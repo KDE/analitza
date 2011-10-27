@@ -36,12 +36,17 @@ set_target_properties(analitzagui PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVE
 
 install(TARGETS analitzagui ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-if(INSTALL_ANALITZA_HEADERS)
-        install(FILES
-		algebrahighlighter.h
-		analitzaguiexport.h
-		operatorsmodel.h
-		variablesmodel.h
+install(FILES
+	algebrahighlighter.h
+	analitzaguiexport.h
+	operatorsmodel.h
+	variablesmodel.h
+	functionfactory.h
+	functionsmodel.h
+	functionsview.h
+	functionspainter.h
+	function.h
+	expressionedit.h
+	graph2d.h
 
-                DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel)
-endif(INSTALL_ANALITZA_HEADERS)
+        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel)

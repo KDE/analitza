@@ -47,24 +47,23 @@ set_target_properties(analitza PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSI
 
 install(TARGETS analitza ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-if(INSTALL_ANALITZA_HEADERS)
-	install(FILES 
-		abstractlexer.h
-		analitzaexport.h
-		analyzer.h
-		analitzautils.h
-		expression.h
-		object.h
-		operations.h
-		operator.h
-		value.h
-		variables.h
-		expressiontype.h
-		builtinmethods.h
-		importqobjectmetatype.h
-		DESTINATION ${INCLUDE_INSTALL_DIR}/analitza/ COMPONENT Devel)
+install(FILES 
+	abstractlexer.h
+	analitzaexport.h
+	analyzer.h
+	analitzautils.h
+	expression.h
+	object.h
+	operations.h
+	operator.h
+	variable.h
+	value.h
+	variables.h
+	expressiontype.h
+	builtinmethods.h
+	importqobjectmetatype.h
+	DESTINATION ${INCLUDE_INSTALL_DIR}/analitza/ COMPONENT Devel)
 	
-	install(FILES
-			../cmake/FindAnalitza.cmake
-			DESTINATION ${DATA_INSTALL_DIR}/cmake/modules)
-endif(INSTALL_ANALITZA_HEADERS)
+install(FILES
+	../cmake/FindAnalitza.cmake
+	DESTINATION ${DATA_INSTALL_DIR}/cmake/modules)
