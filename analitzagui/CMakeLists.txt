@@ -34,7 +34,7 @@ target_link_libraries(analitzagui ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE
 
 set_target_properties(analitzagui PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 
-install(TARGETS analitzagui ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS analitzagui EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
 	algebrahighlighter.h

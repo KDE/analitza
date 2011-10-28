@@ -1,4 +1,4 @@
-project(kalgebra)
+project(analitza)
 
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
@@ -25,3 +25,21 @@ if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
    macro_display_feature_log()
 endif (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
+# # # # # # # # # # #  Installation of the CMake config file
+if(KDE4_USE_COMMON_CMAKE_PACKAGE_CONFIG_DIR)
+    set(_analitza_CONFIG_DEST "${LIB_INSTALL_DIR}/cmake/analitza")
+else(KDE4_USE_COMMON_CMAKE_PACKAGE_CONFIG_DIR)
+    set(_analitza_CONFIG_DEST "${LIB_INSTALL_DIR}/analitza")
+endif(KDE4_USE_COMMON_CMAKE_PACKAGE_CONFIG_DIR)
+
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/AnalitzaConfig.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake" @ONLY )
+export(TARGETS analitza analitzagui
+  FILE "${PROJECT_BINARY_DIR}/AnalitzaTargets.cmake")
+
+install( FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake"
+        DESTINATION "${_analitza_CONFIG_DEST}" )
+install( EXPORT AnalitzaTargets
+         DESTINATION "${_analitza_CONFIG_DEST}"
+         NAMESPACE AnalitzaImport__
+         FILE AnalitzaTargets.cmake )

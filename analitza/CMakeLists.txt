@@ -45,7 +45,7 @@ target_link_libraries(analitza ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${KDE4_K
 
 set_target_properties(analitza PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 
-install(TARGETS analitza ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS analitza EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES 
 	abstractlexer.h
@@ -64,6 +64,3 @@ install(FILES
 	importqobjectmetatype.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/analitza/ COMPONENT Devel)
 	
-install(FILES
-	../cmake/FindAnalitza.cmake
-	DESTINATION ${DATA_INSTALL_DIR}/cmake/modules)
