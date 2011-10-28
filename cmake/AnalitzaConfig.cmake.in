@@ -18,8 +18,8 @@ get_filename_component(_ANALITZA_CURRENT_DIR  "${CMAKE_CURRENT_LIST_FILE}" PATH)
 set( ANALITZA_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@" )
 
 include("${_ANALITZA_CURRENT_DIR}/AnalitzaTargets.cmake")
-set( ANALITZA_LIBRARY AnalitzaTargets__analitza )
-set( ANALITZAGUI_LIBRARY AnalitzaTargets__analitzagui )
+set( ANALITZA_LIBRARY AnalitzaImport__analitza )
+set( ANALITZAGUI_LIBRARY AnalitzaImport__analitzagui )
 set( ANALITZA_LIBS ${ANALITZA_LIBRARY} ${ANALITZAGUI_LIBRARY})
 
 mark_as_advanced(
