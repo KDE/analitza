@@ -23,7 +23,7 @@
 #include "value.h"
 #include "list.h"
 
-#include <KDebug>
+#include <QDebug>
 #include "localize.h"
 #include "variable.h"
 #include "analitzautils.h"

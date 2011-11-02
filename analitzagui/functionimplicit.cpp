@@ -19,7 +19,7 @@
 
 #include <QVector2D>
 #include <qmath.h>
-#include <KDebug>
+#include <QDebug>
 #include <KLocale>
 
 #include "analitza/value.h"

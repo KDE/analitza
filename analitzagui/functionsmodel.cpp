@@ -18,7 +18,7 @@
 
 #include "functionsmodel.h"
 #include <KLocale>
-#include <KDebug>
+#include <QDebug>
 #include <QPixmap>
 #include <QFont>
 #include <analitza/expression.h>

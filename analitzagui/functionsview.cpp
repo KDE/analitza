@@ -18,7 +18,7 @@
 
 #include "functionsview.h"
 #include <analitzagui/functionsmodel.h>
-#include <KDebug>
+#include <QDebug>
 #include <KLocale>
 #include <KIcon>
 #include <QMouseEvent>

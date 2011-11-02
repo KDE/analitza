@@ -24,7 +24,7 @@
 #include <analitza/variable.h>
 #include <analitza/analitzautils.h>
 
-#include <KDebug>
+#include <QDebug>
 #include <KLocale>
 #include "functionutils.h"
 
@@ -219,7 +219,7 @@ QLineF FunctionY::derivative(const QPointF& p)
 			ret = a.calculateLambda().toReal().value();
 		
 		if(!a.isCorrect()) {
-			kDebug() << "Derivative error: " <<  a.errors();
+			qDebug() << "Derivative error: " <<  a.errors();
 			return QLineF();
 		}
 	} else {

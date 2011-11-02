@@ -29,7 +29,7 @@
 #include <QFile>
 
 #include <KLocale>
-#include <KDebug>
+#include <QDebug>
 
 #include <analitza/analyzer.h>
 #include "functionsmodel.h"

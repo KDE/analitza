@@ -22,7 +22,7 @@
 #include "analitza/value.h"
 #include <analitza/expressiontype.h>
 
-#include <KDebug>
+#include <QDebug>
 #include <KLocale>
 #include "functionutils.h"
 

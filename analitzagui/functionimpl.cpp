@@ -22,7 +22,7 @@
 #include "functionfactory.h"
 #include <cmath>
 
-#include <KDebug>
+#include <QDebug>
 
 using namespace std;
 using namespace Analitza;
