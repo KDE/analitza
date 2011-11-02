@@ -20,7 +20,6 @@
 #include <analitzagui/functionsmodel.h>
 #include <QDebug>
 #include <analitza/localize.h>
-#include <KIcon>
 #include <QMouseEvent>
 #include <QMenu>
 
