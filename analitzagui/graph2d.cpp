@@ -28,7 +28,7 @@
 #include <QKeyEvent>
 #include <QFile>
 
-#include <KLocale>
+#include <analitza/localize.h>
 #include <QDebug>
 
 #include <analitza/analyzer.h>

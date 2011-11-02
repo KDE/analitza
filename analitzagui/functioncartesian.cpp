@@ -25,7 +25,7 @@
 #include <analitza/analitzautils.h>
 
 #include <QDebug>
-#include <KLocale>
+#include <analitza/localize.h>
 #include "functionutils.h"
 
 using std::sin;

@@ -24,7 +24,7 @@
 #include "functionimpl.h"
 #include "functionfactory.h"
 
-#include <KLocale>
+#include <analitza/localize.h>
 #include <cmath>
 
 using Analitza::ExpressionType;

@@ -22,7 +22,7 @@
 #include "analitza/value.h"
 #include <analitza/expressiontype.h>
 
-#include <KLocale>
+#include <analitza/localize.h>
 #include "functionutils.h"
 
 using std::atan;

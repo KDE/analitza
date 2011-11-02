@@ -19,7 +19,7 @@
 #include "operatorsmodel.h"
 #include <analitza/operator.h>
 #include <analitza/variables.h>
-#include <KLocale>
+#include <analitza/localize.h>
 #include <QFont>
 
 using Analitza::Operator;

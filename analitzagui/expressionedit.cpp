@@ -29,7 +29,7 @@
 #include <QPropertyAnimation>
 #include <QInputContext>
 
-#include <KLocale>
+#include <analitza/localize.h>
 
 #include <analitzagui/operatorsmodel.h>
 #include <analitza/explexer.h>

@@ -20,7 +20,7 @@
 #include <analitza/variables.h>
 #include <analitza/expression.h>
 #include <analitza/value.h>
-#include <KLocale>
+#include <analitza/localize.h>
 #include <QDebug>
 
 using Analitza::Variables;

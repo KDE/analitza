@@ -19,7 +19,7 @@
 #include "functionsview.h"
 #include <analitzagui/functionsmodel.h>
 #include <QDebug>
-#include <KLocale>
+#include <analitza/localize.h>
 #include <KIcon>
 #include <QMouseEvent>
 #include <QMenu>

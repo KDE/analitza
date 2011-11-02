@@ -23,7 +23,7 @@
 #include <analitza/expressiontype.h>
 
 #include <QDebug>
-#include <KLocale>
+#include <analitza/localize.h>
 #include "functionutils.h"
 
 using Analitza::Expression;
