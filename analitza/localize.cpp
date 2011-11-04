@@ -28,7 +28,12 @@ QString i18np(const char* singular, const char* plural, int x1)
 	return QString::fromUtf8(x1==1 ? singular : plural).arg(x1);
 }
 #else
+#include <kdeversion.h>
+
+#if KDE_IS_VERSION(4,5,90)
 #include <kglobal.h>
 
 static const KCatalogLoader loader("libkdepim");
+#endif
+
 #endif
