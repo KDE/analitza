@@ -1215,13 +1215,13 @@ Object* Analyzer::simpApply(Apply* c)
 			break;
 		case Operator::minus:
 		case Operator::plus: {
-			bool somed=false, lastdel=false;
+			bool somed=false, lastdel=false, firstdel=false;
 			it=c->end()-1;
 			Object* first=*c->firstValue();
 			
-			bool done=false;
+			bool done=false, firstelem=true;
 			
-			for(; !done; --it) {
+			for(; !done; --it, firstelem=false) {
 				done=it==c->m_params.begin();
 				lastdel=false;
 				*it = simp(*it);
@@ -1241,13 +1241,14 @@ Object* Analyzer::simpApply(Apply* c)
 					}
 				}
 				
-				if(!d && ((*it)->type()==Object::value || ((*it)->type()==Object::vector && !hasVars(*it))) && (*it)->isZero()) {
+				if(!d && Monomial::isScalar(*it) && (*it)->isZero()) {
 					d=true;
 					lastdel=true;
 				}
 				
 				if(d) {
 					somed=true;
+					firstdel = firstdel || firstelem;
 					delete *it;
 					if(first==*it) first=0;
 					it = c->m_params.erase(it);
@@ -1265,9 +1266,9 @@ Object* Analyzer::simpApply(Apply* c)
 			}
 			root=c;
 			
-// 			qDebug()<< "PEPEPE" << delme << c->toString();
+// 			qDebug()<< "PEPEPE" << c->toString();
 			if(c->isUnary()) {
-				if(o==Operator::plus || (somed && !lastdel)) {
+				if(o==Operator::plus || (somed && !firstdel)) {
 					root=*c->firstValue();
 					*c->firstValue()=0;
 					delete c;
@@ -1534,98 +1535,17 @@ Object* Analyzer::simpApply(Apply* c)
 	return root;
 }
 
-QDebug operator<<(QDebug dbg, const Monomial &c)
-{
-	dbg.nospace() << "(" << c.first << ", " << (c.second ? c.second->toString() : "<null>") << ")";
-
-	return dbg.space();
-}
-
-void Analyzer::simpScalar(const Operator& o, Polynomial& monos)
-{
-	Object *value=0;
-	QList<Monomial>::iterator i = monos.begin();
-	bool firstvalue = !monos.isEmpty() && monos.first().isValue();
-	qDebug() << "lalala" << monos << firstvalue;
-	
-	for(; i!=monos.end();) {
-		bool d=false;
-		
-		if(i->isValue()) {
-			Object* aux = i->createMono(o);
-			
-			if(value) {
-				QString* err=0;
-				value=Operations::reduce(o.operatorType(), value, aux, &err);
-				delete err;
-			} else
-				value=aux;
-			
-			d=true;
-		}
-		
-		if(d)
-			i = monos.erase(i);
-		else
-			++i;
-	}
-	
-	if(value) {
-		qDebug() << "lalala" << monos << value->toString();
-		
-		bool sign=false;
-		if(value->isZero())
-			delete value;
-		else if(o==Operator::plus || (!firstvalue && o==Operator::minus))
-			monos.append(Monomial(o, value, sign));
-		else
-			monos.prepend(Monomial(o, value, sign));
-	}
-}
-
 Object* Analyzer::simpPolynomials(Apply* c)
 {
 	Q_ASSERT(c!=0 && c->isApply());
 	
-	Operator o(c->firstOperator());
-	bool sign=true;
-	Polynomial monos(c, sign);
-	simpScalar(o, monos);
+	Polynomial monos(c);
 	
 	c->m_params.clear();
 	delete c;
 	c=0;
 	
-	Object *root=0;
-	if(monos.count()==1) {
-		root=monos.first().createMono(o);
-	} else if(monos.count()>1) {
-		Apply* c= new Apply;
-		c->appendBranch(new Operator(o));
-		
-		QList<Monomial>::iterator i=monos.begin();
-		bool first=true;
-		for(; i!=monos.end(); ++i) {
-			if(!first && o==Operator::minus)
-				i->first *= -1;
-			Object* toAdd=i->createMono(o);
-			
-			if(toAdd)
-				c->appendBranch(toAdd);
-			
-			first=false;
-		}
-		root=c;
-	}
-	
-	if(!sign && root) {
-		Apply *cn=new Apply;
-		cn->appendBranch(new Operator(Operator::minus));
-		cn->appendBranch(root);
-		root=cn;
-	} else if(!root) {
-		root=new Cn(0.);
-	}
+	Object *root=monos.toObject();
 	
 	return root;
 }

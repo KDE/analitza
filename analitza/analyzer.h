@@ -189,7 +189,7 @@ class ANALITZA_EXPORT Analyzer
 		Object* simpSum(Apply* c);
 		Object* simpApply(Apply* c);
 		Object* simpPiecewise(Container* c);
-		void simpScalar(const Analitza::Operator& o, Analitza::Polynomial& monos);
+		void simpScalar(const Analitza::Operator& o, const QList< Analitza::Object* >& scalars);
 		
 		Object* findRoots(Apply* a);
 		

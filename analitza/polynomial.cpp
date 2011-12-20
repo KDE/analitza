@@ -21,8 +21,21 @@
 #include "apply.h"
 #include "value.h"
 #include "analitzautils.h"
+#include "operations.h"
 
 using namespace Analitza;
+
+static QDebug operator<<(QDebug dbg, const Monomial &c)
+{
+	dbg.nospace() << "(" << c.first << ", " << (c.second ? c.second->toString() : "<null>") << ")";
+
+	return dbg.space();
+}
+
+bool Monomial::isScalar(const Object* o)
+{
+	return o->type()==Object::value || (o->type()==Object::vector && !AnalitzaUtils::hasVars(o));
+}
 
 Object* Monomial::createMono(const Operator& o)
 {
@@ -132,18 +145,24 @@ Monomial::Monomial(const Operator& o, Object* o2, bool& sign)
 
 bool Monomial::isValue() const
 {
-	return second->type()==Object::value || (second->type()==Object::vector && !AnalitzaUtils::hasVars(second));
+	return isScalar(second);
 }
 
-Polynomial::Polynomial(Apply* c, bool& sign)
+Polynomial::Polynomial(Apply* c)
+	: m_firstValue(false)
+	, m_operator(c->firstOperator())
+	, m_sign(true)
 {
-	Operator o(c->firstOperator());
 	bool first = true;
-	
+// 	qDebug() << "fuuuuuuu" << c->toString();
 	for(Apply::const_iterator it=c->constBegin(), itEnd=c->constEnd(); it!=itEnd; ++it, first=false) {
-		Monomial imono(o, *it, sign);
-		
-		if(o==Operator::minus && !first)
+		if(Monomial::isScalar(*it)) {
+			m_scalars += *it;
+			m_firstValue = m_firstValue || first;
+			continue;
+		}
+		Monomial imono(m_operator, *it, m_sign);
+		if(m_operator==Operator::minus && !first)
 			imono.first*=-1;
 		
 		bool found = false;
@@ -155,7 +174,6 @@ Polynomial::Polynomial(Apply* c, bool& sign)
 				break;
 		}
 		
-// 		qDebug() << "->" << c->toString() << c->firstOperator().toString() << found;
 		if(found) {
 			it1->first += imono.first;
 			delete imono.second;
@@ -168,4 +186,87 @@ Polynomial::Polynomial(Apply* c, bool& sign)
 			append(imono);
 		}
 	}
+	
+	simpScalars();
+// 	qDebug() << "aaaaaaaa" << *this << size();
+}
+
+void Polynomial::simpScalars()
+{
+	Object *value=0;
+	bool first = true;
+	
+	for(QList<Object*>::iterator i=m_scalars.begin(); i!=m_scalars.end(); ++i, first=false) {
+		bool d=false;
+		
+		Object* aux = *i;
+		if(value) {
+			QString* err=0;
+			value=Operations::reduce(m_operator.operatorType(), value, aux, &err);
+			delete err;
+			d=err;
+		} else
+			value=aux;
+		
+		if(d) {
+			bool sign = false;
+			Monomial imono(m_operator, *i, sign);
+			if(m_operator==Operator::minus && !first)
+				imono.first*=-1;
+			append(imono);
+		}
+	}
+	
+	if(value) {
+		bool sign=true;
+		if(value->isZero())
+			delete value;
+		else {
+			Monomial imono(m_operator, value, sign);
+			
+			if(m_operator==Operator::plus || (!m_firstValue && m_operator==Operator::minus)) {
+				if(m_operator==Operator::minus && !first)
+					imono.first*=-1;
+				append(imono);
+			} else
+				prepend(imono);
+		}
+	}
+	
+	m_scalars.clear();
+}
+
+Object* Polynomial::toObject()
+{
+	Object* root = 0;
+	if(count()==1) {
+		root = first().createMono(m_operator);
+	} else if(count()>1) {
+		Apply* c = new Apply;
+		c->appendBranch(new Operator(m_operator));
+		
+		QList<Monomial>::iterator i=begin();
+		bool first=true;
+		for(; i!=end(); ++i, first=false) {
+			if(!first && m_operator==Operator::minus)
+				i->first *= -1;
+			Object* toAdd=i->createMono(m_operator);
+			
+			if(toAdd)
+				c->appendBranch(toAdd);
+		}
+		root=c;
+	}
+	
+	if(!m_sign && root) {
+		Apply *cn=new Apply;
+		cn->appendBranch(new Operator(Operator::minus));
+		cn->appendBranch(root);
+		root=cn;
+	} else if(!root) {
+		root=new Cn(0.);
+	}
+	
+// 	qDebug() << "tuuuuuu" << *this << root->toString();
+	return root;
 }

@@ -21,6 +21,7 @@
 #define POLYNOMIAL_H
 
 #include <QList>
+#include "operator.h"
 
 namespace Analitza {
 
@@ -34,6 +35,7 @@ class Monomial
 		Monomial(const Operator& o, Object* o2, bool& sign);
 		Analitza::Object* createMono(const Analitza::Operator& o);
 		bool isValue() const;
+		static bool isScalar(const Object* o);
 		
 		qreal first;
 		Analitza::Object* second;
@@ -42,10 +44,15 @@ class Monomial
 class Polynomial : public QList<Monomial>
 {
 	public:
-		Polynomial(Apply* c, bool& sign);
+		Polynomial(Apply* c);
+		Analitza::Object* toObject();
 		
 	private:
+		void simpScalars();
 		QList<Object*> m_scalars;
+		bool m_firstValue;
+		Operator m_operator;
+		bool m_sign;
 };
 
 }
