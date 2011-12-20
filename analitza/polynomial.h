@@ -45,7 +45,10 @@ class Polynomial : public QList<Monomial>
 {
 	public:
 		Polynomial(Apply* c);
+		void addMonomial(const Monomial& m);
+		
 		Analitza::Object* toObject();
+		void negate();
 		
 	private:
 		void simpScalars();

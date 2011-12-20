@@ -154,7 +154,7 @@ Polynomial::Polynomial(Apply* c)
 	, m_sign(true)
 {
 	bool first = true;
-// 	qDebug() << "fuuuuuuu" << c->toString();
+	QList<Monomial> monos;
 	for(Apply::const_iterator it=c->constBegin(), itEnd=c->constEnd(); it!=itEnd; ++it, first=false) {
 		if(Monomial::isScalar(*it)) {
 			m_scalars += *it;
@@ -165,30 +165,56 @@ Polynomial::Polynomial(Apply* c)
 		if(m_operator==Operator::minus && !first)
 			imono.first*=-1;
 		
-		bool found = false;
-		QList<Monomial>::iterator it1(begin());
-		for(; it1!=end(); ++it1) {
-			Object *o1=it1->second, *o2=imono.second;
-			found = AnalitzaUtils::equalTree(o1, o2);
-			if(found)
-				break;
+		bool added=false;
+		if(imono.second->isApply()) {
+			Apply* a = static_cast<Apply*>(imono.second);
+			if(a->firstOperator()==m_operator) {
+				Polynomial p(a);
+				
+				a->m_params.clear();
+				delete a;
+				
+				monos.append(p);
+				m_scalars.append(p.m_scalars);
+				added=true;
+			}
 		}
 		
-		if(found) {
-			it1->first += imono.first;
-			delete imono.second;
-			
-			if(it1->first==0.) {
-				delete it1->second;
-				erase(it1);
-			}
-		} else {
-			append(imono);
-		}
+		if(!added)
+			monos.append(imono);
 	}
 	
-	simpScalars();
+// 	qDebug() << "++++++" << monos;
+	for(iterator it=monos.begin(), itEnd=monos.end(); it!=itEnd; ++it) {
+		addMonomial(*it);
+	}
+	
 // 	qDebug() << "aaaaaaaa" << *this << size();
+}
+
+void Polynomial::addMonomial(const Monomial& m)
+{
+	bool found = false;
+	QList<Monomial>::iterator it1(begin());
+	for(; it1!=end(); ++it1) {
+		Object *o1=it1->second, *o2=m.second;
+		found = AnalitzaUtils::equalTree(o1, o2);
+		if(found)
+			break;
+	}
+	
+// 	qDebug() << "looo" << *this << m << found;
+	if(found) {
+		it1->first += m.first;
+		delete m.second;
+		
+		if(it1->first==0.) {
+			delete it1->second;
+			erase(it1);
+		}
+	} else {
+		append(m);
+	}
 }
 
 void Polynomial::simpScalars()
@@ -238,6 +264,9 @@ void Polynomial::simpScalars()
 
 Object* Polynomial::toObject()
 {
+	if(!m_scalars.isEmpty())
+		simpScalars();
+	
 	Object* root = 0;
 	if(count()==1) {
 		root = first().createMono(m_operator);
