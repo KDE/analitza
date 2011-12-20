@@ -3,6 +3,7 @@ project(analitza)
 add_subdirectory(tests)
 
 set(analitza_SRCS
+	polynomial.cpp
 	importqobjectmetatype.cpp
 	builtinmethods.cpp
 	providederivative.cpp

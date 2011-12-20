@@ -32,6 +32,7 @@
 #include "expressiontypechecker.h"
 #include "apply.h"
 #include "providederivative.h"
+#include "polynomial.h"
 
 // #define SCRIPT_PROFILER
 
@@ -1533,18 +1534,25 @@ Object* Analyzer::simpApply(Apply* c)
 	return root;
 }
 
-QList<Monomial> Analyzer::simpScalar(Apply * c, bool& sign)
+QDebug operator<<(QDebug dbg, const Monomial &c)
+{
+	dbg.nospace() << "(" << c.first << ", " << (c.second ? c.second->toString() : "<null>") << ")";
+
+	return dbg.space();
+}
+
+void Analyzer::simpScalar(const Operator& o, Polynomial& monos)
 {
 	Object *value=0;
-	Apply::iterator i = c->firstValue();
-	Operator o = c->firstOperator();
-	bool firstvalue = i!=c->end() && ((*i)->type()==Object::value || ((*i)->type()==Object::vector && !hasVars(*i)));
-	for(; i!=c->end();) {
+	QList<Monomial>::iterator i = monos.begin();
+	bool firstvalue = !monos.isEmpty() && monos.first().isValue();
+	qDebug() << "lalala" << monos << firstvalue;
+	
+	for(; i!=monos.end();) {
 		bool d=false;
 		
-		//TODO: hasVars needed? should have already been simplifyed before, just check type==cn
-		if((*i)->type()==Object::value || ((*i)->type()==Object::vector && !hasVars(*i))) {
-			Object* aux = *i;
+		if(i->isValue()) {
+			Object* aux = i->createMono(o);
 			
 			if(value) {
 				QString* err=0;
@@ -1552,24 +1560,27 @@ QList<Monomial> Analyzer::simpScalar(Apply * c, bool& sign)
 				delete err;
 			} else
 				value=aux;
+			
 			d=true;
 		}
+		
 		if(d)
-			i = c->m_params.erase(i);
+			i = monos.erase(i);
 		else
 			++i;
 	}
 	
 	if(value) {
+		qDebug() << "lalala" << monos << value->toString();
+		
+		bool sign=false;
 		if(value->isZero())
 			delete value;
 		else if(o==Operator::plus || (!firstvalue && o==Operator::minus))
-			c->appendBranch(value);
+			monos.append(Monomial(o, value, sign));
 		else
-			c->insertBranch(c->firstValue(), value);
+			monos.prepend(Monomial(o, value, sign));
 	}
-	
-	return createPolynomial(c, sign);
 }
 
 Object* Analyzer::simpPolynomials(Apply* c)
@@ -1578,7 +1589,8 @@ Object* Analyzer::simpPolynomials(Apply* c)
 	
 	Operator o(c->firstOperator());
 	bool sign=true;
-	QList<Monomial> monos=simpScalar(c, sign);
+	Polynomial monos(c, sign);
+	simpScalar(o, monos);
 	
 	c->m_params.clear();
 	delete c;
@@ -1586,7 +1598,7 @@ Object* Analyzer::simpPolynomials(Apply* c)
 	
 	Object *root=0;
 	if(monos.count()==1) {
-		root=createMono(o, monos.first());
+		root=monos.first().createMono(o);
 	} else if(monos.count()>1) {
 		Apply* c= new Apply;
 		c->appendBranch(new Operator(o));
@@ -1596,7 +1608,7 @@ Object* Analyzer::simpPolynomials(Apply* c)
 		for(; i!=monos.end(); ++i) {
 			if(!first && o==Operator::minus)
 				i->first *= -1;
-			Object* toAdd=createMono(o, *i);
+			Object* toAdd=i->createMono(o);
 			
 			if(toAdd)
 				c->appendBranch(toAdd);

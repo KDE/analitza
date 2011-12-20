@@ -31,7 +31,8 @@
 
 namespace Analitza
 {
-
+class Polynomial;
+class Monomial;
 class Apply;
 class BoundingIterator;
 class BuiltinMethods;
@@ -188,7 +189,7 @@ class ANALITZA_EXPORT Analyzer
 		Object* simpSum(Apply* c);
 		Object* simpApply(Apply* c);
 		Object* simpPiecewise(Container* c);
-		QList< AnalitzaUtils::Monomial > simpScalar(Analitza::Apply* c, bool& sign);
+		void simpScalar(const Analitza::Operator& o, Analitza::Polynomial& monos);
 		
 		Object* findRoots(Apply* a);
 		
