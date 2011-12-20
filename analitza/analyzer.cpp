@@ -1215,7 +1215,7 @@ Object* Analyzer::simpApply(Apply* c)
 			break;
 		case Operator::minus:
 		case Operator::plus: {
-			bool somed=false, lastdel=false, firstdel=false;
+			bool somed=false, lastdel=false, firstdel=true;
 			it=c->end()-1;
 			Object* first=*c->firstValue();
 			
