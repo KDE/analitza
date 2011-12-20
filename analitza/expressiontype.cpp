@@ -200,7 +200,7 @@ bool ExpressionType::operator==(const ExpressionType& t) const
 {
 // 	qDebug() <<"seeee" << m_type << t.m_type << t.m_contained << m_contained << t << *this;
 	bool ret=t.m_type==m_type;
-	ret=ret			&& m_type==ExpressionType::Any ? m_any==t.m_any : (m_size<1 || t.m_size<1 || m_size==t.m_size);
+	ret=ret			&& (m_type==ExpressionType::Any ? m_any==t.m_any : (m_size<1 || t.m_size<1 || m_size==t.m_size));
 	ret=ret			&& t.m_contained==m_contained;
 	
 	if(!ret && t.type()==ExpressionType::Many && t.alternatives().size()==1)
