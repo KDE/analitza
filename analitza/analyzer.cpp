@@ -1209,19 +1209,7 @@ Object* Analyzer::simpApply(Apply* c)
 				*aux->firstValue()=0;
 				delete aux;
 			} else {
-				Object *ret=simpScalar(c);
-				if(ret->isApply()) {
-					c=static_cast<Apply*>(ret);
-					ret=simpPolynomials(c);
-					c=ret->isContainer() ? static_cast<Apply*>(ret) : 0;
-				} else
-					c=0;
-				
-				if(c && c->isEmpty()) {
-					delete root;
-					root = new Cn(0.);
-				} else
-					root=ret;
+				root=simpPolynomials(c);
 			}
 			break;
 		case Operator::minus:
@@ -1297,16 +1285,8 @@ Object* Analyzer::simpApply(Apply* c)
 					}
 				}
 			} else {
-				root=simpScalar(c);
-				
-				if(root->isApply()) {
-					c=static_cast<Apply*>(root);
-					
-					root=simpPolynomials(c);
-					
-					c=root->isApply() ? static_cast<Apply*>(root) : 0;
-				} else
-					c=0;
+				root=simpPolynomials(c);
+				c=0;
 			}
 // 			qDebug()<< "PAAPPA" << root->toString();
 			
@@ -1553,7 +1533,7 @@ Object* Analyzer::simpApply(Apply* c)
 	return root;
 }
 
-Object* Analyzer::simpScalar(Apply * c)
+QList<Monomial> Analyzer::simpScalar(Apply * c, bool& sign)
 {
 	Object *value=0;
 	Apply::iterator i = c->firstValue();
@@ -1588,162 +1568,19 @@ Object* Analyzer::simpScalar(Apply * c)
 		else
 			c->insertBranch(c->firstValue(), value);
 	}
-	return c;
-}
-
-namespace Analitza
-{
-typedef QPair<double, Object*> Monomial;
-
-Object* createMono(const Operator& o, const Monomial& p)
-{
-	Operator::OperatorType mult = o.multiplicityOperator();
 	
-	Object* toAdd=0;
-	if(p.first==0.) {
-		delete p.second;
-	} else if(p.first==1.) {
-		toAdd=p.second;
-	} else if(p.first==-1. && mult==Operator::times) {
-		Apply *cint = new Apply;
-		cint->appendBranch(new Operator(Operator::minus));
-		cint->appendBranch(p.second);
-		toAdd=cint;
-	} else if(mult==Operator::times && p.second->isApply() && static_cast<Apply*>(p.second)->firstOperator()==Operator::times) {
-		Apply* res = static_cast<Apply*>(p.second);
-		res->prependBranch(new Cn(p.first));
-		toAdd=res;
-	} else {
-		Apply *cint = new Apply;
-		cint->appendBranch(new Operator(mult));
-		if(mult==Operator::times) {
-			cint->appendBranch(new Cn(p.first));
-			cint->appendBranch(p.second);
-		} else {
-			cint->appendBranch(p.second);
-			cint->appendBranch(new Cn(p.first));
-		}
-		toAdd=cint;
-	}
-	return toAdd;
-}
-
-Monomial constructMonomial(const Operator& o, Object* o2, bool& sign)
-{
-	bool ismono=false;
-	Monomial imono;
-	Operator::OperatorType mult = o.multiplicityOperator();
-	
-	if(o2->isApply()) {
-		Apply *cx = (Apply*) o2;
-		if(cx->firstOperator()==mult) {
-			if(cx->countValues()==2) {
-				bool valid=false;
-				int scalar, var;
-				
-				if(mult!=Operator::power && cx->m_params[0]->type()==Object::value) {
-					scalar=0;
-					var=1;
-					valid=true;
-				} else if(cx->m_params[1]->type()==Object::value) {
-					scalar=1;
-					var=0;
-					valid=true;
-				}
-				
-				if(valid) {
-					Cn* sc= (Cn*) cx->m_params[scalar];
-					imono.first = sc->value();
-					imono.second = cx->m_params[var];
-					
-					cx->m_params[var]=0;
-					delete cx;
-					
-					ismono=true;
-				}
-			} else if(mult==Operator::times) {
-				imono.first=1;
-				Apply::iterator it=cx->firstValue(), itEnd=cx->end();
-				QVector<Object*> vars;
-				QVector<Object*> values;
-				
-				for(; it!=itEnd; ++it) {
-					if((*it)->type()==Object::value) {
-						imono.first *= static_cast<Cn*>(*it)->value();
-						values += *it;
-						ismono=true;
-					} else {
-						vars += *it;
-					}
-				}
-				
-				if(ismono) {
-					cx->m_params = vars;
-					imono.second = cx;
-					qDeleteAll(values);
-				}
-			}
-		} else if(cx->firstOperator()==Operator::minus && cx->isUnary()) {
-			imono = constructMonomial(o, *cx->firstValue(), sign);
-			*cx->firstValue()=0;
-			delete cx;
-			ismono=true;
-				
-			if(o==Operator::times)
-				sign = !sign;
-			else if(o==Operator::plus || o==Operator::minus)
-				imono.first *= -1;
-		}
-	}
-	
-	if(!ismono) {
-		imono.first = 1.;
-		imono.second = o2;
-	}
-	
-	return imono;
-}
-
+	return createPolynomial(c, sign);
 }
 
 Object* Analyzer::simpPolynomials(Apply* c)
 {
-	Q_ASSERT(c!=0 && dynamic_cast<Apply*>(c));
+	Q_ASSERT(c!=0 && c->isApply());
 	
-	QList<Monomial> monos;
 	Operator o(c->firstOperator());
-	bool sign=true, first=true;
+	bool sign=true;
+	QList<Monomial> monos=simpScalar(c, sign);
 	
-	for(Apply::const_iterator it=c->constBegin(), itEnd=c->constEnd(); it!=itEnd; ++it, first=false) {
-		Monomial imono = constructMonomial(o, *it, sign);
-		
-		if(o==Operator::minus && !first)
-			imono.first*=-1;
-		
-		bool found = false;
-		QList<Monomial>::iterator it1(monos.begin());
-		for(; it1!=monos.end(); ++it1) {
-			Object *o1=it1->second, *o2=imono.second;
-			found = equalTree(o1, o2);
-			if(found)
-				break;
-		}
-		
-// 		qDebug() << "->" << c->toString() << c->firstOperator().toString() << found;
-		if(found) {
-			it1->first += imono.first;
-			delete imono.second;
-			
-			if(it1->first==0.) {
-				delete it1->second;
-				monos.erase(it1);
-			}
-		} else {
-			monos.append(imono);
-		}
-	}
 	c->m_params.clear();
-	
 	delete c;
 	c=0;
 	
@@ -1781,23 +1618,6 @@ Object* Analyzer::simpPolynomials(Apply* c)
 	return root;
 }
 
-int removeAll(QVector<Object*>& v, Object* o)
-{
-// 	int removed=0;
-// 	for(QVector<Object*>::iterator it=v.begin(), itEnd=v.end(); it!=itEnd;) {
-// 		if(*it==o)
-// 			it=v.erase(it);
-// 		else
-// 			++it;
-// 	}
-// 	
-// 	return removed;
-
-//TODO: remove this... -.-
-	QList<Object*> hack=v.toList();
-	return hack.removeAll(o);
-}
-
 Object* Analyzer::simpSum(Apply* c)
 {
 	Object* ret=c;
@@ -1807,15 +1627,16 @@ Object* Analyzer::simpSum(Apply* c)
 		QSet<QString> bvars=c->bvarStrings().toSet();
 		QVector<Object*> sum, out;
 		Apply::iterator it=cval->firstValue(), itEnd=cval->end();
+		int removed=0;
 		for(; it!=itEnd; ++it) {
 			if(hasTheVar(bvars, *it)) {
 				sum.append(*it);
 			} else {
 				out.append(*it);
 				*it=0;
+				++removed;
 			}
 		}
-		int removed=removeAll(cval->m_params, 0);
 		
 		if(removed>0) {
 			Apply* nc=new Apply;

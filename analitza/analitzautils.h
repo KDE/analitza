@@ -31,6 +31,7 @@ class Variables;
 class Expression;
 class Apply;
 class List;
+class Operator;
 }
 
 namespace AnalitzaUtils
@@ -71,6 +72,12 @@ namespace AnalitzaUtils
 	
 	/** tells how much @p depth is being used inside @p tree */
 	int countDepth(int depth, const Analitza::Object* tree);
+	
+	typedef QPair<double, Analitza::Object*> Monomial;
+	Monomial constructMonomial(const Analitza::Operator& o, Analitza::Object* o2, bool& sign);
+	QList<Monomial> createPolynomial(Analitza::Apply* c, bool& sign);
+	
+	Analitza::Object* createMono(const Analitza::Operator& o, const Monomial& p);
 }
 
 #endif // ANALITZAUTILS_H

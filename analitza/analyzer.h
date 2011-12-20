@@ -27,6 +27,7 @@
 #include "expressiontype.h"
 #include "builtinmethods.h"
 #include <QStack>
+#include <analitza/analitzautils.h>
 
 namespace Analitza
 {
@@ -183,11 +184,13 @@ class ANALITZA_EXPORT Analyzer
 		Object* calcCallFunction(Analitza::Container* function, const QVector<Analitza::Object* >& args, const Analitza::Object* op);
 		
 		Object* simp(Object* root);
-		Object* simpScalar(Apply* c);
 		Object* simpPolynomials(Apply* c);
 		Object* simpSum(Apply* c);
 		Object* simpApply(Apply* c);
 		Object* simpPiecewise(Container* c);
+		QList< AnalitzaUtils::Monomial > simpScalar(Analitza::Apply* c, bool& sign);
+		
+		Object* findRoots(Apply* a);
 		
 		Object* derivative(const QString &var, const Object*);
 		void levelOut(Apply *c, Apply *ob, QVector<Object*>::iterator &it);
