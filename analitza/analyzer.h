@@ -194,7 +194,6 @@ class ANALITZA_EXPORT Analyzer
 		Object* findRoots(Apply* a);
 		
 		Object* derivative(const QString &var, const Object*);
-		void levelOut(Apply *c, Apply *ob, QVector<Object*>::iterator &it);
 		Object* boundedOperation(const Apply & n, const Operator & t, Object* initial);
 		
 		BoundingIterator* initializeBVars(const Apply* n, int base);

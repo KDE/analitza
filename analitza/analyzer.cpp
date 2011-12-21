@@ -1100,16 +1100,6 @@ void Analyzer::simplify()
 	}
 }
 
-void Analyzer::levelOut(Apply *c, Apply *ob, Apply::iterator &pos)
-{
-	Apply::iterator it = ob->firstValue();
-	for(; it!=ob->end(); pos++) {
-		pos=c->m_params.insert(pos, *it);
-		
-		it=ob->m_params.erase(it);
-	}
-}
-
 template <class T, class Tit>
 void Analyzer::iterateAndSimp(T* v)
 {
