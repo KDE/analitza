@@ -1165,27 +1165,25 @@ Object* Analyzer::simp(Object* root)
 	return root;
 }
 
+Object* Analyzer::findRoots(Apply* a)
+{
+// 	objectWalker(a, "lala");
+	return 0;
+}
+
 Object* Analyzer::simpApply(Apply* c)
 {
 	Object* root=c;
 	Apply::iterator it;
 	Operator o = c->firstOperator();
-	bool d;
 	
 	switch(o.operatorType()) {
 		case Operator::times:
 			for(it=c->firstValue(); c->countValues()>1 && it!=c->end();) {
-				d=false;
+				bool d=false;
 				*it = simp(*it);
-				if((*it)->isApply()) {
-					Apply *intr = static_cast<Apply*>(*it);
-					if(intr->firstOperator()==o) {
-						levelOut(c, intr, it);
-						d=true;
-					}
-				}
 				
-				if(!d && (*it)->type() == Object::value) {
+				if((*it)->type() == Object::value) {
 					Cn* n = (Cn*) (*it);
 					if(n->value()==1. && c->countValues()>1) { //1*exp=exp
 						d=true;
@@ -1204,71 +1202,18 @@ Object* Analyzer::simpApply(Apply* c)
 				}
 			}
 			
-			if(c->isUnary()) {
-				Apply *aux=c;
-				root=*c->firstValue();
-				*aux->firstValue()=0;
-				delete aux;
-			} else {
-				root=simpPolynomials(c);
-			}
+			root=simpPolynomials(c);
 			break;
 		case Operator::minus:
 		case Operator::plus: {
-			bool somed=false, lastdel=false, firstdel=true;
-			it=c->end()-1;
-			Object* first=*c->firstValue();
-			
-			bool done=false, firstelem=true;
-			
-			for(; !done; --it, firstelem=false) {
-				done=it==c->m_params.begin();
-				lastdel=false;
+// 			qDebug() << "........................" << c->toString();
+			for(Apply::iterator it=c->begin(), itEnd=c->end(); it!=itEnd; ++it) {
 				*it = simp(*it);
-				
-				d=false;
-				
-				if((*it)->isApply()) {
-					Apply *intr = (Apply*) *it;
-					Operator op=intr->firstOperator();
-					if(op==o || (*it!=first && op==Operator::plus && o==Operator::minus))
-					{
-						if(!(intr->isUnary() && op==Operator::minus))
-						{
-							levelOut(c, intr, it);
-							d=true;
-						}
-					}
-				}
-				
-				if(!d && Monomial::isScalar(*it) && (*it)->isZero()) {
-					d=true;
-					lastdel=true;
-				}
-				
-				if(d) {
-					somed=true;
-					firstdel = firstdel || firstelem;
-					delete *it;
-					if(first==*it) first=0;
-					it = c->m_params.erase(it);
-				}
 			}
-			
-// 			qDebug()<< "KOKOKO" << delme << c->toString() << lastdel;
-			
-			if(lastdel && o==Operator::minus && c->countValues()>1) {
-				Apply::iterator it=c->firstValue();
-				Apply* cc=new Apply;
-				cc->appendBranch(new Operator(Operator::minus));
-				cc->appendBranch(*it);
-				*it=cc;
-			}
-			root=c;
 			
 // 			qDebug()<< "PEPEPE" << c->toString();
 			if(c->isUnary()) {
-				if(o==Operator::plus || (somed && !firstdel)) {
+				if(o==Operator::plus) {
 					root=*c->firstValue();
 					*c->firstValue()=0;
 					delete c;
@@ -1285,6 +1230,14 @@ Object* Analyzer::simpApply(Apply* c)
 						delete c1;
 						c=0;
 					}
+				} else if(o==Operator::minus && (*c->firstValue())->type()==Object::value) {
+					Cn* v = static_cast<Cn*>(*c->firstValue());
+					v->rvalue() *= -1;
+					
+					root=v;
+					*c->firstValue()=0;
+					delete c;
+					c=0;
 				}
 			} else {
 				root=simpPolynomials(c);

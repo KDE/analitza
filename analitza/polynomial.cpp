@@ -168,11 +168,16 @@ Polynomial::Polynomial(Apply* c)
 		bool added=false;
 		if(imono.second->isApply()) {
 			Apply* a = static_cast<Apply*>(imono.second);
-			if(a->firstOperator()==m_operator) {
+			if(a->firstOperator()==m_operator
+				|| (m_operator==Operator::minus && a->firstOperator()==Operator::plus && !first)
+			) {
 				Polynomial p(a);
 				
 				a->m_params.clear();
 				delete a;
+				
+				if(m_operator.operatorType()!=a->firstOperator().operatorType())
+					p.negate();
 				
 				monos.append(p);
 				m_scalars.append(p.m_scalars);
@@ -298,4 +303,29 @@ Object* Polynomial::toObject()
 	
 // 	qDebug() << "tuuuuuu" << *this << root->toString();
 	return root;
+}
+
+Object* negateObject(Object* o)
+{
+	if(o->type()==Operator::value) {
+		Cn* v = static_cast<Cn*>(o);
+		v->rvalue() *= -1;
+		return v;
+	} else {
+		Apply* a = new Apply;
+		a->appendBranch(new Operator(Operator::minus));
+		a->appendBranch(o);
+		return a;
+	}
+}
+
+void Polynomial::negate()
+{
+	for(iterator it=begin(); it!=end(); ++it) {
+		it->first *= -1;
+	}
+	
+	for(QList<Object*>::iterator it=m_scalars.begin(); it!=m_scalars.end(); ++it) {
+		*it=negateObject(*it);
+	}
 }
