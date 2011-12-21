@@ -71,6 +71,7 @@ class ANALITZA_EXPORT Cn : public Object
 		 *	Returns the value.
 		 */
 		inline double value() const { return m_value; }
+		inline double& rvalue() { return m_value; }
 		
 		/**
 		 *	Returns the value as an int.
