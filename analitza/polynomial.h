@@ -33,7 +33,7 @@ class Monomial
 {
 	public:
 		Monomial(const Operator& o, Object* o2, bool& sign);
-		Analitza::Object* createMono(const Analitza::Operator& o);
+		Analitza::Object* createMono(const Analitza::Operator& o) const;
 		bool isValue() const;
 		static bool isScalar(const Object* o);
 		
@@ -45,15 +45,15 @@ class Polynomial : public QList<Monomial>
 {
 	public:
 		Polynomial(Apply* c);
-		void addMonomial(const Monomial& m);
 		
 		Analitza::Object* toObject();
-		void negate();
+		void negate(int i);
 		
 	private:
-		void simpScalars();
+		void addMonomial(const Monomial& m);
+		void addValue(Analitza::Object* value);
+		void simpScalars(bool m_firstValue);
 		QList<Object*> m_scalars;
-		bool m_firstValue;
 		Operator m_operator;
 		bool m_sign;
 };

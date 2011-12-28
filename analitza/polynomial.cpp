@@ -25,11 +25,32 @@
 
 using namespace Analitza;
 
-static QDebug operator<<(QDebug dbg, const Monomial &c)
+static QDebug operator<<(QDebug dbg, const Object* c)
 {
-	dbg.nospace() << "(" << c.first << ", " << (c.second ? c.second->toString() : "<null>") << ")";
+	dbg.nospace() << (c ? c->toString() : "<null>");
 
 	return dbg.space();
+}
+
+static QDebug operator<<(QDebug dbg, const Monomial &c)
+{
+	dbg.nospace() << "(" << c.first << ", " << c.second << ")";
+
+	return dbg.space();
+}
+
+static Object* negateObject(Object* o)
+{
+	if(o->type()==Operator::value) {
+		Cn* v = static_cast<Cn*>(o);
+		v->rvalue() *= -1;
+		return v;
+	} else {
+		Apply* a = new Apply;
+		a->appendBranch(new Operator(Operator::minus));
+		a->appendBranch(o);
+		return a;
+	}
 }
 
 bool Monomial::isScalar(const Object* o)
@@ -37,21 +58,18 @@ bool Monomial::isScalar(const Object* o)
 	return o->type()==Object::value || (o->type()==Object::vector && !AnalitzaUtils::hasVars(o));
 }
 
-Object* Monomial::createMono(const Operator& o)
+Object* Monomial::createMono(const Operator& o) const
 {
 	Operator::OperatorType mult = o.multiplicityOperator();
 	
 	Object* toAdd=0;
-	if(first==0.) {
+	if(first==0.)
 		delete second;
-	} else if(first==1.) {
+	else if(first==1.)
 		toAdd=second;
-	} else if(first==-1. && mult==Operator::times) {
-		Apply *cint = new Apply;
-		cint->appendBranch(new Operator(Operator::minus));
-		cint->appendBranch(second);
-		toAdd=cint;
-	} else if(mult==Operator::times && second->isApply() && static_cast<Apply*>(second)->firstOperator()==Operator::times) {
+	else if(first==-1. && mult==Operator::times)
+		toAdd=negateObject(second);
+	else if(mult==Operator::times && second->isApply() && static_cast<Apply*>(second)->firstOperator()==Operator::times) {
 		Apply* res = static_cast<Apply*>(second);
 		res->prependBranch(new Cn(first));
 		toAdd=res;
@@ -93,6 +111,7 @@ Monomial::Monomial(const Operator& o, Object* o2, bool& sign)
 				}
 				
 				if(valid) {
+// 					qDebug() << ";;;;;;;" << o2->toString();
 					Cn* sc= (Cn*) cx->m_params[scalar];
 					first = sc->value();
 					second = cx->m_params[var];
@@ -101,6 +120,7 @@ Monomial::Monomial(const Operator& o, Object* o2, bool& sign)
 					delete cx;
 					
 					ismono=true;
+// 					qDebug() << ":::::::" << *this;
 				}
 			} else if(mult==Operator::times) {
 				first=1;
@@ -135,6 +155,14 @@ Monomial::Monomial(const Operator& o, Object* o2, bool& sign)
 			else if(o==Operator::plus || o==Operator::minus)
 				first *= -1;
 		}
+	} else if(o2->type()==Object::value && (o==Operator::plus || o==Operator::minus)) {
+		Cn* v=static_cast<Cn*>(o2);
+		if(v->value()<0) {
+			v->rvalue()*=-1;
+			first = -1;
+			second = o2;
+			ismono = true;
+		}
 	}
 	
 	if(!ismono) {
@@ -149,38 +177,38 @@ bool Monomial::isValue() const
 }
 
 Polynomial::Polynomial(Apply* c)
-	: m_firstValue(false)
-	, m_operator(c->firstOperator())
+	: m_operator(c->firstOperator())
 	, m_sign(true)
 {
-	bool first = true;
+	bool first = true, firstValue = false;
 	QList<Monomial> monos;
+// 	qDebug() << "1.........." << c->toString();
 	for(Apply::const_iterator it=c->constBegin(), itEnd=c->constEnd(); it!=itEnd; ++it, first=false) {
-		if(Monomial::isScalar(*it)) {
-			m_scalars += *it;
-			m_firstValue = m_firstValue || first;
-			continue;
-		}
 		Monomial imono(m_operator, *it, m_sign);
-		if(m_operator==Operator::minus && !first)
-			imono.first*=-1;
 		
 		bool added=false;
 		if(imono.second->isApply()) {
 			Apply* a = static_cast<Apply*>(imono.second);
+			Operator op=a->firstOperator();
 			if(a->firstOperator()==m_operator
-				|| (m_operator==Operator::minus && a->firstOperator()==Operator::plus && !first)
+				|| (m_operator==Operator::minus && op==Operator::plus)
+				|| (m_operator==Operator::plus && op==Operator::minus)
 			) {
 				Polynomial p(a);
 				
 				a->m_params.clear();
 				delete a;
 				
-				if(m_operator.operatorType()!=a->firstOperator().operatorType())
-					p.negate();
+				if((!first && m_operator==Operator::plus && op==Operator::minus)
+					|| (first && m_operator==Operator::minus && op==Operator::plus)
+					|| (first && m_operator==Operator::minus && op==Operator::minus)
+				)
+				{
+					//if it's a minus, the first is already positive
+					p.negate(1);
+				}
 				
 				monos.append(p);
-				m_scalars.append(p.m_scalars);
 				added=true;
 			}
 		}
@@ -189,16 +217,25 @@ Polynomial::Polynomial(Apply* c)
 			monos.append(imono);
 	}
 	
-// 	qDebug() << "++++++" << monos;
-	for(iterator it=monos.begin(), itEnd=monos.end(); it!=itEnd; ++it) {
-		addMonomial(*it);
+	first = true;
+	for(iterator it=monos.begin(), itEnd=monos.end(); it!=itEnd; ++it, first=false) {
+		if(m_operator==Operator::minus && !first)
+			it->first*=-1;
 	}
 	
-// 	qDebug() << "aaaaaaaa" << *this << size();
+	for(iterator it=monos.begin(), itEnd=monos.end(); it!=itEnd; ++it, first=false)
+		addMonomial(*it);
+	
+	simpScalars(firstValue);
 }
 
 void Polynomial::addMonomial(const Monomial& m)
 {
+	if(m.isValue()) {
+		m_scalars += m.createMono(m_operator);
+		return;
+	}
+	
 	bool found = false;
 	QList<Monomial>::iterator it1(begin());
 	for(; it1!=end(); ++it1) {
@@ -208,7 +245,6 @@ void Polynomial::addMonomial(const Monomial& m)
 			break;
 	}
 	
-// 	qDebug() << "looo" << *this << m << found;
 	if(found) {
 		it1->first += m.first;
 		delete m.second;
@@ -222,10 +258,13 @@ void Polynomial::addMonomial(const Monomial& m)
 	}
 }
 
-void Polynomial::simpScalars()
+void Polynomial::simpScalars(bool firstValue)
 {
 	Object *value=0;
 	bool first = true;
+	
+	if(!firstValue && m_operator==Operator::minus && !m_scalars.isEmpty())
+		m_scalars.first() = negateObject(m_scalars.first());
 	
 	for(QList<Object*>::iterator i=m_scalars.begin(); i!=m_scalars.end(); ++i, first=false) {
 		bool d=false;
@@ -234,44 +273,44 @@ void Polynomial::simpScalars()
 		if(value) {
 			QString* err=0;
 			value=Operations::reduce(m_operator.operatorType(), value, aux, &err);
-			delete err;
 			d=err;
+			delete err;
 		} else
 			value=aux;
 		
 		if(d) {
-			bool sign = false;
-			Monomial imono(m_operator, *i, sign);
-			if(m_operator==Operator::minus && !first)
-				imono.first*=-1;
-			append(imono);
+			addValue(aux);
+			value=0;
 		}
 	}
 	
-	if(value) {
-		bool sign=true;
-		if(value->isZero())
-			delete value;
-		else {
-			Monomial imono(m_operator, value, sign);
-			
-			if(m_operator==Operator::plus || (!m_firstValue && m_operator==Operator::minus)) {
-				if(m_operator==Operator::minus && !first)
-					imono.first*=-1;
-				append(imono);
-			} else
-				prepend(imono);
-		}
-	}
-	
+	addValue(value);
 	m_scalars.clear();
+}
+
+void Polynomial::addValue(Object* value)
+{
+	bool sign=false;
+	if(!value)
+		return;
+	
+	if(value->isZero())
+		delete value;
+	else {
+		Monomial imono(m_operator, value, sign);
+		
+		if(m_operator==Operator::plus)
+			append(imono);
+		else if(m_operator==Operator::minus) {
+			imono.first *= -1;
+			append(imono);
+		} else
+			prepend(imono);
+	}
 }
 
 Object* Polynomial::toObject()
 {
-	if(!m_scalars.isEmpty())
-		simpScalars();
-	
 	Object* root = 0;
 	if(count()==1) {
 		root = first().createMono(m_operator);
@@ -284,48 +323,27 @@ Object* Polynomial::toObject()
 		for(; i!=end(); ++i, first=false) {
 			if(!first && m_operator==Operator::minus)
 				i->first *= -1;
-			Object* toAdd=i->createMono(m_operator);
 			
+			Object* toAdd=i->createMono(m_operator);
 			if(toAdd)
 				c->appendBranch(toAdd);
 		}
 		root=c;
 	}
 	
-	if(!m_sign && root) {
-		Apply *cn=new Apply;
-		cn->appendBranch(new Operator(Operator::minus));
-		cn->appendBranch(root);
-		root=cn;
-	} else if(!root) {
+	if(!root) {
 		root=new Cn(0.);
+	} else if(!m_sign) {
+		root = negateObject(root);
 	}
 	
-// 	qDebug() << "tuuuuuu" << *this << root->toString();
 	return root;
 }
 
-Object* negateObject(Object* o)
+void Polynomial::negate(int i)
 {
-	if(o->type()==Operator::value) {
-		Cn* v = static_cast<Cn*>(o);
-		v->rvalue() *= -1;
-		return v;
-	} else {
-		Apply* a = new Apply;
-		a->appendBranch(new Operator(Operator::minus));
-		a->appendBranch(o);
-		return a;
-	}
-}
-
-void Polynomial::negate()
-{
-	for(iterator it=begin(); it!=end(); ++it) {
-		it->first *= -1;
-	}
-	
-	for(QList<Object*>::iterator it=m_scalars.begin(); it!=m_scalars.end(); ++it) {
-		*it=negateObject(*it);
+	for(iterator it=begin(); it!=end(); ++it, --i) {
+		if(i<=0)
+			it->first *= -1;
 	}
 }
