@@ -570,9 +570,19 @@ void AnalitzaTest::testSimplify_data()
 	
 	QTest::newRow("identity") << "1*x" << "x";
 	QTest::newRow("minus") << "x-x-x" << "-x";
+	QTest::newRow("minus1") << "x-1" << "x-1";
+	QTest::newRow("minus2") << "x-2*x" << "-x";
 	QTest::newRow("compensation") << "-(4*x)+3*x" << "-x";
+	QTest::newRow("compensation1") << "(-(4*x))+3*x" << "-x";
+	QTest::newRow("compensation2") << "((-4)*x)+3*x" << "-x";
 	QTest::newRow("compensation*") << "-(x^4)*x^3" << "-x^7";
 	QTest::newRow("powers") << "3**x*5**x" << "3^x*5^x";
+	QTest::newRow("poli1") << "x-1+2" << "x+1";
+	QTest::newRow("poli2") << "(x+y)-z" << "x--y-z";
+	QTest::newRow("poli3") << "2-13-(x+1)" << "-x-12";
+	QTest::newRow("poli4") << "-x-1-2-4" << "-x-7";
+	QTest::newRow("poli4.0") << "-x-y-z" << "-x-y-z";
+	QTest::newRow("poli4.1") << "minus(-x, 1, 2, 4)" << "-x-7";
 // 	QTest::newRow("powerscomb") << "3**x*3**x" << "9^x";
 	QTest::newRow("no var") << "2+2" << "4";
 	QTest::newRow("simple") << "x+x" << "2*x";
