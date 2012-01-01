@@ -1166,8 +1166,18 @@ QList<Transformation> simplifications()
 {
 	static QList<Transformation> ret;
 	if(KDE_ISUNLIKELY(ret.isEmpty())) {
+		//divide
 		ret += Transformation(Transformation::parse("f/f"), Transformation::parse("1"));
 		ret += Transformation(Transformation::parse("f/1"), Transformation::parse("f"));
+		
+		//power
+		ret += Transformation(Transformation::parse("0**k"), Transformation::parse("0"));
+		ret += Transformation(Transformation::parse("1**k"), Transformation::parse("1"));
+		ret += Transformation(Transformation::parse("x**1"), Transformation::parse("x"));
+		ret += Transformation(Transformation::parse("(x**y)**z"), Transformation::parse("x**(y*z)"));
+		
+		//ln
+		ret += Transformation(Transformation::parse("ln e"), Transformation::parse("1"));
 	}
 	
 	return ret;
@@ -1252,56 +1262,6 @@ Object* Analyzer::simpApply(Apply* c)
 				root = new Cn(0.);
 			}
 		}	break;
-		case Operator::power: {
-			for(it = c->firstValue(); it!=c->end(); ++it)
-				*it = simp(*it);
-			
-			if(c->m_params[1]->type()==Object::value) {
-				Cn *n = (Cn*) c->m_params[1];
-				if(n->value()==0.) { //0*exp=0
-					delete root;
-					root = new Cn(1.);
-					break;
-				} else if(n->value()==1.) { 
-					root = c->m_params[0];
-					c->m_params[0]=0;
-					delete c;
-					break;
-				}
-			}
-			
-			if(c->m_params[0]->isApply()) {
-				Apply *cp = (Apply*) c->m_params[0];
-				if(cp->firstOperator()==Operator::power) {
-					c->m_params[0] = cp->m_params[0];
-					
-					Apply *cm = new Apply;
-					cm->appendBranch(new Operator(Operator::times));
-					cm->appendBranch(c->m_params[1]);
-					cm->appendBranch(cp->m_params[1]);
-					c->m_params[1] = cm;
-					
-					cp->m_params[0]=0;
-					cp->m_params[1]=0;
-					delete cp;
-					c->m_params[1]=simp(c->m_params[1]);
-				}
-			}
-		} break;
-		case Operator::ln:
-			it = c->firstValue();
-// 			Transformation(parse("ln e"), parse("1"));
-			if((*it)->type()==Object::variable) {
-				Ci *val = (Ci*) *it;
-				if(val->name()=="e") {
-					delete root;
-					root = new Cn(1.);
-					break;
-				}
-			} else {
-				*it = simp(*it);
-			}
-			break;
 		//TODO: extend to ::product
 		case Operator::sum: {
 			
