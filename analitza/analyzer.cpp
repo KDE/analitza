@@ -33,6 +33,7 @@
 #include "apply.h"
 #include "providederivative.h"
 #include "polynomial.h"
+#include "transformation.h"
 
 // #define SCRIPT_PROFILER
 
@@ -1161,6 +1162,17 @@ Object* Analyzer::findRoots(Apply* a)
 	return 0;
 }
 
+QList<Transformation> simplifications()
+{
+	static QList<Transformation> ret;
+	if(KDE_ISUNLIKELY(ret.isEmpty())) {
+		ret += Transformation(Transformation::parse("f/f"), Transformation::parse("1"));
+		ret += Transformation(Transformation::parse("f/1"), Transformation::parse("f"));
+	}
+	
+	return ret;
+}
+
 Object* Analyzer::simpApply(Apply* c)
 {
 	Object* root=c;
@@ -1276,29 +1288,9 @@ Object* Analyzer::simpApply(Apply* c)
 				}
 			}
 		} break;
-		case Operator::divide:
-			for(it = c->firstValue(); it!=c->end(); ++it)
-				*it = simp(*it);
-			
-			Object *f, *g; //f/g
-			f=*c->firstValue();
-			g=*(c->firstValue()+1);
-			
-			if(equalTree(f, g)) {
-				delete root;
-				root = new Cn(1.);
-			} else if(g->type()==Object::value) {
-				Cn* gnum=(Cn*) g;
-				if(gnum->value()==1.) {
-					*c->firstValue()=0;
-					delete root;
-					root=f;
-					break;
-				}
-			}
-			break;
 		case Operator::ln:
 			it = c->firstValue();
+// 			Transformation(parse("ln e"), parse("1"));
 			if((*it)->type()==Object::variable) {
 				Ci *val = (Ci*) *it;
 				if(val->name()=="e") {
@@ -1472,6 +1464,15 @@ Object* Analyzer::simpApply(Apply* c)
 				c->domain()=simp(c->domain());
 			
 			iterateAndSimp<Apply, Apply::iterator>(c);
+			
+			QList<Transformation> simps = simplifications();
+			foreach(const Transformation& t, simps) {
+				Object* o = t.applyTransformation(c);
+				if(o) {
+					root = o;
+					break;
+				}
+			}
 			break;
 	}
 	
