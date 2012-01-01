@@ -113,8 +113,5 @@ Cn Cn::euler() { return Cn(0.5772156649); }
 
 bool Cn::matches(const Object* exp, QMap< QString, const Object* >*) const
 {
-#ifdef __GNUC__
-#warning fixme: second condition is just wrong
-#endif
-	return exp->type()==type() && Cn(exp)==*this;
+	return exp->type()==type() && *static_cast<const Cn*>(exp)==*this;
 }
