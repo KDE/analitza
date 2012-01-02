@@ -1162,6 +1162,18 @@ Object* Analyzer::findRoots(Apply* a)
 	return 0;
 }
 
+Object* applyTransformations(Object* root, const QList<Transformation>& trans)
+{
+	foreach(const Transformation& t, trans) {
+		Object* o = t.applyTransformation(root);
+		if(o) {
+			delete root;
+			return o;
+		}
+	}
+	return root;
+}
+
 QList<Transformation> simplifications()
 {
 	static QList<Transformation> ret;
@@ -1225,24 +1237,7 @@ Object* Analyzer::simpApply(Apply* c)
 			
 // 			qDebug()<< "PEPEPE" << c->toString();
 			if(c->isUnary()) {
-				if(o==Operator::plus) {
-					root=*c->firstValue();
-					*c->firstValue()=0;
-					delete c;
-					c=0;
-				} else if((*c->firstValue())->isApply()) {
-					Apply *c1=(Apply*) *c->firstValue();
-					if( c1->firstOperator()==Operator::minus &&
-						c1->isUnary())
-					{
-						root=*c1->firstValue();
-						*c->firstValue()=0;
-						*c1->firstValue()=0;
-						delete c;
-						delete c1;
-						c=0;
-					}
-				} else if(o==Operator::minus && (*c->firstValue())->type()==Object::value) {
+				if(o==Operator::minus && (*c->firstValue())->type()==Object::value) {
 					Cn* v = static_cast<Cn*>(*c->firstValue());
 					v->rvalue() *= -1;
 					
@@ -1256,11 +1251,13 @@ Object* Analyzer::simpApply(Apply* c)
 				c=0;
 			}
 // 			qDebug()<< "PAAPPA" << root->toString();
-			
-			if(c && c->isEmpty()) {
-				delete root;
-				root = new Cn(0.);
+			static QList<Transformation> addTrans;
+			if(addTrans.isEmpty()) {
+				addTrans += Transformation(Transformation::parse("--x"), Transformation::parse("x"));
+				addTrans += Transformation(Transformation::parse("-a--b"), Transformation::parse("b-a"));
 			}
+			
+			root = applyTransformations(root, addTrans);
 		}	break;
 		//TODO: extend to ::product
 		case Operator::sum: {
@@ -1425,15 +1422,7 @@ Object* Analyzer::simpApply(Apply* c)
 			
 			iterateAndSimp<Apply, Apply::iterator>(c);
 			
-			QList<Transformation> simps = simplifications();
-			foreach(const Transformation& t, simps) {
-				Object* o = t.applyTransformation(c);
-				if(o) {
-					delete c;
-					root = o;
-					break;
-				}
-			}
+			root = applyTransformations(root, simplifications());
 			break;
 	}
 	

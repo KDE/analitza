@@ -152,7 +152,7 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::newRow("undefined function call") << "f(2)" << "f(2)";
 	QTest::newRow("--simplification") << "-(-x)" << "x";
 	QTest::newRow("unneeded --simplification") << "-(x-x)" << "0";
-	QTest::newRow("minus order") << "1-x" << "1-x";
+	QTest::newRow("minus order") << "1-x" << "-x--1";
 	QTest::newRow("minus order2") << "x-1" << "x-1";
 	QTest::newRow("after simp(minus) --simplification") << "-(x-x-x)" << "x";
 	QTest::newRow("and") << "and(6>5, 4<5)" << "true";
