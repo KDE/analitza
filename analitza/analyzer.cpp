@@ -1429,6 +1429,7 @@ Object* Analyzer::simpApply(Apply* c)
 			foreach(const Transformation& t, simps) {
 				Object* o = t.applyTransformation(c);
 				if(o) {
+					delete c;
 					root = o;
 					break;
 				}
