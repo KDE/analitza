@@ -25,19 +25,19 @@
 
 using namespace Analitza;
 
-static QDebug operator<<(QDebug dbg, const Object* c)
-{
-	dbg.nospace() << (c ? c->toString() : "<null>");
-
-	return dbg.space();
-}
-
-static QDebug operator<<(QDebug dbg, const Monomial &c)
-{
-	dbg.nospace() << "(" << c.first << ", " << c.second << ")";
-
-	return dbg.space();
-}
+// static QDebug operator<<(QDebug dbg, const Object* c)
+// {
+// 	dbg.nospace() << (c ? c->toString() : "<null>");
+// 
+// 	return dbg.space();
+// }
+// 
+// static QDebug operator<<(QDebug dbg, const Monomial &c)
+// {
+// 	dbg.nospace() << "(" << c.first << ", " << c.second << ")";
+// 
+// 	return dbg.space();
+// }
 
 static Object* negateObject(Object* o)
 {
@@ -261,12 +261,10 @@ void Polynomial::addMonomial(const Monomial& m)
 void Polynomial::simpScalars(bool firstValue)
 {
 	Object *value=0;
-	bool first = true;
-	
 	if(!firstValue && m_operator==Operator::minus && !m_scalars.isEmpty())
 		m_scalars.first() = negateObject(m_scalars.first());
 	
-	for(QList<Object*>::iterator i=m_scalars.begin(); i!=m_scalars.end(); ++i, first=false) {
+	for(QList<Object*>::iterator i=m_scalars.begin(); i!=m_scalars.end(); ++i) {
 		bool d=false;
 		
 		Object* aux = *i;
