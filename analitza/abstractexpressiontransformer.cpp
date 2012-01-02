@@ -75,7 +75,6 @@ ITERATION_WALKER(Container, pattern->containerType())
 Object* AbstractExpressionTransformer::walkApply(const Analitza::Apply* pattern)
 {
 	Apply* ret = new Apply;
-	Apply::const_iterator it=pattern->firstValue(), itEnd=pattern->constEnd();
 	ret->ulimit()=walk(pattern->ulimit());
 	ret->dlimit()=walk(pattern->dlimit());
 	ret->domain()=walk(pattern->domain());
@@ -85,6 +84,7 @@ Object* AbstractExpressionTransformer::walkApply(const Analitza::Apply* pattern)
 		ret->appendBranch(walk(&op));
 	}
 	
+	Apply::const_iterator it=pattern->firstValue(), itEnd=pattern->constEnd();
 	for(; it!=itEnd; ++it)
 		ret->appendBranch(walk(*it));
 	
