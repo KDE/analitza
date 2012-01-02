@@ -36,7 +36,6 @@ class Transformation
 		Object* applyTransformation(const Object* input) const;
 		static const Object* parse(const QString& exp);
 	private:
-		//TODO: really? shared?
 		QSharedPointer<const Object> first, second;
 		QMap<QString, treeCheck> conditions;
 };
