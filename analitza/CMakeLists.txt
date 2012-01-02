@@ -37,6 +37,7 @@ set(analitza_SRCS
 	mathmlpresentationlexer.cpp
 	analitzautils.cpp
 	substituteexpression.cpp
+	transformation.cpp
 	
 	localize.cpp
 )
