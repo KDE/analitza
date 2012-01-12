@@ -61,6 +61,7 @@ install(FILES
 	variable.h
 	value.h
 	variables.h
+	vector.h
 	expressiontype.h
 	builtinmethods.h
 	importqobjectmetatype.h
