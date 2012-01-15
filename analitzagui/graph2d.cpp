@@ -97,7 +97,11 @@ void Graph2D::paintEvent(QPaintEvent * )
 		
 		p.setPen(ccursor);
 		p.setRenderHint(QPainter::Antialiasing, true);
+#ifndef Q_CC_MSVC
 		if(!sl.isNull() && !std::isnan(sl.length()))
+#else
+		if(!sl.isNull() && !_isnan(sl.length()))
+#endif
 			p.drawLine(toWidget(sl));
 		p.setRenderHint(QPainter::Antialiasing, false);
 		//EOderivative
