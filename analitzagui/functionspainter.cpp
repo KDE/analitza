@@ -299,7 +299,7 @@ void FunctionsPainter::updateScale(bool repaint)
 	
 	if(m_keepRatio && rang_x!=rang_y)
 	{
-		rang_y=rang_x=qMax(std::fabs(rang_x), std::fabs(rang_y));
+		rang_y=rang_x=qMin(std::fabs(rang_x), std::fabs(rang_y));
 		if(rang_y>0.) rang_y=-rang_y;
 		if(rang_x<0.) rang_x=-rang_x;
 		
