@@ -82,6 +82,7 @@ class ANALITZA_EXPORT Apply : public Object
 		/** Adds a @p o branch right after @p before of the Container. */
 		void insertBranch(Apply::iterator before, Object* o) { m_params.insert(before, o); }
 		QVector<Object*> values() const { return m_params; }
+		Object* at(int p) const;
 		
 		/** @returns if there's any bounding specified */
 		bool hasBoundings() const;

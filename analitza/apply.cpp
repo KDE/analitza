@@ -177,3 +177,8 @@ void Apply::addBVar(Ci* bvar)
 {
 	m_bvars += bvar;
 }
+
+Object* Apply::at(int p) const
+{
+	return m_params.at(p);
+}

@@ -1406,7 +1406,7 @@ Object* Analyzer::simpApply(Apply* c)
 						root = a;
 					} else {
 						Apply* na = new Apply;
-						na->appendBranch(new Operator(Operator::_and));
+						na->appendBranch(new Operator(Operator::_or));
 						foreach(Object* o, r) {
 							Apply* a = new Apply;
 							a->appendBranch(new Operator(Operator::eq));
@@ -1485,7 +1485,24 @@ QList<Object*> Analyzer::findRoots(const Apply* a)
 				}
 			}
 			
-// 			a->m_params.remove(varAt);
+			if(varAt>=0) {
+				int i=0;
+				Apply* na = 0;
+				if(a->countValues()>2) {
+					na = new Apply;
+					na->appendBranch(new Operator(a->firstOperator()));
+					ret += na;
+				}
+				
+				for(Apply::const_iterator it=a->constBegin(), itEnd=a->constEnd(); it!=itEnd; ++it, ++i) {
+					if(i!=varAt) {
+						if(na)
+							na->appendBranch((*it)->copy());
+						else
+							ret += (*it)->copy();
+					}
+				}
+			}
 		}	break;
 		case Operator::times:
 			for(Apply::const_iterator it=a->constBegin(), itEnd=a->constEnd(); it!=itEnd; ++it) {
@@ -1495,6 +1512,8 @@ QList<Object*> Analyzer::findRoots(const Apply* a)
 					ret += new Cn(0.);
 				//TODO: vectors
 			}
+		default:
+			break;
 	}
 	return ret;
 }
