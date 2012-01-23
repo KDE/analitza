@@ -609,6 +609,9 @@ void AnalitzaTest::testSimplify_data()
 	QTest::newRow("mono") << "2*x*y+3*x*y" << "5*x*y";
 	QTest::newRow("mono1") << "2*y+y" << "3*y";
 	QTest::newRow("mono2") << "-y+1" << "-y+1";
+	
+	QTest::newRow("minus") << "x-3=0" << "x=3";
+	QTest::newRow("times") << "3x=0" << "x=0";
 }
 
 void AnalitzaTest::testSimplify()

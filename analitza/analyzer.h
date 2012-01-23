@@ -191,7 +191,7 @@ class ANALITZA_EXPORT Analyzer
 		Object* simpPiecewise(Container* c);
 		void simpScalar(const Analitza::Operator& o, const QList< Analitza::Object* >& scalars);
 		
-		Object* findRoots(Apply* a);
+		QList<Object*> findRoots(const Analitza::Apply* a);
 		
 		Object* derivative(const QString &var, const Object*);
 		Object* boundedOperation(const Apply & n, const Operator & t, Object* initial);

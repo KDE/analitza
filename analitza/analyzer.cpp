@@ -1156,12 +1156,6 @@ Object* Analyzer::simp(Object* root)
 	return root;
 }
 
-Object* Analyzer::findRoots(Apply* a)
-{
-// 	objectWalker(a, "lala");
-	return 0;
-}
-
 Object* applyTransformations(Object* root, const QList<Transformation>& trans)
 {
 	foreach(const Transformation& t, trans) {
@@ -1369,16 +1363,60 @@ Object* Analyzer::simpApply(Apply* c)
 			
 		}	break;
 		case Operator::eq: {
-			Apply::iterator it=c->firstValue()+1, itEnd=c->end();
-			
 			bool alleq=true;
-			for(; alleq && it!=itEnd; ++it) {
+			for(Apply::iterator it=c->firstValue()+1, itEnd=c->end(); alleq && it!=itEnd; ++it)
 				alleq=equalTree(*c->firstValue(), *it);
+			bool existsjustvar=false;
+			QStringList deps = AnalitzaUtils::dependencies(c, QStringList());
+			
+			for(Apply::iterator it=c->firstValue(), itEnd=c->end(); it!=itEnd; ++it) {
+				alleq = alleq && equalTree(*c->firstValue(), *it);
+				existsjustvar = existsjustvar || (*it)->type()==Object::variable;
 			}
 			
 			if(alleq) {
 				delete c;
 				root = new Cn(true);
+			} else if(!existsjustvar && deps.size()==1) {
+				Apply* a = new Apply;
+				a->appendBranch(new Operator(Operator::minus));
+				
+				for(Apply::const_iterator it=c->constBegin(), itEnd=c->constEnd(); it!=itEnd; ++it) {
+					a->appendBranch(*it);
+				}
+				c->m_params.clear();
+				delete c;
+				
+				root = simp(a);
+				
+				if(root->type()==Object::apply) {
+					QList<Object*> r = findRoots(static_cast<Apply*>(root));
+					
+					if(r.isEmpty()) {
+						Apply* na = new Apply;
+						na->appendBranch(new Operator(Operator::eq));
+						na->appendBranch(new Cn(0.));
+						na->appendBranch(root);
+						root=na;
+					} else if(r.size() == 1) {
+						Apply* a = new Apply;
+						a->appendBranch(new Operator(Operator::eq));
+						a->appendBranch(new Ci(deps.first()));
+						a->appendBranch(r.first());
+						root = a;
+					} else {
+						Apply* na = new Apply;
+						na->appendBranch(new Operator(Operator::_and));
+						foreach(Object* o, r) {
+							Apply* a = new Apply;
+							a->appendBranch(new Operator(Operator::eq));
+							a->appendBranch(new Ci(deps.first()));
+							a->appendBranch(o);
+							na->appendBranch(a);
+						}
+						root = na;
+					}
+				}
 			}
 			
 		}	break;
@@ -1427,6 +1465,38 @@ Object* Analyzer::simpApply(Apply* c)
 	}
 	
 	return root;
+}
+
+QList<Object*> Analyzer::findRoots(const Apply* a)
+{
+	QList<Object*> ret;
+	switch(a->firstOperator().operatorType()) {
+		case Operator::minus: {
+			int varAt=-1, i=0;
+			
+			for(Apply::const_iterator it=a->constBegin(), itEnd=a->constEnd(); it!=itEnd; ++it, ++i) {
+				if(hasVars(*it) && varAt>=0) {
+					varAt = -1; //we don't support having more than 1 variable in the minus yet
+					return QList<Object*>();
+				}
+				
+				if((*it)->type() == Object::variable) { //make smarter!
+					varAt = i;
+				}
+			}
+			
+// 			a->m_params.remove(varAt);
+		}	break;
+		case Operator::times:
+			for(Apply::const_iterator it=a->constBegin(), itEnd=a->constEnd(); it!=itEnd; ++it) {
+				if((*it)->isApply())
+					ret += findRoots(static_cast<Apply*>(*it));
+				else if((*it)->type() == Object::variable)
+					ret += new Cn(0.);
+				//TODO: vectors
+			}
+	}
+	return ret;
 }
 
 Object* Analyzer::simpPolynomials(Apply* c)
