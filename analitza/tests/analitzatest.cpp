@@ -613,6 +613,9 @@ void AnalitzaTest::testSimplify_data()
 	QTest::newRow("minus") << "x-3=0" << "x=3";
 	QTest::newRow("times") << "3x=0" << "x=0";
 	QTest::newRow("times1") << "(x-3)*(x-2)=0" << "or(x=3, x=2)";
+	QTest::newRow("div") << "x/2=0" << "x=0";
+	QTest::newRow("div1") << "(x-1)/2=0" << "x=1";
+	QTest::newRow("div2") << "(x*(x-1))/x=0" << "x=1";
 }
 
 void AnalitzaTest::testSimplify()

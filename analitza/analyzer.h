@@ -189,9 +189,9 @@ class ANALITZA_EXPORT Analyzer
 		Object* simpSum(Apply* c);
 		Object* simpApply(Apply* c);
 		Object* simpPiecewise(Container* c);
-		void simpScalar(const Analitza::Operator& o, const QList< Analitza::Object* >& scalars);
 		
-		QList<Object*> findRoots(const Analitza::Apply* a);
+		QList<Object*> findRoots(const QString& dep, const Analitza::Object* o);
+		QList<Object*> findRootsApply(const QString& dep, const Analitza::Apply* a);
 		
 		Object* derivative(const QString &var, const Object*);
 		Object* boundedOperation(const Apply & n, const Operator & t, Object* initial);
@@ -204,6 +204,7 @@ class ANALITZA_EXPORT Analyzer
 		void iterateAndSimp(T* v);
 		
 		Object* variableValue(Ci* var);
+		Object* testResult(const Analitza::Object* o, const QString& var, const Analitza::Object* val);
 		
 		template <class T, class Tit>
 		void alphaConversion(T* o, int min);

@@ -34,6 +34,7 @@
 #include "providederivative.h"
 #include "polynomial.h"
 #include "transformation.h"
+#include "substituteexpression.h"
 
 // #define SCRIPT_PROFILER
 
@@ -705,7 +706,6 @@ Object* Analyzer::operate(const Apply* c)
 			QString* error=0;
 			if(count>=2) {
 				Apply::const_iterator it = c->firstValue(), itEnd=c->constEnd();
-				
 				ret = calc(*it);
 				++it;
 				bool stop=isNull(opt, ret);
@@ -1390,7 +1390,7 @@ Object* Analyzer::simpApply(Apply* c)
 				root = simp(a);
 				
 				if(root->type()==Object::apply) {
-					QList<Object*> r = findRoots(static_cast<Apply*>(root));
+					QList<Object*> r = findRoots(deps.first(), static_cast<Apply*>(root));
 					
 					if(r.isEmpty()) {
 						Apply* na = new Apply;
@@ -1467,7 +1467,17 @@ Object* Analyzer::simpApply(Apply* c)
 	return root;
 }
 
-QList<Object*> Analyzer::findRoots(const Apply* a)
+QList<Object*> Analyzer::findRoots(const QString& dep, const Object* o)
+{
+	switch(o->type()) {
+		case Object::apply:		return findRootsApply(dep, static_cast<const Apply*>(o));
+		case Object::variable:	return QList<Object*>() << new Cn(0.);
+		default:
+			return QList<Object*>();
+	}
+}
+
+QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
 {
 	QList<Object*> ret;
 	switch(a->firstOperator().operatorType()) {
@@ -1506,16 +1516,41 @@ QList<Object*> Analyzer::findRoots(const Apply* a)
 		}	break;
 		case Operator::times:
 			for(Apply::const_iterator it=a->constBegin(), itEnd=a->constEnd(); it!=itEnd; ++it) {
-				if((*it)->isApply())
-					ret += findRoots(static_cast<Apply*>(*it));
-				else if((*it)->type() == Object::variable)
-					ret += new Cn(0.);
-				//TODO: vectors
+				ret += findRoots(dep, static_cast<Apply*>(*it));
 			}
+			break;
+		case Operator::divide: { // f/g
+			Object* f = *a->firstValue();
+			Object* g = *(a->firstValue()+1);
+			ret = findRoots(dep, f);
+			
+			for(QList<Object*>::iterator it = ret.begin(), itEnd=ret.end(); it!=itEnd; ) {
+				bool erase = false;
+				
+				Object* val = testResult(g, dep, *it);
+				erase = val->isZero();
+				delete val;
+				
+				if(erase)
+					it = ret.erase(it);
+				else
+					++it;
+			}
+		}	break;
 		default:
 			break;
 	}
 	return ret;
+}
+
+Object* Analyzer::testResult(const Object* o, const QString& var, const Object* val)
+{
+	SubstituteExpression s;
+	QMap<QString, const Object*> subs;
+	subs.insert(var, val);
+	
+	QScopedPointer<Object> sometree(s.run(o, subs));
+	return calc(sometree.data());
 }
 
 Object* Analyzer::simpPolynomials(Apply* c)
@@ -1687,7 +1722,6 @@ Expression Analyzer::dependenciesToLambda() const
 		
 		Container* math=new Container(Container::math);
 		math->appendBranch(cc);
-		Expression::computeDepth(math);
 		
 		return Expression(math);
 	} else {
@@ -1775,7 +1809,7 @@ Object* Analyzer::applyAlpha(Object* o, int min)
 		switch(o->type()) {
 			case Object::container:	alphaConversion(static_cast<Container*>(o), min); break;
 			case Object::vector:	alphaConversion<Vector, Vector::iterator>(static_cast<Vector*>(o), min); break;
-			case Object::list:	alphaConversion<List, List::iterator>(static_cast<List*>(o), min); break;
+			case Object::list:		alphaConversion<List, List::iterator>(static_cast<List*>(o), min); break;
 			case Object::apply:		alphaConversion(static_cast<Apply*>(o), min); break;
 			case Object::variable: {
 				Ci *var = static_cast<Ci*>(o);
