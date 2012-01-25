@@ -1518,8 +1518,10 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
 					if(*it != varTree) {
 						if(na)
 							na->appendBranch((*it)->copy());
-						else
+						else {
+							Q_ASSERT(!value);
 							value = (*it)->copy();
+						}
 					}
 				}
 				
@@ -1561,9 +1563,10 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
 				erase = val->isZero();
 				delete val;
 				
-				if(erase)
+				if(erase) {
+					delete *it;
 					it = ret.erase(it);
-				else
+				} else
 					++it;
 			}
 		}	break;
