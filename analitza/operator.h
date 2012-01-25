@@ -102,6 +102,8 @@ class ANALITZA_EXPORT Operator : public Object
 		/** Returns whether it is a correct object. */
 		bool isCorrect() const { return m_type==Object::oper && m_optype!=Operator::none;}
 		
+		Operator inverse() const;
+		
 		/** Returns the multiplicity operator of an operator @p t. e.g. 5+5+5+5=5*4 -> times is the multiplicityOperator of plus. */
 		static OperatorType multiplicityOperator(const OperatorType& t);
 		

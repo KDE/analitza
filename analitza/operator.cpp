@@ -228,6 +228,40 @@ bool Operator::isTrigonometric(OperatorType t)
 	}
 }
 
+Operator Operator::inverse() const
+{
+	OperatorType ret;
+	switch(m_optype) {
+		case plus: ret=Operator::minus; break;
+		case sin: ret=Operator::arcsin; break;
+		case cos: ret=Operator::arccos; break;
+		case tan: ret=Operator::arctan; break;
+		case sec: ret=Operator::arcsec; break;
+		case csc: ret=Operator::arccsc; break;
+		case cot: ret=Operator::arccot; break;
+		case sinh: ret=Operator::arcsinh; break;
+		case cosh: ret=Operator::arccosh; break;
+		case tanh: ret=Operator::arctanh; break;
+		case sech: ret=Operator::arcsech; break;
+		case csch: ret=Operator::arccsch; break;
+// 		case coth: ret=Operator::arccot; break;
+		case arcsin: ret=Operator::sin; break;
+		case arccos: ret=Operator::cos; break;
+		case arctan: ret=Operator::tan; break;
+		case arccot: ret=Operator::cot; break;
+// 		case arccoth: ret=Operator::coth; break;
+		case arccosh: ret=Operator::cosh; break;
+		case arccsc:  ret=Operator::csc; break;
+		case arccsch: ret=Operator::csch; break;
+		case arcsec:  ret=Operator::sec; break;
+		case arcsech: ret=Operator::sech; break;
+		case arcsinh: ret=Operator::sinh; break;
+		case arctanh: ret=Operator::tanh; break;
+		default: break;
+	}
+	return Operator(ret);
+}
+
 bool Operator::matches(const Object* exp, QMap<QString, const Object*>* ) const
 {
 	if(exp->type()!=Object::oper)
