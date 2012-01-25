@@ -230,7 +230,7 @@ bool Operator::isTrigonometric(OperatorType t)
 
 Operator Operator::inverse() const
 {
-	OperatorType ret;
+	OperatorType ret=Operator::none;
 	switch(m_optype) {
 		case plus: ret=Operator::minus; break;
 		case sin: ret=Operator::arcsin; break;
