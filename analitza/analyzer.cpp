@@ -1530,6 +1530,7 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
 					aa->appendBranch(inv.copy());
 					aa->appendBranch(value);
 					value = calc(aa);
+					delete aa;
 				}
 				
 				if(op==Operator::minus) {
@@ -1539,6 +1540,7 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
 					aa->appendBranch(new Operator(Operator::minus));
 					aa->appendBranch(value);
 					ret += calc(aa);
+					delete aa;
 				}
 			}
 		}	break;
@@ -1572,6 +1574,7 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
 				aa->appendBranch(inv.copy());
 				aa->appendBranch(new Cn(0.));
 				ret += calc(aa);
+				delete aa;
 			}
 		}	break;
 	}
