@@ -1363,31 +1363,33 @@ Object* Analyzer::simpApply(Apply* c)
 			
 		}	break;
 		case Operator::eq: {
-			bool alleq=true;
-			for(Apply::iterator it=c->firstValue()+1, itEnd=c->end(); alleq && it!=itEnd; ++it)
-				alleq=equalTree(*c->firstValue(), *it);
-			bool existsjustvar=false;
+			bool alleq=true, existsjustvar=false, allButFirstZero=false;
 			QStringList deps = AnalitzaUtils::dependencies(c, QStringList());
 			
 			for(Apply::iterator it=c->firstValue(), itEnd=c->end(); it!=itEnd; ++it) {
 				alleq = alleq && equalTree(*c->firstValue(), *it);
 				existsjustvar = existsjustvar || (*it)->type()==Object::variable;
+				allButFirstZero = (it==c->firstValue() || (*it)->isZero());
 			}
 			
 			if(alleq) {
 				delete c;
 				root = new Cn(true);
 			} else if(!existsjustvar && deps.size()==1) {
-				Apply* a = new Apply;
-				a->appendBranch(new Operator(Operator::minus));
-				
-				for(Apply::const_iterator it=c->constBegin(), itEnd=c->constEnd(); it!=itEnd; ++it) {
-					a->appendBranch(*it);
+				if(allButFirstZero)
+					root = *c->firstValue();
+				else {
+					Apply* a = new Apply;
+					a->appendBranch(new Operator(Operator::minus));
+					
+					for(Apply::const_iterator it=c->constBegin(), itEnd=c->constEnd(); it!=itEnd; ++it) {
+						a->appendBranch(*it);
+					}
+					c->m_params.clear();
+					delete c;
+					
+					root = simp(a);
 				}
-				c->m_params.clear();
-				delete c;
-				
-				root = simp(a);
 				
 				if(root->type()==Object::apply) {
 					QList<Object*> r = findRoots(deps.first(), static_cast<Apply*>(root));
@@ -1480,9 +1482,9 @@ QList<Object*> Analyzer::findRoots(const QString& dep, const Object* o)
 QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
 {
 	Operator op=a->firstOperator();
-	
 	QList<Object*> ret;
 	switch(op.operatorType()) {
+		case Operator::plus:
 		case Operator::minus: {
 			Object* varTree = 0;
 			//f(x)-w=0 => f(x)=w => x=f-1(x)
@@ -1523,13 +1525,21 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
 				
 				Q_ASSERT(value);
 				if(varTree->isApply()) {
-					const Apply* a = static_cast<const Apply*>(varTree);
+					Operator inv = static_cast<const Apply*>(varTree)->firstOperator().inverse();
 					Apply* aa = new Apply;
-					aa->appendBranch(a->firstOperator().inverse().copy());
+					aa->appendBranch(inv.copy());
+					aa->appendBranch(value);
+					value = calc(aa);
+				}
+				
+				if(op==Operator::minus) {
+					ret += value;
+				} else {
+					Apply* aa = new Apply;
+					aa->appendBranch(new Operator(Operator::minus));
 					aa->appendBranch(value);
 					ret += calc(aa);
-				} else
-					ret += value;
+				}
 			}
 		}	break;
 		case Operator::times:
@@ -1557,7 +1567,7 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
 		}	break;
 		default: {
 			Operator inv = op.inverse();
-			if(inv.operatorType()!=Operator::none) {
+			if(inv.operatorType()!=Operator::none && a->isUnary()) {
 				Apply* aa = new Apply;
 				aa->appendBranch(inv.copy());
 				aa->appendBranch(new Cn(0.));

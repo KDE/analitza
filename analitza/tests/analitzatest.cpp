@@ -611,15 +611,16 @@ void AnalitzaTest::testSimplify_data()
 	QTest::newRow("mono2") << "-y+1" << "-y+1";
 	
 	//equations
-	QTest::newRow("minus") << "x-3=0" << "x=3";
-	QTest::newRow("times") << "3x=0" << "x=0";
-	QTest::newRow("times1") << "(x-3)*(x-2)=0" << "or(x=3, x=2)";
-	QTest::newRow("div") << "x/2=0" << "x=0";
-	QTest::newRow("div1") << "(x-1)/2=0" << "x=1";
-	QTest::newRow("div2") << "(x*(x-1))/x=0" << "x=1";
-	QTest::newRow("div3") << "(x*(x-1))/(x+3)=0" << "or(x=0, x=1)";
-	QTest::newRow("sin") << "sin(x)=0" << "x=0";
-	QTest::newRow("cos") << "cos(x)=1" << "x=0";
+	QTest::newRow("eqminus") << "x-3=0" << "x=3";
+	QTest::newRow("eqplus") << "x+3=0" << "x=-3";
+	QTest::newRow("eqtimes") << "3x=0" << "x=0";
+	QTest::newRow("eqtimes1") << "(x-3)*(x-2)=0" << "or(x=3, x=2)";
+	QTest::newRow("eqdiv") << "x/2=0" << "x=0";
+	QTest::newRow("eqdiv1") << "(x-1)/2=0" << "x=1";
+	QTest::newRow("eqdiv2") << "(x*(x-1))/x=0" << "x=1";
+	QTest::newRow("eqdiv3") << "(x*(x-1))/(x+3)=0" << "or(x=0, x=1)";
+	QTest::newRow("eqsin") << "sin(x)=0" << "x=0";
+	QTest::newRow("eqcos") << "cos(x)=1" << "x=0";
 }
 
 void AnalitzaTest::testSimplify()
