@@ -153,8 +153,8 @@ void Graph2D::wheelEvent(QWheelEvent *e)
 	}
 }
 
-void Graph2D::mousePressEvent(QMouseEvent *e){
-// 	qDebug("%d", toViewport(e->pos()).x());
+void Graph2D::mousePressEvent(QMouseEvent *e)
+{
 	if(!m_readonly && (e->button()==Qt::LeftButton || e->button()==Qt::MidButton)) {
 		last = press = e->pos();
 		ant = toViewport(e->pos());
@@ -163,7 +163,6 @@ void Graph2D::mousePressEvent(QMouseEvent *e){
 			mode=Pan;
 		else if(e->button()==Qt::LeftButton)
 			mode=Selection;
-		
 	}
 }
 
@@ -199,6 +198,7 @@ void Graph2D::mouseReleaseEvent(QMouseEvent *e)
 		} else
 			sendStatus(i18n("Selected viewport too small"));
 	}
+	
 	mode = None;
 	this->repaint();
 }
