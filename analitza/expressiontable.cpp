@@ -13,7 +13,7 @@ const char *const ExpressionTable::spell [] = {
 #endif // QLALR_NO_EXPRESSIONTABLE_DEBUG_INFO
 };
 
-const int ExpressionTable::lhs [] = {
+const short ExpressionTable::lhs [] = {
   32, 32, 32, 33, 35, 36, 37, 38, 38, 38, 
   39, 39, 41, 42, 42, 42, 42, 34, 44, 44, 
   34, 43, 43, 46, 46, 34, 34, 45, 45, 45, 
@@ -21,7 +21,7 @@ const int ExpressionTable::lhs [] = {
   34, 34, 34, 34, 34, 34, 34, 34, 34, 48, 
   48, 49, 49, 51, 52, 52, 50, 53};
 
-const int ExpressionTable:: rhs[] = {
+const short ExpressionTable::rhs [] = {
   0, 1, 1, 3, 1, 1, 1, 1, 1, 1, 
   1, 1, 4, 3, 1, 1, 1, 1, 3, 1, 
   2, 4, 3, 3, 3, 1, 1, 1, 3, 5, 
@@ -100,7 +100,7 @@ const int ExpressionTable::rule_index [] = {
   162, 166, 168, 172, 174, 178, 182, 186};
 #endif // QLALR_NO_EXPRESSIONTABLE_DEBUG_INFO
 
-const int ExpressionTable::action_default [] = {
+const short ExpressionTable::action_default [] = {
   1, 52, 0, 12, 2, 3, 17, 0, 10, 27, 
   8, 26, 15, 18, 0, 9, 16, 11, 5, 0, 
   0, 6, 0, 7, 0, 34, 10, 0, 0, 0, 
@@ -113,12 +113,12 @@ const int ExpressionTable::action_default [] = {
   30, 0, 0, 0, 0, 57, 0, 13, 0, 14, 
   0, 0, 4, 40, 58, 36, 35};
 
-const int ExpressionTable::goto_default [] = {
+const short ExpressionTable::goto_default [] = {
   14, 4, 65, 26, 15, 10, 17, 12, 3, 16, 
   13, 6, 7, 78, 11, 9, 66, 2, 90, 1, 
   54, 0};
 
-const int ExpressionTable::action_index [] = {
+const short ExpressionTable::action_index [] = {
   125, -32, -3, -32, -32, 310, -32, 33, 204, -32, 
   42, -32, -32, -13, 4, -32, -32, -32, -32, 126, 
   126, -32, 126, -32, 126, 310, 81, 96, 56, 96, 
@@ -143,7 +143,7 @@ const int ExpressionTable::action_index [] = {
   -22, -22, -1, 43, 1, -22, -22, -22, -22, -22, 
   -22, 2, -22, -22, -22, -22, -22};
 
-const int ExpressionTable::action_info [] = {
+const short ExpressionTable::action_info [] = {
   64, 36, 77, 94, 104, 57, 24, 57, 94, 94, 
   -54, 81, -20, 60, 64, 61, 18, 68, 18, 86, 
   84, 69, 68, 37, 0, 18, 85, 37, 37, 52, 
@@ -198,7 +198,7 @@ const int ExpressionTable::action_info [] = {
   55, 56, 0, 103, 0, 88, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 53, 0, 0};
 
-const int ExpressionTable::action_check [] = {
+const short ExpressionTable::action_check [] = {
   14, 18, 12, 16, 0, 11, 9, 11, 16, 16, 
   9, 13, 12, 11, 14, 13, 8, 11, 8, 20, 
   12, 15, 11, 7, -1, 8, 27, 7, 7, 12, 
