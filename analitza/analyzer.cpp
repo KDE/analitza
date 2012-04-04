@@ -1764,6 +1764,7 @@ Expression Analyzer::dependenciesToLambda() const
 		Container* math=new Container(Container::math);
 		math->appendBranch(cc);
 		
+		Expression::computeDepth(math);
 		return Expression(math);
 	} else {
 		return m_exp;
