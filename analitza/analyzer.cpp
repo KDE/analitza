@@ -1418,6 +1418,9 @@ Object* Analyzer::simpApply(Apply* c)
 						}
 						root = na;
 					}
+				} else if(!root->isZero()) {
+					delete root;
+					root = new Cn(false);
 				}
 			}
 			
