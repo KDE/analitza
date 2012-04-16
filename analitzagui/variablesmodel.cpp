@@ -32,24 +32,33 @@ VariablesModel::VariablesModel(Variables* v, QObject *parent)
 	: QAbstractTableModel(parent), m_vars(v), m_editable(true)
 {}
 
+VariablesModel::VariablesModel(QObject* parent)
+	: QAbstractTableModel(parent), m_vars(0), m_editable(true)
+{}
+
+void VariablesModel::setVariables(Variables* v)
+{
+	m_vars=v;
+}
+
 QVariant VariablesModel::data(const QModelIndex & index, int role) const
 {
 	QVariant ret;
 	if(role==Qt::DisplayRole) {
-		int var=index.row();
-		QString key=m_vars->keys()[var];
 		switch(index.column()) {
 			case 0:
-				ret=key;
+				ret=m_vars->keys()[index.row()];
 				break;
 			case 1:
-				if(m_vars->value(key)->type()==Object::value) {
-					Cn* v=static_cast<Cn*>(m_vars->value(key));
-					ret=v->value();
-				} else
-					ret=m_vars->value(key)->toString();
-				break;
+				return data(index.sibling(index.row(), 0), Qt::ToolTipRole);
 		}
+	} else if(role==Qt::ToolTipRole && index.column()==0) {
+		QString key = m_vars->keys()[index.row()];
+		if(m_vars->value(key)->type()==Object::value) {
+			Cn* v=static_cast<Cn*>(m_vars->value(key));
+			ret=v->value();
+		} else
+			ret=m_vars->value(key)->toString();
 	}
 	return ret;
 }
@@ -94,7 +103,7 @@ QVariant VariablesModel::headerData(int section, Qt::Orientation orientation, in
 
 int VariablesModel::rowCount(const QModelIndex &idx) const
 {
-	if(idx.isValid())
+	if(!m_vars || idx.isValid())
 		return 0;
 	else
 		return m_vars->count();

@@ -32,9 +32,12 @@ class Expression;
 class ANALITZAGUI_EXPORT VariablesModel : public QAbstractTableModel
 {
 	Q_OBJECT
+	Q_PROPERTY(Analitza::Variables* variables READ variables WRITE setVariables)
 	public:
 		/** Constructor. Creates a new Variable Model. */
-		explicit VariablesModel(Analitza::Variables* v, QObject *parent=0);
+		explicit VariablesModel(QObject *parent=0);
+		VariablesModel(Analitza::Variables* v, QObject *parent=0);
+		void setVariables(Analitza::Variables* v);
 		
 		virtual QFlags< Qt::ItemFlag > flags(const QModelIndex& index) const;
 		bool setData(const QModelIndex& index, const QVariant& value, int role=Qt::EditRole);
