@@ -146,6 +146,9 @@ void FunctionsModel::clear()
 {
 	if(!funclist.isEmpty()) {
 		beginRemoveRows (QModelIndex(), 0, rowCount());
+		foreach(const Function& f, funclist) {
+			emit functionRemoved(f.name());
+		}
 		funclist.clear();
 		endRemoveRows ();
 		reset();
