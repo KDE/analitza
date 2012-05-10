@@ -209,6 +209,7 @@ void MathMLPresentationTest::testConversion()
 	
 	Expression e(mathML, true);
 	QVERIFY(e.isCorrect());
+	qDebug() << "fuuu" << mathML;
 	QCOMPARE(expression, e.toString());
 }
 
