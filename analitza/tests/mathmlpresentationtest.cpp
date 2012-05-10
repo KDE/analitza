@@ -189,7 +189,7 @@ void MathMLPresentationTest::testConversion_data()
 			"</msqrt>"
 		"</msqrt>"
 	"</mrow>"
-	"</math>" << "root((1+root((1+root((1+root((1+root((1+root((1+root((1+x))))))))))))))";
+	"</math>" << "root(1+root(1+root(1+root(1+root(1+root(1+root(1+x, 2), 2), 2), 2), 2), 2), 2)";
 }
 
 void MathMLPresentationTest::testConversion()
@@ -209,6 +209,7 @@ void MathMLPresentationTest::testConversion()
 	
 	Expression e(mathML, true);
 	QVERIFY(e.isCorrect());
+	QCOMPARE(expression, e.toString());
 }
 
 void MathMLPresentationTest::testToPresentation_data()
@@ -318,7 +319,7 @@ void MathMLPresentationTest::testToPresentation_data()
 			"</msqrt>"
 		"</msqrt>"
 	"</mrow>"
-	"</math>" << "root((1+root((1+root((1+root((1+root((1+root((1+root((1+x))))))))))))))";
+	"</math>" << "";
 	
 	QTest::newRow("normal function") <<
 	"<math>"
@@ -332,7 +333,7 @@ void MathMLPresentationTest::testToPresentation_data()
 	
 	QTest::newRow("piecewise") <<
 	"<math><mrow><mrow><mo stretchy='true'> { </mo><mtable columnalign='left left'><mtr><mtd><mi>eq</mi><mo>(</mo><mi>x</mi><mo>,</mo> <mn>3</mn><mo>)</mo></mtd><mtd><mtext>if </mtext><mi>x</mi></mtd></mtr><mtr><mtd><mn>33</mn></mtd><mtd><mtext>otherwise</mtext></mtd></mtr></mtable></mrow></mrow></math>"
-		<< "piecewise { eq(x, 3) ? x, ? 33 }";
+		<< "piecewise { x=3 ? x, ? 33 }";
 }
 
 void MathMLPresentationTest::testToPresentation()
@@ -341,10 +342,10 @@ void MathMLPresentationTest::testToPresentation()
 	QFETCH(QString, expression);
 	
 	Expression e(expression, false);
+	if(!e.isCorrect())
+		qDebug() << "error:" << e.error() << expression;
 	QString mmlcnt=e.toMathML();
 	
-	if(!e.isCorrect())
-		qDebug() << "error:" << e.error();
 	QVERIFY(e.isCorrect());
 	QCOMPARE(e.toString(), expression);
 	QCOMPARE(e.toMathMLPresentation(), mml_pr);

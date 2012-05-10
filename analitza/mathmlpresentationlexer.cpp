@@ -59,6 +59,11 @@ void MathMLPresentationLexer::getToken()
 				if(m_tokenTags.contains(e)) {
 					if(m_tokens.last().type==ExpressionTable::tComa)
 						m_tokens.takeLast();
+					
+					if(e=="msqrt") {
+						m_tokens.append(TOKEN(ExpressionTable::tComa, 0));
+						m_tokens.append(TOKEN(ExpressionTable::tVal, 0, "<cn>2</cn>"));
+					}
 					m_tokens.append(TOKEN(ExpressionTable::tRpr, 0));
 				}
 				
