@@ -209,7 +209,7 @@ void MathMLPresentationTest::testConversion()
 	
 	Expression e(mathML, true);
 	QVERIFY(e.isCorrect());
-	qDebug() << "fuuu" << mathML;
+// 	qDebug() << "fuuu" << mathML;
 	QCOMPARE(expression, e.toString());
 }
 
@@ -320,20 +320,13 @@ void MathMLPresentationTest::testToPresentation_data()
 			"</msqrt>"
 		"</msqrt>"
 	"</mrow>"
-	"</math>" << "";
+	"</math>" << "root(1+root(1+root(1+root(1+root(1+root(1+root(1+x, 2), 2), 2), 2), 2), 2), 2)";
 	
 	QTest::newRow("normal function") <<
-	"<math>"
-		"<mrow>"
-			"<mi>sin</mi>"
-			"<mo>(</mo>"
-			"<mi>x</mi>"
-			"<mo>)</mo>"
-		"</mrow>"
-	"</math>" << "sin(x)";
+	"<math><mrow><mi>sin</mi><mo> &ApplyFunction; </mo><mfenced><mi>x</mi></mfenced></mrow></math>" << "sin(x)";
 	
 	QTest::newRow("piecewise") <<
-	"<math><mrow><mrow><mo stretchy='true'> { </mo><mtable columnalign='left left'><mtr><mtd><mi>eq</mi><mo>(</mo><mi>x</mi><mo>,</mo> <mn>3</mn><mo>)</mo></mtd><mtd><mtext>if </mtext><mi>x</mi></mtd></mtr><mtr><mtd><mn>33</mn></mtd><mtd><mtext>otherwise</mtext></mtd></mtr></mtable></mrow></mrow></math>"
+	"<math><mrow><mrow><mo stretchy='true'> { </mo><mtable columnalign='left left'><mtr><mtd><mi>x</mi></mtd><mtd><mtext>if </mtext><mi>x</mi><mo>=</mo><mn>3</mn></mtd></mtr><mtr><mtd><mn>33</mn></mtd><mtd><mtext>otherwise</mtext></mtd></mtr></mtable></mrow></mrow></math>"
 		<< "piecewise { x=3 ? x, ? 33 }";
 }
 
