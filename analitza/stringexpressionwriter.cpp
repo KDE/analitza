@@ -114,14 +114,13 @@ int StringExpressionWriter::weight(const Operator* op, int size, int pos)
 		case Operator::times:
 			return 4;
 		case Operator::divide:
-			qDebug() << "blaaaa" << pos;
 			return 5 + (pos>0 ? 0 : 1);
 		case Operator::_and:
 		case Operator::_or:
 		case Operator::_xor:
 			return 6;
 		case Operator::power:
-			return 7;
+			return 7 + (pos>0 ? 0 : 1);
 		default:
 			return 1000;
 	}
