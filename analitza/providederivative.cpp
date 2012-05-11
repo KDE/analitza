@@ -113,6 +113,7 @@ ProvideDerivative::ProvideDerivative(const QString& var) : var(var)
 		s_transformations += Transformation(parse("diff(log(p):x)"), parse("diff(p:x)/(ln(10)*p)"));
 		s_transformations += Transformation(parse("diff(f**Real:x)"), parse("Real*diff(f:x)*f**(Real-1)"), nat); //this is just a simplification, should be deprecated
 		s_transformations += Transformation(parse("diff(f**g:x)"), parse("f**g*(diff(g:x)*ln f+g/f*diff(f:x))"));
+		s_transformations += Transformation(parse("diff(abs(p):x)"), parse("diff(p:x)/abs(x)"));
 	}
 }
 
