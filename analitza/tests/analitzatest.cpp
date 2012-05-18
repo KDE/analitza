@@ -621,6 +621,7 @@ void AnalitzaTest::testSimplify_data()
 	QTest::newRow("eqdiv3") << "(x*(x-1))/(x+3)=0" << "or(x=0, x=1)";
 	QTest::newRow("eqsin") << "sin(x)=0" << "x=0";
 	QTest::newRow("eqcos") << "cos(x)=1" << "x=0";
+    QTest::newRow("eqmin") << "x=3-2" << "x=1";
 	QTest::newRow("different") << "x+3=x+2" << "false";
 }
 

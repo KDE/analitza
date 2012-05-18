@@ -1367,6 +1367,7 @@ Object* Analyzer::simpApply(Apply* c)
 			QStringList deps = AnalitzaUtils::dependencies(c, QStringList());
 			
 			for(Apply::iterator it=c->firstValue(), itEnd=c->end(); it!=itEnd; ++it) {
+				*it = simp(*it);
 				alleq = alleq && equalTree(*c->firstValue(), *it);
 				existsjustvar = existsjustvar || (*it)->type()==Object::variable;
 				allButFirstZero = (it==c->firstValue() || (*it)->isZero());
