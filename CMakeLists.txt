@@ -16,6 +16,7 @@ include_directories(.)
 add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
 add_subdirectory(analitza)
+add_subdirectory(analitzaplot)
 add_subdirectory(analitzagui)
 if(HAVE_READLINE)
 	add_subdirectory(calgebra)
@@ -33,7 +34,7 @@ else(KDE4_USE_COMMON_CMAKE_PACKAGE_CONFIG_DIR)
 endif(KDE4_USE_COMMON_CMAKE_PACKAGE_CONFIG_DIR)
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/AnalitzaConfig.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake" @ONLY )
-export(TARGETS analitza analitzagui
+export(TARGETS analitza analitzaplot analitzagui
   FILE "${PROJECT_BINARY_DIR}/AnalitzaTargets.cmake")
 
 install( FILES

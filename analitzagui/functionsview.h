@@ -1,5 +1,6 @@
 /*************************************************************************************
- *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
+ *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -16,21 +17,52 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+
 #ifndef FUNCTIONSVIEW_H
 #define FUNCTIONSVIEW_H
 
 #include <QTreeView>
+
 #include "analitzaguiexport.h"
 
+
+class QUuid;
+
 class FunctionsModel;
+class Function;
 
 class ANALITZAGUI_EXPORT FunctionsView : public QTreeView
 {
-	Q_OBJECT
-	public:
-		FunctionsView(QWidget *parent=0);
-		
-		virtual void mousePressEvent ( QMouseEvent * event );
+    Q_OBJECT
+
+
+
+public:
+    FunctionsView(QWidget *parent=0);
+
+    virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
+    virtual void mousePressEvent ( QMouseEvent * event );
+
+    void setIsMainFunctionsView(bool b)
+    {
+        m_mainView = b;
+    }
+
+
+signals:
+
+
+
+    void functionShown(const Function &function);
+    void functionHided(const QUuid &funid, const QString &funlambda);
+
+
+    void functionOnSpaceShown(const QUuid &spaceId);
+
+
+private:
+    bool m_mainView;
 };
+
 
 #endif

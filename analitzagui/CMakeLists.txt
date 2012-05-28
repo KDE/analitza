@@ -14,23 +14,11 @@ set(analitzagui_SRCS
 	variablesmodel.cpp
 	expressionedit.cpp
 
-	function.cpp
-	functionutils.cpp
-	functionimpl.cpp
-	functionfactory.cpp
-	functionpolar.cpp
-	functioncartesian.cpp
-	functionparametric.cpp
-	functionimplicit.cpp
-
 	functionsview.cpp
-	functionsmodel.cpp
-	functionspainter.cpp
-	graph2d.cpp
 )
 
 kde4_add_library(analitzagui SHARED ${analitzagui_SRCS})
-target_link_libraries(analitzagui ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBRARY} ${QT_QTSVG_LIBRARY} analitza)
+target_link_libraries(analitzagui ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDEUI_LIBS} ${QT_QTSVG_LIBRARY} analitza analitzaplot)
 
 set_target_properties(analitzagui PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 
@@ -41,12 +29,7 @@ install(FILES
 	analitzaguiexport.h
 	operatorsmodel.h
 	variablesmodel.h
-	functionfactory.h
-	functionsmodel.h
 	functionsview.h
-	functionspainter.h
-	function.h
 	expressionedit.h
-	graph2d.h
 
         DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel)

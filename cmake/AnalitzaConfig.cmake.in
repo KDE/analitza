@@ -1,13 +1,14 @@
 #########################################################################
 #
-# Analitza Library Configuration File 
+# Analitza Library Configuration File
 #
 # This file sets various CMake Variables
 #
 # ANALITZA_INCLUDE_DIR               - The Include Directory for all ANALITZA libraries
 # ANALITZA_LIBRARY                   - the analitza library
+# ANALITZAPLOT_LIBRARY               - the analitzaplot library
 # ANALITZAGUI_LIBRARY                - the analitzagui library
-# ANALITZA_LIBS                      - both libraries above
+# ANALITZA_LIBS                      - libraries above
 #
 # Copyright 2011  Aleix Pol Gonzalez <aleixpol@kde.org>
 # Redistribution and use is allowed according to the terms of the BSD license.
@@ -19,12 +20,14 @@ set( ANALITZA_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@" )
 
 include("${_ANALITZA_CURRENT_DIR}/AnalitzaTargets.cmake")
 set( ANALITZA_LIBRARY AnalitzaImport__analitza )
+set( ANALITZAPLOT_LIBRARY AnalitzaImport__analitzaplot )
 set( ANALITZAGUI_LIBRARY AnalitzaImport__analitzagui )
-set( ANALITZA_LIBS ${ANALITZA_LIBRARY} ${ANALITZAGUI_LIBRARY})
+set( ANALITZA_LIBS ${ANALITZA_LIBRARY} ${ANALITZAPLOT_LIBRARY} ${ANALITZAGUI_LIBRARY})
 
 mark_as_advanced(
 	ANALITZA_INCLUDE_DIR
 	ANALITZA_LIBRARY
+	ANALITZA_PLOT_LIBRARY
 	ANALITZA_GUI_LIBRARY
 	ANALITZA_LIBS
 )
