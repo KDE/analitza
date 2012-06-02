@@ -1,6 +1,6 @@
 project(analitzaplot)
 
-#add_subdirectory(tests)
+add_subdirectory(tests)
 
 find_package ( OpenGL REQUIRED )
 if(NOT OPENGL_GLU_FOUND)
