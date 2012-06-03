@@ -33,19 +33,20 @@ Q_OBJECT
 	public:
 		FunctionTest(QObject *parent = 0);
 		~FunctionTest();
-	
+
 	private slots:
 		void initTestCase();
-		
-		void testCorrect();
-		void testCorrect_data();
-		
-		void testCopy();
-		void testCopy_data();
-		
-		void testJumps();
-		void testJumps_data();
-		
+
+		//TODO gsoc2012
+// 		void testCorrect();
+// 		void testCorrect_data();
+//
+// 		void testCopy();
+// 		void testCopy_data();
+//
+// 		void testJumps();
+// 		void testJumps_data();
+
 		void cleanupTestCase();
 	private:
 		Analitza::Variables* m_vars;

@@ -20,6 +20,37 @@
 #include "functionimpl.h"
 #include <QRectF>
 
+namespace Keomath
+{
+
+FunctionGraph::FunctionGraph()
+{
+
+}
+
+FunctionGraph::~FunctionGraph()
+{
+	delete m_data;
+}
+
+void FunctionGraph::setFixedGradient(const VectorXd &point)
+{
+	m_data->fixedGradients.append(point);
+}
+
+void FunctionGraph::clearFixedGradients()
+{
+	m_data->fixedGradients.clear();
+}
+
+FunctionGraphData * FunctionGraph::data() const
+{
+	return m_data;
+}
+
+}
+
+
 FunctionImpl::FunctionImpl(const Analitza::Expression &expression, Analitza::Variables *variables)
     : m_evaluator(variables)
     , m_resolution(50)

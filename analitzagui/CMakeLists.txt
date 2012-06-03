@@ -2,6 +2,16 @@ project(analitzagui)
 
 add_subdirectory(tests)
 
+find_package(Eigen3 REQUIRED)
+
+include_directories (
+  ${EIGEN3_INCLUDE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  .
+  ..
+)
+
+
 find_path(IEEEFP_DIR ieeefp.h)
 if(IEEEFP_DIR)
     include_directories(${IEEEFP_DIR})

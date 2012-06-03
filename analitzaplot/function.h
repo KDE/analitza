@@ -24,19 +24,88 @@
 #include <QPair>
 
 #include <QtGui/QColor>
+#include <QtGui/QPen>
 #include <qglobal.h>
 
 #include <KDE/KDateTime>
 
 #include "analitzaplotexport.h"
+
 #include "functionutils.h"
-
-
 
 namespace Analitza
 {
 class Expression;
 class Variables;
+}
+
+#include "analitza/analyzer.h"
+
+namespace Keomath
+{
+
+class FunctionGraph;
+class FunctionGraphData;
+
+class ANALITZAPLOT_EXPORT Function
+{
+public:
+	Function(const Analitza::Expression &expression, Analitza::Variables *variables,
+			 const IntervalList &domain = IntervalList() << qMakePair(-1.0, 1.0),
+			 const FunctionGraphDescription &graphDescription = FunctionGraphDescription(),
+			 bool hasImplicitExpression = false,
+		     const QString &name = QString(), const QColor &color = QColor());
+
+	virtual ~Function();
+
+	const Analitza::Expression& expression() const;
+
+	IntervalList domain() const { return m_domain; }
+	void setDomain(const IntervalList &domain);
+
+	const FunctionGraphDescription graphDescription() const { return m_graphDescription; }
+
+	const bool hasImplicitExpression() const { return m_hasImplicitExpression; }
+
+	QString name() const { return m_name; }
+	void setName(const QString &newName) { m_name = newName; }
+
+	QColor color() const { return m_color; }
+	void setColor(const QColor& newColor) { m_color = newColor; }
+
+	const int argumentCount() { return m_argumentCount; } //Returns the number of arguments passed to the function in this invocation.
+	const int valueCount() { return m_valueCount; } // realvalued funcs has one only one comp, others > 1
+	const FunctionImageType imageType() const { return m_imageType; }
+// int arguments,int imageComponents, ???
+
+	QUuid id() const { return m_id; }
+
+	VectorXd evaluate(VectorXd funcvalargs);
+
+	QStringList errors() const;
+	bool isCorrect() const;
+
+private:
+	IntervalList m_domain;
+	FunctionGraphDescription m_graphDescription;
+	bool m_hasImplicitExpression;
+	QString m_name;
+	QColor m_color;
+
+	int m_argumentCount;
+	int m_valueCount;
+	FunctionImageType m_imageType;
+	QUuid m_id;
+
+	Analitza::Analyzer m_analyzer;
+	QVector<Analitza::Object*> m_runStack;
+    QVector<Analitza::Cn*> m_arguments;
+
+	FunctionGraph *m_functionGraph;
+
+	QStringList m_errors;
+};
+
 }
 
 struct FunctionImpl;

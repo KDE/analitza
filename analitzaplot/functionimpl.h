@@ -30,7 +30,32 @@
 #include "analitza/analyzer.h"
 
 #include "function.h"
-#include "functionutils.h"
+
+namespace Keomath
+{
+
+class ANALITZAPLOT_EXPORT FunctionGraph //strategy pattern for curves and surfaces
+{
+public:
+	FunctionGraph();
+	virtual ~FunctionGraph();
+
+	void setFixedGradient(const VectorXd &funcvalargs); //mustrerun generate
+	void clearFixedGradients();
+
+	virtual void generateData(const Function &function) = 0;
+	FunctionGraphData * data() const;
+
+	QStringList errors() const;
+
+	virtual FunctionGraph * copy() = 0;
+
+private:
+	FunctionGraphData *m_data;
+	QStringList m_errors;
+};
+
+}
 
 class ANALITZAPLOT_EXPORT FunctionImpl
 {

@@ -1,6 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -21,13 +20,66 @@
 #ifndef KEOMATH_MATHHELPER_H
 #define KEOMATH_MATHHELPER_H
 
+#include <Eigen/Core>
+
+#include <QPair>
+#include <QVector>
+#include <QLineF>
+
+namespace Keomath
+{
+
+typedef Eigen::Matrix<double,1,1> Vector1d;
+typedef Eigen::Vector2d Vector2d;
+typedef Eigen::Vector3d Vector3d;
+typedef Eigen::VectorXd VectorXd;
+
+typedef QPair<double, double> Interval;
+typedef QVector<Interval> IntervalList;
+
+enum FunctionGraphDimension { Dimension1D = 1, Dimension2D = 2, Dimension3D = 3 };
+enum FunctionGraphCoordinateSystem { Cartesian = 1, Polar = 2, Cylindrical = 3, Spherical = 4 };
+enum FunctionGraphPrecision { VeryLow = 1, Low = 2, Average = 3, High = 4, VeryHigh = 5 };
+
+enum FunctionGraphDataFlag { FunctionData = 0x0, GradientData = 0x1, FixedGradientsData = 0x2 };
+Q_DECLARE_FLAGS(FunctionGraphDataFlags, FunctionGraphDataFlag)
+Q_DECLARE_OPERATORS_FOR_FLAGS(FunctionGraphDataFlags)
+
+enum FunctionImageType { InvalidValued = 0, RealValued = 1, VectorValued = 2, /*TODO ComplexValued= 3*/ };
+
+struct FunctionGraphDescription
+{
+	FunctionGraphDimension dimension = Dimension2D;
+	FunctionGraphCoordinateSystem coordinateSystem = Cartesian;
+	FunctionGraphPrecision precision = Average;
+	FunctionGraphDataFlags dataFlags;
+};
+
+struct FunctionGraphData
+{
+	QVector<VectorXd> fixedGradients;
+};
+
+struct FunctionGraphData2D : public FunctionGraphData
+{
+	QVector<QPointF> points;
+	QList<int> jumps;
+};
+
+
+
+}
+
 #include <QtCore/QPointF>
 #include <QtGui/QVector3D>
+
 
 #include "analitzaplotexport.h"
 
 #include <cmath>
 #include <QLineF>
+
+
 using std::sin;
 using std::cos;
 using std::atan;
@@ -93,7 +145,7 @@ class ANALITZAPLOT_EXPORT RealInterval
 public:
     typedef QList<RealInterval> List;
 
-    RealInterval(); 
+    RealInterval();
     RealInterval(qreal lower, qreal upper);
     RealInterval(const RealInterval &realInterval);
     virtual ~RealInterval();
@@ -153,6 +205,5 @@ private:
     qreal m_mid;
 };
 
-
-#endif 
+#endif
 

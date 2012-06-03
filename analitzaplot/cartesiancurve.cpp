@@ -26,6 +26,51 @@
 #include "analitza/variable.h"
 
 
+namespace Keomath
+{
+class ANALITZAPLOT_EXPORT CartesianCurveY : public Keomath::FunctionGraph
+{
+public:
+    static Analitza::ExpressionType expressionType()
+    {
+        return Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value));
+    }
+
+	static FunctionGraphDimension dimension()
+    {
+        return Dimension2D;
+    }
+
+    static FunctionGraphCoordinateSystem coordinateSystem()
+    {
+        return Cartesian;
+    }
+
+    static bool hasImplicitExpression() { return false;}
+
+    static QStringList examples()
+    {
+        return QStringList("x->root(x, 2)-5");
+    }
+
+        virtual void generateData (const Function &function)
+		{
+
+		}
+
+        virtual FunctionGraph *copy()
+		{
+		return 0;
+		}
+
+
+
+};
+	REGISTER_FUNCTIONGRAPH(CartesianCurveY)
+}
+
 class ANALITZAPLOT_EXPORT CartesianCurveY : public FunctionImpl2D
 {
 public:

@@ -3,6 +3,8 @@ project(analitzaplot)
 add_subdirectory(tests)
 
 find_package ( OpenGL REQUIRED )
+find_package(Eigen3 REQUIRED)
+
 if(NOT OPENGL_GLU_FOUND)
     message(FATAL_ERROR "GLU was not found")
 endif(NOT OPENGL_GLU_FOUND)
@@ -15,8 +17,8 @@ endif(IEEEFP_DIR)
 
 
 include_directories (
-  ${KDE4_INCLUDES}
   ${OPENGL_INCLUDE_DIR}
+  ${EIGEN3_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   .
   ..
