@@ -1,5 +1,7 @@
 project(analitzaplot)
 
+
+
 add_subdirectory(tests)
 
 find_package ( OpenGL REQUIRED )
