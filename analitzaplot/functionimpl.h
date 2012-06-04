@@ -40,18 +40,17 @@ public:
 	FunctionGraph();
 	virtual ~FunctionGraph();
 
-	void setFixedGradient(const VectorXd &funcvalargs); //mustrerun generate
-	void clearFixedGradients();
+	virtual void setFixedGradient(const VectorXd &funcvalargs) = 0; //mustrerun generate
+	virtual void clearFixedGradients() = 0;
 
-	virtual void generateData(const Function &function) = 0;
-	FunctionGraphData * data() const;
+	virtual void generateData(Function *function) = 0;
+	virtual FunctionGraphData * data() const = 0;
 
 	QStringList errors() const;
 
 	virtual FunctionGraph * copy() = 0;
 
-private:
-	FunctionGraphData *m_data;
+protected:
 	QStringList m_errors;
 };
 

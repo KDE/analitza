@@ -35,10 +35,9 @@ namespace Keomath
 	//esta clase se debe user si osi con su graph asociado ni no hay uno y se quier evauluar usar analyzer ...
 Function::Function(const Analitza::Expression &expression,
 					Analitza::Variables *variables,
-					const IntervalList &domain,
                     const FunctionGraphDescription &graphDescription,
                     bool hasImplicitExpression,
-                    const QString &name, const QColor &color)
+                    const QString &name)
     : m_analyzer(variables), m_name (name), m_valueCount(-1), m_imageType(InvalidValued)
 {
     m_id = QUuid::createUuid();
@@ -79,10 +78,9 @@ Function::Function(const Analitza::Expression &expression,
         {
             m_functionGraph = FunctionGraphFactory::self()->create (expectedIndex);
 
-            m_domain = domain;
             m_graphDescription = graphDescription;
             m_hasImplicitExpression = hasImplicitExpression;
-            m_color = color;
+            m_color = Qt::darkCyan;
 
             m_argumentCount = m_analyzer.expression().parameters().size();
 
@@ -90,6 +88,8 @@ Function::Function(const Analitza::Expression &expression,
             {
                 m_arguments.append (new Analitza::Cn);
                 m_runStack.append (m_arguments.last());
+
+				m_domain.append(qMakePair(-1.0, 1.0));
             }
 
             m_analyzer.setStack (m_runStack);
@@ -122,12 +122,12 @@ void Function::setDomain (const IntervalList &domain)
 
 }
 
-VectorXd Function::evaluate (VectorXd funcvalargs)
+VectorXd Function::evaluate (const VectorXd &args)
 {
-    Q_ASSERT (funcvalargs.size() == m_argumentCount);
+    Q_ASSERT (args.size() == m_argumentCount);
 
     for (int i = 0; i < m_argumentCount; ++i)
-        m_arguments[i]->setValue (funcvalargs[i]);
+        m_arguments[i]->setValue (args[i]);
 
     VectorXd ret;
 

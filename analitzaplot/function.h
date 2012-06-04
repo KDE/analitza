@@ -47,16 +47,19 @@ namespace Keomath
 class FunctionGraph;
 class FunctionGraphData;
 
+//function is not a value object is an entity object, then their use will be
+// with refs and pointers (no copy ctor nor  = optr == optr)
 class ANALITZAPLOT_EXPORT Function
 {
 public:
 	Function(const Analitza::Expression &expression, Analitza::Variables *variables,
-			 const IntervalList &domain = IntervalList() << qMakePair(-1.0, 1.0),
 			 const FunctionGraphDescription &graphDescription = FunctionGraphDescription(),
 			 bool hasImplicitExpression = false,
-		     const QString &name = QString(), const QColor &color = QColor());
+		     const QString &name = QString());
 
 	virtual ~Function();
+
+// 	void redefine()
 
 	const Analitza::Expression& expression() const;
 
@@ -80,7 +83,12 @@ public:
 
 	QUuid id() const { return m_id; }
 
-	VectorXd evaluate(VectorXd funcvalargs);
+	VectorXd evaluate(const VectorXd &args);
+
+	QVector<Analitza::Cn*> arguments() const
+	{
+		return m_arguments;
+	}
 
 	QStringList errors() const;
 	bool isCorrect() const;
