@@ -26,7 +26,7 @@
 #include <QFont>
 #include <cmath>
 
-#include "functionimpl.h"
+#include "functiongraph.h"
 
 #include "analitza/expression.h"
 

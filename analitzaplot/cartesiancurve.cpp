@@ -18,8 +18,8 @@
  *************************************************************************************/
 
 
-#include "functionimpl.h"
-#include "functionfactory.h"
+#include "functiongraph.h"
+#include "functiongraphfactory.h"
 
 #include <QRectF>
 #include "analitza/value.h"
@@ -37,7 +37,6 @@ public:
 		delete m_data;
 	}
 
-
     static Analitza::ExpressionType expressionType()
     {
         return Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
@@ -45,22 +44,18 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value));
     }
 
-	static FunctionGraphDimension dimension()
-    {
-        return Dimension2D;
-    }
+    static QStringList argumentNames() { return QStringList() << "x"; }
 
-    static FunctionGraphCoordinateSystem coordinateSystem()
-    {
-        return Cartesian;
-    }
+    static CoordinateSystem coordinateSystem() { return Cartesian; }
 
-    static bool hasImplicitExpression() { return false;}
+    static bool isImplicit() { return false;}
 
     static QStringList examples()
     {
-        return QStringList("x->root(x, 2)-5");
+        return QStringList() << "x->root(x, 2)-5";
     }
+
+    static QString iconName() { return QString(""); }
 
         virtual void generateData (Keomath::Function *function);
 
@@ -169,7 +164,7 @@ FunctionGraph *CartesianCurveY::copy()
 
 void CartesianCurveY::generateData (Keomath::Function *function)
 {
-	int resolution = function->graphDescription().precision*10;
+	int resolution = function->graphPrecision()*10;
 	int l_lim = function->domain()[0].first;
 	int r_lim = function->domain()[0].second;
 	m_data->jumps.clear();

@@ -28,8 +28,8 @@ include_directories (
 
 set ( keomath_SRCS
 function.cpp
-functionfactory.cpp
-functionimpl.cpp
+functiongraphfactory.cpp
+functiongraph.cpp
 functionutils.cpp
 graph2d.cpp
 graph3d.cpp
@@ -85,8 +85,8 @@ install(FILES
 
 analitzaplotexport.h
 function.h
-functionimpl.h
-functionfactory.h
+functiongraph.h
+functiongraphfactory.h
 functionutils.h
 graph2d.h
 graph3d.h

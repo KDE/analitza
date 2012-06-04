@@ -45,12 +45,12 @@ void FunctionTest::initTestCase()
 {
 	Analitza::Variables *v = new Analitza::Variables;
 	qDebug() << "AKIII EMPIEZA";
-	Keomath::Function f(Analitza::Expression("x->x-2"), v);
+	Keomath::Function f(Analitza::Expression("x->x-2"), Keomath::Cartesian, v);
 
 	Keomath::VectorXd a(1);
 	a(0) = 34;
 
-	qDebug() << f.valueCount() << f.errors() << f.evaluate(a)(0);
+	qDebug() << f.outputarity() << f.errors() << f.evaluate(a)(0);
 
 	QVERIFY(f.evaluate(a)(0) == 32);
 

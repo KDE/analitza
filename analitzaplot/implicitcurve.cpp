@@ -17,8 +17,8 @@
  *************************************************************************************/
 
 
-#include "functionimpl.h"
-#include "functionfactory.h"
+#include "functiongraph.h"
+#include "functiongraphfactory.h"
 
 #include <QRect>
 #include <QBitArray>

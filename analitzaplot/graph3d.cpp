@@ -30,7 +30,7 @@
 
 
 #include "functionsmodel.h"
-#include "functionimpl.h"
+#include "functiongraph.h"
 
 // #include "solvers/solvers3d/MarchingCubes/ctab.h"
 // #include "solvers/solvers3d/MarchingCubes/glwidget.h"

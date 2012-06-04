@@ -37,21 +37,21 @@ typedef Eigen::VectorXd VectorXd;
 typedef QPair<double, double> Interval;
 typedef QVector<Interval> IntervalList;
 
+enum FunctionType { RealValued = 1, VectorValued = 2};
+enum CoordinateSystem { Cartesian = 1, Polar = 2, Cylindrical = 3, Spherical = 4 };
+
 enum FunctionGraphDimension { Dimension1D = 1, Dimension2D = 2, Dimension3D = 3 };
-enum FunctionGraphCoordinateSystem { Cartesian = 1, Polar = 2, Cylindrical = 3, Spherical = 4 };
 enum FunctionGraphPrecision { VeryLow = 1, Low = 2, Average = 3, High = 4, VeryHigh = 5 };
 
 enum FunctionGraphDataFlag { FunctionData = 0x0, GradientData = 0x1, FixedGradientsData = 0x2 };
 Q_DECLARE_FLAGS(FunctionGraphDataFlags, FunctionGraphDataFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(FunctionGraphDataFlags)
 
-enum FunctionImageType { InvalidValued = 0, RealValued = 1, VectorValued = 2, /*TODO ComplexValued= 3*/ };
+//remove this see above FunctionType ... a better def
+// enum FunctionImageType { InvalidValued = 0, RealValued = 1, VectorValued = 2, /*TODO ComplexValued= 3*/ };
 
 struct FunctionGraphDescription
 {
-	FunctionGraphDimension dimension = Dimension2D;
-	FunctionGraphCoordinateSystem coordinateSystem = Cartesian;
-	FunctionGraphPrecision precision = Average;
 	FunctionGraphDataFlags dataFlags;
 };
 

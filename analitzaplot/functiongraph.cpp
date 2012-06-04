@@ -17,7 +17,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "functionimpl.h"
+#include "functiongraph.h"
 #include <QRectF>
 
 namespace Keomath

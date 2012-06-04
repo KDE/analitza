@@ -43,8 +43,8 @@ namespace Keomath
 #define REGISTER_FUNCTIONGRAPH(name) \
         static FunctionGraph* create##name() { return new name (); } \
         namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(create##name, \
-        name::expressionType(), name ::dimension(), name ::coordinateSystem(), \
-        name ::hasImplicitExpression(), name ::examples()); }
+        name::expressionType(), name ::argumentNames(), name ::coordinateSystem(), name ::isImplicit(), \
+        name ::examples(), name ::iconName()); }
 
 
 
@@ -57,20 +57,21 @@ class ANALITZAPLOT_EXPORT FunctionGraphFactory
 
 		bool registerFunctionGraph(registerFunctionGraph_fn functionGraphConstructor,
 								   const Analitza::ExpressionType &expressionType,
-								   FunctionGraphDimension functionGraphDimension,
-								   FunctionGraphCoordinateSystem functionGraphCoordinateSystem,
-								   bool hasImplicitExpression, const QStringList& examples);
+                                   const QStringList &argumentNames,
+                                   CoordinateSystem coordinateSystem,
+								   bool hasImplicitExpression, const QStringList& examples, const QString &iconName);
 
 		FunctionGraph* create(int functionGraphIndex) const;
 
 		static FunctionGraphFactory* self();
 
-		QVector< registerFunctionGraph_fn > functionGraphConstructors;
-		QVector< Analitza::ExpressionType > functionGraphExpressionTypes;
-		QVector< FunctionGraphDimension > functionGraphDimensions;
-		QVector< FunctionGraphCoordinateSystem > functionGraphCoordinateSystems;
-		QVector< bool > functionGraphImplicitExpressionFlags;
-		QVector< QStringList > functionGraphExamples;
+		QVector< registerFunctionGraph_fn > constructors;
+		QVector< Analitza::ExpressionType > expressionTypes;
+		QVector< QStringList > argumentNames;
+        QVector< CoordinateSystem > coordinateSystems;
+		QVector< bool > implicitFlags;
+        QVector< QStringList > examples;
+        QVector< QString > iconNames;
 
 	private:
 		static FunctionGraphFactory* m_self;

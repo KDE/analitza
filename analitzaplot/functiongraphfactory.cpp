@@ -18,7 +18,7 @@
  *************************************************************************************/
 
 
-#include "functionfactory.h"
+#include "functiongraphfactory.h"
 
 
 using Analitza::Expression;
@@ -31,27 +31,27 @@ namespace Keomath
 FunctionGraphFactory *FunctionGraphFactory::m_self = 0;
 
 bool FunctionGraphFactory::registerFunctionGraph (registerFunctionGraph_fn functionGraphConstructor,
-        const Analitza::ExpressionType &expressionType,
-        FunctionGraphDimension functionGraphDimension,
-        FunctionGraphCoordinateSystem functionGraphCoordinateSystem,
-        bool hasImplicitExpression, const QStringList &examples)
+        const Analitza::ExpressionType &expressionType, const QStringList &varnames,
+        CoordinateSystem coordinateSystem,
+        bool hasImplicitExpression, const QStringList &fexamples, const QString &iconName)
 {
     //Q_ASSERT(!contains(bvars));
 
 
-    functionGraphConstructors.append (functionGraphConstructor);
-    functionGraphExpressionTypes.append (expressionType);
-    functionGraphDimensions.append (functionGraphDimension);
-    functionGraphCoordinateSystems.append (functionGraphCoordinateSystem);
-    functionGraphImplicitExpressionFlags.append (hasImplicitExpression);
-    functionGraphExamples.append (examples);
+    constructors.append(functionGraphConstructor);
+    expressionTypes.append(expressionType);
+    argumentNames.append(varnames);
+    coordinateSystems.append (coordinateSystem);
+    implicitFlags.append (hasImplicitExpression);
+    examples.append (fexamples);
+    iconNames.append(iconName);
 
     return true;
 }
 
 FunctionGraph *FunctionGraphFactory::create (int functionGraphIndex) const
 {
-    return functionGraphConstructors[functionGraphIndex]();
+    return constructors[functionGraphIndex]();
 }
 
 FunctionGraphFactory *FunctionGraphFactory::self()

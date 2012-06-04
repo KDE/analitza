@@ -17,8 +17,8 @@
  *************************************************************************************/
 
 
-#include "functionimpl.h"
-#include "functionfactory.h"
+#include "functiongraph.h"
+#include "functiongraphfactory.h"
 
 #include "analitza/value.h"
 #include <analitza/vector.h>

@@ -18,8 +18,8 @@
  *************************************************************************************/
 
 
-#include "functionimpl.h"
-#include "functionfactory.h"
+#include "functiongraph.h"
+#include "functiongraphfactory.h"
 
 #include <QRectF>
 #include "analitza/value.h"

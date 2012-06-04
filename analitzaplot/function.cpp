@@ -27,40 +27,43 @@
 #include <analitza/value.h>
 #include <analitza/vector.h>
 
-#include "functionimpl.h"
-#include "functionfactory.h"
+#include "functiongraph.h"
+#include "functiongraphfactory.h"
 
 namespace Keomath
 {
-	//esta clase se debe user si osi con su graph asociado ni no hay uno y se quier evauluar usar analyzer ...
-Function::Function(const Analitza::Expression &expression,
-					Analitza::Variables *variables,
-                    const FunctionGraphDescription &graphDescription,
-                    bool hasImplicitExpression,
-                    const QString &name)
-    : m_analyzer(variables), m_name (name), m_valueCount(-1), m_imageType(InvalidValued)
+
+Function::Function(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem, bool isImplicit, const QString &name)
+: m_name(name)
 {
-    m_id = QUuid::createUuid();
+    setExpression(functionExpression, coordinateSystem, isImplicit);
+}
 
+Function::Function (const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem, Analitza::Variables *variables, bool isImplicit, const QString &name)
+: m_analyzer(variables), m_name (name)
+{
+setExpression(functionExpression, coordinateSystem, isImplicit);
+}
 
-    if (!expression.isCorrect())
+void Function::setExpression (const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem, bool isImplicitExpression)
+{
+    if (!functionExpression.isCorrect())
     {
         m_errors << i18n ("The expression is not correct");
-        return;
     }
 
-    m_analyzer.setExpression (expression);
+    m_analyzer.setExpression (functionExpression);
     m_analyzer.setExpression (m_analyzer.dependenciesToLambda());
 
     bool foundExpected = false;
     int expectedIndex = 0;
 
-    for (int i = 0; i < FunctionGraphFactory::self()->functionGraphConstructors.size(); ++i)
+    for (int i = 0; i < FunctionGraphFactory::self()->constructors.size(); ++i)
     {
-        if ( (m_analyzer.type().canReduceTo(FunctionGraphFactory::self()->functionGraphExpressionTypes[i])) &&
-                (graphDescription.dimension == FunctionGraphFactory::self()->functionGraphDimensions[i]) &&
-                (graphDescription.coordinateSystem == FunctionGraphFactory::self()->functionGraphCoordinateSystems[i]) &&
-                (hasImplicitExpression == FunctionGraphFactory::self()->functionGraphImplicitExpressionFlags[i]))
+        if ( (m_analyzer.type().canReduceTo(FunctionGraphFactory::self()->expressionTypes[i])) &&
+             (m_analyzer.expression().bvarList() == FunctionGraphFactory::self()->argumentNames[i]) &&
+                (coordinateSystem == FunctionGraphFactory::self()->coordinateSystems[i]) &&
+                (isImplicitExpression == FunctionGraphFactory::self()->implicitFlags[i]))
         {
             foundExpected = true;
             expectedIndex = i;
@@ -70,18 +73,21 @@ Function::Function(const Analitza::Expression &expression,
     }
 
     if (!foundExpected)
+    {
         m_errors << i18n ("Function type not recognized");
+
+    }
     else
         if (!m_analyzer.isCorrect())
+        {
             m_errors << m_analyzer.errors();
+        }
         else
         {
+            m_coordinateSystem = coordinateSystem;
             m_functionGraph = FunctionGraphFactory::self()->create (expectedIndex);
 
-            m_graphDescription = graphDescription;
-            m_hasImplicitExpression = hasImplicitExpression;
-            m_color = Qt::darkCyan;
-
+            m_isImplicit = isImplicitExpression;
             m_argumentCount = m_analyzer.expression().parameters().size();
 
             for (int i = 0; i < m_argumentCount; ++i)
@@ -89,21 +95,26 @@ Function::Function(const Analitza::Expression &expression,
                 m_arguments.append (new Analitza::Cn);
                 m_runStack.append (m_arguments.last());
 
-				m_domain.append(qMakePair(-1.0, 1.0));
+                m_domain.append(qMakePair(-1.0, 1.0));
             }
 
             m_analyzer.setStack (m_runStack);
 
+            m_argumentNames = m_analyzer.expression().bvarList();
+
             if (m_analyzer.expression().lambdaBody().isVector())
             {
-                m_imageType = VectorValued;
-                m_valueCount = static_cast<Analitza::Vector *> (m_analyzer.expression().lambdaBody().tree())->size();
+                m_type = VectorValued;
+                m_outputArity = static_cast<Analitza::Vector *> (m_analyzer.expression().lambdaBody().tree())->size();
             }
             else
             {
-                m_imageType = RealValued;
-                m_valueCount = 1; //single valued function
+                m_type = RealValued;
+                m_outputArity = 1; //single valued function
             }
+
+        m_graphColor = Qt::darkCyan;
+
         }
 }
 
@@ -131,7 +142,7 @@ VectorXd Function::evaluate (const VectorXd &args)
 
     VectorXd ret;
 
-    switch (m_imageType)
+    switch (m_type)
     {
         case RealValued:
             ret = VectorXd(1);

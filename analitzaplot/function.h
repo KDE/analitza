@@ -47,67 +47,91 @@ namespace Keomath
 class FunctionGraph;
 class FunctionGraphData;
 
-//function is not a value object is an entity object, then their use will be
-// with refs and pointers (no copy ctor nor  = optr == optr)
+//function as a value object
+
+// if f:RN->RM then n = FunctionInputArity and m = FunctionOutputArity
+/*
+enum FunctionInputArity { FunctionInputUnary = 1, FunctionInputBinary = 2, FunctionInputTernary = 3,
+FunctionInputQuaternary = 4, FunctionInputQuinary = 5, FunctionInputSenary = 6, FunctionInputSeptenary = 7,
+FunctionInputOctary = 8, FunctionInputNonary = 9};
+enum FunctionOutputArity { FunctionOutputUnary = 1, FunctionOutputBinary = 2, FunctionOutputTernary = 3 };*/
+
+// "SINLGE valued" functions of real numbers (only real numbers) THAT can we can view on a 2d or 3d space
+
+
+
+    //esta clase se debe user si osi con su graph asociado ni no hay uno y se quier evauluar usar analyzer ...
+
 class ANALITZAPLOT_EXPORT Function
 {
 public:
-	Function(const Analitza::Expression &expression, Analitza::Variables *variables,
-			 const FunctionGraphDescription &graphDescription = FunctionGraphDescription(),
-			 bool hasImplicitExpression = false,
-		     const QString &name = QString());
+    // f:RN->RM / N=argumentCount/arity and M=valueCount
+    explicit Function(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
+                      bool isImplicit = false, const QString &name = QString());
 
-	virtual ~Function();
+    explicit Function(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
+                      Analitza::Variables *variables, bool isImplicit = false, const QString &name = QString());
 
-// 	void redefine()
+    Function(const Function &f);
 
-	const Analitza::Expression& expression() const;
+    virtual ~Function();
+
+	const Analitza::Expression & expression() const;
+
+    const bool isImplicit() const { return m_isImplicit; }
+
+    QString name() const { return m_name; }
+    void setName(const QString &newName) { m_name = newName; }
+    QString iconName() const;
 
 	IntervalList domain() const { return m_domain; }
 	void setDomain(const IntervalList &domain);
 
-	const FunctionGraphDescription graphDescription() const { return m_graphDescription; }
-
-	const bool hasImplicitExpression() const { return m_hasImplicitExpression; }
-
-	QString name() const { return m_name; }
-	void setName(const QString &newName) { m_name = newName; }
-
-	QColor color() const { return m_color; }
-	void setColor(const QColor& newColor) { m_color = newColor; }
-
-	const int argumentCount() { return m_argumentCount; } //Returns the number of arguments passed to the function in this invocation.
-	const int valueCount() { return m_valueCount; } // realvalued funcs has one only one comp, others > 1
-	const FunctionImageType imageType() const { return m_imageType; }
-// int arguments,int imageComponents, ???
-
-	QUuid id() const { return m_id; }
+	int argumentCount() { return m_argumentCount; } //Returns the number of arguments passed to the function
+	int outputarity() { return m_outputArity; } // returns M (f:RN->RM)  // realvalued funcs has one only one comp, others > 1
+	FunctionType type() { return m_type; }
 
 	VectorXd evaluate(const VectorXd &args);
 
-	QVector<Analitza::Cn*> arguments() const
-	{
-		return m_arguments;
-	}
+	QVector<Analitza::Cn*> arguments() const { return m_arguments; }
+	QStringList argumentNames() { return m_argumentNames; }
 
-	QStringList errors() const;
+	FunctionGraphDimension graphDimension() const { return m_graphDimension; }
+    CoordinateSystem coordinateSystem() { return m_coordinateSystem; }
+    FunctionGraphPrecision graphPrecision() { return m_graphPrecision; }
+    void setGraphPrecision(FunctionGraphPrecision precision) { m_graphPrecision = precision; }
+    QColor graphColor() const { return m_graphColor; }
+    void setGraphColor(const QColor& newColor) { m_graphColor = newColor; }
+
+    QStringList errors() const;
 	bool isCorrect() const;
 
 private:
+   void setExpression(const Analitza::Expression &functionExpression, Keomath::CoordinateSystem coordinateSystem, bool isImplicitExpression);
+
 	IntervalList m_domain;
-	FunctionGraphDescription m_graphDescription;
-	bool m_hasImplicitExpression;
+	bool m_isImplicit;
+
+    //gui
 	QString m_name;
-	QColor m_color;
 
+    //useful info
 	int m_argumentCount;
+    int m_outputArity;
+    FunctionType m_type;
 	int m_valueCount;
-	FunctionImageType m_imageType;
-	QUuid m_id;
 
+    //analitza
 	Analitza::Analyzer m_analyzer;
 	QVector<Analitza::Object*> m_runStack;
     QVector<Analitza::Cn*> m_arguments;
+    QStringList m_argumentNames;
+
+    //graphDescription
+    FunctionGraphDimension m_graphDimension = Dimension2D;
+    CoordinateSystem m_coordinateSystem = Cartesian;
+    FunctionGraphPrecision m_graphPrecision = Average;
+    QColor m_graphColor;
 
 	FunctionGraph *m_functionGraph;
 

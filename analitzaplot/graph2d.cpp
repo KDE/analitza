@@ -43,7 +43,7 @@
 #include "analitza/analyzer.h"
 
 #include "functionsmodel.h"
-#include "functionimpl.h"
+#include "functiongraph.h"
 #include <QClipboard>
 #include <QApplication>
 
