@@ -17,14 +17,16 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef KEOMATH_FUNCTION_H
-#define KEOMATH_FUNCTION_H
+#ifndef ANALITZAPLOT_FUNCTION_H
+#define ANALITZAPLOT_FUNCTION_H
 
 #include <QtCore/QUuid>
 #include <QPair>
 
 #include <QtGui/QColor>
 #include <QtGui/QPen>
+#include <QVector2D>
+#include <QVector3D>
 #include <qglobal.h>
 
 #include <KDE/KDateTime>
@@ -48,24 +50,12 @@ class FunctionGraph;
 class FunctionGraphData;
 
 //function as a value object
-
-// if f:RN->RM then n = FunctionInputArity and m = FunctionOutputArity
-/*
-enum FunctionInputArity { FunctionInputUnary = 1, FunctionInputBinary = 2, FunctionInputTernary = 3,
-FunctionInputQuaternary = 4, FunctionInputQuinary = 5, FunctionInputSenary = 6, FunctionInputSeptenary = 7,
-FunctionInputOctary = 8, FunctionInputNonary = 9};
-enum FunctionOutputArity { FunctionOutputUnary = 1, FunctionOutputBinary = 2, FunctionOutputTernary = 3 };*/
-
 // "SINLGE valued" functions of real numbers (only real numbers) THAT can we can view on a 2d or 3d space
-
-
-
-    //esta clase se debe user si osi con su graph asociado ni no hay uno y se quier evauluar usar analyzer ...
+//esta clase se debe user si osi con su graph asociado ni no hay uno y se quier evauluar usar analyzer ...
 
 class ANALITZAPLOT_EXPORT Function
 {
 public:
-    // f:RN->RM / N=argumentCount/arity and M=valueCount
     explicit Function(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
                       bool isImplicit = false, const QString &name = QString());
 
@@ -76,7 +66,7 @@ public:
 
     virtual ~Function();
 
-	const Analitza::Expression & expression() const;
+    const Analitza::Expression & expression() const;
 
     const bool isImplicit() const { return m_isImplicit; }
 
@@ -84,17 +74,28 @@ public:
     void setName(const QString &newName) { m_name = newName; }
     QString iconName() const;
 
-	IntervalList domain() const { return m_domain; }
-	void setDomain(const IntervalList &domain);
+    //no se regenera los puntos si se cambia el "dominio" ... para eso volver a llamar generar puntos
+	QPair<double, double> argumentInterval(const QString &argname) const { return m_arguments[argname].interval; }
+	void setArgumentInverval(const QString &argname, QPair<double, double> interval) { m_arguments[argname].interval = interval; }
 
-	int argumentCount() { return m_argumentCount; } //Returns the number of arguments passed to the function
-	int outputarity() { return m_outputArity; } // returns M (f:RN->RM)  // realvalued funcs has one only one comp, others > 1
 	FunctionType type() { return m_type; }
 
-	VectorXd evaluate(const VectorXd &args);
+	//falla por el c++funcsover
+// 	//conjunto de evals para funciones que representan curvas y superficies
+    double evaluateRealValue(double arg);
+    double evaluateRealValue(double arg1, double arg2);
+    double evaluateRealValue(double arg1, double arg2, double arg3); // superfcie de nivel
+    QVector2D evaluateVectorValue2(double arg); // curv param
+    QVector3D evaluateVectorValue3(double arg); // curv param3d
+    QVector3D evaluateVectorValue3(double arg1, double arg2); // surf param
 
-	QVector<Analitza::Cn*> arguments() const { return m_arguments; }
-	QStringList argumentNames() { return m_argumentNames; }
+//TODO
+//     QVector2D evaluate(double arg1, double arg2); //TODO area para n=2
+//     QVector2D evaluate(double arg1, double arg2); //TODO volemb para n=3 ... TODO n>3
+//     QVector3D evaluate(double arg1, double arg2, double arg2); // transvol TODO n>3
+
+	QStringList arguments() const { return m_arguments.keys(); }
+	Analitza::Cn* argumentValue(const QString &argname) { return m_arguments[argname].value; }
 
 	FunctionGraphDimension graphDimension() const { return m_graphDimension; }
     CoordinateSystem coordinateSystem() { return m_coordinateSystem; }
@@ -104,28 +105,29 @@ public:
     void setGraphColor(const QColor& newColor) { m_graphColor = newColor; }
 
     QStringList errors() const;
-	bool isCorrect() const;
+    bool isCorrect() const;
 
 private:
-   void setExpression(const Analitza::Expression &functionExpression, Keomath::CoordinateSystem coordinateSystem, bool isImplicitExpression);
+    struct ArgumentInfo
+    {
+        QPair<double, double> interval;
+        Analitza::Cn *value;
+    };
 
-	IntervalList m_domain;
-	bool m_isImplicit;
+    void setExpression(const Analitza::Expression &functionExpression, Keomath::CoordinateSystem coordinateSystem, bool isImplicitExpression);
+
+    bool m_isImplicit;
+    QMap< QString, ArgumentInfo > m_arguments;
 
     //gui
 	QString m_name;
 
     //useful info
-	int m_argumentCount;
-    int m_outputArity;
     FunctionType m_type;
-	int m_valueCount;
 
     //analitza
 	Analitza::Analyzer m_analyzer;
 	QVector<Analitza::Object*> m_runStack;
-    QVector<Analitza::Cn*> m_arguments;
-    QStringList m_argumentNames;
 
     //graphDescription
     FunctionGraphDimension m_graphDimension = Dimension2D;
@@ -304,4 +306,5 @@ private:
 
 typedef QList<Function> FunctionList;
 
-#endif
+#endif // ANALITZAPLOT_FUNCTION_H
+

@@ -1,6 +1,3 @@
-include_directories (
-  ${EIGEN3_INCLUDE_DIR} )
-
 set(testLibs ${QT_QTXML_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBS} analitza analitzaplot analitzagui)
 
 set(functiontest_SRCS functiontest.cpp)

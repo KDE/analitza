@@ -26,6 +26,7 @@
 #include "analitza/analyzer.h"
 #include <analitza/value.h>
 #include <analitza/vector.h>
+#include <analitza/variable.h>
 
 #include "functiongraph.h"
 #include "functiongraphfactory.h"
@@ -75,7 +76,6 @@ void Function::setExpression (const Analitza::Expression &functionExpression, Co
     if (!foundExpected)
     {
         m_errors << i18n ("Function type not recognized");
-
     }
     else
         if (!m_analyzer.isCorrect())
@@ -84,37 +84,46 @@ void Function::setExpression (const Analitza::Expression &functionExpression, Co
         }
         else
         {
-            m_coordinateSystem = coordinateSystem;
-            m_functionGraph = FunctionGraphFactory::self()->create (expectedIndex);
-
-            m_isImplicit = isImplicitExpression;
-            m_argumentCount = m_analyzer.expression().parameters().size();
-
-            for (int i = 0; i < m_argumentCount; ++i)
-            {
-                m_arguments.append (new Analitza::Cn);
-                m_runStack.append (m_arguments.last());
-
-                m_domain.append(qMakePair(-1.0, 1.0));
-            }
-
-            m_analyzer.setStack (m_runStack);
-
-            m_argumentNames = m_analyzer.expression().bvarList();
+            bool candraw = true;
 
             if (m_analyzer.expression().lambdaBody().isVector())
             {
                 m_type = VectorValued;
-                m_outputArity = static_cast<Analitza::Vector *> (m_analyzer.expression().lambdaBody().tree())->size();
+
+                if (dynamic_cast<Analitza::Vector*>(m_analyzer.expression().lambdaBody().tree())->size() > 3)
+                    candraw = false;
             }
             else
             {
                 m_type = RealValued;
-                m_outputArity = 1; //single valued function
+
+                if (m_analyzer.expression().parameters().size() > 3) // maximo dibujable: superficies de nivel
+                    candraw = false;
             }
 
-        m_graphColor = Qt::darkCyan;
+            if (!candraw)
+                m_errors << i18n ("Function can not be drawn");
+            else
+            {
+                m_coordinateSystem = coordinateSystem;
+                m_functionGraph = FunctionGraphFactory::self()->create (expectedIndex);
 
+                m_isImplicit = isImplicitExpression;
+
+                for (int i = 0; i < m_analyzer.expression().parameters().size(); ++i)
+                {
+                    ArgumentInfo arg;
+                    arg.interval = qMakePair(-1.0, 1.0);
+                    arg.value = new Analitza::Cn;
+
+                    m_arguments[m_analyzer.expression().parameters()[i]->name()] = arg;
+                    m_runStack.append(arg.value);
+                }
+
+                m_analyzer.setStack (m_runStack);
+
+                m_graphColor = Qt::darkCyan;
+            }
         }
 }
 
@@ -128,32 +137,49 @@ const Analitza::Expression &Function::expression() const
     return m_analyzer.expression();
 }
 
-void Function::setDomain (const IntervalList &domain)
+double Function::evaluateRealValue(double arg)
 {
+    Q_ASSERT (m_arguments.size() == 1);
+//     Q_ASSERT (m_arguments[m_analyzer.expression().parameters()[0]->name()].value); TODO ?
 
+    m_arguments[m_analyzer.expression().parameters()[0]->name()].value->setValue(arg);
+
+    return m_analyzer.calculateLambda().toReal().value();
 }
 
-VectorXd Function::evaluate (const VectorXd &args)
+double Function::evaluateRealValue(double arg1, double arg2)
 {
-    Q_ASSERT (args.size() == m_argumentCount);
+//     Q_ASSERT (args.size() == m_argumentCount);
 
-    for (int i = 0; i < m_argumentCount; ++i)
-        m_arguments[i]->setValue (args[i]);
+    return 0;
+}
 
-    VectorXd ret;
+double Function::evaluateRealValue(double arg1, double arg2, double arg3)
+{
+//     Q_ASSERT (args.size() == m_argumentCount);
 
-    switch (m_type)
-    {
-        case RealValued:
-            ret = VectorXd(1);
-			ret(0) = m_analyzer.calculateLambda().toReal().value();
-            break;
+    return 0;
+}
 
-        case VectorValued:
-            break;
-    }
+QVector2D Function::evaluateVectorValue2(double arg)
+{
+//     Q_ASSERT (args.size() == m_argumentCount);
 
-    return ret;
+    return QVector2D();
+}
+
+QVector3D Function::evaluateVectorValue3(double arg)
+{
+//     Q_ASSERT (args.size() == m_argumentCount);
+
+    return QVector3D();
+}
+
+QVector3D Function::evaluateVectorValue3(double arg1, double arg2)
+{
+//     Q_ASSERT (args.size() == m_argumentCount);
+
+    return QVector3D();
 }
 
 QStringList Function::errors() const

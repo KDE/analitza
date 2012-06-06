@@ -20,22 +20,13 @@
 #ifndef KEOMATH_MATHHELPER_H
 #define KEOMATH_MATHHELPER_H
 
-#include <Eigen/Core>
-
 #include <QPair>
 #include <QVector>
+#include <QVector2D>
 #include <QLineF>
 
 namespace Keomath
 {
-
-typedef Eigen::Matrix<double,1,1> Vector1d;
-typedef Eigen::Vector2d Vector2d;
-typedef Eigen::Vector3d Vector3d;
-typedef Eigen::VectorXd VectorXd;
-
-typedef QPair<double, double> Interval;
-typedef QVector<Interval> IntervalList;
 
 enum FunctionType { RealValued = 1, VectorValued = 2};
 enum CoordinateSystem { Cartesian = 1, Polar = 2, Cylindrical = 3, Spherical = 4 };
@@ -57,11 +48,12 @@ struct FunctionGraphDescription
 
 struct FunctionGraphData
 {
-	QVector<VectorXd> fixedGradients;
+
 };
 
 struct FunctionGraphData2D : public FunctionGraphData
 {
+    QVector<QVector2D> fixedGradients;
 	QVector<QPointF> points;
 	QList<int> jumps;
 };

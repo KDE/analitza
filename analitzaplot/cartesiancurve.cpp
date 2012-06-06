@@ -61,7 +61,7 @@ public:
 
         virtual FunctionGraph *copy();
 
-        virtual void setFixedGradient (const VectorXd &funcvalargs);
+//         virtual void setFixedGradient (const VectorXd &funcvalargs);
         virtual void clearFixedGradients();
         virtual FunctionGraphData *data() const;
 
@@ -111,9 +111,7 @@ void optimizeJump(Keomath::Function *function)
 		qreal dist = x2-x1;
 		qreal x=x1+dist/2;
 
-		Keomath::VectorXd arg(1);
-		arg(0) = x;
-		double y = function->evaluate(arg)(0);
+		double y = function->evaluateRealValue(x);
 
 		if(fabs(y1-y)<fabs(y2-y)) {
 			before.setX(x);
@@ -136,10 +134,10 @@ void optimizeJump(Keomath::Function *function)
 
 };
 
-void CartesianCurveY::setFixedGradient (const VectorXd &funcvalargs)
-{
-
-}
+// void CartesianCurveY::setFixedGradient (const VectorXd &funcvalargs)
+// {
+//
+// }
 
 void CartesianCurveY::clearFixedGradients()
 {
@@ -165,8 +163,9 @@ FunctionGraph *CartesianCurveY::copy()
 void CartesianCurveY::generateData (Keomath::Function *function)
 {
 	int resolution = function->graphPrecision()*10;
-	int l_lim = function->domain()[0].first;
-	int r_lim = function->domain()[0].second;
+
+	int l_lim = function->argumentInterval("x").first;
+	int r_lim = function->argumentInterval("x").second;
 	m_data->jumps.clear();
 	m_data->points.clear();
 	m_data->points.reserve(resolution);
@@ -175,9 +174,7 @@ void CartesianCurveY::generateData (Keomath::Function *function)
 
 	bool jumping=true;
 	for(double x=l_lim; x<r_lim-step; x+=step) {
-		Keomath::VectorXd arg(1);
-		arg(0) = x;
-		double y = function->evaluate(arg)(0);
+		double y = function->evaluateRealValue(x);
 		QPointF p(x, y);
 		bool ch=addValue(p);
 
@@ -186,7 +183,7 @@ void CartesianCurveY::generateData (Keomath::Function *function)
 		if(ch && !jj) {
 // 			if(!m_jumps.isEmpty()) qDebug() << "popopo" << m_jumps.last() << points.count();
 			double prevY=m_data->points[m_data->points.count()-2].y();
-			if(function->arguments()[0]->format()!=Analitza::Cn::Real && prevY!=y) {
+			if(function->argumentValue("x")->format()!=Analitza::Cn::Real && prevY!=y) {
 				m_data->jumps.append(m_data->points.count()-1);
 				jumping=true;
 			} else if(m_data->points.count()>3 && traverse(m_data->points[m_data->points.count()-3].y(), prevY, y)) {

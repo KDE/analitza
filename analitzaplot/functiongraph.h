@@ -40,7 +40,8 @@ public:
 	FunctionGraph();
 	virtual ~FunctionGraph();
 
-	virtual void setFixedGradient(const VectorXd &funcvalargs) = 0; //mustrerun generate
+    //TODO to fungrap2d
+// 	virtual void setFixedGradient(const VectorXd &funcvalargs) = 0; //mustrerun generate
 	virtual void clearFixedGradients() = 0;
 
 	virtual void generateData(Function *function) = 0;
