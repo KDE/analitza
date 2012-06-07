@@ -119,9 +119,6 @@ class ANALITZAGUI_EXPORT Function
 		
 		QList<int> jumps() const;
 		
-		void setUplimit(const Analitza::Expression& e);
-		void setDownlimit(const Analitza::Expression& e);
-		
 		bool allDisconnected() const;
 		
 	private:
