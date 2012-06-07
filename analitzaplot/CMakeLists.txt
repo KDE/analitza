@@ -25,22 +25,26 @@ include_directories (
 )
 
 set ( keomath_SRCS
-function.cpp
-functiongraphfactory.cpp
-functiongraph.cpp
 functionutils.cpp
-graph2d.cpp
-graph3d.cpp
+function.cpp
+functiongraph.cpp
+functiongraphfactory.cpp
 functionsmodel.cpp
-cartesiansurface.cpp
-implicitcurve.cpp
-cartesiancurve.cpp
-cylindricalsurface.cpp
-parametriccurve2d.cpp
-parametriccurve3d.cpp
-parametricsurface.cpp
-polarcurve.cpp
-sphericalsurface.cpp
+
+plotter2d.cpp
+plotter3d.cpp
+plotview2d.cpp
+plotview3d.cpp
+
+functiongraphtypes/cartesiansurface.cpp
+functiongraphtypes/implicitcurve.cpp
+functiongraphtypes/cartesiancurve.cpp
+functiongraphtypes/cylindricalsurface.cpp
+functiongraphtypes/parametriccurve2d.cpp
+functiongraphtypes/parametriccurve3d.cpp
+functiongraphtypes/parametricsurface.cpp
+functiongraphtypes/polarcurve.cpp
+functiongraphtypes/sphericalsurface.cpp
 
 #   solvers/solvers3d/implicitsurface.cpp
 #
@@ -82,13 +86,17 @@ install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_AR
 install(FILES
 
 analitzaplotexport.h
+
+functionutils.h
 function.h
 functiongraph.h
 functiongraphfactory.h
-functionutils.h
-graph2d.h
-graph3d.h
 functionsmodel.h
+
+plotter2d.h
+plotter3d.h
+plotview2d.h
+plotview3d.h
 
 
         DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)

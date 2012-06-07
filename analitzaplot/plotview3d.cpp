@@ -17,7 +17,7 @@
  *************************************************************************************/
 
 
-#include "graph3d.h"
+#include "plotview3d.h"
 
 #include <QVector3D>
 #include <QVector2D>

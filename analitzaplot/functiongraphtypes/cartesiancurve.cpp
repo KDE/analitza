@@ -57,7 +57,7 @@ public:
 
     static QString iconName() { return QString(""); }
 
-        virtual void generateData (Keomath::Function *function);
+        virtual void updateGraphData (Keomath::Function *function);
 
         virtual FunctionGraph *copy();
 
@@ -160,7 +160,7 @@ FunctionGraph *CartesianCurveY::copy()
 	return 0;
 }
 
-void CartesianCurveY::generateData (Keomath::Function *function)
+void CartesianCurveY::updateGraphData (Keomath::Function *function)
 {
 	int resolution = function->graphPrecision()*10;
 

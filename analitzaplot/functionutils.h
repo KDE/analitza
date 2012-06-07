@@ -33,6 +33,7 @@ enum CoordinateSystem { Cartesian = 1, Polar = 2, Cylindrical = 3, Spherical = 4
 
 enum FunctionGraphDimension { Dimension1D = 1, Dimension2D = 2, Dimension3D = 3 };
 enum FunctionGraphPrecision { VeryLow = 1, Low = 2, Average = 3, High = 4, VeryHigh = 5 };
+enum FunctionGraphType { Solid = 0, Wired = 1, Dots = 3 };
 
 enum FunctionGraphDataFlag { FunctionData = 0x0, GradientData = 0x1, FixedGradientsData = 0x2 };
 Q_DECLARE_FLAGS(FunctionGraphDataFlags, FunctionGraphDataFlag)

@@ -44,7 +44,7 @@ public:
 // 	virtual void setFixedGradient(const VectorXd &funcvalargs) = 0; //mustrerun generate
 	virtual void clearFixedGradients() = 0;
 
-	virtual void generateData(Function *function) = 0;
+	virtual void updateGraphData(Function *function) = 0;
 	virtual FunctionGraphData * data() const = 0;
 
 	QStringList errors() const;

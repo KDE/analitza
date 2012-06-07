@@ -72,11 +72,14 @@ public:
 
     QString name() const { return m_name; }
     void setName(const QString &newName) { m_name = newName; }
-    QString iconName() const;
+    QString iconName() const { return m_iconName; }
+    QStringList examples() const { return m_examples; }
 
     //no se regenera los puntos si se cambia el "dominio" ... para eso volver a llamar generar puntos
 	QPair<double, double> argumentInterval(const QString &argname) const { return m_arguments[argname].interval; }
 	void setArgumentInverval(const QString &argname, QPair<double, double> interval) { m_arguments[argname].interval = interval; }
+    QStringList arguments() const { return m_arguments.keys(); }
+    Analitza::Cn* argumentValue(const QString &argname) { return m_arguments[argname].value; }
 
 	FunctionType type() { return m_type; }
 
@@ -94,18 +97,26 @@ public:
 //     QVector2D evaluate(double arg1, double arg2); //TODO volemb para n=3 ... TODO n>3
 //     QVector3D evaluate(double arg1, double arg2, double arg2); // transvol TODO n>3
 
-	QStringList arguments() const { return m_arguments.keys(); }
-	Analitza::Cn* argumentValue(const QString &argname) { return m_arguments[argname].value; }
 
 	FunctionGraphDimension graphDimension() const { return m_graphDimension; }
     CoordinateSystem coordinateSystem() { return m_coordinateSystem; }
     FunctionGraphPrecision graphPrecision() { return m_graphPrecision; }
     void setGraphPrecision(FunctionGraphPrecision precision) { m_graphPrecision = precision; }
+    FunctionGraphType graphType() { return m_graphType; }
+    void setGraphType(FunctionGraphType graphType) { m_graphType = graphType; }
     QColor graphColor() const { return m_graphColor; }
     void setGraphColor(const QColor& newColor) { m_graphColor = newColor; }
+    bool isGraphVisible() const { return m_graphVisible; }
+    void setGraphVisible(bool show) { m_graphVisible = show; }
+
+    void updateGraphData();
+    const FunctionGraphData * graphData() const;
 
     QStringList errors() const;
     bool isCorrect() const;
+
+//     Keomath::Function operator = (const Keomath::Function& f);
+//     bool operator==(const Keomath::Function& f) const;
 
 private:
     struct ArgumentInfo
@@ -121,6 +132,8 @@ private:
 
     //gui
 	QString m_name;
+    QString m_iconName;
+    QStringList m_examples;
 
     //useful info
     FunctionType m_type;
@@ -133,9 +146,10 @@ private:
     FunctionGraphDimension m_graphDimension = Dimension2D;
     CoordinateSystem m_coordinateSystem = Cartesian;
     FunctionGraphPrecision m_graphPrecision = Average;
+    FunctionGraphType m_graphType = Solid;
     QColor m_graphColor;
-
-	FunctionGraph *m_functionGraph;
+    bool m_graphVisible;
+	FunctionGraph *m_graph;
 
 	QStringList m_errors;
 };

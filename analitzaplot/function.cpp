@@ -34,16 +34,37 @@
 namespace Keomath
 {
 
+
 Function::Function(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem, bool isImplicit, const QString &name)
-: m_name(name)
+: m_name(name), m_graph(0)
 {
     setExpression(functionExpression, coordinateSystem, isImplicit);
 }
 
 Function::Function (const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem, Analitza::Variables *variables, bool isImplicit, const QString &name)
-: m_analyzer(variables), m_name (name)
+: m_analyzer(variables), m_name (name), m_graph(0)
 {
 setExpression(functionExpression, coordinateSystem, isImplicit);
+}
+
+Function::Function(const Function &f)
+: m_name(f.m_name)
+, m_analyzer(f.m_analyzer)
+, m_runStack(f.m_runStack)
+, m_isImplicit(f.m_isImplicit)
+, m_type(f.m_type)
+, m_arguments(f.m_arguments)
+, m_graphDimension(f.m_graphDimension)
+, m_coordinateSystem(f.m_coordinateSystem)
+, m_graphPrecision(f.m_graphPrecision)
+, m_graphType(f.m_graphType)
+, m_graphColor(f.m_graphColor)
+, m_graphVisible(f.m_graphVisible)
+, m_graph(0)
+, m_errors(f.errors())
+{
+    if (f.m_graph)
+        m_graph = f.m_graph->copy();
 }
 
 void Function::setExpression (const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem, bool isImplicitExpression)
@@ -84,29 +105,29 @@ void Function::setExpression (const Analitza::Expression &functionExpression, Co
         }
         else
         {
-            bool candraw = true;
+            bool isDrawable = true;
 
             if (m_analyzer.expression().lambdaBody().isVector())
             {
                 m_type = VectorValued;
 
                 if (dynamic_cast<Analitza::Vector*>(m_analyzer.expression().lambdaBody().tree())->size() > 3)
-                    candraw = false;
+                    isDrawable = false;
             }
             else
             {
                 m_type = RealValued;
 
                 if (m_analyzer.expression().parameters().size() > 3) // maximo dibujable: superficies de nivel
-                    candraw = false;
+                    isDrawable = false;
             }
 
-            if (!candraw)
+            if (!isDrawable)
                 m_errors << i18n ("Function can not be drawn");
             else
             {
                 m_coordinateSystem = coordinateSystem;
-                m_functionGraph = FunctionGraphFactory::self()->create (expectedIndex);
+                m_graph = FunctionGraphFactory::self()->create(expectedIndex);
 
                 m_isImplicit = isImplicitExpression;
 
@@ -120,9 +141,13 @@ void Function::setExpression (const Analitza::Expression &functionExpression, Co
                     m_runStack.append(arg.value);
                 }
 
+                m_iconName = FunctionGraphFactory::self()->iconNames[expectedIndex];
+                m_examples = FunctionGraphFactory::self()->examples[expectedIndex];
+
                 m_analyzer.setStack (m_runStack);
 
                 m_graphColor = Qt::darkCyan;
+                m_graphVisible = true;
             }
         }
 }
@@ -182,6 +207,17 @@ QVector3D Function::evaluateVectorValue3(double arg1, double arg2)
     return QVector3D();
 }
 
+
+void Function::updateGraphData()
+{
+    m_graph->updateGraphData(this);
+}
+
+const FunctionGraphData * Function::graphData() const
+{
+    return m_graph->data();
+}
+
 QStringList Function::errors() const
 {
     return m_errors;
@@ -193,6 +229,34 @@ bool Function::isCorrect() const
 
 }
 
+// Keomath::Function Function::operator=(const Keomath::Function& f)
+// {
+//     if(&f!=this)
+//     {
+//         delete m_graph;
+//
+//         if(f.m_graph)
+//         {
+//             m_graph=f.m_graph->copy();
+// //          m_function=copy(f.m_function);
+//             Q_ASSERT(m_graph);
+//         }
+//         else
+//             m_graph=0;
+//
+//         m_analyzer=Analitza::Analyzer(m_analyzer).m_expression;
+//         m_show=f.m_show;
+//         m_pen=f.m_pen;
+//         m_name=f.m_name;
+//         m_err=f.m_err;
+//     }
+//     return *this;
+// }
+
+// bool Function::operator== (const Function &f) const
+// {
+//
+// }
 
 
 }
