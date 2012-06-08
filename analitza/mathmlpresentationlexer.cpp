@@ -59,6 +59,11 @@ void MathMLPresentationLexer::getToken()
 				if(m_tokenTags.contains(e)) {
 					if(m_tokens.last().type==ExpressionTable::tComa)
 						m_tokens.takeLast();
+					
+					if(e=="msqrt") {
+						m_tokens.append(TOKEN(ExpressionTable::tComa, 0));
+						m_tokens.append(TOKEN(ExpressionTable::tVal, 0, "<cn>2</cn>"));
+					}
 					m_tokens.append(TOKEN(ExpressionTable::tRpr, 0));
 				}
 				
@@ -79,16 +84,21 @@ void MathMLPresentationLexer::getToken()
 						m_tokens.takeLast();
 					
 					int t;
-					QString op=m_xml.text().toString();
+					QString op=m_xml.text().toString().trimmed();
 					if(op.length()==1 && m_operators.contains(op[0]))
 						t = m_operators[op[0]];
 					else if(op.length()==2 && m_longOperators.contains(op))
 						t = m_longOperators[op];
 					else
-						m_err= i18nc("Error message", "Unknown token %1", op);
+						m_err= i18nc("Error message", "Unknown token '%1'", op);
 					m_tokens.append(TOKEN(t, 0));
-				} else
-					qDebug() << "dunno" << m_xml.text().toString();
+				} else {
+					QString text = m_xml.text().toString().trimmed();
+					if(text=="if" || text=="otherwise") {
+						m_tokens.append(TOKEN(ExpressionTable::tQm, 0, m_xml.text().toString()));
+					} else
+						qDebug() << "dunno" << text;
+				}
 				break;
 		}
 	}

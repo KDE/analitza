@@ -97,6 +97,8 @@ void ExpressionTest::testConversion_data()
 	QTest::newRow("vector") << "vector { 1, 2, 3 }";
 	QTest::newRow("list") << "list {  }";
 	QTest::newRow("listbvar") << "sum(p:x@mylist)";
+	QTest::newRow("division") << "a/(b/2)";
+	QTest::newRow("power") << "2^(2^(2^x))";
 	
 	QTest::newRow("string2") << "\"a\"";
 	QTest::newRow("string3") << "\"a&b\"";
