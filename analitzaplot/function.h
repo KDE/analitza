@@ -31,106 +31,123 @@ namespace Analitza
 class Variables;
 }
 
-class FunctionImpl;
-class FunctionImplData;
+class FunctionImpl2D;
 
-//function as a value object
-// "SINLGE valued" functions of real numbers (only real numbers) THAT can we can view on a 2d or 3d space
-//esta clase se debe user si osi con su graph asociado ni no hay uno y se quier evauluar usar analyzer ...
-
+// this class is a sort of a functionitem ...
+// it can't use for plot curves/surfaces (is a just a data holder)
 class ANALITZAPLOT_EXPORT Function
 {
 public:
     Function();
-
     Function(const Function &f);
-
-    Function(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
-             Analitza::Variables *variables, bool isImplicit = false, const QString &name = QString());
-
+    Function(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
     virtual ~Function();
 
-    const Analitza::Expression & expression() const;
+    const QString id() const { return m_id; }
 
+    const Analitza::Expression & expression() const { return m_expression; }
     bool isImplicit() const { return m_isImplicit; }
 
     QString name() const { return m_name; }
     void setName(const QString &newName) { m_name = newName; }
     QString iconName() const { return m_iconName; }
+    QColor color() const { return m_color; }
+    void setColor(const QColor& newColor) { m_color = newColor; }
     QStringList examples() const { return m_examples; }
 
-    //no se regenera los puntos si se cambia el "dominio" ... para eso volver a llamar generar puntos
-	QPair<double, double> argumentInterval(const QString &argname) const { return m_arguments[argname].interval; }
-	void setArgumentInverval(const QString &argname, QPair<double, double> interval) { m_arguments[argname].interval = interval; }
-    QStringList arguments() const { return m_arguments.keys(); }
-//     Analitza::Cn* argumentValue(const QString &argname) { return m_arguments[argname].value; }
+    QPair<double, double> argumentInterval(const QString &argname) const { return m_argumentIntervals[argname]; }
+    void setArgumentInverval(const QString &argname, QPair<double, double> interval) { m_argumentIntervals[argname] = interval; }
+    QStringList arguments() const;
 
-	FunctionType type() { return m_type; }
-
-// 	//falla por el c++funcsover
-// // 	//conjunto de evals para funciones que representan curvas y superficies
-//     double evaluateRealValue(double arg);
-//     double evaluateRealValue(double arg1, double arg2);
-//     double evaluateRealValue(double arg1, double arg2, double arg3); // superfcie de nivel
-//     QVector2D evaluateVectorValue2(double arg); // curv param
-//     QVector3D evaluateVectorValue3(double arg); // curv param3d
-//     QVector3D evaluateVectorValue3(double arg1, double arg2); // surf param
-
-//TODO
-//     QVector2D evaluate(double arg1, double arg2); //TODO area para n=2
-//     QVector2D evaluate(double arg1, double arg2); //TODO volemb para n=3 ... TODO n>3
-//     QVector3D evaluate(double arg1, double arg2, double arg2); // transvol TODO n>3
-
-
-	FunctionGraphDimension graphDimension() const { return m_graphDimension; }
+    FunctionType type() { return m_type; }
+    virtual FunctionGraphDimension graphDimension() const = 0;
     CoordinateSystem coordinateSystem() { return m_coordinateSystem; }
     FunctionGraphPrecision graphPrecision() { return m_graphPrecision; }
-    void setGraphPrecision(FunctionGraphPrecision precision) { m_graphPrecision = precision; }
+    virtual void setGraphPrecision(FunctionGraphPrecision precs) = 0; // why pure abstract: couse graphpres go to functionimpl
     PlotStyle plotStyle() { return m_plotStyle; }
     void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }
-    QColor graphColor() const { return m_graphColor; }
-    void setGraphColor(const QColor& newColor) { m_graphColor = newColor; }
     bool isGraphVisible() const { return m_graphVisible; }
-    void setGraphVisible(bool show) { m_graphVisible = show; }
+    void hideGraph() { m_graphVisible = false; }
+    void showGraph() { m_graphVisible = true; }
 
-    void updateGraphData();
-    const FunctionGraphData * graphData() const;
+    virtual QStringList errors() const = 0;
+    virtual bool isCorrect() const = 0;
 
-    QStringList errors() const;
-    bool isCorrect() const;
+//     virtual Function operator = (const Function& f) = 0; // copy all:members, "id" and funcimpl instance
+    bool operator == (const Function& f) const { return m_id == f.m_id; }
 
-    Function operator = (const Function& f);
-    bool operator==(const Function& f) const;
-
-private:
-    struct ArgumentInfo
-    {
-        QPair<double, double> interval;
-    };
-
-    bool m_isImplicit;
-    QMap< QString, ArgumentInfo > m_arguments;
-
-    Analitza::Expression m_expression;
+protected:
+    void setExpression(const Analitza::Expression &funcexp) { m_expression = funcexp; }
+    void setIsImplicit(bool implicitexp) { m_isImplicit = implicitexp; }
 
     //gui
-	QString m_name;
+    void setIconName(const QString &iconName) { m_iconName = iconName; }
+    void setExamples(const QStringList &examples) { m_examples = examples; }
+
+    //useful info
+    void setType(FunctionType t) { m_type = t; }
+
+    //graphDescription
+    void setGraphDimension(FunctionGraphDimension graphdim) { m_graphDimension = graphdim; }
+    void setCoordinateSystem(CoordinateSystem coordsys) { m_coordinateSystem = coordsys; }
+
+private: //TODO pimpl idiom here?
+    QString m_id; // from a QUuid
+
+    Analitza::Expression m_expression;
+    bool m_isImplicit;
+
+    QMap< QString, QPair<double, double> > m_argumentIntervals;
+
+    //gui
+    QString m_name;
     QString m_iconName;
+    QColor m_color;
     QStringList m_examples;
 
     //useful info
     FunctionType m_type;
 
     //graphDescription
-    FunctionGraphDimension m_graphDimension;
-    CoordinateSystem m_coordinateSystem;
     FunctionGraphPrecision m_graphPrecision;
     PlotStyle m_plotStyle;
-    QColor m_graphColor;
     bool m_graphVisible;
-	FunctionImpl *m_graph;
 
-	QStringList m_errors;
+    //graphDescription
+    FunctionGraphDimension m_graphDimension;
+    CoordinateSystem m_coordinateSystem;
 };
+
+class ANALITZAPLOT_EXPORT Function2D : public Function
+{
+public:
+    Function2D();
+
+    Function2D(const Function2D &f);
+
+    Function2D(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, Analitza::Variables *variables);
+
+    virtual ~Function2D();
+
+    FunctionGraphDimension graphDimension() const { return Dimension2D; }
+    void setGraphPrecision(FunctionGraphPrecision precs);
+
+    QStringList errors() const;
+    bool isCorrect() const;
+
+    Function2D operator = (const Function2D& f);
+
+    //functionimpl iface
+    const QVector<QPointF> & points() const;
+    QList<int> jumps() const;
+    QLineF derivative(const QPointF &p) const;
+    QPair<QPointF, QString> calc(const QPointF &dp);
+
+private:
+    FunctionImpl2D* m_function;
+
+    QStringList m_errors;
+};
+
 
 #endif // ANALITZAPLOT_FUNCTION_H

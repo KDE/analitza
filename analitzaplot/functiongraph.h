@@ -22,6 +22,7 @@
 #define ANALITZAPLOT_FUNCTIONGRAPH_H
 
 #include "analitza/analyzer.h"
+#include "analitza/value.h"
 #include "function.h"
 
 namespace Analitza
@@ -36,38 +37,43 @@ class Expression;
 class ANALITZAPLOT_EXPORT FunctionImpl //strategy pattern for curves and surfaces
 {
 public:
-	FunctionImpl(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
-             Analitza::Variables *variables, bool isImplicit = false);
+    explicit FunctionImpl(const Analitza::Expression& e, Analitza::Variables* v);
     FunctionImpl(const FunctionImpl& fi);
-	virtual ~FunctionImpl();
+    virtual ~FunctionImpl();
 
-    //TODO to fungrap2d
-// 	virtual void setFixedGradient(const VectorXd &funcvalargs) = 0; //mustrerun generate
-	virtual void clearFixedGradients() = 0;
+    FunctionGraphPrecision graphPrecision() { return m_graphPrecision; }
+    void setGraphPrecision(FunctionGraphPrecision precs) { m_graphPrecision = precs; }
 
-	virtual void updateGraphData(Function *function) = 0;
-	virtual FunctionGraphData * data() const = 0;
+    virtual QStringList errors() const = 0;
 
-	QStringList errors() const;
-
-	virtual FunctionImpl * copy() = 0;
-
-
-    //iface for func
-    const FunctionGraphData * graphData() const;
-
+    virtual FunctionImpl * copy() = 0;
 
 protected:
-    //analitza
-    Analitza::Analyzer m_analyzer;
-    QVector<Analitza::Object*> m_runStack;
-    QVector<Analitza::Cn *> m_values;
-
-    QStringList m_errors;
-    bool m_isImplicit;
+    Analitza::Analyzer analyzer;
+    const Analitza::Cn* arg(const QString &argname) const { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
 
 private:
-    FunctionGraphData *m_graphData;
+    FunctionGraphPrecision m_graphPrecision;
+
+    QMap<QString, Analitza::Object*> m_argumentValues;
+};
+
+////
+
+class ANALITZAPLOT_EXPORT FunctionImpl2D : public FunctionImpl //strategy pattern for curves
+{
+public:
+    explicit FunctionImpl2D(const Analitza::Expression& e, Analitza::Variables* v);
+    FunctionImpl2D(const FunctionImpl2D& fi);
+    virtual ~FunctionImpl2D();
+
+    QStringList errors() const;
+
+    virtual FunctionImpl * copy();
+
+protected:
+    QVector<QPointF> points;
+    QList<int> jumps;
 };
 
 #endif // ANALITZAPLOT_FUNCTIONGRAPH_H

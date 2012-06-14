@@ -21,7 +21,7 @@
 
 FunctionFactory *FunctionFactory::m_self = 0;
 
-bool FunctionFactory::registerFunctionGraph (registerFunctionGraph_fn functionGraphConstructor,
+bool FunctionFactory::registerFunction2D (registerFunction2D_fn functionGraphConstructor,
         const Analitza::ExpressionType &expressionType, const QStringList &varnames,
         CoordinateSystem coordinateSystem,
         bool hasImplicitExpression, const QStringList &fexamples, const QString &iconName)
@@ -40,10 +40,9 @@ bool FunctionFactory::registerFunctionGraph (registerFunctionGraph_fn functionGr
     return true;
 }
 
-FunctionImpl *FunctionFactory::create (int functionGraphIndex, const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
-             Analitza::Variables *variables, bool isImplicit) const
+FunctionImpl2D * FunctionFactory::createFunction2D (int functionGraphIndex, const Analitza::Expression &functionExpression, Analitza::Variables *variables) const
 {
-    return constructors[functionGraphIndex](functionExpression, coordinateSystem, variables, isImplicit);
+    return constructors[functionGraphIndex](functionExpression, variables);
 }
 
 FunctionFactory *FunctionFactory::self()

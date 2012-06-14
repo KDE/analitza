@@ -30,7 +30,7 @@ class ANALITZAPLOT_EXPORT FunctionsModel : public QAbstractTableModel
 //     Q_PROPERTY(uint resolution READ resolution WRITE setResolution);
     public:
         enum FunctionsModelRoles { Color=Qt::UserRole, Expression=Qt::UserRole+1 , Shown=Qt::UserRole+2 };
-        typedef QList<Function>::const_iterator const_iterator;
+        typedef QList<Function2D>::const_iterator const_iterator;
         friend class PlotView2D;
 
         /** Constructor. Creates a new Function Model. */
@@ -44,7 +44,7 @@ class ANALITZAPLOT_EXPORT FunctionsModel : public QAbstractTableModel
         int columnCount(const QModelIndex & =QModelIndex()) const { return 2; }
 
         /** Adds another function @p f. Returns whether another function like @p f existed. */
-        bool addFunction(const Function& f);
+        bool addFunction(const Function2D &func);
 
         /** Specifies that the @p exp function is shown.
             @returns whether another function like @p exp existed. */
@@ -52,10 +52,10 @@ class ANALITZAPLOT_EXPORT FunctionsModel : public QAbstractTableModel
 
         /** Edits the @p num nth function. The @p num should be less than the number of functions,
             because you are editing. */
-        void editFunction(int num, const Function& func);
+        void editFunction(int num, const Function2D &func);
 
         /** Edits the @p exp function. Returns whether another function like @p exp existed. */
-        bool editFunction(const QString& name, const Function& func);
+        bool editFunction(const QString &toChange, const Function2D &func);
 
         /** Returns a pointer to the @p num nth function. */
         Function* editFunction(int num);
@@ -92,10 +92,10 @@ class ANALITZAPLOT_EXPORT FunctionsModel : public QAbstractTableModel
         void functionRemoved(const QString& name);
 
     private:
-        QList<Function>::const_iterator findFunction(const QString& id) const;
-        QList<Function>::iterator findFunction(const QString& id);
+        QList<Function2D>::const_iterator findFunction(const QString& id) const;
+        QList<Function2D>::iterator findFunction(const QString& id);
 
-        QList<Function> funclist;
+        QList<Function2D> funclist;
         FunctionGraphPrecision m_resolution;
 
         uint m_fcount;

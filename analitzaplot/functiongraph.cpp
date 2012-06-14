@@ -21,29 +21,63 @@
 
 #include "analitza/analyzer.h"
 #include "analitza/value.h"
+#include "analitza/variable.h"
 
-FunctionImpl::FunctionImpl(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
-             Analitza::Variables *variables, bool isImplicit)
+FunctionImpl::FunctionImpl(const Analitza::Expression& e, Analitza::Variables* v)
 {
-    m_isImplicit = isImplicit;
-    m_analyzer.setExpression(functionExpression);
-    m_analyzer.simplify();
-    m_analyzer.flushErrors();
+    analyzer.setExpression(e);
+    analyzer.simplify();
+    analyzer.flushErrors();
 
-    for (int i = 0; i < m_analyzer.expression().parameters().size(); ++i)
-        m_runStack.append(new Analitza::Cn);
+    foreach (const Analitza::Ci *var, analyzer.expression().parameters())
+        m_argumentValues[var->name()] = new Analitza::Cn;
 
-    m_analyzer.setStack (m_runStack);
+    analyzer.setStack(m_argumentValues.values().toVector());
 }
 
 FunctionImpl::FunctionImpl(const FunctionImpl& fi)
-    : m_analyzer(fi.m_analyzer.variables()), m_isImplicit(fi.m_isImplicit)
+    : analyzer(fi.analyzer.variables())
 {
-//  Q_ASSERT(fi.isCorrect());
-    m_analyzer.setExpression(fi.m_analyzer.expression());
+    analyzer.setExpression(fi.analyzer.expression());
+    m_graphPrecision = fi.m_graphPrecision;
 }
 
 FunctionImpl::~FunctionImpl()
 {
-//    delete data();
+    qDeleteAll(m_argumentValues.begin(), m_argumentValues.end());
+    m_argumentValues.clear();
 }
+
+///
+
+FunctionImpl2D::FunctionImpl2D(const Analitza::Expression& e, Analitza::Variables* v)
+: FunctionImpl(e, v)
+{
+
+}
+
+FunctionImpl2D::FunctionImpl2D(const FunctionImpl2D& fi)
+: FunctionImpl(fi)
+{
+
+}
+
+FunctionImpl2D::~FunctionImpl2D()
+{
+
+}
+
+QStringList FunctionImpl2D::errors() const
+{
+    return QStringList();
+}
+
+FunctionImpl *FunctionImpl2D::copy()
+{
+    return 0;
+}
+
+
+
+
+

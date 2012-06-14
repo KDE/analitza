@@ -26,11 +26,13 @@
 #include "analitza/variable.h"
 
 
-class ANALITZAPLOT_EXPORT CartesianCurveY : public FunctionImpl
+class ANALITZAPLOT_EXPORT CartesianCurveY : public FunctionImpl2D
 {
 public:
-    CartesianCurveY(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
-             Analitza::Variables *variables, bool isImplicit = false);
+
+
+
+    CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
 	~CartesianCurveY()
 	{
 		delete m_data;
@@ -112,7 +114,7 @@ void optimizeJump(Function *function)
 		qreal x=x1+dist/2;
 
         m_x->setValue(x);
-		double y = m_analyzer.calculateLambda().toReal().value();
+		double y = analyzer.calculateLambda().toReal().value();
 
 		if(fabs(y1-y)<fabs(y2-y)) {
 			before.setX(x);
@@ -150,14 +152,13 @@ FunctionGraphData * CartesianCurveY::data() const
 	return m_data;
 }
 
-CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
-             Analitza::Variables *variables, bool isImplicit)
-:FunctionImpl(functionExpression, coordinateSystem,
-             variables, isImplicit )
+CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
+:FunctionImpl2D(functionExpression, variables)
 {
 	m_data = new FunctionGraphData2D;
 
-    m_x = dynamic_cast<Analitza::Cn*>(m_runStack.first());
+    //TODO gsoc
+//     m_x = dynamic_cast<Analitza::Cn*>(m_runStack.first());
 }
 
 
@@ -181,7 +182,7 @@ void CartesianCurveY::updateGraphData (Function *function)
 	bool jumping=true;
 	for(double x=l_lim; x<r_lim-step; x+=step) {
         m_x->setValue(x);
-		double y = m_analyzer.calculateLambda().toReal().value();
+		double y = analyzer.calculateLambda().toReal().value();
 		QPointF p(x, y);
 		bool ch=addValue(p);
 
@@ -203,5 +204,5 @@ void CartesianCurveY::updateGraphData (Function *function)
 // 	qDebug() << "juuuumps" << m_jumps << resolution();
 }
 
-REGISTER_FUNCTIONGRAPH(CartesianCurveY)
+REGISTER_FUNCTION2D(CartesianCurveY)
 

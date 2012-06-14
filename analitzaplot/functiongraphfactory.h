@@ -37,35 +37,32 @@ class Variables;
 }
 
 
-#define REGISTER_FUNCTIONGRAPH(name) \
-        static FunctionImpl* create##name(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem, \
-        Analitza::Variables *variables, bool isImplicit) { return new name (functionExpression, \
-        coordinateSystem, variables, isImplicit); } \
-        namespace { bool _##name=FunctionFactory::self()->registerFunctionGraph(create##name, \
+#define REGISTER_FUNCTION2D(name) \
+        static FunctionImpl2D* create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
+        namespace { bool _##name=FunctionFactory::self()->registerFunction2D(create##name, \
         name::expressionType(), name ::argumentNames(), name ::coordinateSystem(), name ::isImplicit(), \
         name ::examples(), name ::iconName()); }
 
 
 
-class FunctionImpl;
+class FunctionImpl2D;
 
 class ANALITZAPLOT_EXPORT FunctionFactory
 {
 	public:
-		typedef FunctionImpl* (*registerFunctionGraph_fn)(const Analitza::Expression &, CoordinateSystem, Analitza::Variables *, bool);
+		typedef FunctionImpl2D* (*registerFunction2D_fn)(const Analitza::Expression &, Analitza::Variables *);
 
-		bool registerFunctionGraph(registerFunctionGraph_fn functionGraphConstructor,
+		bool registerFunction2D(registerFunction2D_fn functionGraphConstructor,
 								   const Analitza::ExpressionType &expressionType,
                                    const QStringList &argumentNames,
                                    CoordinateSystem coordinateSystem,
 								   bool hasImplicitExpression, const QStringList& examples, const QString &iconName);
 
-		FunctionImpl* create(int functionGraphIndex, const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
-             Analitza::Variables *variables, bool isImplicit) const;
+		FunctionImpl2D* createFunction2D(int functionGraphIndex, const Analitza::Expression &functionExpression, Analitza::Variables *variables) const;
 
 		static FunctionFactory* self();
 
-		QVector< registerFunctionGraph_fn > constructors;
+		QVector< registerFunction2D_fn > constructors;
 		QVector< Analitza::ExpressionType > expressionTypes;
 		QVector< QStringList > argumentNames;
         QVector< CoordinateSystem > coordinateSystems;

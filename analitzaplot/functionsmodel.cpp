@@ -57,7 +57,7 @@ QVariant FunctionsModel::data(const QModelIndex & index, int role) const
         case Qt::DecorationRole:
             if(index.column()==0) {
                 QPixmap ico(15, 15);
-                ico.fill(f.graphColor());
+                ico.fill(f.color());
                 ret = QIcon(ico);
             } else {
                 ret = QIcon::fromTheme(f.iconName());
@@ -70,7 +70,7 @@ QVariant FunctionsModel::data(const QModelIndex & index, int role) const
             ret=f.isGraphVisible();
             break;
         case Color:
-            ret=f.graphColor();
+            ret=f.color();
             break;
 
     }
@@ -104,11 +104,11 @@ int FunctionsModel::rowCount(const QModelIndex &idx) const
 }
 
 //TODO: really need to return that?
-bool FunctionsModel::addFunction(const Function& func)
+bool FunctionsModel::addFunction(const Function2D& func)
 {
     Q_ASSERT(func.isCorrect());
 
-    QList<Function>::const_iterator it=const_cast<const FunctionsModel*>(this)->findFunction(func.name());
+    QList<Function2D>::const_iterator it=const_cast<const FunctionsModel*>(this)->findFunction(func.name());
     bool exists=it!=funclist.constEnd();
 
     if(!exists) {
@@ -131,7 +131,7 @@ bool FunctionsModel::removeRows(int row, int count, const QModelIndex & parent)
         return false;
     beginRemoveRows(parent, row, row+count-1);
 
-    QList<Function>::iterator it=funclist.begin()+row;
+    QList<Function2D>::iterator it=funclist.begin()+row;
     for(int i=count-1; i>=0; i--) {
         QString name=it->name();
         it=funclist.erase(it);
@@ -157,12 +157,14 @@ void FunctionsModel::clear()
 
 bool FunctionsModel::setShown(const QString& f, bool shown)
 {
-    for (QList<Function>::iterator it = funclist.begin(); it != funclist.end(); ++it ){
-        if(it->name() == f) {
-            it->setGraphVisible(shown);
-            return true;
-        }
-    }
+    //TODO gsoc
+
+//     for (QList<Function>::iterator it = funclist.begin(); it != funclist.end(); ++it ){
+//         if(it->name() == f) {
+//             it->setGraphVisible(shown);
+//             return true;
+//         }
+//     }
     return false;
 }
 
@@ -173,7 +175,7 @@ Function* FunctionsModel::editFunction(int num)
     return &funclist[num];
 }
 
-void FunctionsModel::editFunction(int num, const Function& func)
+void FunctionsModel::editFunction(int num, const Function2D& func)
 {
     Q_ASSERT(num<funclist.count());
     funclist[num]=func;
@@ -186,11 +188,11 @@ void FunctionsModel::editFunction(int num, const Function& func)
 //  this->repaint(); emit update
 }
 
-bool FunctionsModel::editFunction(const QString& toChange, const Function& func)
+bool FunctionsModel::editFunction(const QString& toChange, const Function2D& func)
 {
     bool exist=false;
 
-    QList<Function>::iterator it=findFunction(toChange);
+    QList<Function2D>::iterator it=findFunction(toChange);
     if(it!=funclist.end()) {
         exist=true;
         *it = func;
@@ -209,20 +211,23 @@ bool FunctionsModel::editFunction(const QString& toChange, const Function& func)
 
 bool FunctionsModel::setData(const QModelIndex & idx, const QVariant &value, int role)
 {
-    if(role==Shown) {
-        bool isshown=value.toBool();
-        funclist[idx.row()].setGraphVisible(isshown);
+    //TODO gsoc
 
-        QModelIndex idx1=index(idx.row(), 0), idxEnd=index(idx.row(), columnCount()-1);
-        emit dataChanged(idx1, idxEnd);
-    }
+//     if(role==Shown) {
+//         bool isshown=value.toBool();
+//         funclist[idx.row()].setGraphVisible(isshown);
+//
+//         QModelIndex idx1=index(idx.row(), 0), idxEnd=index(idx.row(), columnCount()-1);
+//         emit dataChanged(idx1, idxEnd);
+//     }
     return false;
 }
 
 void FunctionsModel::updatePoints(int i, const QRect & viewport)
 {
     Q_ASSERT(i<funclist.count());
-    funclist[i].updateGraphData(/*viewport*/);
+    //TODO gsoc
+//     funclist[i].updateGraphData(/*viewport*/);
 }
 
 QLineF FunctionsModel::slope(int row, const QPointF & dp) const
@@ -263,7 +268,7 @@ void FunctionsModel::setResolution(FunctionGraphPrecision res)
 {
     m_resolution=res;
     if(!funclist.isEmpty()) {
-        for (QList<Function>::iterator it=funclist.begin(); it!=funclist.end(); ++it)
+        for (QList<Function2D>::iterator it=funclist.begin(); it!=funclist.end(); ++it)
             it->setGraphPrecision(res);
         QModelIndex idx=index(0, 0), idxEnd=index(rowCount()-1, 0);
         emit dataChanged(idx, idxEnd);
@@ -275,18 +280,18 @@ QString FunctionsModel::freeId()
     return QString("f%1").arg(m_fcount++);
 }
 
-QList<Function>::const_iterator FunctionsModel::findFunction(const QString& id) const
+QList<Function2D>::const_iterator FunctionsModel::findFunction(const QString& id) const
 {
-    for (QList<Function>::const_iterator it = funclist.constBegin(); it!=funclist.constEnd(); ++it)
+    for (QList<Function2D>::const_iterator it = funclist.constBegin(); it!=funclist.constEnd(); ++it)
         if(it->name() == id)
             return it;
 
     return funclist.constEnd();
 }
 
-QList<Function>::iterator FunctionsModel::findFunction(const QString& id)
+QList<Function2D>::iterator FunctionsModel::findFunction(const QString& id)
 {
-    for (QList<Function>::iterator it = funclist.begin(); it!=funclist.end(); ++it)
+    for (QList<Function2D>::iterator it = funclist.begin(); it!=funclist.end(); ++it)
         if(it->name() == id)
             return it;
 
@@ -296,7 +301,7 @@ QList<Function>::iterator FunctionsModel::findFunction(const QString& id)
 QModelIndex FunctionsModel::indexForId(const QString& id)
 {
     int i=0;
-    for (QList<Function>::iterator it = funclist.begin(); it!=funclist.end(); ++it, ++i)
+    for (QList<Function2D>::iterator it = funclist.begin(); it!=funclist.end(); ++it, ++i)
         if(it->name() == id)
             return index(i,0);
     return QModelIndex();
