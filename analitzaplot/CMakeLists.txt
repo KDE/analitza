@@ -32,19 +32,19 @@ functiongraphfactory.cpp
 functionsmodel.cpp
 
 plotter2d.cpp
-plotter3d.cpp
 plotview2d.cpp
-plotview3d.cpp
+# plotter3d.cpp
+# plotview3d.cpp
 
-functiongraphtypes/cartesiansurface.cpp
-functiongraphtypes/implicitcurve.cpp
+# functiongraphtypes/cartesiansurface.cpp
+# functiongraphtypes/implicitcurve.cpp
 functiongraphtypes/cartesiancurve.cpp
-functiongraphtypes/cylindricalsurface.cpp
-functiongraphtypes/parametriccurve2d.cpp
-functiongraphtypes/parametriccurve3d.cpp
-functiongraphtypes/parametricsurface.cpp
-functiongraphtypes/polarcurve.cpp
-functiongraphtypes/sphericalsurface.cpp
+# functiongraphtypes/cylindricalsurface.cpp
+# functiongraphtypes/parametriccurve2d.cpp
+# functiongraphtypes/parametriccurve3d.cpp
+# functiongraphtypes/parametricsurface.cpp
+# functiongraphtypes/polarcurve.cpp
+# functiongraphtypes/sphericalsurface.cpp
 
 #   solvers/solvers3d/implicitsurface.cpp
 #

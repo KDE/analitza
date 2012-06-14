@@ -18,127 +18,32 @@
  *************************************************************************************/
 
 #include "functiongraph.h"
-#include <QRectF>
 
-namespace Keomath
+#include "analitza/analyzer.h"
+#include "analitza/value.h"
+
+FunctionImpl::FunctionImpl(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
+             Analitza::Variables *variables, bool isImplicit)
 {
+    m_isImplicit = isImplicit;
+    m_analyzer.setExpression(functionExpression);
+    m_analyzer.simplify();
+    m_analyzer.flushErrors();
 
-FunctionGraph::FunctionGraph()
-{
+    for (int i = 0; i < m_analyzer.expression().parameters().size(); ++i)
+        m_runStack.append(new Analitza::Cn);
 
+    m_analyzer.setStack (m_runStack);
 }
 
-FunctionGraph::~FunctionGraph()
+FunctionImpl::FunctionImpl(const FunctionImpl& fi)
+    : m_analyzer(fi.m_analyzer.variables()), m_isImplicit(fi.m_isImplicit)
 {
-// 	delete data();??
-}
-
-
-}
-
-
-FunctionImpl::FunctionImpl(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : m_evaluator(variables)
-    , m_resolution(50)
-{
-    m_evaluator.setExpression(expression);
-    m_evaluator.simplify();
-    m_evaluator.flushErrors();
-}
-
-FunctionImpl::FunctionImpl(const FunctionImpl &solver)
-    : m_evaluator(solver.m_evaluator.variables())
-    , m_domain(solver.m_domain)
-    , m_resolution(solver.m_resolution)
-{
-    m_evaluator.setExpression(solver.lambda());
+//  Q_ASSERT(fi.isCorrect());
+    m_analyzer.setExpression(fi.m_analyzer.expression());
 }
 
 FunctionImpl::~FunctionImpl()
 {
-}
-
-FunctionImpl2D::FunctionImpl2D(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : FunctionImpl(expression, variables)
-{
-}
-
-FunctionImpl2D::FunctionImpl2D(const FunctionImpl2D &solver2d)
-    : FunctionImpl(solver2d)
-{
-}
-
-FunctionImpl2D::~FunctionImpl2D()
-{
-}
-
-void FunctionImpl2D::setResolution(int resolution)
-{
-
-
-
-
-
-
-    if (resolution != m_resolution)
-    {
-
-
-        m_paths.clear();
-    }
-
-    m_resolution = resolution;
-
-
-
-
-}
-
-void FunctionImpl2D::buildPaths(const QRectF &viewport, const QList<QPointF> &points)
-{
-    m_paths.clear();
-
-    if (points.size() <= 2)
-    {
-        for (int i = 1; i < points.size(); i++)
-        {
-            if (!std::isnan(points.at(i).x()) && !std::isnan(points.at(i).y()) &&
-                    !std::isnan(points.at(i-1).x()) && !std::isnan(points.at(i-1).y()))
-                m_paths.append(QLineF(points.at(i-1), points.at(i)));
-
-        }
-    }
-    else
-    {
-        for (int i = 1; i < points.size(); i++)
-        {
-
-            if (!std::isnan(points.at(i).x()) && !std::isnan(points.at(i).y()) &&
-                    !std::isnan(points.at(i-1).x()) && !std::isnan(points.at(i-1).y()))
-            {
-                m_paths.append(QLineF(points.at(i-1), points.at(i)));
-            }
-        }
-    }
-
-    if (m_paths.empty())
-    {
-        m_errors << "No se puede dibujar esta curva";
-
-        return ;
-    }
-}
-
-FunctionImpl3D::FunctionImpl3D(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : FunctionImpl(expression, variables)
-{
-}
-
-FunctionImpl3D::FunctionImpl3D(const FunctionImpl3D &solver3d)
-    : FunctionImpl(solver3d)
-{
-}
-
-FunctionImpl3D::~FunctionImpl3D()
-{
+//    delete data();
 }

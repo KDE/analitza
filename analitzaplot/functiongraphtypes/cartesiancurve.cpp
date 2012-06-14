@@ -26,12 +26,11 @@
 #include "analitza/variable.h"
 
 
-namespace Keomath
-{
-class ANALITZAPLOT_EXPORT CartesianCurveY : public Keomath::FunctionGraph
+class ANALITZAPLOT_EXPORT CartesianCurveY : public FunctionImpl
 {
 public:
-    CartesianCurveY();
+    CartesianCurveY(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
+             Analitza::Variables *variables, bool isImplicit = false);
 	~CartesianCurveY()
 	{
 		delete m_data;
@@ -57,9 +56,9 @@ public:
 
     static QString iconName() { return QString(""); }
 
-        virtual void updateGraphData (Keomath::Function *function);
+        virtual void updateGraphData (Function *function);
 
-        virtual FunctionGraph *copy();
+        virtual FunctionImpl *copy();
 
 //         virtual void setFixedGradient (const VectorXd &funcvalargs);
         virtual void clearFixedGradients();
@@ -68,6 +67,7 @@ public:
 
 private:
 
+    Analitza::Cn *m_x;
 
 bool traverse(double p1, double p2, double next)
 {
@@ -99,7 +99,7 @@ bool addValue(const QPointF& p)
 	return append;
 }
 
-void optimizeJump(Keomath::Function *function)
+void optimizeJump(Function *function)
 {
 	QPointF before = m_data->points.at(m_data->points.count()-2), after=m_data->points.last();
 	qreal x1=before.x(), x2=after.x();
@@ -111,7 +111,8 @@ void optimizeJump(Keomath::Function *function)
 		qreal dist = x2-x1;
 		qreal x=x1+dist/2;
 
-		double y = function->evaluateRealValue(x);
+        m_x->setValue(x);
+		double y = m_analyzer.calculateLambda().toReal().value();
 
 		if(fabs(y1-y)<fabs(y2-y)) {
 			before.setX(x);
@@ -130,7 +131,7 @@ void optimizeJump(Keomath::Function *function)
 	m_data->points.last()=after;
 }
 
-	Keomath::FunctionGraphData2D *m_data;
+	FunctionGraphData2D *m_data;
 
 };
 
@@ -149,18 +150,23 @@ FunctionGraphData * CartesianCurveY::data() const
 	return m_data;
 }
 
-CartesianCurveY::CartesianCurveY()
+CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
+             Analitza::Variables *variables, bool isImplicit)
+:FunctionImpl(functionExpression, coordinateSystem,
+             variables, isImplicit )
 {
-	m_data = new Keomath::FunctionGraphData2D;
+	m_data = new FunctionGraphData2D;
+
+    m_x = dynamic_cast<Analitza::Cn*>(m_runStack.first());
 }
 
 
-FunctionGraph *CartesianCurveY::copy()
+FunctionImpl *CartesianCurveY::copy()
 {
 	return 0;
 }
 
-void CartesianCurveY::updateGraphData (Keomath::Function *function)
+void CartesianCurveY::updateGraphData (Function *function)
 {
 	int resolution = function->graphPrecision()*10;
 
@@ -174,7 +180,8 @@ void CartesianCurveY::updateGraphData (Keomath::Function *function)
 
 	bool jumping=true;
 	for(double x=l_lim; x<r_lim-step; x+=step) {
-		double y = function->evaluateRealValue(x);
+        m_x->setValue(x);
+		double y = m_analyzer.calculateLambda().toReal().value();
 		QPointF p(x, y);
 		bool ch=addValue(p);
 
@@ -183,7 +190,7 @@ void CartesianCurveY::updateGraphData (Keomath::Function *function)
 		if(ch && !jj) {
 // 			if(!m_jumps.isEmpty()) qDebug() << "popopo" << m_jumps.last() << points.count();
 			double prevY=m_data->points[m_data->points.count()-2].y();
-			if(function->argumentValue("x")->format()!=Analitza::Cn::Real && prevY!=y) {
+			if(m_x->format()!=Analitza::Cn::Real && prevY!=y) {
 				m_data->jumps.append(m_data->points.count()-1);
 				jumping=true;
 			} else if(m_data->points.count()>3 && traverse(m_data->points[m_data->points.count()-3].y(), prevY, y)) {
@@ -197,316 +204,4 @@ void CartesianCurveY::updateGraphData (Keomath::Function *function)
 }
 
 REGISTER_FUNCTIONGRAPH(CartesianCurveY)
-}
-
-class ANALITZAPLOT_EXPORT CartesianCurveY : public FunctionImpl2D
-{
-public:
-    explicit CartesianCurveY(const Analitza::Expression &expression, Analitza::Variables *variables);
-    CartesianCurveY(const CartesianCurveY &cartesianCurveY);
-    virtual ~CartesianCurveY();
-
-    static QStringList supportedBVars()
-    {
-        return QStringList("x");
-    }
-    static Analitza::ExpressionType expectedType()
-    {
-        return Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value));
-    }
-    static QStringList examples()
-    {
-        return QStringList("x->root(x, 2)-5");
-    }
-
-    QStringList arguments() const
-    {
-        return supportedBVars();
-    }
-    Function::Axe axeType() const
-    {
-        return Function::Cartesian;
-    }
-    void solve(const RealInterval::List &spaceBounds = RealInterval::List());
-    FunctionImpl * copy()
-    {
-        return new CartesianCurveY(*this);
-    }
-
-    QPair<QPointF, QString> calc(const QPointF &dp);
-    QLineF derivative(const QPointF &point);
-
-    bool allDisconnected() const
-    {
-        return false;
-    }
-
-
-protected:
-    Analitza::Cn* m_arg;
-    Analitza::Expression m_deriv;
-};
-
-CartesianCurveY::CartesianCurveY(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : FunctionImpl2D(expression, variables)
-    , m_arg(new Analitza::Cn)
-{
-    m_runStack.append(m_arg);
-    m_evaluator.setStack(m_runStack);
-    m_type2D = 1;
-
-
-
-    {
-
-
-        if (m_evaluator.isCorrect())
-        {
-
-            m_deriv = m_evaluator.derivative(arguments().first());
-
-            m_evaluator.flushErrors();
-
-        }
-    }
-}
-
-CartesianCurveY::CartesianCurveY(const CartesianCurveY &cartesianCurveY)
-    : FunctionImpl2D(cartesianCurveY)
-    , m_arg(new Analitza::Cn)
-
-{
-    m_runStack.append(m_arg);
-    m_evaluator.setStack(m_runStack);
-    m_type2D = 1;
-
-
-    m_deriv = cartesianCurveY.m_deriv;
-    m_evaluator.flushErrors();
-
-}
-
-CartesianCurveY::~CartesianCurveY()
-{
-    delete m_arg;
-}
-
-void CartesianCurveY::solve(const RealInterval::List &spaceBounds)
-{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    double l_lim=m_domain.at(0).lower();
-    double r_lim=m_domain.at(0).upper();
-
-
-
-    QRectF viewport;
-    viewport.setLeft(spaceBounds[0].lower());
-    viewport.setRight(spaceBounds[0].upper());
-    viewport.setBottom(spaceBounds[1].lower());
-    viewport.setTop(spaceBounds[1].upper());
-
-
-    QList<QPointF> points;
-
-    qreal image = 0.;
-
-
-    for (qreal domain = l_lim; domain < r_lim; domain += 0.01)
-    {
-
-        m_arg->setValue(domain);
-
-        image = m_evaluator.calculateLambda().toReal().value();
-
-
-        points.append(QPointF(domain, image));
-    }
-
-
-    buildPaths(viewport, points);
-
-}
-
-QPair<QPointF, QString> CartesianCurveY::calc(const QPointF& p)
-{
-    QPointF dp=p;
-    m_arg->setValue(dp.x());
-    Analitza::Expression r=m_evaluator.calculateLambda();
-
-    if(!r.isReal())
-        m_errors += i18n("We can only draw Real results.");
-
-    dp.setY(r.toReal().value());
-
-    return QPair<QPointF, QString>(dp, QString());
-
-
-
-}
-
-QLineF CartesianCurveY::derivative(const QPointF& p)
-{
-    Analitza::Analyzer a(m_evaluator.variables());
-    double ret;
-
-
-    qDebug() << m_deriv.isCorrect() << m_deriv.error();
-    qDebug() << m_deriv.toString();
-
-
-    {
-        QVector<Analitza::Object*> vars;
-        vars.append(new Analitza::Cn(p.x()));
-        a.setExpression(m_evaluator.expression());
-        ret=a.derivative(vars);
-        qDeleteAll(vars);
-    }
-
-    return slopeToLine(ret);
-
-}
-
-REGISTER_FUNCTION_2D(CartesianCurveY)
-
-
-
-
-
-
-class ANALITZAPLOT_EXPORT CartesianCurveX : public CartesianCurveY
-{
-public:
-    explicit CartesianCurveX(const Analitza::Expression &expression, Analitza::Variables *variables);
-    CartesianCurveX(const CartesianCurveX &cartesianCurveX);
-    virtual ~CartesianCurveX();
-
-    static QStringList supportedBVars()
-    {
-        return QStringList("y");
-    }
-    static Analitza::ExpressionType expectedType()
-    {
-        return Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value));
-    }
-    static QStringList examples()
-    {
-        return QStringList("y->y*sin(y)");
-    }
-
-    QStringList arguments() const
-    {
-        return supportedBVars();
-    }
-    void solve(const RealInterval::List &spaceBounds = RealInterval::List());
-    FunctionImpl * copy()
-    {
-        return new CartesianCurveX(*this);
-    }
-
-    QPair<QPointF, QString> calc(const QPointF &dp);
-    QLineF derivative(const QPointF &point);
-};
-
-CartesianCurveX::CartesianCurveX(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : CartesianCurveY(expression, variables)
-{
-}
-
-CartesianCurveX::CartesianCurveX(const CartesianCurveX &cartesianCurveX)
-    : CartesianCurveY(cartesianCurveX)
-{
-}
-
-CartesianCurveX::~CartesianCurveX()
-{
-}
-
-void CartesianCurveX::solve(const RealInterval::List &spaceBounds)
-{
-
-    double l_lim=m_domain.at(0).lower();
-    double r_lim=m_domain.at(0).upper();
-
-
-    QRectF viewport;
-    viewport.setLeft(spaceBounds[0].lower());
-    viewport.setRight(spaceBounds[0].upper());
-    viewport.setBottom(spaceBounds[1].lower());
-    viewport.setTop(spaceBounds[1].upper());
-
-
-    QList<QPointF> points;
-
-    qreal image = 0.;
-
-    for (qreal domain = l_lim; domain < r_lim; domain += 0.01)
-    {
-        m_arg->setValue(domain);
-
-        image = m_evaluator.calculateLambda().toReal().value();
-
-        points.append(QPointF(image, domain));
-    }
-
-
-    buildPaths(viewport, points);
-
-
-}
-
-QPair<QPointF, QString> CartesianCurveX::calc(const QPointF& p)
-{
-    QPointF dp=p;
-    m_arg->setValue(dp.y());
-    Analitza::Expression r=m_evaluator.calculateLambda();
-
-    if(!r.isReal())
-        m_errors += i18n("We can only draw Real results.");
-
-    dp.setX(r.toReal().value());
-
-    return QPair<QPointF, QString>(dp, QString());
-
-}
-
-QLineF CartesianCurveX::derivative(const QPointF& p)
-{
-    QPointF p1(p.y(), p.x());
-    QLineF ret=CartesianCurveY::derivative(p1);
-    return mirrorXY(ret);
-
-
-
-}
-
-REGISTER_FUNCTION_2D(CartesianCurveX)
-
 

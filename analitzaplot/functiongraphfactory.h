@@ -18,8 +18,8 @@
  *************************************************************************************/
 
 
-#ifndef KEOMATH_SOLVERFACTORY_H
-#define KEOMATH_SOLVERFACTORY_H
+#ifndef ANALITZAPLOT_FUNCTIONGRAPHFACTORY_H
+#define ANALITZAPLOT_FUNCTIONGRAPHFACTORY_H
 
 #include <QVector>
 #include <QString>
@@ -28,7 +28,6 @@
 #include "analitza/analyzer.h"
 
 #include "functionutils.h"
-#include "analitzaplotexport.h"
 extern Analitza::Analyzer a;
 namespace Analitza
 {
@@ -36,24 +35,24 @@ class Expression;
 class ExpressionType;
 class Variables;
 }
-namespace Keomath
-{
 
 
 #define REGISTER_FUNCTIONGRAPH(name) \
-        static FunctionGraph* create##name() { return new name (); } \
-        namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(create##name, \
+        static FunctionImpl* create##name(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem, \
+        Analitza::Variables *variables, bool isImplicit) { return new name (functionExpression, \
+        coordinateSystem, variables, isImplicit); } \
+        namespace { bool _##name=FunctionFactory::self()->registerFunctionGraph(create##name, \
         name::expressionType(), name ::argumentNames(), name ::coordinateSystem(), name ::isImplicit(), \
         name ::examples(), name ::iconName()); }
 
 
 
-class FunctionGraph;
+class FunctionImpl;
 
-class ANALITZAPLOT_EXPORT FunctionGraphFactory
+class ANALITZAPLOT_EXPORT FunctionFactory
 {
 	public:
-		typedef FunctionGraph* (*registerFunctionGraph_fn)();
+		typedef FunctionImpl* (*registerFunctionGraph_fn)(const Analitza::Expression &, CoordinateSystem, Analitza::Variables *, bool);
 
 		bool registerFunctionGraph(registerFunctionGraph_fn functionGraphConstructor,
 								   const Analitza::ExpressionType &expressionType,
@@ -61,9 +60,10 @@ class ANALITZAPLOT_EXPORT FunctionGraphFactory
                                    CoordinateSystem coordinateSystem,
 								   bool hasImplicitExpression, const QStringList& examples, const QString &iconName);
 
-		FunctionGraph* create(int functionGraphIndex) const;
+		FunctionImpl* create(int functionGraphIndex, const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
+             Analitza::Variables *variables, bool isImplicit) const;
 
-		static FunctionGraphFactory* self();
+		static FunctionFactory* self();
 
 		QVector< registerFunctionGraph_fn > constructors;
 		QVector< Analitza::ExpressionType > expressionTypes;
@@ -74,169 +74,8 @@ class ANALITZAPLOT_EXPORT FunctionGraphFactory
         QVector< QString > iconNames;
 
 	private:
-		static FunctionGraphFactory* m_self;
-		FunctionGraphFactory() { Q_ASSERT(!m_self); m_self=this; }
+		static FunctionFactory* m_self;
+		FunctionFactory() { Q_ASSERT(!m_self); m_self=this; }
 };
 
-}
-
-
-#define REGISTER_FUNCTION_2D(name) \
-        static FunctionImpl2D* create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
-        namespace { bool _##name=FunctionFactory::self()->registerFunction2D(name::supportedBVars(), create##name, name ::expectedType, name ::fDimension, name ::examples()); }
-
-#define REGISTER_FUNCTION_3D(name) \
-        static FunctionImpl3D* create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
-        namespace { bool _##name=FunctionFactory::self()->registerFunction3D(name::supportedBVars(), create##name, name ::expectedType, name ::fDimension, name ::examples()); }
-
-#include <QMap>
-#include <QStringList>
-
-
-
-class FunctionImpl2D;
-class FunctionImpl3D;
-
-class ANALITZAPLOT_EXPORT FunctionFactory
-{
-public:
-    typedef FunctionImpl2D* (*registerFunc_fn_2d)(const Analitza::Expression&, Analitza::Variables* );
-    typedef FunctionImpl3D* (*registerFunc_fn_3d)(const Analitza::Expression&, Analitza::Variables* );
-
-    typedef Analitza::ExpressionType (*expectedType_fn)();
-    typedef int (*dim_fn)();
-
-    typedef QStringList Id;
-
-    FunctionImpl2D* item2D(const Id& bvars, const Analitza::Expression& exp, Analitza::Variables* v) const;
-    FunctionImpl3D* item3D(const Id& bvars, const Analitza::Expression& exp, Analitza::Variables* v) const;
-
-    Analitza::ExpressionType typeFor2D(const Id& bvars);
-    Analitza::ExpressionType typeFor3D(const Id& bvars);
-
-    static FunctionFactory* self();
-
-    bool registerFunction2D(const Id& bvars, registerFunc_fn_2d f, expectedType_fn ft, dim_fn fd,
-                            const QStringList& examples);
-
-    bool registerFunction3D(const Id& bvars, registerFunc_fn_3d f, expectedType_fn ft, dim_fn fd,
-                            const QStringList& examples);
-
-    bool containsFor2D(const Id& bvars) const;
-    bool containsFor3D(const Id& bvars) const;
-
-    //(backward comp)
-    bool contains(const Id& bvars) const
-    {
-        return containsFor2D(bvars);
-    }
-
-    //(backward comp)
-    Analitza::ExpressionType type(const Id& bvars);
-
-
-
-
-    QStringList examples() const;
-private:
-    static FunctionFactory* mm_self;
-    FunctionFactory()
-    {
-        Q_ASSERT(!mm_self);
-        mm_self = this;
-    }
-    QMap<QString, registerFunc_fn_2d> m_items_2d;
-    QMap<QString, registerFunc_fn_3d> m_items_3d;
-    QMap<QString, expectedType_fn> m_types_2d;
-    QMap<QString, expectedType_fn> m_types_3d;
-    QMap<QString, dim_fn> m_dims;
-    QStringList m_examples;
-};
-
-
-
-// c++only
-// namespace Keomath
-// {
-//
-// class FunctionGraph;
-//
-// template<typename FunctionGraphType>
-// struct FunctionGraphTypeConstructor
-// {
-// 	FunctionGraph * operator() ()
-// 	{
-// 		return new FunctionGraphType();
-// 	}
-// };
-//
-// struct FunctionGraphTypeConstructorProxy
-// {
-// 	template<typename FunctionGraphType>
-// 	FunctionGraph * operator() ()
-// 	{
-// 		return new FunctionGraphType();
-// 	}
-// };
-//
-// struct FunctionGraphFactory
-// {
-//     FunctionGraph * create(const Analitza::Expression& functionExpression,
-// 						   FunctionGraphDimension functionGraphDimension,
-// 						   FunctionGraphCoordinateSystem functionGraphCoordinateSystem,
-// 						   bool hasImplicitExpression, Analitza::Variables *variables)
-// 	{
-// 		FunctionGraph *ret = 0;
-//
-// 		Analitza::Analyzer analyzer(variables);
-// 		analyzer.setExpression(functionExpression);
-// 		analyzer.setExpression(analyzer.dependenciesToLambda());
-//
-// 		for (int i = 0; i < functionGraphTypeConstructors.size(); ++i)
-// 		{
-// 			if ((analyzer.type().canReduceTo(functionGraphExpressionTypes[i])) &&
-// 				(functionGraphDimension == functionGraphDimensions[i]) &&
-// 				(functionGraphCoordinateSystem == functionGraphCoordinateSystems[i]) &&
-// 				(hasImplicitExpression == functionGraphImplicitExpressionFlags[i]))
-// 				ret = functionGraphTypeConstructors[i].constructNewPointerInstance();
-// 		}
-//
-// 		return ret;
-// 	}
-//
-// 	template<typename FunctionGraphType>
-// 	void registerFunctionGraphType()
-// 	{
-// 		FunctionGraphTypeConstructorProxy proxy;
-// 		functionGraphTypeConstructors.append(proxy.operator()<FunctionGraphType>());
-// 	}
-//
-// 	static QVector< FunctionGraphTypeConstructorProxy > functionGraphTypeConstructors;
-// 	static QVector< Analitza::ExpressionType > functionGraphExpressionTypes;
-// 	static QVector< FunctionGraphDimension > functionGraphDimensions;
-// 	static QVector< FunctionGraphCoordinateSystem > functionGraphCoordinateSystems;
-// 	static QVector< bool > functionGraphImplicitExpressionFlags;
-// 	static QVector< QStringList > functionGraphExamples;
-// };
-//
-// template<typename FunctionGraphType >
-// struct RegisterFunctionGraph
-// {
-// 	RegisterFunctionGraph()
-// 	{
-// 		FunctionGraphFactory::registerFunctionGraphType<FunctionGraphType>();
-// 		FunctionGraphFactory::functionGraphExpressionTypes.append(FunctionGraphType::ExpressionType());
-// 		FunctionGraphFactory::functionGraphDimensions.append(FunctionGraphType::Dimension());
-// 		FunctionGraphFactory::functionGraphCoordinateSystems.append(FunctionGraphType::CoordinateSystem());
-// 		FunctionGraphFactory::functionGraphImplicitExpressionFlags.append(FunctionGraphType::HasImplicitExpression());
-// 		FunctionGraphFactory::functionGraphExamples.append(FunctionGraphType::Examples());
-// 	}
-// };
-//
-// #define REGISTER_FUNCTIONGRAPH(FunctionGraphTypeName) \
-// RegisterFunctionGraph < ##FunctionGraphTypeName > _##FunctionGraphTypeName_gins;
-//
-// };
-//
-
-#endif
+#endif // ANALITZAPLOT_FUNCTIONGRAPHFACTORY_H

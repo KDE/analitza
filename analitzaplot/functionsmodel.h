@@ -1,6 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -17,215 +16,89 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef FUNCTIONSMODEL_H
-#define FUNCTIONSMODEL_H
+#ifndef ANALITZAPLOT_FUNCTIONSMODEL_H
+#define ANALITZAPLOT_FUNCTIONSMODEL_H
 
-#include <QtCore/QAbstractTableModel>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtCore/QPointF>
-#include <QtGui/QVector3D>
-#include <QVector>
-#include <QLineF>
-
-#include <KDE/KLocalizedString>
+#include <QAbstractTableModel>
 
 #include "function.h"
 
+/** Functions model is a model class that has a relation of all operators string with their FunctionType. */
 class ANALITZAPLOT_EXPORT FunctionsModel : public QAbstractTableModel
 {
     Q_OBJECT
-public:
-    enum FunctionsModelRoles { Selection=Qt::UserRole+1, Shown=Qt::UserRole+2 };
-    typedef QList<Function>::const_iterator const_iterator;
-    friend class Graph2D;
-    friend class Graph3D;
-    friend class FunctionsView;
+//     Q_PROPERTY(uint resolution READ resolution WRITE setResolution);
+    public:
+        enum FunctionsModelRoles { Color=Qt::UserRole, Expression=Qt::UserRole+1 , Shown=Qt::UserRole+2 };
+        typedef QList<Function>::const_iterator const_iterator;
+        friend class PlotView2D;
 
+        /** Constructor. Creates a new Function Model. */
+        explicit FunctionsModel(QObject *parent=0);
 
-    explicit FunctionsModel(QObject *parent=0);
+        Qt::ItemFlags flags ( const QModelIndex & index ) const;
 
-    Qt::ItemFlags flags ( const QModelIndex & index ) const;
+        QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const;
+        QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
+        int rowCount(const QModelIndex &parent=QModelIndex()) const;
+        int columnCount(const QModelIndex & =QModelIndex()) const { return 2; }
 
-    QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
-    int rowCount(const QModelIndex &parent=QModelIndex()) const;
-    int columnCount(const QModelIndex & =QModelIndex()) const
-    {
-        return 4;
-    }
+        /** Adds another function @p f. Returns whether another function like @p f existed. */
+        bool addFunction(const Function& f);
 
+        /** Specifies that the @p exp function is shown.
+            @returns whether another function like @p exp existed. */
+        bool setShown(const QString& exp, bool shown);
 
-    bool addFunction(const Function& f);
+        /** Edits the @p num nth function. The @p num should be less than the number of functions,
+            because you are editing. */
+        void editFunction(int num, const Function& func);
 
-    bool addFunction(Function& func,int index,QList<double> cons,int oct,int axi,bool solid,bool curva,bool xy,double pres);
+        /** Edits the @p exp function. Returns whether another function like @p exp existed. */
+        bool editFunction(const QString& name, const Function& func);
 
+        /** Returns a pointer to the @p num nth function. */
+        Function* editFunction(int num);
 
-    bool setSelected(const QUuid& fid);
+        void setResolution(FunctionGraphPrecision res);
+        uint resolution() const { return m_resolution; }
 
-    inline bool isSelected(int i) const
-    {
-        return i==m_selectedRow;
-    }
+        void sendStatus(const QString& msg) { emit status(msg); }
 
+        void updatePoints(int i, const QRect& viewport);
 
-    bool setShown(const QString& exp, bool shown);
+        const_iterator constBegin() const { return funclist.constBegin(); }
+        const_iterator constEnd() const { return funclist.constEnd(); }
 
+        virtual bool setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
 
-    void editFunction(int num, const Function& func);
+        virtual bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
 
+        /** Returns the id for the next function that's not used by any other, starting by f */
+        QString freeId();
 
-    bool editFunction(const QUuid& id, const Function& func);
+        QPair<QPointF, QString> calcImage(int row, const QPointF& ndp);
+        QLineF slope(int row, const QPointF& dp) const;
+        QModelIndex indexForId(const QString & name);
 
+    public slots:
+        void clear();
 
-    void updateSpaceId(const QUuid& functionId, const QUuid& spaceId);
+    signals:
+        /** Emits a status message when something changes. */
+        void status(const QString &msg);
 
+        void functionModified(const QString& name, const Analitza::Expression& e);
+        void functionRemoved(const QString& name);
 
-    Function* editFunction(int num);
+    private:
+        QList<Function>::const_iterator findFunction(const QString& id) const;
+        QList<Function>::iterator findFunction(const QString& id);
 
-    void setResolution(uint res);
+        QList<Function> funclist;
+        FunctionGraphPrecision m_resolution;
 
-    void unselect();
-
-    void clear();
-
-    void sendStatus(const QString& msg)
-    {
-        emit status(msg);
-    }
-
-    void solve(int i, const QList<RealInterval> &spaceBounds);
-
-    const Function& currentFunction() const;
-
-    bool hasSelection() const
-    {
-        return m_selectedRow>=0 && !funclist.isEmpty();
-    }
-
-    const_iterator constBegin() const
-    {
-        return funclist.constBegin();
-    }
-    const_iterator constEnd() const
-    {
-        return funclist.constEnd();
-    }
-
-    virtual bool setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
-
-    virtual bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
-
-
-    QString freeId();
-
-    void removeFunctionsBySpaceId(const QUuid &sid);
-
-    void setAnimActiva(int flag);
-    int getAnimActiva();
-    void setModAnActivo(bool flag);
-    bool getModAnActivo();
-    void setDirAnim(int flag);
-    int getDirAnim();
-    bool getMArea();
-    void setMArea(bool flag);
-    bool getMAreaE();
-    void setMAreaE(bool flag);
-    void setMFuncion1(QString func1);
-    void setMFuncion2(QString func2);
-    QString getMFuncion1();
-    QString getMFuncion2();
-    void setPFuncion1(int pf1);
-    void setPFuncion2(int pf2);
-    int getPFuncion1();
-    int getPFuncion2();
-    void setAreaEjemplo(int ej);
-    int getAreaEjemplo();
-    void setCantDiv(int div);
-    int getCantDiv();
-    QVector<QLineF> getPathsArea();
-    void setPathsArea(QVector<QLineF> &areaLines);
-    void setIntPoints(QVector<QPointF> &puntosInt);
-    QVector<QPointF> getIntPoints();
-    void setPathsCre(QVector<QLineF> &linesCre);
-    QVector<QLineF> getPathsCre();
-    void setPathsDec(QVector<QLineF> &linesDec);
-    QVector<QLineF> getPathsDec();
-    void setPathsEnt(QVector<QLineF> &linesEnt);
-    QVector<QLineF> getPathsEnt();
-    void setPathsEnt2(QVector<QLineF> &linesEnt);
-    QVector<QLineF> getPathsEnt2();
-    void setPathsACre(QVector<QLineF> &linesACre);
-    QVector<QLineF> getPathsACre();
-    void setPathsADec(QVector<QLineF> &linesADec);
-    QVector<QLineF> getPathsADec();
-    void setPathsAEnt(QVector<QLineF> &linesAEnt);
-    QVector<QLineF> getPathsAEnt();
-    double getLimiteS();
-    double getLimiteI();
-    void setLimiteS(double ls);
-    void setLimiteI(double li);
-
-    /// ???? TODO gsoc
-    QModelIndex indexForId(const QString& id)
-    {
-        int i=0;
-        for (QList<Function>::iterator it = funclist.begin(); it!=funclist.end(); ++it, ++i)
-            if(it->name() == id)
-                return index(i,0);
-        return QModelIndex();
-    }
-
-
-public slots:
-    void setSelected(const QModelIndex& idx);
-
-protected:
-
-    int selectedRow() const
-    {
-        return m_selectedRow;
-    }
-
-signals:
-
-    void status(const QString &msg);
-    void functionModified(const Function &function);
-    void functionImplicitCall(QUuid functionId,QColor col,int index,QList<double> cons,int oct,int axi,bool solid,bool curva,bool xy,double pres);
-    void functionRemoved(const QUuid &functionId, const QString &functionName);
-
-private:
-    Function& currentFunction();
-
-    FunctionList funclist;
-    int m_selectedRow;
-
-    //WARNING ??????????????
-    int animActiva;
-    bool modAnActivo;
-    int dirAnim;
-    bool mArea;
-    bool mAreaE;
-    QString mFuncion1;
-    QString mFuncion2;
-    int pFuncion1;
-    int pFuncion2;
-    QVector<QLineF> m_pathsArea;
-    QVector<QPointF> m_pointsInt;
-    QVector<QLineF> m_pathsCre;
-    QVector<QLineF> m_pathsDec;
-    QVector<QLineF> m_pathsEnt;
-    QVector<QLineF> m_pathsEnt2;
-    QVector<QLineF> m_pathsACre;
-    QVector<QLineF> m_pathsADec;
-    QVector<QLineF> m_pathsAEnt;
-    int areaEjemplo;
-    int cantDiv;
-    double limiteS;
-    double limiteI;
-
-    uint m_resolution;
-
-    uint m_fcount;
+        uint m_fcount;
 };
 
-#endif
+#endif // ANALITZAPLOT_FUNCTIONSMODEL_H

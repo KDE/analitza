@@ -1,5 +1,6 @@
 /*************************************************************************************
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
+ *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -17,31 +18,46 @@
  *************************************************************************************/
 
 
-#ifndef KEOMATH_MATHHELPER_H
-#define KEOMATH_MATHHELPER_H
+#ifndef ANALITZAPLOT_FUNCTIONUTILS
+#define ANALITZAPLOT_FUNCTIONUTILS
+
+#include "analitzaplotexport.h"
+
+#include <cmath>
 
 #include <QPair>
 #include <QVector>
 #include <QVector2D>
+#include <QVector3D>
 #include <QLineF>
 
-namespace Keomath
+using std::acos;
+using std::atan;
+using std::fabs;
+using std::cos;
+using std::sin;
+using std::sqrt;
+
+const double PI = std::acos(-1.0);
+
+namespace Analitza
 {
+class Expression;
+}
 
 enum FunctionType { RealValued = 1, VectorValued = 2};
 enum CoordinateSystem { Cartesian = 1, Polar = 2, Cylindrical = 3, Spherical = 4 };
 
 enum FunctionGraphDimension { Dimension1D = 1, Dimension2D = 2, Dimension3D = 3 };
-enum FunctionGraphPrecision { VeryLow = 1, Low = 2, Average = 3, High = 4, VeryHigh = 5 };
-enum FunctionGraphType { Solid = 0, Wired = 1, Dots = 3 };
+enum FunctionGraphPrecision { VeryLowPrecision = 1, LowPrecision = 2, AveragePrecision = 3,
+HighPrecision = 4, VeryHighPrecision = 5 };
+enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };
 
 enum FunctionGraphDataFlag { FunctionData = 0x0, GradientData = 0x1, FixedGradientsData = 0x2 };
 Q_DECLARE_FLAGS(FunctionGraphDataFlags, FunctionGraphDataFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(FunctionGraphDataFlags)
 
-//remove this see above FunctionType ... a better def
-// enum FunctionImageType { InvalidValued = 0, RealValued = 1, VectorValued = 2, /*TODO ComplexValued= 3*/ };
-
+//TODO
 struct FunctionGraphDescription
 {
 	FunctionGraphDataFlags dataFlags;
@@ -55,44 +71,14 @@ struct FunctionGraphData
 struct FunctionGraphData2D : public FunctionGraphData
 {
     QVector<QVector2D> fixedGradients;
-	QVector<QPointF> points;
-	QList<int> jumps;
+    QVector<QPointF> points;
+    QList<int> jumps;
 };
-
-
-
-}
-
-#include <QtCore/QPointF>
-#include <QtGui/QVector3D>
-
-
-#include "analitzaplotexport.h"
-
-#include <cmath>
-#include <QLineF>
-
-
-using std::sin;
-using std::cos;
-using std::atan;
-using std::fabs;
-
-namespace Analitza
-{
-class Expression;
-}
-
-const double PI = std::acos(-1.0);
 
 static bool isSimilar(double a, double b, double diff = .0000001)
 {
     return fabs(a-b) < diff;
 }
-
-
-
-
 
 static bool traverse(double p1, double p2, double next)
 {
@@ -126,77 +112,4 @@ static QLineF mirrorXY(const QLineF& l)
     return QLineF(l.y1(), l.x1(), l.y2(), l.x2());
 }
 
-
-
-
-
-
-
-
-class ANALITZAPLOT_EXPORT RealInterval
-{
-public:
-    typedef QList<RealInterval> List;
-
-    RealInterval();
-    RealInterval(qreal lower, qreal upper);
-    RealInterval(const RealInterval &realInterval);
-    virtual ~RealInterval();
-
-    qreal lower() const
-    {
-        return m_lower;
-    }
-    void setLower(qreal lower)
-    {
-        m_lower = lower;
-        m_mid = (m_lower + m_upper)*0.5;
-    }
-
-    qreal upper() const
-    {
-        return m_upper;
-    }
-    void setUpper(qreal upper)
-    {
-        m_upper = upper;
-        m_mid = (m_lower + m_upper)*0.5;
-    }
-
-    qreal mid() const
-    {
-        return m_mid;
-    }
-
-    bool contains(qreal val) const
-    {
-        if ((m_lower <= val) && (val <= m_upper))
-            return true;
-
-        return false;
-    }
-
-
-    bool operator == (const RealInterval &realInterval) const
-    {
-        return ((m_lower == realInterval.lower()) && (m_upper == realInterval.upper()));
-    }
-
-    RealInterval & operator *= (qreal factor)
-    {
-        m_lower *= factor;
-        m_upper *= factor;
-
-        m_mid = (m_lower + m_upper)*0.5;
-
-        return *this;
-    }
-
-private:
-    qreal m_lower;
-    qreal m_upper;
-    qreal m_mid;
-};
-
-#endif
-
+#endif // ANALITZAPLOT_FUNCTIONUTILS

@@ -20,34 +20,19 @@
 #ifndef ANALITZAPLOT_FUNCTION_H
 #define ANALITZAPLOT_FUNCTION_H
 
-#include <QtCore/QUuid>
-#include <QPair>
-
-#include <QtGui/QColor>
-#include <QtGui/QPen>
-#include <QVector2D>
-#include <QVector3D>
-#include <qglobal.h>
-
-#include <KDE/KDateTime>
-
-#include "analitzaplotexport.h"
-
+#include "analitza/expression.h"
 #include "functionutils.h"
+
+#include <QMap>
+#include <QColor>
 
 namespace Analitza
 {
-class Expression;
 class Variables;
 }
 
-#include "analitza/analyzer.h"
-
-namespace Keomath
-{
-
-class FunctionGraph;
-class FunctionGraphData;
+class FunctionImpl;
+class FunctionImplData;
 
 //function as a value object
 // "SINLGE valued" functions of real numbers (only real numbers) THAT can we can view on a 2d or 3d space
@@ -56,19 +41,18 @@ class FunctionGraphData;
 class ANALITZAPLOT_EXPORT Function
 {
 public:
-    explicit Function(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
-                      bool isImplicit = false, const QString &name = QString());
-
-    explicit Function(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
-                      Analitza::Variables *variables, bool isImplicit = false, const QString &name = QString());
+    Function();
 
     Function(const Function &f);
+
+    Function(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
+             Analitza::Variables *variables, bool isImplicit = false, const QString &name = QString());
 
     virtual ~Function();
 
     const Analitza::Expression & expression() const;
 
-    const bool isImplicit() const { return m_isImplicit; }
+    bool isImplicit() const { return m_isImplicit; }
 
     QString name() const { return m_name; }
     void setName(const QString &newName) { m_name = newName; }
@@ -79,18 +63,18 @@ public:
 	QPair<double, double> argumentInterval(const QString &argname) const { return m_arguments[argname].interval; }
 	void setArgumentInverval(const QString &argname, QPair<double, double> interval) { m_arguments[argname].interval = interval; }
     QStringList arguments() const { return m_arguments.keys(); }
-    Analitza::Cn* argumentValue(const QString &argname) { return m_arguments[argname].value; }
+//     Analitza::Cn* argumentValue(const QString &argname) { return m_arguments[argname].value; }
 
 	FunctionType type() { return m_type; }
 
-	//falla por el c++funcsover
-// 	//conjunto de evals para funciones que representan curvas y superficies
-    double evaluateRealValue(double arg);
-    double evaluateRealValue(double arg1, double arg2);
-    double evaluateRealValue(double arg1, double arg2, double arg3); // superfcie de nivel
-    QVector2D evaluateVectorValue2(double arg); // curv param
-    QVector3D evaluateVectorValue3(double arg); // curv param3d
-    QVector3D evaluateVectorValue3(double arg1, double arg2); // surf param
+// 	//falla por el c++funcsover
+// // 	//conjunto de evals para funciones que representan curvas y superficies
+//     double evaluateRealValue(double arg);
+//     double evaluateRealValue(double arg1, double arg2);
+//     double evaluateRealValue(double arg1, double arg2, double arg3); // superfcie de nivel
+//     QVector2D evaluateVectorValue2(double arg); // curv param
+//     QVector3D evaluateVectorValue3(double arg); // curv param3d
+//     QVector3D evaluateVectorValue3(double arg1, double arg2); // surf param
 
 //TODO
 //     QVector2D evaluate(double arg1, double arg2); //TODO area para n=2
@@ -102,8 +86,8 @@ public:
     CoordinateSystem coordinateSystem() { return m_coordinateSystem; }
     FunctionGraphPrecision graphPrecision() { return m_graphPrecision; }
     void setGraphPrecision(FunctionGraphPrecision precision) { m_graphPrecision = precision; }
-    FunctionGraphType graphType() { return m_graphType; }
-    void setGraphType(FunctionGraphType graphType) { m_graphType = graphType; }
+    PlotStyle plotStyle() { return m_plotStyle; }
+    void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }
     QColor graphColor() const { return m_graphColor; }
     void setGraphColor(const QColor& newColor) { m_graphColor = newColor; }
     bool isGraphVisible() const { return m_graphVisible; }
@@ -115,20 +99,19 @@ public:
     QStringList errors() const;
     bool isCorrect() const;
 
-//     Keomath::Function operator = (const Keomath::Function& f);
-//     bool operator==(const Keomath::Function& f) const;
+    Function operator = (const Function& f);
+    bool operator==(const Function& f) const;
 
 private:
     struct ArgumentInfo
     {
         QPair<double, double> interval;
-        Analitza::Cn *value;
     };
-
-    void setExpression(const Analitza::Expression &functionExpression, Keomath::CoordinateSystem coordinateSystem, bool isImplicitExpression);
 
     bool m_isImplicit;
     QMap< QString, ArgumentInfo > m_arguments;
+
+    Analitza::Expression m_expression;
 
     //gui
 	QString m_name;
@@ -138,187 +121,16 @@ private:
     //useful info
     FunctionType m_type;
 
-    //analitza
-	Analitza::Analyzer m_analyzer;
-	QVector<Analitza::Object*> m_runStack;
-
     //graphDescription
-    FunctionGraphDimension m_graphDimension = Dimension2D;
-    CoordinateSystem m_coordinateSystem = Cartesian;
-    FunctionGraphPrecision m_graphPrecision = Average;
-    FunctionGraphType m_graphType = Solid;
+    FunctionGraphDimension m_graphDimension;
+    CoordinateSystem m_coordinateSystem;
+    FunctionGraphPrecision m_graphPrecision;
+    PlotStyle m_plotStyle;
     QColor m_graphColor;
     bool m_graphVisible;
-	FunctionGraph *m_graph;
+	FunctionImpl *m_graph;
 
 	QStringList m_errors;
 };
 
-}
-
-struct FunctionImpl;
-
-class ANALITZAPLOT_EXPORT Function
-{
-public:
-
-    enum Axe { Cartesian = 0, Polar, Cylindrical, Spherical };
-
-
-
-    enum DrawingType { Solid = 0, Wired, Dots};
-
-
-    Function();
-
-    //create a 2d fn with just one arg (backward comp)
-    Function(const QString& name, const Analitza::Expression& newExp, Analitza::Variables* v, const QPen& m_pen,
-                double uplimit, double downlimit);
-
-    Function(const Analitza::Expression &expression, int dimension, const RealInterval::List &domain,
-             Analitza::Variables *variables, const QString &name = QString(), const QColor &color = QColor());
-
-
-    Function(const Function &function);
-
-
-    ~Function();
-
-    //clac 2d val for 2d curve (backward comp)
-    QPair<QPointF, QString> calc(const QPointF& dp);
-
-    //(backward comp)
-    void update_points(const QRect& viewport);
-
-    const QUuid & id() const
-    {
-        return m_id;
-    }
-
-    void setId(const QUuid &newid)
-    {
-        m_id = newid;
-    }
-
-
-    const QUuid & spaceId() const
-    {
-        return m_spaceId;
-    }
-
-
-    KDateTime dateTime() const
-    {
-        return m_dateTime;
-    }
-
-
-    void setSpaceId(const QUuid &spaceId)
-    {
-        m_spaceId = spaceId;
-    }
-
-    const Analitza::Expression& expression() const;
-
-
-    QString name() const
-    {
-        return m_name;
-    }
-
-
-    void setName(const QString &newName)
-    {
-        m_name = newName;
-    }
-
-
-    QColor color() const
-    {
-        return m_color;
-    }
-    void setColor(const QColor& newColor)
-    {
-        m_color = newColor;
-    }
-
-
-    int dimension() const;
-
-    Axe axeType() const;
-    RealInterval::List domain() const;
-    void setDomain(const RealInterval::List &domain);
-
-    int resolution() const;
-    void setResolution(int resolution);
-
-
-
-    bool isShown() const;
-    void setShown(bool newShow)
-    {
-        m_show=newShow;
-    }
-    int typeFunction()
-    {
-        return typeF;
-    }
-    DrawingType drawingType() const
-    {
-        return m_drawingType;
-    }
-    void setDrawingType(DrawingType drawingType)
-    {
-        m_drawingType = drawingType;
-    }
-
-
-    qreal lineWidth() const
-    {
-        return m_lineWidth;
-    }
-    void setLineWidth(qreal lineWidth)
-    {
-        m_lineWidth = lineWidth;
-    }
-
-    FunctionImpl * solver() const
-    {
-        return m_solver;
-    }
-
-    QStringList errors() const;
-
-    bool isCorrect() const;
-
-
-    bool operator == (const Function &function) const
-    {
-        return function.id() == m_id;
-    }
-
-
-    Function operator = (const Function& f);
-
-private:
-    QUuid m_id;
-    QUuid m_spaceId;
-    KDateTime m_dateTime;
-
-    QString m_name;
-    QColor m_color;
-    int typeF;
-
-    bool m_show;
-    DrawingType m_drawingType;
-    qreal m_lineWidth;
-
-    FunctionImpl *m_solver;
-
-    QStringList m_errors;
-};
-
-typedef QList<Function> FunctionList;
-
 #endif // ANALITZAPLOT_FUNCTION_H
-

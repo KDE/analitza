@@ -18,27 +18,28 @@
  *************************************************************************************/
 
 
-#ifndef KEOMATH_SOLVER_H
-#define KEOMATH_SOLVER_H
-
-#include <QtCore/QPointF>
-#include <QtGui/QVector3D>
-
-
-#include <KDE/KLocalizedString>
+#ifndef ANALITZAPLOT_FUNCTIONGRAPH_H
+#define ANALITZAPLOT_FUNCTIONGRAPH_H
 
 #include "analitza/analyzer.h"
-
 #include "function.h"
 
-namespace Keomath
+namespace Analitza
 {
+class Variables;
+class Analyzer;
+class Object;
+class Cn;
+class Expression;
+}
 
-class ANALITZAPLOT_EXPORT FunctionGraph //strategy pattern for curves and surfaces
+class ANALITZAPLOT_EXPORT FunctionImpl //strategy pattern for curves and surfaces
 {
 public:
-	FunctionGraph();
-	virtual ~FunctionGraph();
+	FunctionImpl(const Analitza::Expression &functionExpression, CoordinateSystem coordinateSystem,
+             Analitza::Variables *variables, bool isImplicit = false);
+    FunctionImpl(const FunctionImpl& fi);
+	virtual ~FunctionImpl();
 
     //TODO to fungrap2d
 // 	virtual void setFixedGradient(const VectorXd &funcvalargs) = 0; //mustrerun generate
@@ -49,161 +50,24 @@ public:
 
 	QStringList errors() const;
 
-	virtual FunctionGraph * copy() = 0;
+	virtual FunctionImpl * copy() = 0;
+
+
+    //iface for func
+    const FunctionGraphData * graphData() const;
+
 
 protected:
-	QStringList m_errors;
-};
-
-}
-
-class ANALITZAPLOT_EXPORT FunctionImpl
-{
-public:
-    explicit FunctionImpl(const Analitza::Expression &expression, Analitza::Variables *variables);
-    FunctionImpl(const FunctionImpl &solver);
-    virtual ~FunctionImpl();
-
-    RealInterval::List domain() const
-    {
-        return m_domain;
-    }
-
-    void setDomain(const RealInterval::List &domain)
-    {
-        m_domain.clear();
-
-        foreach (const RealInterval &i, domain)
-        m_domain.append(i);
-    }
-
-    int resolution() const
-    {
-        return m_resolution;
-    }
-
-    virtual void setResolution(int resolution) = 0;
-
-    QStringList errors() const
-    {
-        return m_errors;
-    }
-    bool isCorrect() const
-    {
-        return m_errors.isEmpty() && m_evaluator.isCorrect();
-    }
-
-    virtual const Analitza::Expression & lambda() const
-    {
-        return m_evaluator.expression();
-    }
-
-    virtual int dimension() = 0;
-    virtual QStringList arguments() const = 0;
-    virtual Function::Axe axeType() const = 0;
-    virtual void solve(const RealInterval::List &spaceBounds = RealInterval::List()) = 0;
-    virtual FunctionImpl * copy() = 0;
-
-protected:
-    RealInterval::List m_domain;
-    int m_resolution;
-    QStringList m_errors;
-
-
-    Analitza::Analyzer m_evaluator;
+    //analitza
+    Analitza::Analyzer m_analyzer;
     QVector<Analitza::Object*> m_runStack;
+    QVector<Analitza::Cn *> m_values;
 
+    QStringList m_errors;
+    bool m_isImplicit;
+
+private:
+    FunctionGraphData *m_graphData;
 };
 
-
-
-
-
-class ANALITZAPLOT_EXPORT FunctionImpl2D : public FunctionImpl
-{
-public:
-    explicit FunctionImpl2D(const Analitza::Expression &expression, Analitza::Variables *variables);
-    FunctionImpl2D(const FunctionImpl2D &solver2d);
-    virtual ~FunctionImpl2D();
-
-    void setResolution(int resolution);
-
-    static int fDimension()
-    {
-        return 2;
-    }
-
-    int dimension()
-    {
-        return fDimension();
-    }
-
-    int typeFunc2D()
-    {
-        return m_type2D;
-    }
-
-    virtual Function::Axe axeType() const
-    {
-        return Function::Cartesian;
-    }
-
-    virtual QPair<QPointF, QString> calc(const QPointF &dp) = 0;
-    virtual QLineF derivative(const QPointF &point) = 0;
-
-    QVector<QLineF> paths() const
-    {
-        return m_paths;
-    }
-
-protected:
-    void buildPaths(const QRectF &viewport, const QList<QPointF> &points);
-    int m_type2D;
-
-    QVector<QLineF> m_paths;
-};
-
-
-class ANALITZAPLOT_EXPORT FunctionImpl3D : public FunctionImpl
-{
-public:
-
-    virtual bool isCurve() const
-    {
-        return false;
-    }
-    virtual QVector3D evalCurve(qreal t)
-    {
-        return QVector3D();
-    }
-
-
-
-
-    explicit FunctionImpl3D(const Analitza::Expression &expression, Analitza::Variables *variables);
-    FunctionImpl3D(const FunctionImpl3D &solver3D);
-    virtual ~FunctionImpl3D();
-
-    void setResolution(int resolution)
-    {
-        m_resolution = resolution;
-    }
-
-    static int fDimension()
-    {
-        return 3;
-    }
-
-    int dimension()
-    {
-        return fDimension();
-    }
-    virtual Function::Axe axeType() const
-    {
-        return Function::Cartesian;
-    }
-
-    virtual QVector3D evalSurface(qreal u, qreal v) = 0;
-};
-
-#endif
+#endif // ANALITZAPLOT_FUNCTIONGRAPH_H
