@@ -45,18 +45,16 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value));
     }
 
-    static QStringList argumentNames() { return QStringList() << "x"; }
+    static QStringList arguments() { return QStringList() << "x"; }
 
     static CoordinateSystem coordinateSystem() { return Cartesian; }
-
-    static bool isImplicit() { return false;}
+    static QString iconName() { return QString(""); }
 
     static QStringList examples()
     {
         return QStringList() << "x->root(x, 2)-5";
     }
 
-    static QString iconName() { return QString(""); }
 
         virtual void updateGraphData (Function *function);
 

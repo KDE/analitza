@@ -40,7 +40,6 @@ Function::Function()
 
 Function::Function(const Function &f)
 : m_id(f.m_id)
-, m_expression(f.m_expression)
 , m_isImplicit(f.m_isImplicit)
 , m_name(f.m_name)
 , m_iconName(f.m_iconName)
@@ -56,8 +55,8 @@ Function::Function(const Function &f)
 {
 }
 
-Function::Function (const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
-: m_expression(functionExpression), m_name (name), m_color(col), m_graphPrecision(AveragePrecision), m_plotStyle(Solid)
+Function::Function (const QString &name, const QColor& col)
+: m_name (name), m_color(col), m_graphPrecision(AveragePrecision), m_plotStyle(Solid)
 {
     m_id = QUuid::createUuid().toString();
 }
@@ -66,7 +65,72 @@ Function::~Function()
 {
 }
 
-QStringList Function::arguments() const
+
+
+/////
+Function2D::Function2D()
+: Function()
+{
+
+}
+Function2D::Function2D (const Function2D &f)
+: Function (f)
+{
+
+}
+
+Function2D::Function2D (const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *v)
+: Function (name, col)
+{
+    if(!functionExpression.isCorrect()) {
+        m_errors << i18n("The expression is not correct");
+        return;
+    }
+
+    Analitza::Analyzer a(v);
+    a.setExpression(functionExpression);
+
+    m_expression = a.dependenciesToLambda();
+    a.setExpression(m_expression);
+
+    QStringList bvars = m_expression.bvarList();
+
+    //TODO: turn into assertion
+    if(!Function2DFactory::self()->contains(bvars))
+        m_errors << i18n("Function type not recognized");
+    else if(!a.isCorrect())
+        m_errors << a.errors();
+    else {
+        Analitza::ExpressionType expected=Function2DFactory::self()->type(bvars);
+        Analitza::ExpressionType actual=a.type();
+
+        if(actual.canReduceTo(expected)) {
+            m_function=Function2DFactory::self()->item(bvars, m_expression, v);
+        } else
+            m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+    }
+}
+
+Function2D::~Function2D()
+{
+    delete m_function;
+}
+
+const Analitza::Expression &Function2D::expression() const
+{
+//     return m_function->
+return Analitza::Expression();
+}
+
+bool Function2D::isImplicit() const
+{
+    //TODO gsoc
+
+//     return m_function->
+    return false;
+}
+
+QStringList Function2D::arguments() const
 {
     QStringList ret;
 
@@ -74,28 +138,6 @@ QStringList Function::arguments() const
         ret.append(var->name());
 
     return ret;
-}
-
-
-/////
-Function2D::Function2D()
-{
-
-}
-Function2D::Function2D (const Function2D &f) : Function (f)
-{
-
-}
-
-Function2D::Function2D (const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables) : Function (functionExpression, name, col)
-{
-
-}
-
-
-Function2D::~Function2D()
-{
-
 }
 
 void Function2D::setGraphPrecision (FunctionGraphPrecision precs)
@@ -117,21 +159,22 @@ bool Function2D::isCorrect() const
 
 Function2D Function2D::operator= (const Function2D &f)
 {
-//     if(&f!=this) {
-//         delete m_function;
-//
-//         if(f.m_function) {
-//             m_function=f.m_function->copy();
-// //          m_function=copy(f.m_function);
-//             Q_ASSERT(m_function);
-//         } else
-//             m_function=0;
-//         m_expression=f.m_expression;
-//         m_show=f.m_show;
-//         m_pen=f.m_pen;
-//         m_name=f.m_name;
-//         m_err=f.m_err;
-//     }
+    if(&f!=this) {
+        delete m_function;
+        
+        if(f.m_function) {
+            m_function=dynamic_cast<FunctionImpl2D*>( f.m_function->copy() );
+//          m_function=copy(f.m_function);
+            Q_ASSERT(m_function);
+        } else
+            m_function=0;
+        m_expression=f.m_expression;
+        setGraphVisible(f.isGraphVisible());
+        setColor(f.color());
+        setName(f.name());
+        setId(f.id());
+        m_errors=f.m_errors;
+    }
     return *this;
 }
 

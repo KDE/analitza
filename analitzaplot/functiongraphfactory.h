@@ -36,43 +36,43 @@ class ExpressionType;
 class Variables;
 }
 
-
 #define REGISTER_FUNCTION2D(name) \
         static FunctionImpl2D* create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
-        namespace { bool _##name=FunctionFactory::self()->registerFunction2D(create##name, \
-        name::expressionType(), name ::argumentNames(), name ::coordinateSystem(), name ::isImplicit(), \
-        name ::examples(), name ::iconName()); }
-
-
+        namespace { bool _##name=Function2DFactory::self()->registerFunction(create##name, \
+        name::expressionType, name ::arguments, name ::coordinateSystem, name ::iconName, name ::examples); }
 
 class FunctionImpl2D;
 
-class ANALITZAPLOT_EXPORT FunctionFactory
+class ANALITZAPLOT_EXPORT Function2DFactory
 {
-	public:
-		typedef FunctionImpl2D* (*registerFunction2D_fn)(const Analitza::Expression &, Analitza::Variables *);
+    public:
+        typedef FunctionImpl2D* (*registerFunc_fn)(const Analitza::Expression&, Analitza::Variables* );
+        typedef Analitza::ExpressionType (*expectedType_fn)();
+        typedef QStringList (*arguments_fn)();
+        typedef CoordinateSystem (*coordinateSystem_fn)();
+        typedef QString (*iconName_fn)();
+        typedef QStringList (*examples_fn)();
+        
+        typedef QStringList Id;
+        static Function2DFactory* self();
+        bool registerFunction(registerFunc_fn f, expectedType_fn ft, arguments_fn argsf, 
+                              coordinateSystem_fn coordsysf, iconName_fn iconf, examples_fn egf);
+        bool contains(const Id& id) const;
 
-		bool registerFunction2D(registerFunction2D_fn functionGraphConstructor,
-								   const Analitza::ExpressionType &expressionType,
-                                   const QStringList &argumentNames,
-                                   CoordinateSystem coordinateSystem,
-								   bool hasImplicitExpression, const QStringList& examples, const QString &iconName);
+        FunctionImpl2D* item(const Id& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
+        Analitza::ExpressionType type(const Id& id);
+        CoordinateSystem coordinateSystem(const Id& id) const;
+        QString iconName(const Id& id) const;
+        QStringList examples(const Id& id) const;
 
-		FunctionImpl2D* createFunction2D(int functionGraphIndex, const Analitza::Expression &functionExpression, Analitza::Variables *variables) const;
-
-		static FunctionFactory* self();
-
-		QVector< registerFunction2D_fn > constructors;
-		QVector< Analitza::ExpressionType > expressionTypes;
-		QVector< QStringList > argumentNames;
-        QVector< CoordinateSystem > coordinateSystems;
-		QVector< bool > implicitFlags;
-        QVector< QStringList > examples;
-        QVector< QString > iconNames;
-
-	private:
-		static FunctionFactory* m_self;
-		FunctionFactory() { Q_ASSERT(!m_self); m_self=this; }
+    private:
+        static Function2DFactory* m_self;
+        Function2DFactory() { Q_ASSERT(!m_self); m_self=this; }
+        QMap<QString, registerFunc_fn> m_items;
+        QMap<QString, expectedType_fn> m_types;
+        QMap<QString, coordinateSystem_fn> m_coordsys;
+        QMap<QString, examples_fn> m_examples;
+        QMap<QString, iconName_fn> m_icons;
 };
 
 #endif // ANALITZAPLOT_FUNCTIONGRAPHFACTORY_H

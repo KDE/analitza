@@ -72,10 +72,6 @@ QStringList FunctionImpl2D::errors() const
     return QStringList();
 }
 
-FunctionImpl *FunctionImpl2D::copy()
-{
-    return 0;
-}
 
 
 

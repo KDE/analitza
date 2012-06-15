@@ -59,7 +59,7 @@ private:
 };
 
 ////
-
+//si tiene 2 vars es implicit si tiene 2 vars y una de ellos es r es polar ... caracterizacion
 class ANALITZAPLOT_EXPORT FunctionImpl2D : public FunctionImpl //strategy pattern for curves
 {
 public:
@@ -68,8 +68,6 @@ public:
     virtual ~FunctionImpl2D();
 
     QStringList errors() const;
-
-    virtual FunctionImpl * copy();
 
 protected:
     QVector<QPointF> points;

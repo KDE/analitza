@@ -19,35 +19,59 @@
 
 #include "functiongraphfactory.h"
 
-FunctionFactory *FunctionFactory::m_self = 0;
+#include "analitza/expressiontype.h"
 
-bool FunctionFactory::registerFunction2D (registerFunction2D_fn functionGraphConstructor,
-        const Analitza::ExpressionType &expressionType, const QStringList &varnames,
-        CoordinateSystem coordinateSystem,
-        bool hasImplicitExpression, const QStringList &fexamples, const QString &iconName)
+Function2DFactory* Function2DFactory::m_self=0;
+
+Function2DFactory* Function2DFactory::self()
 {
-    //Q_ASSERT(!contains(bvars));
+    if(!m_self)
+        m_self=new Function2DFactory;
+    return m_self;
+}
 
-
-    constructors.append(functionGraphConstructor);
-    expressionTypes.append(expressionType);
-    argumentNames.append(varnames);
-    coordinateSystems.append (coordinateSystem);
-    implicitFlags.append (hasImplicitExpression);
-    examples.append (fexamples);
-    iconNames.append(iconName);
+bool Function2DFactory::registerFunction(registerFunc_fn f, expectedType_fn ft, arguments_fn argsf, 
+                              coordinateSystem_fn coordsysf, iconName_fn iconf, examples_fn egf)
+{
+    Q_ASSERT(!contains(argsf()));
+    QString id = argsf().join("|");
+    m_items[id]=f;
+    m_types[id]=ft;
+    m_coordsys[id]=coordsysf;
+    m_icons[id]=iconf;
+    m_examples[id]=egf;
 
     return true;
 }
 
-FunctionImpl2D * FunctionFactory::createFunction2D (int functionGraphIndex, const Analitza::Expression &functionExpression, Analitza::Variables *variables) const
+bool Function2DFactory::contains(const Function2DFactory::Id& bvars) const
 {
-    return constructors[functionGraphIndex](functionExpression, variables);
+    return m_items.contains(bvars.join("|"));
 }
 
-FunctionFactory *FunctionFactory::self()
+FunctionImpl2D* Function2DFactory::item(const Id& bvars, const Analitza::Expression & exp, Analitza::Variables* v) const
 {
-	if(!m_self)
-		m_self=new FunctionFactory;
-	return m_self;
+    return m_items[bvars.join("|")](exp, v);
 }
+
+Analitza::ExpressionType Function2DFactory::type(const Function2DFactory::Id& bvars)
+{
+    return m_types[bvars.join("|")]();
+}
+
+CoordinateSystem Function2DFactory::coordinateSystem(const Id& id) const
+{
+    return m_coordsys[id.join("|")]();    
+}
+
+QString Function2DFactory::iconName(const Id& id) const
+{
+    return m_icons[id.join("|")]();    
+}
+
+QStringList Function2DFactory::examples(const Id& id) const
+{
+    return m_examples[id.join("|")]();    
+}
+
+
