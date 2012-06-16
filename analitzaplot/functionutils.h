@@ -45,13 +45,62 @@ namespace Analitza
 class Expression;
 }
 
-enum FunctionType { RealValued = 1, VectorValued = 2};
+enum DrawingPrecision { LowPrecision = 1, MediumPrecision = 2, HighPrecision = 3};
+enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };
 enum CoordinateSystem { Cartesian = 1, Polar = 2, Cylindrical = 3, Spherical = 4 };
 
-enum FunctionGraphDimension { Dimension1D = 1, Dimension2D = 2, Dimension3D = 3 };
-enum FunctionGraphPrecision { VeryLowPrecision = 1, LowPrecision = 2, AveragePrecision = 3,
-HighPrecision = 4, VeryHighPrecision = 5 };
-enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };
+class EndPoint
+{
+public:
+    EndPoint(double value = 0.0) : m_isInfinite(false), m_value(value) {}
+
+    bool isInfinite() const { return m_isInfinite; }
+    void setInfinite(bool infinite) { m_isInfinite = infinite; }
+    double value() const { Q_ASSERT(m_isInfinite); return m_value; }
+    void setValue(double value) { Q_ASSERT(m_isInfinite); m_value = value; }
+
+private:
+
+    bool m_isInfinite;
+    double m_value;
+};
+
+class RealInterval
+{
+public:
+    RealInterval(const EndPoint &lowEndPoint = EndPoint(-1.0), 
+                 const EndPoint &highEndPoint = EndPoint(1.0))
+    : m_lowEndPoint(lowEndPoint), m_highEndPoint(highEndPoint) { }
+
+    EndPoint lowEndPoint() const { return m_lowEndPoint; }
+    EndPoint highEndPoint() const { return m_highEndPoint; }
+    void setEndPoints(const EndPoint &lowEndPoint, EndPoint &highEndPoint)
+    {
+        m_lowEndPoint = lowEndPoint;
+        m_highEndPoint = highEndPoint;
+    }
+
+private:
+    EndPoint m_lowEndPoint;
+    EndPoint m_highEndPoint;
+};
+
+template<typename VectorType>
+class LineSegment
+{
+public:
+    LineSegment(const VectorType &position = VectorType(), 
+                const VectorType &direction = VectorType())
+    : m_position(position), m_direction(direction) {}
+    
+    VectorType position() const { return m_position; }
+    VectorType direction() const { return direction; }
+    
+private:
+    VectorType m_position;
+    VectorType m_direction;
+  
+};
 
 enum FunctionGraphDataFlag { FunctionData = 0x0, GradientData = 0x1, FixedGradientsData = 0x2 };
 Q_DECLARE_FLAGS(FunctionGraphDataFlags, FunctionGraphDataFlag)

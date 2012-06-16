@@ -56,7 +56,7 @@ public:
     void setFunctionsModel(FunctionsModel *fm);
 
 public slots:
-    void updateSurface(const Function &function);
+    void updateSurface(const FunctionGraph &function);
     void updateSurfaceImplicit(QUuid funId,QColor col,int index,QList<double> cons,int oct,int axi,bool solid,bool curva,bool xy,double pres);
     void removeSurface(const QUuid &funid, const QString &funlambda);
     void pintar_ejes(unsigned int modo);
@@ -138,7 +138,7 @@ private:
 
     GLuint m_indexDisplayList;
     FunctionImpl3D *m_currentSolver;
-    Function::DrawingType m_drawingType;
+    FunctionGraph::DrawingType m_drawingType;
     QColor m_color;
 
 private:

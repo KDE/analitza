@@ -34,44 +34,57 @@ class Cn;
 class Expression;
 }
 
-class ANALITZAPLOT_EXPORT FunctionImpl //strategy pattern for curves and surfaces
+class ANALITZAPLOT_EXPORT AbstractMappingGraph //strategy pattern for curves and surfaces
 {
 public:
-    explicit FunctionImpl(const Analitza::Expression& e, Analitza::Variables* v);
-    FunctionImpl(const FunctionImpl& fi);
-    virtual ~FunctionImpl();
+    explicit AbstractMappingGraph(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractMappingGraph(const AbstractMappingGraph& fi);
+    virtual ~AbstractMappingGraph();
 
-    FunctionGraphPrecision graphPrecision() { return m_graphPrecision; }
-    void setGraphPrecision(FunctionGraphPrecision precs) { m_graphPrecision = precs; }
+    DrawingPrecision drawingPrecision() { return m_drawingPrecision; }
+    void setDrawingPrecision(DrawingPrecision precision) { m_drawingPrecision = precision; }
 
     virtual QStringList errors() const = 0;
-
-    virtual FunctionImpl * copy() = 0;
+    virtual bool isCorrect() const = 0;
+    virtual AbstractMappingGraph * copy() = 0;
 
 protected:
     Analitza::Analyzer analyzer;
-    const Analitza::Cn* arg(const QString &argname) const { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
+    Analitza::Cn* arg(const QString &argname) { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
 
 private:
-    FunctionGraphPrecision m_graphPrecision;
+
+    DrawingPrecision m_drawingPrecision;
 
     QMap<QString, Analitza::Object*> m_argumentValues;
 };
 
 ////
 //si tiene 2 vars es implicit si tiene 2 vars y una de ellos es r es polar ... caracterizacion
-class ANALITZAPLOT_EXPORT FunctionImpl2D : public FunctionImpl //strategy pattern for curves
+class ANALITZAPLOT_EXPORT AbstractCurve : public AbstractMappingGraph //strategy pattern for curves
 {
 public:
-    explicit FunctionImpl2D(const Analitza::Expression& e, Analitza::Variables* v);
-    FunctionImpl2D(const FunctionImpl2D& fi);
-    virtual ~FunctionImpl2D();
+    explicit AbstractCurve(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractCurve(const AbstractCurve& fi);
+    virtual ~AbstractCurve();
 
-    QStringList errors() const;
+//     RealInterval argumentInterval(const QString &argname) const { return m_argumentIntervals[argname]; }
+//     void setArgumentInverval(const QString &argname, QPair<double, double> interval) { m_argumentIntervals[argname] = interval; }
+
+    virtual void updateGraph(const QRect& viewport) = 0;
+    QVector<QPointF> points() const;
+    QList<int> jumps() const;
+    virtual QPair<QPointF, QString> calc(const QPointF& dp)=0;
+    virtual QLineF derivative(const QPointF& p)=0;
 
 protected:
-    QVector<QPointF> points;
-    QList<int> jumps;
+    bool addValue(const QPointF& p);
+    void setJump(int jump);
+    
+private:
+    QMap< QString, RealInterval > m_argumentIntervals;
+    QVector<QPointF> m_points;
+    QList<int> m_jumps;
 };
 
 #endif // ANALITZAPLOT_FUNCTIONGRAPH_H

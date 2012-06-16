@@ -59,12 +59,12 @@ public:
     {
         return supportedBVars();
     }
-    Function::Axe axeType() const
+    FunctionGraph::Axe axeType() const
     {
-        return Function::Cartesian;
+        return FunctionGraph::Cartesian;
     }
     void solve(const RealInterval::List &spaceBounds);
-    FunctionImpl * copy()
+    AbstractMappingGraph * copy()
     {
         return new ParametricCurve3D(*this);
     }

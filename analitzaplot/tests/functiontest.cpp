@@ -50,7 +50,7 @@ void FunctionTest::initTestCase()
 // //
 // //
 
-    QList<Function> a;
+    QList< Curve<QVector2D> > a;
 
 // 	QVERIFY(f.evaluateRealValue(34) == 32);
 //

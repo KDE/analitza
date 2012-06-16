@@ -32,55 +32,54 @@
 #include "functiongraph.h"
 #include "functiongraphfactory.h"
 
-Function::Function()
-: m_color(Qt::black), m_graphPrecision(AveragePrecision), m_plotStyle(Solid)
+MappingGraph::MappingGraph()
+: m_color(Qt::black), m_plotStyle(Solid)
 {
     m_id = QUuid::createUuid().toString();
 }
 
-Function::Function(const Function &f)
+MappingGraph::MappingGraph(const MappingGraph &f)
 : m_id(f.m_id)
-, m_isImplicit(f.m_isImplicit)
 , m_name(f.m_name)
 , m_iconName(f.m_iconName)
 , m_color(f.m_color)
 , m_examples(f.m_examples)
-, m_argumentIntervals(f.m_argumentIntervals)
-, m_type(f.m_type)
-, m_graphDimension(f.m_graphDimension)
 , m_coordinateSystem(f.m_coordinateSystem)
-, m_graphPrecision(f.m_graphPrecision)
 , m_plotStyle(f.m_plotStyle)
 , m_graphVisible(f.m_graphVisible)
 {
 }
 
-Function::Function (const QString &name, const QColor& col)
-: m_name (name), m_color(col), m_graphPrecision(AveragePrecision), m_plotStyle(Solid)
+MappingGraph::MappingGraph(const QString &name, const QColor& col)
+: m_name (name), m_color(col), m_plotStyle(Solid)
 {
     m_id = QUuid::createUuid().toString();
 }
 
-Function::~Function()
+MappingGraph::~MappingGraph()
 {
 }
 
 
 
 /////
-Function2D::Function2D()
-: Function()
+
+template<typename VectorType>
+Curve<VectorType>::Curve()
+: FunctionGraph()
 {
 
 }
-Function2D::Function2D (const Function2D &f)
-: Function (f)
+template<typename VectorType>
+Curve<VectorType>::Curve(const Curve &f)
+: FunctionGraph(f)
 {
 
 }
 
-Function2D::Function2D (const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *v)
-: Function (name, col)
+template<typename VectorType>
+Curve<VectorType>::Curve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
+: FunctionGraph(name, col)
 {
     if(!functionExpression.isCorrect()) {
         m_errors << i18n("The expression is not correct");
@@ -96,41 +95,36 @@ Function2D::Function2D (const Analitza::Expression &functionExpression, const QS
     QStringList bvars = m_expression.bvarList();
 
     //TODO: turn into assertion
-    if(!Function2DFactory::self()->contains(bvars))
+    if(!CurveFactory::self()->contains(bvars))
         m_errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
         m_errors << a.errors();
     else {
-        Analitza::ExpressionType expected=Function2DFactory::self()->type(bvars);
+        Analitza::ExpressionType expected=CurveFactory::self()->type(bvars);
         Analitza::ExpressionType actual=a.type();
 
         if(actual.canReduceTo(expected)) {
-            m_function=Function2DFactory::self()->item(bvars, m_expression, v);
+            m_curve=CurveFactory::self()->item(bvars, m_expression, v);
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
 }
 
-Function2D::~Function2D()
+template<typename VectorType>
+Curve<VectorType>::~Curve()
 {
-    delete m_function;
+    delete m_curve;
 }
 
-const Analitza::Expression &Function2D::expression() const
+template<typename VectorType>
+const Analitza::Expression & Curve<VectorType>::expression() const
 {
-//     return m_function->
+//     return m_curve->
 return Analitza::Expression();
 }
 
-bool Function2D::isImplicit() const
-{
-    //TODO gsoc
-
-//     return m_function->
-    return false;
-}
-
-QStringList Function2D::arguments() const
+template<typename VectorType>
+QStringList Curve<VectorType>::arguments() const
 {
     QStringList ret;
 
@@ -140,34 +134,71 @@ QStringList Function2D::arguments() const
     return ret;
 }
 
-void Function2D::setGraphPrecision (FunctionGraphPrecision precs)
+template<typename VectorType>
+DrawingPrecision Curve<VectorType>::drawingPrecision()
 {
-    m_function->setGraphPrecision(precs);
+    return m_curve->drawingPrecision();
 }
 
-QStringList Function2D::errors() const
+template<typename VectorType>
+void Curve<VectorType>::setDrawingPrecision(DrawingPrecision precision)
 {
-return QStringList();
+    m_curve->setDrawingPrecision(precision);
+}
+
+template<typename VectorType>
+QStringList Curve<VectorType>::errors() const
+{
+    QStringList err(m_errors);
+    if(m_curve) {
+        err += m_curve->errors();
+    }
+    return err;
+}
+
+template<typename VectorType>
+bool Curve<VectorType>::isCorrect() const
+{
+    return m_curve && m_errors.isEmpty() && m_curve->isCorrect();
 }
 
 
-bool Function2D::isCorrect() const
+template<typename VectorType>
+const QVector< VectorType > & Curve<VectorType>::points() const
 {
-    return false;
+    Q_ASSERT(m_curve);
+    Q_ASSERT(m_curve->points().size()>1);
+    return m_curve->points();
 }
-
-
-Function2D Function2D::operator= (const Function2D &f)
+template<typename VectorType>
+QList< int > Curve<VectorType>::jumps() const
+{
+return m_curve->jumps();
+}
+template<typename VectorType>
+LineSegment<VectorType> Curve<VectorType>::derivative(const VectorType &p) const
+{
+    Q_ASSERT(m_curve);
+    return m_curve->derivative(p);
+}
+template<typename VectorType>
+QPair< VectorType, QString > Curve<VectorType>::calc(const VectorType &dp)
+{
+    Q_ASSERT(m_curve);
+    return m_curve->calc(dp);
+}
+template<typename VectorType>
+Curve<VectorType> Curve<VectorType>::operator= (const Curve<VectorType>& f)
 {
     if(&f!=this) {
-        delete m_function;
+        delete m_curve;
         
-        if(f.m_function) {
-            m_function=dynamic_cast<FunctionImpl2D*>( f.m_function->copy() );
-//          m_function=copy(f.m_function);
-            Q_ASSERT(m_function);
+        if(f.m_curve) {
+            m_curve=dynamic_cast<AbstractCurve*>( f.m_curve->copy() );
+//          m_curve=copy(f.m_curve);
+            Q_ASSERT(m_curve);
         } else
-            m_function=0;
+            m_curve=0;
         m_expression=f.m_expression;
         setGraphVisible(f.isGraphVisible());
         setColor(f.color());
@@ -177,29 +208,6 @@ Function2D Function2D::operator= (const Function2D &f)
     }
     return *this;
 }
-
-//functionimpl iface
-
-
-const QVector< QPointF >& Function2D::points() const
-{
-return QVector< QPointF >();
-}
-
-QList< int > Function2D::jumps() const
-{
-return QList< int >();
-}
-
-QLineF Function2D::derivative (const QPointF &p) const
-{
-return QLineF();
-}
-QPair< QPointF, QString > Function2D::calc (const QPointF &dp)
-{
-return qMakePair(QPointF(), QString());
-}
-
 
 
 

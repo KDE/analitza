@@ -25,7 +25,7 @@
 
 #include "analitza/value.h"
 
-class ANALITZAPLOT_EXPORT ImplicitCurve : public FunctionImpl2D
+class ANALITZAPLOT_EXPORT ImplicitCurve : public AbstractCurve
 {
 public:
     explicit ImplicitCurve(const Analitza::Expression &expression, Analitza::Variables *variables);
@@ -59,12 +59,12 @@ public:
     {
         return supportedBVars();
     }
-    Function::Axe axeType() const
+    FunctionGraph::Axe axeType() const
     {
-        return Function::Cartesian;
+        return FunctionGraph::Cartesian;
     }
     void solve(const RealInterval::List &spaceBounds = RealInterval::List());
-    FunctionImpl * copy()
+    AbstractMappingGraph * copy()
     {
         return new ImplicitCurve(*this);
     }
@@ -99,7 +99,7 @@ protected:
 };
 
 ImplicitCurve::ImplicitCurve(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : FunctionImpl2D(expression, variables)
+    : AbstractCurve(expression, variables)
     , m_x(new Analitza::Cn)
     , m_y(new Analitza::Cn)
     , m_resolutionWasImproved(false)
@@ -112,7 +112,7 @@ ImplicitCurve::ImplicitCurve(const Analitza::Expression &expression, Analitza::V
 }
 
 ImplicitCurve::ImplicitCurve(const ImplicitCurve &implicitCurve)
-    : FunctionImpl2D(implicitCurve)
+    : AbstractCurve(implicitCurve)
     , m_x(new Analitza::Cn)
     , m_y(new Analitza::Cn)
     , m_resolutionWasImproved(implicitCurve.m_resolutionWasImproved)

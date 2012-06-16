@@ -23,7 +23,7 @@
 #include "analitza/value.h"
 #include "analitza/variable.h"
 
-FunctionImpl::FunctionImpl(const Analitza::Expression& e, Analitza::Variables* v)
+AbstractMappingGraph::AbstractMappingGraph(const Analitza::Expression& e, Analitza::Variables* v)
 {
     analyzer.setExpression(e);
     analyzer.simplify();
@@ -35,14 +35,14 @@ FunctionImpl::FunctionImpl(const Analitza::Expression& e, Analitza::Variables* v
     analyzer.setStack(m_argumentValues.values().toVector());
 }
 
-FunctionImpl::FunctionImpl(const FunctionImpl& fi)
+AbstractMappingGraph::AbstractMappingGraph(const AbstractMappingGraph& fi)
     : analyzer(fi.analyzer.variables())
 {
     analyzer.setExpression(fi.analyzer.expression());
-    m_graphPrecision = fi.m_graphPrecision;
+    m_drawingPrecision = fi.m_drawingPrecision;
 }
 
-FunctionImpl::~FunctionImpl()
+AbstractMappingGraph::~AbstractMappingGraph()
 {
     qDeleteAll(m_argumentValues.begin(), m_argumentValues.end());
     m_argumentValues.clear();
@@ -50,28 +50,32 @@ FunctionImpl::~FunctionImpl()
 
 ///
 
-FunctionImpl2D::FunctionImpl2D(const Analitza::Expression& e, Analitza::Variables* v)
-: FunctionImpl(e, v)
+AbstractCurve::AbstractCurve(const Analitza::Expression& e, Analitza::Variables* v)
+: AbstractMappingGraph(e, v)
 {
 
 }
 
-FunctionImpl2D::FunctionImpl2D(const FunctionImpl2D& fi)
-: FunctionImpl(fi)
+AbstractCurve::AbstractCurve(const AbstractCurve& fi)
+: AbstractMappingGraph(fi), m_argumentIntervals(fi.m_argumentIntervals)
 {
 
 }
 
-FunctionImpl2D::~FunctionImpl2D()
+AbstractCurve::~AbstractCurve()
 {
 
 }
 
-QStringList FunctionImpl2D::errors() const
+QVector<QPointF> AbstractCurve::points() const
 {
-    return QStringList();
+    return m_points;    
 }
 
+QList<int> AbstractCurve::jumps() const
+{
+    return m_jumps;
+}
 
 
 

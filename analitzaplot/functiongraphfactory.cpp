@@ -21,16 +21,16 @@
 
 #include "analitza/expressiontype.h"
 
-Function2DFactory* Function2DFactory::m_self=0;
+CurveFactory* CurveFactory::m_self=0;
 
-Function2DFactory* Function2DFactory::self()
+CurveFactory* CurveFactory::self()
 {
     if(!m_self)
-        m_self=new Function2DFactory;
+        m_self=new CurveFactory;
     return m_self;
 }
 
-bool Function2DFactory::registerFunction(registerFunc_fn f, expectedType_fn ft, arguments_fn argsf, 
+bool CurveFactory::registerFunction(registerFunc_fn f, expectedType_fn ft, arguments_fn argsf, 
                               coordinateSystem_fn coordsysf, iconName_fn iconf, examples_fn egf)
 {
     Q_ASSERT(!contains(argsf()));
@@ -44,32 +44,32 @@ bool Function2DFactory::registerFunction(registerFunc_fn f, expectedType_fn ft, 
     return true;
 }
 
-bool Function2DFactory::contains(const Function2DFactory::Id& bvars) const
+bool CurveFactory::contains(const CurveFactory::Id& bvars) const
 {
     return m_items.contains(bvars.join("|"));
 }
 
-FunctionImpl2D* Function2DFactory::item(const Id& bvars, const Analitza::Expression & exp, Analitza::Variables* v) const
+AbstractCurve* CurveFactory::item(const Id& bvars, const Analitza::Expression & exp, Analitza::Variables* v) const
 {
     return m_items[bvars.join("|")](exp, v);
 }
 
-Analitza::ExpressionType Function2DFactory::type(const Function2DFactory::Id& bvars)
+Analitza::ExpressionType CurveFactory::type(const CurveFactory::Id& bvars)
 {
     return m_types[bvars.join("|")]();
 }
 
-CoordinateSystem Function2DFactory::coordinateSystem(const Id& id) const
+CoordinateSystem CurveFactory::coordinateSystem(const Id& id) const
 {
     return m_coordsys[id.join("|")]();    
 }
 
-QString Function2DFactory::iconName(const Id& id) const
+QString CurveFactory::iconName(const Id& id) const
 {
     return m_icons[id.join("|")]();    
 }
 
-QStringList Function2DFactory::examples(const Id& id) const
+QStringList CurveFactory::examples(const Id& id) const
 {
     return m_examples[id.join("|")]();    
 }

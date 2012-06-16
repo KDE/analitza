@@ -25,7 +25,7 @@
 #include "analitza/value.h"
 
 
-class ANALITZAPLOT_EXPORT PolarCurve : public FunctionImpl2D
+class ANALITZAPLOT_EXPORT PolarCurve : public AbstractCurve
 {
 public:
     explicit PolarCurve(const Analitza::Expression &expression, Analitza::Variables *variables);
@@ -51,12 +51,12 @@ public:
     {
         return supportedBVars();
     }
-    Function::Axe axeType() const
+    FunctionGraph::Axe axeType() const
     {
-        return Function::Polar;
+        return FunctionGraph::Polar;
     }
     void solve(const RealInterval::List &spaceBounds = RealInterval::List());
-    FunctionImpl * copy()
+    AbstractMappingGraph * copy()
     {
         return new PolarCurve(*this);
     }
@@ -79,7 +79,7 @@ protected:
 };
 
 PolarCurve::PolarCurve(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : FunctionImpl2D(expression, variables)
+    : AbstractCurve(expression, variables)
     , m_th(new Analitza::Cn)
 {
     m_runStack.append(m_th);
@@ -88,7 +88,7 @@ PolarCurve::PolarCurve(const Analitza::Expression &expression, Analitza::Variabl
 }
 
 PolarCurve::PolarCurve(const PolarCurve &polarCurve)
-    : FunctionImpl2D(polarCurve)
+    : AbstractCurve(polarCurve)
     , m_th(new Analitza::Cn)
 {
     m_runStack.append(m_th);

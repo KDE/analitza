@@ -42,7 +42,7 @@
 
 Graph3D::Graph3D(FunctionsModel *fm, QWidget *parent)
     : QGLViewer(parent)
-    , m_drawingType(Function::Solid)
+    , m_drawingType(FunctionGraph::Solid)
     , m_color(Qt::white)
     , m_functionsModel(fm)
 {
@@ -111,7 +111,7 @@ void Graph3D::generateDisplayLists()
 {
     for (int i = 0; i < m_functionsModel->rowCount(); i+=1)
     {
-        FunctionImpl *tempsol = m_functionsModel->funclist.at(i).solver();
+        AbstractMappingGraph *tempsol = m_functionsModel->funclist.at(i).solver();
 
         if (tempsol->dimension() == 2) continue;
 
@@ -127,12 +127,12 @@ void Graph3D::setFunctionsModel(FunctionsModel *fm)
 {
     m_functionsModel = fm;
 
-    connect(m_functionsModel, SIGNAL(functionModified(Function)), SLOT(updateSurface(Function)));
+    connect(m_functionsModel, SIGNAL(functionModified(FunctionGraph)), SLOT(updateSurface(FunctionGraph)));
     connect(m_functionsModel, SIGNAL(functionImplicitCall(QUuid,QColor,int,QList<double>,int,int,bool,bool,bool,double)), SLOT(updateSurfaceImplicit(QUuid,QColor,int,QList<double>,int,int,bool,bool,bool,double)));
     connect(m_functionsModel, SIGNAL(functionRemoved(QUuid,QString)), SLOT(removeSurface(QUuid,QString)));
 }
 
-void Graph3D::updateSurface(const Function &function)
+void Graph3D::updateSurface(const FunctionGraph &function)
 {
 
 
@@ -760,13 +760,13 @@ void Graph3D::_emit( surfpoint *buffer )
 
     switch (m_drawingType)
     {
-    case Function::Solid:
+    case FunctionGraph::Solid:
         glBegin(GL_POLYGON);
         break;
-    case Function::Wired:
+    case FunctionGraph::Wired:
         glBegin(GL_LINES);
         break;
-    case Function::Dots:
+    case FunctionGraph::Dots:
         glBegin(GL_POINTS);
         break;
 

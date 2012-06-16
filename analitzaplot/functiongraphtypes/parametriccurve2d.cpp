@@ -26,7 +26,7 @@
 #include "analitza/vector.h"
 
 
-class ANALITZAPLOT_EXPORT ParametricCurve : public FunctionImpl2D
+class ANALITZAPLOT_EXPORT ParametricCurve : public AbstractCurve
 {
 public:
     explicit ParametricCurve(const Analitza::Expression &expression, Analitza::Variables *variables);
@@ -53,12 +53,12 @@ public:
     {
         return supportedBVars();
     }
-    Function::Axe axeType() const
+    FunctionGraph::Axe axeType() const
     {
-        return Function::Cartesian;
+        return FunctionGraph::Cartesian;
     }
     void solve(const RealInterval::List &spaceBounds = RealInterval::List());
-    FunctionImpl * copy()
+    AbstractMappingGraph * copy()
     {
         return new ParametricCurve(*this);
     }
@@ -76,7 +76,7 @@ protected:
 };
 
 ParametricCurve::ParametricCurve(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : FunctionImpl2D(expression, variables)
+    : AbstractCurve(expression, variables)
     , m_t(new Analitza::Cn)
 {
     m_runStack.append(m_t);
@@ -92,7 +92,7 @@ ParametricCurve::ParametricCurve(const Analitza::Expression &expression, Analitz
 }
 
 ParametricCurve::ParametricCurve(const ParametricCurve &parametricCurve)
-    : FunctionImpl2D(parametricCurve)
+    : AbstractCurve(parametricCurve)
     , m_t(new Analitza::Cn)
 {
     m_runStack.append(m_t);

@@ -37,16 +37,16 @@ class Variables;
 }
 
 #define REGISTER_FUNCTION2D(name) \
-        static FunctionImpl2D* create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
-        namespace { bool _##name=Function2DFactory::self()->registerFunction(create##name, \
+        static AbstractCurve* create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
+        namespace { bool _##name=CurveFactory::self()->registerFunction(create##name, \
         name::expressionType, name ::arguments, name ::coordinateSystem, name ::iconName, name ::examples); }
 
-class FunctionImpl2D;
+class AbstractCurve;
 
-class ANALITZAPLOT_EXPORT Function2DFactory
+class ANALITZAPLOT_EXPORT CurveFactory
 {
     public:
-        typedef FunctionImpl2D* (*registerFunc_fn)(const Analitza::Expression&, Analitza::Variables* );
+        typedef AbstractCurve* (*registerFunc_fn)(const Analitza::Expression&, Analitza::Variables* );
         typedef Analitza::ExpressionType (*expectedType_fn)();
         typedef QStringList (*arguments_fn)();
         typedef CoordinateSystem (*coordinateSystem_fn)();
@@ -54,20 +54,20 @@ class ANALITZAPLOT_EXPORT Function2DFactory
         typedef QStringList (*examples_fn)();
         
         typedef QStringList Id;
-        static Function2DFactory* self();
+        static CurveFactory* self();
         bool registerFunction(registerFunc_fn f, expectedType_fn ft, arguments_fn argsf, 
                               coordinateSystem_fn coordsysf, iconName_fn iconf, examples_fn egf);
         bool contains(const Id& id) const;
 
-        FunctionImpl2D* item(const Id& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
+        AbstractCurve* item(const Id& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
         Analitza::ExpressionType type(const Id& id);
         CoordinateSystem coordinateSystem(const Id& id) const;
         QString iconName(const Id& id) const;
         QStringList examples(const Id& id) const;
 
     private:
-        static Function2DFactory* m_self;
-        Function2DFactory() { Q_ASSERT(!m_self); m_self=this; }
+        static CurveFactory* m_self;
+        CurveFactory() { Q_ASSERT(!m_self); m_self=this; }
         QMap<QString, registerFunc_fn> m_items;
         QMap<QString, expectedType_fn> m_types;
         QMap<QString, coordinateSystem_fn> m_coordsys;

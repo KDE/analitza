@@ -27,18 +27,18 @@ include_directories (
 set ( keomath_SRCS
 functionutils.cpp
 function.cpp
-functiongraph.cpp
-functiongraphfactory.cpp
-functionsmodel.cpp
+# functiongraph.cpp
+# functiongraphfactory.cpp
+# functionsmodel.cpp
 
-plotter2d.cpp
-plotview2d.cpp
+# plotter2d.cpp
+# plotview2d.cpp
 # plotter3d.cpp
 # plotview3d.cpp
 
 # functiongraphtypes/cartesiansurface.cpp
 # functiongraphtypes/implicitcurve.cpp
-functiongraphtypes/cartesiancurve.cpp
+# functiongraphtypes/cartesiancurve.cpp
 # functiongraphtypes/cylindricalsurface.cpp
 # functiongraphtypes/parametriccurve2d.cpp
 # functiongraphtypes/parametriccurve3d.cpp

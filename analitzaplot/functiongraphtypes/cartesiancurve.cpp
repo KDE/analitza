@@ -26,11 +26,12 @@
 #include "analitza/variable.h"
 
 
-class ANALITZAPLOT_EXPORT CartesianCurveY : public FunctionImpl2D
+class ANALITZAPLOT_EXPORT CartesianCurveY : public AbstractCurve
 {
 public:
 
 
+    
 
     CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
 	~CartesianCurveY()
@@ -55,19 +56,23 @@ public:
         return QStringList() << "x->root(x, 2)-5";
     }
 
+    
+    QStringList errors() const
+    {
+            return QStringList();
+    }
+    
+    
+    bool isCorrect() const { return m_errors.isEmpty() && analyzer.isCorrect(); }
 
-        virtual void updateGraphData (Function *function);
-
-        virtual FunctionImpl *copy();
-
-//         virtual void setFixedGradient (const VectorXd &funcvalargs);
-        virtual void clearFixedGradients();
-        virtual FunctionGraphData *data() const;
+    void updateGraph(const QRect& viewport);
+    QPair<QPointF, QString> calc(const QPointF& dp);
+    QLineF derivative(const QPointF& p);
+        virtual AbstractMappingGraph *copy();
 
 
 private:
-
-    Analitza::Cn *m_x;
+QStringList m_errors;
 
 bool traverse(double p1, double p2, double next)
 {
@@ -79,27 +84,9 @@ bool traverse(double p1, double p2, double next)
 }
 
 
-bool addValue(const QPointF& p)
-{
-	int count=m_data->points.count();
-	if(count<2) {
-		m_data->points.append(p);
-		return false;
-	}
 
-	double angle1=std::atan2(m_data->points[count-1].y()-m_data->points[count-2].y(), m_data->points[count-1].x()-m_data->points[count-2].x());
-	double angle2=std::atan2(p.y()-m_data->points[count-1].y(), p.x()-m_data->points[count-1].x());
-
-	bool append=!isSimilar(angle1, angle2);
-	if(append)
-		m_data->points.append(p);
-	else
-		m_data->points.last()=p;
-
-	return append;
-}
-
-void optimizeJump(Function *function)
+/*
+void optimizeJump(FunctionGraph *function)
 {
 	QPointF before = m_data->points.at(m_data->points.count()-2), after=m_data->points.last();
 	qreal x1=before.x(), x2=after.x();
@@ -111,7 +98,7 @@ void optimizeJump(Function *function)
 		qreal dist = x2-x1;
 		qreal x=x1+dist/2;
 
-        m_x->setValue(x);
+        arg("x")->setValue(x);
 		double y = analyzer.calculateLambda().toReal().value();
 
 		if(fabs(y1-y)<fabs(y2-y)) {
@@ -129,7 +116,7 @@ void optimizeJump(Function *function)
 // 	qDebug() << "---------" << before << after;
 	m_data->points[m_data->points.count()-2]=before;
 	m_data->points.last()=after;
-}
+}*/
 
 	FunctionGraphData2D *m_data;
 
@@ -140,67 +127,47 @@ void optimizeJump(Function *function)
 //
 // }
 
-void CartesianCurveY::clearFixedGradients()
-{
-
-}
-
-FunctionGraphData * CartesianCurveY::data() const
-{
-	return m_data;
-}
-
 CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
-:FunctionImpl2D(functionExpression, variables)
+:AbstractCurve(functionExpression, variables)
 {
 	m_data = new FunctionGraphData2D;
 
     //TODO gsoc
-//     m_x = dynamic_cast<Analitza::Cn*>(m_runStack.first());
+//     arg("x") = dynamic_cast<Analitza::Cn*>(m_runStack.first());
 }
 
 
-FunctionImpl *CartesianCurveY::copy()
+AbstractMappingGraph *CartesianCurveY::copy()
 {
 	return 0;
 }
 
-void CartesianCurveY::updateGraphData (Function *function)
+void CartesianCurveY::updateGraph(const QRect& viewport)
 {
-	int resolution = function->graphPrecision()*10;
-
-	int l_lim = function->argumentInterval("x").first;
-	int r_lim = function->argumentInterval("x").second;
-	m_data->jumps.clear();
-	m_data->points.clear();
-	m_data->points.reserve(resolution);
-
-	double step= (-l_lim+r_lim)/(double)(resolution);
-
-	bool jumping=true;
-	for(double x=l_lim; x<r_lim-step; x+=step) {
-        m_x->setValue(x);
-		double y = analyzer.calculateLambda().toReal().value();
-		QPointF p(x, y);
-		bool ch=addValue(p);
-
-		bool jj=jumping;
-		jumping=false;
-		if(ch && !jj) {
-// 			if(!m_jumps.isEmpty()) qDebug() << "popopo" << m_jumps.last() << points.count();
-			double prevY=m_data->points[m_data->points.count()-2].y();
-			if(m_x->format()!=Analitza::Cn::Real && prevY!=y) {
-				m_data->jumps.append(m_data->points.count()-1);
-				jumping=true;
-			} else if(m_data->points.count()>3 && traverse(m_data->points[m_data->points.count()-3].y(), prevY, y)) {
-				optimizeJump(function);
-				m_data->jumps.append(m_data->points.count()-1);
-				jumping=true;
-			}
-		}
-	}
-// 	qDebug() << "juuuumps" << m_jumps << resolution();
+	
 }
+
+
+QPair< QPointF, QString > CartesianCurveY::calc(const QPointF& dp)
+{
+return qMakePair<QPointF, QString>(QPointF(), QString());
+}
+
+QLineF CartesianCurveY::derivative(const QPointF& p)
+{
+return QLineF();
+}
+
+
+
+
+
+
+
+
+
+
+
 
 REGISTER_FUNCTION2D(CartesianCurveY)
 
