@@ -25,7 +25,7 @@
 #include "analitza/value.h"
 
 
-class ANALITZAPLOT_EXPORT PolarCurve : public AbstractCurve
+class ANALITZAPLOT_EXPORT PolarCurve : public AbstractPlaneCurve
 {
 public:
     explicit PolarCurve(const Analitza::Expression &expression, Analitza::Variables *variables);
@@ -79,7 +79,7 @@ protected:
 };
 
 PolarCurve::PolarCurve(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : AbstractCurve(expression, variables)
+    : AbstractPlaneCurve(expression, variables)
     , m_th(new Analitza::Cn)
 {
     m_runStack.append(m_th);
@@ -88,7 +88,7 @@ PolarCurve::PolarCurve(const Analitza::Expression &expression, Analitza::Variabl
 }
 
 PolarCurve::PolarCurve(const PolarCurve &polarCurve)
-    : AbstractCurve(polarCurve)
+    : AbstractPlaneCurve(polarCurve)
     , m_th(new Analitza::Cn)
 {
     m_runStack.append(m_th);

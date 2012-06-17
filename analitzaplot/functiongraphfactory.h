@@ -37,16 +37,16 @@ class Variables;
 }
 
 #define REGISTER_FUNCTION2D(name) \
-        static AbstractCurve* create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
+        static AbstractMappingGraph* create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         namespace { bool _##name=CurveFactory::self()->registerFunction(create##name, \
         name::expressionType, name ::arguments, name ::coordinateSystem, name ::iconName, name ::examples); }
 
-class AbstractCurve;
+class AbstractMappingGraph;
 
 class ANALITZAPLOT_EXPORT CurveFactory
 {
     public:
-        typedef AbstractCurve* (*registerFunc_fn)(const Analitza::Expression&, Analitza::Variables* );
+        typedef AbstractMappingGraph* (*registerFunc_fn)(const Analitza::Expression&, Analitza::Variables* );
         typedef Analitza::ExpressionType (*expectedType_fn)();
         typedef QStringList (*arguments_fn)();
         typedef CoordinateSystem (*coordinateSystem_fn)();
@@ -59,7 +59,7 @@ class ANALITZAPLOT_EXPORT CurveFactory
                               coordinateSystem_fn coordsysf, iconName_fn iconf, examples_fn egf);
         bool contains(const Id& id) const;
 
-        AbstractCurve* item(const Id& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
+        AbstractMappingGraph* item(const Id& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
         Analitza::ExpressionType type(const Id& id);
         CoordinateSystem coordinateSystem(const Id& id) const;
         QString iconName(const Id& id) const;

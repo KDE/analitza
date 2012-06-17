@@ -41,6 +41,13 @@ public:
     AbstractMappingGraph(const AbstractMappingGraph& fi);
     virtual ~AbstractMappingGraph();
 
+    virtual const QString typeName() const = 0;
+    const Analitza::Expression &expression() const;
+    virtual QString iconName() const = 0;
+    virtual QStringList examples() const = 0;
+
+    virtual int spaceDimension() const = 0;
+    virtual CoordinateSystem coordinateSystem() const = 0;
     DrawingPrecision drawingPrecision() { return m_drawingPrecision; }
     void setDrawingPrecision(DrawingPrecision precision) { m_drawingPrecision = precision; }
 
@@ -53,38 +60,69 @@ protected:
     Analitza::Cn* arg(const QString &argname) { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
 
 private:
-
     DrawingPrecision m_drawingPrecision;
 
     QMap<QString, Analitza::Object*> m_argumentValues;
 };
 
 ////
+
+
+
+///
+//static must doc
+
+
+// static Analitza::ExpressionType ExpressionType()
+// static QStringList Arguments()
+// static CoordinateSystem CoordinateSystem()
+// static QString iconName()
+// static QStringList examples()
+
+    
+
+///
 //si tiene 2 vars es implicit si tiene 2 vars y una de ellos es r es polar ... caracterizacion
-class ANALITZAPLOT_EXPORT AbstractCurve : public AbstractMappingGraph //strategy pattern for curves
+class ANALITZAPLOT_EXPORT AbstractPlaneCurve : public AbstractMappingGraph //strategy pattern for curves
 {
 public:
-    explicit AbstractCurve(const Analitza::Expression& e, Analitza::Variables* v);
-    AbstractCurve(const AbstractCurve& fi);
-    virtual ~AbstractCurve();
+    explicit AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractPlaneCurve(const AbstractPlaneCurve& fi);
+    virtual ~AbstractPlaneCurve();
 
-//     RealInterval argumentInterval(const QString &argname) const { return m_argumentIntervals[argname]; }
-//     void setArgumentInverval(const QString &argname, QPair<double, double> interval) { m_argumentIntervals[argname] = interval; }
+    //FunctionGraph
+    RealInterval argumentInterval(const QString &argname) const;
+    void setArgumentInverval(const QString &argname, const RealInterval &interval);
+    QStringList arguments() const;
+    virtual void update(const QList<RealInterval> viewport) = 0;
 
-    virtual void updateGraph(const QRect& viewport) = 0;
-    QVector<QPointF> points() const;
+    //Curve
+    virtual double arcLength() const = 0;
+    virtual bool isClosed() const = 0;
+    virtual double area() const = 0;
+    virtual QPair<bool, double> isParallelTo(const Curve &othercurve) = 0;
     QList<int> jumps() const;
-    virtual QPair<QPointF, QString> calc(const QPointF& dp)=0;
-    virtual QLineF derivative(const QPointF& p)=0;
+
+    //Own
+    const QVector<QVector2D> & points() const;
+    virtual QPair<QVector2D, QString> calc(const QPointF &mousepos) = 0;
+    virtual QLineF derivative(const QPointF &mousepos) const = 0;
+
+    bool isImplicit() const { return m_isImplicit; }
+    bool isParametric() const { return m_isParametric; }
+    bool isAlgebraic() const;
 
 protected:
-    bool addValue(const QPointF& p);
+    bool addPoint(const QVector2D& p);
     void setJump(int jump);
-    
+
 private:
     QMap< QString, RealInterval > m_argumentIntervals;
-    QVector<QPointF> m_points;
+    QVector<QVector2D> m_points;
     QList<int> m_jumps;
+    bool m_isImplicit;
+    bool m_isAlgebraic;
+    bool m_isParametric;
 };
 
 #endif // ANALITZAPLOT_FUNCTIONGRAPH_H

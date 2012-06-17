@@ -49,7 +49,7 @@ bool CurveFactory::contains(const CurveFactory::Id& bvars) const
     return m_items.contains(bvars.join("|"));
 }
 
-AbstractCurve* CurveFactory::item(const Id& bvars, const Analitza::Expression & exp, Analitza::Variables* v) const
+AbstractMappingGraph* CurveFactory::item(const Id& bvars, const Analitza::Expression & exp, Analitza::Variables* v) const
 {
     return m_items[bvars.join("|")](exp, v);
 }

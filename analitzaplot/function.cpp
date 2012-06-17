@@ -41,10 +41,7 @@ MappingGraph::MappingGraph()
 MappingGraph::MappingGraph(const MappingGraph &f)
 : m_id(f.m_id)
 , m_name(f.m_name)
-, m_iconName(f.m_iconName)
 , m_color(f.m_color)
-, m_examples(f.m_examples)
-, m_coordinateSystem(f.m_coordinateSystem)
 , m_plotStyle(f.m_plotStyle)
 , m_graphVisible(f.m_graphVisible)
 {
@@ -64,148 +61,215 @@ MappingGraph::~MappingGraph()
 
 /////
 
-template<typename VectorType>
-Curve<VectorType>::Curve()
-: FunctionGraph()
-{
-
-}
-template<typename VectorType>
-Curve<VectorType>::Curve(const Curve &f)
-: FunctionGraph(f)
+PlaneCurve::PlaneCurve()
+: Curve()
 {
 
 }
 
-template<typename VectorType>
-Curve<VectorType>::Curve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-: FunctionGraph(name, col)
+PlaneCurve::PlaneCurve(const PlaneCurve &f)
+: Curve(f)
 {
-    if(!functionExpression.isCorrect()) {
-        m_errors << i18n("The expression is not correct");
-        return;
+
+}
+
+
+PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
+: Curve(name, col)
+{
+//     if(!functionExpression.isCorrect()) {
+//         m_errors << i18n("The expression is not correct");
+//         return;
+//     }
+// 
+//     Analitza::Analyzer a(v);
+//     a.setExpression(functionExpression);
+//     a.setExpression(a.dependenciesToLambda());
+// 
+//     QStringList bvars = a.expression().bvarList();
+// 
+//     //TODO: turn into assertion
+//     if(!CurveFactory::self()->contains(bvars))
+//         m_errors << i18n("Function type not recognized");
+//     else if(!a.isCorrect())
+//         m_errors << a.errors();
+//     else {
+//         Analitza::ExpressionType expected=CurveFactory::self()->type(bvars);
+//         Analitza::ExpressionType actual=a.type();
+// 
+//         if(actual.canReduceTo(expected)) {
+//             m_planeCurve=CurveFactory::self()->item(bvars, m_expression, v);
+//         } else
+//             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+//     }
+}
+
+
+PlaneCurve::~PlaneCurve()
+{
+    delete m_planeCurve;
+}
+
+    const QString PlaneCurve::typeName() const
+    {
+        return m_planeCurve->typeName();
     }
 
-    Analitza::Analyzer a(v);
-    a.setExpression(functionExpression);
-
-    m_expression = a.dependenciesToLambda();
-    a.setExpression(m_expression);
-
-    QStringList bvars = m_expression.bvarList();
-
-    //TODO: turn into assertion
-    if(!CurveFactory::self()->contains(bvars))
-        m_errors << i18n("Function type not recognized");
-    else if(!a.isCorrect())
-        m_errors << a.errors();
-    else {
-        Analitza::ExpressionType expected=CurveFactory::self()->type(bvars);
-        Analitza::ExpressionType actual=a.type();
-
-        if(actual.canReduceTo(expected)) {
-            m_curve=CurveFactory::self()->item(bvars, m_expression, v);
-        } else
-            m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-    }
-}
-
-template<typename VectorType>
-Curve<VectorType>::~Curve()
+const Analitza::Expression & PlaneCurve::expression() const
 {
-    delete m_curve;
-}
-
-template<typename VectorType>
-const Analitza::Expression & Curve<VectorType>::expression() const
-{
-//     return m_curve->
+//     return m_planeCurve->
 return Analitza::Expression();
 }
 
-template<typename VectorType>
-QStringList Curve<VectorType>::arguments() const
+QString PlaneCurve::iconName() const
 {
-    QStringList ret;
-
-    foreach (const Analitza::Ci *var, m_expression.parameters())
-        ret.append(var->name());
-
-    return ret;
+return m_planeCurve->iconName();
 }
 
-template<typename VectorType>
-DrawingPrecision Curve<VectorType>::drawingPrecision()
+
+QStringList PlaneCurve::examples() const
 {
-    return m_curve->drawingPrecision();
+return m_planeCurve->examples();
 }
 
-template<typename VectorType>
-void Curve<VectorType>::setDrawingPrecision(DrawingPrecision precision)
+int PlaneCurve::spaceDimension() const
 {
-    m_curve->setDrawingPrecision(precision);
+    return m_planeCurve->spaceDimension();
 }
 
-template<typename VectorType>
-QStringList Curve<VectorType>::errors() const
+CoordinateSystem PlaneCurve::coordinateSystem() const
+{
+return m_planeCurve->coordinateSystem();
+}
+
+
+DrawingPrecision PlaneCurve::drawingPrecision()
+{
+    return m_planeCurve->drawingPrecision();
+}
+
+
+void PlaneCurve::setDrawingPrecision(DrawingPrecision precision)
+{
+    m_planeCurve->setDrawingPrecision(precision);
+}
+
+
+QStringList PlaneCurve::errors() const
 {
     QStringList err(m_errors);
-    if(m_curve) {
-        err += m_curve->errors();
+    if(m_planeCurve) {
+        err += m_planeCurve->errors();
     }
     return err;
 }
 
-template<typename VectorType>
-bool Curve<VectorType>::isCorrect() const
+
+bool PlaneCurve::isCorrect() const
 {
-    return m_curve && m_errors.isEmpty() && m_curve->isCorrect();
+    return m_planeCurve && m_errors.isEmpty() && m_planeCurve->isCorrect();
 }
 
-
-template<typename VectorType>
-const QVector< VectorType > & Curve<VectorType>::points() const
-{
-    Q_ASSERT(m_curve);
-    Q_ASSERT(m_curve->points().size()>1);
-    return m_curve->points();
-}
-template<typename VectorType>
-QList< int > Curve<VectorType>::jumps() const
-{
-return m_curve->jumps();
-}
-template<typename VectorType>
-LineSegment<VectorType> Curve<VectorType>::derivative(const VectorType &p) const
-{
-    Q_ASSERT(m_curve);
-    return m_curve->derivative(p);
-}
-template<typename VectorType>
-QPair< VectorType, QString > Curve<VectorType>::calc(const VectorType &dp)
-{
-    Q_ASSERT(m_curve);
-    return m_curve->calc(dp);
-}
-template<typename VectorType>
-Curve<VectorType> Curve<VectorType>::operator= (const Curve<VectorType>& f)
-{
-    if(&f!=this) {
-        delete m_curve;
-        
-        if(f.m_curve) {
-            m_curve=dynamic_cast<AbstractCurve*>( f.m_curve->copy() );
-//          m_curve=copy(f.m_curve);
-            Q_ASSERT(m_curve);
-        } else
-            m_curve=0;
-        m_expression=f.m_expression;
-        setGraphVisible(f.isGraphVisible());
-        setColor(f.color());
-        setName(f.name());
-        setId(f.id());
-        m_errors=f.m_errors;
+    RealInterval PlaneCurve::argumentInterval(const QString &argname) const
+    {
+        return m_planeCurve->argumentInterval(argname);
     }
+    void PlaneCurve::setArgumentInverval(const QString &argname, const RealInterval &interval)
+    {
+        m_planeCurve->setArgumentInverval(argname, interval);
+    }
+QStringList PlaneCurve::arguments() const
+{
+    QStringList ret;
+
+    //TODO
+//     foreach (const Analitza::Ci *var, m_expression.parameters())
+//         ret.append(var->name());
+
+    return m_planeCurve->arguments();
+}
+    void PlaneCurve::update(const QList<RealInterval> viewport)
+    {
+        m_planeCurve->update(viewport);
+    }
+
+double PlaneCurve::arcLength() const
+{
+    return m_planeCurve->arcLength();
+}
+
+bool PlaneCurve::isClosed() const
+{
+    return m_planeCurve->isClosed();    
+}
+
+double PlaneCurve::area() const
+{
+    return m_planeCurve->area();
+}
+
+QPair<bool, double> PlaneCurve::isParallelTo(const Curve &othercurve)
+{
+    return m_planeCurve->isParallelTo(othercurve);
+}
+
+const QVector<QVector2D> & PlaneCurve::points() const
+{
+    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(m_planeCurve->points().size()>1);
+    return m_planeCurve->points();
+}
+
+QList< int > PlaneCurve::jumps() const
+{
+return m_planeCurve->jumps();
+}
+
+QPair< QVector2D, QString > PlaneCurve::calc(const QPointF &mousepos)
+{
+    Q_ASSERT(m_planeCurve);
+    return m_planeCurve->calc(mousepos);
+}
+
+QLineF PlaneCurve::derivative(const QPointF &mousepos) const
+{
+    Q_ASSERT(m_planeCurve);
+    return m_planeCurve->derivative(mousepos);
+}
+
+bool PlaneCurve::isImplicit() const
+{
+    return m_planeCurve->isImplicit();
+}
+
+bool PlaneCurve::isParametric() const
+{
+    return m_planeCurve->isParametric();
+}
+
+bool PlaneCurve::isAlgebraic() const // implicit plus only polynomails analitza work :)
+{
+    return m_planeCurve->isAlgebraic();
+}
+
+PlaneCurve PlaneCurve::operator = (const PlaneCurve& f)
+{
+//     if(&f!=this) {
+//         delete m_planeCurve;
+//         
+//         if(f.m_planeCurve) {
+//             m_planeCurve=dynamic_cast<AbstractCurve*>( f.m_planeCurve->copy() );
+// //          m_planeCurve=copy(f.m_planeCurve);
+//             Q_ASSERT(m_planeCurve);
+//         } else
+//             m_planeCurve=0;
+//         m_expression=f.m_expression;
+//         setGraphVisible(f.isGraphVisible());
+//         setColor(f.color());
+//         setName(f.name());
+//         setId(f.id());
+//         m_errors=f.m_errors;
+//     }
     return *this;
 }
 

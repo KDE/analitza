@@ -136,7 +136,7 @@ void Graph3D::updateSurface(const FunctionGraph &function)
 {
 
 
-    if (function.dimension() == 2)
+    if (function.spaceDimension() == 2)
         return ;
     if (function.name()=="Esfera")
         return;

@@ -48,36 +48,62 @@ AbstractMappingGraph::~AbstractMappingGraph()
     m_argumentValues.clear();
 }
 
+const Analitza::Expression& AbstractMappingGraph::expression() const
+{
+    return analyzer.expression();
+}
+
+
 ///
 
-AbstractCurve::AbstractCurve(const Analitza::Expression& e, Analitza::Variables* v)
+AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractMappingGraph(e, v)
 {
 
 }
 
-AbstractCurve::AbstractCurve(const AbstractCurve& fi)
+AbstractPlaneCurve::AbstractPlaneCurve(const AbstractPlaneCurve& fi)
 : AbstractMappingGraph(fi), m_argumentIntervals(fi.m_argumentIntervals)
 {
 
 }
 
-AbstractCurve::~AbstractCurve()
+
+AbstractPlaneCurve::~AbstractPlaneCurve()
 {
 
 }
 
-QVector<QPointF> AbstractCurve::points() const
+//FunctionGraph
+RealInterval AbstractPlaneCurve::argumentInterval(const QString &argname) const
 {
-    return m_points;    
+    return RealInterval();
 }
 
-QList<int> AbstractCurve::jumps() const
+void AbstractPlaneCurve::setArgumentInverval(const QString &argname, const RealInterval &interval)
+{
+    
+}
+
+QStringList AbstractPlaneCurve::arguments() const
+{
+    return QStringList();
+}
+
+QList<int> AbstractPlaneCurve::jumps() const
 {
     return m_jumps;
 }
 
+    //Own
+const QVector<QVector2D> & AbstractPlaneCurve::points() const
+{
+    return m_points;
+}
 
-
-
+bool AbstractPlaneCurve::isAlgebraic() const
+{
+//     if (is implicit verificar si es un polisnimio)
+    return false;
+}
 

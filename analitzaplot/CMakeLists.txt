@@ -27,7 +27,7 @@ include_directories (
 set ( keomath_SRCS
 functionutils.cpp
 function.cpp
-# functiongraph.cpp
+functiongraph.cpp
 # functiongraphfactory.cpp
 # functionsmodel.cpp
 

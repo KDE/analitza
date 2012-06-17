@@ -26,7 +26,7 @@
 #include "analitza/variable.h"
 
 
-class ANALITZAPLOT_EXPORT CartesianCurveY : public AbstractCurve
+class ANALITZAPLOT_EXPORT CartesianCurveY : public AbstractPlaneCurve
 {
 public:
 
@@ -128,7 +128,7 @@ void optimizeJump(FunctionGraph *function)
 // }
 
 CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
-:AbstractCurve(functionExpression, variables)
+:AbstractPlaneCurve(functionExpression, variables)
 {
 	m_data = new FunctionGraphData2D;
 

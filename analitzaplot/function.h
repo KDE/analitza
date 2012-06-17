@@ -1,5 +1,6 @@
 /*************************************************************************************
- *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2007-2011 by Aleix Pol <aleixpol@kde.org>                          *
+ *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -30,7 +31,7 @@ namespace Analitza
 class Variables;
 }
 
-class AbstractCurve;
+class AbstractPlaneCurve;
 
 // this class is a sort of a functionitem ...
 // it can't use for plot curves/surfaces (is a just a data holder)
@@ -43,18 +44,18 @@ public:
     virtual ~MappingGraph();
 
     const QString id() const { return m_id; }
-    virtual const QString type() const = 0; // curve, linear op, isosurface etc localized
+    virtual const QString typeName() const = 0; // curve, linear op, isosurface etc localized
     virtual const Analitza::Expression & expression() const = 0; // why pure abstract: couse graphpres go to functionimpl
 
     QString name() const { return m_name; }
     void setName(const QString &newName) { m_name = newName; }
-    QString iconName() const { return m_iconName; }
+    virtual QString iconName() const = 0;
     QColor color() const { return m_color; }
     void setColor(const QColor& newColor) { m_color = newColor; }
-    QStringList examples() const { return m_examples; }
+    virtual QStringList examples() const = 0;
 
-    virtual int dimension() const = 0;
-    CoordinateSystem coordinateSystem() { return m_coordinateSystem; }
+    virtual int spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
+    virtual CoordinateSystem coordinateSystem() const = 0;
     virtual DrawingPrecision drawingPrecision()  = 0;
     virtual void setDrawingPrecision(DrawingPrecision precs) = 0; // why pure abstract: couse graphpres go to functionimpl
     PlotStyle plotStyle() { return m_plotStyle; }
@@ -70,26 +71,14 @@ public:
 protected:
     void setId(const QString id) { m_id = id; }
 
-    //gui
-    void setIconName(const QString &iconName) { m_iconName = iconName; }
-    void setExamples(const QStringList &examples) { m_examples = examples; }
-
-    //graphDescription
-    void setDimension(int dimension) { m_dimension = dimension; }
-    void setCoordinateSystem(CoordinateSystem coordsys) { m_coordinateSystem = coordsys; }
-
 private: //TODO pimpl idiom here?
     QString m_id; // from a QUuid
 
     //gui
     QString m_name;
-    QString m_iconName;
     QColor m_color;
-    QStringList m_examples;
 
     //graphDescription    
-    int m_dimension;
-    CoordinateSystem m_coordinateSystem;
     PlotStyle m_plotStyle;
     bool m_graphVisible;
 };
@@ -110,49 +99,97 @@ public:
     virtual QStringList arguments() const = 0;
     
     virtual void update(const QList<RealInterval> viewport) = 0;
-
-private:
 };
 
-template<typename VectorType>
+//TODO class curve surface curve
+
 class ANALITZAPLOT_EXPORT Curve : public FunctionGraph
 {
 public:
-    Curve();
-    Curve(const Curve &f);
-    Curve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
-    virtual ~Curve();
+    Curve() : FunctionGraph() {}
+    Curve(const Curve &f) : FunctionGraph(f) {}
+    Curve(const QString &name, const QColor& col) : FunctionGraph(name, col) {}
+    virtual ~Curve() {}
+
+    //Own
+    //TODO ... (very :p) hard Numerical analysis
+    virtual double arcLength() const = 0;
+    virtual bool isClosed() const = 0;
+    virtual double area() const = 0; //only if is closed
+    virtual QPair<bool /*yes or not*/, double /*offset*/> isParallelTo(const Curve &othercurve) = 0; // offset, either positive or negative, in the direction of the curve's normal
+    virtual QList<int> jumps() const = 0;
+};
+
+//algebraic, parametric curves (//equans of this curves are functiones callet vector valued functions (with one real param) 
+//... aka vectorialcurves)), polar curves etc
+class ANALITZAPLOT_EXPORT PlaneCurve : public Curve 
+{
+//2D
+    //curvature, length of arc, etc curvature
+//parametricform ... implicit->parametric etc
+public:
+    PlaneCurve();
+    PlaneCurve(const PlaneCurve &f);
+    PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
+    virtual ~PlaneCurve();
 
     //MappingGraph
-    const QString type() const { return QString("if names"); } //TODO 
+    const QString typeName() const;
     const Analitza::Expression &expression() const;
-    int dimension() const { return VectorType().length(); }
+    QString iconName() const;
+    QStringList examples() const;
+    int spaceDimension() const;
+    CoordinateSystem coordinateSystem() const;
     DrawingPrecision drawingPrecision();
     void setDrawingPrecision(DrawingPrecision precision); 
     QStringList errors() const;
     bool isCorrect() const;
-    
+
     //FunctionGraph
+    RealInterval argumentInterval(const QString &argname) const;
+    void setArgumentInverval(const QString &argname, const RealInterval &interval);
     QStringList arguments() const;
     void update(const QList<RealInterval> viewport);
-    QPair<VectorType, QString> calc(const VectorType &dp);
+
+    //Curve
+    double arcLength() const;
+    bool isClosed() const;
+    double area() const;
+    QPair<bool, double> isParallelTo(const Curve &othercurve);
+    QList<int> jumps() const;
 
     //Own
-    bool isImplicit() const;
-    const QVector<VectorType> & points() const;
-    QList<int> jumps() const;
-    LineSegment<VectorType> derivative(const VectorType &p) const;
+    const QVector<QVector2D> & points() const;
+    QPair<QVector2D, QString> calc(const QPointF &mousepos);
+    QLineF derivative(const QPointF &mousepos) const;
 
-    Curve<VectorType> operator = (const Curve<VectorType> &curve); // copy all:members, "id" and funcimpl instance
+    bool isImplicit() const;
+    bool isParametric() const;
+    bool isAlgebraic() const; // implicit plus only polynomails analitza work :)
+
+    PlaneCurve operator = (const PlaneCurve &curve); // copy all:members, "id" and funcimpl instance
+    
+    
+    //TODO gsoc
+    ///Region under curve (relative to zxis polar axis ... sistema of referencia = basis = 0 + vectors)
+    ///parametricform ... -> expresion
+    ///toparamform ->void
+    /// can be parameterized ... work for analitza :)
 
 private:
-    Analitza::Expression m_expression;
-
-    DrawingPrecision m_drawingPrecision;
-
-    AbstractCurve *m_curve;
+    AbstractPlaneCurve *m_planeCurve;
 
     QStringList m_errors;
 };
+
+// class ANALITZAPLOT_EXPORT SpaceCurve : public Curve 
+// {
+//     //3D
+// //torsion,   
+//     //curvature, length of arc, curvature
+//     
+// 
+// };
+
 
 #endif // ANALITZAPLOT_FUNCTION_H

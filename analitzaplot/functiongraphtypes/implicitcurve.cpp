@@ -25,7 +25,7 @@
 
 #include "analitza/value.h"
 
-class ANALITZAPLOT_EXPORT ImplicitCurve : public AbstractCurve
+class ANALITZAPLOT_EXPORT ImplicitCurve : public AbstractPlaneCurve
 {
 public:
     explicit ImplicitCurve(const Analitza::Expression &expression, Analitza::Variables *variables);
@@ -99,7 +99,7 @@ protected:
 };
 
 ImplicitCurve::ImplicitCurve(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : AbstractCurve(expression, variables)
+    : AbstractPlaneCurve(expression, variables)
     , m_x(new Analitza::Cn)
     , m_y(new Analitza::Cn)
     , m_resolutionWasImproved(false)
@@ -112,7 +112,7 @@ ImplicitCurve::ImplicitCurve(const Analitza::Expression &expression, Analitza::V
 }
 
 ImplicitCurve::ImplicitCurve(const ImplicitCurve &implicitCurve)
-    : AbstractCurve(implicitCurve)
+    : AbstractPlaneCurve(implicitCurve)
     , m_x(new Analitza::Cn)
     , m_y(new Analitza::Cn)
     , m_resolutionWasImproved(implicitCurve.m_resolutionWasImproved)

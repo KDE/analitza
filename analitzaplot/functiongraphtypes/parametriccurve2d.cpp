@@ -26,7 +26,7 @@
 #include "analitza/vector.h"
 
 
-class ANALITZAPLOT_EXPORT ParametricCurve : public AbstractCurve
+class ANALITZAPLOT_EXPORT ParametricCurve : public AbstractPlaneCurve
 {
 public:
     explicit ParametricCurve(const Analitza::Expression &expression, Analitza::Variables *variables);
@@ -76,7 +76,7 @@ protected:
 };
 
 ParametricCurve::ParametricCurve(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : AbstractCurve(expression, variables)
+    : AbstractPlaneCurve(expression, variables)
     , m_t(new Analitza::Cn)
 {
     m_runStack.append(m_t);
@@ -92,7 +92,7 @@ ParametricCurve::ParametricCurve(const Analitza::Expression &expression, Analitz
 }
 
 ParametricCurve::ParametricCurve(const ParametricCurve &parametricCurve)
-    : AbstractCurve(parametricCurve)
+    : AbstractPlaneCurve(parametricCurve)
     , m_t(new Analitza::Cn)
 {
     m_runStack.append(m_t);
