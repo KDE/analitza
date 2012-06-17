@@ -21,57 +21,89 @@
 
 #include "analitza/expressiontype.h"
 
-CurveFactory* CurveFactory::m_self=0;
+PlaneCurveFactory* PlaneCurveFactory::m_self=0;
 
-CurveFactory* CurveFactory::self()
+PlaneCurveFactory* PlaneCurveFactory::self()
 {
     if(!m_self)
-        m_self=new CurveFactory;
+        m_self=new PlaneCurveFactory;
     return m_self;
 }
 
-bool CurveFactory::registerFunction(registerFunc_fn f, expectedType_fn ft, arguments_fn argsf, 
-                              coordinateSystem_fn coordsysf, iconName_fn iconf, examples_fn egf)
+bool PlaneCurveFactory::registerPlaneCurve(BuilderFunction builderFunction, TypeNameFunction typeNameFunction, 
+                              ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+                              CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
+                              IconNameFunction iconNameFunction, ExamplesFunction examplesFunction,
+                              IsImplicitFunction isImplicitFunction, IsParametricFunction isParametricFunction)
 {
-    Q_ASSERT(!contains(argsf()));
-    QString id = argsf().join("|");
-    m_items[id]=f;
-    m_types[id]=ft;
-    m_coordsys[id]=coordsysf;
-    m_icons[id]=iconf;
-    m_examples[id]=egf;
+    Q_ASSERT(!contains(argumentsFunction()));
+
+    QString arguments = argumentsFunction().join("|");
+    
+    m_builderFunctions[arguments] = builderFunction;
+
+    m_typeNameFunctions[arguments] = typeNameFunction;
+    m_expressionTypeFunctions[arguments] = expressionTypeFunction;
+    m_spaceDimensionFunctions[arguments] = spaceDimensionFunction;
+    m_coordinateSystemFunctions[arguments] = coordinateSystemFunction;
+    m_iconNameFunctions[arguments] = iconNameFunction;
+    m_examplesFunctions[arguments] = examplesFunction;
+    m_IsImplicitFunctions[arguments] = isImplicitFunction;
+    m_IsParametricFunctions[arguments] = isParametricFunction;
 
     return true;
 }
 
-bool CurveFactory::contains(const CurveFactory::Id& bvars) const
+bool PlaneCurveFactory::contains(const QStringList& arguments) const
 {
-    return m_items.contains(bvars.join("|"));
+    return m_builderFunctions.contains(arguments.join("|"));
 }
 
-AbstractMappingGraph* CurveFactory::item(const Id& bvars, const Analitza::Expression & exp, Analitza::Variables* v) const
-{
-    return m_items[bvars.join("|")](exp, v);
-}
+        AbstractPlaneCurve* PlaneCurveFactory::build(const QStringList& arguments, const Analitza::Expression& exp, Analitza::Variables* v) const
+        {
+           return m_builderFunctions[arguments.join("|")](exp, v);
+        }
+        
+        QString PlaneCurveFactory::typeName(const QStringList& arguments) const
+        {
+            return m_typeNameFunctions[arguments.join("|")]();
+        }
+        
+        Analitza::ExpressionType PlaneCurveFactory::expressionType(const QStringList& arguments) const
+        {
+            return m_expressionTypeFunctions[arguments.join("|")]();
+        }
+        
+        int PlaneCurveFactory::spaceDimension(const QStringList& arguments) const
+        {
+            return m_spaceDimensionFunctions[arguments.join("|")]();
+        }
+        
+        CoordinateSystem PlaneCurveFactory::coordinateSystem(const QStringList& arguments) const
+        {
+            return m_coordinateSystemFunctions[arguments.join("|")]();
+        }
+        
+        QString PlaneCurveFactory::iconName(const QStringList& arguments) const
+        {
+            return m_iconNameFunctions[arguments.join("|")]();
+        }
+        
+        QStringList PlaneCurveFactory::examples(const QStringList& arguments) const
+        {
+            return m_examplesFunctions[arguments.join("|")]();
+        }
+        
+        bool PlaneCurveFactory::isImplicit(const QStringList& arguments) const
+        {
+            return m_IsImplicitFunctions[arguments.join("|")]();
+        }
+        
+        bool PlaneCurveFactory::isParametric(const QStringList& arguments) const
+        {
+            return m_IsParametricFunctions[arguments.join("|")]();
+        }
+        
 
-Analitza::ExpressionType CurveFactory::type(const CurveFactory::Id& bvars)
-{
-    return m_types[bvars.join("|")]();
-}
-
-CoordinateSystem CurveFactory::coordinateSystem(const Id& id) const
-{
-    return m_coordsys[id.join("|")]();    
-}
-
-QString CurveFactory::iconName(const Id& id) const
-{
-    return m_icons[id.join("|")]();    
-}
-
-QStringList CurveFactory::examples(const Id& id) const
-{
-    return m_examples[id.join("|")]();    
-}
 
 

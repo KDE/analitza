@@ -43,20 +43,24 @@ FunctionTest::~FunctionTest()
 
 void FunctionTest::initTestCase()
 {
-// 	Analitza::Variables *v = new Analitza::Variables;
+	Analitza::Variables *v = new Analitza::Variables;
 // 	Function f(Analitza::Expression("x->x-2"), Cartesian, v);
 //
 // //     qDebug() << "AKIII EMPIEZA " << f.errors();
 // //
 // //
 
-    QList< PlaneCurve > a;
+    PlaneCurve f(Analitza::Expression("x->x*x"), v, "para", Qt::red);
+    
+    qDebug() << f.typeName();
+    
+    
 
 // 	QVERIFY(f.evaluateRealValue(34) == 32);
 //
 // // 	qDebug() << "AKIII TERMINA";
 //
-// 	delete v;
+	delete v;
 }
 
 void FunctionTest::cleanupTestCase()

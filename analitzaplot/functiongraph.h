@@ -70,18 +70,21 @@ private:
 
 
 ///
-//static must doc
 
+// plugins must expose this static members
 
-// static Analitza::ExpressionType ExpressionType()
-// static QStringList Arguments()
-// static CoordinateSystem CoordinateSystem()
-// static QString iconName()
-// static QStringList examples()
-
-    
+// QString TypeName 
+// Analitza::ExpressionType ExpressionType
+// int SpaceDimension
+// CoordinateSystem CoordinateSystem
+// QStringList Arguments
+// QString IconName
+// QStringList Examples
+// bool IsImplicit()
+// bool IsParametric()
 
 ///
+
 //si tiene 2 vars es implicit si tiene 2 vars y una de ellos es r es polar ... caracterizacion
 class ANALITZAPLOT_EXPORT AbstractPlaneCurve : public AbstractMappingGraph //strategy pattern for curves
 {

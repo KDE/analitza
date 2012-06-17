@@ -36,43 +36,80 @@ class ExpressionType;
 class Variables;
 }
 
-#define REGISTER_FUNCTION2D(name) \
-        static AbstractMappingGraph* create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
-        namespace { bool _##name=CurveFactory::self()->registerFunction(create##name, \
-        name::expressionType, name ::arguments, name ::coordinateSystem, name ::iconName, name ::examples); }
+#define REGISTER_PLANECURVE(name) \
+        static AbstractPlaneCurve * create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
+        namespace { bool _##name=PlaneCurveFactory::self()->registerPlaneCurve(create##name, \
+        name ::TypeName, name ::ExpressionType, name ::SpaceDimension, name ::CoordSystem, name ::Arguments, \
+        name ::IconName, name ::Examples, name ::IsImplicit, name ::IsParametric); }
 
-class AbstractMappingGraph;
 
-class ANALITZAPLOT_EXPORT CurveFactory
+class AbstractPlaneCurve;
+
+
+
+
+// plugins must expose this static members
+
+// QString TypeName 
+// Analitza::ExpressionType ExpressionType
+// int SpaceDimension
+// CoordinateSystem CoordinateSystem
+// QStringList Arguments
+// QString IconName
+// QStringList Examples
+// bool IsImplicit()
+// bool IsParametric()
+
+class ANALITZAPLOT_EXPORT PlaneCurveFactory
 {
     public:
-        typedef AbstractMappingGraph* (*registerFunc_fn)(const Analitza::Expression&, Analitza::Variables* );
-        typedef Analitza::ExpressionType (*expectedType_fn)();
-        typedef QStringList (*arguments_fn)();
-        typedef CoordinateSystem (*coordinateSystem_fn)();
-        typedef QString (*iconName_fn)();
-        typedef QStringList (*examples_fn)();
+        typedef AbstractPlaneCurve* (*BuilderFunction)(const Analitza::Expression&, Analitza::Variables* );
         
-        typedef QStringList Id;
-        static CurveFactory* self();
-        bool registerFunction(registerFunc_fn f, expectedType_fn ft, arguments_fn argsf, 
-                              coordinateSystem_fn coordsysf, iconName_fn iconf, examples_fn egf);
-        bool contains(const Id& id) const;
+        typedef QString (*TypeNameFunction)();
+        typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
+        typedef int (*SpaceDimensionFunction)();
+        typedef CoordinateSystem (*CoordinateSystemFunction)();
+        typedef QStringList (*ArgumentsFunction)();
+        typedef QString (*IconNameFunction)();
+        typedef QStringList (*ExamplesFunction)();
+        typedef bool (*IsImplicitFunction)();
+        typedef bool (*IsParametricFunction)();
 
-        AbstractMappingGraph* item(const Id& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
-        Analitza::ExpressionType type(const Id& id);
-        CoordinateSystem coordinateSystem(const Id& id) const;
-        QString iconName(const Id& id) const;
-        QStringList examples(const Id& id) const;
+        static PlaneCurveFactory* self();
+        
+        bool registerPlaneCurve(BuilderFunction builderFunction, TypeNameFunction typeNameFunction, 
+                              ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+                              CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
+                              IconNameFunction iconNameFunction, ExamplesFunction examplesFunction,
+                              IsImplicitFunction isImplicitFunction, IsParametricFunction isParametricFunction);
+        
+        bool contains(const QStringList& arguments) const;
+
+        AbstractPlaneCurve * build(const QStringList& arguments, const Analitza::Expression& exp, Analitza::Variables* v) const;
+        
+        QString typeName(const QStringList& arguments) const;
+        Analitza::ExpressionType expressionType(const QStringList& arguments) const;
+        int spaceDimension(const QStringList& arguments) const;
+        CoordinateSystem coordinateSystem(const QStringList& arguments) const;
+        QString iconName(const QStringList& arguments) const;
+        QStringList examples(const QStringList& arguments) const;
+        bool isImplicit(const QStringList& arguments) const;
+        bool isParametric(const QStringList& arguments) const;
 
     private:
-        static CurveFactory* m_self;
-        CurveFactory() { Q_ASSERT(!m_self); m_self=this; }
-        QMap<QString, registerFunc_fn> m_items;
-        QMap<QString, expectedType_fn> m_types;
-        QMap<QString, coordinateSystem_fn> m_coordsys;
-        QMap<QString, examples_fn> m_examples;
-        QMap<QString, iconName_fn> m_icons;
+        static PlaneCurveFactory* m_self;
+        PlaneCurveFactory() { Q_ASSERT(!m_self); m_self = this; }
+        
+        QMap<QString, BuilderFunction> m_builderFunctions;
+
+        QMap<QString, TypeNameFunction> m_typeNameFunctions;
+        QMap<QString, ExpressionTypeFunction> m_expressionTypeFunctions;
+        QMap<QString, SpaceDimensionFunction> m_spaceDimensionFunctions;
+        QMap<QString, CoordinateSystemFunction> m_coordinateSystemFunctions;
+        QMap<QString, IconNameFunction> m_iconNameFunctions;
+        QMap<QString, ExamplesFunction> m_examplesFunctions;
+        QMap<QString, IsImplicitFunction> m_IsImplicitFunctions;
+        QMap<QString, IsParametricFunction> m_IsParametricFunctions;
 };
 
 #endif // ANALITZAPLOT_FUNCTIONGRAPHFACTORY_H

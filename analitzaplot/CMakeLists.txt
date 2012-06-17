@@ -28,7 +28,7 @@ set ( keomath_SRCS
 functionutils.cpp
 function.cpp
 functiongraph.cpp
-# functiongraphfactory.cpp
+functiongraphfactory.cpp
 # functionsmodel.cpp
 
 # plotter2d.cpp
@@ -38,7 +38,7 @@ functiongraph.cpp
 
 # functiongraphtypes/cartesiansurface.cpp
 # functiongraphtypes/implicitcurve.cpp
-# functiongraphtypes/cartesiancurve.cpp
+functiongraphtypes/cartesiancurve.cpp
 # functiongraphtypes/cylindricalsurface.cpp
 # functiongraphtypes/parametriccurve2d.cpp
 # functiongraphtypes/parametriccurve3d.cpp

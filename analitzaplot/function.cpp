@@ -77,31 +77,34 @@ PlaneCurve::PlaneCurve(const PlaneCurve &f)
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
 : Curve(name, col)
 {
-//     if(!functionExpression.isCorrect()) {
-//         m_errors << i18n("The expression is not correct");
-//         return;
-//     }
-// 
-//     Analitza::Analyzer a(v);
-//     a.setExpression(functionExpression);
-//     a.setExpression(a.dependenciesToLambda());
-// 
-//     QStringList bvars = a.expression().bvarList();
-// 
-//     //TODO: turn into assertion
-//     if(!CurveFactory::self()->contains(bvars))
-//         m_errors << i18n("Function type not recognized");
-//     else if(!a.isCorrect())
-//         m_errors << a.errors();
-//     else {
-//         Analitza::ExpressionType expected=CurveFactory::self()->type(bvars);
-//         Analitza::ExpressionType actual=a.type();
-// 
-//         if(actual.canReduceTo(expected)) {
-//             m_planeCurve=CurveFactory::self()->item(bvars, m_expression, v);
-//         } else
-//             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-//     }
+    if(!functionExpression.isCorrect()) {
+        m_errors << i18n("The expression is not correct");
+        return;
+    }
+    
+    Analitza::Analyzer a(v);
+    a.setExpression(functionExpression);
+    a.setExpression(a.dependenciesToLambda());
+    
+    QStringList bvars;
+    
+    foreach (Analitza::Ci *arg, a.expression().parameters())
+        bvars.append(arg->name());
+    
+    //TODO: turn into assertion
+    if(!PlaneCurveFactory::self()->contains(bvars))                                        
+        m_errors << i18n("Function type not recognized");
+    else if(!a.isCorrect())
+        m_errors << a.errors();
+    else {
+        Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(bvars);
+        Analitza::ExpressionType actual=a.type();
+        
+        if(actual.canReduceTo(expected)) {
+            m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), v);
+        } else
+            m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+    }
 }
 
 

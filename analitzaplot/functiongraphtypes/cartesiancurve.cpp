@@ -29,133 +29,103 @@
 class ANALITZAPLOT_EXPORT CartesianCurveY : public AbstractPlaneCurve
 {
 public:
-
-
-    
-
     CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
 	~CartesianCurveY()
 	{
-		delete m_data;
 	}
 
-    static Analitza::ExpressionType expressionType()
+
+    //MappingGraph
+    const QString typeName() const { return TypeName(); }
+    QString iconName() const { return IconName(); }
+    QStringList examples() const { return Examples(); }
+    int spaceDimension() const { return 2; }
+    CoordinateSystem coordinateSystem() const { return CoordinateSystem(); }
+    QStringList errors() const { return m_errors; }
+    bool isCorrect() const { return false; }
+    AbstractMappingGraph * copy();
+
+    //FunctionGraph
+    void update(const QList<RealInterval> viewport);
+
+    //Curve
+    double arcLength() const;
+    bool isClosed() const { return false; }
+    double area() const;
+    QPair<bool, double> isParallelTo(const Curve &othercurve);
+
+    //Own
+    QPair<QVector2D, QString> calc(const QPointF &mousepos);
+    QLineF derivative(const QPointF &mousepos) const;
+
+    bool isImplicit() const { return IsImplicit(); }
+    bool isParametric() const { return IsParametric(); }
+
+    //factory registration
+    static QString TypeName() { return QString("CartesianCurveY"); }
+    static Analitza::ExpressionType ExpressionType()
     {
         return Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value));
     }
-
-    static QStringList arguments() { return QStringList() << "x"; }
-
-    static CoordinateSystem coordinateSystem() { return Cartesian; }
-    static QString iconName() { return QString(""); }
-
-    static QStringList examples()
-    {
-        return QStringList() << "x->root(x, 2)-5";
-    }
-
-    
-    QStringList errors() const
-    {
-            return QStringList();
-    }
-    
-    
-    bool isCorrect() const { return m_errors.isEmpty() && analyzer.isCorrect(); }
-
-    void updateGraph(const QRect& viewport);
-    QPair<QPointF, QString> calc(const QPointF& dp);
-    QLineF derivative(const QPointF& p);
-        virtual AbstractMappingGraph *copy();
-
+    static int SpaceDimension() { return 2; }
+    static CoordinateSystem CoordSystem() { return Cartesian; }
+    static QStringList Arguments() { return QStringList() << "x"; }
+    static QString IconName() { return QString(); }
+    static QStringList Examples() { return QStringList(); }
+    static bool IsImplicit() { return false; }
+    static bool IsParametric() { return false; }
 
 private:
 QStringList m_errors;
-
-bool traverse(double p1, double p2, double next)
-{
-	static const double delta=3;
-	double diff=p2-p1, diff2=next-p2;
-	bool ret = (diff>0 && diff2<-delta) || (diff<0 && diff2>delta);
-
-	return ret;
-}
-
-
-
-/*
-void optimizeJump(FunctionGraph *function)
-{
-	QPointF before = m_data->points.at(m_data->points.count()-2), after=m_data->points.last();
-	qreal x1=before.x(), x2=after.x();
-	qreal y1=before.y(), y2=after.y();
-	int iterations=5;
-
-// 	qDebug() << "+++++++++" << before << after;
-	for(; iterations>0; --iterations) {
-		qreal dist = x2-x1;
-		qreal x=x1+dist/2;
-
-        arg("x")->setValue(x);
-		double y = analyzer.calculateLambda().toReal().value();
-
-		if(fabs(y1-y)<fabs(y2-y)) {
-			before.setX(x);
-			before.setY(y);
-			x1=x;
-			y1=y;
-		} else {
-			after.setX(x);
-			after.setY(y);
-			x2=x;
-			y2=y;
-		}
-	}
-// 	qDebug() << "---------" << before << after;
-	m_data->points[m_data->points.count()-2]=before;
-	m_data->points.last()=after;
-}*/
-
-	FunctionGraphData2D *m_data;
-
 };
-
-// void CartesianCurveY::setFixedGradient (const VectorXd &funcvalargs)
-// {
-//
-// }
 
 CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
 :AbstractPlaneCurve(functionExpression, variables)
 {
-	m_data = new FunctionGraphData2D;
-
-    //TODO gsoc
-//     arg("x") = dynamic_cast<Analitza::Cn*>(m_runStack.first());
 }
 
 
-AbstractMappingGraph *CartesianCurveY::copy()
+AbstractMappingGraph * CartesianCurveY::copy()
 {
 	return 0;
 }
 
-void CartesianCurveY::updateGraph(const QRect& viewport)
+//FunctionGraph
+void CartesianCurveY::update(const QList<RealInterval> viewport)
 {
-	
+    
+}
+
+//Curve
+
+
+double CartesianCurveY::arcLength() const
+{
+    return 0;
+}
+
+double CartesianCurveY::area() const
+{
+    return 0;
+}
+
+QPair<bool, double> CartesianCurveY::isParallelTo(const Curve &othercurve)
+{
+    return qMakePair(false, 0.0);
 }
 
 
-QPair< QPointF, QString > CartesianCurveY::calc(const QPointF& dp)
+//Own
+QPair<QVector2D, QString> CartesianCurveY::calc(const QPointF &mousepos)
 {
-return qMakePair<QPointF, QString>(QPointF(), QString());
+    return qMakePair(QVector2D(), QString());
 }
 
-QLineF CartesianCurveY::derivative(const QPointF& p)
+QLineF CartesianCurveY::derivative(const QPointF &mousepos) const
 {
-return QLineF();
+    return QLineF();
 }
 
 
@@ -163,11 +133,5 @@ return QLineF();
 
 
 
-
-
-
-
-
-
-REGISTER_FUNCTION2D(CartesianCurveY)
+REGISTER_PLANECURVE(CartesianCurveY)
 
