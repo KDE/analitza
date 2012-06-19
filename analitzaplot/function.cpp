@@ -32,21 +32,6 @@
 #include "functiongraph.h"
 #include "functiongraphfactory.h"
 
-MappingGraph::MappingGraph()
-: m_color(Qt::black), m_plotStyle(Solid)
-{
-    m_id = QUuid::createUuid().toString();
-}
-
-MappingGraph::MappingGraph(const MappingGraph &f)
-: m_id(f.m_id)
-, m_name(f.m_name)
-, m_color(f.m_color)
-, m_plotStyle(f.m_plotStyle)
-, m_graphVisible(f.m_graphVisible)
-{
-}
-
 MappingGraph::MappingGraph(const QString &name, const QColor& col)
 : m_name (name), m_color(col), m_plotStyle(Solid)
 {
@@ -58,24 +43,10 @@ MappingGraph::~MappingGraph()
 }
 
 
-
 /////
 
-PlaneCurve::PlaneCurve()
-: Curve()
-{
-
-}
-
-PlaneCurve::PlaneCurve(const PlaneCurve &f)
-: Curve(f)
-{
-
-}
-
-
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-: Curve(name, col)
+: Curve(name, col), m_varsModule(v)
 {
     if(!functionExpression.isCorrect()) {
         m_errors << i18n("The expression is not correct");
@@ -107,7 +78,6 @@ PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza:
     }
 }
 
-
 PlaneCurve::~PlaneCurve()
 {
     delete m_planeCurve;
@@ -122,6 +92,56 @@ const Analitza::Expression & PlaneCurve::expression() const
 {
 //     return m_planeCurve->
 return Analitza::Expression();
+}
+
+bool PlaneCurve::setExpression(Analitza::Expression &functionExpression)
+{
+    if(!functionExpression.isCorrect()) {
+        m_errors << i18n("The expression is not correct");
+        return false;
+    }
+    
+    Analitza::Analyzer a(m_varsModule);
+    a.setExpression(functionExpression);
+    a.setExpression(a.dependenciesToLambda());
+    
+    QStringList bvars;
+    
+    foreach (Analitza::Ci *arg, a.expression().parameters())
+        bvars.append(arg->name());
+    
+    //TODO: turn into assertion
+    if(!PlaneCurveFactory::self()->contains(bvars))
+    {
+        m_errors << i18n("Function type not recognized");
+        
+        return false;
+    }
+    else if(!a.isCorrect())
+    {
+        m_errors << a.errors();
+        
+        return false;
+    }
+    else {
+        Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(bvars);
+        Analitza::ExpressionType actual=a.type();
+        
+        if(actual.canReduceTo(expected))
+        {
+            delete m_planeCurve;
+
+            m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), m_varsModule);
+        }
+        else
+        {
+            m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+            
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 QString PlaneCurve::iconName() const
@@ -146,7 +166,7 @@ return m_planeCurve->coordinateSystem();
 }
 
 
-DrawingPrecision PlaneCurve::drawingPrecision()
+DrawingPrecision PlaneCurve::drawingPrecision() const
 {
     return m_planeCurve->drawingPrecision();
 }
@@ -255,8 +275,8 @@ bool PlaneCurve::isAlgebraic() const // implicit plus only polynomails analitza 
     return m_planeCurve->isAlgebraic();
 }
 
-PlaneCurve PlaneCurve::operator = (const PlaneCurve& f)
-{
+// PlaneCurve PlaneCurve::operator = (const PlaneCurve& f)
+// {
 //     if(&f!=this) {
 //         delete m_planeCurve;
 //         
@@ -273,8 +293,8 @@ PlaneCurve PlaneCurve::operator = (const PlaneCurve& f)
 //         setId(f.id());
 //         m_errors=f.m_errors;
 //     }
-    return *this;
-}
+//     return *this;
+// }
 
 
 

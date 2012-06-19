@@ -29,7 +29,7 @@ functionutils.cpp
 function.cpp
 functiongraph.cpp
 functiongraphfactory.cpp
-# functionsmodel.cpp
+functionsmodel.cpp
 
 # plotter2d.cpp
 # plotview2d.cpp

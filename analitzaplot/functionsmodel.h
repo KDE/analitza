@@ -1,5 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -20,85 +21,190 @@
 #define ANALITZAPLOT_FUNCTIONSMODEL_H
 
 #include <QAbstractTableModel>
+#include <QStandardItem>
+
 
 #include "function.h"
 
-/** Functions model is a model class that has a relation of all operators string with their FunctionType. */
-class ANALITZAPLOT_EXPORT FunctionsModel : public QAbstractTableModel
+
+
+
+
+
+
+template<typename MappingGraphType>
+class ANALITZAPLOT_EXPORT MappingGraphModel : public QAbstractItemModel
 {
-    Q_OBJECT
-//     Q_PROPERTY(uint resolution READ resolution WRITE setResolution);
-    public:
-        enum FunctionsModelRoles { Color=Qt::UserRole, Expression=Qt::UserRole+1 , Shown=Qt::UserRole+2 };
-        typedef QList<FunctionGraph2d>::const_iterator const_iterator;
-        friend class PlotView2D;
-
-        /** Constructor. Creates a new Function Model. */
-        explicit FunctionsModel(QObject *parent=0);
-
-        Qt::ItemFlags flags ( const QModelIndex & index ) const;
-
-        QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const;
-        QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
-        int rowCount(const QModelIndex &parent=QModelIndex()) const;
-        int columnCount(const QModelIndex & =QModelIndex()) const { return 2; }
-
-        /** Adds another function @p f. Returns whether another function like @p f existed. */
-        bool addFunction(const FunctionGraph2d &func);
-
-        /** Specifies that the @p exp function is shown.
-            @returns whether another function like @p exp existed. */
-        bool setShown(const QString& exp, bool shown);
-
-        /** Edits the @p num nth function. The @p num should be less than the number of functions,
-            because you are editing. */
-        void editFunction(int num, const FunctionGraph2d &func);
-
-        /** Edits the @p exp function. Returns whether another function like @p exp existed. */
-        bool editFunction(const QString &toChange, const FunctionGraph2d &func);
-
-        /** Returns a pointer to the @p num nth function. */
-        FunctionGraph* editFunction(int num);
-
-        void setResolution(FunctionGraphPrecision res);
-        uint resolution() const { return m_resolution; }
-
-        void sendStatus(const QString& msg) { emit status(msg); }
-
-        void updatePoints(int i, const QRect& viewport);
-
-        const_iterator constBegin() const { return funclist.constBegin(); }
-        const_iterator constEnd() const { return funclist.constEnd(); }
-
-        virtual bool setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
-
-        virtual bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
-
-        /** Returns the id for the next function that's not used by any other, starting by f */
-        QString freeId();
-
-        QPair<QPointF, QString> calcImage(int row, const QPointF& ndp);
-        QLineF slope(int row, const QPointF& dp) const;
-        QModelIndex indexForId(const QString & name);
-
-    public slots:
-        void clear();
-
-    signals:
-        /** Emits a status message when something changes. */
-        void status(const QString &msg);
-
-        void functionModified(const QString& name, const Analitza::Expression& e);
-        void functionRemoved(const QString& name);
-
-    private:
-        QList<FunctionGraph2d>::const_iterator findFunction(const QString& id) const;
-        QList<FunctionGraph2d>::iterator findFunction(const QString& id);
-
-        QList<FunctionGraph2d> funclist;
-        FunctionGraphPrecision m_resolution;
-
-        uint m_fcount;
+public:
+    MappingGraphModel(Analitza::Variables *v, QObject * parent = 0);
+    virtual ~MappingGraphModel();
+    
+    int columnCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    Qt::ItemFlags flags(const QModelIndex & index) const;
+    bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
+    bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
+    QMap<int, QVariant> itemData(const QModelIndex & index) const;
+    bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
+    int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
+    bool setItemData(const QModelIndex & index, const QMap<int, QVariant> & roles);
+    Qt::DropActions supportedDropActions() const;
+    
+private:
+    Analitza::Variables *m_variablesModule;
+    QList<MappingGraphType*> m_planeCurves;
 };
+
+
+
+
+
+
+
+
+
+/*
+class ANALITZAPLOT_EXPORT PlaneCurveModel : public QAbstractItemModel
+{
+public:
+    enum PlaneCurveDataRole 
+    {
+        //roles that will show in a view, also works for editing job
+        ExpressionRole = Qt::UserRole, //Variant->QString
+        NameRole, //Variant->QString
+        ColorRole, //Variant->QColor
+        IconNameRole, //Variant->QString
+
+        //roles for editing job
+        ArgumentsRole, //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+        DrawingPrecisionRole, //Variant->int
+        VisibleRole, //Variant->bool
+
+        //roles for deliver extra data: examples, etc ... read-only roles
+        ExamplesRoles, //Variant->QStringList
+        SpaceDimensionRole, //Variant->int
+        CoordinateSystemRole, //Variant->int
+        PlotStyleRole, //Variant->int
+        IsCorrectRole, //Variant->bool
+        ErrorsRole, //Variant->QStringList
+        ArcLengthRole, //Variant->double
+        IsClosedRole,  //Variant->double
+        AreaRole, //Variant->double
+        JumpsRole,  //Variant->QList<QVariant> ... list of ints
+        PointsRole, //Variant->QList<QVariant> ... list of doubles
+        IsImplicitRole, //Variant->bool
+        IsParametricRole, //Variant->bool
+        IsAlgebraicRole,  //Variant->bool
+    };
+    
+    PlaneCurveModel(Analitza::Variables *v, QObject * parent = 0);
+    virtual ~PlaneCurveModel();
+    
+    int columnCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    Qt::ItemFlags flags(const QModelIndex & index) const;
+    bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
+    bool insertColumns(int column, int count, const QModelIndex & parent = QModelIndex());
+    bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
+    QMap<int, QVariant> itemData(const QModelIndex & index) const;
+    bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
+    int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
+    bool setItemData(const QModelIndex & index, const QMap<int, QVariant> & roles);
+    Qt::DropActions supportedDropActions() const;
+    
+private:
+    Analitza::Variables *m_variablesModule;
+    QList<PlaneCurve*> m_planeCurves;
+};*/
+
+
+
+
+
+/** Functions model is a model class that has a relation of all operators string with their FunctionType. */
+// class ANALITZAPLOT_EXPORT FunctionsModel : public QAbstractTableModel
+// {
+//     Q_OBJECT
+// //     Q_PROPERTY(uint resolution READ resolution WRITE setResolution);
+//     public:
+//         enum FunctionsModelRoles { Color=Qt::UserRole, Expression=Qt::UserRole+1 , Shown=Qt::UserRole+2 };
+//         typedef QList<FunctionGraph2d>::const_iterator const_iterator;
+//         friend class PlotView2D;
+// 
+//         /** Constructor. Creates a new Function Model. */
+//         explicit FunctionsModel(QObject *parent=0);
+// 
+//         Qt::ItemFlags flags ( const QModelIndex & index ) const;
+// 
+//         QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const;
+//         QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
+//         int rowCount(const QModelIndex &parent=QModelIndex()) const;
+//         int columnCount(const QModelIndex & =QModelIndex()) const { return 2; }
+// 
+//         /** Adds another function @p f. Returns whether another function like @p f existed. */
+//         bool addFunction(const FunctionGraph2d &func);
+// 
+//         /** Specifies that the @p exp function is shown.
+//             @returns whether another function like @p exp existed. */
+//         bool setShown(const QString& exp, bool shown);
+// 
+//         /** Edits the @p num nth function. The @p num should be less than the number of functions,
+//             because you are editing. */
+//         void editFunction(int num, const FunctionGraph2d &func);
+// 
+//         /** Edits the @p exp function. Returns whether another function like @p exp existed. */
+//         bool editFunction(const QString &toChange, const FunctionGraph2d &func);
+// 
+//         /** Returns a pointer to the @p num nth function. */
+//         FunctionGraph* editFunction(int num);
+// 
+//         void setResolution(FunctionGraphPrecision res);
+//         uint resolution() const { return m_resolution; }
+// 
+//         void sendStatus(const QString& msg) { emit status(msg); }
+// 
+//         void updatePoints(int i, const QRect& viewport);
+// 
+//         const_iterator constBegin() const { return funclist.constBegin(); }
+//         const_iterator constEnd() const { return funclist.constEnd(); }
+// 
+//         virtual bool setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
+// 
+//         virtual bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
+// 
+//         /** Returns the id for the next function that's not used by any other, starting by f */
+//         QString freeId();
+// 
+//         QPair<QPointF, QString> calcImage(int row, const QPointF& ndp);
+//         QLineF slope(int row, const QPointF& dp) const;
+//         QModelIndex indexForId(const QString & name);
+// 
+//     public slots:
+//         void clear();
+// 
+//     signals:
+//         /** Emits a status message when something changes. */
+//         void status(const QString &msg);
+// 
+//         void functionModified(const QString& name, const Analitza::Expression& e);
+//         void functionRemoved(const QString& name);
+// 
+//     private:
+//         QList<FunctionGraph2d>::const_iterator findFunction(const QString& id) const;
+//         QList<FunctionGraph2d>::iterator findFunction(const QString& id);
+// 
+//         QList<FunctionGraph2d> funclist;
+//         FunctionGraphPrecision m_resolution;
+// 
+//         uint m_fcount;
+// };
+
+
 
 #endif // ANALITZAPLOT_FUNCTIONSMODEL_H

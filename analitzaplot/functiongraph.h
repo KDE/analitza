@@ -1,6 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -48,7 +48,7 @@ public:
 
     virtual int spaceDimension() const = 0;
     virtual CoordinateSystem coordinateSystem() const = 0;
-    DrawingPrecision drawingPrecision() { return m_drawingPrecision; }
+    DrawingPrecision drawingPrecision() const { return m_drawingPrecision; }
     void setDrawingPrecision(DrawingPrecision precision) { m_drawingPrecision = precision; }
 
     virtual QStringList errors() const = 0;

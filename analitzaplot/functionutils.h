@@ -45,9 +45,9 @@ namespace Analitza
 class Expression;
 }
 
-enum DrawingPrecision { LowPrecision = 1, MediumPrecision = 2, HighPrecision = 3};
-enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };
-enum CoordinateSystem { Cartesian = 1, Polar = 2, Cylindrical = 3, Spherical = 4 };
+enum DrawingPrecision { LowPrecision = 1, MediumPrecision, HighPrecision};
+enum PlotStyle { Solid = 1, Wired, Dots };
+enum CoordinateSystem { Cartesian = 1, Polar, Cylindrical, Spherical };
 
 class EndPoint
 {
