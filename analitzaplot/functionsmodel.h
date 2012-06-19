@@ -31,7 +31,6 @@
 
 
 
-
 template<typename MappingGraphType>
 class ANALITZAPLOT_EXPORT MappingGraphModel : public QAbstractItemModel
 {
@@ -39,29 +38,42 @@ public:
     MappingGraphModel(Analitza::Variables *v, QObject * parent = 0);
     virtual ~MappingGraphModel();
     
+    //QAbstractItemModel
     int columnCount(const QModelIndex & parent = QModelIndex()) const;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     Qt::ItemFlags flags(const QModelIndex & index) const;
     bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-    QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
-    bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
-    QMap<int, QVariant> itemData(const QModelIndex & index) const;
     bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
     bool setItemData(const QModelIndex & index, const QMap<int, QVariant> & roles);
     Qt::DropActions supportedDropActions() const;
+ 
+    //own
+    
+    // append gen n valid functions randomly usa insertrow /// insertrow las genera pero invalidadas
+    virtual bool magic(int n) = 0; 
+
+protected:
+    MappingGraphType * item(int row) const;
+    int itemCount() const;
+    MappingGraphType * firstItem() const;
+    void insertItem(int row, MappingGraphType *item); //use this in the cont4ext of insertrows begin end inserting
+    bool isEmpty() const;
+    MappingGraphType * lastItem() const;
     
 private:
     Analitza::Variables *m_variablesModule;
-    QList<MappingGraphType*> m_planeCurves;
+
+    QList<MappingGraphType*> m_items;
 };
 
 
 
 
-
+class ANALITZAPLOT_EXPORT PlaneCurveModel : public MappingGraphModel<PlaneCurveModel>
+{
+};
 
 
 

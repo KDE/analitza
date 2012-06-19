@@ -42,8 +42,8 @@ MappingGraphModel<MappingGraphType>::MappingGraphModel(Analitza::Variables *v, Q
 template<typename MappingGraphType>
 MappingGraphModel<MappingGraphType>::~MappingGraphModel()
 {
-    qDeleteAll(m_planeCurves.begin(), m_planeCurves.end());
-    m_planeCurves.clear();
+    qDeleteAll(m_items.begin(), m_items.end());
+    m_items.clear();
 }
 
 template<typename MappingGraphType>
@@ -52,142 +52,6 @@ int MappingGraphModel<MappingGraphType>::columnCount(const QModelIndex & parent)
     Q_UNUSED(parent);
     
     return 2;
-}
-
-template<typename MappingGraphType>
-QVariant MappingGraphModel<MappingGraphType>::data(const QModelIndex & index, int role) const
-{
-    if(!index.isValid() || index.row()>=m_planeCurves.count())
-        return QVariant();
-    
-    int var=index.row();
-    
-    PlaneCurve *tmpcurve = m_planeCurves.at(var);
-
-    switch(role) {
-        case Qt::DisplayRole:
-            switch(index.column()) {
-                case 0:
-                    return tmpcurve->name();
-                    break;
-                case 1:
-                    return tmpcurve->expression().toString();
-                    break;
-            }
-            break;
-        case Qt::DecorationRole:
-            if(index.column()==0) {
-                QPixmap ico(15, 15);
-                ico.fill(tmpcurve->color());
-                return  QIcon(ico);
-            } else {
-                return QIcon::fromTheme(tmpcurve->iconName());
-            }
-            break;
-            /*
-        //roles that will show in a view, also works for editing job
-        case ExpressionRole: //Variant->QString
-            return tmpcurve->expression().toString();
-            break;
-            
-        case NameRole: //Variant->QString
-                return tmpcurve->name();
-            break;
-
-        case ColorRole: //Variant->QColor
-                return tmpcurve->color();
-            break;
-            
-        case IconNameRole: //Variant->QString
-                return tmpcurve->iconName();
-            break;
-            
-        //roles for editing job
-        case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
-        {
-            QVariantList args;
-
-                foreach (QString arg, tmpcurve->arguments())
-                {
-                    args.append(arg);
-                    args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
-                    args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
-                }
-
-                return args;
-            break;
-        }
-        
-        case DrawingPrecisionRole: //Variant->int
-                return tmpcurve->drawingPrecision();
-            break;
-
-        case VisibleRole: //Variant->bool
-                return tmpcurve->isVisible();
-            break;
-
-        //roles for deliver extra data: examples, etc ... read-only roles
-        case ExamplesRoles: //Variant->QStringList
-                return tmpcurve->examples();
-            break;
-
-        case SpaceDimensionRole: //Variant->int
-                return tmpcurve->spaceDimension();
-            break;
-
-        case CoordinateSystemRole: //Variant->int
-                return tmpcurve->coordinateSystem();
-            break;
-            
-        case PlotStyleRole: //Variant->int
-                return tmpcurve->plotStyle();
-            break;
-
-        case IsCorrectRole: //Variant->bool
-                return tmpcurve->isCorrect();
-            break;
-
-        case ErrorsRole: //Variant->QStringList
-                return tmpcurve->errors();
-            break;
-
-        case ArcLengthRole: //Variant->double
-                return tmpcurve->arcLength();
-            break;
-
-        case IsClosedRole:  //Variant->double
-                return tmpcurve->isClosed();
-            break;
-
-        case AreaRole: //Variant->double
-                return tmpcurve->area();
-            break;
-
-        case JumpsRole:  //Variant->QList<QVariant> ... list of ints
-        {
-                QVariantList jumps = tmpcurve->jumps();
-                return jumps;
-            break;
-        }
-        
-        case PointsRole: //Variant->QList<QVariant> ... list of doubles
-                return tmpcurve->points();
-            break;
-
-        case IsImplicitRole: //Variant->bool
-                return tmpcurve->isImplicit();
-            break;
-
-        case IsParametricRole: //Variant->bool
-                return tmpcurve->isParametric();
-            break;
-
-        case IsAlgebraicRole:  //Variant->bool
-                return tmpcurve->isAlgebraic();
-            break;*/
-    }
-
-    return QVariant();
 }
 
 template<typename MappingGraphType>
@@ -227,48 +91,9 @@ QVariant MappingGraphModel<MappingGraphType>::headerData(int section, Qt::Orient
 }
 
 template<typename MappingGraphType>
-QModelIndex MappingGraphModel<MappingGraphType>::index(int row, int column, const QModelIndex & parent) const
-{
-    return QModelIndex();
-}
-
-template<typename MappingGraphType>
-bool MappingGraphModel<MappingGraphType>::insertRows(int row, int count, const QModelIndex & parent)
-{
-    Q_ASSERT(row+count-1<m_planeCurves.count());
-   
-    beginInsertRows(parent, row, row+count-1);
-
-    static int defaultNameId = 1;
-    
-    for (int i = 0; i < count; ++i) 
-    {
-        QString defaultName = QString("Curve %1").arg(defaultNameId);
-        QColor defaultColor(qrand() % 256, qrand() % 256, qrand() % 256);
-        
-        PlaneCurve *tmpcurve = PlaneCurve(Analitza::Expression("x->x*x"), m_variablesModule, defaultName, defaultColor);
-        m_planeCurves.insert(row, tmpcurve);
-    }
-
-    ++defaultNameId;
-    
-    endInsertRows();
-    
-    return true;
-}
-
-template<typename MappingGraphType>
-QMap<int, QVariant> MappingGraphModel<MappingGraphType>::itemData(const QModelIndex & index) const
-{
-    QMap<int, QVariant> a;
-
-    return a;
-}
-
-template<typename MappingGraphType>
 bool MappingGraphModel<MappingGraphType>::removeRows(int row, int count, const QModelIndex & parent)
 {
-    Q_ASSERT(row+count-1<m_planeCurves.count());
+    Q_ASSERT(row+count-1<m_items.count());
     
     if(parent.isValid())
         return false;
@@ -277,9 +102,9 @@ bool MappingGraphModel<MappingGraphType>::removeRows(int row, int count, const Q
 
     for (int i = 0; row < count; ++i) 
     {
-        PlaneCurve *tmpcurve = m_planeCurves.at(row);
-        delete tmpcurve;
-        m_planeCurves.removeAt(row);
+        PlaneCurve *tmpitem = m_items[row];
+        delete tmpitem;
+        m_items.removeAt(row);
     }
 
     endRemoveRows();
@@ -293,7 +118,7 @@ int MappingGraphModel<MappingGraphType>::rowCount(const QModelIndex & parent) co
     if(parent.isValid())
         return 0;
     else
-        return m_planeCurves.count();
+        return m_items.count();
 }
 
 template<typename MappingGraphType>
@@ -307,13 +132,12 @@ bool MappingGraphModel<MappingGraphType>::setItemData(const QModelIndex & index,
 {
     return false;
 }
+
 template<typename MappingGraphType>
 Qt::DropActions MappingGraphModel<MappingGraphType>::supportedDropActions() const
 {
     return Qt::IgnoreAction;
 }
-
-
 
 
 

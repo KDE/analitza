@@ -36,13 +36,14 @@ class AbstractPlaneCurve;
 
 //*entity* concept here (not a value concept, so no copy constructor,etc)... defines a hierarchy
 //it should use with pointers to pass in mthods
+//reference semantics when dealing with objects that will be use polymorphically: again,MappingGraphdefines a hierarchy
 // ... if is a pointer then also because of performance reasons
 class ANALITZAPLOT_EXPORT MappingGraph
 {
 public:
     explicit MappingGraph(const QString &name, const QColor& col);
     virtual ~MappingGraph();
-
+// redefine ... no todo es setexpression ... redefine involucra expresio + coordsys (surf) o optra convinacion
     const QString id() const { return m_id; }
     virtual const QString typeName() const = 0; // curve, linear op, isosurface etc localized
     virtual const Analitza::Expression & expression() const = 0; // why pure abstract: couse graphpres go to functionimpl
