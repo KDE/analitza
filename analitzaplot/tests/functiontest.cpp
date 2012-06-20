@@ -58,8 +58,9 @@ void FunctionTest::initTestCase()
 
     qDebug() << model->data(model->index(3), PlaneCurveModel::ExpressionRole) << model->item(0)->examples();
     
+    model->magic(3);
     QCOMPARE(model->item(2)->arguments(), QStringList() << "x");
-	QVERIFY(model->rowCount() == 3);
+	QVERIFY(model->rowCount() == 6);
 //
 //
 	delete v;

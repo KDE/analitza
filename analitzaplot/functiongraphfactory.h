@@ -40,7 +40,7 @@ class Variables;
         static AbstractPlaneCurve * create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         namespace { bool _##name=PlaneCurveFactory::self()->registerPlaneCurve(create##name, \
         name ::TypeName, name ::ExpressionType, name ::SpaceDimension, name ::CoordSystem, name ::Arguments, \
-        name ::IconName, name ::Examples, name ::IsImplicit, name ::IsParametric); }
+        name ::IconName, name ::Examples); }
 
 
 class AbstractPlaneCurve;
@@ -80,8 +80,7 @@ class ANALITZAPLOT_EXPORT PlaneCurveFactory
         bool registerPlaneCurve(BuilderFunction builderFunction, TypeNameFunction typeNameFunction, 
                               ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
                               CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
-                              IconNameFunction iconNameFunction, ExamplesFunction examplesFunction,
-                              IsImplicitFunction isImplicitFunction, IsParametricFunction isParametricFunction);
+                              IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);
         
         bool contains(const QStringList& arguments) const;
 

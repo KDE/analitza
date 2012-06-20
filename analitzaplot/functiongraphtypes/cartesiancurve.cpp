@@ -59,8 +59,8 @@ public:
     QPair<QVector2D, QString> calc(const QPointF &mousepos);
     QLineF derivative(const QPointF &mousepos) const;
 
-    bool isImplicit() const { return IsImplicit(); }
-    bool isParametric() const { return IsParametric(); }
+    bool isImplicit() const { return false; }
+    bool isParametric() const { return false; }
 
     //factory registration
     static QString TypeName() { return QString("CartesianCurveY"); }
@@ -75,8 +75,6 @@ public:
     static QStringList Arguments() { return QStringList() << "x"; }
     static QString IconName() { return QString(); }
     static QStringList Examples() { return QStringList() << "x*x+x" << "x-2*x*x"; }
-    static bool IsImplicit() { return false; }
-    static bool IsParametric() { return false; }
 
 private:
 QStringList m_errors;

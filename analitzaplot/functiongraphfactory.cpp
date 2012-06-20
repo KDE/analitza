@@ -33,8 +33,7 @@ PlaneCurveFactory* PlaneCurveFactory::self()
 bool PlaneCurveFactory::registerPlaneCurve(BuilderFunction builderFunction, TypeNameFunction typeNameFunction, 
                               ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
                               CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
-                              IconNameFunction iconNameFunction, ExamplesFunction examplesFunction,
-                              IsImplicitFunction isImplicitFunction, IsParametricFunction isParametricFunction)
+                              IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
 {
     Q_ASSERT(!contains(argumentsFunction()));
 
@@ -48,8 +47,6 @@ bool PlaneCurveFactory::registerPlaneCurve(BuilderFunction builderFunction, Type
     m_coordinateSystemFunctions[arguments] = coordinateSystemFunction;
     m_iconNameFunctions[arguments] = iconNameFunction;
     m_examplesFunctions[arguments] = examplesFunction;
-    m_IsImplicitFunctions[arguments] = isImplicitFunction;
-    m_IsParametricFunctions[arguments] = isParametricFunction;
 
     return true;
 }
@@ -94,15 +91,6 @@ bool PlaneCurveFactory::contains(const QStringList& arguments) const
             return m_examplesFunctions[arguments.join("|")]();
         }
         
-        bool PlaneCurveFactory::isImplicit(const QStringList& arguments) const
-        {
-            return m_IsImplicitFunctions[arguments.join("|")]();
-        }
-        
-        bool PlaneCurveFactory::isParametric(const QStringList& arguments) const
-        {
-            return m_IsParametricFunctions[arguments.join("|")]();
-        }
         
 
 

@@ -456,7 +456,7 @@ bool PlaneCurveModel::magic(int n)
     
     if (insertRows(m_items.size(), n))
     {
-        for (int i = m_items.size()-n; i < m_items.size(); ++i) 
+        for (int i = n-m_items.size(); i < m_items.size(); ++i) 
         {
             //TODO rand expression ... from examples?
             QString defaultName = QString("Curve %1").arg(defaultNameId);
