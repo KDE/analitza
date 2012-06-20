@@ -48,12 +48,64 @@ MappingGraph::~MappingGraph()
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
 : Curve(name, col), m_varsModule(v)
 {
-    if(!functionExpression.isCorrect()) {
-        m_errors << i18n("The expression is not correct");
-        return;
+    reset(functionExpression);
+}
+
+PlaneCurve::~PlaneCurve()
+{
+    delete m_planeCurve;
+}
+
+bool PlaneCurve::canReset(const Analitza::Expression &functionExpression) const
+{
+    QStringList tmperrs;
+    
+    //NOTE GSOC see functionExpression.isLambda ask for
+    if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
+        tmperrs << i18n("The expression is not correct");
+        return false;
+    }
+
+    Analitza::Analyzer a(m_varsModule);
+    a.setExpression(functionExpression);
+    a.setExpression(a.dependenciesToLambda());
+    
+    QStringList bvars;
+    
+    foreach (Analitza::Ci *arg, a.expression().parameters())
+        bvars.append(arg->name());
+    
+    //TODO: turn into assertion
+    if(!PlaneCurveFactory::self()->contains(bvars))                                        
+        tmperrs << i18n("Function type not recognized");
+    else if(!a.isCorrect())
+        tmperrs << a.errors();
+    else {
+        Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(bvars);
+        Analitza::ExpressionType actual=a.type();
+        
+        if(actual.canReduceTo(expected)) {
+//             delete m_planeCurve;
+//             m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), m_varsModule);
+        } else
+            tmperrs << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
     
-    Analitza::Analyzer a(v);
+    return tmperrs.empty();
+}
+
+
+bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
+{
+    m_errors.clear();
+    
+    //NOTE GSOC see functionExpression.isLambda ask for
+    if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
+        m_errors << i18n("The expression is not correct");
+        return false;
+    }
+
+    Analitza::Analyzer a(m_varsModule);
     a.setExpression(functionExpression);
     a.setExpression(a.dependenciesToLambda());
     
@@ -72,16 +124,16 @@ PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza:
         Analitza::ExpressionType actual=a.type();
         
         if(actual.canReduceTo(expected)) {
-            m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), v);
+            delete m_planeCurve;
+            m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), m_varsModule);
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
+    
+    return m_errors.empty();
 }
 
-PlaneCurve::~PlaneCurve()
-{
-    delete m_planeCurve;
-}
+
 
     const QString PlaneCurve::typeName() const
     {
@@ -92,56 +144,6 @@ const Analitza::Expression & PlaneCurve::expression() const
 {
 //     return m_planeCurve->
 return Analitza::Expression();
-}
-
-bool PlaneCurve::setExpression(Analitza::Expression &functionExpression)
-{
-    if(!functionExpression.isCorrect()) {
-        m_errors << i18n("The expression is not correct");
-        return false;
-    }
-    
-    Analitza::Analyzer a(m_varsModule);
-    a.setExpression(functionExpression);
-    a.setExpression(a.dependenciesToLambda());
-    
-    QStringList bvars;
-    
-    foreach (Analitza::Ci *arg, a.expression().parameters())
-        bvars.append(arg->name());
-    
-    //TODO: turn into assertion
-    if(!PlaneCurveFactory::self()->contains(bvars))
-    {
-        m_errors << i18n("Function type not recognized");
-        
-        return false;
-    }
-    else if(!a.isCorrect())
-    {
-        m_errors << a.errors();
-        
-        return false;
-    }
-    else {
-        Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(bvars);
-        Analitza::ExpressionType actual=a.type();
-        
-        if(actual.canReduceTo(expected))
-        {
-            delete m_planeCurve;
-
-            m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), m_varsModule);
-        }
-        else
-        {
-            m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-            
-            return false;
-        }
-    }
-    
-    return true;
 }
 
 QString PlaneCurve::iconName() const
@@ -176,7 +178,6 @@ void PlaneCurve::setDrawingPrecision(DrawingPrecision precision)
 {
     m_planeCurve->setDrawingPrecision(precision);
 }
-
 
 QStringList PlaneCurve::errors() const
 {

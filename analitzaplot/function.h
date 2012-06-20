@@ -43,11 +43,12 @@ class ANALITZAPLOT_EXPORT MappingGraph
 public:
     explicit MappingGraph(const QString &name, const QColor& col);
     virtual ~MappingGraph();
+    
+    
 // redefine ... no todo es setexpression ... redefine involucra expresio + coordsys (surf) o optra convinacion
     const QString id() const { return m_id; }
     virtual const QString typeName() const = 0; // curve, linear op, isosurface etc localized
     virtual const Analitza::Expression & expression() const = 0; // why pure abstract: couse graphpres go to functionimpl
-    virtual bool setExpression(Analitza::Expression & expression) = 0; // true if the exp is of the same type (or exist a blackend of the same type)... false if not
 
     QString name() const { return m_name; }
     void setName(const QString &newName) { m_name = newName; }
@@ -144,10 +145,12 @@ public:
     explicit PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
     virtual ~PlaneCurve();
 
+    bool canReset(const Analitza::Expression &functionExpression) const;
+    bool reset(const Analitza::Expression &functionExpression);
+    
     //MappingGraph
     const QString typeName() const;
     const Analitza::Expression &expression() const;
-    bool setExpression(Analitza::Expression &functionExpression); 
     QString iconName() const;
     QStringList examples() const;
     int spaceDimension() const;

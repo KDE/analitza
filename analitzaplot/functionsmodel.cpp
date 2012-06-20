@@ -346,8 +346,22 @@ bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value,
         {
             //roles that will show in a view, also works for editing job
             case ExpressionRole: //Variant->QString
-//                 return tmpcurve->expression().toString();
+            {
+                Analitza::Expression fexp(value.toString());
+                
+                if (m_items[index.row()]->canReset(fexp))
+                {
+                    m_items[index.row()]->reset(fexp);
+                    
+                    emit dataChanged(index, index);
+                    
+                    return true;
+                }
+                else
+                    return false;
+            
                 break;
+            }
                 
             case NameRole: //Variant->QString
             {
@@ -424,7 +438,17 @@ bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value,
 
 bool PlaneCurveModel::setItemData(const QModelIndex & index, const QMap<int, QVariant> & roles)
 {
-    return false;
+    bool allvalid = true;
+    
+    foreach (int role, roles.keys())
+        if (!setData(index, roles[role], role))
+        {
+            allvalid = false;
+            
+            break;
+        }
+        
+    return allvalid;
 }
 
 bool PlaneCurveModel::magic(int n)
