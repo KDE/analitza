@@ -487,11 +487,25 @@ bool PlaneCurveModel::magic(int n)
     return false;
 }
 
-const PlaneCurve* PlaneCurveModel::item(int n) const
+const PlaneCurve* PlaneCurveModel::item(int row) const
 {
-    Q_ASSERT(n<m_items.count());
+    Q_ASSERT(row<m_items.count());
 
-    return m_items[n];
+    return m_items[row];
+}
+
+QPair< QVector2D, QString > PlaneCurveModel::calcItem(int row, const QPointF& mousepos)
+{
+        Q_ASSERT(row<m_items.count());
+
+    return m_items[row]->calc(mousepos);
+}
+
+QLineF PlaneCurveModel::derivativeItem(int row, const QPointF& mousepos) const
+{
+        Q_ASSERT(row<m_items.count());
+
+    return m_items[row]->derivative(mousepos);
 }
 
 

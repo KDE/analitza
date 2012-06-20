@@ -109,7 +109,11 @@ public:
     bool magic(int n);
     //ro pointer for points values ... stuff too heavy for the role/variant way
     //also points and jumps will change internaly not by the setdata/qobject 
-    const PlaneCurve * item(int n) const; 
+    const PlaneCurve * item(int row) const; 
+    
+    QPair<QVector2D, QString> calcItem(int row, const QPointF &mousepos);
+    QLineF derivativeItem(int row, const QPointF &mousepos) const;
+
 
 private:
     QList<PlaneCurve*> m_items;
