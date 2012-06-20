@@ -32,7 +32,7 @@ class Variables;
 }
 
 class AbstractPlaneCurve;
-
+class AbstractSurface;
 
 //*entity* concept here (not a value concept, so no copy constructor,etc)... defines a hierarchy
 //it should use with pointers to pass in mthods
@@ -210,6 +210,50 @@ private:
 //     
 // 
 // };
+
+class ANALITZAPLOT_EXPORT Surface : public FunctionGraph 
+{
+public:
+    explicit Surface(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
+    virtual ~Surface();
+
+    bool canReset(const Analitza::Expression &functionExpression) const;
+    bool reset(const Analitza::Expression &functionExpression);
+    
+    //MappingGraph
+    const QString typeName() const;
+    const Analitza::Expression &expression() const;
+    QString iconName() const;
+    QStringList examples() const;
+    int spaceDimension() const;
+    CoordinateSystem coordinateSystem() const;
+    DrawingPrecision drawingPrecision() const;
+    void setDrawingPrecision(DrawingPrecision precision); 
+    QStringList errors() const;
+    bool isCorrect() const;
+
+    //FunctionGraph
+    RealInterval argumentInterval(const QString &argname) const;
+    void setArgumentInverval(const QString &argname, const RealInterval &interval);
+    QStringList arguments() const;
+
+    //Own
+    const QList<int> & indexes() const;
+    const QList<QVector3D> & points() const;
+    void update();
+
+protected:
+    Surface() {}
+    Surface(const PlaneCurve &other) {}
+
+private:
+    Analitza::Variables *m_varsModule;
+    AbstractSurface *m_surface;
+
+    QStringList m_errors;
+};
+
+
 
 
 #endif // ANALITZAPLOT_FUNCTION_H

@@ -130,4 +130,39 @@ private:
     bool m_isParametric;
 };
 
+
+
+///
+
+class ANALITZAPLOT_EXPORT AbstractSurface : public AbstractMappingGraph //strategy pattern for curves
+{
+public:
+    explicit AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractSurface(const AbstractPlaneCurve& fi);
+    virtual ~AbstractSurface();
+
+    //FunctionGraph
+    RealInterval argumentInterval(const QString &argname) const;
+    void setArgumentInverval(const QString &argname, const RealInterval &interval);
+    virtual QStringList arguments() const = 0;
+    virtual void update(const QRect& viewport) = 0;
+
+    //Own
+    const QList<int> & indexes() const;
+    const QList<QVector3D> & points() const;
+    virtual void update() = 0;
+    
+protected:
+//     bool addPoint(const QVector2D& p);
+//     void setJump(int jump);
+//     void clearPoints();
+//     void clearJumps();
+
+private:
+    QMap< QString, RealInterval > m_argumentIntervals;
+    QList<int> m_indexes;
+    QList<QVector3D> m_points;
+};
+
+
 #endif // ANALITZAPLOT_FUNCTIONGRAPH_H
