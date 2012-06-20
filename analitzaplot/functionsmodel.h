@@ -31,9 +31,10 @@
 
 
 
-template<typename MappingGraphType>
 class ANALITZAPLOT_EXPORT MappingGraphModel : public QAbstractItemModel
 {
+Q_OBJECT
+    
 public:
     MappingGraphModel(Analitza::Variables *v, QObject * parent = 0);
     virtual ~MappingGraphModel();
@@ -43,48 +44,25 @@ public:
     Qt::ItemFlags flags(const QModelIndex & index) const;
     bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-    bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
-    int rowCount(const QModelIndex & parent = QModelIndex()) const;
-    bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
-    bool setItemData(const QModelIndex & index, const QMap<int, QVariant> & roles);
     Qt::DropActions supportedDropActions() const;
- 
+
     //own
     
     // append gen n valid functions randomly usa insertrow /// insertrow las genera pero invalidadas
     virtual bool magic(int n) = 0; 
 
 protected:
-    MappingGraphType * item(int row) const;
-    int itemCount() const;
-    MappingGraphType * firstItem() const;
-    void insertItem(int row, MappingGraphType *item); //use this in the cont4ext of insertrows begin end inserting
-    bool isEmpty() const;
-    MappingGraphType * lastItem() const;
-    
-private:
-    Analitza::Variables *m_variablesModule;
-
-    QList<MappingGraphType*> m_items;
+    Analitza::Variables *variablesModule;
 };
 
-
-
-
-class ANALITZAPLOT_EXPORT PlaneCurveModel : public MappingGraphModel<PlaneCurveModel>
+class ANALITZAPLOT_EXPORT PlaneCurveModel : public MappingGraphModel
 {
-};
+Q_OBJECT
 
-
-
-
-/*
-class ANALITZAPLOT_EXPORT PlaneCurveModel : public QAbstractItemModel
-{
 public:
     enum PlaneCurveDataRole 
     {
-        //roles that will show in a view, also works for editing job
+        //roles that will show in a view, also works for editing job except iconname
         ExpressionRole = Qt::UserRole, //Variant->QString
         NameRole, //Variant->QString
         ColorRole, //Variant->QColor
@@ -95,7 +73,7 @@ public:
         DrawingPrecisionRole, //Variant->int
         VisibleRole, //Variant->bool
 
-        //roles for deliver extra data: examples, etc ... read-only roles
+        //roles for deliver extra data: examples, etc ... read-only roles / except plotstyle
         ExamplesRoles, //Variant->QStringList
         SpaceDimensionRole, //Variant->int
         CoordinateSystemRole, //Variant->int
@@ -105,8 +83,8 @@ public:
         ArcLengthRole, //Variant->double
         IsClosedRole,  //Variant->double
         AreaRole, //Variant->double
-        JumpsRole,  //Variant->QList<QVariant> ... list of ints
-        PointsRole, //Variant->QList<QVariant> ... list of doubles
+//         JumpsRole,  //Variant->QList<QVariant> ... list of ints ... use const T * item const instead
+//         PointsRole, //Variant->QList<QVariant> ... list of doubles ... use const T * item const instead
         IsImplicitRole, //Variant->bool
         IsParametricRole, //Variant->bool
         IsAlgebraicRole,  //Variant->bool
@@ -115,25 +93,22 @@ public:
     PlaneCurveModel(Analitza::Variables *v, QObject * parent = 0);
     virtual ~PlaneCurveModel();
     
-    int columnCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-    Qt::ItemFlags flags(const QModelIndex & index) const;
-    bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-    QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
-    bool insertColumns(int column, int count, const QModelIndex & parent = QModelIndex());
     bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
     QMap<int, QVariant> itemData(const QModelIndex & index) const;
     bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
     bool setItemData(const QModelIndex & index, const QMap<int, QVariant> & roles);
-    Qt::DropActions supportedDropActions() const;
     
+    bool magic(int n);
+    //ro pointer for points values ... stuff too heavy for the role/variant way
+    //also points and jumps will change internaly not by the setdata/qobject 
+    const PlaneCurve * item(int n) const; 
+
 private:
-    Analitza::Variables *m_variablesModule;
-    QList<PlaneCurve*> m_planeCurves;
-};*/
+    QList<PlaneCurve*> m_items;
+};
 
 
 

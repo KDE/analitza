@@ -28,34 +28,33 @@
 
 
 
-template<typename MappingGraphType>
-MappingGraphModel<MappingGraphType>::MappingGraphModel(Analitza::Variables *v, QObject * parent)
+
+MappingGraphModel::MappingGraphModel(Analitza::Variables *v, QObject * parent)
 : QAbstractItemModel(parent)
 {
     Q_ASSERT(v);
     
-    m_variablesModule = v;
+    variablesModule = v;
     
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 }
 
-template<typename MappingGraphType>
-MappingGraphModel<MappingGraphType>::~MappingGraphModel()
+
+MappingGraphModel::~MappingGraphModel()
 {
-    qDeleteAll(m_items.begin(), m_items.end());
-    m_items.clear();
+
 }
 
-template<typename MappingGraphType>
-int MappingGraphModel<MappingGraphType>::columnCount(const QModelIndex & parent) const
+
+int MappingGraphModel::columnCount(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
     
     return 2;
 }
 
-template<typename MappingGraphType>
-Qt::ItemFlags MappingGraphModel<MappingGraphType>::flags(const QModelIndex & index) const
+
+Qt::ItemFlags MappingGraphModel::flags(const QModelIndex & index) const
 {
     if(index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsTristate;
@@ -63,16 +62,16 @@ Qt::ItemFlags MappingGraphModel<MappingGraphType>::flags(const QModelIndex & ind
         return 0;
 }
 
-template<typename MappingGraphType>
-bool MappingGraphModel<MappingGraphType>::hasChildren(const QModelIndex & parent) const
+
+bool MappingGraphModel::hasChildren(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
     
     return false;   
 }
 
-template<typename MappingGraphType>
-QVariant MappingGraphModel<MappingGraphType>::headerData(int section, Qt::Orientation orientation, int role) const
+
+QVariant MappingGraphModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     QVariant ret;
     
@@ -90,54 +89,12 @@ QVariant MappingGraphModel<MappingGraphType>::headerData(int section, Qt::Orient
     return ret;
 }
 
-template<typename MappingGraphType>
-bool MappingGraphModel<MappingGraphType>::removeRows(int row, int count, const QModelIndex & parent)
-{
-    Q_ASSERT(row+count-1<m_items.count());
-    
-    if(parent.isValid())
-        return false;
-    
-    beginRemoveRows(parent, row, row+count-1);
 
-    for (int i = 0; row < count; ++i) 
-    {
-        PlaneCurve *tmpitem = m_items[row];
-        delete tmpitem;
-        m_items.removeAt(row);
-    }
-
-    endRemoveRows();
-
-    return true;   
-}
-
-template<typename MappingGraphType>
-int MappingGraphModel<MappingGraphType>::rowCount(const QModelIndex & parent) const
-{
-    if(parent.isValid())
-        return 0;
-    else
-        return m_items.count();
-}
-
-template<typename MappingGraphType>
-bool MappingGraphModel<MappingGraphType>::setData(const QModelIndex & index, const QVariant & value, int role)
-{
-    return false;
-}
-
-template<typename MappingGraphType>
-bool MappingGraphModel<MappingGraphType>::setItemData(const QModelIndex & index, const QMap<int, QVariant> & roles)
-{
-    return false;
-}
-
-template<typename MappingGraphType>
-Qt::DropActions MappingGraphModel<MappingGraphType>::supportedDropActions() const
+Qt::DropActions MappingGraphModel::supportedDropActions() const
 {
     return Qt::IgnoreAction;
 }
+
 
 
 
@@ -153,8 +110,354 @@ Qt::DropActions MappingGraphModel<MappingGraphType>::supportedDropActions() cons
 
 
 
+PlaneCurveModel::PlaneCurveModel(Analitza::Variables *v, QObject * parent)
+: MappingGraphModel(v, parent)
+{
+}
 
 
+PlaneCurveModel::~PlaneCurveModel()
+{
+    qDeleteAll(m_items.begin(), m_items.end());
+    m_items.clear();
+}
+
+
+QVariant PlaneCurveModel::data(const QModelIndex & index, int role) const
+{
+    if(!index.isValid() || index.row()>=m_items.count())
+        return QVariant();
+    
+    int var=index.row();
+    
+    PlaneCurve *tmpcurve = m_items.at(var);
+
+    switch(role) 
+    {
+        case Qt::DisplayRole:
+            switch(index.column()) {
+                case 0:
+                    return tmpcurve->name();
+                    break;
+                case 1:
+                    return tmpcurve->expression().toString();
+                    break;
+            }
+            break;
+        case Qt::DecorationRole:
+            if(index.column()==0) {
+                QPixmap ico(15, 15);
+                ico.fill(tmpcurve->color());
+                return  QIcon(ico);
+            } else {
+                return QIcon::fromTheme(tmpcurve->iconName());
+            }
+            break;
+            
+        //roles that will show in a view, also works for editing job
+        case ExpressionRole: //Variant->QString
+            return tmpcurve->expression().toString();
+            break;
+            
+        case NameRole: //Variant->QString
+                return tmpcurve->name();
+            break;
+
+        case ColorRole: //Variant->QColor
+                return tmpcurve->color();
+            break;
+            
+        case IconNameRole: //Variant->QString
+                return tmpcurve->iconName();
+            break;
+            
+        //roles for editing job
+        case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+        {
+            QVariantList args;
+
+                foreach (QString arg, tmpcurve->arguments())
+                {
+                    args.append(arg);
+                    args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
+                    args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
+                }
+
+                return args;
+            break;
+        }
+        
+        case DrawingPrecisionRole: //Variant->int
+                return tmpcurve->drawingPrecision();
+            break;
+
+        case VisibleRole: //Variant->bool
+                return tmpcurve->isVisible();
+            break;
+
+        //roles for deliver extra data: examples, etc ... read-only roles
+        case ExamplesRoles: //Variant->QStringList
+                return tmpcurve->examples();
+            break;
+
+        case SpaceDimensionRole: //Variant->int
+                return tmpcurve->spaceDimension();
+            break;
+
+        case CoordinateSystemRole: //Variant->int
+                return tmpcurve->coordinateSystem();
+            break;
+            
+        case PlotStyleRole: //Variant->int
+                return tmpcurve->plotStyle();
+            break;
+
+        case IsCorrectRole: //Variant->bool
+                return tmpcurve->isCorrect();
+            break;
+
+        case ErrorsRole: //Variant->QStringList
+                return tmpcurve->errors();
+            break;
+
+        case ArcLengthRole: //Variant->double
+                return tmpcurve->arcLength();
+            break;
+
+        case IsClosedRole:  //Variant->double
+                return tmpcurve->isClosed();
+            break;
+
+        case AreaRole: //Variant->double
+                return tmpcurve->area();
+            break;
+
+            //use item instead
+//         case JumpsRole:  //Variant->QList<QVariant> ... list of ints
+//         {
+//                 QVariantList jumps = tmpcurve->jumps();
+//                 return jumps;
+//             break;
+//         }
+//         
+//         case PointsRole: //Variant->QList<QVariant> ... list of doubles
+//                 return tmpcurve->points();
+//             break;
+
+        case IsImplicitRole: //Variant->bool
+                return tmpcurve->isImplicit();
+            break;
+
+        case IsParametricRole: //Variant->bool
+                return tmpcurve->isParametric();
+            break;
+
+        case IsAlgebraicRole:  //Variant->bool
+                return tmpcurve->isAlgebraic();
+            break;
+    }
+
+    return QVariant();
+}
+
+
+bool PlaneCurveModel::insertRows(int row, int count, const QModelIndex & parent)
+{
+    beginInsertRows(parent, row, row+count-1);
+
+    for (int i = 0; i < count; ++i) 
+        m_items.insert(row, new PlaneCurve(Analitza::Expression(""), variablesModule, "", QColor()));
+    
+    endInsertRows();
+    
+    return true;
+}
+
+QMap<int, QVariant> PlaneCurveModel::itemData(const QModelIndex & index) const
+{
+    QMap<int, QVariant> ret;
+    
+    ret[ExpressionRole] = data(index, ExpressionRole);
+    ret[NameRole] = data(index, NameRole);
+    ret[ColorRole] = data(index, ColorRole);
+    ret[IconNameRole] = data(index, IconNameRole);
+
+    //roles for editing job
+    ret[ArgumentsRole] = data(index, ArgumentsRole);
+    ret[DrawingPrecisionRole] = data(index, DrawingPrecisionRole);
+    ret[VisibleRole] = data(index, VisibleRole);
+
+    //roles for deliver extra data: examples, etc ... read-only roles
+    ret[ExamplesRoles] = data(index, ExamplesRoles);
+    ret[SpaceDimensionRole] = data(index, SpaceDimensionRole);
+    ret[CoordinateSystemRole] = data(index, CoordinateSystemRole);
+    ret[PlotStyleRole] = data(index, PlotStyleRole);
+    ret[IsCorrectRole] = data(index, IsCorrectRole);
+    ret[ErrorsRole] = data(index, ErrorsRole);
+    ret[ArcLengthRole] = data(index, ArcLengthRole);
+    ret[IsClosedRole] = data(index, IsClosedRole);
+    ret[AreaRole] = data(index, AreaRole);
+//         JumpsRole,  //Variant->QList<QVariant> ... list of ints ... use const T * item const instead
+//         PointsRole, //Variant->QList<QVariant> ... list of doubles ... use const T * item const instead
+    ret[IsImplicitRole] = data(index, IsImplicitRole);
+    ret[IsParametricRole] = data(index, IsParametricRole);
+    ret[IsAlgebraicRole] = data(index, IsAlgebraicRole);
+
+    return ret;
+}
+
+
+bool PlaneCurveModel::removeRows(int row, int count, const QModelIndex & parent)
+{
+    Q_ASSERT(row+count-1<m_items.count());
+    
+    if(parent.isValid())
+        return false;
+    
+    beginRemoveRows(parent, row, row+count-1);
+
+    for (int i = 0; row < count; ++i) 
+    {
+        PlaneCurve *tmpcurve = m_items.at(row);
+        delete tmpcurve;
+        m_items.removeAt(row);
+    }
+
+    endRemoveRows();
+
+    return true;   
+}
+
+
+int PlaneCurveModel::rowCount(const QModelIndex & parent) const
+{
+    if(parent.isValid())
+        return 0;
+    else
+        return m_items.count();
+}
+
+
+bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value, int role)
+{
+    if (index.isValid() && role == Qt::EditRole)
+    {
+        switch (role)
+        {
+            //roles that will show in a view, also works for editing job
+            case ExpressionRole: //Variant->QString
+//                 return tmpcurve->expression().toString();
+                break;
+                
+            case NameRole: //Variant->QString
+            {
+                m_items[index.row()]->setName(value.toString());
+                emit dataChanged(index, index);
+                
+                return true;
+            
+                break;
+            }
+
+            case ColorRole: //Variant->QColor
+            {
+                m_items[index.row()]->setColor(value.value<QColor>());
+                emit dataChanged(index, index);
+                
+                return true;
+            
+                break;
+            }
+                
+                
+            //roles for editing job
+            case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+            {
+//                 QVariantList args;
+// 
+//                     foreach (QString arg, tmpcurve->arguments())
+//                     {
+//                         args.append(arg);
+//                         args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
+//                         args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
+//                     }
+// 
+//                     return args;
+                break;
+            }
+            
+            case DrawingPrecisionRole: //Variant->int
+            {
+                m_items[index.row()]->setDrawingPrecision((DrawingPrecision)value.toInt());
+                emit dataChanged(index, index);
+                
+                return true;
+            
+                break;
+            }
+
+            case VisibleRole: //Variant->bool
+            {
+                m_items[index.row()]->setVisible(value.toBool());
+                emit dataChanged(index, index);
+                
+                return true;
+            
+                break;
+            }
+
+            case PlotStyleRole: //Variant->int
+            {
+                m_items[index.row()]->setPlotStyle((PlotStyle)value.toInt());
+                emit dataChanged(index, index);
+                
+                return true;
+            
+                break;
+            }
+        }
+    }
+    
+    return false;
+}
+
+
+bool PlaneCurveModel::setItemData(const QModelIndex & index, const QMap<int, QVariant> & roles)
+{
+    return false;
+}
+
+bool PlaneCurveModel::magic(int n)
+{
+//     static int defaultNameId = 1;
+//     
+//     if (insertRows(m_items.size()))
+//     {
+//         for (int i = 0; i < m_items.size(); ++i) 
+//         {
+//             //TODO rand expression ... from examples?
+//             QString defaultName = QString("Curve %1").arg(defaultNameId);
+//             QColor defaultColor(qrand() % 256, qrand() % 256, qrand() % 256);
+// 
+//             m_items[i]->setExpression(Analitza::Expression("x->x*x"));
+//             m_items[i]->setName(defaultName);
+//             m_items[i]->setColor(defaultColor);
+//         }
+// 
+//         ++defaultNameId;
+//         
+//         return true;
+//     }
+    
+    return false;
+}
+
+const PlaneCurve* PlaneCurveModel::item(int n) const
+{
+    Q_ASSERT(n<m_items.count());
+
+    return m_items[n];
+}
 
 
 
