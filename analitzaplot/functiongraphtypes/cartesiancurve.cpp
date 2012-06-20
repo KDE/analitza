@@ -39,13 +39,14 @@ public:
     const QString typeName() const { return TypeName(); }
     QString iconName() const { return IconName(); }
     QStringList examples() const { return Examples(); }
-    int spaceDimension() const { return 2; }
-    CoordinateSystem coordinateSystem() const { return CoordinateSystem(); }
+    int spaceDimension() const { return SpaceDimension(); }
+    CoordinateSystem coordinateSystem() const { return CoordSystem(); }
     QStringList errors() const { return m_errors; }
     bool isCorrect() const { return false; }
     AbstractMappingGraph * copy();
 
     //FunctionGraph
+    QStringList arguments() const { return Arguments(); }
     void update(const QList<RealInterval> viewport);
 
     //Curve
@@ -92,7 +93,9 @@ AbstractMappingGraph * CartesianCurveY::copy()
 	return 0;
 }
 
+
 //FunctionGraph
+
 void CartesianCurveY::update(const QList<RealInterval> viewport)
 {
     

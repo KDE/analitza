@@ -96,7 +96,7 @@ public:
     //FunctionGraph
     RealInterval argumentInterval(const QString &argname) const;
     void setArgumentInverval(const QString &argname, const RealInterval &interval);
-    QStringList arguments() const;
+    virtual QStringList arguments() const = 0;
     virtual void update(const QList<RealInterval> viewport) = 0;
 
     //Curve

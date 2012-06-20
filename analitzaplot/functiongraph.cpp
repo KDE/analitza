@@ -77,18 +77,18 @@ AbstractPlaneCurve::~AbstractPlaneCurve()
 //FunctionGraph
 RealInterval AbstractPlaneCurve::argumentInterval(const QString &argname) const
 {
-    return RealInterval();
+    Q_ASSERT(m_argumentIntervals.size()>0);
+    
+    return m_argumentIntervals[argname];
 }
 
 void AbstractPlaneCurve::setArgumentInverval(const QString &argname, const RealInterval &interval)
 {
+//     Q_ASSERT(m_argumentIntervals.find().size()>0);
     
+    m_argumentIntervals[argname] = interval;
 }
 
-QStringList AbstractPlaneCurve::arguments() const
-{
-    return QStringList();
-}
 
 QList<int> AbstractPlaneCurve::jumps() const
 {

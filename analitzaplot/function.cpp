@@ -253,6 +253,8 @@ const QVector<QVector2D> & PlaneCurve::points() const
 
 QList< int > PlaneCurve::jumps() const
 {
+        Q_ASSERT(m_planeCurve);
+    Q_ASSERT(m_planeCurve->jumps().size()>1);
 return m_planeCurve->jumps();
 }
 
