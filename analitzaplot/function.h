@@ -202,6 +202,8 @@ private:
     QStringList m_errors;
 };
 
+///
+
 // class ANALITZAPLOT_EXPORT SpaceCurve : public Curve 
 // {
 //     //3D
@@ -210,6 +212,10 @@ private:
 //     
 // 
 // };
+
+
+///
+
 
 class ANALITZAPLOT_EXPORT Surface : public FunctionGraph 
 {
@@ -240,7 +246,7 @@ public:
     //Own
     const QList<int> & indexes() const;
     const QList<QVector3D> & points() const;
-    void update();
+    void update(/*frustum*/);
 
 protected:
     Surface() {}
