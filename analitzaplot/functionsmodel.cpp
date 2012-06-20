@@ -22,15 +22,15 @@
 #include <QTime>
 #include <QPixmap>
 #include <QFont>
-#include "analitza/expression.h"
 #include <QIcon>
 
+#include "analitza/expression.h"
 
 
 
 
 MappingGraphModel::MappingGraphModel(Analitza::Variables *v, QObject * parent)
-: QAbstractItemModel(parent)
+: QAbstractListModel(parent)
 {
     Q_ASSERT(v);
     
@@ -158,7 +158,6 @@ QVariant PlaneCurveModel::data(const QModelIndex & index, int role) const
         case ExpressionRole: //Variant->QString
             return tmpcurve->expression().toString();
             break;
-            
         case NameRole: //Variant->QString
                 return tmpcurve->name();
             break;
@@ -266,8 +265,8 @@ bool PlaneCurveModel::insertRows(int row, int count, const QModelIndex & parent)
     beginInsertRows(parent, row, row+count-1);
 
     for (int i = 0; i < count; ++i) 
-        m_items.insert(row, new PlaneCurve(Analitza::Expression(""), variablesModule, "", QColor()));
-    
+        m_items.insert(row, new PlaneCurve(Analitza::Expression("x->0"), variablesModule, QString(), QColor()));
+
     endInsertRows();
     
     return true;
@@ -340,7 +339,7 @@ int PlaneCurveModel::rowCount(const QModelIndex & parent) const
 
 bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
-    if (index.isValid() && role == Qt::EditRole)
+    if (index.isValid())
     {
         switch (role)
         {
@@ -348,7 +347,6 @@ bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value,
             case ExpressionRole: //Variant->QString
             {
                 Analitza::Expression fexp(value.toString());
-                
                 if (m_items[index.row()]->canReset(fexp))
                 {
                     m_items[index.row()]->reset(fexp);
@@ -375,9 +373,10 @@ bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value,
 
             case ColorRole: //Variant->QColor
             {
+                    
+
                 m_items[index.row()]->setColor(value.value<QColor>());
                 emit dataChanged(index, index);
-                
                 return true;
             
                 break;
@@ -453,25 +452,27 @@ bool PlaneCurveModel::setItemData(const QModelIndex & index, const QMap<int, QVa
 
 bool PlaneCurveModel::magic(int n)
 {
-//     static int defaultNameId = 1;
-//     
-//     if (insertRows(m_items.size()))
-//     {
-//         for (int i = 0; i < m_items.size(); ++i) 
-//         {
-//             //TODO rand expression ... from examples?
-//             QString defaultName = QString("Curve %1").arg(defaultNameId);
-//             QColor defaultColor(qrand() % 256, qrand() % 256, qrand() % 256);
-// 
-//             m_items[i]->setExpression(Analitza::Expression("x->x*x"));
-//             m_items[i]->setName(defaultName);
-//             m_items[i]->setColor(defaultColor);
-//         }
-// 
-//         ++defaultNameId;
-//         
-//         return true;
-//     }
+    static int defaultNameId = 1;
+    
+    if (insertRows(m_items.size(), n))
+    {
+        for (int i = m_items.size()-n; i < m_items.size(); ++i) 
+        {
+            //TODO rand expression ... from examples?
+            QString defaultName = QString("Curve %1").arg(defaultNameId);
+            QColor defaultColor(qrand() % 256, qrand() % 256, qrand() % 256);
+            
+            //yanoisreset se asume que la data que se pondra aca viene de examples o de otra fuente confiable
+            //TODO gsoc por el momento solo una sola funcion
+            setData(index(i), QString("x->x*x"), ExpressionRole);
+            setData(index(i), defaultName, NameRole);
+            setData(index(i), defaultColor, ColorRole);
+        }
+
+        ++defaultNameId;
+        
+        return true;
+    }
     
     return false;
 }

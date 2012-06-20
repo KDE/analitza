@@ -46,7 +46,7 @@ MappingGraph::~MappingGraph()
 /////
 
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-: Curve(name, col), m_varsModule(v)
+: Curve(name, col), m_varsModule(v), m_planeCurve(0)
 {
     reset(functionExpression);
 }
@@ -59,7 +59,6 @@ PlaneCurve::~PlaneCurve()
 bool PlaneCurve::canReset(const Analitza::Expression &functionExpression) const
 {
     QStringList tmperrs;
-    
     //NOTE GSOC see functionExpression.isLambda ask for
     if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
         tmperrs << i18n("The expression is not correct");
@@ -100,7 +99,8 @@ bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
     m_errors.clear();
     
     //NOTE GSOC see functionExpression.isLambda ask for
-    if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
+    if(!functionExpression.isCorrect() || !functionExpression.isLambda())
+    {
         m_errors << i18n("The expression is not correct");
         return false;
     }
@@ -124,10 +124,14 @@ bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
         Analitza::ExpressionType actual=a.type();
         
         if(actual.canReduceTo(expected)) {
+            
             delete m_planeCurve;
+
             m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), m_varsModule);
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+        
+        
     }
     
     return m_errors.empty();
@@ -143,7 +147,7 @@ bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
 const Analitza::Expression & PlaneCurve::expression() const
 {
 //     return m_planeCurve->
-return Analitza::Expression();
+return m_planeCurve->expression();
 }
 
 QString PlaneCurve::iconName() const
@@ -191,7 +195,10 @@ QStringList PlaneCurve::errors() const
 
 bool PlaneCurve::isCorrect() const
 {
-    return m_planeCurve && m_errors.isEmpty() && m_planeCurve->isCorrect();
+    if (m_planeCurve)
+        return m_errors.isEmpty() && m_planeCurve->isCorrect();
+
+    return m_errors.isEmpty();
 }
 
     RealInterval PlaneCurve::argumentInterval(const QString &argname) const

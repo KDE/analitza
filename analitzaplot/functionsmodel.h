@@ -22,6 +22,7 @@
 
 #include <QAbstractTableModel>
 #include <QStandardItem>
+#include <QAbstractListModel>
 
 
 #include "function.h"
@@ -31,7 +32,7 @@
 
 
 
-class ANALITZAPLOT_EXPORT MappingGraphModel : public QAbstractItemModel
+class ANALITZAPLOT_EXPORT MappingGraphModel : public QAbstractListModel
 {
 Q_OBJECT
     

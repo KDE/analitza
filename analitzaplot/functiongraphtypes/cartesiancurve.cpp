@@ -73,7 +73,7 @@ public:
     static CoordinateSystem CoordSystem() { return Cartesian; }
     static QStringList Arguments() { return QStringList() << "x"; }
     static QString IconName() { return QString(); }
-    static QStringList Examples() { return QStringList(); }
+    static QStringList Examples() { return QStringList() << "x*x+x" << "x-2*x*x"; }
     static bool IsImplicit() { return false; }
     static bool IsParametric() { return false; }
 

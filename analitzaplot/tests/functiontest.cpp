@@ -18,6 +18,7 @@
 
 #include "functiontest.h"
 #include "analitzaplot/function.h"
+#include "analitzaplot/functionsmodel.h"
 #include "analitza/expression.h"
 #include "analitza/variables.h"
 #include <qtest_kde.h>
@@ -50,15 +51,16 @@ void FunctionTest::initTestCase()
 // //
 // //
 
-    PlaneCurve f(Analitza::Expression("x->x*x"), v, "para", Qt::red);
+//     PlaneCurve f(Analitza::Expression("x->x*x"), v, "para", Qt::red);
     
-    qDebug() << f.typeName();
-    
+    PlaneCurveModel *model = new PlaneCurveModel(v, this);
+    model->magic(3);
+
+    qDebug() << model->data(model->index(3), PlaneCurveModel::ExpressionRole) << model->item(0)->examples();
     
 
-// 	QVERIFY(f.evaluateRealValue(34) == 32);
+	QVERIFY(model->rowCount() == 3);
 //
-// // 	qDebug() << "AKIII TERMINA";
 //
 	delete v;
 }
