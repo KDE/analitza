@@ -106,8 +106,6 @@ public:
     virtual void setArgumentInverval(const QString &argname, const RealInterval &interval) = 0;
     virtual QStringList arguments() const = 0;
     
-    virtual void update(const QList<RealInterval> viewport) = 0;
-    
 protected:
     FunctionGraph() {}
     FunctionGraph(const FunctionGraph &other) {}
@@ -164,7 +162,6 @@ public:
     RealInterval argumentInterval(const QString &argname) const;
     void setArgumentInverval(const QString &argname, const RealInterval &interval);
     QStringList arguments() const;
-    void update(const QList<RealInterval> viewport);
 
     //Curve
     double arcLength() const;
@@ -175,6 +172,7 @@ public:
 
     //Own
     const QVector<QVector2D> & points() const;
+    void update(const QRect& viewport);
     QPair<QVector2D, QString> calc(const QPointF &mousepos);
     QLineF derivative(const QPointF &mousepos) const;
 

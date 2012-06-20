@@ -219,10 +219,6 @@ QStringList PlaneCurve::arguments() const
 
     return m_planeCurve->arguments();
 }
-    void PlaneCurve::update(const QList<RealInterval> viewport)
-    {
-        m_planeCurve->update(viewport);
-    }
 
 double PlaneCurve::arcLength() const
 {
@@ -247,16 +243,24 @@ QPair<bool, double> PlaneCurve::isParallelTo(const Curve &othercurve)
 const QVector<QVector2D> & PlaneCurve::points() const
 {
     Q_ASSERT(m_planeCurve);
-    Q_ASSERT(m_planeCurve->points().size()>1);
+    
+//     Q_ASSERT(m_planeCurve->points().size()>1);
     return m_planeCurve->points();
 }
 
 QList< int > PlaneCurve::jumps() const
 {
         Q_ASSERT(m_planeCurve);
-    Q_ASSERT(m_planeCurve->jumps().size()>1);
+//     Q_ASSERT(m_planeCurve->jumps().size()>1);
 return m_planeCurve->jumps();
 }
+
+void PlaneCurve::update(const QRect& viewport)
+{
+    Q_ASSERT(m_planeCurve);
+    m_planeCurve->update(viewport);
+}
+
 
 QPair< QVector2D, QString > PlaneCurve::calc(const QPointF &mousepos)
 {

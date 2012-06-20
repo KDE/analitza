@@ -84,11 +84,15 @@ public:
         ArcLengthRole, //Variant->double
         IsClosedRole,  //Variant->double
         AreaRole, //Variant->double
+
+                //methodroles
+        UpdateRole, //variant->qrect
 //         JumpsRole,  //Variant->QList<QVariant> ... list of ints ... use const T * item const instead
 //         PointsRole, //Variant->QList<QVariant> ... list of doubles ... use const T * item const instead
         IsImplicitRole, //Variant->bool
         IsParametricRole, //Variant->bool
-        IsAlgebraicRole,  //Variant->bool
+        IsAlgebraicRole  //Variant->bool
+
     };
     
     PlaneCurveModel(Analitza::Variables *v, QObject * parent = 0);

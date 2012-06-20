@@ -92,8 +92,6 @@ class ANALITZAPLOT_EXPORT PlaneCurveFactory
         CoordinateSystem coordinateSystem(const QStringList& arguments) const;
         QString iconName(const QStringList& arguments) const;
         QStringList examples(const QStringList& arguments) const;
-        bool isImplicit(const QStringList& arguments) const;
-        bool isParametric(const QStringList& arguments) const;
 
     private:
         static PlaneCurveFactory* m_self;

@@ -97,7 +97,7 @@ public:
     RealInterval argumentInterval(const QString &argname) const;
     void setArgumentInverval(const QString &argname, const RealInterval &interval);
     virtual QStringList arguments() const = 0;
-    virtual void update(const QList<RealInterval> viewport) = 0;
+    virtual void update(const QRect& viewport) = 0;
 
     //Curve
     virtual double arcLength() const = 0;
@@ -118,6 +118,8 @@ public:
 protected:
     bool addPoint(const QVector2D& p);
     void setJump(int jump);
+    void clearPoints();
+    void clearJumps();
 
 private:
     QMap< QString, RealInterval > m_argumentIntervals;

@@ -428,6 +428,16 @@ bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value,
             
                 break;
             }
+            
+            case UpdateRole:
+            {
+                m_items[index.row()]->update(value.toRect());
+                emit dataChanged(index, index);
+                
+                return true;
+            
+                break;
+            }
         }
     }
     
