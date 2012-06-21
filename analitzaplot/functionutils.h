@@ -46,7 +46,6 @@ class Expression;
 }
 
 enum DrawingPrecision { LowPrecision = 1, MediumPrecision, HighPrecision};
-enum PlotStyle { Solid = 1, Wired, Dots };
 enum CoordinateSystem { Cartesian = 1, Polar, Cylindrical, Spherical };
 
 class EndPoint

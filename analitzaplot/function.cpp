@@ -20,20 +20,18 @@
 
 #include "function.h"
 
-#include <KDE/KLocalizedString>
-#include <QPen>
 #include <QUuid>
 
+#include <KDE/KLocalizedString>
+
 #include "analitza/analyzer.h"
-#include <analitza/value.h>
-#include <analitza/vector.h>
-#include <analitza/variable.h>
+#include "analitza/variable.h"
 
 #include "functiongraph.h"
 #include "functiongraphfactory.h"
 
 MappingGraph::MappingGraph(const QString &name, const QColor& col)
-: m_name (name), m_color(col), m_plotStyle(Solid)
+    : m_name (name), m_color(col)
 {
     m_id = QUuid::createUuid().toString();
 }
@@ -42,11 +40,10 @@ MappingGraph::~MappingGraph()
 {
 }
 
-
-/////
+///
 
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-: Curve(name, col), m_varsModule(v), m_planeCurve(0)
+    : Curve(name, col), m_varsModule(v), m_planeCurve(0)
 {
     reset(functionExpression);
 }
@@ -68,36 +65,35 @@ bool PlaneCurve::canReset(const Analitza::Expression &functionExpression) const
     Analitza::Analyzer a(m_varsModule);
     a.setExpression(functionExpression);
     a.setExpression(a.dependenciesToLambda());
-    
+
     QStringList bvars;
-    
+
     foreach (Analitza::Ci *arg, a.expression().parameters())
         bvars.append(arg->name());
-    
+
     //TODO: turn into assertion
-    if(!PlaneCurveFactory::self()->contains(bvars))                                        
+    if(!PlaneCurveFactory::self()->contains(PlaneCurveFactory::self()->id(bvars)))
         tmperrs << i18n("Function type not recognized");
     else if(!a.isCorrect())
         tmperrs << a.errors();
     else {
-        Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(bvars);
+        Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(PlaneCurveFactory::self()->id(bvars));
         Analitza::ExpressionType actual=a.type();
-        
+
         if(actual.canReduceTo(expected)) {
 //             delete m_planeCurve;
 //             m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), m_varsModule);
         } else
             tmperrs << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
-    
+
     return tmperrs.empty();
 }
-
 
 bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
 {
     m_errors.clear();
-    
+
     //NOTE GSOC see functionExpression.isLambda ask for
     if(!functionExpression.isCorrect() || !functionExpression.isLambda())
     {
@@ -108,83 +104,112 @@ bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
     Analitza::Analyzer a(m_varsModule);
     a.setExpression(functionExpression);
     a.setExpression(a.dependenciesToLambda());
-    
+
     QStringList bvars;
-    
+
     foreach (Analitza::Ci *arg, a.expression().parameters())
         bvars.append(arg->name());
-    
+
     //TODO: turn into assertion
-    if(!PlaneCurveFactory::self()->contains(bvars))                                        
+    if(!PlaneCurveFactory::self()->contains(PlaneCurveFactory::self()->id(bvars)))
         m_errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
         m_errors << a.errors();
     else {
-        Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(bvars);
+        Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(PlaneCurveFactory::self()->id(bvars));
         Analitza::ExpressionType actual=a.type();
-        
+
         if(actual.canReduceTo(expected)) {
-            
+
             delete m_planeCurve;
 
-            m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), m_varsModule);
+            m_planeCurve=PlaneCurveFactory::self()->build(PlaneCurveFactory::self()->id(bvars), a.expression(), m_varsModule);
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-        
-        
+
+
     }
-    
+
     return m_errors.empty();
 }
 
-
-
-    const QString PlaneCurve::typeName() const
-    {
-        return m_planeCurve->typeName();
-    }
+const QString PlaneCurve::typeName() const
+{
+    Q_ASSERT(m_planeCurve);
+    
+    return m_planeCurve->typeName();
+}
 
 const Analitza::Expression & PlaneCurve::expression() const
 {
+    Q_ASSERT(m_planeCurve);
+    
 //     return m_planeCurve->
-return m_planeCurve->expression();
+    return m_planeCurve->expression();
 }
 
 QString PlaneCurve::iconName() const
 {
-return m_planeCurve->iconName();
+    Q_ASSERT(m_planeCurve);
+    
+    return m_planeCurve->iconName();
 }
-
 
 QStringList PlaneCurve::examples() const
 {
-return m_planeCurve->examples();
+    Q_ASSERT(m_planeCurve);
+    
+    return m_planeCurve->examples();
 }
 
 int PlaneCurve::spaceDimension() const
 {
+    Q_ASSERT(m_planeCurve);
+    
     return m_planeCurve->spaceDimension();
 }
 
 CoordinateSystem PlaneCurve::coordinateSystem() const
 {
-return m_planeCurve->coordinateSystem();
+    Q_ASSERT(m_planeCurve);
+    
+    return m_planeCurve->coordinateSystem();
 }
 
 
 DrawingPrecision PlaneCurve::drawingPrecision() const
 {
+    Q_ASSERT(m_planeCurve);
+    
     return m_planeCurve->drawingPrecision();
 }
 
 
 void PlaneCurve::setDrawingPrecision(DrawingPrecision precision)
 {
+    Q_ASSERT(m_planeCurve);
+    
     m_planeCurve->setDrawingPrecision(precision);
 }
 
+QVariantMap PlaneCurve::additionalProperties()
+{
+    Q_ASSERT(m_planeCurve);
+    return m_planeCurve->additionalProperties();
+}
+
+QVector< QVariantMap > PlaneCurve::additionalInformation(const QVector< MappingGraph* >& others)
+{
+    Q_ASSERT(m_planeCurve);
+
+    return m_planeCurve->additionalInformation(others);
+}
+
+
 QStringList PlaneCurve::errors() const
 {
+    Q_ASSERT(m_planeCurve);
+    
     QStringList err(m_errors);
     if(m_planeCurve) {
         err += m_planeCurve->errors();
@@ -192,23 +217,25 @@ QStringList PlaneCurve::errors() const
     return err;
 }
 
-
 bool PlaneCurve::isCorrect() const
 {
-    if (m_planeCurve)
-        return m_errors.isEmpty() && m_planeCurve->isCorrect();
+    Q_ASSERT(m_planeCurve);
 
-    return m_errors.isEmpty();
+    return m_errors.isEmpty() && m_planeCurve->isCorrect();
 }
 
-    RealInterval PlaneCurve::argumentInterval(const QString &argname) const
-    {
-        return m_planeCurve->argumentInterval(argname);
-    }
-    void PlaneCurve::setArgumentInverval(const QString &argname, const RealInterval &interval)
-    {
-        m_planeCurve->setArgumentInverval(argname, interval);
-    }
+RealInterval PlaneCurve::argumentInterval(const QString &argname) const
+{
+    Q_ASSERT(m_planeCurve);
+    
+    return m_planeCurve->argumentInterval(argname);
+}
+void PlaneCurve::setArgumentInverval(const QString &argname, const RealInterval &interval)
+{
+    Q_ASSERT(m_planeCurve);
+    
+    m_planeCurve->setArgumentInverval(argname, interval);
+}
 QStringList PlaneCurve::arguments() const
 {
     QStringList ret;
@@ -217,98 +244,282 @@ QStringList PlaneCurve::arguments() const
 //     foreach (const Analitza::Ci *var, m_expression.parameters())
 //         ret.append(var->name());
 
+    Q_ASSERT(m_planeCurve);
+    
     return m_planeCurve->arguments();
-}
-
-double PlaneCurve::arcLength() const
-{
-    return m_planeCurve->arcLength();
-}
-
-bool PlaneCurve::isClosed() const
-{
-    return m_planeCurve->isClosed();    
-}
-
-double PlaneCurve::area() const
-{
-    return m_planeCurve->area();
 }
 
 QPair<bool, double> PlaneCurve::isParallelTo(const Curve &othercurve)
 {
+    Q_ASSERT(m_planeCurve);
+    
     return m_planeCurve->isParallelTo(othercurve);
 }
 
-const QVector<QVector2D> & PlaneCurve::points() const
+const QVector<QPointF> & PlaneCurve::points() const
 {
     Q_ASSERT(m_planeCurve);
-    
+
 //     Q_ASSERT(m_planeCurve->points().size()>1);
     return m_planeCurve->points();
 }
 
-QList< int > PlaneCurve::jumps() const
+QVector< int > PlaneCurve::jumps() const
 {
-        Q_ASSERT(m_planeCurve);
+    Q_ASSERT(m_planeCurve);
+    
 //     Q_ASSERT(m_planeCurve->jumps().size()>1);
-return m_planeCurve->jumps();
+    return m_planeCurve->jumps();
 }
 
 void PlaneCurve::update(const QRect& viewport)
 {
     Q_ASSERT(m_planeCurve);
+    
     m_planeCurve->update(viewport);
 }
 
-
-QPair< QVector2D, QString > PlaneCurve::calc(const QPointF &mousepos)
+QPair< QPointF, QString > PlaneCurve::calc(const QPointF &mousepos)
 {
     Q_ASSERT(m_planeCurve);
+    
     return m_planeCurve->calc(mousepos);
 }
 
 QLineF PlaneCurve::derivative(const QPointF &mousepos) const
 {
     Q_ASSERT(m_planeCurve);
+    
     return m_planeCurve->derivative(mousepos);
 }
 
-bool PlaneCurve::isImplicit() const
+///
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///
+
+Surface::Surface(const Analitza::Expression &functionExpression, CoordinateSystem coordsys, Analitza::Variables *v, const QString &name, const QColor &col)
+    : FunctionGraph(name, col), m_varsModule(v), m_surface(0)
 {
-    return m_planeCurve->isImplicit();
+//     reset(functionExpression);
 }
 
-bool PlaneCurve::isParametric() const
+Surface::~Surface()
 {
-    return m_planeCurve->isParametric();
+    delete m_surface;
 }
 
-bool PlaneCurve::isAlgebraic() const // implicit plus only polynomails analitza work :)
+bool Surface::canReset(const Analitza::Expression &functionExpression, CoordinateSystem coordsys) const
 {
-    return m_planeCurve->isAlgebraic();
+    QStringList tmperrs;
+    //NOTE GSOC see functionExpression.isLambda ask for
+    if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
+        tmperrs << i18n("The expression is not correct");
+        return false;
+    }
+
+    Analitza::Analyzer a(m_varsModule);
+    a.setExpression(functionExpression);
+    a.setExpression(a.dependenciesToLambda());
+
+    QStringList bvars;
+
+    foreach (Analitza::Ci *arg, a.expression().parameters())
+        bvars.append(arg->name());
+
+    //TODO: turn into assertion
+    if(!SurfaceFactory::self()->contains(SurfaceFactory::self()->id(bvars, coordsys)))
+        tmperrs << i18n("Function type not recognized");
+    else if(!a.isCorrect())
+        tmperrs << a.errors();
+    else {
+        Analitza::ExpressionType expected=SurfaceFactory::self()->expressionType(SurfaceFactory::self()->id(bvars, coordsys));
+        Analitza::ExpressionType actual=a.type();
+
+        if(actual.canReduceTo(expected)) {
+//             delete m_planeCurve;
+//             m_planeCurve=SurfaceFactory::self()->build(bvars, a.expression(), m_varsModule);
+        } else
+            tmperrs << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+    }
+
+    return tmperrs.empty();
 }
 
-// PlaneCurve PlaneCurve::operator = (const PlaneCurve& f)
-// {
-//     if(&f!=this) {
-//         delete m_planeCurve;
-//         
-//         if(f.m_planeCurve) {
-//             m_planeCurve=dynamic_cast<AbstractCurve*>( f.m_planeCurve->copy() );
-// //          m_planeCurve=copy(f.m_planeCurve);
-//             Q_ASSERT(m_planeCurve);
-//         } else
-//             m_planeCurve=0;
-//         m_expression=f.m_expression;
-//         setGraphVisible(f.isGraphVisible());
-//         setColor(f.color());
-//         setName(f.name());
-//         setId(f.id());
-//         m_errors=f.m_errors;
-//     }
-//     return *this;
-// }
+bool Surface::reset(const Analitza::Expression& functionExpression, CoordinateSystem coordsys)
+{
+    m_errors.clear();
 
+    //NOTE GSOC see functionExpression.isLambda ask for
+    if(!functionExpression.isCorrect() || !functionExpression.isLambda())
+    {
+        m_errors << i18n("The expression is not correct");
+        return false;
+    }
+
+    Analitza::Analyzer a(m_varsModule);
+    a.setExpression(functionExpression);
+    a.setExpression(a.dependenciesToLambda());
+
+    QStringList bvars;
+
+    foreach (Analitza::Ci *arg, a.expression().parameters())
+        bvars.append(arg->name());
+
+    //TODO: turn into assertion
+    if(!SurfaceFactory::self()->contains(SurfaceFactory::self()->id(bvars, coordsys)))
+        m_errors << i18n("Function type not recognized");
+    else if(!a.isCorrect())
+        m_errors << a.errors();
+    else {
+        Analitza::ExpressionType expected=SurfaceFactory::self()->expressionType(SurfaceFactory::self()->id(bvars, coordsys));
+        Analitza::ExpressionType actual=a.type();
+
+        if(actual.canReduceTo(expected)) {
+
+            delete m_surface;
+
+            m_surface=SurfaceFactory::self()->build(SurfaceFactory::self()->id(bvars, coordsys), a.expression(), m_varsModule);
+        } else
+            m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+
+
+    }
+
+    return m_errors.empty();
+}
+
+const QString Surface::typeName() const
+{
+    Q_ASSERT(m_surface);
+    
+    return m_surface->typeName();
+}
+
+const Analitza::Expression & Surface::expression() const
+{
+    Q_ASSERT(m_surface);
+    
+//     return m_surface->
+    return m_surface->expression();
+}
+
+QString Surface::iconName() const
+{
+    Q_ASSERT(m_surface);
+    
+    return m_surface->iconName();
+}
+
+QStringList Surface::examples() const
+{
+    Q_ASSERT(m_surface);
+    
+    return m_surface->examples();
+}
+
+int Surface::spaceDimension() const
+{
+    Q_ASSERT(m_surface);
+    
+    return m_surface->spaceDimension();
+}
+
+CoordinateSystem Surface::coordinateSystem() const
+{
+    Q_ASSERT(m_surface);
+    
+    return m_surface->coordinateSystem();
+}
+
+DrawingPrecision Surface::drawingPrecision() const
+{
+    Q_ASSERT(m_surface);
+    
+    return m_surface->drawingPrecision();
+}
+
+void Surface::setDrawingPrecision(DrawingPrecision precision)
+{
+    Q_ASSERT(m_surface);
+    
+    m_surface->setDrawingPrecision(precision);
+}
+
+QStringList Surface::errors() const
+{
+    Q_ASSERT(m_surface);
+    
+    QStringList err(m_errors);
+    if(m_surface) {
+        err += m_surface->errors();
+    }
+    return err;
+}
+
+bool Surface::isCorrect() const
+{
+    Q_ASSERT(m_surface);
+
+    return m_errors.isEmpty() && m_surface->isCorrect();
+}
+
+RealInterval Surface::argumentInterval(const QString &argname) const
+{
+    Q_ASSERT(m_surface);
+    
+    return m_surface->argumentInterval(argname);
+}
+void Surface::setArgumentInverval(const QString &argname, const RealInterval &interval)
+{
+    Q_ASSERT(m_surface);
+    
+    m_surface->setArgumentInverval(argname, interval);
+}
+QStringList Surface::arguments() const
+{
+    QStringList ret;
+
+    //TODO
+//     foreach (const Analitza::Ci *var, m_expression.parameters())
+//         ret.append(var->name());
+
+    Q_ASSERT(m_surface);
+    
+    return m_surface->arguments();
+}
+
+const QVector< int >& Surface::indexes() const
+{
+    return QVector< int >();
+}
+    
+const QVector<QVector3D> & Surface::points() const
+{
+    Q_ASSERT(m_surface);
+
+//     Q_ASSERT(m_surface->points().size()>1);
+    return m_surface->points();
+}
+
+void Surface::update()
+{
+    Q_ASSERT(m_surface);
+    
+//     m_surface->update(viewport);
+}
 
 

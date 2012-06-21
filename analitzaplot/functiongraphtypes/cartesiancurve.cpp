@@ -56,11 +56,18 @@ public:
     QPair<bool, double> isParallelTo(const Curve &othercurve);
 
     //Own
-    QPair<QVector2D, QString> calc(const QPointF &mousepos);
+    QPair<QPointF, QString> calc(const QPointF &mousepos);
     QLineF derivative(const QPointF &mousepos) const;
 
-    bool isImplicit() const { return false; }
-    bool isParametric() const { return false; }
+    QVariantMap additionalProperties()
+    {
+            return QVariantMap();
+    }
+    
+    QVector< QVariantMap > additionalInformation(const QVector< MappingGraph* >& others)
+    {
+        return QVector< QVariantMap > ();
+    }
 
     //factory registration
     static QString TypeName() { return QString("CartesianCurveY"); }
@@ -121,7 +128,7 @@ void CartesianCurveY::update(const QRect& viewport)
 
         arg("x")->setValue(x);
         Analitza::Cn y = analyzer.calculateLambda().toReal();
-        QVector2D p(x, y.value());
+        QPointF p(x, y.value());
         bool ch=addPoint(p);
         
         
@@ -165,9 +172,9 @@ QPair<bool, double> CartesianCurveY::isParallelTo(const Curve &othercurve)
 
 
 //Own
-QPair<QVector2D, QString> CartesianCurveY::calc(const QPointF &mousepos)
+QPair<QPointF, QString> CartesianCurveY::calc(const QPointF &mousepos)
 {
-    return qMakePair(QVector2D(), QString());
+    return qMakePair(QPointF(), QString());
 }
 
 QLineF CartesianCurveY::derivative(const QPointF &mousepos) const

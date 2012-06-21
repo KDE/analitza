@@ -28,24 +28,10 @@ AbstractMappingGraph::AbstractMappingGraph(const Analitza::Expression& e, Analit
     analyzer.setExpression(e);
     analyzer.simplify();
     analyzer.flushErrors();
-
-    foreach (const Analitza::Ci *var, analyzer.expression().parameters())
-        m_argumentValues[var->name()] = new Analitza::Cn;
-
-    analyzer.setStack(m_argumentValues.values().toVector());
-}
-
-AbstractMappingGraph::AbstractMappingGraph(const AbstractMappingGraph& fi)
-    : analyzer(fi.analyzer.variables())
-{
-    analyzer.setExpression(fi.analyzer.expression());
-    m_drawingPrecision = fi.m_drawingPrecision;
 }
 
 AbstractMappingGraph::~AbstractMappingGraph()
 {
-    qDeleteAll(m_argumentValues.begin(), m_argumentValues.end());
-    m_argumentValues.clear();
 }
 
 const Analitza::Expression& AbstractMappingGraph::expression() const
@@ -53,66 +39,68 @@ const Analitza::Expression& AbstractMappingGraph::expression() const
     return analyzer.expression();
 }
 
-
 ///
 
-AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractMappingGraph(e, v)
+AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
+: AbstractMappingGraph(e,v)
 {
+    foreach (const Analitza::Ci *var, analyzer.expression().parameters())
+        m_argumentValues[var->name()] = new Analitza::Cn;
 
+    analyzer.setStack(m_argumentValues.values().toVector());
 }
 
-AbstractPlaneCurve::AbstractPlaneCurve(const AbstractPlaneCurve& fi)
-: AbstractMappingGraph(fi), m_argumentIntervals(fi.m_argumentIntervals)
+AbstractFunctionGraph::~AbstractFunctionGraph()
 {
-
+    qDeleteAll(m_argumentValues.begin(), m_argumentValues.end());
+    m_argumentValues.clear();
 }
 
-
-AbstractPlaneCurve::~AbstractPlaneCurve()
-{
-
-}
-
-//FunctionGraph
-RealInterval AbstractPlaneCurve::argumentInterval(const QString &argname) const
+RealInterval AbstractFunctionGraph::argumentInterval(const QString &argname) const
 {
     Q_ASSERT(m_argumentIntervals.size()>0);
     
     return m_argumentIntervals[argname];
 }
 
-void AbstractPlaneCurve::setArgumentInverval(const QString &argname, const RealInterval &interval)
+void AbstractFunctionGraph::setArgumentInverval(const QString &argname, const RealInterval &interval)
 {
 //     Q_ASSERT(m_argumentIntervals.find().size()>0);
     
     m_argumentIntervals[argname] = interval;
 }
 
+///
 
-QList<int> AbstractPlaneCurve::jumps() const
+AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
+: AbstractFunctionGraph(e, v)
+{
+
+}
+
+AbstractPlaneCurve::~AbstractPlaneCurve()
+{
+
+}
+
+QVector< int > AbstractPlaneCurve::jumps() const
 {
     return m_jumps;
 }
 
     //Own
-const QVector<QVector2D> & AbstractPlaneCurve::points() const
+const QVector<QPointF> & AbstractPlaneCurve::points() const
 {
 //     qDebug() << m_points.size();
     return m_points;
 }
 
-bool AbstractPlaneCurve::isAlgebraic() const
-{
-//     if (is implicit verificar si es un polisnimio)
-    return false;
-}
 
 #include <cmath>
 using std::atan2;
 
 
-bool AbstractPlaneCurve::addPoint(const QVector2D& p)
+bool AbstractPlaneCurve::addPoint(const QPointF& p)
 {
     int count=m_points.count();
     if(count<2) {
@@ -146,4 +134,30 @@ void AbstractPlaneCurve::clearJumps()
 {
     m_jumps.clear();
 }
+
+///
+
+
+
+AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
+: AbstractFunctionGraph(e, v)
+{
+
+}
+
+AbstractSurface::~AbstractSurface()
+{
+
+}
+
+const QVector< int >& AbstractSurface::indexes() const
+{
+return QVector<int>();
+}
+
+const QVector< QVector3D >& AbstractSurface::points() const
+{
+return QVector<QVector3D>();
+}
+
     

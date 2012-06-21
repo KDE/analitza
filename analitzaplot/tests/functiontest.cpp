@@ -51,20 +51,23 @@ void FunctionTest::initTestCase()
 // //
 // //
 
-//     PlaneCurve f(Analitza::Expression("x->x*x"), v, "para", Qt::red);
+    PlaneCurve f(Analitza::Expression("x->x*x"), v, "para", Qt::red);
     
+    qDebug() << f.examples();
+    QCOMPARE(f.arguments(), QStringList() << "x");
+
     PlaneCurveModel *model = new PlaneCurveModel(v, this);
-    model->magic(3);
+//     model->magic(3);
 
 //     qDebug() << model->data(model->index(3), PlaneCurveModel::ExpressionRole) << model->item(0)->examples();
     
-    QVERIFY(model->item(0)->points().isEmpty());
-    model->setData(model->index(0), QRect(QPoint(-10,-10), QSize(20,20)), PlaneCurveModel::UpdateRole);
-    QVERIFY(!model->item(0)->points().isEmpty());
-
-    model->magic(3);
-    QCOMPARE(model->item(2)->arguments(), QStringList() << "x");
-	QVERIFY(model->rowCount() == 6);
+//     QVERIFY(model->item(0)->points().isEmpty());
+//     model->setData(model->index(0), QRect(QPoint(-10,-10), QSize(20,20)), PlaneCurveModel::UpdateRole);
+//     QVERIFY(!model->item(0)->points().isEmpty());
+// 
+//     model->magic(3);
+//     QCOMPARE(model->item(2)->arguments(), QStringList() << "x");
+// 	QVERIFY(model->rowCount() == 6);
 //
 //
 	delete v;
