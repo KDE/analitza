@@ -41,7 +41,6 @@ class ANALITZAPLOT_EXPORT AbstractFunctionGraphFactory
 public:
     typedef QString (*TypeNameFunction)();
     typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
-    typedef int (*SpaceDimensionFunction)();
     typedef CoordinateSystem (*CoordinateSystemFunction)();
     typedef QStringList (*ArgumentsFunction)();
     typedef QString (*IconNameFunction)();
@@ -59,14 +58,14 @@ public:
 
 protected:
     QString registerFunctionGraphDefs(TypeNameFunction typeNameFunction,
-                         ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+                         ExpressionTypeFunction expressionTypeFunction, int spaceDimension,
                          CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
                          IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);    
     
     
     QMap<QString, TypeNameFunction> typeNameFunctions;
     QMap<QString, ExpressionTypeFunction> expressionTypeFunctions;
-    QMap<QString, SpaceDimensionFunction> spaceDimensionFunctions;
+    QMap<QString, int> spaceDimensions;
     QMap<QString, CoordinateSystemFunction> coordinateSystemFunctions;
     QMap<QString, ArgumentsFunction> argumentsFunctions;
     QMap<QString, IconNameFunction> iconNameFunctions;
@@ -77,7 +76,7 @@ protected:
 #define REGISTER_PLANECURVE(name) \
         static AbstractPlaneCurve * create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         namespace { bool _##name=PlaneCurveFactory::self()->registerPlaneCurve(create##name, \
-        name ::TypeName, name ::ExpressionType, name ::SpaceDimension, name ::CoordSystem, name ::Arguments, \
+        name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Arguments, \
         name ::IconName, name ::Examples); }
 
 class AbstractPlaneCurve;
@@ -107,7 +106,7 @@ public:
     static PlaneCurveFactory* self();
 
     bool registerPlaneCurve(BuilderFunction builderFunction, TypeNameFunction typeNameFunction,
-                         ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+                         ExpressionTypeFunction expressionTypeFunction, 
                          CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
                          IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);
     QString id(const QStringList& args) const;
@@ -128,9 +127,9 @@ private:
 ///
 
 #define REGISTER_SURFACE(name) \
-        static AbstractSurface * create##name(const Analitza::Expression &exp, CoordinateSystem coordsys, Analitza::Variables* v) { return new name (exp, coordsys, v); } \
-        namespace { bool _##name=PlaneCurveFactory::self()->registerSurface(create##name, \
-        name ::TypeName, name ::ExpressionType, name ::SpaceDimension, name ::CoordSystem, name ::Arguments, \
+        static AbstractSurface * create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
+        namespace { bool _##name=SurfaceFactory::self()->registerSurface(create##name, \
+        name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Arguments, \
         name ::IconName, name ::Examples); }
 
 class AbstractSurface;
@@ -138,12 +137,12 @@ class AbstractSurface;
 class ANALITZAPLOT_EXPORT SurfaceFactory : public AbstractFunctionGraphFactory
 {
 public:
-    typedef AbstractSurface* (*BuilderFunction)(const Analitza::Expression&, CoordinateSystem, Analitza::Variables* );
+    typedef AbstractSurface* (*BuilderFunction)(const Analitza::Expression&, Analitza::Variables* );
 
     static SurfaceFactory* self();
 
     bool registerSurface(BuilderFunction builderFunction, TypeNameFunction typeNameFunction,
-                         ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+                         ExpressionTypeFunction expressionTypeFunction, 
                          CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
                          IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);
     QString id(const QStringList& args, CoordinateSystem coordsys) const;

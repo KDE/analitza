@@ -34,6 +34,59 @@ class Cn;
 class Expression;
 }
 
+
+
+#define TYPE_NAME(name) \
+const QString typeName() const { return TypeName(); } \
+static QString TypeName() { return QString(name); } 
+
+#define EXPRESSION_TYPE(name) \
+static Analitza::ExpressionType ExpressionType() { return Analitza::ExpressionType(name); }
+
+#define COORDDINATE_SYSTEM(name) \
+CoordinateSystem coordinateSystem() const { return CoordSystem(); } \
+static CoordinateSystem CoordSystem() { return name; }
+
+//TODO validaciones strim etc 
+#define ARGUMENTS(name) \
+QStringList arguments() const { return Arguments(); } \
+static QStringList Arguments() { return QString(name).split(","); }
+
+#define ICON_NAME(name) \
+QString iconName() const { return IconName(); } \
+static QString IconName() { return QString(name); } 
+
+#define EXAMPLES(name) \
+QStringList examples() const { return Examples(); } \
+static QStringList Examples() { return QString(name).split(","); }
+
+
+
+/*
+
+//MappingGraph
+
+
+
+
+//FunctionGraph
+
+
+//Curve
+
+//factory registration
+
+
+
+
+    */
+    
+    
+//NOTE
+//para construir estos backends/abstract solo re necesitaa que su ctor tenga exp y varmod ... 
+//en la funcion y en el metodo factory id es donde se requiere que tenga mas detalle ademas de exp y varsmod
+// por ejemolo coordsys en el caso de surf
+
 class ANALITZAPLOT_EXPORT AbstractMappingGraph //strategy pattern
 {
 public:
@@ -97,7 +150,9 @@ public:
     explicit AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v);
     virtual ~AbstractPlaneCurve();
 
-
+    //AbstractMappingGraph
+    int spaceDimension() const { return 2; }
+    
     //Curve
     QVector<int> jumps() const;
 
@@ -129,6 +184,9 @@ public:
     explicit AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v);
     virtual ~AbstractSurface();
 
+    //AbstractMappingGraph
+    int spaceDimension() const { return 3; }
+    
     //Own
     virtual void update(/*frumtum*/) = 0;
     const QVector<int> & indexes() const;

@@ -33,7 +33,7 @@ Analitza::ExpressionType AbstractFunctionGraphFactory::expressionType(const QStr
 
 int AbstractFunctionGraphFactory::spaceDimension(const QString& id) const
 {
-    return spaceDimensionFunctions[id]();
+    return spaceDimensions[id];
 }
 
 CoordinateSystem AbstractFunctionGraphFactory::coordinateSystem(const QString& id) const
@@ -57,19 +57,19 @@ QStringList AbstractFunctionGraphFactory::examples(const QString& id) const
 }
 
 QString AbstractFunctionGraphFactory::registerFunctionGraphDefs(TypeNameFunction typeNameFunction,
-        ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+        ExpressionTypeFunction expressionTypeFunction, int spaceDimension,
         CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
         IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
 {
 //     Q_ASSERT(!contains(argumentsFunction()));
 
-    QString id = QString::number(spaceDimensionFunction())+"|"+
+    QString id = QString::number(spaceDimension)+"|"+
                  QString::number((int)coordinateSystemFunction())+"|"+
                  argumentsFunction().join(",");
 
     typeNameFunctions[id] = typeNameFunction;
     expressionTypeFunctions[id] = expressionTypeFunction;
-    spaceDimensionFunctions[id] = spaceDimensionFunction;
+    spaceDimensions[id] = spaceDimension;
     coordinateSystemFunctions[id] = coordinateSystemFunction;
     argumentsFunctions[id] = argumentsFunction;
     iconNameFunctions[id] = iconNameFunction;
@@ -90,13 +90,13 @@ PlaneCurveFactory* PlaneCurveFactory::self()
 }
 
 bool PlaneCurveFactory::registerPlaneCurve(BuilderFunction builderFunction, TypeNameFunction typeNameFunction,
-        ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+        ExpressionTypeFunction expressionTypeFunction, 
         CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
         IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
 {
 //     Q_ASSERT(!contains(argumentsFunction()));
 
-    QString id = registerFunctionGraphDefs(typeNameFunction,expressionTypeFunction, spaceDimensionFunction,
+    QString id = registerFunctionGraphDefs(typeNameFunction,expressionTypeFunction, 2,
                                            coordinateSystemFunction, argumentsFunction, iconNameFunction, examplesFunction);
 
     builderFunctions[id] = builderFunction;
@@ -146,13 +146,13 @@ SurfaceFactory* SurfaceFactory::self()
 }
 
 bool SurfaceFactory::registerSurface(BuilderFunction builderFunction, TypeNameFunction typeNameFunction,
-                                     ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+                                     ExpressionTypeFunction expressionTypeFunction, 
                                      CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
                                      IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
 {
 //             Q_ASSERT(!contains(argumentsFunction()));
 
-    QString id = registerFunctionGraphDefs(typeNameFunction,expressionTypeFunction, spaceDimensionFunction,
+    QString id = registerFunctionGraphDefs(typeNameFunction,expressionTypeFunction, 3,
                                            coordinateSystemFunction, argumentsFunction, iconNameFunction, examplesFunction);
 
     builderFunctions[id] = builderFunction;
@@ -185,7 +185,7 @@ bool SurfaceFactory::contains(const QString& id) const
 
 AbstractSurface* SurfaceFactory::build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
 {
-    return builderFunctions[id](exp, coordinateSystem(id) ,v);
+    return builderFunctions[id](exp,v);
 }
 
 

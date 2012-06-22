@@ -52,6 +52,10 @@ void FunctionTest::initTestCase()
 // //
 
     PlaneCurve f(Analitza::Expression("x->x*x"), v, "para", Qt::red);
+    Surface s(Analitza::Expression("(x,y)->x*x+y*y"), Cartesian, v, "surf", Qt::yellow);
+    
+    
+    qDebug() << s.spaceDimension() << s.typeName() << s.arguments();
     
     qDebug() << f.examples();
     QCOMPARE(f.arguments(), QStringList() << "x");

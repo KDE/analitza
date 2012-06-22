@@ -29,6 +29,16 @@
 class ANALITZAPLOT_EXPORT CartesianCurveY : public AbstractPlaneCurve
 {
 public:
+    TYPE_NAME("CartesianCurveY")
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+    COORDDINATE_SYSTEM(Cartesian)
+    ARGUMENTS("x")
+    ICON_NAME("noane")
+    EXAMPLES("x,x*x,x+4")    
+    
+    
     CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
 	~CartesianCurveY()
 	{
@@ -36,47 +46,21 @@ public:
 
 
     //MappingGraph
-    const QString typeName() const { return TypeName(); }
-    QString iconName() const { return IconName(); }
-    QStringList examples() const { return Examples(); }
-    int spaceDimension() const { return SpaceDimension(); }
-    CoordinateSystem coordinateSystem() const { return CoordSystem(); }
     QStringList errors() const { return m_errors; }
     bool isCorrect() const { return false; }
-    AbstractMappingGraph * copy();
-
-    //FunctionGraph
-    QStringList arguments() const { return Arguments(); }
-    void update(const QRect& viewport);
 
     //Curve
-    double arcLength() const;
-    bool isClosed() const { return false; }
-    double area() const;
 
     //Own
+    void update(const QRect& viewport);
+    
     QPair<QPointF, QString> calc(const QPointF &mousepos);
     QLineF derivative(const QPointF &mousepos) const;
-
-    //factory registration
-    static QString TypeName() { return QString("CartesianCurveY"); }
-    static Analitza::ExpressionType ExpressionType()
-    {
-        return Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value));
-    }
-    static int SpaceDimension() { return 2; }
-    static CoordinateSystem CoordSystem() { return Cartesian; }
-    static QStringList Arguments() { return QStringList() << "x"; }
-    static QString IconName() { return QString(); }
-    static QStringList Examples() { return QStringList() << "x*x+x" << "x-2*x*x"; }
 
 private:
     void optimizeJump();
     
-    
-QStringList m_errors;
+    QStringList m_errors;
 };
 
 CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
@@ -84,14 +68,12 @@ CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression,
 {
 }
 
-
-AbstractMappingGraph * CartesianCurveY::copy()
-{
-	return 0;
-}
-
-
 //FunctionGraph
+
+
+
+//Curve
+
 
 void CartesianCurveY::update(const QRect& viewport)
 {
@@ -141,18 +123,7 @@ void CartesianCurveY::update(const QRect& viewport)
 //  qDebug() << "juuuumps" << m_jumps << resolution();
 }
 
-//Curve
 
-
-double CartesianCurveY::arcLength() const
-{
-    return 0;
-}
-
-double CartesianCurveY::area() const
-{
-    return 0;
-}
 
 //Own
 QPair<QPointF, QString> CartesianCurveY::calc(const QPointF &mousepos)

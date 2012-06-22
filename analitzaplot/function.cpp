@@ -293,7 +293,7 @@ QLineF PlaneCurve::derivative(const QPointF &mousepos) const
 Surface::Surface(const Analitza::Expression &functionExpression, CoordinateSystem coordsys, Analitza::Variables *v, const QString &name, const QColor &col)
     : FunctionGraph(name, col), m_varsModule(v), m_surface(0)
 {
-//     reset(functionExpression);
+    reset(functionExpression, coordsys);
 }
 
 Surface::~Surface()
