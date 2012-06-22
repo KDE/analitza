@@ -53,21 +53,10 @@ public:
     double arcLength() const;
     bool isClosed() const { return false; }
     double area() const;
-    QPair<bool, double> isParallelTo(const Curve &othercurve);
 
     //Own
     QPair<QPointF, QString> calc(const QPointF &mousepos);
     QLineF derivative(const QPointF &mousepos) const;
-
-    QVariantMap additionalProperties()
-    {
-            return QVariantMap();
-    }
-    
-    QVector< QVariantMap > additionalInformation(const QVector< MappingGraph* >& others)
-    {
-        return QVector< QVariantMap > ();
-    }
 
     //factory registration
     static QString TypeName() { return QString("CartesianCurveY"); }
@@ -164,12 +153,6 @@ double CartesianCurveY::area() const
 {
     return 0;
 }
-
-QPair<bool, double> CartesianCurveY::isParallelTo(const Curve &othercurve)
-{
-    return qMakePair(false, 0.0);
-}
-
 
 //Own
 QPair<QPointF, QString> CartesianCurveY::calc(const QPointF &mousepos)

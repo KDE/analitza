@@ -380,17 +380,3 @@ QLineF PlaneCurveModel::derivativeItem(int row, const QPointF& mousepos) const
     return m_items[row]->derivative(mousepos);
 }
 
-QVariantMap PlaneCurveModel::additionalPropertiesForItem(int row)
-{
-    Q_ASSERT(row<m_items.count());
-
-    return m_items[row]->additionalProperties();
-}
-
-QVector< QVariantMap > PlaneCurveModel::additionalInformationForItem(int row, const QVector< MappingGraph* >& others)
-{
-    Q_ASSERT(row<m_items.count());
-
-    return m_items[row]->additionalInformation(others);
-}
-

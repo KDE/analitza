@@ -68,10 +68,13 @@ public:
     //all avobe is replaced by additionalInformation a more inteligent approach to expose
     // information from the curve/surface/item ... 
     // the developer can put here what kind of aditional info will be calculated/showed
-    virtual QVariantMap additionalProperties() = 0;
+//     virtual QVariantMap additionalProperties() = 0;
+
     // additionalInformation = properties relative to others items such as:
     //curvas paralelas, intersec entre curvas/surfacesetc, mismos eigenvals, ...
-    virtual QVector<QVariantMap> additionalInformation(const QVector<MappingGraph*> &others) = 0;
+    //exaples
+    // was virtual QPair<bool /*yes or not*/, double /*offset*/> isParallelTo(const Curve &othercurve) = 0; // offset, either positive or negative, in the direction of the curve's normal
+//     virtual QVector<QVariantMap> additionalInformation(const QVector<MappingGraph*> &others) = 0;
 
     virtual QStringList errors() const = 0;
     virtual bool isCorrect() const = 0;
@@ -116,7 +119,6 @@ public:
     virtual ~Curve() {}
 
     //own
-    virtual QPair<bool /*yes or not*/, double /*offset*/> isParallelTo(const Curve &othercurve) = 0; // offset, either positive or negative, in the direction of the curve's normal
     virtual QVector<int> jumps() const = 0;
 
 protected:
@@ -144,8 +146,8 @@ public:
     CoordinateSystem coordinateSystem() const;
     DrawingPrecision drawingPrecision() const;
     void setDrawingPrecision(DrawingPrecision precision); 
-    QVariantMap additionalProperties();
-    QVector< QVariantMap > additionalInformation(const QVector< MappingGraph* >& others);
+//     QVariantMap additionalProperties();
+//     QVariantMap additionalInformation(const QVector< MappingGraph* >& others);
     QStringList errors() const;
     bool isCorrect() const;
 

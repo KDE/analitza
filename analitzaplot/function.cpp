@@ -192,20 +192,6 @@ void PlaneCurve::setDrawingPrecision(DrawingPrecision precision)
     m_planeCurve->setDrawingPrecision(precision);
 }
 
-QVariantMap PlaneCurve::additionalProperties()
-{
-    Q_ASSERT(m_planeCurve);
-    return m_planeCurve->additionalProperties();
-}
-
-QVector< QVariantMap > PlaneCurve::additionalInformation(const QVector< MappingGraph* >& others)
-{
-    Q_ASSERT(m_planeCurve);
-
-    return m_planeCurve->additionalInformation(others);
-}
-
-
 QStringList PlaneCurve::errors() const
 {
     Q_ASSERT(m_planeCurve);
@@ -247,13 +233,6 @@ QStringList PlaneCurve::arguments() const
     Q_ASSERT(m_planeCurve);
     
     return m_planeCurve->arguments();
-}
-
-QPair<bool, double> PlaneCurve::isParallelTo(const Curve &othercurve)
-{
-    Q_ASSERT(m_planeCurve);
-    
-    return m_planeCurve->isParallelTo(othercurve);
 }
 
 const QVector<QPointF> & PlaneCurve::points() const

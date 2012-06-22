@@ -50,8 +50,8 @@ public:
     DrawingPrecision drawingPrecision() const { return m_drawingPrecision; }
     void setDrawingPrecision(DrawingPrecision precision) { m_drawingPrecision = precision; }
 
-    virtual QVariantMap additionalProperties() = 0;
-    virtual QVector<QVariantMap> additionalInformation(const QVector<MappingGraph*> &others) = 0;
+//     virtual QVariantMap additionalProperties() = 0;
+//     virtual QVector<QVariantMap> additionalInformation(const QVector<MappingGraph*> &others) = 0;
     
     virtual QStringList errors() const = 0;
     virtual bool isCorrect() const = 0;
@@ -99,7 +99,6 @@ public:
 
 
     //Curve
-    virtual QPair<bool, double> isParallelTo(const Curve &othercurve) = 0;
     QVector<int> jumps() const;
 
     //Own
