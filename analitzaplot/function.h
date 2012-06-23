@@ -74,7 +74,7 @@ public:
     //curvas paralelas, intersec entre curvas/surfacesetc, mismos eigenvals, ...
     //exaples
     // was virtual QPair<bool /*yes or not*/, double /*offset*/> isParallelTo(const Curve &othercurve) = 0; // offset, either positive or negative, in the direction of the curve's normal
-//     virtual QVector<QVariantMap> additionalInformation(const QVector<MappingGraph*> &others) = 0;
+//     virtual QVariantMap additionalInformation(const QVector<MappingGraph*> &others) = 0; //key|feature-> vmap[graphid]->variant(data/result)
 
     virtual QStringList errors() const = 0;
     virtual bool isCorrect() const = 0;
@@ -134,9 +134,12 @@ public:
     explicit PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
     virtual ~PlaneCurve();
 
-    bool canReset(const Analitza::Expression &functionExpression) const;
+    static bool canDraw(const Analitza::Expression &functionExpression);
+    //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
+    static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
+
     bool reset(const Analitza::Expression &functionExpression);
-    
+
     //MappingGraph
     const QString typeName() const;
     const Analitza::Expression &expression() const;
@@ -157,10 +160,6 @@ public:
     QStringList arguments() const;
 
     //Curve
-    double arcLength() const;
-    bool isClosed() const;
-    double area() const;
-    QPair<bool, double> isParallelTo(const Curve &othercurve);
     QVector<int> jumps() const;
 
     //Own
@@ -203,7 +202,9 @@ public:
     explicit Surface(const Analitza::Expression &functionExpression, CoordinateSystem coordsys, Analitza::Variables *variables, const QString &name, const QColor& col);
     virtual ~Surface();
 
-    bool canReset(const Analitza::Expression &functionExpression, CoordinateSystem coordsys) const;
+    static bool canDraw(const Analitza::Expression &functionExpression, CoordinateSystem coordsys);
+    //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
+    static bool canDraw(const Analitza::Expression &functionExpression, CoordinateSystem coordsys, QStringList &errors);
     bool reset(const Analitza::Expression &functionExpression, CoordinateSystem coordsys);
     
     //MappingGraph

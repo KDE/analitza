@@ -46,8 +46,6 @@ public:
 
 
     //MappingGraph
-    QStringList errors() const { return m_errors; }
-    bool isCorrect() const { return false; }
 
     //Curve
 
@@ -60,7 +58,6 @@ public:
 private:
     void optimizeJump();
     
-    QStringList m_errors;
 };
 
 CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)

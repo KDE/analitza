@@ -53,16 +53,17 @@ PlaneCurve::~PlaneCurve()
     delete m_planeCurve;
 }
 
-bool PlaneCurve::canReset(const Analitza::Expression &functionExpression) const
+bool PlaneCurve::canDraw(const Analitza::Expression &functionExpression)
 {
-    QStringList tmperrs;
+    QStringList errors;
+    
     //NOTE GSOC see functionExpression.isLambda ask for
     if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
-        tmperrs << i18n("The expression is not correct");
+        errors << i18n("The expression is not correct");
         return false;
     }
 
-    Analitza::Analyzer a(m_varsModule);
+    Analitza::Analyzer a;
     a.setExpression(functionExpression);
     a.setExpression(a.dependenciesToLambda());
 
@@ -73,9 +74,9 @@ bool PlaneCurve::canReset(const Analitza::Expression &functionExpression) const
 
     //TODO: turn into assertion
     if(!PlaneCurveFactory::self()->contains(PlaneCurveFactory::self()->id(bvars)))
-        tmperrs << i18n("Function type not recognized");
+        errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
-        tmperrs << a.errors();
+        errors << a.errors();
     else {
         Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(PlaneCurveFactory::self()->id(bvars));
         Analitza::ExpressionType actual=a.type();
@@ -84,10 +85,48 @@ bool PlaneCurve::canReset(const Analitza::Expression &functionExpression) const
 //             delete m_planeCurve;
 //             m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), m_varsModule);
         } else
-            tmperrs << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+            errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
 
-    return tmperrs.empty();
+    return errors.empty();
+}
+
+bool PlaneCurve::canDraw(const Analitza::Expression &functionExpression, QStringList &errors)
+{
+    Q_ASSERT(errors.isEmpty()); // el usuario deberia ingresar un lista vacia 
+    
+    //NOTE GSOC see functionExpression.isLambda ask for
+    if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
+        errors << i18n("The expression is not correct");
+        return false;
+    }
+
+    Analitza::Analyzer a;
+    a.setExpression(functionExpression);
+    a.setExpression(a.dependenciesToLambda());
+
+    QStringList bvars;
+
+    foreach (Analitza::Ci *arg, a.expression().parameters())
+        bvars.append(arg->name());
+
+    //TODO: turn into assertion
+    if(!PlaneCurveFactory::self()->contains(PlaneCurveFactory::self()->id(bvars)))
+        errors << i18n("Function type not recognized");
+    else if(!a.isCorrect())
+        errors << a.errors();
+    else {
+        Analitza::ExpressionType expected=PlaneCurveFactory::self()->expressionType(PlaneCurveFactory::self()->id(bvars));
+        Analitza::ExpressionType actual=a.type();
+
+        if(actual.canReduceTo(expected)) {
+//             delete m_planeCurve;
+//             m_planeCurve=PlaneCurveFactory::self()->build(bvars, a.expression(), m_varsModule);
+        } else
+            errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+    }
+
+    return errors.empty();
 }
 
 bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
@@ -301,16 +340,16 @@ Surface::~Surface()
     delete m_surface;
 }
 
-bool Surface::canReset(const Analitza::Expression &functionExpression, CoordinateSystem coordsys) const
+bool Surface::canDraw(const Analitza::Expression &functionExpression, CoordinateSystem coordsys) 
 {
-    QStringList tmperrs;
+    QStringList errors;
     //NOTE GSOC see functionExpression.isLambda ask for
     if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
-        tmperrs << i18n("The expression is not correct");
+        errors << i18n("The expression is not correct");
         return false;
     }
 
-    Analitza::Analyzer a(m_varsModule);
+    Analitza::Analyzer a;
     a.setExpression(functionExpression);
     a.setExpression(a.dependenciesToLambda());
 
@@ -321,9 +360,9 @@ bool Surface::canReset(const Analitza::Expression &functionExpression, Coordinat
 
     //TODO: turn into assertion
     if(!SurfaceFactory::self()->contains(SurfaceFactory::self()->id(bvars, coordsys)))
-        tmperrs << i18n("Function type not recognized");
+        errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
-        tmperrs << a.errors();
+        errors << a.errors();
     else {
         Analitza::ExpressionType expected=SurfaceFactory::self()->expressionType(SurfaceFactory::self()->id(bvars, coordsys));
         Analitza::ExpressionType actual=a.type();
@@ -332,10 +371,48 @@ bool Surface::canReset(const Analitza::Expression &functionExpression, Coordinat
 //             delete m_planeCurve;
 //             m_planeCurve=SurfaceFactory::self()->build(bvars, a.expression(), m_varsModule);
         } else
-            tmperrs << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+            errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
 
-    return tmperrs.empty();
+    return errors.empty();
+}
+
+bool Surface::canDraw(const Analitza::Expression &functionExpression, CoordinateSystem coordsys, QStringList &errors)
+{
+    Q_ASSERT(errors.isEmpty());
+    
+    //NOTE GSOC see functionExpression.isLambda ask for
+    if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
+        errors << i18n("The expression is not correct");
+        return false;
+    }
+
+    Analitza::Analyzer a;
+    a.setExpression(functionExpression);
+    a.setExpression(a.dependenciesToLambda());
+
+    QStringList bvars;
+
+    foreach (Analitza::Ci *arg, a.expression().parameters())
+        bvars.append(arg->name());
+
+    //TODO: turn into assertion
+    if(!SurfaceFactory::self()->contains(SurfaceFactory::self()->id(bvars, coordsys)))
+        errors << i18n("Function type not recognized");
+    else if(!a.isCorrect())
+        errors << a.errors();
+    else {
+        Analitza::ExpressionType expected=SurfaceFactory::self()->expressionType(SurfaceFactory::self()->id(bvars, coordsys));
+        Analitza::ExpressionType actual=a.type();
+
+        if(actual.canReduceTo(expected)) {
+//             delete m_planeCurve;
+//             m_planeCurve=SurfaceFactory::self()->build(bvars, a.expression(), m_varsModule);
+        } else
+            errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+    }
+
+    return errors.empty();
 }
 
 bool Surface::reset(const Analitza::Expression& functionExpression, CoordinateSystem coordsys)
@@ -374,8 +451,6 @@ bool Surface::reset(const Analitza::Expression& functionExpression, CoordinateSy
             m_surface=SurfaceFactory::self()->build(SurfaceFactory::self()->id(bvars, coordsys), a.expression(), m_varsModule);
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-
-
     }
 
     return m_errors.empty();

@@ -25,7 +25,7 @@
 
 #include "analitza/expression.h"
 
-MappingGraphModel::MappingGraphModel(Analitza::Variables *v, QObject * parent)
+FunctionGraphModel::FunctionGraphModel(Analitza::Variables *v, QObject * parent)
     : QAbstractListModel(parent)
 {
     Q_ASSERT(v);
@@ -33,14 +33,13 @@ MappingGraphModel::MappingGraphModel(Analitza::Variables *v, QObject * parent)
     variablesModule = v;
 }
 
-
-MappingGraphModel::~MappingGraphModel()
+FunctionGraphModel::~FunctionGraphModel()
 {
 
 }
 
 
-int MappingGraphModel::columnCount(const QModelIndex & parent) const
+int FunctionGraphModel::columnCount(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
 
@@ -48,7 +47,7 @@ int MappingGraphModel::columnCount(const QModelIndex & parent) const
 }
 
 
-Qt::ItemFlags MappingGraphModel::flags(const QModelIndex & index) const
+Qt::ItemFlags FunctionGraphModel::flags(const QModelIndex & index) const
 {
     if(index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsTristate;
@@ -57,7 +56,7 @@ Qt::ItemFlags MappingGraphModel::flags(const QModelIndex & index) const
 }
 
 
-bool MappingGraphModel::hasChildren(const QModelIndex & parent) const
+bool FunctionGraphModel::hasChildren(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
 
@@ -65,7 +64,7 @@ bool MappingGraphModel::hasChildren(const QModelIndex & parent) const
 }
 
 
-QVariant MappingGraphModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant FunctionGraphModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     QVariant ret;
 
@@ -84,7 +83,7 @@ QVariant MappingGraphModel::headerData(int section, Qt::Orientation orientation,
 }
 
 
-Qt::DropActions MappingGraphModel::supportedDropActions() const
+Qt::DropActions FunctionGraphModel::supportedDropActions() const
 {
     return Qt::IgnoreAction;
 }
@@ -92,7 +91,7 @@ Qt::DropActions MappingGraphModel::supportedDropActions() const
 ///
 
 PlaneCurveModel::PlaneCurveModel(Analitza::Variables *v, QObject * parent)
-    : MappingGraphModel(v, parent)
+    : FunctionGraphModel(v, parent)
 {
 }
 
@@ -235,91 +234,82 @@ bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value,
     {
         switch (role)
         {
-            //roles that will show in a view, also works for editing job
-        case ExpressionRole: //Variant->QString
-        {
-            Analitza::Expression fexp(value.toString());
-            if (m_items[index.row()]->canReset(fexp))
+                //roles that will show in a view, also works for editing job
+            case ExpressionRole: //Variant->QString
             {
-                m_items[index.row()]->reset(fexp);
+                Analitza::Expression fexp(value.toString());
+                
+                if (PlaneCurve::canDraw(fexp))
+                {
+                    m_items[index.row()]->reset(fexp);
 
+                    emit dataChanged(index, index);
+
+                    return true;
+                }
+                else
+                    return false;
+
+                break;
+            }
+
+            case NameRole: //Variant->QString
+            {
+                m_items[index.row()]->setName(value.toString());
                 emit dataChanged(index, index);
 
                 return true;
+
+                break;
             }
-            else
-                return false;
 
-            break;
-        }
-
-        case NameRole: //Variant->QString
-        {
-            m_items[index.row()]->setName(value.toString());
-            emit dataChanged(index, index);
-
-            return true;
-
-            break;
-        }
-
-        case ColorRole: //Variant->QColor
-        {
+            case ColorRole: //Variant->QColor
+            {
 
 
-            m_items[index.row()]->setColor(value.value<QColor>());
-            emit dataChanged(index, index);
-            return true;
+                m_items[index.row()]->setColor(value.value<QColor>());
+                emit dataChanged(index, index);
+                return true;
 
-            break;
-        }
+                break;
+            }
 
 
-        //roles for editing job
-        case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
-        {
-//                 QVariantList args;
-//
-//                     foreach (QString arg, tmpcurve->arguments())
-//                     {
-//                         args.append(arg);
-//                         args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
-//                         args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
-//                     }
-//
-//                     return args;
-            break;
-        }
+            //roles for editing job
+            case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+            {
+    //                 QVariantList args;
+    //
+    //                     foreach (QString arg, tmpcurve->arguments())
+    //                     {
+    //                         args.append(arg);
+    //                         args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
+    //                         args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
+    //                     }
+    //
+    //                     return args;
+                break;
+            }
 
-        case DrawingPrecisionRole: //Variant->int
-        {
-            m_items[index.row()]->setDrawingPrecision((DrawingPrecision)value.toInt());
-            emit dataChanged(index, index);
+            case DrawingPrecisionRole: //Variant->int
+            {
+                m_items[index.row()]->setDrawingPrecision((DrawingPrecision)value.toInt());
+                emit dataChanged(index, index);
 
-            return true;
+                return true;
 
-            break;
-        }
+                break;
+            }
 
-        case VisibleRole: //Variant->bool
-        {
-            m_items[index.row()]->setVisible(value.toBool());
-            emit dataChanged(index, index);
+            case VisibleRole: //Variant->bool
+            {
+                m_items[index.row()]->setVisible(value.toBool());
+                emit dataChanged(index, index);
 
-            return true;
+                return true;
 
-            break;
-        }
-
-        case UpdateRole:
-        {
-            m_items[index.row()]->update(value.toRect());
-            emit dataChanged(index, index);
-
-            return true;
-
-            break;
-        }
+                break;
+            }
         }
     }
 
@@ -365,6 +355,14 @@ const PlaneCurve* PlaneCurveModel::item(int row) const
 
     return m_items[row];
 }
+
+void PlaneCurveModel::update(int row, const QRect& viewport)
+{
+    m_items[row]->update(viewport);
+
+    emit dataChanged(index(row), index(row));
+}
+
 
 QPair< QPointF, QString > PlaneCurveModel::calcItem(int row, const QPointF& mousepos)
 {

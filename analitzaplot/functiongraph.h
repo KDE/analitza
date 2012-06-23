@@ -61,27 +61,6 @@ QStringList examples() const { return Examples(); } \
 static QStringList Examples() { return QString(name).split(","); }
 
 
-
-/*
-
-//MappingGraph
-
-
-
-
-//FunctionGraph
-
-
-//Curve
-
-//factory registration
-
-
-
-
-    */
-    
-    
 //NOTE
 //para construir estos backends/abstract solo re necesitaa que su ctor tenga exp y varmod ... 
 //en la funcion y en el metodo factory id es donde se requiere que tenga mas detalle ademas de exp y varsmod
@@ -106,15 +85,24 @@ public:
 //     virtual QVariantMap additionalProperties() = 0;
 //     virtual QVector<QVariantMap> additionalInformation(const QVector<MappingGraph*> &others) = 0;
     
-    virtual QStringList errors() const = 0;
-    virtual bool isCorrect() const = 0;
+    QStringList errors() const { return m_errors; }
+    bool isCorrect() const { return m_errors.isEmpty() && analyzer.isCorrect(); }
 
 protected:
     AbstractMappingGraph() {}
     AbstractMappingGraph(const AbstractMappingGraph& other) {}
     
+    void appendError(const QString &error) { m_errors.append(error); }
+    void flushErrors() { m_errors.clear(); }
+    
+    //WARNING see if errorCount is necesary ...
+    int errorCount() const { return m_errors.count(); } // if some method throws many erros perhaps the user (child-class) want to stop something
+    
     Analitza::Analyzer analyzer;
     
+private:
+    QStringList m_errors;
+
     DrawingPrecision m_drawingPrecision;
 };
 

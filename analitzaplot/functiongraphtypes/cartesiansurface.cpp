@@ -41,14 +41,10 @@ public:
     explicit CartesianSurface(const Analitza::Expression& expression, Analitza::Variables* variables);
     virtual ~CartesianSurface();
     
-    QStringList errors() const { return m_errors; }
-    bool isCorrect() const { return false; }
-
     //Own
     void update();
     
 private:
-    QStringList m_errors;
 };
 
 

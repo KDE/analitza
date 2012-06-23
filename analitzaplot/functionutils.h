@@ -84,44 +84,6 @@ private:
     EndPoint m_highEndPoint;
 };
 
-template<typename VectorType>
-class LineSegment
-{
-public:
-    LineSegment(const VectorType &position = VectorType(), 
-                const VectorType &direction = VectorType())
-    : m_position(position), m_direction(direction) {}
-    
-    VectorType position() const { return m_position; }
-    VectorType direction() const { return direction; }
-    
-private:
-    VectorType m_position;
-    VectorType m_direction;
-  
-};
-
-enum FunctionGraphDataFlag { FunctionData = 0x0, GradientData = 0x1, FixedGradientsData = 0x2 };
-Q_DECLARE_FLAGS(FunctionGraphDataFlags, FunctionGraphDataFlag)
-Q_DECLARE_OPERATORS_FOR_FLAGS(FunctionGraphDataFlags)
-
-//TODO
-struct FunctionGraphDescription
-{
-	FunctionGraphDataFlags dataFlags;
-};
-
-struct FunctionGraphData
-{
-
-};
-
-struct FunctionGraphData2D : public FunctionGraphData
-{
-    QVector<QVector2D> fixedGradients;
-    QVector<QPointF> points;
-    QList<int> jumps;
-};
 
 static bool isSimilar(double a, double b, double diff = .0000001)
 {

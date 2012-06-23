@@ -24,29 +24,10 @@
 
 #include "function.h"
 
-class ANALITZAPLOT_EXPORT MappingGraphModel : public QAbstractListModel
+class ANALITZAPLOT_EXPORT FunctionGraphModel : public QAbstractListModel
 {
 Q_OBJECT
     
-public:
-    MappingGraphModel(Analitza::Variables *v, QObject * parent = 0);
-    virtual ~MappingGraphModel();
-    
-    //QAbstractItemModel
-    int columnCount(const QModelIndex & parent = QModelIndex()) const;
-    Qt::ItemFlags flags(const QModelIndex & index) const;
-    bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-    Qt::DropActions supportedDropActions() const;
-
-protected:
-    Analitza::Variables *variablesModule;
-};
-
-class ANALITZAPLOT_EXPORT PlaneCurveModel : public MappingGraphModel
-{
-Q_OBJECT
-
 public:
     enum PlaneCurveDataRole 
     {
@@ -66,10 +47,28 @@ public:
         SpaceDimensionRole, //Variant->int
         CoordinateSystemRole, //Variant->int
         ErrorsRole, //Variant->QStringList
-
-                //methodroles
-        UpdateRole, //variant->qrect
     };
+
+    
+    FunctionGraphModel(Analitza::Variables *v, QObject * parent = 0);
+    virtual ~FunctionGraphModel();
+    
+    //QAbstractItemModel
+    int columnCount(const QModelIndex & parent = QModelIndex()) const;
+    Qt::ItemFlags flags(const QModelIndex & index) const;
+    bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    Qt::DropActions supportedDropActions() const;
+
+protected:
+    Analitza::Variables *variablesModule;
+};
+
+class ANALITZAPLOT_EXPORT PlaneCurveModel : public FunctionGraphModel
+{
+Q_OBJECT
+
+public:
     
     PlaneCurveModel(Analitza::Variables *v, QObject * parent = 0);
     virtual ~PlaneCurveModel();
@@ -80,7 +79,10 @@ public:
 
     void addItem(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
     void removeItem(int row);
-    const PlaneCurve * item(int row) const; 
+    const PlaneCurve * item(int row) const;
+    
+    //planecurve methods
+    void update(int row, const QRect& viewport); //emit setdata signal
     QPair<QPointF, QString> calcItem(int row, const QPointF &mousepos);
     QLineF derivativeItem(int row, const QPointF &mousepos) const;
     QVariantMap additionalPropertiesForItem(int row);
