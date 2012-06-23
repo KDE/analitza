@@ -225,7 +225,7 @@ int PlaneCurveModel::rowCount(const QModelIndex & parent) const
     if(parent.isValid())
         return 0;
     else
-        return m_items.count();
+        return m_items.size();
 }
 
 bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value, int role)
@@ -316,44 +316,49 @@ bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value,
     return false;
 }
 
+//agrego item al model y no como un puntero ... esto para manejar que el model maneje el scope del planecurve internamente
 void PlaneCurveModel::addItem(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
-//     beginInsertRows(parent, row, row+count-1);
-//
-//     for (int i = 0; i < count; ++i)
-//         m_items.insert(row, new PlaneCurve(Analitza::Expression("x->0"), variablesModule, QString(), QColor()));
-//
-//     endInsertRows();
-//
-//     return true;
+    //no se permiten items invalidos
+    Q_ASSERT(PlaneCurve::canDraw(functionExpression));
+    
+    beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
+
+    m_items.append(new PlaneCurve(Analitza::Expression("x->0"), variablesModule, name, col));
+
+    endInsertRows();
 }
 
 void PlaneCurveModel::removeItem(int row)
 {
-//     Q_ASSERT(row+count-1<m_items.count());
-//
-//     if(parent.isValid())
-//         return false;
-//
-//     beginRemoveRows(parent, row, row+count-1);
-//
-//     for (int i = 0; row < count; ++i)
-//     {
-//         PlaneCurve *tmpcurve = m_items.at(row);
-//         delete tmpcurve;
-//         m_items.removeAt(row);
-//     }
-//
-//     endRemoveRows();
-//
-//     return true;
+    Q_ASSERT(row<m_items.size());
+
+    beginRemoveRows(QModelIndex(), row, row);
+
+    PlaneCurve *tmpcurve = m_items[row];
+    delete tmpcurve;
+        
+    m_items.removeAt(row);
+
+    endRemoveRows();
 }
 
-const PlaneCurve* PlaneCurveModel::item(int row) const
-{
-    Q_ASSERT(row<m_items.count());
+//TODO remove this for next iter
+// const PlaneCurve* PlaneCurveModel::item(int row) const
+// {
+//     Q_ASSERT(row<m_items.count());
+// 
+//     return m_items[row];
+// }
 
-    return m_items[row];
+QVector< int > PlaneCurveModel::jumps(int row) const
+{
+    return m_items[row]->jumps();
+}
+
+const QVector< QPointF >& PlaneCurveModel::points(int row) const
+{
+    return m_items[row]->points();
 }
 
 void PlaneCurveModel::update(int row, const QRect& viewport)

@@ -79,9 +79,14 @@ public:
 
     void addItem(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
     void removeItem(int row);
-    const PlaneCurve * item(int row) const;
     
+    //don't expose planecurve data that is already expose by data() ... put methods
+    // to specific data -from planecurve- that aren't expose by data()
+    //const PlaneCurve * item(int row) const; see above ... and then see jumps(row,) and points(row,) 
+
     //planecurve methods
+    QVector<int> jumps(int row) const;
+    const QVector<QPointF> & points(int row) const;
     void update(int row, const QRect& viewport); //emit setdata signal
     QPair<QPointF, QString> calcItem(int row, const QPointF &mousepos);
     QLineF derivativeItem(int row, const QPointF &mousepos) const;
@@ -89,7 +94,7 @@ public:
     QVector<QVariantMap> additionalInformationForItem(int row, const QVector<MappingGraph*> &others);
 
 private:
-    QVector<PlaneCurve*> m_items;
+    QList<PlaneCurve*> m_items;
 };
 
 #endif // ANALITZAPLOT_FUNCTIONSMODEL_H
