@@ -21,6 +21,8 @@
 #include "analitzaplot/functionsmodel.h"
 #include "analitza/expression.h"
 #include "analitza/variables.h"
+#include <analitza/analyzer.h>
+#include <analitza/value.h>
 #include <qtest_kde.h>
 #include <cmath>
 
@@ -74,6 +76,20 @@ void FunctionTest::initTestCase()
 // 	QVERIFY(model->rowCount() == 6);
 //
 //
+    v->modify("a", 9);
+    
+    Analitza::Expression e("-inf"); // if -inf inf or empty .. put 
+    
+//     qDebug() << "exp " << e.isCorrect() << e.toString();
+    
+    Analitza::Analyzer a(v);
+    a.setExpression(e);
+/*
+    qDebug() << a.calculate().isCorrect();
+    qDebug() << a.expression().toString();*/
+
+    
+    
 	delete v;
 }
 

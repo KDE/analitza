@@ -22,6 +22,9 @@
 #define ANALITZAPLOT_FUNCTIONUTILS
 
 #include "analitzaplotexport.h"
+#include <analitza/expression.h>
+#include <analitza/analyzer.h>
+#include <analitza/value.h>
 
 #include <cmath>
 
@@ -30,6 +33,7 @@
 #include <QVector2D>
 #include <QVector3D>
 #include <QLineF>
+#include <qsharedpointer.h>
 
 using std::acos;
 using std::atan;
@@ -48,6 +52,120 @@ class Expression;
 enum DrawingPrecision { LowPrecision = 1, MediumPrecision, HighPrecision};
 enum CoordinateSystem { Cartesian = 1, Polar, Cylindrical, Spherical };
 
+
+class EndPoint
+{
+public:
+    EndPoint() {}
+    
+    EndPoint(double value, Analitza::Variables *varmod)
+    {
+        m_analyzer = QSharedPointer<Analitza::Analyzer>(new Analitza::Analyzer(varmod));
+        
+        setValue(value);
+    }
+
+    EndPoint(const Analitza::Expression &expression, Analitza::Variables *varmod)
+    {
+        m_analyzer = QSharedPointer<Analitza::Analyzer>(new Analitza::Analyzer(varmod));
+
+        if (!setValue(expression))
+            setValue(0.0);
+    }
+
+    EndPoint(const EndPoint &other) : m_analyzer(other.m_analyzer) { }
+
+    bool isInfinite() const 
+    {
+        return m_analyzer->expression().toString() == QString("-inf") || m_analyzer->expression().toString() == QString("inf");
+    }
+    
+    double value() 
+    { 
+        //TODO no magic numbers
+        if (m_analyzer->expression().toString() == QString("-inf"))
+            return -1000000;
+        
+        if (m_analyzer->expression().toString() == QString("inf"))
+            return 1000000;
+        
+        return m_analyzer->calculate().toReal().value(); 
+    }
+    
+    void setValue(double value) { m_analyzer->setExpression(Analitza::Expression(Analitza::Cn(value))); }
+    
+    bool setValue(const Analitza::Expression &expression)
+    {
+        if (!expression.isCorrect())
+            return false;
+        else
+        {
+            m_analyzer->setExpression(expression);
+
+            if (expression.toString().isEmpty() || expression.toString() == QString("-inf"))
+                m_analyzer->setExpression(Analitza::Expression("-inf"));
+
+            if (expression.toString().isEmpty() || expression.toString() == QString("inf"))
+                m_analyzer->setExpression(Analitza::Expression("inf"));
+         
+            return true;
+        }
+    }
+    
+    const Analitza::Expression & expression() const { return m_analyzer->expression(); }
+
+    bool operator==(const EndPoint &other) const { return m_analyzer->expression() == other.m_analyzer->expression(); }
+    EndPoint operator=(const EndPoint& other) 
+    {
+        m_analyzer = other.m_analyzer;
+        
+        return *this;
+    }
+
+private:
+
+    
+    QSharedPointer<Analitza::Analyzer> m_analyzer;
+};
+
+class RealInterval
+{
+public:
+    RealInterval() {}
+    RealInterval(const EndPoint &lowEndPoint, const EndPoint &highEndPoint) : m_lowEndPoint(lowEndPoint), m_highEndPoint(highEndPoint) {}
+    RealInterval(const RealInterval &other) : m_lowEndPoint(other.m_lowEndPoint) {}
+
+    EndPoint lowEndPoint() { return m_lowEndPoint; }
+    EndPoint highEndPoint() { return m_highEndPoint; }
+    
+    void setEndPoints(const EndPoint &lowEndPoint, EndPoint &highEndPoint)
+    {
+        m_lowEndPoint = lowEndPoint;
+        m_highEndPoint = highEndPoint;
+    }
+
+    bool operator==(const RealInterval &other) const 
+    {
+        return (m_lowEndPoint == other.m_lowEndPoint) && (m_highEndPoint == other.m_highEndPoint);  
+    }
+
+    RealInterval operator=(const RealInterval& other) 
+    {
+        m_lowEndPoint = other.m_lowEndPoint;
+        m_highEndPoint = other.m_lowEndPoint;
+        
+        return *this;
+    }
+
+    
+private:
+    EndPoint m_lowEndPoint;
+    EndPoint m_highEndPoint;
+};
+
+
+/*
+//TODO endpoints to expressions
 class EndPoint
 {
 public:
@@ -82,7 +200,7 @@ public:
 private:
     EndPoint m_lowEndPoint;
     EndPoint m_highEndPoint;
-};
+};*/
 
 
 static bool isSimilar(double a, double b, double diff = .0000001)

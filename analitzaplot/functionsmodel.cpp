@@ -324,7 +324,7 @@ void PlaneCurveModel::addItem(const Analitza::Expression& functionExpression, co
     
     beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
 
-    m_items.append(new PlaneCurve(Analitza::Expression("x->0"), variablesModule, name, col));
+    m_items.append(new PlaneCurve(functionExpression, variablesModule, name, col));
 
     endInsertRows();
 }
