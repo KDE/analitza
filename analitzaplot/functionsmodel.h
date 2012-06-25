@@ -38,7 +38,8 @@ public:
         IconNameRole, //Variant->QString
 
         //roles for editing job
-        ArgumentsRole, //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+        ArgumentValuesRole, //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+        ArgumentExpressionValuesRole, 
         DrawingPrecisionRole, //Variant->int
         VisibleRole, //Variant->bool
 

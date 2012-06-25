@@ -148,21 +148,38 @@ QVariant PlaneCurveModel::data(const QModelIndex & index, int role) const
         return tmpcurve->iconName();
         break;
 
-        //roles for editing job
-    case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
-    {
-        QVariantList args;
-
-        foreach (QString arg, tmpcurve->arguments())
-        {
-            args.append(arg);
-            args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
-            args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
-        }
-
-        return args;
-        break;
-    }
+        //TODO last
+//         //roles for editing job
+//     case ArgumentValuesRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+//     {
+//         QVariantList args;
+// 
+//         foreach (QString arg, tmpcurve->arguments())
+//         {
+//             args.append(arg);
+//             args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
+//             args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
+//         }
+// 
+//         return args;
+//         break;
+//     }
+// 
+// 
+//     case ArgumentExpressionValuesRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+//     {
+//         QVariantList args;
+// 
+//         foreach (QString arg, tmpcurve->arguments())
+//         {
+//             args.append(arg);
+//             args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
+//             args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
+//         }
+// 
+//         return args;
+//         break;
+//     }
 
     case DrawingPrecisionRole: //Variant->int
         return tmpcurve->drawingPrecision();
@@ -275,21 +292,22 @@ bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value,
             }
 
 
-            //roles for editing job
-            case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
-            {
-    //                 QVariantList args;
-    //
-    //                     foreach (QString arg, tmpcurve->arguments())
-    //                     {
-    //                         args.append(arg);
-    //                         args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
-    //                         args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
-    //                     }
-    //
-    //                     return args;
-                break;
-            }
+            //TODO last
+//             //roles for editing job
+//             case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+//             {
+//     //                 QVariantList args;
+//     //
+//     //                     foreach (QString arg, tmpcurve->arguments())
+//     //                     {
+//     //                         args.append(arg);
+//     //                         args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
+//     //                         args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
+//     //                     }
+//     //
+//     //                     return args;
+//                 break;
+//             }
 
             case DrawingPrecisionRole: //Variant->int
             {

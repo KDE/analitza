@@ -27,6 +27,8 @@
 #include <analitza/value.h>
 
 #include <cmath>
+#include <limits>
+
 
 #include <QPair>
 #include <QVector>
@@ -53,46 +55,57 @@ enum DrawingPrecision { LowPrecision = 1, MediumPrecision, HighPrecision};
 enum CoordinateSystem { Cartesian = 1, Polar, Cylindrical, Spherical };
 
 
+//2 private class not used on public api
+
 class EndPoint
 {
 public:
-    EndPoint() {}
+    EndPoint() : m_isInfinite(false)  {}
     
-    EndPoint(double value, Analitza::Variables *varmod)
+    //el owner de *analitza sera functiongraph ... no tiene sentido usar usar esta calse fuera de functiongraph
+    EndPoint(double value): m_isInfinite(false)
     {
-        m_analyzer = QSharedPointer<Analitza::Analyzer>(new Analitza::Analyzer(varmod));
-        
         setValue(value);
     }
 
-    EndPoint(const Analitza::Expression &expression, Analitza::Variables *varmod)
+    EndPoint(const Analitza::Expression &expression) : m_isInfinite(false)
     {
-        m_analyzer = QSharedPointer<Analitza::Analyzer>(new Analitza::Analyzer(varmod));
-
         if (!setValue(expression))
             setValue(0.0);
     }
 
-    EndPoint(const EndPoint &other) : m_analyzer(other.m_analyzer) { }
+    EndPoint(const EndPoint &other) : m_expressionValue(other.m_expressionValue), m_isInfinite(other.m_isInfinite)
+    {
+        
+    }
 
     bool isInfinite() const 
     {
-        return m_analyzer->expression().toString() == QString("-inf") || m_analyzer->expression().toString() == QString("inf");
+        return m_isInfinite;
     }
     
-    double value() 
+    void setInfinite(bool infinite) { m_isInfinite = infinite; }
+    
+    //no cambiar el exp de analyzer en setvalue por el costo ... solo cuando se quier calcular el value
+    double value(Analitza::Analyzer *analyzer) const
     { 
-        //TODO no magic numbers
-        if (m_analyzer->expression().toString() == QString("-inf"))
-            return -1000000;
+        Q_ASSERT(analyzer);
+
+        analyzer->setExpression(m_expressionValue);
         
-        if (m_analyzer->expression().toString() == QString("inf"))
-            return 1000000;
+        //TODO checks
+        if (!m_isInfinite)
+//             if (m_analyzer->isCorrect())
+            return analyzer->calculate().toReal().value();
         
-        return m_analyzer->calculate().toReal().value(); 
+        return std::numeric_limits<double>::infinity();
     }
-    
-    void setValue(double value) { m_analyzer->setExpression(Analitza::Expression(Analitza::Cn(value))); }
+
+    //no cambiar el exp de analyzer en setvalue por el costo ... solo cuando se quier calcular el value
+    void setValue(double value)
+    { 
+        m_expressionValue = Analitza::Expression(Analitza::Expression(Analitza::Cn(value))); 
+    }
     
     bool setValue(const Analitza::Expression &expression)
     {
@@ -100,48 +113,48 @@ public:
             return false;
         else
         {
-            m_analyzer->setExpression(expression);
+            m_expressionValue = Analitza::Expression(expression);
 
-            if (expression.toString().isEmpty() || expression.toString() == QString("-inf"))
-                m_analyzer->setExpression(Analitza::Expression("-inf"));
-
-            if (expression.toString().isEmpty() || expression.toString() == QString("inf"))
-                m_analyzer->setExpression(Analitza::Expression("inf"));
-         
             return true;
         }
+        
+        return false;
     }
     
-    const Analitza::Expression & expression() const { return m_analyzer->expression(); }
+    const Analitza::Expression & expression() const { return m_expressionValue; }
 
-    bool operator==(const EndPoint &other) const { return m_analyzer->expression() == other.m_analyzer->expression(); }
+    bool operator==(const EndPoint &other) const 
+    { 
+        return m_expressionValue == other.m_expressionValue && m_isInfinite == other.m_isInfinite;
+    }
+    
     EndPoint operator=(const EndPoint& other) 
     {
-        m_analyzer = other.m_analyzer;
+        m_expressionValue = other.m_expressionValue;
+        m_isInfinite = other.m_isInfinite;
         
         return *this;
     }
 
 private:
-
-    
-    QSharedPointer<Analitza::Analyzer> m_analyzer;
+    Analitza::Expression m_expressionValue;
+    bool m_isInfinite;
 };
 
 class RealInterval
 {
 public:
     RealInterval() {}
-    RealInterval(const EndPoint &lowEndPoint, const EndPoint &highEndPoint) : m_lowEndPoint(lowEndPoint), m_highEndPoint(highEndPoint) {}
-    RealInterval(const RealInterval &other) : m_lowEndPoint(other.m_lowEndPoint) {}
+    RealInterval(const EndPoint &lEndPoint, const EndPoint &hEndPoint) : m_lowEndPoint(lEndPoint), m_highEndPoint(hEndPoint) { }
+    RealInterval(const RealInterval &other) : m_lowEndPoint(other.m_lowEndPoint), m_highEndPoint(other.m_highEndPoint) {}
 
-    EndPoint lowEndPoint() { return m_lowEndPoint; }
-    EndPoint highEndPoint() { return m_highEndPoint; }
+    EndPoint lowEndPoint() const { return m_lowEndPoint; }
+    EndPoint highEndPoint() const { return m_highEndPoint; }
     
-    void setEndPoints(const EndPoint &lowEndPoint, EndPoint &highEndPoint)
+    void setEndPoints(const EndPoint &lEndPoint, EndPoint &hEndPoint)
     {
-        m_lowEndPoint = lowEndPoint;
-        m_highEndPoint = highEndPoint;
+        m_lowEndPoint = lEndPoint;
+        m_highEndPoint = hEndPoint;
     }
 
     bool operator==(const RealInterval &other) const 
@@ -152,11 +165,10 @@ public:
     RealInterval operator=(const RealInterval& other) 
     {
         m_lowEndPoint = other.m_lowEndPoint;
-        m_highEndPoint = other.m_lowEndPoint;
+        m_highEndPoint = other.m_highEndPoint;
         
         return *this;
     }
-
     
 private:
     EndPoint m_lowEndPoint;

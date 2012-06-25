@@ -101,8 +101,12 @@ class ANALITZAPLOT_EXPORT FunctionGraph : public MappingGraph
 public:
     FunctionGraph(const QString &name, const QColor& col) : MappingGraph(name, col) {}
 
-    virtual RealInterval argumentInterval(const QString &argname) const = 0;
-    virtual void setArgumentInverval(const QString &argname, const RealInterval &interval) = 0;
+    virtual QPair<double, double> intervalValues(const QString &argname) = 0;
+    virtual void setIntervalValues(const QString &argname, const QPair<double, double> &interval) = 0;
+    
+    virtual QPair<Analitza::Expression, Analitza::Expression> intervalExpressionValues(const QString &argname) const = 0;
+    virtual void setIntervalExpressionValues(const QString &argname, const QPair<Analitza::Expression, Analitza::Expression> &interval) = 0;
+
     virtual QStringList arguments() const = 0;
     
 protected:
@@ -155,8 +159,16 @@ public:
     bool isCorrect() const;
 
     //FunctionGraph
-    RealInterval argumentInterval(const QString &argname) const;
-    void setArgumentInverval(const QString &argname, const RealInterval &interval);
+    QPair<double, double> intervalValues(const QString &argname);
+    void setIntervalValues(const QString &argname, const QPair<double, double> &interval);
+    
+    QPair<Analitza::Expression, Analitza::Expression> intervalExpressionValues(const QString &argname) const;
+    void setIntervalExpressionValues(const QString &argname, const QPair<Analitza::Expression, Analitza::Expression> &interval);
+
+    //RealInterval ni endpoint deben de ser publcos ... Solo deben usarse internamente
+//     RealInterval argumentInterval(const QString &argname) const;
+//     void setArgumentInverval(const QString &argname, const RealInterval &interval);
+    
     QStringList arguments() const;
 
     //Curve
@@ -220,8 +232,12 @@ public:
     bool isCorrect() const;
 
     //FunctionGraph
-    RealInterval argumentInterval(const QString &argname) const;
-    void setArgumentInverval(const QString &argname, const RealInterval &interval);
+    QPair<double, double> intervalValues(const QString &argname);
+    void setIntervalValues(const QString &argname, const QPair<double, double> &interval);
+    
+    QPair<Analitza::Expression, Analitza::Expression> intervalExpressionValues(const QString &argname) const;
+    void setIntervalExpressionValues(const QString &argname, const QPair<Analitza::Expression, Analitza::Expression> &interval);
+
     QStringList arguments() const;
 
     //Own

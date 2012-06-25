@@ -115,8 +115,13 @@ public:
     virtual ~AbstractFunctionGraph();
 
     //FunctionGraph
-    RealInterval argumentInterval(const QString &argname) const;
-    void setArgumentInverval(const QString &argname, const RealInterval &interval);
+    //no lleva const porque se calcularan valores con m_argumentIntervals
+    QPair<double, double> intervalValues(const QString &argname);
+    void setIntervalValues(const QString &argname, const QPair<double, double> &interval);
+    
+    QPair<Analitza::Expression, Analitza::Expression> intervalExpressionValues(const QString &argname) const;
+    void setIntervalExpressionValues(const QString &argname, const QPair<Analitza::Expression, Analitza::Expression> &interval);
+    
     virtual QStringList arguments() const = 0;
 
 protected:
@@ -127,7 +132,8 @@ protected:
 
 private:
     QMap<QString, Analitza::Object*> m_argumentValues;
-    QMap< QString, RealInterval > m_argumentIntervals;
+    QMap<QString, RealInterval > m_argumentIntervals;
+    Analitza::Analyzer* m_intervalsAnalizer; //solo es necesario 1?
 };
 
 ///
