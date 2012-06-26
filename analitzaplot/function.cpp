@@ -306,7 +306,7 @@ const QVector<QPointF> & PlaneCurve::points() const
     Q_ASSERT(m_planeCurve);
 
 //     Q_ASSERT(m_planeCurve->points().size()>1);
-    return m_planeCurve->points();
+    return m_planeCurve->points;
 }
 
 QVector< int > PlaneCurve::jumps() const
@@ -314,7 +314,7 @@ QVector< int > PlaneCurve::jumps() const
     Q_ASSERT(m_planeCurve);
     
 //     Q_ASSERT(m_planeCurve->jumps().size()>1);
-    return m_planeCurve->jumps();
+    return m_planeCurve->jumps;
 }
 
 void PlaneCurve::update(const QRect& viewport)

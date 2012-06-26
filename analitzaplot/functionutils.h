@@ -21,21 +21,20 @@
 #ifndef ANALITZAPLOT_FUNCTIONUTILS
 #define ANALITZAPLOT_FUNCTIONUTILS
 
-#include "analitzaplotexport.h"
-#include <analitza/expression.h>
-#include <analitza/analyzer.h>
-#include <analitza/value.h>
-
 #include <cmath>
 #include <limits>
 
+#include "analitzaplotexport.h"
+
+#include "analitza/expression.h"
+#include "analitza/value.h"
+#include "analitza/analyzer.h"
+
 
 #include <QPair>
-#include <QVector>
 #include <QVector2D>
 #include <QVector3D>
 #include <QLineF>
-#include <qsharedpointer.h>
 
 using std::acos;
 using std::atan;
@@ -176,44 +175,7 @@ private:
 };
 
 
-/*
-//TODO endpoints to expressions
-class EndPoint
-{
-public:
-    EndPoint(double value = 0.0) : m_isInfinite(false), m_value(value) {}
-
-    bool isInfinite() const { return m_isInfinite; }
-    void setInfinite(bool infinite) { m_isInfinite = infinite; }
-    double value() const { Q_ASSERT(m_isInfinite); return m_value; }
-    void setValue(double value) { Q_ASSERT(m_isInfinite); m_value = value; }
-
-private:
-
-    bool m_isInfinite;
-    double m_value;
-};
-
-class RealInterval
-{
-public:
-    RealInterval(const EndPoint &lowEndPoint = EndPoint(-1.0), 
-                 const EndPoint &highEndPoint = EndPoint(1.0))
-    : m_lowEndPoint(lowEndPoint), m_highEndPoint(highEndPoint) { }
-
-    EndPoint lowEndPoint() const { return m_lowEndPoint; }
-    EndPoint highEndPoint() const { return m_highEndPoint; }
-    void setEndPoints(const EndPoint &lowEndPoint, EndPoint &highEndPoint)
-    {
-        m_lowEndPoint = lowEndPoint;
-        m_highEndPoint = highEndPoint;
-    }
-
-private:
-    EndPoint m_lowEndPoint;
-    EndPoint m_highEndPoint;
-};*/
-
+//math utils
 
 static bool isSimilar(double a, double b, double diff = .0000001)
 {

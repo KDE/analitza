@@ -1,6 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -24,12 +24,13 @@
 #include <QRectF>
 #include "analitza/value.h"
 #include "analitza/variable.h"
+#include "analitza/localize.h"
 
-
-class ANALITZAPLOT_EXPORT CartesianCurveY : public AbstractPlaneCurve
+///Functions where the x is bounding. like x->sin(x)
+class ANALITZAPLOT_EXPORT FunctionY : public AbstractPlaneCurve
 {
 public:
-    TYPE_NAME("CartesianCurveY")
+    TYPE_NAME("FunctionY")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
@@ -39,135 +40,162 @@ public:
     EXAMPLES("x,x*x,x+4")    
     
     
-    CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
-	~CartesianCurveY()
+    FunctionY(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
+	~FunctionY()
 	{
 	}
 
-
-    //MappingGraph
-
-    //Curve
-
-    //Own
     void update(const QRect& viewport);
     
     QPair<QPointF, QString> calc(const QPointF &mousepos);
     QLineF derivative(const QPointF &mousepos) const;
+    
+    //
+    
 
 private:
     void optimizeJump();
+    void calculateValues(double, double);
     
 };
 
-CartesianCurveY::CartesianCurveY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
+FunctionY::FunctionY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
 :AbstractPlaneCurve(functionExpression, variables)
 {
 }
 
-//FunctionGraph
-
-
-
-//Curve
-
-
-void CartesianCurveY::update(const QRect& viewport)
+void FunctionY::update(const QRect& viewport)
 {
     double l_lim=viewport.left()-.1, r_lim=viewport.right()+.1;
-
-    if(!points().isEmpty()
-            && isSimilar(points().first().x(), l_lim)
-            && isSimilar(points().last().x(), r_lim)) {
+    
+    if(!points.isEmpty()
+            && isSimilar(points.first().x(), l_lim)
+            && isSimilar(points.last().x(), r_lim)) {
         return;
     }
     
-    clearPoints();
-    clearPoints();;
-//     points.reserve(resolution());
- 
-    //TODO GSOC(pres)
-    double step= 0.1;
-    
-    bool jumping=true;
-    
-    for(double x=l_lim; x<r_lim-step; x+=step) 
-    {
-
-        arg("x")->setValue(x);
-        Analitza::Cn y = analyzer.calculateLambda().toReal();
-        QPointF p(x, y.value());
-        bool ch=addPoint(p);
-        
-        
-        bool jj=jumping;
-        jumping=false;
-        if(ch && !jj) {
-//          if(!m_jumps.isEmpty()) qDebug() << "popopo" << m_jumps.last() << points.count();
-            double prevY=points()[points().count()-2].y();
-            if(y.format()!=Analitza::Cn::Real && prevY!=y.value()) {
-                setJump(points().count()-1);
-                jumping=true;
-            } else if(points().count()>3 && traverse(points()[points().count()-3].y(), prevY, y.value())) {
-                optimizeJump();
-                setJump(points().count()-1);
-                jumping=true;
-            }
-        }
-    }
-    
-
-//  qDebug() << "juuuumps" << m_jumps << resolution();
+    calculateValues(l_lim, r_lim);
+//  qDebug() << "end." << jumps;
 }
 
 
 
 //Own
-QPair<QPointF, QString> CartesianCurveY::calc(const QPointF &mousepos)
+QPair<QPointF, QString> FunctionY::calc(const QPointF &p)
 {
-    return qMakePair(QPointF(), QString());
+    QPointF dp=p;
+    
+    arg("x")->setValue(dp.x());
+    Analitza::Expression r=analyzer.calculateLambda();
+
+    if(!r.isReal())
+        appendError(i18n("We can only draw Real results."));
+    
+    dp.setY(r.toReal().value());
+    QString pos = QString("x=%1 y=%2").arg(dp.x(),3,'f',2).arg(dp.y(),3,'f',2);
+    return QPair<QPointF, QString>(dp, pos);
 }
 
-QLineF CartesianCurveY::derivative(const QPointF &mousepos) const
+QLineF FunctionY::derivative(const QPointF &mousepos) const
 {
-    return QLineF();
-}
-
-void CartesianCurveY::optimizeJump()
-{
-//     QPointF before = points.at(points.count()-2), after=points.last();
-//     qreal x1=before.x(), x2=after.x();
-//     qreal y1=before.y(), y2=after.y();
-//     int iterations=5;
+    //TODO port
+//     Analitza::Analyzer a(analyzer.variables());
+//     double ret;
 //     
-// //  qDebug() << "+++++++++" << before << after;
-//     for(; iterations>0; --iterations) {
-//         qreal dist = x2-x1;
-//         qreal x=x1+dist/2;
+//     if(m_deriv) {
+//         arg("x")->setValue(p.x());
+//         a.setExpression(*m_deriv);
 //         
-//         vx->setValue(x);
-//         qreal y = func.calculateLambda().toReal().value();
+//         a.setStack(m_runStack);
+//         if(a.isCorrect())
+//             ret = a.calculateLambda().toReal().value();
 //         
-//         if(fabs(y1-y)<fabs(y2-y)) {
-//             before.setX(x);
-//             before.setY(y);
-//             x1=x;
-//             y1=y;
-//         } else {
-//             after.setX(x);
-//             after.setY(y);
-//             x2=x;
-//             y2=y;
+//         if(!a.isCorrect()) {
+//             qDebug() << "Derivative error: " <<  a.errors();
+//             return QLineF();
 //         }
+//     } else {
+//         QVector<Analitza::Object*> vars;
+//         vars.append(new Cn(p.x()));
+//         a.setExpression(analyzer.expression());
+//         ret=a.derivative(vars);
+//         qDeleteAll(vars);
 //     }
-// //  qDebug() << "---------" << before << after;
-//     points[points.count()-2]=before;
-//     points.last()=after;
+//     
+//     return FunctionUtils::slopeToLine(ret);
+
+return QLineF();
+    
+}
+
+
+void FunctionY::optimizeJump()
+{
+    QPointF before = points.at(points.count()-2), after=points.last();
+    qreal x1=before.x(), x2=after.x();
+    qreal y1=before.y(), y2=after.y();
+    int iterations=5;
+    
+//  qDebug() << "+++++++++" << before << after;
+    for(; iterations>0; --iterations) {
+        qreal dist = x2-x1;
+        qreal x=x1+dist/2;
+        
+        arg("x")->setValue(x);
+        qreal y = analyzer.calculateLambda().toReal().value();
+        
+        if(fabs(y1-y)<fabs(y2-y)) {
+            before.setX(x);
+            before.setY(y);
+            x1=x;
+            y1=y;
+        } else {
+            after.setX(x);
+            after.setY(y);
+            x2=x;
+            y2=y;
+        }
+    }
+//  qDebug() << "---------" << before << after;
+    points[points.count()-2]=before;
+    points.last()=after;
+}
+
+void FunctionY::calculateValues(double l_lim, double r_lim)
+{
+    jumps.clear();
+    points.clear();
+//     points.reserve(resolution()); //TODO port
+    
+//     double step= double((-l_lim+r_lim)/resolution()); //TODO port
+    double step = 0.1;
+    
+    bool jumping=true;
+    for(double x=l_lim; x<r_lim-step; x+=step) {
+        arg("x")->setValue(x);
+        Analitza::Cn y = analyzer.calculateLambda().toReal();
+        QPointF p(x, y.value());
+        bool ch=addPoint(p);
+        
+        bool jj=jumping;
+        jumping=false;
+        if(ch && !jj) {
+//          if(!jumps.isEmpty()) qDebug() << "popopo" << jumps.last() << points.count();
+            double prevY=points[points.count()-2].y();
+            if(y.format()!=Analitza::Cn::Real && prevY!=y.value()) {
+                jumps.append(points.count()-1);
+                jumping=true;
+            } else if(points.count()>3 && traverse(points[points.count()-3].y(), prevY, y.value())) {
+                optimizeJump();
+                jumps.append(points.count()-1);
+                jumping=true;
+            }
+        }
+    }
+//  qDebug() << "juuuumps" << jumps << resolution();
 }
 
 
 
-
-
-REGISTER_PLANECURVE(CartesianCurveY)
+REGISTER_PLANECURVE(FunctionY)
 

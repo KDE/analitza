@@ -141,18 +141,6 @@ AbstractPlaneCurve::~AbstractPlaneCurve()
 
 }
 
-QVector< int > AbstractPlaneCurve::jumps() const
-{
-    return m_jumps;
-}
-
-    //Own
-const QVector<QPointF> & AbstractPlaneCurve::points() const
-{
-//     qDebug() << m_points.size();
-    return m_points;
-}
-
 
 #include <cmath>
 using std::atan2;
@@ -160,38 +148,24 @@ using std::atan2;
 
 bool AbstractPlaneCurve::addPoint(const QPointF& p)
 {
-    int count=m_points.count();
+    int count=points.count();
     if(count<2) {
-        m_points.append(p);
+        points.append(p);
         return false;
     }
     
-    double angle1=std::atan2(m_points[count-1].y()-m_points[count-2].y(), m_points[count-1].x()-m_points[count-2].x());
-    double angle2=std::atan2(p.y()-m_points[count-1].y(), p.x()-m_points[count-1].x());
+    double angle1=std::atan2(points[count-1].y()-points[count-2].y(), points[count-1].x()-points[count-2].x());
+    double angle2=std::atan2(p.y()-points[count-1].y(), p.x()-points[count-1].x());
     
     bool append=!isSimilar(angle1, angle2);
     if(append)
-        m_points.append(p);
+        points.append(p);
     else
-        m_points.last()=p;
+        points.last()=p;
         
     return append;
 }
 
-void AbstractPlaneCurve::setJump(int jump)
-{
-    
-}
-
-void AbstractPlaneCurve::clearPoints()
-{
-    m_points.clear();
-}
-
-void AbstractPlaneCurve::clearJumps()
-{
-    m_jumps.clear();
-}
 
 ///
 

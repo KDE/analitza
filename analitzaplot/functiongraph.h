@@ -147,12 +147,14 @@ public:
     //AbstractMappingGraph
     int spaceDimension() const { return 2; }
     
-    //Curve
-    QVector<int> jumps() const;
-
+    //Curve ... los expongo como publicos tanto para planecurve como para los backend (
+    //para los backends por un tema de performance y flexibilidad) 
+    // al final en planecurve todo estara expuesto consistentemente 
+    QVector<QPointF> points;
+    QVector<int> jumps;
+    
     //Own
     virtual void update(const QRect& viewport) = 0;
-    const QVector<QPointF> & points() const;
     virtual QPair<QPointF, QString> calc(const QPointF &mousepos) = 0;
     virtual QLineF derivative(const QPointF &mousepos) const = 0;
 
@@ -161,13 +163,8 @@ protected:
     AbstractPlaneCurve(const AbstractPlaneCurve& other) {}
     
     bool addPoint(const QPointF& p);
-    void setJump(int jump);
-    void clearPoints();
-    void clearJumps();
 
-private:
-    QVector<QPointF> m_points;
-    QVector<int> m_jumps;
+
 };
 
 ///
