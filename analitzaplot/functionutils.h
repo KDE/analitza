@@ -50,7 +50,11 @@ namespace Analitza
 class Expression;
 }
 
-enum DrawingPrecision { LowPrecision = 1, MediumPrecision, HighPrecision};
+//TODO remove this next iter ... la implementacion debera ser lo suficientemente inteligente para generar los datos con una buena resolucion
+//puese no solo se le pasan los intervalos de los argumentos, sino tambien el viewport (2D) y el frustum/cubo (en 3d) ... esto
+//es mejor porque el usuario no debera pensar en que resolucion le conviene
+
+//enum DrawingPrecision { LowPrecision = 1, MediumPrecision, HighPrecision};
 enum CoordinateSystem { Cartesian = 1, Polar, Cylindrical, Spherical };
 
 

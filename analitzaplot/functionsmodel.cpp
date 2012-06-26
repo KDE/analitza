@@ -131,7 +131,8 @@ QVariant PlaneCurveModel::data(const QModelIndex & index, int role) const
             return QIcon::fromTheme(tmpcurve->iconName());
         }
         break;
-
+        //TODO remove for next iter
+/*
         //roles that will show in a view, also works for editing job
     case ExpressionRole: //Variant->QString
         return tmpcurve->expression().toString();
@@ -148,25 +149,23 @@ QVariant PlaneCurveModel::data(const QModelIndex & index, int role) const
         return tmpcurve->iconName();
         break;
 
-        //TODO last
-//         //roles for editing job
-//     case ArgumentValuesRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
-//     {
-//         QVariantList args;
+    case ArgumentValuesRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+    {
+        QVariantList args;
+
+        foreach (QString arg, tmpcurve->arguments())
+        {
+            args.append(arg);
+            args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
+            args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
+        }
+
+        return args;
+        break;
+    }
+
 // 
-//         foreach (QString arg, tmpcurve->arguments())
-//         {
-//             args.append(arg);
-//             args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
-//             args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
-//         }
-// 
-//         return args;
-//         break;
-//     }
-// 
-// 
-//     case ArgumentExpressionValuesRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+//     case ArgumentExpressionRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
 //     {
 //         QVariantList args;
 // 
@@ -230,7 +229,7 @@ QVariant PlaneCurveModel::data(const QModelIndex & index, int role) const
 //
 //         case PointsRole: //Variant->QList<QVariant> ... list of doubles
 //                 return tmpcurve->points();
-//             break;
+//             break;*/
 
     }
 
@@ -247,95 +246,96 @@ int PlaneCurveModel::rowCount(const QModelIndex & parent) const
 
 bool PlaneCurveModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
-    if (index.isValid())
-    {
-        switch (role)
-        {
-                //roles that will show in a view, also works for editing job
-            case ExpressionRole: //Variant->QString
-            {
-                Analitza::Expression fexp(value.toString());
-                
-                if (PlaneCurve::canDraw(fexp))
-                {
-                    m_items[index.row()]->reset(fexp);
-
-                    emit dataChanged(index, index);
-
-                    return true;
-                }
-                else
-                    return false;
-
-                break;
-            }
-
-            case NameRole: //Variant->QString
-            {
-                m_items[index.row()]->setName(value.toString());
-                emit dataChanged(index, index);
-
-                return true;
-
-                break;
-            }
-
-            case ColorRole: //Variant->QColor
-            {
-
-
-                m_items[index.row()]->setColor(value.value<QColor>());
-                emit dataChanged(index, index);
-                return true;
-
-                break;
-            }
-
-
-            //TODO last
-//             //roles for editing job
-//             case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+    //TODO el set data solo seran de los roles por defecto y quizas de visible ... next iter
+//     if (index.isValid())
+//     {
+//         switch (role)
+//         {
+//                 //roles that will show in a view, also works for editing job
+//             case ExpressionRole: //Variant->QString
 //             {
-//     //                 QVariantList args;
-//     //
-//     //                     foreach (QString arg, tmpcurve->arguments())
-//     //                     {
-//     //                         args.append(arg);
-//     //                         args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
-//     //                         args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
-//     //                     }
-//     //
-//     //                     return args;
+//                 Analitza::Expression fexp(value.toString());
+//                 
+//                 if (PlaneCurve::canDraw(fexp))
+//                 {
+//                     m_items[index.row()]->reset(fexp);
+// 
+//                     emit dataChanged(index, index);
+// 
+//                     return true;
+//                 }
+//                 else
+//                     return false;
+// 
 //                 break;
 //             }
-
-            case DrawingPrecisionRole: //Variant->int
-            {
-                m_items[index.row()]->setDrawingPrecision((DrawingPrecision)value.toInt());
-                emit dataChanged(index, index);
-
-                return true;
-
-                break;
-            }
-
-            case VisibleRole: //Variant->bool
-            {
-                m_items[index.row()]->setVisible(value.toBool());
-                emit dataChanged(index, index);
-
-                return true;
-
-                break;
-            }
-        }
-    }
+// 
+//             case NameRole: //Variant->QString
+//             {
+//                 m_items[index.row()]->setName(value.toString());
+//                 emit dataChanged(index, index);
+// 
+//                 return true;
+// 
+//                 break;
+//             }
+// 
+//             case ColorRole: //Variant->QColor
+//             {
+// 
+// 
+//                 m_items[index.row()]->setColor(value.value<QColor>());
+//                 emit dataChanged(index, index);
+//                 return true;
+// 
+//                 break;
+//             }
+// 
+// 
+//             //TODO last
+// //             //roles for editing job
+// //             case ArgumentsRole: //Variant->QList<QVariant> ... List: ... QString(argname), double min, double max ...
+// //             {
+// //     //                 QVariantList args;
+// //     //
+// //     //                     foreach (QString arg, tmpcurve->arguments())
+// //     //                     {
+// //     //                         args.append(arg);
+// //     //                         args.append(tmpcurve->argumentInterval(arg).lowEndPoint().value());
+// //     //                         args.append(tmpcurve->argumentInterval(arg).highEndPoint().value());
+// //     //                     }
+// //     //
+// //     //                     return args;
+// //                 break;
+// //             }
+// 
+//             case DrawingPrecisionRole: //Variant->int
+//             {
+//                 m_items[index.row()]->setDrawingPrecision((DrawingPrecision)value.toInt());
+//                 emit dataChanged(index, index);
+// 
+//                 return true;
+// 
+//                 break;
+//             }
+// 
+//             case VisibleRole: //Variant->bool
+//             {
+//                 m_items[index.row()]->setVisible(value.toBool());
+//                 emit dataChanged(index, index);
+// 
+//                 return true;
+// 
+//                 break;
+//             }
+//         }
+//     }
 
     return false;
 }
 
 //agrego item al model y no como un puntero ... esto para manejar que el model maneje el scope del planecurve internamente
-void PlaneCurveModel::addItem(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+void PlaneCurveModel::addCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
     //no se permiten items invalidos
     Q_ASSERT(PlaneCurve::canDraw(functionExpression));
@@ -347,7 +347,7 @@ void PlaneCurveModel::addItem(const Analitza::Expression& functionExpression, co
     endInsertRows();
 }
 
-void PlaneCurveModel::removeItem(int row)
+void PlaneCurveModel::removeCurve(int row)
 {
     Q_ASSERT(row<m_items.size());
 
@@ -361,43 +361,70 @@ void PlaneCurveModel::removeItem(int row)
     endRemoveRows();
 }
 
-//TODO remove this for next iter
-// const PlaneCurve* PlaneCurveModel::item(int row) const
-// {
-//     Q_ASSERT(row<m_items.count());
+const PlaneCurve* PlaneCurveModel::curve(int curveIndex) const
+{
+    Q_ASSERT(curveIndex<m_items.count());
+
+    return m_items[curveIndex];
+}
+
+bool PlaneCurveModel::setCurve(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
+{
+//                 if (PlaneCurve::canDraw(fexp))
+//                 {
+//                     m_items[index.row()]->reset(fexp);
 // 
-//     return m_items[row];
-// }
-
-QVector< int > PlaneCurveModel::jumps(int row) const
+//                     emit dataChanged(index, index);
+// 
+//                     return true;
+//                 }
+return false;
+}
+/*
+QPair<Analitza::Expression, Analitza::Expression> PlaneCurveModel::curveParameterInterval(int curveIndex, const QString &argname, bool evaluate) 
 {
-    return m_items[row]->jumps();
+    return m_items[curveIndex]->interval(argname, evaluate);
+
+//     emit dataChanged(index(curveIndex), index(curveIndex));
+}*/
+
+void PlaneCurveModel::setCurveParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
+{
+    
 }
 
-const QVector< QPointF >& PlaneCurveModel::points(int row) const
+
+/*
+QPair<double, double> PlaneCurveModel::curveParameterInterval(int curveIndex, const QString &argname)
 {
-    return m_items[row]->points();
+    
+}*/
+
+void PlaneCurveModel::setCurveParameterInterval(int curveIndex, const QString &argname, double min, double max)
+{
+    
 }
 
-void PlaneCurveModel::update(int row, const QRect& viewport)
+    
+void PlaneCurveModel::updateCurve(int curveIndex, const QRect& viewport)
 {
-    m_items[row]->update(viewport);
+    m_items[curveIndex]->update(viewport);
 
-    emit dataChanged(index(row), index(row));
+    emit dataChanged(index(curveIndex), index(curveIndex));
 }
 
 
-QPair< QPointF, QString > PlaneCurveModel::calcItem(int row, const QPointF& mousepos)
+QPair< QPointF, QString > PlaneCurveModel::curveImage(int row, const QPointF& mousepos)
 {
     Q_ASSERT(row<m_items.count());
 
-    return m_items[row]->calc(mousepos);
+    return m_items[row]->image(mousepos);
 }
 
-QLineF PlaneCurveModel::derivativeItem(int row, const QPointF& mousepos) const
+QLineF PlaneCurveModel::curveTangent(int row, const QPointF& mousepos)
 {
     Q_ASSERT(row<m_items.count());
 
-    return m_items[row]->derivative(mousepos);
+    return m_items[row]->tangent(mousepos);
 }
 

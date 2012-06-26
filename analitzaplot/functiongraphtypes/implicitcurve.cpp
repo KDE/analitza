@@ -54,7 +54,7 @@ public:
     TYPE_NAME("FunctionImplicit implicit curve")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    ARGUMENTS("x,y")
+    PARAMETERS("x,y")
     ICON_NAME("newimplicit")
     EXAMPLES("x^3-y^2+2,y^2*(y^2-10)-x^2*(x^2-9)")    
     
@@ -66,8 +66,8 @@ public:
 
     void update(const QRect& viewport);
     
-    QPair<QPointF, QString> calc(const QPointF &mousepos);
-    QLineF derivative(const QPointF &mousepos) const;
+    QPair<QPointF, QString> image(const QPointF &mousepos);
+    QLineF tangent(const QPointF &mousepos) ;
     
     //
     
@@ -183,7 +183,7 @@ void FunctionImplicit::update(const QRect& vp)
 }
 
 //Own
-QPair<QPointF, QString> FunctionImplicit::calc(const QPointF &point)
+QPair<QPointF, QString> FunctionImplicit::image(const QPointF &point)
 {
     
     return qMakePair(QPointF(), QString());
@@ -297,7 +297,7 @@ QPair<QPointF, QString> FunctionImplicit::calc(const QPointF &point)
 
 }
 
-QLineF FunctionImplicit::derivative(const QPointF &mousepos) const
+QLineF FunctionImplicit::tangent(const QPointF &mousepos) 
 {
 
 

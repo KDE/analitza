@@ -35,7 +35,7 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    ARGUMENTS("x")
+    PARAMETERS("x")
     ICON_NAME("noane")
     EXAMPLES("x,x*x,x+4")    
     
@@ -47,8 +47,8 @@ public:
 
     void update(const QRect& viewport);
     
-    QPair<QPointF, QString> calc(const QPointF &mousepos);
-    QLineF derivative(const QPointF &mousepos) const;
+    QPair<QPointF, QString> image(const QPointF &mousepos);
+    QLineF tangent(const QPointF &mousepos) ;
     
     //
     
@@ -81,7 +81,7 @@ void FunctionY::update(const QRect& viewport)
 
 
 //Own
-QPair<QPointF, QString> FunctionY::calc(const QPointF &p)
+QPair<QPointF, QString> FunctionY::image(const QPointF &p)
 {
     QPointF dp=p;
     
@@ -96,7 +96,7 @@ QPair<QPointF, QString> FunctionY::calc(const QPointF &p)
     return QPair<QPointF, QString>(dp, pos);
 }
 
-QLineF FunctionY::derivative(const QPointF &mousepos) const
+QLineF FunctionY::tangent(const QPointF &mousepos) 
 {
     //TODO port
 //     Analitza::Analyzer a(analyzer.variables());
@@ -207,7 +207,7 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    ARGUMENTS("y")
+    PARAMETERS("y")
     ICON_NAME("nYYoane")
     EXAMPLES("y,y*y,y+4")  
     
@@ -218,8 +218,8 @@ public:
 
     void update(const QRect& viewport);
     
-    QPair<QPointF, QString> calc(const QPointF &mousepos);
-    QLineF derivative(const QPointF &mousepos) const;
+    QPair<QPointF, QString> image(const QPointF &mousepos);
+    QLineF tangent(const QPointF &mousepos);
     
     //
     
@@ -234,7 +234,7 @@ FunctionX::FunctionX(const Analitza::Expression &functionExpression, Analitza::V
 {
 }
 
-QPair<QPointF, QString> FunctionX::calc(const QPointF& p)
+QPair<QPointF, QString> FunctionX::image(const QPointF& p)
 {
     QPointF dp=p;
     arg("y")->setValue(dp.y());
@@ -258,7 +258,7 @@ void FunctionX::update(const QRect& viewport)
     }
 }
 
-QLineF FunctionX::derivative(const QPointF &p) const
+QLineF FunctionX::tangent(const QPointF &p) 
 {
 //     QPointF p1(p.y(), p.x());
 //     QLineF ret=FunctionY::derivative(p1);

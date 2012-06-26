@@ -34,7 +34,7 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Polar)
-    ARGUMENTS("q")
+    PARAMETERS("q")
     ICON_NAME("newpolar")
     EXAMPLES("q->3*sin(q/0.142),q->q+3")    
     
@@ -46,8 +46,8 @@ public:
 
     void update(const QRect& viewport);
     
-    QPair<QPointF, QString> calc(const QPointF &mousepos);
-    QLineF derivative(const QPointF &mousepos) const;
+    QPair<QPointF, QString> image(const QPointF &mousepos);
+    QLineF tangent(const QPointF &mousepos) ;
     
     //
     
@@ -104,7 +104,7 @@ void FunctionPolar::update(const QRect& viewport)
 #endif
 static const double pi=M_PI;
 //Own
-QPair<QPointF, QString> FunctionPolar::calc(const QPointF &p)
+QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
 {
     QPointF dp=p;
     QString pos;
@@ -161,7 +161,7 @@ QPair<QPointF, QString> FunctionPolar::calc(const QPointF &p)
     return QPair<QPointF, QString>(dp, pos);
 }
 
-QLineF FunctionPolar::derivative(const QPointF &mousepos) const
+QLineF FunctionPolar::tangent(const QPointF &mousepos) 
 {
 //     //TODO review calc and this method
 // 

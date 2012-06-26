@@ -76,7 +76,7 @@ protected:
 #define REGISTER_PLANECURVE(name) \
         static AbstractPlaneCurve * create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         namespace { bool _##name=PlaneCurveFactory::self()->registerPlaneCurve(create##name, \
-        name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Arguments, \
+        name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Parameters, \
         name ::IconName, name ::Examples); }
 
 class AbstractPlaneCurve;
@@ -129,7 +129,7 @@ private:
 #define REGISTER_SURFACE(name) \
         static AbstractSurface * create##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         namespace { bool _##name=SurfaceFactory::self()->registerSurface(create##name, \
-        name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Arguments, \
+        name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Parameters, \
         name ::IconName, name ::Examples); }
 
 class AbstractSurface;

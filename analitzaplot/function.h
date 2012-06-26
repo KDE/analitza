@@ -53,8 +53,8 @@ public:
 
     virtual int spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
     virtual CoordinateSystem coordinateSystem() const = 0;
-    virtual DrawingPrecision drawingPrecision() const = 0;
-    virtual void setDrawingPrecision(DrawingPrecision precs) = 0; // why pure abstract: couse graphpres go to functionimpl
+//     virtual DrawingPrecision drawingPrecision() const = 0; //TODO remove next iter
+//     virtual void setDrawingPrecision(DrawingPrecision precs) = 0; // why pure abstract: couse graphpres go to functionimpl
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool f) { m_graphVisible = f; }
 
@@ -103,14 +103,14 @@ public:
 
     //if evaluate true then result of expressiones will be strings of the value
     //if evaluate is false then the expressions will not evaluate
-    virtual QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) = 0;
+    virtual QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const = 0;
     virtual void setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max) = 0;
 
     //2 convenience methods to work with doubles instead of Expression->Cn->value ... see above
-    virtual QPair<double, double> interval(const QString &argname) = 0;
+    virtual QPair<double, double> interval(const QString &argname) const = 0;
     virtual void setInterval(const QString &argname, double min, double max) = 0;
 
-    virtual QStringList arguments() const = 0;
+    virtual QStringList parameters() const = 0;
     
 protected:
     FunctionGraph() {}
@@ -154,8 +154,8 @@ public:
     QStringList examples() const;
     int spaceDimension() const;
     CoordinateSystem coordinateSystem() const;
-    DrawingPrecision drawingPrecision() const;
-    void setDrawingPrecision(DrawingPrecision precision); 
+//     DrawingPrecision drawingPrecision() const; //TODO remove next iter
+//     void setDrawingPrecision(DrawingPrecision precision); 
 //     QVariantMap additionalProperties();
 //     QVariantMap additionalInformation(const QVector< MappingGraph* >& others);
     QStringList errors() const;
@@ -163,10 +163,10 @@ public:
 
     //FunctionGraph
     
-    QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) ;
+    QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
     void setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
     
-    QPair<double, double> interval(const QString &argname);
+    QPair<double, double> interval(const QString &argname) const;
     void setInterval(const QString &argname, double min, double max);
     
 
@@ -174,7 +174,7 @@ public:
 //     RealInterval argumentInterval(const QString &argname) const;
 //     void setArgumentInverval(const QString &argname, const RealInterval &interval);
     
-    QStringList arguments() const;
+    QStringList parameters() const;
 
     //Curve
     QVector<int> jumps() const;
@@ -182,8 +182,8 @@ public:
     //Own
     const QVector<QPointF> & points() const;
     void update(const QRect& viewport);
-    QPair<QPointF, QString> calc(const QPointF &mousepos);
-    QLineF derivative(const QPointF &mousepos) const;
+    QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
+    QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse postion 
 
 protected:
     PlaneCurve() {}
@@ -231,21 +231,21 @@ public:
     QStringList examples() const;
     int spaceDimension() const;
     CoordinateSystem coordinateSystem() const;
-    DrawingPrecision drawingPrecision() const;
-    void setDrawingPrecision(DrawingPrecision precision); 
+//     DrawingPrecision drawingPrecision() const; //TODO remove next iter
+//     void setDrawingPrecision(DrawingPrecision precision); 
     QStringList errors() const;
     bool isCorrect() const;
 
     //FunctionGraph
     
     
-    QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate);
+    QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
     void setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
 
-    QPair<double, double> interval(const QString &argname);
+    QPair<double, double> interval(const QString &argname) const;
     void setInterval(const QString &argname, double min, double max);
     
-    QStringList arguments() const;
+    QStringList parameters() const;
 
     //Own
     const QVector<int> & indexes() const;

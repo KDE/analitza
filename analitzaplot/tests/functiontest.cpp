@@ -60,7 +60,7 @@ void FunctionTest::initTestCase()
 //     qDebug() << s.spaceDimension() << s.typeName() << s.arguments();
 //     
 //     qDebug() << f.examples();
-    QCOMPARE(f.arguments(), QStringList() << "x");
+    QCOMPARE(f.parameters(), QStringList() << "x");
 
     PlaneCurveModel *model = new PlaneCurveModel(v, this);
 //     model->magic(3);

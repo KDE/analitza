@@ -71,7 +71,7 @@ public:
     TYPE_NAME("FunctionParametricVecto")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)))
     COORDDINATE_SYSTEM(Cartesian)
-    ARGUMENTS("t")
+    PARAMETERS("t")
     ICON_NAME("newparametric")
     EXAMPLES("t->vector {t,t**2}")    
     
@@ -83,8 +83,8 @@ public:
 
     void update(const QRect& viewport);
     
-    QPair<QPointF, QString> calc(const QPointF &mousepos);
-    QLineF derivative(const QPointF &mousepos) const;
+    QPair<QPointF, QString> image(const QPointF &mousepos);
+    QLineF tangent(const QPointF &mousepos) ;
     
     //
     
@@ -175,7 +175,7 @@ void FunctionParametric::update(const QRect& viewport)
 
 
 //Own
-QPair<QPointF, QString> FunctionParametric::calc(const QPointF &point)
+QPair<QPointF, QString> FunctionParametric::image(const QPointF &point)
 {
     
     arg("t")->setValue(findTValueForPoint(point).value());
@@ -188,7 +188,7 @@ QPair<QPointF, QString> FunctionParametric::calc(const QPointF &point)
 
 }
 
-QLineF FunctionParametric::derivative(const QPointF &mousepos) const
+QLineF FunctionParametric::tangent(const QPointF &mousepos) 
 {
 //    if(m_deriv)
 //     {

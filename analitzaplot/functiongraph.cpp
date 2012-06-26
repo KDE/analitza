@@ -45,7 +45,8 @@ const Analitza::Expression& AbstractMappingGraph::expression() const
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractMappingGraph(e,v)
 {
-    m_intervalsAnalizer = new Analitza::Analyzer(v);
+    //TODO intervalparameter tiene que ser const ... no es necesario que no lo sea ... siempre es preferible que algo sea inmutable :)
+//     m_intervalsAnalizer = new Analitza::Analyzer(v);
     
     foreach (const Analitza::Ci *var, analyzer.expression().parameters())
     {
@@ -66,10 +67,10 @@ AbstractFunctionGraph::~AbstractFunctionGraph()
     qDeleteAll(m_argumentValues.begin(), m_argumentValues.end());
     m_argumentValues.clear();
 
-    delete m_intervalsAnalizer;
+//     delete m_intervalsAnalizer;
 }
 
-QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interval(const QString &argname, bool evaluate) 
+QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interval(const QString &argname, bool evaluate) const
 {
     Q_ASSERT(m_argumentIntervals.contains(argname));
     
@@ -77,8 +78,13 @@ QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interva
     
     if (evaluate)
     {
-        ret.first = m_argumentIntervals[argname].lowEndPoint().value(m_intervalsAnalizer);
-        ret.second = m_argumentIntervals[argname].highEndPoint().value(m_intervalsAnalizer);
+        //NOTE heap ?
+        Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer.variables());
+
+        ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer);
+        ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer);
+        
+        delete intervalsAnalizer;
     }
     else
     {
@@ -98,14 +104,18 @@ void AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::
 
 
 
-QPair<double, double> AbstractFunctionGraph::interval(const QString &argname)
+QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) const
 {
     Q_ASSERT(m_argumentIntervals.contains(argname));
     
     QPair<double, double> ret;
     
-    ret.first = m_argumentIntervals[argname].lowEndPoint().value(m_intervalsAnalizer).toReal().value();
-    ret.second = m_argumentIntervals[argname].highEndPoint().value(m_intervalsAnalizer).toReal().value();
+    Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer.variables());
+    
+    ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer).toReal().value();
+    ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
+    
+    delete intervalsAnalizer;
     
     return ret;
 }

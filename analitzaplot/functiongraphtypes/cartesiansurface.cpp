@@ -34,7 +34,7 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    ARGUMENTS("x,y")
+    PARAMETERS("x,y")
     ICON_NAME("none")
     EXAMPLES("x*x+y,x+y*sin(x),x*y")
     

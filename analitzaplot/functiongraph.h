@@ -48,9 +48,9 @@ CoordinateSystem coordinateSystem() const { return CoordSystem(); } \
 static CoordinateSystem CoordSystem() { return name; }
 
 //TODO validaciones strim etc 
-#define ARGUMENTS(name) \
-QStringList arguments() const { return Arguments(); } \
-static QStringList Arguments() { return QString(name).split(","); }
+#define PARAMETERS(name) \
+QStringList parameters() const { return Parameters(); } \
+static QStringList Parameters() { return QString(name).split(","); }
 
 #define ICON_NAME(name) \
 QString iconName() const { return IconName(); } \
@@ -79,8 +79,9 @@ public:
 
     virtual int spaceDimension() const = 0;
     virtual CoordinateSystem coordinateSystem() const = 0;
-    DrawingPrecision drawingPrecision() const { return m_drawingPrecision; }
-    void setDrawingPrecision(DrawingPrecision precision) { m_drawingPrecision = precision; }
+    //TODO delete next iter
+//     DrawingPrecision drawingPrecision() const { return m_drawingPrecision; }
+//     void setDrawingPrecision(DrawingPrecision precision) { m_drawingPrecision = precision; }
 
 //     virtual QVariantMap additionalProperties() = 0;
 //     virtual QVector<QVariantMap> additionalInformation(const QVector<MappingGraph*> &others) = 0;
@@ -103,7 +104,8 @@ protected:
 private:
     QStringList m_errors;
 
-    DrawingPrecision m_drawingPrecision;
+    //TODO remove next iter
+//     DrawingPrecision m_drawingPrecision;
 };
 
 ///
@@ -116,13 +118,13 @@ public:
 
     //FunctionGraph
     //no lleva const porque se calcularan valores con m_argumentIntervals
-    QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) ;
+    QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
     void setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
     
-    QPair<double, double> interval(const QString &argname);
+    QPair<double, double> interval(const QString &argname) const;
     void setInterval(const QString &argname, double min, double max);
     
-    virtual QStringList arguments() const = 0;
+    virtual QStringList parameters() const = 0;
 
 protected:
     AbstractFunctionGraph() {}
@@ -133,7 +135,6 @@ protected:
 private:
     QMap<QString, Analitza::Object*> m_argumentValues;
     QMap<QString, RealInterval > m_argumentIntervals;
-    Analitza::Analyzer* m_intervalsAnalizer; //solo es necesario 1
 };
 
 ///
@@ -155,8 +156,8 @@ public:
     
     //Own
     virtual void update(const QRect& viewport) = 0;
-    virtual QPair<QPointF, QString> calc(const QPointF &mousepos) = 0;
-    virtual QLineF derivative(const QPointF &mousepos) const = 0;
+    virtual QPair<QPointF, QString> image(const QPointF &mousepos) = 0;
+    virtual QLineF tangent(const QPointF &mousepos) = 0;
 
 protected:
     AbstractPlaneCurve() {}
