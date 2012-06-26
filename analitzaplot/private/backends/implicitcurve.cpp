@@ -181,6 +181,11 @@ void FunctionImplicit::update(const QRect& vp)
             }
         }
     }
+
+    if (points.size() <= 2)
+    {
+        appendError(i18nc("This function can't be represented as a curve. To draw implicit curve, the function has to satisfy the implicit function theorem.", "Implicit function undefined in the plane"));
+    }
 }
 
 //Own

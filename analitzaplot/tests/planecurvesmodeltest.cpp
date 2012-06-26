@@ -1,0 +1,302 @@
+/*************************************************************************************
+ *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
+ *                                                                                   *
+ *  This program is free software; you can redistribute it and/or                    *
+ *  modify it under the terms of the GNU General Public License                      *
+ *  as published by the Free Software Foundation; either version 2                   *
+ *  of the License, or (at your option) any later version.                           *
+ *                                                                                   *
+ *  This program is distributed in the hope that it will be useful,                  *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
+ *  GNU General Public License for more details.                                     *
+ *                                                                                   *
+ *  You should have received a copy of the GNU General Public License                *
+ *  along with this program; if not, write to the Free Software                      *
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
+ *************************************************************************************/
+
+
+
+#include "planecurvetest.h"
+
+#include "analitzaplot/planecurve.h"
+#include "analitzaplot/planecurvesmodel.h"
+#include "analitzaplot/surface.h"
+
+#include "analitza/expression.h"
+#include "analitza/variables.h"
+#include <analitza/analyzer.h>
+#include <analitza/value.h>
+#include <qtest_kde.h>
+#include <cmath>
+
+using namespace std;
+using Analitza::Expression;
+
+QTEST_KDEMAIN_CORE( FunctionTest )
+
+static const int resolution=3000;
+
+FunctionTest::FunctionTest(QObject *parent)
+	: QObject(parent)
+{
+	m_vars=new Analitza::Variables;
+}
+
+FunctionTest::~FunctionTest()
+{
+	delete m_vars;
+}
+
+void FunctionTest::initTestCase()
+{
+	Analitza::Variables *v = new Analitza::Variables;
+// 	Function f(Analitza::Expression("x->x-2"), Cartesian, v);
+//
+// //     qDebug() << "AKIII EMPIEZA " << f.errors();
+// //
+// //
+
+    PlaneCurve f(Analitza::Expression("x->x*x"), v, "para", Qt::red);
+    Surface s(Analitza::Expression("(x,y)->x*x+y*y"), Cartesian, v, "surf", Qt::yellow);
+    
+    
+    qDebug() << s.spaceDimension() << s.typeName() << s.parameters();
+//     
+//     qDebug() << f.examples();
+    QCOMPARE(f.parameters(), QStringList() << "x");
+
+    PlaneCurveModel *model = new PlaneCurveModel(v, this);
+//     model->magic(3);
+
+//     qDebug() << model->data(model->index(3), PlaneCurveModel::ExpressionRole) << model->item(0)->examples();
+    
+//     QVERIFY(model->item(0)->points().isEmpty());
+//     model->setData(model->index(0), QRect(QPoint(-10,-10), QSize(20,20)), PlaneCurveModel::UpdateRole);
+//     QVERIFY(!model->item(0)->points().isEmpty());
+// 
+//     model->magic(3);
+//     QCOMPARE(model->item(2)->arguments(), QStringList() << "x");
+// 	QVERIFY(model->rowCount() == 6);
+//
+//
+    v->modify("a", 9);
+    
+    Analitza::Expression e("-inf"); // if -inf inf or empty .. put 
+    
+//     qDebug() << "exp " << e.isCorrect() << e.toString();
+    
+    Analitza::Analyzer a(v);
+    a.setExpression(e);
+/*
+    qDebug() << a.calculate().isCorrect();
+    qDebug() << a.expression().toString();*/
+
+///
+// probar los interval
+    
+    QPair<double, double> intervalValues = f.interval("x");
+    
+//     qDebug() << intervalValues;
+
+    QPair<double, double> newintervalValues = qMakePair(-14.0, intervalValues.second);
+    
+    f.setInterval("x", newintervalValues.first, newintervalValues.second);
+    qDebug() << f.interval("x");
+
+    QPair<Analitza::Expression, Analitza::Expression> newi = qMakePair(Analitza::Expression("8*sin(0)"), Analitza::Expression("3+abs(-8)"));
+
+    //TODO mejora los nombres este debe llamarse igual ... ademas no recibir pair ,, sino 2 valores
+    f.setInterval("x", newi.first, newi.second);
+    qDebug() << f.interval("x").second << f.interval("x", false).second.toString();
+
+    ///
+    
+//     PlaneCurve fy(Analitza::Expression("y->y*y"), v, "paraY", Qt::green);
+//     
+//     qDebug() << fy.typeName();
+    
+    ///
+//     PlaneCurve fq(Analitza::Expression("q->q*q-q"), v, "qhol", Qt::darkBlue);
+//     
+//     qDebug() << fq.typeName();
+    
+    ///
+
+//     PlaneCurve vt(Analitza::Expression("t->vector {t*t,t/2}"), v, "vvvt", Qt::darkBlue);
+//     qDebug() << vt.typeName() << vt.points().size();
+//     vt.update( QRect(QPoint(-10,-10), QSize(20,20)));
+//     qDebug() << vt.typeName() << vt.points().size();
+
+    
+//     PlaneCurve implicit(Analitza::Expression("(x,y)->x*x+y*y-6"), v, "ippvvvt", Qt::cyan);
+//     qDebug() << implicit.typeName() << implicit.points().size();
+//     implicit.update( QRect(QPoint(-10,-10), QSize(20,20)));
+//     qDebug() << implicit.typeName() << implicit.points().size();
+
+	delete v;
+}
+
+void FunctionTest::cleanupTestCase()
+{}
+
+
+// void FunctionTest::testCopy_data()
+// {
+// 	QTest::addColumn<QString>("input");
+//
+// 	QTest::newRow("x->flat") << "x->1";
+// 	QTest::newRow("x->x") << "x->x";
+// 	QTest::newRow("x->and") << "x->piecewise { and(gt(x,-1), lt(x,1)) ? 1, ?0 }";
+// 	QTest::newRow("x->abs") << "x->abs(x)";
+// 	QTest::newRow("x->addition") << "x->2+x";
+// 	QTest::newRow("x->minus") << "x->x-2";
+// 	QTest::newRow("x->log") << "x->log x";
+// 	QTest::newRow("x->tan") << "x->tan x";
+//     QTest::newRow("x->sqrt") << "x->root(x, 2)";
+// 	QTest::newRow("x->factorof") << "x->factorof(x,x)";
+// 	QTest::newRow("x->sum") << "x->sum(t : t=0..3)";
+// 	QTest::newRow("x->piece") << "x->piecewise { gt(x,0) ? selector(1, vector{x, 1/x}),"
+// 									"? selector(2, vector{x, 1/x} ) }";
+// 	QTest::newRow("x->diff1") << "x->(diff(x:x))(x)";
+// 	QTest::newRow("x->diffx") << "x->(diff(x^2:x))(x)";
+// 	QTest::newRow("y->flat") << "y->1";
+// 	QTest::newRow("y->trigonometric") << "y->sin y";
+// 	QTest::newRow("polar->scalar") << "q->2";
+// 	QTest::newRow("polar->function") << "q->sin q";
+// 	QTest::newRow("polar->hard") << "q->ceiling(q/(2*pi))";
+// 	QTest::newRow("polar->strange") << "q->q/q";
+//
+// 	QTest::newRow("parametric") << "t->vector{t,t**2}";
+// 	QTest::newRow("parametric1") << "t->vector{16*sin(t)^3, abs(t)^0.3*root(t,2)}";
+// 	QTest::newRow("implicit") << "(x,y)->x+y";
+// }
+//
+// void FunctionTest::testCopy()
+// {
+// 	QFETCH(QString, input);
+// 	Expression exp(input, false);
+//
+//
+//
+//
+// 	Function f("hola", exp, m_vars, QPen(Qt::red), 0,0);
+// 	if(!f.isCorrect()) qDebug() << "error:" << f.errors();
+// 	QVERIFY(f.isCorrect());
+// 	f.setResolution(resolution);
+// 	if(!f.isCorrect()) qDebug() << "error:" << f.errors();
+// 	QVERIFY(f.isCorrect());
+// 	Function f2(f);
+// 	if(!f2.isCorrect()) qDebug()<< "error" << f2.errors();
+// 	QVERIFY(f2.isCorrect());
+// 	Function f3;
+// 	f3=f2;
+// 	QVERIFY(f3.isCorrect());
+// 	f3.calc(QPointF(1,1));
+// 	if(!f3.isCorrect()) qDebug() << "error" << f3.errors();
+// 	QVERIFY(f3.isCorrect());
+// 	QRectF viewp(QPoint(-12, 10), QPoint(12, -10));
+// 	f3.update_points(viewp.toRect());
+//
+// 	//TODO gsoc2012
+// // 	QVERIFY(f3.points().size()>1);
+// // 	QVERIFY(f3.points().size()<=int(f3.resolution()));
+// // 	f3.update_points(viewp.toRect());
+//
+// // 	bool found=false;
+// // 	foreach(const QPointF& pt, f3.points()) {
+// // 		if(viewp.contains(pt)) {
+// // 			found=true;
+// // 			break;
+// // 		}
+// // 	}
+// // 	QVERIFY(found);
+//
+// 	QCOMPARE(f3.expression().toString(), exp.toString());
+//
+// 	//TODO gsoc2012
+// 	/*
+// 	int ant=-1;
+// 	foreach(int pos, f3.jumps()) {
+// 		QVERIFY(pos>ant);
+// 		ant=pos;
+// 	}
+//
+// 	f3.derivative(QPointF(0., 0.));
+// 	f3.derivative(QPointF(1., 0.));
+// 	f3.calc(QPointF(0., 0.));
+// 	f3.calc(QPointF(1., 0.));
+// 	f3.calc(QPointF(109., 20.));
+// 	*/
+// }
+// void FunctionTest::testCorrect_data()
+// {
+// 	QTest::addColumn<QString>("input");
+//
+// 	QTest::newRow("empty function") << "";
+// 	QTest::newRow("undefined var") << "x:=w";
+// 	QTest::newRow("parametric-novector") << "t->3";
+// 	QTest::newRow("parametric-wrongvector") << "t->vector{3}";
+// 	QTest::newRow("wrong-dimension") << "vector{2,3}";
+// 	QTest::newRow("wrong-dimension-y") << "y->vector{2,3}";
+// 	QTest::newRow("wrong-dimension-q") << "q->vector{2,3}";
+//     QTest::newRow("wrong-parametric") << "t->v";
+// 	QTest::newRow("wrong-variable") << "x->x(x)";
+// 	QTest::newRow("wrong-call") << "(x+1)(x+2)";
+//
+// 	QTest::newRow("implicit.notindomain") << "(x,y)->3-sin x*sin y";
+//
+// 	QTest::newRow("not a function") << "t";
+// }
+//
+// void FunctionTest::testCorrect()
+// {
+// 	QFETCH(QString, input);
+// 	Function f3("hola", Expression(input, false), m_vars, QPen(Qt::red), 0,0);
+//
+// 	if(f3.isCorrect()) {
+// 		f3.setResolution(resolution);
+// 		f3.calc(QPointF(1,1));
+// 		if(f3.isCorrect())
+// 			f3.update_points(QRect(-10, 10, 10, -10));
+// 	}
+//
+// 	//TODO gsoc2012
+// // 	if(f3.isCorrect())
+// // 	{
+// // 		f3.update_points(QRect(-10, 10, 10, -10));
+// // 		QVERIFY(f3.points().size()>1);
+// // 		QVERIFY(f3.points().size()<=100);
+// // 	}
+// 	QVERIFY(!f3.isCorrect());
+// }
+//
+// void FunctionTest::testJumps_data()
+// {
+// 	QTest::addColumn<QString>("input");
+// 	QTest::addColumn<int>("jumps");
+//
+// 	QTest::newRow("tanx") << "x->tan x" << 6;
+// 	QTest::newRow("divx") << "x->1/x" << 1;
+// }
+//
+// void FunctionTest::testJumps()
+// {
+// 	QFETCH(QString, input);
+// 	QFETCH(int, jumps);
+//
+// 	Function f3("hola", Expression(input, false), m_vars, QPen(Qt::red), 0,0);
+// 	QVERIFY(f3.isCorrect());
+//
+// 	f3.setResolution(resolution);
+// 	f3.calc(QPointF(1,1));
+// 	QVERIFY(f3.isCorrect());
+// 	f3.update_points(QRect(-10, 10, 20, -20));
+//
+// 	QVERIFY(f3.isCorrect());
+// 	//TODO gsoc2012
+// // 	QCOMPARE(f3.jumps().count(), jumps);
+// }
+
+#include "planecurvesmodeltest.moc"

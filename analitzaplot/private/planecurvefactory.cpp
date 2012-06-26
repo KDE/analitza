@@ -51,16 +51,22 @@ bool PlaneCurveFactory::registerPlaneCurve(BuilderFunction builderFunction, Type
 QString PlaneCurveFactory::id(const QStringList& args) const
 {
     QString key;
-
+    
+    bool found = false;
+    
     for (int i = 0; i < argumentsFunctions.values().size(); ++i)
         if (argumentsFunctions.values()[i]() == args)
         {
             key = argumentsFunctions.key(argumentsFunctions.values()[i]);
-
+            found = true;
             break;
         }
 
-    return QString("2|")+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
+        
+    if (found)
+        return QString("2|")+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
+
+    return QString();    
 }
 
 bool PlaneCurveFactory::contains(const QString& id) const

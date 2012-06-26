@@ -71,7 +71,9 @@ bool PlaneCurve::canDraw(const Analitza::Expression &functionExpression)
 
     //TODO: turn into assertion
     if(!PlaneCurveFactory::self()->contains(PlaneCurveFactory::self()->id(bvars)))
+    {
         errors << i18n("Function type not recognized");
+    }
     else if(!a.isCorrect())
         errors << a.errors();
     else {

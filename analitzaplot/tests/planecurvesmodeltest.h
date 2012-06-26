@@ -1,6 +1,5 @@
 /*************************************************************************************
  *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -38,18 +37,15 @@ Q_OBJECT
 	private slots:
 		void initTestCase();
 
-		void testCorrect();
-		void testCorrect_data();
-
-        //NOTE gsoc2012  PlaneCurve no es copiable ... no es value object
+		//TODO gsoc2012
+// 		void testCorrect();
+// 		void testCorrect_data();
+//
 // 		void testCopy();
 // 		void testCopy_data();
-
-		void testJumps();
-		void testJumps_data();
-
-        void testParamIntervals();
-        void testParamIntervals_data();
+//
+// 		void testJumps();
+// 		void testJumps_data();
 
 		void cleanupTestCase();
 	private:
