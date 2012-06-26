@@ -119,9 +119,16 @@ void FunctionTest::initTestCase()
     
     ///
 
-    PlaneCurve vt(Analitza::Expression("t->vector {t*t,t/2}"), v, "vvvt", Qt::darkBlue);
+//     PlaneCurve vt(Analitza::Expression("t->vector {t*t,t/2}"), v, "vvvt", Qt::darkBlue);
+//     qDebug() << vt.typeName() << vt.points().size();
+//     vt.update( QRect(QPoint(-10,-10), QSize(20,20)));
+//     qDebug() << vt.typeName() << vt.points().size();
+
     
-    qDebug() << vt.typeName();
+    PlaneCurve implicit(Analitza::Expression("(x,y)->x*x+y*y-6"), v, "ippvvvt", Qt::cyan);
+    qDebug() << implicit.typeName() << implicit.points().size();
+    implicit.update( QRect(QPoint(-10,-10), QSize(20,20)));
+    qDebug() << implicit.typeName() << implicit.points().size();
 
 	delete v;
 }

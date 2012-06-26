@@ -37,7 +37,7 @@ functionsmodel.cpp
 # plotview3d.cpp
 
 functiongraphtypes/cartesiansurface.cpp
-# functiongraphtypes/implicitcurve.cpp
+functiongraphtypes/implicitcurve.cpp
 functiongraphtypes/cartesiancurve.cpp
 # functiongraphtypes/cylindricalsurface.cpp
 functiongraphtypes/parametriccurve2d.cpp
