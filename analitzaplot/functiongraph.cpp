@@ -19,9 +19,13 @@
 
 #include "functiongraph.h"
 
+#include <cmath>
+
 #include "analitza/analyzer.h"
 #include "analitza/value.h"
 #include "analitza/variable.h"
+
+using std::atan2;
 
 AbstractMappingGraph::AbstractMappingGraph(const Analitza::Expression& e, Analitza::Variables* v)
 : analyzer(v)
@@ -102,8 +106,6 @@ void AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
 }
 
-
-
 QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) const
 {
     Q_ASSERT(m_argumentIntervals.contains(argname));
@@ -127,28 +129,6 @@ void AbstractFunctionGraph::setInterval(const QString &argname, double min, doub
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
 }
 
-
-//TODO borrar siguiente iteracion
-// RealInterval AbstractFunctionGraph::argumentInterval(const QString &argname) const
-// {
-//     
-//     
-//     return m_argumentIntervals[argname];
-// }
-// 
-// void AbstractFunctionGraph::setArgumentInverval(const QString &argname, const RealInterval &interval)
-// {
-//     Q_ASSERT(m_argumentIntervals.contains(argname));
-//     
-//     m_argumentIntervals[argname] = interval;
-//     
-//     //NOTE aqui se le pasa el analitza a los intervals
-//     m_argumentIntervals[argname].lowEndPoint().setAnalitza(m_intervalsAnalizer);
-//     m_argumentIntervals[argname].highEndPoint().setAnalitza(m_intervalsAnalizer);
-// }
-
-///
-
 AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)
 {
@@ -159,11 +139,6 @@ AbstractPlaneCurve::~AbstractPlaneCurve()
 {
 
 }
-
-
-#include <cmath>
-using std::atan2;
-
 
 bool AbstractPlaneCurve::addPoint(const QPointF& p)
 {
@@ -188,8 +163,6 @@ bool AbstractPlaneCurve::addPoint(const QPointF& p)
 
 ///
 
-
-
 AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)
 {
@@ -203,12 +176,11 @@ AbstractSurface::~AbstractSurface()
 
 const QVector< int >& AbstractSurface::indexes() const
 {
-return QVector<int>();
+    return QVector<int>();
 }
 
 const QVector< QVector3D >& AbstractSurface::points() const
 {
-return QVector<QVector3D>();
+    return QVector<QVector3D>();
 }
-
     

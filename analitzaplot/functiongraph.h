@@ -34,8 +34,6 @@ class Cn;
 class Expression;
 }
 
-
-
 #define TYPE_NAME(name) \
 const QString typeName() const { return TypeName(); } \
 static QString TypeName() { return QString(name); } 
@@ -79,12 +77,6 @@ public:
 
     virtual int spaceDimension() const = 0;
     virtual CoordinateSystem coordinateSystem() const = 0;
-    //TODO delete next iter
-//     DrawingPrecision drawingPrecision() const { return m_drawingPrecision; }
-//     void setDrawingPrecision(DrawingPrecision precision) { m_drawingPrecision = precision; }
-
-//     virtual QVariantMap additionalProperties() = 0;
-//     virtual QVector<QVariantMap> additionalInformation(const QVector<MappingGraph*> &others) = 0;
     
     QStringList errors() const { return m_errors; }
     bool isCorrect() const { return m_errors.isEmpty() && analyzer.isCorrect(); }
@@ -103,9 +95,6 @@ protected:
     
 private:
     QStringList m_errors;
-
-    //TODO remove next iter
-//     DrawingPrecision m_drawingPrecision;
 };
 
 ///
@@ -188,11 +177,6 @@ protected:
     AbstractSurface() {}
     AbstractSurface(const AbstractSurface& other) {}
     
-//     bool addPoint(const QVector2D& p);
-//     void setJump(int jump);
-//     void clearPoints();
-//     void clearJumps();
-
 private:
     QMap< QString, RealInterval > m_argumentIntervals;
     QVector<int> m_indexes;

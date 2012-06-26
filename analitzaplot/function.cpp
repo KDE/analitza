@@ -215,22 +215,6 @@ CoordinateSystem PlaneCurve::coordinateSystem() const
     return m_planeCurve->coordinateSystem();
 }
 
-
-// DrawingPrecision PlaneCurve::drawingPrecision() const
-// {
-//     Q_ASSERT(m_planeCurve);
-//     
-//     return m_planeCurve->drawingPrecision();
-// }
-
-
-// void PlaneCurve::setDrawingPrecision(DrawingPrecision precision)
-// {
-//     Q_ASSERT(m_planeCurve);
-//     
-//     m_planeCurve->setDrawingPrecision(precision);
-// }
-
 QStringList PlaneCurve::errors() const
 {
     Q_ASSERT(m_planeCurve);
@@ -277,8 +261,6 @@ void PlaneCurve::setInterval(const QString &argname, double min, double max)
     m_planeCurve->setInterval(argname, min, max);
 }
 
-
-
 QStringList PlaneCurve::parameters() const
 {
     Q_ASSERT(m_planeCurve);
@@ -322,22 +304,6 @@ QLineF PlaneCurve::tangent(const QPointF &mousepos)
     
     return m_planeCurve->tangent(mousepos);
 }
-
-///
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ///
 
@@ -511,20 +477,6 @@ CoordinateSystem Surface::coordinateSystem() const
     return m_surface->coordinateSystem();
 }
 
-// DrawingPrecision Surface::drawingPrecision() const
-// {
-//     Q_ASSERT(m_surface);
-//     
-//     return m_surface->drawingPrecision();
-// }
-// 
-// void Surface::setDrawingPrecision(DrawingPrecision precision)
-// {
-//     Q_ASSERT(m_surface);
-//     
-//     m_surface->setDrawingPrecision(precision);
-// }
-
 QStringList Surface::errors() const
 {
     Q_ASSERT(m_surface);
@@ -542,8 +494,6 @@ bool Surface::isCorrect() const
 
     return m_errors.isEmpty() && m_surface->isCorrect();
 }
-
-
 
 QPair<Analitza::Expression, Analitza::Expression> Surface::interval(const QString &argname, bool evaluate)  const
 {
@@ -573,29 +523,8 @@ void Surface::setInterval(const QString &argname, double min, double max)
     m_surface->setInterval(argname, min, max);
 }
 
-
-
-/*
-RealInterval Surface::argumentInterval(const QString &argname) const
-{
-    Q_ASSERT(m_surface);
-    
-    return m_surface->argumentInterval(argname);
-}
-void Surface::setArgumentInverval(const QString &argname, const RealInterval &interval)
-{
-    Q_ASSERT(m_surface);
-    
-    m_surface->setArgumentInverval(argname, interval);
-}*/
 QStringList Surface::parameters() const
 {
-    QStringList ret;
-
-    //TODO
-//     foreach (const Analitza::Ci *var, m_expression.parameters())
-//         ret.append(var->name());
-
     Q_ASSERT(m_surface);
     
     return m_surface->parameters();
@@ -610,7 +539,6 @@ const QVector<QVector3D> & Surface::points() const
 {
     Q_ASSERT(m_surface);
 
-//     Q_ASSERT(m_surface->points().size()>1);
     return m_surface->points();
 }
 

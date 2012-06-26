@@ -41,8 +41,8 @@ public:
     virtual ~MappingGraph();
     
     const QString id() const { return m_id; }
-    virtual const QString typeName() const = 0; // curve, linear op, isosurface etc localized
-    virtual const Analitza::Expression & expression() const = 0; // why pure abstract: couse graphpres go to functionimpl
+    virtual const QString typeName() const = 0;
+    virtual const Analitza::Expression & expression() const = 0;
 
     QString name() const { return m_name; }
     void setName(const QString &newName) { m_name = newName; }
@@ -53,28 +53,8 @@ public:
 
     virtual int spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
     virtual CoordinateSystem coordinateSystem() const = 0;
-//     virtual DrawingPrecision drawingPrecision() const = 0; //TODO remove next iter
-//     virtual void setDrawingPrecision(DrawingPrecision precs) = 0; // why pure abstract: couse graphpres go to functionimpl
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool f) { m_graphVisible = f; }
-
-    //2D//curvature, length of arc, etc curvature
-    //parametricform ... implicit->parametric etc
-    //Own
-    //TODO ... (very :p) hard Numerical analysis was on planecurve
-//     virtual double arcLength() const = 0;
-//     virtual bool isClosed() const = 0;
-//     virtual double area() const = 0; //only if is closed
-    //all avobe is replaced by additionalInformation a more inteligent approach to expose
-    // information from the curve/surface/item ... 
-    // the developer can put here what kind of aditional info will be calculated/showed
-//     virtual QVariantMap additionalProperties() = 0;
-
-    // additionalInformation = properties relative to others items such as:
-    //curvas paralelas, intersec entre curvas/surfacesetc, mismos eigenvals, ...
-    //exaples
-    // was virtual QPair<bool /*yes or not*/, double /*offset*/> isParallelTo(const Curve &othercurve) = 0; // offset, either positive or negative, in the direction of the curve's normal
-//     virtual QVariantMap additionalInformation(const QVector<MappingGraph*> &others) = 0; //key|feature-> vmap[graphid]->variant(data/result)
 
     virtual QStringList errors() const = 0;
     virtual bool isCorrect() const = 0;
@@ -154,10 +134,6 @@ public:
     QStringList examples() const;
     int spaceDimension() const;
     CoordinateSystem coordinateSystem() const;
-//     DrawingPrecision drawingPrecision() const; //TODO remove next iter
-//     void setDrawingPrecision(DrawingPrecision precision); 
-//     QVariantMap additionalProperties();
-//     QVariantMap additionalInformation(const QVector< MappingGraph* >& others);
     QStringList errors() const;
     bool isCorrect() const;
 
@@ -168,11 +144,6 @@ public:
     
     QPair<double, double> interval(const QString &argname) const;
     void setInterval(const QString &argname, double min, double max);
-    
-
-    //RealInterval ni endpoint deben de ser publcos ... Solo deben usarse internamente
-//     RealInterval argumentInterval(const QString &argname) const;
-//     void setArgumentInverval(const QString &argname, const RealInterval &interval);
     
     QStringList parameters() const;
 
@@ -231,13 +202,10 @@ public:
     QStringList examples() const;
     int spaceDimension() const;
     CoordinateSystem coordinateSystem() const;
-//     DrawingPrecision drawingPrecision() const; //TODO remove next iter
-//     void setDrawingPrecision(DrawingPrecision precision); 
     QStringList errors() const;
     bool isCorrect() const;
 
     //FunctionGraph
-    
     
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
     void setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);

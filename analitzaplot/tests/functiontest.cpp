@@ -57,7 +57,7 @@ void FunctionTest::initTestCase()
     Surface s(Analitza::Expression("(x,y)->x*x+y*y"), Cartesian, v, "surf", Qt::yellow);
     
     
-//     qDebug() << s.spaceDimension() << s.typeName() << s.arguments();
+    qDebug() << s.spaceDimension() << s.typeName() << s.parameters();
 //     
 //     qDebug() << f.examples();
     QCOMPARE(f.parameters(), QStringList() << "x");
