@@ -113,10 +113,16 @@ void FunctionTest::initTestCase()
 //     qDebug() << fy.typeName();
     
     ///
-    PlaneCurve fq(Analitza::Expression("q->q*q-q"), v, "qhol", Qt::darkBlue);
+//     PlaneCurve fq(Analitza::Expression("q->q*q-q"), v, "qhol", Qt::darkBlue);
+//     
+//     qDebug() << fq.typeName();
     
-    qDebug() << fq.typeName();
+    ///
+
+    PlaneCurve vt(Analitza::Expression("t->vector {t*t,t/2}"), v, "vvvt", Qt::darkBlue);
     
+    qDebug() << vt.typeName();
+
 	delete v;
 }
 
