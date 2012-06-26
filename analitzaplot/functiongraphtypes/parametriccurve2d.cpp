@@ -110,7 +110,7 @@ void FunctionParametric::update(const QRect& viewport)
     
     
             //TODO CACHE en intervalvalues!!!
-    static QPair<double, double> c_limits = intervalValues("t");
+    static QPair<double, double> c_limits = interval("t");
     
 //     if ()
 //     

@@ -86,20 +86,30 @@ public:
     void setInfinite(bool infinite) { m_isInfinite = infinite; }
     
     //no cambiar el exp de analyzer en setvalue por el costo ... solo cuando se quier calcular el value
-    double value(Analitza::Analyzer *analyzer) const
+    //case evaluate = true
+    Analitza::Expression value(Analitza::Analyzer *analyzer) const
     { 
-        Q_ASSERT(analyzer);
+            Q_ASSERT(analyzer);
 
-        analyzer->setExpression(m_expressionValue);
+            analyzer->setExpression(m_expressionValue);
         
-        //TODO checks
-        if (!m_isInfinite)
-//             if (m_analyzer->isCorrect())
-            return analyzer->calculate().toReal().value();
+            //TODO checks
+            if (!m_isInfinite)
+    //             if (m_analyzer->isCorrect())
+                return analyzer->calculate();
+
+//             return std::numeric_limits<double>::infinity();
+              return Analitza::Expression(Analitza::Cn("inf")); //TODO
         
-        return std::numeric_limits<double>::infinity();
     }
 
+    //case evaluate = false
+    Analitza::Expression value() const
+    { 
+        return m_expressionValue;
+    }
+    
+    
     //no cambiar el exp de analyzer en setvalue por el costo ... solo cuando se quier calcular el value
     void setValue(double value)
     { 
@@ -120,8 +130,6 @@ public:
         return false;
     }
     
-    const Analitza::Expression & expression() const { return m_expressionValue; }
-
     bool operator==(const EndPoint &other) const 
     { 
         return m_expressionValue == other.m_expressionValue && m_isInfinite == other.m_isInfinite;

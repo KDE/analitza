@@ -57,7 +57,7 @@ void FunctionTest::initTestCase()
     Surface s(Analitza::Expression("(x,y)->x*x+y*y"), Cartesian, v, "surf", Qt::yellow);
     
     
-    qDebug() << s.spaceDimension() << s.typeName() << s.arguments();
+//     qDebug() << s.spaceDimension() << s.typeName() << s.arguments();
 //     
 //     qDebug() << f.examples();
     QCOMPARE(f.arguments(), QStringList() << "x");
@@ -91,20 +91,20 @@ void FunctionTest::initTestCase()
 ///
 // probar los interval
     
-    QPair<double, double> intervalValues = f.intervalValues("x");
+    QPair<double, double> intervalValues = f.interval("x");
     
 //     qDebug() << intervalValues;
 
     QPair<double, double> newintervalValues = qMakePair(-14.0, intervalValues.second);
     
-    f.setIntervalValues("x", newintervalValues);
-//     qDebug() << f.intervalValues("x");
+    f.setInterval("x", newintervalValues.first, newintervalValues.second);
+    qDebug() << f.interval("x");
 
     QPair<Analitza::Expression, Analitza::Expression> newi = qMakePair(Analitza::Expression("8*sin(0)"), Analitza::Expression("3+abs(-8)"));
 
     //TODO mejora los nombres este debe llamarse igual ... ademas no recibir pair ,, sino 2 valores
-    f.setIntervalExpressionValues("x", newi);
-//     qDebug() << f.intervalValues("x");
+    f.setInterval("x", newi.first, newi.second);
+    qDebug() << f.interval("x").second << f.interval("x", false).second.toString();
 
     ///
     

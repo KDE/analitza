@@ -249,50 +249,35 @@ bool PlaneCurve::isCorrect() const
     return m_errors.isEmpty() && m_planeCurve->isCorrect();
 }
 
-
-
-QPair<double, double> PlaneCurve::intervalValues(const QString &argname)
+QPair<Analitza::Expression, Analitza::Expression> PlaneCurve::interval(const QString &argname, bool evaluate) 
 {
     Q_ASSERT(m_planeCurve);
     
-    return m_planeCurve->intervalValues(argname);
+    return m_planeCurve->interval(argname, evaluate);
 }
 
-void PlaneCurve::setIntervalValues(const QString &argname, const QPair<double, double> &interval)
+void PlaneCurve::setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
 {
     Q_ASSERT(m_planeCurve);
     
-    m_planeCurve->setIntervalValues(argname, interval);
+    m_planeCurve->setInterval(argname, min, max);
 }
 
-QPair<Analitza::Expression, Analitza::Expression> PlaneCurve::intervalExpressionValues(const QString &argname) const
+QPair<double, double> PlaneCurve::interval(const QString &argname)
 {
     Q_ASSERT(m_planeCurve);
     
-    return m_planeCurve->intervalExpressionValues(argname);
+    return m_planeCurve->interval(argname);
 }
 
-void PlaneCurve::setIntervalExpressionValues(const QString &argname, const QPair<Analitza::Expression, Analitza::Expression> &interval)
+void PlaneCurve::setInterval(const QString &argname, double min, double max)
 {
     Q_ASSERT(m_planeCurve);
     
-    m_planeCurve->setIntervalExpressionValues(argname, interval);
+    m_planeCurve->setInterval(argname, min, max);
 }
 
 
-//TODO  borrar next iter
-// RealInterval PlaneCurve::argumentInterval(const QString &argname) const
-// {
-//     Q_ASSERT(m_planeCurve);
-//     
-//     return m_planeCurve->argumentInterval(argname);
-// }
-// void PlaneCurve::setArgumentInverval(const QString &argname, const RealInterval &interval)
-// {
-//     Q_ASSERT(m_planeCurve);
-//     
-//     m_planeCurve->setArgumentInverval(argname, interval);
-// }
 
 QStringList PlaneCurve::arguments() const
 {
@@ -558,33 +543,36 @@ bool Surface::isCorrect() const
     return m_errors.isEmpty() && m_surface->isCorrect();
 }
 
-QPair<double, double> Surface::intervalValues(const QString &argname)
+
+
+QPair<Analitza::Expression, Analitza::Expression> Surface::interval(const QString &argname, bool evaluate) 
 {
     Q_ASSERT(m_surface);
     
-    return m_surface->intervalValues(argname);
+    return m_surface->interval(argname, evaluate);
 }
 
-void Surface::setIntervalValues(const QString &argname, const QPair<double, double> &interval)
+void Surface::setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
 {
     Q_ASSERT(m_surface);
     
-    m_surface->setIntervalValues(argname, interval);
+    m_surface->setInterval(argname, min, max);
 }
 
-QPair<Analitza::Expression, Analitza::Expression> Surface::intervalExpressionValues(const QString &argname) const
+QPair<double, double> Surface::interval(const QString &argname)
 {
     Q_ASSERT(m_surface);
     
-    return m_surface->intervalExpressionValues(argname);
+    return m_surface->interval(argname);
 }
 
-void Surface::setIntervalExpressionValues(const QString &argname, const QPair<Analitza::Expression, Analitza::Expression> &interval)
+void Surface::setInterval(const QString &argname, double min, double max)
 {
     Q_ASSERT(m_surface);
     
-    m_surface->setIntervalExpressionValues(argname, interval);
+    m_surface->setInterval(argname, min, max);
 }
+
 
 
 /*

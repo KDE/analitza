@@ -72,7 +72,7 @@ void FunctionPolar::update(const QRect& viewport)
     
     
     //TODO CACHE en intervalvalues!!!
-    static QPair<double, double> c_limits = intervalValues("q");
+    static QPair<double, double> c_limits = interval("q");
     
 //     if ()
 //     
@@ -116,7 +116,7 @@ QPair<QPointF, QString> FunctionPolar::calc(const QPointF &p)
     
     
         //TODO CACHE en intervalvalues!!!
-    static QPair<double, double> c_limits = intervalValues("q");
+    static QPair<double, double> c_limits = interval("q");
     
 //     if ()
 //     
