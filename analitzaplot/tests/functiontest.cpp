@@ -93,18 +93,24 @@ void FunctionTest::initTestCase()
     
     QPair<double, double> intervalValues = f.intervalValues("x");
     
-    qDebug() << intervalValues;
+//     qDebug() << intervalValues;
 
     QPair<double, double> newintervalValues = qMakePair(-14.0, intervalValues.second);
     
     f.setIntervalValues("x", newintervalValues);
-    qDebug() << f.intervalValues("x");
+//     qDebug() << f.intervalValues("x");
 
     QPair<Analitza::Expression, Analitza::Expression> newi = qMakePair(Analitza::Expression("8*sin(0)"), Analitza::Expression("3+abs(-8)"));
 
     //TODO mejora los nombres este debe llamarse igual ... ademas no recibir pair ,, sino 2 valores
     f.setIntervalExpressionValues("x", newi);
-    qDebug() << f.intervalValues("x");
+//     qDebug() << f.intervalValues("x");
+
+    ///
+    
+    PlaneCurve fy(Analitza::Expression("y->y*y"), v, "paraY", Qt::green);
+    
+    qDebug() << fy.typeName();
     
 	delete v;
 }

@@ -133,7 +133,7 @@ protected:
 private:
     QMap<QString, Analitza::Object*> m_argumentValues;
     QMap<QString, RealInterval > m_argumentIntervals;
-    Analitza::Analyzer* m_intervalsAnalizer; //solo es necesario 1?
+    Analitza::Analyzer* m_intervalsAnalizer; //solo es necesario 1
 };
 
 ///

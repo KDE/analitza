@@ -195,7 +195,147 @@ void FunctionY::calculateValues(double l_lim, double r_lim)
 //  qDebug() << "juuuumps" << jumps << resolution();
 }
 
+///
+
+///Functions where the y is bounding. like y->sin(y). FunctionY mirrored
+class FunctionX : public AbstractPlaneCurve
+{
+public:
+    
+    TYPE_NAME("FunctionX ... su variable es y ")
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+    COORDDINATE_SYSTEM(Cartesian)
+    ARGUMENTS("y")
+    ICON_NAME("nYYoane")
+    EXAMPLES("y,y*y,y+4")  
+    
+    FunctionX(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
+    ~FunctionX()
+    {
+    }
+
+    void update(const QRect& viewport);
+    
+    QPair<QPointF, QString> calc(const QPointF &mousepos);
+    QLineF derivative(const QPointF &mousepos) const;
+    
+    //
+    
+
+private:
+    void optimizeJump();
+    void calculateValues(double, double);
+};
+
+FunctionX::FunctionX(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
+:AbstractPlaneCurve(functionExpression, variables)
+{
+}
+
+QPair<QPointF, QString> FunctionX::calc(const QPointF& p)
+{
+    QPointF dp=p;
+    arg("y")->setValue(dp.y());
+    Analitza::Expression r=analyzer.calculateLambda();
+    
+    if(!r.isReal())
+        appendError(i18n("We can only draw Real results."));
+    
+    dp.setX(r.toReal().value());
+    QString pos = QString("x=%1 y=%2").arg(dp.x(),3,'f',2).arg(dp.y(),3,'f',2);
+    return QPair<QPointF, QString>(dp, pos);
+}
+
+void FunctionX::update(const QRect& viewport)
+{
+    double l_lim=viewport.bottom()-.1, r_lim=viewport.top()+.1;
+    calculateValues(l_lim, r_lim);
+    for(int i=0; i<points.size(); i++) {
+        QPointF p=points[i];
+        points[i]=QPointF(p.y(), p.x());
+    }
+}
+
+QLineF FunctionX::derivative(const QPointF &p) const
+{
+//     QPointF p1(p.y(), p.x());
+//     QLineF ret=FunctionY::derivative(p1);
+//     return FunctionUtils::mirrorXY(ret);
+
+return QLineF();
+}
+
+void FunctionX::optimizeJump()
+{
+    QPointF before = points.at(points.count()-2), after=points.last();
+    qreal x1=before.x(), x2=after.x();
+    qreal y1=before.y(), y2=after.y();
+    int iterations=5;
+    
+//  qDebug() << "+++++++++" << before << after;
+    for(; iterations>0; --iterations) {
+        qreal dist = x2-x1;
+        qreal x=x1+dist/2;
+        
+        arg("x")->setValue(x);
+        qreal y = analyzer.calculateLambda().toReal().value();
+        
+        if(fabs(y1-y)<fabs(y2-y)) {
+            before.setX(x);
+            before.setY(y);
+            x1=x;
+            y1=y;
+        } else {
+            after.setX(x);
+            after.setY(y);
+            x2=x;
+            y2=y;
+        }
+    }
+//  qDebug() << "---------" << before << after;
+    points[points.count()-2]=before;
+    points.last()=after;
+}
+
+void FunctionX::calculateValues(double l_lim, double r_lim)
+{
+    jumps.clear();
+    points.clear();
+//     points.reserve(resolution()); //TODO port
+    
+//     double step= double((-l_lim+r_lim)/resolution()); //TODO port
+    double step = 0.1;
+    
+    bool jumping=true;
+    for(double x=l_lim; x<r_lim-step; x+=step) {
+        arg("x")->setValue(x);
+        Analitza::Cn y = analyzer.calculateLambda().toReal();
+        QPointF p(x, y.value());
+        bool ch=addPoint(p);
+        
+        bool jj=jumping;
+        jumping=false;
+        if(ch && !jj) {
+//          if(!jumps.isEmpty()) qDebug() << "popopo" << jumps.last() << points.count();
+            double prevY=points[points.count()-2].y();
+            if(y.format()!=Analitza::Cn::Real && prevY!=y.value()) {
+                jumps.append(points.count()-1);
+                jumping=true;
+            } else if(points.count()>3 && traverse(points[points.count()-3].y(), prevY, y.value())) {
+                optimizeJump();
+                jumps.append(points.count()-1);
+                jumping=true;
+            }
+        }
+    }
+//  qDebug() << "juuuumps" << jumps << resolution();
+}
+
 
 
 REGISTER_PLANECURVE(FunctionY)
+REGISTER_PLANECURVE(FunctionX)
+
 
