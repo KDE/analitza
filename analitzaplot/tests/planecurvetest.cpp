@@ -16,15 +16,21 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "functiontest.h"
-#include "analitzaplot/function.h"
-#include "analitzaplot/functionsmodel.h"
+
 #include "analitza/expression.h"
 #include "analitza/variables.h"
 #include <analitza/analyzer.h>
 #include <analitza/value.h>
 #include <qtest_kde.h>
 #include <cmath>
+
+#include "planecurvetest.h"
+
+#include "analitzaplot/planecurve.h"
+#include "analitzaplot/surface.h"
+
+#include "analitzaplot/planecurvesmodel.h"
+
 
 using namespace std;
 using Analitza::Expression;
@@ -294,4 +300,4 @@ void FunctionTest::cleanupTestCase()
 // // 	QCOMPARE(f3.jumps().count(), jumps);
 // }
 
-#include "functiontest.moc"
+#include "planecurvetest.moc"

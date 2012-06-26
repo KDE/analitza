@@ -25,25 +25,44 @@ include_directories (
 )
 
 set ( keomath_SRCS
-functionutils.cpp
-function.cpp
-functiongraph.cpp
-functiongraphfactory.cpp
-functionsmodel.cpp
+# functionutils.cpp
+# function.cpp
+# functiongraph.cpp
+# functiongraphfactory.cpp
+# functionsmodel.cpp
+# 
+# plotter2d.cpp
+# plotview2d.cpp
+# # plotter3d.cpp
+# # plotview3d.cpp
 
+private/abstractfunctiongraph.cpp
+private/abstractfunctiongraphfactory.cpp
+private/abstractmappinggraph.cpp
+private/abstractplanecurve.cpp
+private/abstractsurface.cpp
+private/functiongraphsmodel.cpp
+private/mappinggraph.cpp
+private/planecurvefactory.cpp
+private/surfacefactory.cpp
+
+mathutils.cpp
+planecurve.cpp
+planecurvesmodel.cpp
 plotter2d.cpp
+#plotter3d.cpp
 plotview2d.cpp
-# plotter3d.cpp
-# plotview3d.cpp
+#plotview3d.cpp
+surface.cpp
 
-functiongraphtypes/cartesiansurface.cpp
-functiongraphtypes/implicitcurve.cpp
-functiongraphtypes/cartesiancurve.cpp
+private/backends/cartesiansurface.cpp
+private/backends/implicitcurve.cpp
+private/backends/cartesiancurve.cpp
 # functiongraphtypes/cylindricalsurface.cpp
-functiongraphtypes/parametriccurve2d.cpp
+private/backends/parametriccurve2d.cpp
 # functiongraphtypes/parametriccurve3d.cpp
 # functiongraphtypes/parametricsurface.cpp
-functiongraphtypes/polarcurve.cpp
+private/backends/polarcurve.cpp
 # functiongraphtypes/sphericalsurface.cpp
 
 #   solvers/solvers3d/implicitsurface.cpp
@@ -85,18 +104,54 @@ install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_AR
 
 install(FILES
 
+
+#public api
 analitzaplotexport.h
-
-functionutils.h
-function.h
-functiongraph.h
-functiongraphfactory.h
-functionsmodel.h
-
+mathutils.h
+planecurve.h
+planecurvesmodel.h
 plotter2d.h
 plotter3d.h
 plotview2d.h
 plotview3d.h
-
-
+surface.h
         DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
+
+
+install(FILES
+
+#private api/files only for compile by using the headers
+
+private/abstractfunctiongraphfactory.h
+private/abstractfunctiongraph.h
+private/abstractmappinggraph.h
+private/abstractplanecurve.h
+private/abstractsurface.h
+private/curve.h
+private/functiongraph.h
+private/functiongraphsmodel.h
+private/mappinggraph.h
+private/planecurvefactory.h
+private/surfacefactory.h
+
+        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
+
+
+
+
+
+
+# analitzaplotexport.h
+# 
+# functionutils.h
+# function.h
+# functiongraph.h
+# functiongraphfactory.h
+# functionsmodel.h
+# 
+# plotter2d.h
+# plotter3d.h
+# plotview2d.h
+# plotview3d.h
+
+

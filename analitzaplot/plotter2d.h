@@ -20,7 +20,7 @@
 #ifndef FUNCTIONSPAINTER_H
 #define FUNCTIONSPAINTER_H
 
-#include "function.h"
+#include "planecurve.h"
 #include <QPen>
 
 class QModelIndex;

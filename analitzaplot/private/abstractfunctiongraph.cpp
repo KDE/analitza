@@ -1,6 +1,7 @@
+
 /*************************************************************************************
- *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2007-2011 by Aleix Pol <aleixpol@kde.org>                          *
+ *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -17,34 +18,9 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "functiongraph.h"
+#include "abstractfunctiongraph.h"
 
-#include <cmath>
-
-#include "analitza/analyzer.h"
-#include "analitza/value.h"
 #include "analitza/variable.h"
-
-using std::atan2;
-
-AbstractMappingGraph::AbstractMappingGraph(const Analitza::Expression& e, Analitza::Variables* v)
-: analyzer(v)
-{
-    analyzer.setExpression(e);
-    analyzer.simplify();
-    analyzer.flushErrors();
-}
-
-AbstractMappingGraph::~AbstractMappingGraph()
-{
-}
-
-const Analitza::Expression& AbstractMappingGraph::expression() const
-{
-    return analyzer.expression();
-}
-
-///
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractMappingGraph(e,v)
@@ -128,59 +104,3 @@ void AbstractFunctionGraph::setInterval(const QString &argname, double min, doub
     
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
 }
-
-AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractFunctionGraph(e, v)
-{
-
-}
-
-AbstractPlaneCurve::~AbstractPlaneCurve()
-{
-
-}
-
-bool AbstractPlaneCurve::addPoint(const QPointF& p)
-{
-    int count=points.count();
-    if(count<2) {
-        points.append(p);
-        return false;
-    }
-    
-    double angle1=std::atan2(points[count-1].y()-points[count-2].y(), points[count-1].x()-points[count-2].x());
-    double angle2=std::atan2(p.y()-points[count-1].y(), p.x()-points[count-1].x());
-    
-    bool append=!isSimilar(angle1, angle2);
-    if(append)
-        points.append(p);
-    else
-        points.last()=p;
-        
-    return append;
-}
-
-
-///
-
-AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractFunctionGraph(e, v)
-{
-
-}
-
-AbstractSurface::~AbstractSurface()
-{
-
-}
-
-const QVector< int >& AbstractSurface::indexes() const
-{
-    return QVector<int>();
-}
-
-const QVector< QVector3D >& AbstractSurface::points() const
-{
-    return QVector<QVector3D>();
-}
-    

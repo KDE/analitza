@@ -30,7 +30,8 @@
 #include <QPixmap>
 #include <QModelIndex>
 
-#include "function.h"
+#include "planecurve.h"
+
 #include "analitzaplotexport.h"
 #include "plotter2d.h"
 

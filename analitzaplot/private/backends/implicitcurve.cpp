@@ -18,8 +18,9 @@
  *************************************************************************************/
 
 
-#include "functiongraph.h"
-#include "functiongraphfactory.h"
+#include "private/abstractplanecurve.h"
+#include "private/planecurvefactory.h"
+
 
 #include <QRect>
 #include <QBitArray>

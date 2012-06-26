@@ -17,9 +17,12 @@
  *************************************************************************************/
 
 #include "plotter2d.h"
-#include "functionsmodel.h"
-#include "functionutils.h"
-#include "function.h"
+
+#include  "planecurvesmodel.h"
+
+#include "mathutils.h"
+#include "planecurve.h"
+
 #include <QPalette>
 #include <QPen>
 #include <QPainter>

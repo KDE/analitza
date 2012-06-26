@@ -32,8 +32,8 @@
 #include <QDebug>
 
 #include <analitza/analyzer.h>
-#include "functionsmodel.h"
-#include "functionutils.h"
+#include "planecurvesmodel.h"
+#include "mathutils.h"
 #include "plotter2d.h"
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>

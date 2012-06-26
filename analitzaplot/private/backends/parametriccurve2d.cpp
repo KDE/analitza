@@ -18,8 +18,9 @@
  *************************************************************************************/
 
 
-#include "functiongraph.h"
-#include "functiongraphfactory.h"
+
+#include "private/abstractplanecurve.h"
+#include "private/planecurvefactory.h"
 
 #include <QRectF>
 #include "analitza/value.h"
@@ -28,7 +29,6 @@
 
 #include <QDebug>
 #include <analitza/localize.h>
-#include "functionutils.h"
 
 using Analitza::Expression;
 using Analitza::ExpressionType;

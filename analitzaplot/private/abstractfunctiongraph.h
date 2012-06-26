@@ -1,5 +1,6 @@
+
 /*************************************************************************************
- *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
+ *  Copyright (C) 2007-2011 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
@@ -17,22 +18,10 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+#ifndef _ABSTRACTFUNCTIONGRAPH_H
+#define _ABSTRACTFUNCTIONGRAPH_H
 
-#ifndef ANALITZAPLOT_FUNCTIONGRAPH_H
-#define ANALITZAPLOT_FUNCTIONGRAPH_H
-
-#include "analitza/analyzer.h"
-#include "analitza/value.h"
-#include "function.h"
-
-namespace Analitza
-{
-class Variables;
-class Analyzer;
-class Object;
-class Cn;
-class Expression;
-}
+#include "abstractmappinggraph.h"
 
 #define TYPE_NAME(name) \
 const QString typeName() const { return TypeName(); } \
@@ -58,46 +47,6 @@ static QString IconName() { return QString(name); }
 QStringList examples() const { return Examples(); } \
 static QStringList Examples() { return QString(name).split(","); }
 
-
-//NOTE
-//para construir estos backends/abstract solo re necesitaa que su ctor tenga exp y varmod ... 
-//en la funcion y en el metodo factory id es donde se requiere que tenga mas detalle ademas de exp y varsmod
-// por ejemolo coordsys en el caso de surf
-
-class ANALITZAPLOT_EXPORT AbstractMappingGraph //strategy pattern
-{
-public:
-    explicit AbstractMappingGraph(const Analitza::Expression& e, Analitza::Variables* v);
-    virtual ~AbstractMappingGraph();
-
-    virtual const QString typeName() const = 0;
-    const Analitza::Expression &expression() const;
-    virtual QString iconName() const = 0;
-    virtual QStringList examples() const = 0;
-
-    virtual int spaceDimension() const = 0;
-    virtual CoordinateSystem coordinateSystem() const = 0;
-    
-    QStringList errors() const { return m_errors; }
-    bool isCorrect() const { return m_errors.isEmpty() && analyzer.isCorrect(); }
-
-protected:
-    AbstractMappingGraph() {}
-    AbstractMappingGraph(const AbstractMappingGraph& other) {}
-    
-    void appendError(const QString &error) { m_errors.append(error); }
-    void flushErrors() { m_errors.clear(); }
-    
-    //WARNING see if errorCount is necesary ...
-    int errorCount() const { return m_errors.count(); } // if some method throws many erros perhaps the user (child-class) want to stop something
-    
-    Analitza::Analyzer analyzer;
-    
-private:
-    QStringList m_errors;
-};
-
-///
 
 class ANALITZAPLOT_EXPORT AbstractFunctionGraph : public AbstractMappingGraph
 {
@@ -126,62 +75,5 @@ private:
     QMap<QString, RealInterval > m_argumentIntervals;
 };
 
-///
 
-class ANALITZAPLOT_EXPORT AbstractPlaneCurve : public AbstractFunctionGraph 
-{
-public:
-    explicit AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v);
-    virtual ~AbstractPlaneCurve();
-
-    //AbstractMappingGraph
-    int spaceDimension() const { return 2; }
-    
-    //Curve ... los expongo como publicos tanto para planecurve como para los backend (
-    //para los backends por un tema de performance y flexibilidad) 
-    // al final en planecurve todo estara expuesto consistentemente 
-    QVector<QPointF> points;
-    QVector<int> jumps;
-    
-    //Own
-    virtual void update(const QRect& viewport) = 0;
-    virtual QPair<QPointF, QString> image(const QPointF &mousepos) = 0;
-    virtual QLineF tangent(const QPointF &mousepos) = 0;
-
-protected:
-    AbstractPlaneCurve() {}
-    AbstractPlaneCurve(const AbstractPlaneCurve& other) {}
-    
-    bool addPoint(const QPointF& p);
-
-
-};
-
-///
-
-class ANALITZAPLOT_EXPORT AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
-{
-public:
-    explicit AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v);
-    virtual ~AbstractSurface();
-
-    //AbstractMappingGraph
-    int spaceDimension() const { return 3; }
-    
-    //Own
-    virtual void update(/*frumtum*/) = 0;
-    const QVector<int> & indexes() const;
-    const QVector<QVector3D> & points() const;
-    
-protected:
-    AbstractSurface() {}
-    AbstractSurface(const AbstractSurface& other) {}
-    
-private:
-    QMap< QString, RealInterval > m_argumentIntervals;
-    QVector<int> m_indexes;
-    QVector<QVector3D> m_points;
-};
-
-
-#endif // ANALITZAPLOT_FUNCTIONGRAPH_H
+#endif // ABSTRACTFUNCTIONGRAPH_H
