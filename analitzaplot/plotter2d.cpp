@@ -17,7 +17,6 @@
  *************************************************************************************/
 
 #include "plotter2d.h"
-
 #include "functionsmodel.h"
 #include "functionutils.h"
 #include "function.h"
@@ -36,21 +35,21 @@ using namespace std;
 
 // #define DEBUG_GRAPH
 
-QColor const Plotter2D::m_axeColor(100,100,255);
-QColor const Plotter2D::m_axe2Color(235,235,235);
-QColor const Plotter2D::m_derivativeColor(90,90,160);
+QColor const FunctionsPainter::m_axeColor(100,100,255);
+QColor const FunctionsPainter::m_axe2Color(235,235,235);
+QColor const FunctionsPainter::m_derivativeColor(90,90,160);
 
-Plotter2D::Plotter2D(FunctionsModel* model, const QSizeF& size)
+FunctionsPainter::FunctionsPainter(PlaneCurveModel* model, const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model)
 {}
 
-Plotter2D::~Plotter2D()
+FunctionsPainter::~FunctionsPainter()
 {}
 
-void Plotter2D::drawAxes(QPainter *p, CoordinateSystem a)
+void FunctionsPainter::drawAxes(QPainter *p, CoordinateSystem a)
 {
     p->setRenderHint(QPainter::Antialiasing, false);
-
+    
     switch(a) {
         case Polar:
             drawPolarAxes(p);
@@ -58,11 +57,11 @@ void Plotter2D::drawAxes(QPainter *p, CoordinateSystem a)
         default:
             drawCartesianAxes(p);
     }
-
+    
     //write coords
     QString rightBound=QString::number(viewport.right());
     int width=p->fontMetrics().width(rightBound);
-
+    
     p->drawText(QPointF(3.+this->width()/2., 13.                 ), QString::number(viewport.top()));
     p->drawText(QPointF(3.+this->width()/2., this->height()-5.   ), QString::number(viewport.bottom()));
     p->drawText(QPointF(8.                 , this->height()/2.-5.), QString::number(viewport.left()));
@@ -70,7 +69,7 @@ void Plotter2D::drawAxes(QPainter *p, CoordinateSystem a)
     //EO write coords
 }
 
-void Plotter2D::drawPolarAxes(QPainter *p)
+void FunctionsPainter::drawPolarAxes(QPainter *p)
 {
     QPen ceixos;
     ceixos.setColor(m_axeColor);
@@ -83,11 +82,11 @@ void Plotter2D::drawPolarAxes(QPainter *p)
                 sqrt(pow(viewport.bottomLeft().x(), 2.)+ pow(viewport.bottomLeft().y(), 2.))
                 )
             );
-
+        
     ceixos.setColor(m_axe2Color);
     ceixos.setStyle(Qt::SolidLine);
     p->setPen(ceixos);
-
+    
     p->setRenderHint(QPainter::Antialiasing, true);
     for(double i=thmin; i<thmax; i++) { //i is +
         QPointF p1(toWidget(QPointF(i,i)));
@@ -95,7 +94,7 @@ void Plotter2D::drawPolarAxes(QPainter *p)
         p->drawEllipse(QRectF(p1.x(),p1.y(), p2.x()-p1.x(),p2.y()-p1.y()));
     }
     p->setRenderHint(QPainter::Antialiasing, false);
-
+    
     ceixos.setColor(m_axeColor);
     ceixos.setStyle(Qt::SolidLine);
     p->setPen(ceixos);
@@ -103,24 +102,24 @@ void Plotter2D::drawPolarAxes(QPainter *p)
     p->drawLine(QPointF(center.x(), 0.), QPointF(center.x(),this->height()));
 }
 
-void Plotter2D::drawCartesianAxes(QPainter *painter)
+void FunctionsPainter::drawCartesianAxes(QPainter *painter)
 {
     QPen ceixos;
     const QPointF center = toWidget(QPointF(0.,0.));
-
+    
     ceixos.setColor(m_axe2Color);
     ceixos.setStyle(Qt::SolidLine);
     painter->setPen(ceixos);
-
+    
     double xini=ceil(viewport.left()), inc=1.;
     double yini=ceil(viewport.top());
-
+    
     if(viewport.width()>100.) { //Draw less lines on large viewports
         inc=10.;
         xini=floor(xini/10.)*10.;
         yini=floor(yini/10.)*10.;
     }
-
+    
     for(double x=xini; x<=viewport.right(); x+=inc) {   // ticks X
         QPointF p = toWidget(QPointF(x, 0.));
         if(m_squares)
@@ -128,7 +127,7 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
         else
             painter->drawLine(p, p+QPointF(0.,-3.));
     }
-
+    
     for(double y=yini; y>=viewport.bottom(); y-=inc) {      // ticks y
         QPointF p = toWidget(QPointF(0., y));
         if(m_squares)
@@ -136,27 +135,27 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
         else
             painter->drawLine(p, p+QPointF(3.,0.));
     }
-
+    
     ceixos.setColor(m_axeColor);
     ceixos.setStyle(Qt::SolidLine);
     painter->setPen(ceixos);
-
+    
     QPointF Xright(this->width(), center.y());
     QPointF Ytop(center.x(), 0.);
-
+    
     //draw viewport axes
     painter->drawLine(QPointF(0., center.y()), Xright);
     painter->drawLine(Ytop, QPointF(center.x(),this->height()));
     //EO draw viewport axes
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setBrush(m_axeColor);
-
+    
     const double width=15., height=4.;
     QPointF dpx(width, height);
     QPointF dpy(height, width);
     QRectF rectX(Xright+dpx, Xright-dpx);
     QRectF rectY(Ytop+dpy, Ytop-dpy);
-
+    
     int startAngleX = 150*16;
     int startAngleY = 240*16;
     int spanAngle = 60*16;
@@ -164,153 +163,161 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     painter->drawPie(rectY, startAngleY, spanAngle);
 }
 
-void Plotter2D::drawFunctions(QPaintDevice *qpd)
+void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
 {
-    //TODO
-//     QPen pfunc(QColor(0,150,0), 2);
-//
-//     QPainter p;
-//     p.begin(qpd);
-// //  finestra.initFrom(this);
-//     p.setPen(pfunc);
-//
-//     int current=currentFunction();
-//     Function::Axe t=Function::Cartesian;
-//     if(current>=0)
-//         t=m_model->editFunction(current)->axeType();
-//     drawAxes(&p, t);
-//     p.setRenderHint(QPainter::Antialiasing, true);
-//
-//     int k=0;
-//     FunctionsModel::const_iterator it=m_model->constBegin(), itEnd=m_model->constEnd();
+    QPen pfunc(QColor(0,150,0), 2);
+    
+    QPainter p;
+    p.begin(qpd);
+//  finestra.initFrom(this);
+    p.setPen(pfunc);
+    
+    int current=currentFunction();
+    CoordinateSystem t=Cartesian;
+    if(current>=0)
+        t=(CoordinateSystem)m_model->data(m_model->index(current), FunctionGraphModel::CoordinateSystemRole).toInt(); // editFunction(current)->axeType();
+    drawAxes(&p, t);
+    p.setRenderHint(QPainter::Antialiasing, true);
+    
+    int k=0;
+//     PlaneCurveModel::const_iterator it=m_model->constBegin(), itEnd=m_model->constEnd();
 //     for (; it!=itEnd; ++it, ++k ) {
-//         if(!it->isShown())
-//             continue;
-//         pfunc.setColor(it->color());
-//         pfunc.setWidth((k==current)+1);
-//         p.setPen(pfunc);
-//
-//         const QVector<QPointF> &vect=it->points();
-//         QList<int> jumps=it->jumps();
-//
-//         unsigned int pointsCount = vect.count();
-//         QPointF ultim(toWidget(vect[0]));
-//
+    for (int k = 0; k < m_model->rowCount(); ++k )
+    {
+        if (!m_model->data(model()->index(k), FunctionGraphModel::VisibleRole).toBool())
+            continue;
+        
+        pfunc.setColor(m_model->data(model()->index(k), FunctionGraphModel::ColorRole).value<QColor>());
+        pfunc.setWidth((k==current)+1);
+        p.setPen(pfunc);
+        
+        const QVector<QPointF> &vect=m_model->points(k);
+        QVector<int> jumps=m_model->jumps(k);
+        
+        unsigned int pointsCount = vect.count();
+        QPointF ultim(toWidget(vect[0]));
+        
+        //TODO port see new implicitcurve
 //         bool allJumps = it->allDisconnected();
-//         int nextjump;
+        
+        int nextjump;
 //         if(allJumps)
 //             nextjump = 0;
 //         else
-//             nextjump = jumps.isEmpty() ? -1 : jumps.takeFirst();
-//
-// #ifdef DEBUG_GRAPH
-//         qDebug() << "---------" << jumps.count()+1;
-// #endif
-//         for(unsigned int j=0; j<pointsCount; j++) {
-//             QPointF act=toWidget(vect.at(j));
-//
-// //          qDebug() << "xxxxx" << act << ultim << isnan(act.y()) << isnan(ultim.y());
-//             if(isinf(act.y()) && !isnan(act.y())) qDebug() << "trying to plot from a NaN value" << act << ultim;
-//             else if(isinf(act.y()) && isnan(act.y())) qDebug() << "trying to plot to a NaN value";
-//
-//             bool bothinf=(isinf(ultim.y()) && isinf(act.y())) || (isinf(ultim.x()) && isinf(act.x()));
-//             if(!bothinf && !isnan(act.y()) && !isnan(ultim.y()) && nextjump!=int(j)) {
-//                 if(isinf(ultim.y())) {
-//                     if(act.y()<0) ultim.setY(0);
-//                     if(act.y()>0) ultim.setY(qpd->height());
-//                 }
-// //
-//                 QPointF act2(act);
-//                 if(isinf(act2.y())) {
-//                     if(ultim.y()<0) act2.setY(0);
-//                     if(ultim.y()>0) act2.setY(qpd->height());
-//                 }
-//
-// //              qDebug() << "xxxxx" << act2 << ultim << isnan(act2.y()) << isnan(ultim.y());
-//                 p.drawLine(ultim, act2);
-//
-// #ifdef DEBUG_GRAPH
-//                 QPen p(Qt::red);
-//                 p.setWidth(3);
-//                 finestra.setPen(p);
-//                 finestra.drawPoint(ultim);
-//                 finestra.setPen(pfunc);
-// #endif
-//             } else if(nextjump==int(j)) {
-//                 do {
-//                     if(nextjump!=int(j))
-//                         p.drawPoint(act);
-//
+        int ff_ = jumps.first(); jumps.remove(0); // GSCO instead of jumps.takeFirst()
+            nextjump = jumps.isEmpty() ? -1 : ff_;
+        
+#ifdef DEBUG_GRAPH
+        qDebug() << "---------" << jumps.count()+1;
+#endif
+        for(unsigned int j=0; j<pointsCount; j++) {
+            QPointF act=toWidget(vect.at(j));
+            
+//          qDebug() << "xxxxx" << act << ultim << isnan(act.y()) << isnan(ultim.y());
+            if(isinf(act.y()) && !isnan(act.y())) qDebug() << "trying to plot from a NaN value" << act << ultim;
+            else if(isinf(act.y()) && isnan(act.y())) qDebug() << "trying to plot to a NaN value";
+            
+            bool bothinf=(isinf(ultim.y()) && isinf(act.y())) || (isinf(ultim.x()) && isinf(act.x()));
+            if(!bothinf && !isnan(act.y()) && !isnan(ultim.y()) && nextjump!=int(j)) {
+                if(isinf(ultim.y())) {
+                    if(act.y()<0) ultim.setY(0);
+                    if(act.y()>0) ultim.setY(qpd->height());
+                }
+//              
+                QPointF act2(act);
+                if(isinf(act2.y())) {
+                    if(ultim.y()<0) act2.setY(0);
+                    if(ultim.y()>0) act2.setY(qpd->height());
+                }
+                
+//              qDebug() << "xxxxx" << act2 << ultim << isnan(act2.y()) << isnan(ultim.y());
+                p.drawLine(ultim, act2);
+                
+#ifdef DEBUG_GRAPH
+                QPen p(Qt::red);
+                p.setWidth(3);
+                finestra.setPen(p);
+                finestra.drawPoint(ultim);
+                finestra.setPen(pfunc);
+#endif
+            } else if(nextjump==int(j)) {
+                do {
+                    if(nextjump!=int(j))
+                        p.drawPoint(act);
+                    
 //                     if(allJumps)
 //                         nextjump += 2;
 //                     else
-//                         nextjump = jumps.isEmpty() ? -1 : jumps.takeFirst();
-//
-//                 } while(!jumps.isEmpty() && jumps.first()==nextjump+1);
-//
-// #ifdef DEBUG_GRAPH
-//                 qDebug() << "jumpiiiiiing" << ultim << toWidget(vect.at(j));
-//                 QPen p(Qt::blue);
-//                 p.setWidth(2);
-//                 finestra.setPen(p);
-//                 finestra.drawLine(QLineF(QPointF(act.x(), height()/2-10), QPointF(act.x(), height()/2+10)));
-//                 finestra.setPen(pfunc);
-// #endif
-//             }
-//
-//             ultim=act;
-//         }
-//     }
-//
-//     p.end();
+                        int fff_ = jumps.first(); jumps.remove(0); // GSCO instead of jumps.takeFirst()
+                        nextjump = jumps.isEmpty() ? -1 : fff_;
+                    
+                } while(!jumps.isEmpty() && jumps.first()==nextjump+1);
+
+#ifdef DEBUG_GRAPH
+                qDebug() << "jumpiiiiiing" << ultim << toWidget(vect.at(j));
+                QPen p(Qt::blue);
+                p.setWidth(2);
+                finestra.setPen(p);
+                finestra.drawLine(QLineF(QPointF(act.x(), height()/2-10), QPointF(act.x(), height()/2+10)));
+                finestra.setPen(pfunc);
+#endif
+            }
+            
+            ultim=act;
+        }
+    }
+    
+    p.end();
 }
 
-void Plotter2D::updateFunctions(const QModelIndex& startIdx, const QModelIndex& endIdx)
+void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModelIndex& endIdx)
 {
     Q_ASSERT(startIdx.isValid() && endIdx.isValid());
     int start=startIdx.row(), end=endIdx.row();
-
+    
     for(int i=start; i<=end; i++) {
-//         m_model->updatePoints(i, toBiggerRect(viewport));
+        m_model->update(i, toBiggerRect(viewport));
     }
-
+    
     forceRepaint();
 }
 
-QPointF Plotter2D::calcImage(const QPointF& ndp) const
+QPointF FunctionsPainter::calcImage(const QPointF& ndp) const
 {
-//     return m_model->calcImage(currentFunction(), ndp).first;
-return QPointF();
+    if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
+        return m_model->calcItem(currentFunction(), ndp).first;
+    
+    return QPointF();
 }
 
-QRect Plotter2D::toBiggerRect(const QRectF& ent)
+QRect FunctionsPainter::toBiggerRect(const QRectF& ent)
 {
     QRect ret;
     ret.setTop(static_cast<int>(std::ceil(ent.top())));
     ret.setBottom(static_cast<int>(std::floor(ent.bottom())));
     ret.setLeft(static_cast<int>(std::floor(ent.left())));
     ret.setRight(static_cast<int>(std::ceil(ent.right())));
-
+    
     return ret;
 }
 
-void Plotter2D::updateScale(bool repaint)
+void FunctionsPainter::updateScale(bool repaint)
 {
     viewport=userViewport;
     rang_x= width()/viewport.width();
     rang_y= height()/viewport.height();
-
+    
     if(m_keepRatio && rang_x!=rang_y)
     {
         rang_y=rang_x=qMin(std::fabs(rang_x), std::fabs(rang_y));
         if(rang_y>0.) rang_y=-rang_y;
         if(rang_x<0.) rang_x=-rang_x;
-
+        
         double newW=width()/rang_x, newH=height()/rang_x;
-
+        
         double mx=(userViewport.width()-newW)/2.;
         double my=(userViewport.height()-newH)/2.;
-
+        
         viewport.setLeft(userViewport.left()+mx);
         viewport.setTop(userViewport.bottom()-my);
         viewport.setWidth(newW);
@@ -318,7 +325,7 @@ void Plotter2D::updateScale(bool repaint)
         //Commented because precision could make the program crash
 //      Q_ASSERT(userViewport.center() == viewport.center());
     }
-
+    
     if(repaint) {
         if(m_model && m_model->rowCount())
             updateFunctions(m_model->index(0,0), m_model->index(m_model->rowCount()-1,0));
@@ -326,55 +333,58 @@ void Plotter2D::updateScale(bool repaint)
     }
 }
 
-void Plotter2D::setViewport(const QRectF& vp, bool repaint)
+void FunctionsPainter::setViewport(const QRectF& vp, bool repaint)
 {
     userViewport = vp;
     Q_ASSERT(userViewport.top()>userViewport.bottom());
     Q_ASSERT(userViewport.right()>userViewport.left());
-
+    
     updateScale(repaint);
-
+    
     viewportChanged();
 }
 
-QLineF Plotter2D::slope(const QPointF& dp) const
+QLineF FunctionsPainter::slope(const QPointF& dp) const
 {
-//     QLineF ret = m_model->slope(currentFunction(), dp);
-//     if(ret.isNull() && currentFunction()>=0) {
-//         QPointF a = calcImage(dp-QPointF(.1,.1));
-//         QPointF b = calcImage(dp+QPointF(.1,.1));
-//
-//         ret = FunctionUtils::slopeToLine((a.y()-b.y())/(a.x()-b.x()));
-//     }
-//
-//     return ret;
-return QLineF();
+    if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
+    {
+        QLineF ret = m_model->derivativeItem(currentFunction(), dp);
+        if(ret.isNull() && currentFunction()>=0) {
+            QPointF a = calcImage(dp-QPointF(.1,.1));
+            QPointF b = calcImage(dp+QPointF(.1,.1));
+            
+            ret = slopeToLine((a.y()-b.y())/(a.x()-b.x()));
+        }
+        return ret;
+    }
+    
+    return QLineF();
 }
 
-QLineF Plotter2D::toWidget(const QLineF &f) const
+QLineF FunctionsPainter::toWidget(const QLineF &f) const
 {
     return QLineF(toWidget(f.p1()), toWidget(f.p2()));
 }
 
-QPointF Plotter2D::toWidget(const QPointF& p) const
+QPointF FunctionsPainter::toWidget(const QPointF& p) const
 {
     double left=-viewport.left(), top=-viewport.top();
     return QPointF((left + p.x()) * rang_x,  (top + p.y()) * rang_y);
 }
 
-QPointF Plotter2D::fromWidget(const QPoint& p) const
+QPointF FunctionsPainter::fromWidget(const QPoint& p) const
 {
     double part_negativa_x = -viewport.left();
     double part_negativa_y = -viewport.top();
     return QPointF(p.x()/rang_x-part_negativa_x, p.y()/rang_y-part_negativa_y);
 }
 
-QPointF Plotter2D::toViewport(const QPoint &mv) const
+QPointF FunctionsPainter::toViewport(const QPoint &mv) const
 {
     return QPointF(mv.x()/rang_x, mv.y()/rang_y);
 }
 
-void Plotter2D::moveViewport(const QPoint& delta)
+void FunctionsPainter::moveViewport(const QPoint& delta)
 {
     QPointF rel = toViewport(delta);
     QRectF viewport = lastViewport();
@@ -383,33 +393,33 @@ void Plotter2D::moveViewport(const QPoint& delta)
     setViewport(viewport);
 }
 
-void Plotter2D::scaleViewport(qreal s, const QPoint& center)
+void FunctionsPainter::scaleViewport(qreal s, const QPoint& center)
 {
     QPointF p = fromWidget(center);
     QSizeF ns = viewport.size()*s;
-
+    
     QRectF nv(viewport.topLeft(), ns);
     setViewport(nv, false);
-
+    
     QPointF p2 = p-fromWidget(center);
-    nv.translate(p2);
+    nv.translate(p2);       
     setViewport(nv);
 }
 
-void Plotter2D::setKeepAspectRatio(bool ar)
+void FunctionsPainter::setKeepAspectRatio(bool ar)
 {
     m_keepRatio=ar;
     updateScale(true);
 }
 
-void Plotter2D::setModel(FunctionsModel* f)
+void FunctionsPainter::setModel(PlaneCurveModel* f)
 {
     m_model=f;
     modelChanged();
     forceRepaint();
 }
 
-void Plotter2D::setPaintedSize(const QSize& size)
+void FunctionsPainter::setPaintedSize(const QSize& size)
 {
     m_size=size;
     updateScale(true);

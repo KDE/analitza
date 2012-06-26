@@ -57,7 +57,7 @@ void FunctionTest::initTestCase()
     Surface s(Analitza::Expression("(x,y)->x*x+y*y"), Cartesian, v, "surf", Qt::yellow);
     
     
-//     qDebug() << s.spaceDimension() << s.typeName() << s.arguments();
+    qDebug() << s.spaceDimension() << s.typeName() << s.arguments();
 //     
 //     qDebug() << f.examples();
     QCOMPARE(f.arguments(), QStringList() << "x");
@@ -125,10 +125,10 @@ void FunctionTest::initTestCase()
 //     qDebug() << vt.typeName() << vt.points().size();
 
     
-    PlaneCurve implicit(Analitza::Expression("(x,y)->x*x+y*y-6"), v, "ippvvvt", Qt::cyan);
-    qDebug() << implicit.typeName() << implicit.points().size();
-    implicit.update( QRect(QPoint(-10,-10), QSize(20,20)));
-    qDebug() << implicit.typeName() << implicit.points().size();
+//     PlaneCurve implicit(Analitza::Expression("(x,y)->x*x+y*y-6"), v, "ippvvvt", Qt::cyan);
+//     qDebug() << implicit.typeName() << implicit.points().size();
+//     implicit.update( QRect(QPoint(-10,-10), QSize(20,20)));
+//     qDebug() << implicit.typeName() << implicit.points().size();
 
 	delete v;
 }

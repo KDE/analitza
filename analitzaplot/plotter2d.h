@@ -19,70 +19,65 @@
 
 #ifndef FUNCTIONSPAINTER_H
 #define FUNCTIONSPAINTER_H
+
 #include "function.h"
-
-#include "analitzaplotexport.h"
-
-#include <QRectF>
+#include <QPen>
 
 class QModelIndex;
-class QPaintDevice;
-class QPainter;
+class PlaneCurveModel;
 
-class FunctionsModel;
-
-class ANALITZAPLOT_EXPORT Plotter2D
+class ANALITZAPLOT_EXPORT FunctionsPainter
 {
     public:
-        Plotter2D(FunctionsModel* model, const QSizeF& size);
-        virtual ~Plotter2D();
-
+        FunctionsPainter(PlaneCurveModel* model, const QSizeF& size);
+        virtual ~FunctionsPainter();
+        
         virtual void drawFunctions(QPaintDevice *qpd);
         virtual void forceRepaint() = 0;
         virtual void viewportChanged() = 0;
         virtual int currentFunction() const = 0;
         virtual void modelChanged() {}
-
+        
         /** Sets whether we will see a grid or only the axes. */
         void setSquares(bool newSquare) { m_squares=newSquare; forceRepaint(); }
-
+        
         /** Returns whether we have chosen to see the grid. */
         bool squares() const {return m_squares;}
-
+        
         /** Sets whether it has to keep the aspect ratio (1:1 grid). */
         void setKeepAspectRatio(bool ar);
-
+        
         /** Sets whether it is keeping the aspect ratio (1:1 grid). */
         bool keepAspectRatio() const { return m_keepRatio; }
-
+        
         /** Force the functions from @p start to @p end to be recalculated. */
         void updateFunctions( const QModelIndex & start, const QModelIndex& end );
-
-        void setModel(FunctionsModel* f);
-        FunctionsModel* model() const { return m_model; }
-
+        
+        void setModel(PlaneCurveModel* f);
+        PlaneCurveModel* model() const { return m_model; }
+        
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
-
+        
         static QRect toBiggerRect(const QRectF&);
-
+        
         /** Sets the graph's viewport to @p v. */
         void setViewport(const QRectF& vp, bool repaint=true);
-
+        
         /** Moves the viewport @p delta */
         void moveViewport(const QPoint& delta);
-
+        
     protected:
         QRectF lastViewport() const { return viewport; }
         QRectF lastUserViewport() const { return userViewport; }
         void updateScale(bool repaint);
-
+        
         QPointF toWidget(const QPointF &) const;
         QPointF fromWidget(const QPoint& p) const;
         QPointF toViewport(const QPoint& mv) const;
         QPointF calcImage(const QPointF& ndp) const;
         QLineF slope(const QPointF& dp) const;
-
+        
         QLineF toWidget(const QLineF &) const;
         void setPaintedSize(const QSize& size);
         void scaleViewport(qreal s, const QPoint& center);
@@ -91,7 +86,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void drawAxes(QPainter *f, CoordinateSystem a);
         void drawPolarAxes(QPainter *f);
         void drawCartesianAxes(QPainter *f);
-
+        
         double rang_x, rang_y;
         bool m_squares;
         bool m_keepRatio;
@@ -99,8 +94,8 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QRectF viewport;
         QRectF userViewport;
         QSizeF m_size;
-        FunctionsModel* m_model;
-
+        PlaneCurveModel* m_model;
+        
         static const QColor m_axeColor;
         static const QColor m_axe2Color;
         static const QColor m_derivativeColor;
