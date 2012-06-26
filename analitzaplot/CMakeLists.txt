@@ -32,7 +32,7 @@ functiongraphfactory.cpp
 functionsmodel.cpp
 
 plotter2d.cpp
-# plotview2d.cpp
+plotview2d.cpp
 # plotter3d.cpp
 # plotview3d.cpp
 
