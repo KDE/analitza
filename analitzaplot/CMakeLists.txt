@@ -43,7 +43,7 @@ functiongraphtypes/cartesiancurve.cpp
 # functiongraphtypes/parametriccurve2d.cpp
 # functiongraphtypes/parametriccurve3d.cpp
 # functiongraphtypes/parametricsurface.cpp
-# functiongraphtypes/polarcurve.cpp
+functiongraphtypes/polarcurve.cpp
 # functiongraphtypes/sphericalsurface.cpp
 
 #   solvers/solvers3d/implicitsurface.cpp
