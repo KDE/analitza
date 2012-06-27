@@ -1,5 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -218,7 +219,10 @@ void FunctionTest::testParamIntervals_data()
     QTest::addColumn<IntervalExpression>("interval_expression");
     
     QTest::newRow("simple_interval_vals") << "x->x*x" << "x" << 
-        qMakePair(-7.0, 5.0) << qMakePair(Analitza::Expression("a+b-4"), Analitza::Expression("45"));
+        qMakePair(-7.0, 5.0) << qMakePair(Analitza::Expression("a+b-4"), Analitza::Expression("16"));
+        
+    QTest::newRow("implicit_curve_1_interval_vals") << "(x,y)->x*x+y*y-8" << "y" << 
+        qMakePair(-9.0+2, 15.0) << qMakePair(Analitza::Expression("-abs(a*b)"), Analitza::Expression("cos(0)*a*a"));
 }
 
 void FunctionTest::testParamIntervals()
@@ -227,6 +231,9 @@ void FunctionTest::testParamIntervals()
     QFETCH(QString, param);
     QFETCH(IntervalValue, interval_value);
     QFETCH(IntervalExpression, interval_expression);
+
+    m_vars->modify("a", -4.0);
+    m_vars->modify("b", -9.5);
     
     PlaneCurve f3(Expression(input, false), m_vars, "hola", Qt::red/*, 0,0*/);
     QVERIFY(f3.isCorrect());
@@ -235,12 +242,9 @@ void FunctionTest::testParamIntervals()
     QCOMPARE(f3.interval(param).first, -7.0);
 
     //Interval as expression
-    m_vars->modify("a", -1.0);
-    m_vars->modify("b", -9.5);
     f3.setInterval(param, interval_expression.first, interval_expression.second);
 
-    QCOMPARE(f3.interval(param, true).first.toString(), QString("-14.5"));
+    QCOMPARE(f3.interval(param, true).second.toString(), QString("16"));
 }
-
 
 #include "planecurvetest.moc"

@@ -38,7 +38,7 @@
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>
 
-Graph2D::Graph2D(PlaneCurveModel* fm, QWidget *parent) :
+Graph2D::Graph2D(PlaneCurvesModel* fm, QWidget *parent) :
     QWidget(parent), FunctionsPainter(fm, size()),
     valid(false), mode(None),
     m_framed(false), m_readonly(false), m_selection(0)

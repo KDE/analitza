@@ -26,13 +26,13 @@
 
 #include "private/functiongraphsmodel.h"
 
-class ANALITZAPLOT_EXPORT PlaneCurveModel : public FunctionGraphModel
+class ANALITZAPLOT_EXPORT PlaneCurvesModel : public FunctionGraphModel
 {
 Q_OBJECT
 
 public:
-    PlaneCurveModel(Analitza::Variables *v, QObject * parent = 0);
-    virtual ~PlaneCurveModel();
+    PlaneCurvesModel(Analitza::Variables *v, QObject * parent = 0);
+    virtual ~PlaneCurvesModel();
     
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;

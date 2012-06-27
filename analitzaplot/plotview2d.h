@@ -41,7 +41,7 @@
  */
 
 class QItemSelectionModel;
-class PlaneCurveModel;
+class PlaneCurvesModel;
 
 class ANALITZAPLOT_EXPORT Graph2D : public QWidget, public FunctionsPainter
 {
@@ -58,7 +58,7 @@ public:
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
-    explicit Graph2D(PlaneCurveModel* fm, QWidget *parent = 0);
+    explicit Graph2D(PlaneCurvesModel* fm, QWidget *parent = 0);
     
     /** Destructor. */
     ~Graph2D();

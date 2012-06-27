@@ -24,12 +24,12 @@
 #include <QPen>
 
 class QModelIndex;
-class PlaneCurveModel;
+class PlaneCurvesModel;
 
 class ANALITZAPLOT_EXPORT FunctionsPainter
 {
     public:
-        FunctionsPainter(PlaneCurveModel* model, const QSizeF& size);
+        FunctionsPainter(PlaneCurvesModel* model, const QSizeF& size);
         virtual ~FunctionsPainter();
         
         virtual void drawFunctions(QPaintDevice *qpd);
@@ -53,8 +53,8 @@ class ANALITZAPLOT_EXPORT FunctionsPainter
         /** Force the functions from @p start to @p end to be recalculated. */
         void updateFunctions( const QModelIndex & start, const QModelIndex& end );
         
-        void setModel(PlaneCurveModel* f);
-        PlaneCurveModel* model() const { return m_model; }
+        void setModel(PlaneCurvesModel* f);
+        PlaneCurvesModel* model() const { return m_model; }
         
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
@@ -94,7 +94,7 @@ class ANALITZAPLOT_EXPORT FunctionsPainter
         QRectF viewport;
         QRectF userViewport;
         QSizeF m_size;
-        PlaneCurveModel* m_model;
+        PlaneCurvesModel* m_model;
         
         static const QColor m_axeColor;
         static const QColor m_axe2Color;

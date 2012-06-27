@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -22,34 +22,31 @@
 #include <QObject>
 
 /**
-	@author Aleix Pol
+	@author Percy Camilo
 */
-class FunctionGraph;
+
+class PlaneCurvesModel;
+
 namespace Analitza { class Variables; }
 
-class FunctionTest : public QObject
+class PlaneCurvesModelTest : public QObject
 {
 Q_OBJECT
 	public:
-		FunctionTest(QObject *parent = 0);
-		~FunctionTest();
+		PlaneCurvesModelTest(QObject *parent = 0);
+		~PlaneCurvesModelTest();
 
 	private slots:
 		void initTestCase();
 
-		//TODO gsoc2012
-// 		void testCorrect();
-// 		void testCorrect_data();
-//
-// 		void testCopy();
-// 		void testCopy_data();
-//
-// 		void testJumps();
-// 		void testJumps_data();
+        //Como todas las curvas son correctas por construccion solo basta probar que se ageregen al modelo
+		void testAppend();
+		void testAppend_data();
 
 		void cleanupTestCase();
 	private:
 		Analitza::Variables* m_vars;
+        PlaneCurvesModel *m_model;
 };
 
 #endif

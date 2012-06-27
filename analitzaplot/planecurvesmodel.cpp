@@ -28,18 +28,18 @@
 
 ///
 
-PlaneCurveModel::PlaneCurveModel(Analitza::Variables *v, QObject * parent)
+PlaneCurvesModel::PlaneCurvesModel(Analitza::Variables *v, QObject * parent)
     : FunctionGraphModel(v, parent)
 {
 }
 
-PlaneCurveModel::~PlaneCurveModel()
+PlaneCurvesModel::~PlaneCurvesModel()
 {
     qDeleteAll(m_items.begin(), m_items.end());
     m_items.clear();
 }
 
-QVariant PlaneCurveModel::data(const QModelIndex & index, int role) const
+QVariant PlaneCurvesModel::data(const QModelIndex & index, int role) const
 {
     if(!index.isValid() || index.row()>=m_items.count())
         return QVariant();
@@ -74,7 +74,7 @@ QVariant PlaneCurveModel::data(const QModelIndex & index, int role) const
     return QVariant();
 }
 
-int PlaneCurveModel::rowCount(const QModelIndex & parent) const
+int PlaneCurvesModel::rowCount(const QModelIndex & parent) const
 {
     if(parent.isValid())
         return 0;
@@ -83,7 +83,7 @@ int PlaneCurveModel::rowCount(const QModelIndex & parent) const
 }
 
 //agrego item al model y no como un puntero ... esto para manejar que el model maneje el scope del planecurve internamente
-void PlaneCurveModel::addCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+void PlaneCurvesModel::addCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
     //no se permiten items invalidos
     Q_ASSERT(PlaneCurve::canDraw(functionExpression));
@@ -95,7 +95,7 @@ void PlaneCurveModel::addCurve(const Analitza::Expression& functionExpression, c
     endInsertRows();
 }
 
-void PlaneCurveModel::removeCurve(int row)
+void PlaneCurvesModel::removeCurve(int row)
 {
     Q_ASSERT(row<m_items.size());
 
@@ -109,14 +109,14 @@ void PlaneCurveModel::removeCurve(int row)
     endRemoveRows();
 }
 
-const PlaneCurve* PlaneCurveModel::curve(int curveIndex) const
+const PlaneCurve* PlaneCurvesModel::curve(int curveIndex) const
 {
     Q_ASSERT(curveIndex<m_items.count());
 
     return m_items[curveIndex];
 }
 
-bool PlaneCurveModel::setCurve(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
+bool PlaneCurvesModel::setCurve(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
 {
 //                 if (PlaneCurve::canDraw(fexp))
 //                 {
@@ -129,19 +129,19 @@ bool PlaneCurveModel::setCurve(int curveIndex, const Analitza::Expression &funct
 return false;
 }
 
-void PlaneCurveModel::setCurveParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
+void PlaneCurvesModel::setCurveParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
 {
     
 }
 
 
-void PlaneCurveModel::setCurveParameterInterval(int curveIndex, const QString &argname, double min, double max)
+void PlaneCurvesModel::setCurveParameterInterval(int curveIndex, const QString &argname, double min, double max)
 {
     
 }
 
     
-void PlaneCurveModel::updateCurve(int curveIndex, const QRect& viewport)
+void PlaneCurvesModel::updateCurve(int curveIndex, const QRect& viewport)
 {
     m_items[curveIndex]->update(viewport);
 
@@ -149,14 +149,14 @@ void PlaneCurveModel::updateCurve(int curveIndex, const QRect& viewport)
 }
 
 
-QPair< QPointF, QString > PlaneCurveModel::curveImage(int row, const QPointF& mousepos)
+QPair< QPointF, QString > PlaneCurvesModel::curveImage(int row, const QPointF& mousepos)
 {
     Q_ASSERT(row<m_items.count());
 
     return m_items[row]->image(mousepos);
 }
 
-QLineF PlaneCurveModel::curveTangent(int row, const QPointF& mousepos)
+QLineF PlaneCurvesModel::curveTangent(int row, const QPointF& mousepos)
 {
     Q_ASSERT(row<m_items.count());
 

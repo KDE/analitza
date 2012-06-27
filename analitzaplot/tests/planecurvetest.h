@@ -25,7 +25,6 @@
 /**
 	@author Aleix Pol
 */
-class FunctionGraph;
 namespace Analitza { class Variables; }
 
 class FunctionTest : public QObject
