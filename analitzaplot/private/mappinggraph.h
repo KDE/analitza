@@ -35,6 +35,8 @@ public:
     explicit MappingGraph(const QString &name, const QColor& col);
     virtual ~MappingGraph();
     
+    virtual void setVariables(Analitza::Variables *variables) = 0;
+    
     const QString id() const { return m_id; }
     virtual const QString typeName() const = 0;
     virtual const Analitza::Expression & expression() const = 0;
@@ -48,6 +50,8 @@ public:
 
     virtual int spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
     virtual CoordinateSystem coordinateSystem() const = 0;
+    PlotStyle plotStyle() { return m_plotStyle; }
+    void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool f) { m_graphVisible = f; }
 
@@ -66,6 +70,7 @@ private:
     QColor m_color;
 
     //graphDescription    
+    PlotStyle m_plotStyle;
     bool m_graphVisible;
 };
 

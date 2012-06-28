@@ -30,6 +30,7 @@
 class ANALITZAPLOT_EXPORT FunctionY : public AbstractPlaneCurve
 {
 public:
+    CONSTRUCTORS(FunctionY)
     TYPE_NAME("FunctionY")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -38,12 +39,6 @@ public:
     PARAMETERS("x")
     ICON_NAME("noane")
     EXAMPLES("x,x*x,x+4")    
-    
-    
-    FunctionY(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
-	~FunctionY()
-	{
-	}
 
     void update(const QRect& viewport);
     
@@ -59,11 +54,6 @@ private:
     
 };
 
-FunctionY::FunctionY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
-:AbstractPlaneCurve(functionExpression, variables)
-{
-}
-
 void FunctionY::update(const QRect& viewport)
 {
     double l_lim=viewport.left()-.1, r_lim=viewport.right()+.1;
@@ -78,15 +68,13 @@ void FunctionY::update(const QRect& viewport)
 //  qDebug() << "end." << jumps;
 }
 
-
-
 //Own
 QPair<QPointF, QString> FunctionY::image(const QPointF &p)
 {
     QPointF dp=p;
     
     arg("x")->setValue(dp.x());
-    Analitza::Expression r=analyzer.calculateLambda();
+    Analitza::Expression r=analyzer->calculateLambda();
 
     if(!r.isReal())
         appendError(i18n("We can only draw Real results."));
@@ -142,7 +130,7 @@ void FunctionY::optimizeJump()
         qreal x=x1+dist/2;
         
         arg("x")->setValue(x);
-        qreal y = analyzer.calculateLambda().toReal().value();
+        qreal y = analyzer->calculateLambda().toReal().value();
         
         if(fabs(y1-y)<fabs(y2-y)) {
             before.setX(x);
@@ -173,7 +161,7 @@ void FunctionY::calculateValues(double l_lim, double r_lim)
     bool jumping=true;
     for(double x=l_lim; x<r_lim-step; x+=step) {
         arg("x")->setValue(x);
-        Analitza::Cn y = analyzer.calculateLambda().toReal();
+        Analitza::Cn y = analyzer->calculateLambda().toReal();
         QPointF p(x, y.value());
         bool ch=addPoint(p);
         
@@ -201,7 +189,7 @@ void FunctionY::calculateValues(double l_lim, double r_lim)
 class FunctionX : public AbstractPlaneCurve
 {
 public:
-    
+    CONSTRUCTORS(FunctionX)
     TYPE_NAME("FunctionX ... su variable es y ")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -211,11 +199,6 @@ public:
     ICON_NAME("nYYoane")
     EXAMPLES("y,y*y,y+4")  
     
-    FunctionX(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
-    ~FunctionX()
-    {
-    }
-
     void update(const QRect& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
@@ -229,16 +212,11 @@ private:
     void calculateValues(double, double);
 };
 
-FunctionX::FunctionX(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
-:AbstractPlaneCurve(functionExpression, variables)
-{
-}
-
 QPair<QPointF, QString> FunctionX::image(const QPointF& p)
 {
     QPointF dp=p;
     arg("y")->setValue(dp.y());
-    Analitza::Expression r=analyzer.calculateLambda();
+    Analitza::Expression r=analyzer->calculateLambda();
     
     if(!r.isReal())
         appendError(i18n("We can only draw Real results."));
@@ -280,7 +258,7 @@ void FunctionX::optimizeJump()
         qreal x=x1+dist/2;
         
         arg("x")->setValue(x);
-        qreal y = analyzer.calculateLambda().toReal().value();
+        qreal y = analyzer->calculateLambda().toReal().value();
         
         if(fabs(y1-y)<fabs(y2-y)) {
             before.setX(x);
@@ -311,7 +289,7 @@ void FunctionX::calculateValues(double l_lim, double r_lim)
     bool jumping=true;
     for(double x=l_lim; x<r_lim-step; x+=step) {
         arg("x")->setValue(x);
-        Analitza::Cn y = analyzer.calculateLambda().toReal();
+        Analitza::Cn y = analyzer->calculateLambda().toReal();
         QPointF p(x, y.value());
         bool ch=addPoint(p);
         
@@ -337,5 +315,3 @@ void FunctionX::calculateValues(double l_lim, double r_lim)
 
 REGISTER_PLANECURVE(FunctionY)
 REGISTER_PLANECURVE(FunctionX)
-
-

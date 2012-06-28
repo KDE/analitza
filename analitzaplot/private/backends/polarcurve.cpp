@@ -31,6 +31,7 @@
 class ANALITZAPLOT_EXPORT FunctionPolar : public AbstractPlaneCurve
 {
 public:
+    CONSTRUCTORS(FunctionPolar)
     TYPE_NAME("FunctionPolarFunctionPolar")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -40,12 +41,6 @@ public:
     ICON_NAME("newpolar")
     EXAMPLES("q->3*sin(q/0.142),q->q+3")    
     
-    
-    FunctionPolar(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
-    ~FunctionPolar()
-    {
-    }
-
     void update(const QRect& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
@@ -58,13 +53,6 @@ private:
     inline QPointF fromPolar(double r, double th) { return QPointF(r*std::cos(th), r*std::sin(th)); }
 
 };
-
-FunctionPolar::FunctionPolar(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
-:AbstractPlaneCurve(functionExpression, variables)
-{
-}
-
-
 
 void FunctionPolar::update(const QRect& viewport)
 {
@@ -94,7 +82,7 @@ void FunctionPolar::update(const QRect& viewport)
     double final=ulimit-inv_res;
     for(double th=dlimit; th<final; th+=inv_res) {
         arg("q")->setValue(th);
-        double r = analyzer.calculateLambda().toReal().value();
+        double r = analyzer->calculateLambda().toReal().value();
         
         addPoint(fromPolar(r, th));
     }
@@ -136,13 +124,13 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     arg("q")->setValue(th);
     do {
         arg("q")->setValue(th);
-        r = analyzer.calculateLambda().toReal().value();
+        r = analyzer->calculateLambda().toReal().value();
         dp = fromPolar(r, th);
         dist = (dp-p);
         d = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
         
         arg("q")->setValue(th+2.*pi);
-        r = analyzer.calculateLambda().toReal().value();
+        r = analyzer->calculateLambda().toReal().value();
         dp = fromPolar(r, th);
         dist = (dp-p);
         d2 = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
@@ -152,7 +140,7 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     th -= 2.*pi;
     
     arg("q")->setValue(th);
-    Analitza::Expression res=analyzer.calculateLambda();
+    Analitza::Expression res=analyzer->calculateLambda();
     
     if(!res.isReal())
        appendError(i18n("We can only draw Real results."));

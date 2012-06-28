@@ -238,11 +238,11 @@ void FunctionTest::testParamIntervals()
     PlaneCurve f3(Expression(input, false), m_vars, "hola", Qt::red/*, 0,0*/);
     QVERIFY(f3.isCorrect());
     
-    f3.setInterval(param, interval_value.first, interval_value.second);
+    QVERIFY(f3.setInterval(param, interval_value.first, interval_value.second));
     QCOMPARE(f3.interval(param).first, -7.0);
 
     //Interval as expression
-    f3.setInterval(param, interval_expression.first, interval_expression.second);
+    QVERIFY(f3.setInterval(param, interval_expression.first, interval_expression.second));
 
     QCOMPARE(f3.interval(param, true).second.toString(), QString("16"));
 }

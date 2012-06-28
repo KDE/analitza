@@ -20,6 +20,12 @@
 #include "abstractsurface.h"
 
 
+AbstractSurface::AbstractSurface(const Analitza::Expression& e)
+: AbstractFunctionGraph(e)
+{
+
+}
+
 AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)
 {
@@ -29,16 +35,6 @@ AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variab
 AbstractSurface::~AbstractSurface()
 {
 
-}
-
-const QVector< int >& AbstractSurface::indexes() const
-{
-    return QVector<int>();
-}
-
-const QVector< QVector3D >& AbstractSurface::points() const
-{
-    return QVector<QVector3D>();
 }
     
     

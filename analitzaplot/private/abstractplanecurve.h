@@ -23,6 +23,9 @@
 
 #include "abstractfunctiongraph.h"
 
+#define CONSTRUCTORS(name) \
+name (const Analitza::Expression &functionExpression) : AbstractPlaneCurve(functionExpression) { } \
+name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractPlaneCurve(functionExpression, variables) { }
 
 namespace Analitza
 {
@@ -33,7 +36,8 @@ namespace Analitza
 class ANALITZAPLOT_EXPORT AbstractPlaneCurve : public AbstractFunctionGraph 
 {
 public:
-    explicit AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractPlaneCurve(const Analitza::Expression& e);
     virtual ~AbstractPlaneCurve();
 
     //AbstractMappingGraph

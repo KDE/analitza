@@ -19,20 +19,37 @@
 
 #include "abstractmappinggraph.h"
 
-
 AbstractMappingGraph::AbstractMappingGraph(const Analitza::Expression& e, Analitza::Variables* v)
-: analyzer(v)
+: analyzer(new Analitza::Analyzer(v))
 {
-    analyzer.setExpression(e);
-    analyzer.simplify();
-    analyzer.flushErrors();
+    analyzer->setExpression(e);
+    analyzer->simplify();
+    analyzer->flushErrors();
+}
+
+AbstractMappingGraph::AbstractMappingGraph(const Analitza::Expression& e)
+: analyzer(new Analitza::Analyzer)
+{
+    analyzer->setExpression(e);
+    analyzer->simplify();
+    analyzer->flushErrors();
 }
 
 AbstractMappingGraph::~AbstractMappingGraph()
 {
+    delete analyzer;
+}
+
+void AbstractMappingGraph::setVariables(Analitza::Variables* variables)
+{
+    Q_ASSERT(variables);
+    
+    delete analyzer;
+    
+    analyzer = new Analitza::Analyzer(variables);
 }
 
 const Analitza::Expression& AbstractMappingGraph::expression() const
 {
-    return analyzer.expression();
+    return analyzer->expression();
 }

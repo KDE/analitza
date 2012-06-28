@@ -52,6 +52,7 @@ using Analitza::Cn;
 class ANALITZAPLOT_EXPORT FunctionImplicit : public AbstractPlaneCurve
 {
 public:
+    CONSTRUCTORS(FunctionImplicit)
     TYPE_NAME("FunctionImplicit implicit curve")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
@@ -59,12 +60,6 @@ public:
     ICON_NAME("newimplicit")
     EXAMPLES("x^3-y^2+2,y^2*(y^2-10)-x^2*(x^2-9)")    
     
-    
-    FunctionImplicit(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
-    ~FunctionImplicit()
-    {
-    }
-
     void update(const QRect& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
@@ -76,15 +71,6 @@ public:
 private:
     double getFValue(double xValue, double yValue);
 };
-
-
-
-FunctionImplicit::FunctionImplicit(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
-:AbstractPlaneCurve(functionExpression, variables)
-{
-}
-
-
 
 void FunctionImplicit::update(const QRect& vp)
 {
@@ -129,8 +115,6 @@ void FunctionImplicit::update(const QRect& vp)
         double resOne = getFValue(_xRelative, yOne);
         curRow.setBit(xAbsolute, resOne >= 0.0);
     }
-
-
 
     for (int yAbsolute = 1; yAbsolute < heightFlags - 1; yAbsolute++)
     {
@@ -313,13 +297,10 @@ return QLineF();
 
 double FunctionImplicit::getFValue(double xValue, double yValue)
 {
-    
     arg("x")->setValue(xValue);
     arg("y")->setValue(yValue);
 
-    return analyzer.calculateLambda().toReal().value();
+    return analyzer->calculateLambda().toReal().value();
 }
-
-
 
 REGISTER_PLANECURVE(FunctionImplicit)

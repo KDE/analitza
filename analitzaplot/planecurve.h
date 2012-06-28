@@ -41,7 +41,8 @@ class AbstractSurface;
 class ANALITZAPLOT_EXPORT PlaneCurve : public Curve 
 {
 public:
-    explicit PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
+    PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
+    PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
     virtual ~PlaneCurve();
 
     static bool canDraw(const Analitza::Expression &functionExpression);
@@ -49,6 +50,7 @@ public:
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
 
     bool reset(const Analitza::Expression &functionExpression);
+    void setVariables(Analitza::Variables *variables);
 
     //MappingGraph
     const QString typeName() const;
@@ -63,10 +65,10 @@ public:
     //FunctionGraph
     
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
-    void setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
+    bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
     
     QPair<double, double> interval(const QString &argname) const;
-    void setInterval(const QString &argname, double min, double max);
+    bool setInterval(const QString &argname, double min, double max);
     
     QStringList parameters() const;
 

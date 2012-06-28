@@ -63,6 +63,12 @@ AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::
 
 }
 
+AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e)
+: AbstractFunctionGraph(e)
+{
+
+}
+
 AbstractPlaneCurve::~AbstractPlaneCurve()
 {
 

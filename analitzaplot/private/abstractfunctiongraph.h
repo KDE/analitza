@@ -23,6 +23,7 @@
 
 #include "abstractmappinggraph.h"
 
+
 #define TYPE_NAME(name) \
 const QString typeName() const { return TypeName(); } \
 static QString TypeName() { return QString(name); } 
@@ -51,16 +52,17 @@ static QStringList Examples() { return QString(name).split(","); }
 class ANALITZAPLOT_EXPORT AbstractFunctionGraph : public AbstractMappingGraph
 {
 public:
-    explicit AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractFunctionGraph(const Analitza::Expression& e);
     virtual ~AbstractFunctionGraph();
 
     //FunctionGraph
     //no lleva const porque se calcularan valores con m_argumentIntervals
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
-    void setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
+    bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
     
     QPair<double, double> interval(const QString &argname) const;
-    void setInterval(const QString &argname, double min, double max);
+    bool setInterval(const QString &argname, double min, double max);
     
     virtual QStringList parameters() const = 0;
 
@@ -71,6 +73,135 @@ protected:
     Analitza::Cn* arg(const QString &argname) { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
 
 private:
+
+//BEGIN private types
+class EndPoint
+{
+public:
+    EndPoint() : m_isInfinite(false)  {}
+    
+    //el owner de *analitza sera functiongraph ... no tiene sentido usar usar esta calse fuera de functiongraph
+    EndPoint(double value): m_isInfinite(false)
+    {
+        setValue(value);
+    }
+
+    EndPoint(const Analitza::Expression &expression) : m_isInfinite(false)
+    {
+        if (!setValue(expression))
+            setValue(0.0);
+    }
+
+    EndPoint(const EndPoint &other) : m_expressionValue(other.m_expressionValue), m_isInfinite(other.m_isInfinite)
+    {
+        
+    }
+
+    bool isInfinite() const 
+    {
+        return m_isInfinite;
+    }
+    
+    void setInfinite(bool infinite) { m_isInfinite = infinite; }
+    
+    //no cambiar el exp de analyzer en setvalue por el costo ... solo cuando se quier calcular el value
+    //case evaluate = true
+    Analitza::Expression value(Analitza::Analyzer *analyzer) const
+    { 
+            Q_ASSERT(analyzer);
+
+            analyzer->setExpression(m_expressionValue);
+        
+            //TODO checks
+            if (!m_isInfinite)
+    //             if (m_analyzer->isCorrect())
+                return analyzer->calculate();
+
+//             return std::numeric_limits<double>::infinity();
+              return Analitza::Expression(Analitza::Cn("inf")); //TODO
+        
+    }
+
+    //case evaluate = false
+    Analitza::Expression value() const
+    { 
+        return m_expressionValue;
+    }
+    
+    
+    //no cambiar el exp de analyzer en setvalue por el costo ... solo cuando se quier calcular el value
+    void setValue(double value)
+    { 
+        m_expressionValue = Analitza::Expression(Analitza::Expression(Analitza::Cn(value))); 
+    }
+    
+    bool setValue(const Analitza::Expression &expression)
+    {
+        if (!expression.isCorrect())
+            return false;
+        else
+        {
+            m_expressionValue = Analitza::Expression(expression);
+
+            return true;
+        }
+        
+        return false;
+    }
+    
+    bool operator==(const EndPoint &other) const 
+    { 
+        return m_expressionValue == other.m_expressionValue && m_isInfinite == other.m_isInfinite;
+    }
+    
+    EndPoint operator=(const EndPoint& other) 
+    {
+        m_expressionValue = other.m_expressionValue;
+        m_isInfinite = other.m_isInfinite;
+        
+        return *this;
+    }
+
+private:
+    Analitza::Expression m_expressionValue;
+    bool m_isInfinite;
+};
+
+class RealInterval
+{
+public:
+    RealInterval() {}
+    RealInterval(const EndPoint &lEndPoint, const EndPoint &hEndPoint) : m_lowEndPoint(lEndPoint), m_highEndPoint(hEndPoint) { }
+    RealInterval(const RealInterval &other) : m_lowEndPoint(other.m_lowEndPoint), m_highEndPoint(other.m_highEndPoint) {}
+
+    EndPoint lowEndPoint() const { return m_lowEndPoint; }
+    EndPoint highEndPoint() const { return m_highEndPoint; }
+    
+    void setEndPoints(const EndPoint &lEndPoint, EndPoint &hEndPoint)
+    {
+        m_lowEndPoint = lEndPoint;
+        m_highEndPoint = hEndPoint;
+    }
+
+    bool operator==(const RealInterval &other) const 
+    {
+        return (m_lowEndPoint == other.m_lowEndPoint) && (m_highEndPoint == other.m_highEndPoint);  
+    }
+
+    RealInterval operator=(const RealInterval& other) 
+    {
+        m_lowEndPoint = other.m_lowEndPoint;
+        m_highEndPoint = other.m_highEndPoint;
+        
+        return *this;
+    }
+    
+private:
+    EndPoint m_lowEndPoint;
+    EndPoint m_highEndPoint;
+};
+//END private types
+    
     QMap<QString, Analitza::Object*> m_argumentValues;
     QMap<QString, RealInterval > m_argumentIntervals;
 };

@@ -1,5 +1,6 @@
 #include "abstractfunctiongraphfactory.h"
 
+AbstractFunctionGraphFactory* AbstractFunctionGraphFactory::m_self=0;
 
 QString AbstractFunctionGraphFactory::typeName(const QString& id) const
 {
@@ -36,12 +37,32 @@ QStringList AbstractFunctionGraphFactory::examples(const QString& id) const
     return examplesFunctions[id]();
 }
 
-QString AbstractFunctionGraphFactory::registerFunctionGraphDefs(TypeNameFunction typeNameFunction,
-        ExpressionTypeFunction expressionTypeFunction, int spaceDimension,
+AbstractFunctionGraphFactory* AbstractFunctionGraphFactory::self()
+{
+    if(!m_self)
+        m_self=new AbstractFunctionGraphFactory;
+    return m_self;
+}
+
+bool AbstractFunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, BuilderFunctionWithoutVars builderFunctionWithoutVars, TypeNameFunction typeNameFunction,
+        ExpressionTypeFunction expressionTypeFunction, 
         CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
         IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
 {
 //     Q_ASSERT(!contains(argumentsFunction()));
+    int spaceDimension = 2;
+    
+//     Analitza::ExpressionType exptype = expressionTypeFunction();
+//     
+//     if (exptype.type() == Analitza::ExpressionType::Vector)
+//     {
+//         
+//     }
+//     else
+//     {
+//         
+//     }
+
 
     QString id = QString::number(spaceDimension)+"|"+
                  QString::number((int)coordinateSystemFunction())+"|"+
@@ -55,5 +76,44 @@ QString AbstractFunctionGraphFactory::registerFunctionGraphDefs(TypeNameFunction
     iconNameFunctions[id] = iconNameFunction;
     examplesFunctions[id] = examplesFunction;
 
-    return id;
+    builderFunctionsWithVars[id] = builderFunctionWithVars;
+    builderFunctionsWithoutVars[id] = builderFunctionWithoutVars;
+
+    return true;
+}
+
+QString AbstractFunctionGraphFactory::id(const QStringList& args) const
+{
+    QString key;
+    
+    bool found = false;
+    
+    for (int i = 0; i < argumentsFunctions.values().size(); ++i)
+        if (argumentsFunctions.values()[i]() == args)
+        {
+            key = argumentsFunctions.key(argumentsFunctions.values()[i]);
+            found = true;
+            break;
+        }
+
+        
+    if (found)
+        return QString("2|")+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
+
+    return QString();    
+}
+
+bool AbstractFunctionGraphFactory::contains(const QString& id) const
+{
+    return builderFunctionsWithVars.contains(id);
+}
+
+AbstractFunctionGraph* AbstractFunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
+{
+    return builderFunctionsWithVars[id](exp, v);
+}
+
+AbstractFunctionGraph* AbstractFunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp) const
+{
+    return builderFunctionsWithoutVars[id](exp);
 }

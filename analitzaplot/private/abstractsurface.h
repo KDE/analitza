@@ -22,10 +22,17 @@
 
 #include "abstractfunctiongraph.h"
 
+
+#define CONSTRUCTORS(name) \
+name (const Analitza::Expression &functionExpression) : AbstractSurface(functionExpression) { } \
+name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) : AbstractSurface(functionExpression, variables) { }
+
+
 class ANALITZAPLOT_EXPORT AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
 {
 public:
-    explicit AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractSurface(const Analitza::Expression& e);
+    AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v);
     virtual ~AbstractSurface();
 
     //AbstractMappingGraph
@@ -33,17 +40,12 @@ public:
     
     //Own
     virtual void update(/*frumtum*/) = 0;
-    const QVector<int> & indexes() const;
-    const QVector<QVector3D> & points() const;
+    QVector<int> indexes;
+    QVector<QVector3D> points;
     
 protected:
     AbstractSurface() {}
     AbstractSurface(const AbstractSurface& other) {}
-    
-private:
-    QMap< QString, RealInterval > m_argumentIntervals;
-    QVector<int> m_indexes;
-    QVector<QVector3D> m_points;
 };
 
 #endif // ABSTRACTSURFACE_H

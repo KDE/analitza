@@ -26,13 +26,15 @@ class AbstractSurface;
 class ANALITZAPLOT_EXPORT Surface : public FunctionGraph 
 {
 public:
-    explicit Surface(const Analitza::Expression &functionExpression, CoordinateSystem coordsys, Analitza::Variables *variables, const QString &name, const QColor& col);
+    Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
+    Surface(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
     virtual ~Surface();
 
-    static bool canDraw(const Analitza::Expression &functionExpression, CoordinateSystem coordsys);
+    static bool canDraw(const Analitza::Expression &functionExpression);
     //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
-    static bool canDraw(const Analitza::Expression &functionExpression, CoordinateSystem coordsys, QStringList &errors);
-    bool reset(const Analitza::Expression &functionExpression, CoordinateSystem coordsys);
+    static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
+    bool reset(const Analitza::Expression &functionExpression);
+    void setVariables(Analitza::Variables *variables);
     
     //MappingGraph
     const QString typeName() const;
@@ -47,10 +49,10 @@ public:
     //FunctionGraph
     
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
-    void setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
+    bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
 
     QPair<double, double> interval(const QString &argname) const;
-    void setInterval(const QString &argname, double min, double max);
+    bool setInterval(const QString &argname, double min, double max);
     
     QStringList parameters() const;
 

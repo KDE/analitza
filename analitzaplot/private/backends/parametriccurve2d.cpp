@@ -68,6 +68,7 @@ namespace
 class ANALITZAPLOT_EXPORT FunctionParametric : public AbstractPlaneCurve
 {
 public:
+    CONSTRUCTORS(FunctionParametric)
     TYPE_NAME("FunctionParametricVecto")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)))
     COORDDINATE_SYSTEM(Cartesian)
@@ -75,12 +76,6 @@ public:
     ICON_NAME("newparametric")
     EXAMPLES("t->vector {t,t**2}")    
     
-    
-    FunctionParametric(const Analitza::Expression &functionExpression, Analitza::Variables *variables);
-    ~FunctionParametric()
-    {
-    }
-
     void update(const QRect& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
@@ -94,17 +89,12 @@ private:
 
 };
 
-FunctionParametric::FunctionParametric(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
-:AbstractPlaneCurve(functionExpression, variables)
-{
-}
-
 // 
 
 void FunctionParametric::update(const QRect& viewport)
 {
   Q_UNUSED(viewport);
-    Q_ASSERT(analyzer.expression().isCorrect());
+    Q_ASSERT(analyzer->expression().isCorrect());
     //if(int(resolution())==points.capacity())
     //  return;
     
@@ -149,7 +139,7 @@ void FunctionParametric::update(const QRect& viewport)
     
     for(double t=dlimit; t<ulimit; t+=inv_res, ++i) {
         arg("t")->setValue(t);
-        res=analyzer.calculateLambda();
+        res=analyzer->calculateLambda();
         
         Cn x=res.elementAt(0).toReal();
         Cn y=res.elementAt(1).toReal();
@@ -180,7 +170,7 @@ QPair<QPointF, QString> FunctionParametric::image(const QPointF &point)
     
     arg("t")->setValue(findTValueForPoint(point).value());
     
-    Expression res=analyzer.calculateLambda();
+    Expression res=analyzer->calculateLambda();
     Analitza::Cn comp1 = res.elementAt(0).toReal();
     Analitza::Cn comp2 = res.elementAt(1).toReal();
     

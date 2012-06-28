@@ -28,7 +28,7 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
     //TODO intervalparameter tiene que ser const ... no es necesario que no lo sea ... siempre es preferible que algo sea inmutable :)
 //     m_intervalsAnalizer = new Analitza::Analyzer(v);
     
-    foreach (const Analitza::Ci *var, analyzer.expression().parameters())
+    foreach (const Analitza::Ci *var, analyzer->expression().parameters())
     {
         m_argumentValues[var->name()] = new Analitza::Cn;
         
@@ -39,7 +39,27 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
         m_argumentIntervals[var->name()] = RealInterval(min, max);
     }
 
-    analyzer.setStack(m_argumentValues.values().toVector());
+    analyzer->setStack(m_argumentValues.values().toVector());
+}
+
+AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e)
+: AbstractMappingGraph(e)
+{
+    //TODO intervalparameter tiene que ser const ... no es necesario que no lo sea ... siempre es preferible que algo sea inmutable :)
+//     m_intervalsAnalizer = new Analitza::Analyzer(v);
+    
+    foreach (const Analitza::Ci *var, analyzer->expression().parameters())
+    {
+        m_argumentValues[var->name()] = new Analitza::Cn;
+        
+        //WARNING FIX magic numbers
+        EndPoint min(-5.0);
+        EndPoint max(8.0);
+        
+        m_argumentIntervals[var->name()] = RealInterval(min, max);
+    }
+
+    analyzer->setStack(m_argumentValues.values().toVector());
 }
 
 AbstractFunctionGraph::~AbstractFunctionGraph()
@@ -59,7 +79,7 @@ QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interva
     if (evaluate)
     {
         //NOTE heap ?
-        Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer.variables());
+        Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
 
         ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer);
         ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer);
@@ -75,11 +95,23 @@ QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interva
     return ret;
 }
 
-void AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
+bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
 {
     Q_ASSERT(m_argumentIntervals.contains(argname));
     
+    Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
+
+    double min_val = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer).toReal().value();
+    double max_val = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
+        
+    delete intervalsAnalizer;
+
+    if (max_val < min_val)
+        return false;
+    
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
+    
+    return true;
 }
 
 QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) const
@@ -88,7 +120,7 @@ QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) co
     
     QPair<double, double> ret;
     
-    Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer.variables());
+    Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
     
     ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer).toReal().value();
     ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
@@ -98,9 +130,14 @@ QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) co
     return ret;
 }
 
-void AbstractFunctionGraph::setInterval(const QString &argname, double min, double max)
+bool AbstractFunctionGraph::setInterval(const QString &argname, double min, double max)
 {
     Q_ASSERT(m_argumentIntervals.contains(argname));
     
+    if (max < min)
+        return false;
+    
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
+    
+    return true;
 }

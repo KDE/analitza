@@ -21,13 +21,20 @@
 #include "analitza/localize.h"
 #include "analitza/variable.h"
 
-#include "private/surfacefactory.h"
+
+#include "private/abstractfunctiongraphfactory.h"
 #include "private/abstractsurface.h"
 
-Surface::Surface(const Analitza::Expression &functionExpression, CoordinateSystem coordsys, Analitza::Variables *v, const QString &name, const QColor &col)
+Surface::Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor &col)
+    : FunctionGraph(name, col), m_varsModule(0), m_surface(0)
+{
+    reset(functionExpression);
+}
+
+Surface::Surface(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
     : FunctionGraph(name, col), m_varsModule(v), m_surface(0)
 {
-    reset(functionExpression, coordsys);
+    reset(functionExpression);
 }
 
 Surface::~Surface()
@@ -35,7 +42,7 @@ Surface::~Surface()
     delete m_surface;
 }
 
-bool Surface::canDraw(const Analitza::Expression &functionExpression, CoordinateSystem coordsys) 
+bool Surface::canDraw(const Analitza::Expression &functionExpression) 
 {
     QStringList errors;
     //NOTE GSOC see functionExpression.isLambda ask for
@@ -54,17 +61,17 @@ bool Surface::canDraw(const Analitza::Expression &functionExpression, Coordinate
         bvars.append(arg->name());
 
     //TODO: turn into assertion
-    if(!SurfaceFactory::self()->contains(SurfaceFactory::self()->id(bvars, coordsys)))
+    if(!AbstractFunctionGraphFactory::self()->contains(AbstractFunctionGraphFactory::self()->id(bvars)))
         errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
         errors << a.errors();
     else {
-        Analitza::ExpressionType expected=SurfaceFactory::self()->expressionType(SurfaceFactory::self()->id(bvars, coordsys));
+        Analitza::ExpressionType expected=AbstractFunctionGraphFactory::self()->expressionType(AbstractFunctionGraphFactory::self()->id(bvars));
         Analitza::ExpressionType actual=a.type();
 
         if(actual.canReduceTo(expected)) {
 //             delete m_planeCurve;
-//             m_planeCurve=SurfaceFactory::self()->build(bvars, a.expression(), m_varsModule);
+//             m_planeCurve=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
         } else
             errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
@@ -72,7 +79,7 @@ bool Surface::canDraw(const Analitza::Expression &functionExpression, Coordinate
     return errors.empty();
 }
 
-bool Surface::canDraw(const Analitza::Expression &functionExpression, CoordinateSystem coordsys, QStringList &errors)
+bool Surface::canDraw(const Analitza::Expression &functionExpression, QStringList &errors)
 {
     Q_ASSERT(errors.isEmpty());
     
@@ -92,17 +99,17 @@ bool Surface::canDraw(const Analitza::Expression &functionExpression, Coordinate
         bvars.append(arg->name());
 
     //TODO: turn into assertion
-    if(!SurfaceFactory::self()->contains(SurfaceFactory::self()->id(bvars, coordsys)))
+    if(!AbstractFunctionGraphFactory::self()->contains(AbstractFunctionGraphFactory::self()->id(bvars)))
         errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
         errors << a.errors();
     else {
-        Analitza::ExpressionType expected=SurfaceFactory::self()->expressionType(SurfaceFactory::self()->id(bvars, coordsys));
+        Analitza::ExpressionType expected=AbstractFunctionGraphFactory::self()->expressionType(AbstractFunctionGraphFactory::self()->id(bvars));
         Analitza::ExpressionType actual=a.type();
 
         if(actual.canReduceTo(expected)) {
 //             delete m_planeCurve;
-//             m_planeCurve=SurfaceFactory::self()->build(bvars, a.expression(), m_varsModule);
+//             m_planeCurve=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
         } else
             errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
@@ -110,7 +117,7 @@ bool Surface::canDraw(const Analitza::Expression &functionExpression, Coordinate
     return errors.empty();
 }
 
-bool Surface::reset(const Analitza::Expression& functionExpression, CoordinateSystem coordsys)
+bool Surface::reset(const Analitza::Expression& functionExpression)
 {
     m_errors.clear();
 
@@ -131,24 +138,35 @@ bool Surface::reset(const Analitza::Expression& functionExpression, CoordinateSy
         bvars.append(arg->name());
 
     //TODO: turn into assertion
-    if(!SurfaceFactory::self()->contains(SurfaceFactory::self()->id(bvars, coordsys)))
+    if(!AbstractFunctionGraphFactory::self()->contains(AbstractFunctionGraphFactory::self()->id(bvars)))
         m_errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
         m_errors << a.errors();
     else {
-        Analitza::ExpressionType expected=SurfaceFactory::self()->expressionType(SurfaceFactory::self()->id(bvars, coordsys));
+        Analitza::ExpressionType expected=AbstractFunctionGraphFactory::self()->expressionType(AbstractFunctionGraphFactory::self()->id(bvars));
         Analitza::ExpressionType actual=a.type();
 
         if(actual.canReduceTo(expected)) {
 
             delete m_surface;
 
-            m_surface=SurfaceFactory::self()->build(SurfaceFactory::self()->id(bvars, coordsys), a.expression(), m_varsModule);
+            m_surface=static_cast<AbstractSurface*>(AbstractFunctionGraphFactory::self()->build(AbstractFunctionGraphFactory::self()->id(bvars), a.expression(), m_varsModule));
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
 
     return m_errors.empty();
+}
+
+void Surface::setVariables(Analitza::Variables* variables)
+{
+    Q_ASSERT(variables);
+    
+    delete m_varsModule;
+    
+    m_varsModule = variables;
+    
+    m_surface->setVariables(variables);
 }
 
 const QString Surface::typeName() const
@@ -219,11 +237,11 @@ QPair<Analitza::Expression, Analitza::Expression> Surface::interval(const QStrin
     return m_surface->interval(argname, evaluate);
 }
 
-void Surface::setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
+bool Surface::setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max)
 {
     Q_ASSERT(m_surface);
     
-    m_surface->setInterval(argname, min, max);
+    return m_surface->setInterval(argname, min, max);
 }
 
 QPair<double, double> Surface::interval(const QString &argname) const
@@ -233,11 +251,11 @@ QPair<double, double> Surface::interval(const QString &argname) const
     return m_surface->interval(argname);
 }
 
-void Surface::setInterval(const QString &argname, double min, double max)
+bool Surface::setInterval(const QString &argname, double min, double max)
 {
     Q_ASSERT(m_surface);
     
-    m_surface->setInterval(argname, min, max);
+    return m_surface->setInterval(argname, min, max);
 }
 
 QStringList Surface::parameters() const
@@ -249,14 +267,14 @@ QStringList Surface::parameters() const
 
 const QVector< int >& Surface::indexes() const
 {
-    return QVector< int >();
+    return m_surface->indexes;
 }
     
 const QVector<QVector3D> & Surface::points() const
 {
     Q_ASSERT(m_surface);
 
-    return m_surface->points();
+    return m_surface->points;
 }
 
 void Surface::update()
