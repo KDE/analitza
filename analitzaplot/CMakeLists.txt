@@ -43,6 +43,8 @@ private/abstractplanecurve.cpp
 private/abstractsurface.cpp
 private/functiongraphsmodel.cpp
 private/mappinggraph.cpp
+private/functiongraph.cpp
+# private/curve.cpp
 private/planecurvefactory.cpp
 private/surfacefactory.cpp
 

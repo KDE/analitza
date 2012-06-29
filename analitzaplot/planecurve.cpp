@@ -38,25 +38,23 @@
 ///
 
 
-#include "planecurve.h"
 
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col)
-    : Curve(name, col), m_varsModule(0), m_planeCurve(0)
+    : FunctionGraph(functionExpression, name, col)
 {
     reset(functionExpression);
 }
 
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-    : Curve(name, col), m_varsModule(v), m_planeCurve(0)
+    : FunctionGraph(functionExpression, v,name, col)
 {
     reset(functionExpression);
 }
 
 PlaneCurve::~PlaneCurve()
 {
-    delete m_planeCurve;
 }
-
+/*
 bool PlaneCurve::canDraw(const Analitza::Expression &functionExpression)
 {
     QStringList errors;
@@ -88,8 +86,8 @@ bool PlaneCurve::canDraw(const Analitza::Expression &functionExpression)
         Analitza::ExpressionType actual=a.type();
 
         if(actual.canReduceTo(expected)) {
-//             delete m_planeCurve;
-//             m_planeCurve=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
+//             delete backend();
+//             backend()=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
         } else
             errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
@@ -126,8 +124,8 @@ bool PlaneCurve::canDraw(const Analitza::Expression &functionExpression, QString
         Analitza::ExpressionType actual=a.type();
 
         if(actual.canReduceTo(expected)) {
-//             delete m_planeCurve;
-//             m_planeCurve=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
+//             delete backend();
+//             backend()=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
         } else
             errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
@@ -171,12 +169,12 @@ bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
 
         if(actual.canReduceTo(expected)) {
 
-            delete m_planeCurve;
+            delete backend();
 
             if (m_varsModule)
-                m_planeCurve= static_cast<AbstractPlaneCurve*>(AbstractFunctionGraphFactory::self()->build(AbstractFunctionGraphFactory::self()->id(bvars), a->expression(), m_varsModule));
+                backend()= static_cast<AbstractPlaneCurve*>(AbstractFunctionGraphFactory::self()->build(AbstractFunctionGraphFactory::self()->id(bvars), a->expression(), m_varsModule));
             else
-                m_planeCurve=static_cast<AbstractPlaneCurve*>(AbstractFunctionGraphFactory::self()->build(AbstractFunctionGraphFactory::self()->id(bvars), a->expression()));
+                backend()=static_cast<AbstractPlaneCurve*>(AbstractFunctionGraphFactory::self()->build(AbstractFunctionGraphFactory::self()->id(bvars), a->expression()));
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
 
@@ -193,139 +191,140 @@ void PlaneCurve::setVariables(Analitza::Variables* variables)
     
     m_varsModule = variables;
     
-    m_planeCurve->setVariables(variables);
+    backend()->setVariables(variables);
 }
 
 const QString PlaneCurve::typeName() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->typeName();
+    return backend()->typeName();
 }
 
 const Analitza::Expression & PlaneCurve::expression() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-//     return m_planeCurve->
-    return m_planeCurve->expression();
+//     return backend()->
+    return backend()->expression();
 }
 
 QString PlaneCurve::iconName() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->iconName();
+    return backend()->iconName();
 }
 
 QStringList PlaneCurve::examples() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->examples();
+    return backend()->examples();
 }
 
 int PlaneCurve::spaceDimension() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->spaceDimension();
+    return backend()->spaceDimension();
 }
 
 CoordinateSystem PlaneCurve::coordinateSystem() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->coordinateSystem();
+    return backend()->coordinateSystem();
 }
 
 QStringList PlaneCurve::errors() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
     QStringList err(m_errors);
-    if(m_planeCurve) {
-        err += m_planeCurve->errors();
+    if(backend()) {
+        err += backend()->errors();
     }
     return err;
 }
 
 bool PlaneCurve::isCorrect() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
 
-    return m_errors.isEmpty() && m_planeCurve->isCorrect();
+    return m_errors.isEmpty() && backend()->isCorrect();
 }
 
 QPair<Analitza::Expression, Analitza::Expression> PlaneCurve::interval(const QString &argname, bool evaluate) const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->interval(argname, evaluate);
+    return backend()->interval(argname, evaluate);
 }
 
 bool PlaneCurve::setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->setInterval(argname, min, max);
+    return backend()->setInterval(argname, min, max);
 }
 
 QPair<double, double> PlaneCurve::interval(const QString &argname) const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->interval(argname);
+    return backend()->interval(argname);
 }
 
 bool PlaneCurve::setInterval(const QString &argname, double min, double max)
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->setInterval(argname, min, max);
+    return backend()->setInterval(argname, min, max);
 }
 
 QStringList PlaneCurve::parameters() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->parameters();
+    return backend()->parameters();
 }
-
+*/
 const QVector<QPointF> & PlaneCurve::points() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
 
-//     Q_ASSERT(m_planeCurve->points().size()>1);
-    return m_planeCurve->points;
+//     Q_ASSERT(backend()->points().size()>1);
+    return static_cast<AbstractPlaneCurve*>(backend())->points;
 }
 
 QVector< int > PlaneCurve::jumps() const
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-//     Q_ASSERT(m_planeCurve->jumps().size()>1);
-    return m_planeCurve->jumps;
+//     Q_ASSERT(backend()->jumps().size()>1);
+    return static_cast<AbstractPlaneCurve*>(backend())->jumps;
 }
 
 void PlaneCurve::update(const QRect& viewport)
 {
-    Q_ASSERT(m_planeCurve);
     
-    m_planeCurve->update(viewport);
+    Q_ASSERT(backend());
+    
+    static_cast<AbstractPlaneCurve*>(backend())->update(viewport);
 }
 
 QPair< QPointF, QString > PlaneCurve::image(const QPointF &mousepos)
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->image(mousepos);
+    return static_cast<AbstractPlaneCurve*>(backend())->image(mousepos);
 }
 
 QLineF PlaneCurve::tangent(const QPointF &mousepos)
 {
-    Q_ASSERT(m_planeCurve);
+    Q_ASSERT(backend());
     
-    return m_planeCurve->tangent(mousepos);
+    return static_cast<AbstractPlaneCurve*>(backend())->tangent(mousepos);
 }
 

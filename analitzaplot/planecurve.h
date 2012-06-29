@@ -38,13 +38,13 @@ class AbstractSurface;
 #include "private/curve.h"
 ///
 
-class ANALITZAPLOT_EXPORT PlaneCurve : public Curve 
+class ANALITZAPLOT_EXPORT PlaneCurve : public FunctionGraph 
 {
 public:
     PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
     PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
     virtual ~PlaneCurve();
-
+/*
     static bool canDraw(const Analitza::Expression &functionExpression);
     //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
@@ -71,7 +71,7 @@ public:
     bool setInterval(const QString &argname, double min, double max);
     
     QStringList parameters() const;
-
+*/
     //Curve
     QVector<int> jumps() const;
 
@@ -86,8 +86,8 @@ protected:
     PlaneCurve(const PlaneCurve &other) {}
 
 private:
-    Analitza::Variables *m_varsModule;
-    AbstractPlaneCurve *m_planeCurve;
+//     Analitza::Variables *m_varsModule;
+//     AbstractPlaneCurve *m_planeCurve;
 
     QStringList m_errors;
 };

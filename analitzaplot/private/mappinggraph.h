@@ -35,6 +35,7 @@ public:
     explicit MappingGraph(const QString &name, const QColor& col);
     virtual ~MappingGraph();
     
+//     virtual Analitza::Variables * variables() const = 0;
     virtual void setVariables(Analitza::Variables *variables) = 0;
     
     const QString id() const { return m_id; }

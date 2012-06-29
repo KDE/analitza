@@ -26,13 +26,13 @@
 #include "private/abstractsurface.h"
 
 Surface::Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor &col)
-    : FunctionGraph(name, col), m_varsModule(0), m_surface(0)
+    : FunctionGraph(functionExpression, name, col)
 {
     reset(functionExpression);
 }
 
 Surface::Surface(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-    : FunctionGraph(name, col), m_varsModule(v), m_surface(0)
+    : FunctionGraph(functionExpression, v, name, col)
 {
     reset(functionExpression);
 }

@@ -23,20 +23,21 @@
 
 #include "functiongraph.h"
 
-class ANALITZAPLOT_EXPORT Curve : public FunctionGraph
-{
-public:
-    Curve(const QString &name, const QColor& col) : FunctionGraph(name, col) {}
-    virtual ~Curve() {}
-
-    //own
-    virtual QVector<int> jumps() const = 0;
-    
-    static int AABB() { return 2; }
-
-protected:
-    Curve() {}
-    Curve(const Curve &other) {}
-};
+// class ANALITZAPLOT_EXPORT Curve : public FunctionGraph
+// {
+// public:
+//     Curve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col) 
+//     : FunctionGraph(functionExpression, name, col) {}
+//     Curve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col)
+//     : FunctionGraph(functionExpression, variables, name, col) {}
+//     virtual ~Curve() {}
+// 
+//     //own
+//     QVector<int> jumps() const;
+// 
+// protected:
+//     Curve() {}
+//     Curve(const Curve &other) {}
+// };
 
 #endif // CURVE_H

@@ -3,25 +3,54 @@
 
 #include "mappinggraph.h"
 
+class AbstractFunctionGraph;
+
 class ANALITZAPLOT_EXPORT FunctionGraph : public MappingGraph
 {
 public:
-    FunctionGraph(const QString &name, const QColor& col) : MappingGraph(name, col) {}
+    FunctionGraph(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
+    FunctionGraph(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
+    virtual ~FunctionGraph();
+
+    static bool canDraw(const Analitza::Expression &functionExpression);
+    //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
+    static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
+
+    bool reset(const Analitza::Expression &functionExpression);
+    void setVariables(Analitza::Variables *variables);
+
+    //MappingGraph
+    const QString typeName() const;
+    const Analitza::Expression &expression() const;
+    QString iconName() const;
+    QStringList examples() const;
+    int spaceDimension() const;
+    CoordinateSystem coordinateSystem() const;
+    QStringList errors() const;
+    bool isCorrect() const;
     
     //if evaluate true then result of expressiones will be strings of the value
     //if evaluate is false then the expressions will not evaluate
-    virtual QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const = 0;
-    virtual bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max) = 0;
+    QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
+    bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
 
     //2 convenience methods to work with doubles instead of Expression->Cn->value ... see above
-    virtual QPair<double, double> interval(const QString &argname) const = 0;
-    virtual bool setInterval(const QString &argname, double min, double max) = 0;
+    QPair<double, double> interval(const QString &argname) const;
+    bool setInterval(const QString &argname, double min, double max);
 
-    virtual QStringList parameters() const = 0;
+    QStringList parameters() const;
     
 protected:
     FunctionGraph() {}
     FunctionGraph(const FunctionGraph &other) {}
+    
+    AbstractFunctionGraph *backend() const { return m_functionGraph; }
+
+private:
+    Analitza::Variables *m_varsModule;
+    AbstractFunctionGraph *m_functionGraph;
+
+    QStringList m_errors;
 };
 
 
