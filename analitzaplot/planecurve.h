@@ -98,14 +98,7 @@ private:
 
 ///
 
-// class ANALITZAPLOT_EXPORT SpaceCurve : public Curve 
-// {
-//     //3D
-// //torsion,   
-//     //curvature, length of arc, curvature
-//     
-// 
-// };
+
 
 /// sacar khipu  mockups 
 //fines de mes khipu ui!!

@@ -59,7 +59,7 @@ public:
     //Own
     const QVector<int> & indexes() const;
     const QVector<QVector3D> & points() const;
-    void update(/*frustum*/);
+    void update(const Box &viewport);
 
 protected:
     Surface() {}

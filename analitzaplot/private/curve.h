@@ -31,6 +31,8 @@ public:
 
     //own
     virtual QVector<int> jumps() const = 0;
+    
+    static int AABB() { return 2; }
 
 protected:
     Curve() {}

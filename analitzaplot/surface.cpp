@@ -277,7 +277,7 @@ const QVector<QVector3D> & Surface::points() const
     return m_surface->points;
 }
 
-void Surface::update()
+void Surface::update(const Box& viewport)
 {
     Q_ASSERT(m_surface);
     

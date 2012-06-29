@@ -49,6 +49,7 @@ private/surfacefactory.cpp
 mathutils.cpp
 planecurve.cpp
 planecurvesmodel.cpp
+spacecurve.cpp
 plotter2d.cpp
 #plotter3d.cpp
 plotview2d.cpp
@@ -110,6 +111,7 @@ analitzaplotexport.h
 mathutils.h
 planecurve.h
 planecurvesmodel.h
+spacecurve.h
 plotter2d.h
 plotter3d.h
 plotview2d.h

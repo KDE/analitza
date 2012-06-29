@@ -55,6 +55,16 @@ enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };
 
 //math utils
 
+//  default cotrs AxisAlignedBoundingBox 
+
+// an   Oriented Bounding Box class 
+
+class Box
+{
+    
+};
+
+ 
 static bool isSimilar(double a, double b, double diff = .0000001)
 {
     return fabs(a-b) < diff;

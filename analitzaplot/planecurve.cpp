@@ -191,8 +191,6 @@ void PlaneCurve::setVariables(Analitza::Variables* variables)
 {
     Q_ASSERT(variables);
     
-    delete m_varsModule;
-    
     m_varsModule = variables;
     
     m_planeCurve->setVariables(variables);
