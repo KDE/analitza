@@ -37,16 +37,13 @@ set ( keomath_SRCS
 # # plotview3d.cpp
 
 private/abstractfunctiongraph.cpp
-private/abstractfunctiongraphfactory.cpp
+private/functiongraphfactory.cpp
 private/abstractmappinggraph.cpp
 private/abstractplanecurve.cpp
 private/abstractsurface.cpp
 private/functiongraphsmodel.cpp
 private/mappinggraph.cpp
 private/functiongraph.cpp
-# private/curve.cpp
-private/planecurvefactory.cpp
-private/surfacefactory.cpp
 
 mathutils.cpp
 planecurve.cpp

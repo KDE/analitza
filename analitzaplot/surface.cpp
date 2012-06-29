@@ -22,7 +22,7 @@
 #include "analitza/variable.h"
 
 
-#include "private/abstractfunctiongraphfactory.h"
+#include "private/functiongraphfactory.h"
 #include "private/abstractsurface.h"
 
 Surface::Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor &col)

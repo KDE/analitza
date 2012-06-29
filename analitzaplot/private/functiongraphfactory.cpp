@@ -1,4 +1,4 @@
-#include "abstractfunctiongraphfactory.h"
+#include "functiongraphfactory.h"
 
 AbstractFunctionGraphFactory* AbstractFunctionGraphFactory::m_self=0;
 

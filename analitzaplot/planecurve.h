@@ -20,6 +20,8 @@
 #ifndef ANALITZAPLOT_FUNCTION_H
 #define ANALITZAPLOT_FUNCTION_H
 
+#include "private/functiongraph.h"
+
 #include "analitza/expression.h"
 #include "mathutils.h"
 
@@ -34,48 +36,14 @@ class Variables;
 class AbstractPlaneCurve;
 class AbstractSurface;
 
-///
-#include "private/curve.h"
-///
-
 class ANALITZAPLOT_EXPORT PlaneCurve : public FunctionGraph 
 {
 public:
     PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
     PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
     virtual ~PlaneCurve();
-/*
-    static bool canDraw(const Analitza::Expression &functionExpression);
-    //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
-    static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
 
-    bool reset(const Analitza::Expression &functionExpression);
-    void setVariables(Analitza::Variables *variables);
-
-    //MappingGraph
-    const QString typeName() const;
-    const Analitza::Expression &expression() const;
-    QString iconName() const;
-    QStringList examples() const;
-    int spaceDimension() const;
-    CoordinateSystem coordinateSystem() const;
-    QStringList errors() const;
-    bool isCorrect() const;
-
-    //FunctionGraph
-    
-    QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
-    bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
-    
-    QPair<double, double> interval(const QString &argname) const;
-    bool setInterval(const QString &argname, double min, double max);
-    
-    QStringList parameters() const;
-*/
-    //Curve
     QVector<int> jumps() const;
-
-    //Own
     const QVector<QPointF> & points() const;
     void update(const QRect& viewport);
     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
@@ -84,12 +52,6 @@ public:
 protected:
     PlaneCurve() {}
     PlaneCurve(const PlaneCurve &other) {}
-
-private:
-//     Analitza::Variables *m_varsModule;
-//     AbstractPlaneCurve *m_planeCurve;
-
-    QStringList m_errors;
 };
 
 

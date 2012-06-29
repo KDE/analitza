@@ -21,7 +21,7 @@
 
 #include "private/abstractsurface.h"
 // #include "private/surfacefactory.h"
-#include "private/abstractfunctiongraphfactory.h"
+#include "private/functiongraphfactory.h"
 
 
 #include "analitza/value.h"

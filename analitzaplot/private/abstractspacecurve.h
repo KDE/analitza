@@ -1,5 +1,4 @@
 /*************************************************************************************
- *  Copyright (C) 2007-2011 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
@@ -18,26 +17,43 @@
  *************************************************************************************/
 
 
-#ifndef CURVE_H
-#define CURVE_H
+#ifndef _ANALITZAPLOT_FUNCTIONGRAPH_H
+#define _ANALITZAPLOT_FUNCTIONGRAPH_H
 
-#include "functiongraph.h"
+#include "abstractfunctiongraph.h"
 
-// class ANALITZAPLOT_EXPORT Curve : public FunctionGraph
-// {
-// public:
-//     Curve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col) 
-//     : FunctionGraph(functionExpression, name, col) {}
-//     Curve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col)
-//     : FunctionGraph(functionExpression, variables, name, col) {}
-//     virtual ~Curve() {}
-// 
-//     //own
-//     QVector<int> jumps() const;
-// 
-// protected:
-//     Curve() {}
-//     Curve(const Curve &other) {}
-// };
+#define CONSTRUCTORS(name) \
+name (const Analitza::Expression &functionExpression) : AbstractSpaceCurve(functionExpression) { } \
+name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractSpaceCurve(functionExpression, variables) { }
 
-#endif // CURVE_H
+namespace Analitza
+{
+    class Variables;
+}
+
+class ANALITZAPLOT_EXPORT AbstractSpaceCurve : public AbstractFunctionGraph 
+{
+public:
+    AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v);
+    AbstractSpaceCurve(const Analitza::Expression& e);
+    virtual ~AbstractSpaceCurve();
+
+    //AbstractMappingGraph
+    int spaceDimension() const { return 3; }
+    
+    //Curve ... los expongo como publicos tanto para planecurve como para los backend (
+    //para los backends por un tema de performance y flexibilidad) 
+    // al final en planecurve todo estara expuesto consistentemente 
+    QVector<QVector3D> points;
+    QVector<int> jumps;
+
+    //Own
+    virtual void update(const Box& viewport) = 0;
+
+protected:
+    AbstractSpaceCurve() {}
+    AbstractSpaceCurve(const AbstractSpaceCurve& other) {}
+};
+
+
+#endif // ANALITZAPLOT_FUNCTIONGRAPH_H

@@ -20,8 +20,7 @@
 
 
 #include "private/abstractplanecurve.h"
-#include "private/planecurvefactory.h"
-
+#include "private/functiongraphfactory.h"
 
 #include <QRectF>
 #include "analitza/value.h"

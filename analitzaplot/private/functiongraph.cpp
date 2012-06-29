@@ -9,7 +9,7 @@
 #include <analitza/variables.h>
 
 #include "private/abstractplanecurve.h"
-#include "private/abstractfunctiongraphfactory.h"
+#include "functiongraphfactory.h"
 
 
 
