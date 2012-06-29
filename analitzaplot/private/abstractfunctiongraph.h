@@ -31,6 +31,10 @@ static QString TypeName() { return QString(name); }
 #define EXPRESSION_TYPE(name) \
 static Analitza::ExpressionType ExpressionType() { return Analitza::ExpressionType(name); }
 
+#define SPACE_DIMENSION(name) \
+int spaceDimension() const { return SpaceDimension(); } \
+static int SpaceDimension() { return name; }
+
 #define COORDDINATE_SYSTEM(name) \
 CoordinateSystem coordinateSystem() const { return CoordSystem(); } \
 static CoordinateSystem CoordSystem() { return name; }

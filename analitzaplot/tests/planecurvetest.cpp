@@ -44,7 +44,8 @@ FunctionTest::~FunctionTest()
 }
 
 void FunctionTest::initTestCase()
-{}
+{
+}
 
 void FunctionTest::cleanupTestCase()
 {}
@@ -177,6 +178,10 @@ void FunctionTest::testCorrect()
     }
 //     esle
 //         QVERIFY(!f3.isCorrect());
+
+
+                   
+
 }
 
 void FunctionTest::testJumps_data()

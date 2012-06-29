@@ -14,7 +14,7 @@ Analitza::ExpressionType AbstractFunctionGraphFactory::expressionType(const QStr
 
 int AbstractFunctionGraphFactory::spaceDimension(const QString& id) const
 {
-    return spaceDimensions[id];
+    return spaceDimensionFunctions[id]();
 }
 
 CoordinateSystem AbstractFunctionGraphFactory::coordinateSystem(const QString& id) const
@@ -45,32 +45,21 @@ AbstractFunctionGraphFactory* AbstractFunctionGraphFactory::self()
 }
 
 bool AbstractFunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, BuilderFunctionWithoutVars builderFunctionWithoutVars, TypeNameFunction typeNameFunction,
-        ExpressionTypeFunction expressionTypeFunction, 
+        ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
         CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
         IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
 {
 //     Q_ASSERT(!contains(argumentsFunction()));
-    int spaceDimension = 2;
     
-//     Analitza::ExpressionType exptype = expressionTypeFunction();
-//     
-//     if (exptype.type() == Analitza::ExpressionType::Vector)
-//     {
-//         
-//     }
-//     else
-//     {
-//         
-//     }
-
-
-    QString id = QString::number(spaceDimension)+"|"+
+    Q_ASSERT(expressionTypeFunction().type() == Analitza::ExpressionType::Lambda);
+    
+    QString id = QString::number(spaceDimensionFunction())+"|"+
                  QString::number((int)coordinateSystemFunction())+"|"+
                  argumentsFunction().join(",");
 
     typeNameFunctions[id] = typeNameFunction;
     expressionTypeFunctions[id] = expressionTypeFunction;
-    spaceDimensions[id] = spaceDimension;
+    spaceDimensionFunctions[id] = spaceDimensionFunction;
     coordinateSystemFunctions[id] = coordinateSystemFunction;
     argumentsFunctions[id] = argumentsFunction;
     iconNameFunctions[id] = iconNameFunction;

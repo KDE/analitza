@@ -40,9 +40,6 @@ public:
     AbstractPlaneCurve(const Analitza::Expression& e);
     virtual ~AbstractPlaneCurve();
 
-    //AbstractMappingGraph
-    int spaceDimension() const { return 2; }
-    
     //Curve ... los expongo como publicos tanto para planecurve como para los backend (
     //para los backends por un tema de performance y flexibilidad) 
     // al final en planecurve todo estara expuesto consistentemente 

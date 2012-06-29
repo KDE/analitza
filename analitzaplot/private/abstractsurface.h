@@ -35,9 +35,6 @@ public:
     AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v);
     virtual ~AbstractSurface();
 
-    //AbstractMappingGraph
-    int spaceDimension() const { return 3; }
-    
     //Own
     virtual void update(/*frumtum*/) = 0;
     QVector<int> indexes;

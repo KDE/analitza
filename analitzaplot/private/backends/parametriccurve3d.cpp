@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -17,149 +17,158 @@
  *************************************************************************************/
 
 
-#include "functiongraph.h"
-#include "functiongraphfactory.h"
+#include "private/abstractspacecurve.h"
+#include "private/functiongraphfactory.h"
 
 #include "analitza/value.h"
 #include <analitza/vector.h>
 
 
-class ANALITZAPLOT_EXPORT ParametricCurve3D : public FunctionImpl3D
+#include <QRectF>
+#include "analitza/value.h"
+#include "analitza/vector.h"
+
+
+#include <QDebug>
+#include <analitza/localize.h>
+
+using Analitza::Expression;
+using Analitza::ExpressionType;
+using Analitza::Variables;
+using Analitza::Object;
+using Analitza::Cn;
+
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
+static const double pi=M_PI;
+
+
+namespace
 {
-public:
-    explicit ParametricCurve3D(const Analitza::Expression &expression, Analitza::Variables *variables);
-    ParametricCurve3D(const ParametricCurve3D &ParametricCurve3D);
-    virtual ~ParametricCurve3D();
+    /// The @p p1 and @p p2 parameters are the last 2 values found
+    /// @p next is the next value found
+    /// @returns whether we've found the gap
 
-    static QStringList supportedBVars()
+    bool traverse(double p1, double p2, double next)
     {
-        return QStringList() << "t";
-    }
-    static Analitza::ExpressionType expectedType()
-    {
-        return Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Vector,
-                                            Analitza::ExpressionType(Analitza::ExpressionType::Value), 3));
+        static const double delta=3;
+        double diff=p2-p1, diff2=next-p2;
+        bool ret=false;
 
-
-
-
-    }
-    static QStringList examples()
-    {
-        QStringList ret;
-
+        if(diff>0 && diff2<-delta)
+            ret=true;
+        else if(diff<0 && diff2>delta)
+            ret=true;
 
         return ret;
     }
+}
 
 
-    QStringList arguments() const
-    {
-        return supportedBVars();
-    }
-    FunctionGraph::Axe axeType() const
-    {
-        return FunctionGraph::Cartesian;
-    }
-    void solve(const RealInterval::List &spaceBounds);
-    AbstractMappingGraph * copy()
-    {
-        return new ParametricCurve3D(*this);
-    }
-    QVector3D evalCurve(qreal t);
 
-    QVector3D evalSurface(qreal u, qreal v)
-    {
-        return QVector3D();
-    }
+class ANALITZAPLOT_EXPORT ParametricCurve3D : public AbstractSpaceCurve
+{
+public:
+    CONSTRUCTORS(ParametricCurve3D)
+    TYPE_NAME("ParametricCurve3DVecto3D")
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Vector,
+                                            Analitza::ExpressionType(Analitza::ExpressionType::Value), 3)))
+    SPACE_DIMENSION(2)
+    COORDDINATE_SYSTEM(Cartesian)
+    PARAMETERS("t")
+    ICON_NAME("newparametric3d")
+    EXAMPLES("t->vector {t,t**2,t}")    
+    
+    void update(const Box& viewport);
+    
+    
+    //
+    
 
-    void loadParametricEvaluator();
-    virtual bool isCurve() const
-    {
-        return true;
-    }
-
-protected:
-    Analitza::Cn* m_t;
+private:
+    Cn findTValueForPoint(const QPointF& p);
 
 };
 
-ParametricCurve3D::ParametricCurve3D(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : FunctionImpl3D(expression, variables)
-    , m_t(new Analitza::Cn)
+// 
+
+void ParametricCurve3D::update(const Box& viewport)
 {
+  Q_UNUSED(viewport);
+    Q_ASSERT(analyzer->expression().isCorrect());
+    //if(int(resolution())==points.capacity())
+    //  return;
+    
+    
+            //TODO CACHE en intervalvalues!!!
+    static QPair<double, double> c_limits = interval("t");
+    
+//     if ()
+//     
+//     static QPair<double, double> o_limits = c_limits;
+    
+    
+    double ulimit=c_limits.second;
+    double dlimit=c_limits.first;
+    
+    
+    
+    points.clear();
+    jumps.clear();
+    //points.reserve(resolution());
 
-
-
-
-
-    loadParametricEvaluator();
-
-
-
-
-    if(m_evaluator.isCorrect())
-    {
-
-
-
-
-
-
-        m_evaluator.flushErrors();
+    
+//  double inv_res= double((ulimit-dlimit)/resolution());
+    double inv_res= 0.01; 
+//  double final=ulimit-inv_res;
+    
+        //by percy
+    Box vp(viewport);
+    
+//     vp.setTop(viewport.top() - 2);
+//     vp.setBottom(viewport.bottom() + 2);
+//     vp.setLeft(viewport.left() + 2);
+//     vp.setRight(viewport.right() - 2);
+    
+    QVector3D curp;
+    
+    arg("t")->setValue(dlimit);
+    Expression res;
+    
+    int i = 0;
+    bool jlock = false;
+    
+    for(double t=dlimit; t<ulimit; t+=inv_res, ++i) {
+        arg("t")->setValue(t);
+        res=analyzer->calculateLambda();
+        
+        Cn x=res.elementAt(0).toReal();
+        Cn y=res.elementAt(1).toReal();
+        Cn z=res.elementAt(2).toReal();
+        
+        curp = QVector3D(x.value(), y.value(), z.value());
+        
+        if (/*vp.contains(curp)*/1)
+        {
+//             addPoint(curp);
+            jlock = false;
+        }
+        else if (!jlock)
+        {
+            jumps.append(i);
+            jlock = true;
+        }
+        
+        //      objectWalker(vo);
+        Q_ASSERT(res.isVector());
     }
 }
 
-ParametricCurve3D::ParametricCurve3D(const ParametricCurve3D &ParametricCurve3D)
-    : FunctionImpl3D(ParametricCurve3D)
-    , m_t(new Analitza::Cn)
-{
 
-    loadParametricEvaluator();
-
-
-
-
-
-}
-
-void ParametricCurve3D::loadParametricEvaluator()
-
-{
-    m_runStack.append(m_t);
-    m_evaluator.setStack(m_runStack);
-}
-
-ParametricCurve3D::~ParametricCurve3D()
-{
-    delete m_t;
-}
-
-
-
-
-void ParametricCurve3D::solve(const RealInterval::List &spaceBounds)
-{
-
-
-}
-
-QVector3D ParametricCurve3D::evalCurve(qreal t)
-{
-    m_t->setValue(t);
-
-    Analitza::Expression res = m_evaluator.calculateLambda();
-
-
-    return QVector3D(res.elementAt(0).toReal().value(),
-                     res.elementAt(1).toReal().value(),
-                     res.elementAt(2).toReal().value());
-
-}
-
-REGISTER_FUNCTION_3D(ParametricCurve3D)
+REGISTER_SPACECURVE(ParametricCurve3D)
 
 
 

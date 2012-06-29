@@ -35,6 +35,7 @@ public:
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+    SPACE_DIMENSION(2)
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x")
     ICON_NAME("noane")
@@ -194,6 +195,7 @@ public:
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+    SPACE_DIMENSION(2)
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("y")
     ICON_NAME("nYYoane")

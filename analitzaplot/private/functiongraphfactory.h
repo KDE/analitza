@@ -9,13 +9,13 @@
         static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         static AbstractFunctionGraph * create##name(const Analitza::Expression &exp) { return new name (exp); } \
         namespace { bool _##name=AbstractFunctionGraphFactory::self()->registerFunctionGraph(vcreate##name, create##name, \
-        name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Parameters, \
+        name ::TypeName, name ::ExpressionType, name ::SpaceDimension, name ::CoordSystem, name ::Parameters, \
         name ::IconName, name ::Examples); }
 
         
 #define REGISTER_PLANECURVE REGISTER_FUNCTIONGRAPH
+#define REGISTER_SPACECURVE REGISTER_FUNCTIONGRAPH
 #define REGISTER_SURFACE REGISTER_FUNCTIONGRAPH
-
         
 class AbstractFunctionGraph;
 
@@ -27,6 +27,7 @@ public:
     
     typedef QString (*TypeNameFunction)();
     typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
+    typedef int (*SpaceDimensionFunction)();
     typedef CoordinateSystem (*CoordinateSystemFunction)();
     typedef QStringList (*ArgumentsFunction)();
     typedef QString (*IconNameFunction)();
@@ -44,7 +45,7 @@ public:
 
     bool registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, BuilderFunctionWithoutVars builderFunctionWithoutVars, 
                   TypeNameFunction typeNameFunction,
-                         ExpressionTypeFunction expressionTypeFunction,
+                         ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
                          CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
                          IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);
     QString id(const QStringList& args) const;
@@ -56,7 +57,7 @@ public:
 private:
     QMap<QString, TypeNameFunction> typeNameFunctions;
     QMap<QString, ExpressionTypeFunction> expressionTypeFunctions;
-    QMap<QString, int> spaceDimensions;
+    QMap<QString, SpaceDimensionFunction> spaceDimensionFunctions;
     QMap<QString, CoordinateSystemFunction> coordinateSystemFunctions;
     QMap<QString, ArgumentsFunction> argumentsFunctions;
     QMap<QString, IconNameFunction> iconNameFunctions;

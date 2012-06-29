@@ -40,6 +40,7 @@ private/abstractfunctiongraph.cpp
 private/functiongraphfactory.cpp
 private/abstractmappinggraph.cpp
 private/abstractplanecurve.cpp
+private/abstractspacecurve.cpp
 private/abstractsurface.cpp
 private/functiongraphsmodel.cpp
 private/mappinggraph.cpp
@@ -60,7 +61,7 @@ private/backends/implicitcurve.cpp
 private/backends/cartesiancurve.cpp
 # functiongraphtypes/cylindricalsurface.cpp
 private/backends/parametriccurve2d.cpp
-# functiongraphtypes/parametriccurve3d.cpp
+private/backends/parametriccurve3d.cpp
 # functiongraphtypes/parametricsurface.cpp
 private/backends/polarcurve.cpp
 # functiongraphtypes/sphericalsurface.cpp

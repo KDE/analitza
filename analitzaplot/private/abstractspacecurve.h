@@ -38,9 +38,6 @@ public:
     AbstractSpaceCurve(const Analitza::Expression& e);
     virtual ~AbstractSpaceCurve();
 
-    //AbstractMappingGraph
-    int spaceDimension() const { return 3; }
-    
     //Curve ... los expongo como publicos tanto para planecurve como para los backend (
     //para los backends por un tema de performance y flexibilidad) 
     // al final en planecurve todo estara expuesto consistentemente 
@@ -53,6 +50,8 @@ public:
 protected:
     AbstractSpaceCurve() {}
     AbstractSpaceCurve(const AbstractSpaceCurve& other) {}
+    
+    bool addPoint(const QVector3D& p);
 };
 
 
