@@ -40,18 +40,32 @@
 SpaceCurve::SpaceCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col)
     : FunctionGraph(functionExpression,3, name, col)
 {
-    reset(functionExpression,3);
 }
 
 SpaceCurve::SpaceCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
     : FunctionGraph(functionExpression, v,3,name, col)
 {
-    reset(functionExpression, 3);
 }
 
 SpaceCurve::~SpaceCurve()
 {
 }
+
+bool SpaceCurve::canDraw(const Analitza::Expression& functionExpression)
+{
+return FunctionGraph::canDraw(functionExpression, 3);
+}
+
+bool SpaceCurve::canDraw(const Analitza::Expression& functionExpression, QStringList& errors)
+{
+return FunctionGraph::canDraw(functionExpression, 3, errors);
+}
+
+bool SpaceCurve::reset(const Analitza::Expression& functionExpression)
+{
+return FunctionGraph::reset(functionExpression, 3);
+}
+
 
 const QVector<QVector3D> & SpaceCurve::points() const
 {

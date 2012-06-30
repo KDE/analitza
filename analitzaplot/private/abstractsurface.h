@@ -31,7 +31,7 @@ name (const Analitza::Expression &functionExpression, Analitza::Variables *varia
 class ANALITZAPLOT_EXPORT AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
 {
 public:
-    AbstractSurface(const Analitza::Expression& e);
+    explicit AbstractSurface(const Analitza::Expression& e);
     AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v);
     virtual ~AbstractSurface();
 

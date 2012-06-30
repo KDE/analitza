@@ -17,7 +17,7 @@ public:
     static bool canDraw(const Analitza::Expression &functionExpression, int spaceDimension, QStringList &errors);
 
     bool reset(const Analitza::Expression &functionExpression, int spaceDimension);
-    
+
     Analitza::Variables *variables() const;
     void setVariables(Analitza::Variables *variables);
 

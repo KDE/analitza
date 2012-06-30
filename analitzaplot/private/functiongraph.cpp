@@ -160,9 +160,6 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int 
         } else
             errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
-
-        
-    
     
     return errors.empty();
 }

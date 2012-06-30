@@ -63,6 +63,12 @@ bool PlaneCurve::canDraw(const Analitza::Expression& functionExpression, QString
 return FunctionGraph::canDraw(functionExpression, 2, errors);
 }
 
+bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
+{
+    return FunctionGraph::reset(functionExpression, 2);
+}
+
+
 const QVector<QPointF> & PlaneCurve::points() const
 {
     Q_ASSERT(backend());

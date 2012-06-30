@@ -44,9 +44,10 @@ public:
     virtual ~PlaneCurve();
 
     static bool canDraw(const Analitza::Expression &functionExpression);
-    //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
-    
+
+    bool reset(const Analitza::Expression& functionExpression);
+
     QVector<int> jumps() const;
     const QVector<QPointF> & points() const;
     void update(const QRect& viewport);

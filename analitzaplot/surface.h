@@ -31,30 +31,9 @@ public:
     virtual ~Surface();
 
     static bool canDraw(const Analitza::Expression &functionExpression);
-    //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
-    bool reset(const Analitza::Expression &functionExpression);
-    void setVariables(Analitza::Variables *variables);
-    
-    //MappingGraph
-    const QString typeName() const;
-    const Analitza::Expression &expression() const;
-    QString iconName() const;
-    QStringList examples() const;
-    int spaceDimension() const;
-    CoordinateSystem coordinateSystem() const;
-    QStringList errors() const;
-    bool isCorrect() const;
 
-    //FunctionGraph
-    
-    QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
-    bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
-
-    QPair<double, double> interval(const QString &argname) const;
-    bool setInterval(const QString &argname, double min, double max);
-    
-    QStringList parameters() const;
+    bool reset(const Analitza::Expression& functionExpression);
 
     //Own
     const QVector<int> & indexes() const;
@@ -64,12 +43,6 @@ public:
 protected:
     Surface() {}
     Surface(const Surface &other) {}
-
-private:
-    Analitza::Variables *m_varsModule;
-    AbstractSurface *m_surface;
-
-    QStringList m_errors;
 };
 
 
