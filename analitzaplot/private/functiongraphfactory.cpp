@@ -71,23 +71,27 @@ bool AbstractFunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars
     return true;
 }
 
-QString AbstractFunctionGraphFactory::id(const QStringList& args) const
+QString AbstractFunctionGraphFactory::id(const QStringList& args, int spaceDimension) const
 {
     QString key;
     
     bool found = false;
     
     for (int i = 0; i < argumentsFunctions.values().size(); ++i)
-        if (argumentsFunctions.values()[i]() == args)
+    {
+        if (argumentsFunctions.values()[i]() == args && 
+            spaceDimension == spaceDimensionFunctions.values()[i]())
         {
             key = argumentsFunctions.key(argumentsFunctions.values()[i]);
+
             found = true;
+            
             break;
         }
+    }
 
-        
     if (found)
-        return QString("2|")+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
+        return QString::number(spaceDimensionFunctions[key]())+"|"+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
 
     return QString();    
 }

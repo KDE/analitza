@@ -181,7 +181,7 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
         //los cast producto de los itemroles son demaciado largos ... nada elegantes
 //         t=(CoordinateSystem)m_model->data(m_model->index(current), FunctionGraphModel::CoordinateSystemRole).toInt(); // editFunction(current)->axeType();
     //comparado con esto que es mucho mejor
-        t=m_model->curve(current)->coordinateSystem();
+        t=m_model->item(current)->coordinateSystem();
     
     
     drawAxes(&p, t);
@@ -192,15 +192,15 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
 //     for (; it!=itEnd; ++it, ++k ) {
     for (int k = 0; k < m_model->rowCount(); ++k )
     {
-        if (!m_model->curve(k)->isVisible())
+        if (!m_model->item(k)->isVisible())
             continue;
         
-        pfunc.setColor(m_model->curve(k)->color());
+        pfunc.setColor(m_model->item(k)->color());
         pfunc.setWidth((k==current)+1);
         p.setPen(pfunc);
         
-        const QVector<QPointF> &vect=m_model->curve(k)->points();
-        QVector<int> jumps=m_model->curve(k)->jumps();
+        const QVector<QPointF> &vect=static_cast<const PlaneCurve*>(m_model->item(k))->points();
+        QVector<int> jumps=static_cast<const PlaneCurve*>(m_model->item(k))->jumps();
         
         unsigned int pointsCount = vect.count();
         QPointF ultim(toWidget(vect[0]));
@@ -293,7 +293,7 @@ void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModel
 QPointF FunctionsPainter::calcImage(const QPointF& ndp) const
 {
     //DEPRECATED if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
-    if (m_model->curve(currentFunction())->isVisible())
+    if (m_model->item(currentFunction())->isVisible())
         return m_model->curveImage(currentFunction(), ndp).first;
 
     return QPointF();
@@ -355,7 +355,7 @@ void FunctionsPainter::setViewport(const QRectF& vp, bool repaint)
 
 QLineF FunctionsPainter::slope(const QPointF& dp) const
 {
-    if (m_model->curve(currentFunction())->isVisible())
+    if (m_model->item(currentFunction())->isVisible())
     {
         QLineF ret = m_model->curveTangent(currentFunction(), dp);
         if(ret.isNull() && currentFunction()>=0) {

@@ -26,13 +26,13 @@
 #include "private/abstractsurface.h"
 
 Surface::Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor &col)
-    : FunctionGraph(functionExpression, name, col)
+    : FunctionGraph(functionExpression, 3,name, col)
 {
     reset(functionExpression);
 }
 
 Surface::Surface(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-    : FunctionGraph(functionExpression, v, name, col)
+    : FunctionGraph(functionExpression, v,3, name, col)
 {
     reset(functionExpression);
 }
@@ -61,12 +61,12 @@ bool Surface::canDraw(const Analitza::Expression &functionExpression)
         bvars.append(arg->name());
 
     //TODO: turn into assertion
-    if(!AbstractFunctionGraphFactory::self()->contains(AbstractFunctionGraphFactory::self()->id(bvars)))
+    if(!AbstractFunctionGraphFactory::self()->contains(AbstractFunctionGraphFactory::self()->id(bvars, 3)))
         errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
         errors << a.errors();
     else {
-        Analitza::ExpressionType expected=AbstractFunctionGraphFactory::self()->expressionType(AbstractFunctionGraphFactory::self()->id(bvars));
+        Analitza::ExpressionType expected=AbstractFunctionGraphFactory::self()->expressionType(AbstractFunctionGraphFactory::self()->id(bvars, 3));
         Analitza::ExpressionType actual=a.type();
 
         if(actual.canReduceTo(expected)) {
@@ -99,12 +99,12 @@ bool Surface::canDraw(const Analitza::Expression &functionExpression, QStringLis
         bvars.append(arg->name());
 
     //TODO: turn into assertion
-    if(!AbstractFunctionGraphFactory::self()->contains(AbstractFunctionGraphFactory::self()->id(bvars)))
+    if(!AbstractFunctionGraphFactory::self()->contains(AbstractFunctionGraphFactory::self()->id(bvars, 3)))
         errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
         errors << a.errors();
     else {
-        Analitza::ExpressionType expected=AbstractFunctionGraphFactory::self()->expressionType(AbstractFunctionGraphFactory::self()->id(bvars));
+        Analitza::ExpressionType expected=AbstractFunctionGraphFactory::self()->expressionType(AbstractFunctionGraphFactory::self()->id(bvars, 3));
         Analitza::ExpressionType actual=a.type();
 
         if(actual.canReduceTo(expected)) {
@@ -138,19 +138,19 @@ bool Surface::reset(const Analitza::Expression& functionExpression)
         bvars.append(arg->name());
 
     //TODO: turn into assertion
-    if(!AbstractFunctionGraphFactory::self()->contains(AbstractFunctionGraphFactory::self()->id(bvars)))
+    if(!AbstractFunctionGraphFactory::self()->contains(AbstractFunctionGraphFactory::self()->id(bvars, 3)))
         m_errors << i18n("Function type not recognized");
     else if(!a.isCorrect())
         m_errors << a.errors();
     else {
-        Analitza::ExpressionType expected=AbstractFunctionGraphFactory::self()->expressionType(AbstractFunctionGraphFactory::self()->id(bvars));
+        Analitza::ExpressionType expected=AbstractFunctionGraphFactory::self()->expressionType(AbstractFunctionGraphFactory::self()->id(bvars, 3));
         Analitza::ExpressionType actual=a.type();
 
         if(actual.canReduceTo(expected)) {
 
             delete m_surface;
 
-            m_surface=static_cast<AbstractSurface*>(AbstractFunctionGraphFactory::self()->build(AbstractFunctionGraphFactory::self()->id(bvars), a.expression(), m_varsModule));
+            m_surface=static_cast<AbstractSurface*>(AbstractFunctionGraphFactory::self()->build(AbstractFunctionGraphFactory::self()->id(bvars, 3), a.expression(), m_varsModule));
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }

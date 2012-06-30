@@ -35,92 +35,31 @@ PlaneCurvesModel::PlaneCurvesModel(Analitza::Variables *v, QObject * parent)
 
 PlaneCurvesModel::~PlaneCurvesModel()
 {
-    qDeleteAll(m_items.begin(), m_items.end());
-    m_items.clear();
-}
 
-QVariant PlaneCurvesModel::data(const QModelIndex & index, int role) const
-{
-    if(!index.isValid() || index.row()>=m_items.count())
-        return QVariant();
-
-    int var=index.row();
-
-    PlaneCurve *tmpcurve = m_items.at(var);
-
-    switch(role)
-    {
-    case Qt::DisplayRole:
-        switch(index.column()) {
-        case 0:
-            return tmpcurve->name();
-            break;
-        case 1:
-            return tmpcurve->expression().toString();
-            break;
-        }
-        break;
-    case Qt::DecorationRole:
-        if(index.column()==0) {
-            QPixmap ico(15, 15);
-            ico.fill(tmpcurve->color());
-            return  QIcon(ico);
-        } else {
-            return QIcon::fromTheme(tmpcurve->iconName());
-        }
-        break;
-    }
-
-    return QVariant();
-}
-
-int PlaneCurvesModel::rowCount(const QModelIndex & parent) const
-{
-    if(parent.isValid())
-        return 0;
-    else
-        return m_items.size();
 }
 
 //agrego item al model y no como un puntero ... esto para manejar que el model maneje el scope del planecurve internamente
-void PlaneCurvesModel::addCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+bool PlaneCurvesModel::addCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
-    //no se permiten items invalidos
-    Q_ASSERT(PlaneCurve::canDraw(functionExpression));
-    
-    beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
 
-    m_items.append(new PlaneCurve(functionExpression, variablesModule, name, col));
-
-    endInsertRows();
+return addItem(functionExpression, 2, name, col);    
 }
 
-void PlaneCurvesModel::removeCurve(int row)
+bool PlaneCurvesModel::addCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, QStringList &errors)
 {
-    Q_ASSERT(row<m_items.size());
-
-    beginRemoveRows(QModelIndex(), row, row);
-
-    PlaneCurve *tmpcurve = m_items[row];
-    delete tmpcurve;
-        
-    m_items.removeAt(row);
-
-    endRemoveRows();
+return addItem(functionExpression, 2, name, col, errors);    
 }
 
 const PlaneCurve* PlaneCurvesModel::curve(int curveIndex) const
 {
-    Q_ASSERT(curveIndex<m_items.count());
-
-    return m_items[curveIndex];
+    return static_cast<const PlaneCurve*>(item(curveIndex));
 }
 
 bool PlaneCurvesModel::setCurve(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
 {
 //                 if (PlaneCurve::canDraw(fexp))
 //                 {
-//                     m_items[index.row()]->reset(fexp);
+//                     items[index.row()]->reset(fexp);
 // 
 //                     emit dataChanged(index, index);
 // 
@@ -128,38 +67,25 @@ bool PlaneCurvesModel::setCurve(int curveIndex, const Analitza::Expression &func
 //                 }
 return false;
 }
-
-void PlaneCurvesModel::setCurveParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
-{
-    
-}
-
-
-void PlaneCurvesModel::setCurveParameterInterval(int curveIndex, const QString &argname, double min, double max)
-{
-    
-}
-
     
 void PlaneCurvesModel::updateCurve(int curveIndex, const QRect& viewport)
 {
-    m_items[curveIndex]->update(viewport);
+    static_cast<PlaneCurve*>(items[curveIndex])->update(viewport);
 
     emit dataChanged(index(curveIndex), index(curveIndex));
 }
 
-
 QPair< QPointF, QString > PlaneCurvesModel::curveImage(int row, const QPointF& mousepos)
 {
-    Q_ASSERT(row<m_items.count());
+    Q_ASSERT(row<items.count());
 
-    return m_items[row]->image(mousepos);
+    return static_cast<PlaneCurve*>(items[row])->image(mousepos);
 }
 
 QLineF PlaneCurvesModel::curveTangent(int row, const QPointF& mousepos)
 {
-    Q_ASSERT(row<m_items.count());
+    Q_ASSERT(row<items.count());
 
-    return m_items[row]->tangent(mousepos);
+    return static_cast<PlaneCurve*>(items[row])->tangent(mousepos);
 }
 

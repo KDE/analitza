@@ -60,6 +60,14 @@ public:
     AbstractFunctionGraph(const Analitza::Expression& e);
     virtual ~AbstractFunctionGraph();
 
+    Analitza::Variables *variables() const;
+    void setVariables(Analitza::Variables *variables);
+
+    const Analitza::Expression &expression() const;
+
+    QStringList errors() const { return m_errors; }
+    bool isCorrect() const { return m_errors.isEmpty() && analyzer->isCorrect(); }
+
     //FunctionGraph
     //no lleva const porque se calcularan valores con m_argumentIntervals
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
@@ -74,8 +82,16 @@ protected:
     AbstractFunctionGraph() {}
     AbstractFunctionGraph(const AbstractFunctionGraph& other);
     
+    void appendError(const QString &error) { m_errors.append(error); }
+    void flushErrors() { m_errors.clear(); }
+    
+    //WARNING see if errorCount is necesary ...
+    int errorCount() const { return m_errors.count(); } // if some method throws many erros perhaps the user (child-class) want to stop something
+    
+    Analitza::Analyzer *analyzer;
+    
     Analitza::Cn* arg(const QString &argname) { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
-
+    
 private:
 
 //BEGIN private types
@@ -205,7 +221,8 @@ private:
     EndPoint m_highEndPoint;
 };
 //END private types
-    
+    QStringList m_errors;
+
     QMap<QString, Analitza::Object*> m_argumentValues;
     QMap<QString, RealInterval > m_argumentIntervals;
 };

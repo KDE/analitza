@@ -38,15 +38,15 @@
 
 
 SpaceCurve::SpaceCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col)
-    : FunctionGraph(functionExpression, name, col)
+    : FunctionGraph(functionExpression,3, name, col)
 {
-    reset(functionExpression);
+    reset(functionExpression,3);
 }
 
 SpaceCurve::SpaceCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-    : FunctionGraph(functionExpression, v,name, col)
+    : FunctionGraph(functionExpression, v,3,name, col)
 {
-    reset(functionExpression);
+    reset(functionExpression, 3);
 }
 
 SpaceCurve::~SpaceCurve()

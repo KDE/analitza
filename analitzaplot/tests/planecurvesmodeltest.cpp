@@ -91,7 +91,8 @@ void PlaneCurvesModelTest::testAppend()
 {
     QFETCH(QString, input);
 
-    m_model->addCurve(Expression(input), "Hola", Qt::yellow);
+    
+    QVERIFY(m_model->addCurve(Expression(input), "Hola", Qt::yellow));
 
     QCOMPARE(m_model->curve(m_model->rowCount()-1)->expression().bvarList(), Analitza::Expression(input).bvarList());
     QVERIFY(m_model->curve(m_model->rowCount()-1)->isCorrect()); // all corrects

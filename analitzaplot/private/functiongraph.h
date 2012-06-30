@@ -8,15 +8,17 @@ class AbstractFunctionGraph;
 class ANALITZAPLOT_EXPORT FunctionGraph : public MappingGraph
 {
 public:
-    FunctionGraph(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
-    FunctionGraph(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
+    FunctionGraph(const Analitza::Expression &functionExpression, int spaceDimension, const QString &name, const QColor& col);
+    FunctionGraph(const Analitza::Expression &functionExpression, Analitza::Variables *variables, int spaceDimension, const QString &name, const QColor& col);
     virtual ~FunctionGraph();
 
-    static bool canDraw(const Analitza::Expression &functionExpression);
+    static bool canDraw(const Analitza::Expression &functionExpression, int spaceDimension);
     //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
-    static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
+    static bool canDraw(const Analitza::Expression &functionExpression, int spaceDimension, QStringList &errors);
 
-    bool reset(const Analitza::Expression &functionExpression);
+    bool reset(const Analitza::Expression &functionExpression, int spaceDimension);
+    
+    Analitza::Variables *variables() const;
     void setVariables(Analitza::Variables *variables);
 
     //MappingGraph
@@ -47,7 +49,6 @@ protected:
     AbstractFunctionGraph *backend() const { return m_functionGraph; }
 
 private:
-    Analitza::Variables *m_varsModule;
     AbstractFunctionGraph *m_functionGraph;
 
     QStringList m_errors;

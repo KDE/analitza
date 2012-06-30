@@ -124,17 +124,14 @@ install(FILES
 
 #private api/files only for compile by using the headers
 
-private/abstractfunctiongraphfactory.h
+private/functiongraphfactory.h
 private/abstractfunctiongraph.h
 private/abstractmappinggraph.h
 private/abstractplanecurve.h
 private/abstractsurface.h
-private/curve.h
 private/functiongraph.h
 private/functiongraphsmodel.h
 private/mappinggraph.h
-private/planecurvefactory.h
-private/surfacefactory.h
 
         DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
 

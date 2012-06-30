@@ -23,10 +23,14 @@
 #include "analitza/variable.h"
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractMappingGraph(e,v)
+: AbstractMappingGraph(), analyzer(new Analitza::Analyzer(v))
 {
     //TODO intervalparameter tiene que ser const ... no es necesario que no lo sea ... siempre es preferible que algo sea inmutable :)
 //     m_intervalsAnalizer = new Analitza::Analyzer(v);
+    
+        analyzer->setExpression(e);
+    analyzer->simplify();
+    analyzer->flushErrors();
     
     foreach (const Analitza::Ci *var, analyzer->expression().parameters())
     {
@@ -43,10 +47,14 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
 }
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e)
-: AbstractMappingGraph(e)
+: AbstractMappingGraph(), analyzer(new Analitza::Analyzer)
 {
     //TODO intervalparameter tiene que ser const ... no es necesario que no lo sea ... siempre es preferible que algo sea inmutable :)
 //     m_intervalsAnalizer = new Analitza::Analyzer(v);
+    
+        analyzer->setExpression(e);
+    analyzer->simplify();
+    analyzer->flushErrors();
     
     foreach (const Analitza::Ci *var, analyzer->expression().parameters())
     {
@@ -67,8 +75,32 @@ AbstractFunctionGraph::~AbstractFunctionGraph()
     qDeleteAll(m_argumentValues.begin(), m_argumentValues.end());
     m_argumentValues.clear();
 
-//     delete m_intervalsAnalizer;
+    delete analyzer;
 }
+
+Analitza::Variables *AbstractFunctionGraph::variables() const 
+{ 
+    return analyzer->variables(); 
+}
+
+void AbstractFunctionGraph::setVariables(Analitza::Variables* variables)
+{
+    Q_ASSERT(variables);
+    
+    Analitza::Expression exp = analyzer->expression();
+    
+    delete analyzer;
+    
+    analyzer = new Analitza::Analyzer(variables);
+    analyzer->setExpression(exp);
+    analyzer->setStack(m_argumentValues.values().toVector());
+}
+
+const Analitza::Expression& AbstractFunctionGraph::expression() const
+{
+    return analyzer->expression();
+}
+
 
 QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interval(const QString &argname, bool evaluate) const
 {

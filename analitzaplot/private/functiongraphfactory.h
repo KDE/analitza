@@ -48,7 +48,7 @@ public:
                          ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
                          CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
                          IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);
-    QString id(const QStringList& args) const;
+    QString id(const QStringList& args, int spaceDimension) const; // , spaceDimension will save a lot of code duplication (facory for curves, for surfaces etc...)
     bool contains(const QString &id) const;
     
     AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;

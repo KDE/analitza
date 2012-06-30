@@ -57,37 +57,20 @@ class Expression;
 class ANALITZAPLOT_EXPORT AbstractMappingGraph //strategy pattern
 {
 public:
-    AbstractMappingGraph(const Analitza::Expression& e, Analitza::Variables* v);
-    AbstractMappingGraph(const Analitza::Expression& e);
     virtual ~AbstractMappingGraph();
 
-    void setVariables(Analitza::Variables *variables);
-
     virtual const QString typeName() const = 0;
-    const Analitza::Expression &expression() const;
     virtual QString iconName() const = 0;
     virtual QStringList examples() const = 0;
 
     virtual int spaceDimension() const = 0;
     virtual CoordinateSystem coordinateSystem() const = 0;
     
-    QStringList errors() const { return m_errors; }
-    bool isCorrect() const { return m_errors.isEmpty() && analyzer->isCorrect(); }
-
 protected:
     AbstractMappingGraph() {}
     AbstractMappingGraph(const AbstractMappingGraph& other) {}
     
-    void appendError(const QString &error) { m_errors.append(error); }
-    void flushErrors() { m_errors.clear(); }
-    
-    //WARNING see if errorCount is necesary ...
-    int errorCount() const { return m_errors.count(); } // if some method throws many erros perhaps the user (child-class) want to stop something
-    
-    Analitza::Analyzer *analyzer;
-    
-private:
-    QStringList m_errors;
+
 };
 
 #endif // ABSTRACTMAPPINGGRAPH_H

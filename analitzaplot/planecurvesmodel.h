@@ -34,25 +34,18 @@ public:
     PlaneCurvesModel(Analitza::Variables *v, QObject * parent = 0);
     virtual ~PlaneCurvesModel();
     
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-    int rowCount(const QModelIndex & parent = QModelIndex()) const;
-
-    void addCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
-    void removeCurve(int curveIndex);
+    bool addCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
+    bool addCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, QStringList &errors);
 
     //planecurve getters
     const PlaneCurve * curve(int curveIndex) const; //read only pointer the data CAN NOT be changed (is a good thing :) )... use this instead of roles ... razon: el uso de roles hace que el cliente deba hacer casts largos
     
     //planecurve setters and calculation/evaluation methods  .. don't forget to emit setdata signal' ... ninguno de estos metodos tiene cont al final
     bool setCurve(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
-    void setCurveParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
-    void setCurveParameterInterval(int curveIndex, const QString &argname, double min, double max);
     void updateCurve(int curveIndex, const QRect& viewport); //emit setdata signal
     QPair<QPointF, QString> curveImage(int curveIndex, const QPointF &mousepos); // image of curve
     QLineF curveTangent(int curveIndex, const QPointF &mousepos); //tangent to curve
 
-private:
-    QList<PlaneCurve*> m_items;
 };
 
 #endif // ANALITZAPLOT_FUNCTIONSMODEL_H
