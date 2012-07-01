@@ -39,7 +39,9 @@
 #include <QtGui/qitemselectionmodel.h>
 
 Graph2D::Graph2D(QWidget *parent)
-:QWidget(parent), FunctionsPainter(size())
+:QWidget(parent), FunctionsPainter( size()),
+    valid(false), mode(None),
+    m_framed(false), m_readonly(false), m_selection(0)
 {
     this->setFocusPolicy(Qt::ClickFocus);
     this->setCursor(Qt::CrossCursor);

@@ -43,7 +43,7 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
-    SPACE_DIMENSION(2)
+    SPACE_DIMENSION(3)
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y")
     ICON_NAME("none")
