@@ -35,14 +35,14 @@ class Variables;
 class Expression;
 }
 
-class ANALITZAPLOT_EXPORT FunctionGraphModel : public QAbstractListModel
+class ANALITZAPLOT_EXPORT FunctionGraphsModel : public QAbstractListModel
 {
 Q_OBJECT
     
 public:
-    FunctionGraphModel(QObject * parent = 0);
-    FunctionGraphModel(Analitza::Variables *v, QObject * parent = 0);
-    virtual ~FunctionGraphModel();
+    FunctionGraphsModel(QObject * parent = 0);
+    FunctionGraphsModel(Analitza::Variables *v, QObject * parent = 0);
+    virtual ~FunctionGraphsModel();
     
     int columnCount(const QModelIndex & parent = QModelIndex()) const;
     Qt::ItemFlags flags(const QModelIndex & index) const;
@@ -64,6 +64,8 @@ public:
     bool setItem(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
     void setItemParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
     void setItemParameterInterval(int curveIndex, const QString &argname, double min, double max);
+
+    void setVisible(int curveIndex, bool f);
 
 protected:    
     QList<FunctionGraph*> items;

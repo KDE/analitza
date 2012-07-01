@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -18,7 +18,7 @@
 
 
 #include "plotview3d.h"
-
+#include "private/functiongraphsmodel.h"
 #include <QVector3D>
 #include <QVector2D>
 #include <QVector>
@@ -29,9 +29,8 @@
 #include <QDebug>
 
 
-#include "functionsmodel.h"
-#include "functiongraph.h"
-
+// #include "functionsmodel.h"
+// #include "solvers/solver.h"
 // #include "solvers/solvers3d/MarchingCubes/ctab.h"
 // #include "solvers/solvers3d/MarchingCubes/glwidget.h"
 
@@ -40,31 +39,25 @@
 #endif
 
 
-Graph3D::Graph3D(FunctionsModel *fm, QWidget *parent)
+View3D::View3D(QWidget *parent)
     : QGLViewer(parent)
-    , m_drawingType(FunctionGraph::Solid)
+    , m_drawingType(Solid)
     , m_color(Qt::white)
-    , m_functionsModel(fm)
 {
+    
 
-
-    //WARNING
-    //TODO
 
 //     logo = 0;
     xRot = 0;
     yRot = 0;
     zRot = 0;
 
-
+    
     camara_x = camara_y = 0;
     camara_z = -5;
-
-        //WARNING
-    //TODO
 //     logo = NULL;
-
-
+    
+    
     num=1000;
     dlnum=1000;
     qtGreen = QColor::fromCmykF(0.40, 0.0, 1.0, 0.0);
@@ -73,7 +66,7 @@ Graph3D::Graph3D(FunctionsModel *fm, QWidget *parent)
     setGridIsDrawn(true);
 }
 
-void Graph3D::clearDisplayLists()
+void View3D::clearDisplayLists()
 {
 
 
@@ -84,89 +77,117 @@ void Graph3D::clearDisplayLists()
     m_displayList.clear();
 }
 
+// // // /*
+// // // void View3D::drawGrid(float size,int nbSubdivisions)
+// // // {
+// // // 
+// // //     GLboolean lighting;
+// // //     glGetBooleanv(GL_LIGHTING, &lighting);
+// // //     glDisable(GL_LIGHTING);
+// // //     glBegin(GL_LINES);
+// // //     for (int i=0; i<=nbSubdivisions; ++i)
+// // //     {
+// // //         const float pos = size*(2.0*i/nbSubdivisions-1.0);
+// // //         glVertex2f(pos, -size);
+// // //         glVertex2f(pos, +size);
+// // //         glVertex2f(-size, pos);
+// // //         glVertex2f( size, pos);
+// // //     }
+// // //     glEnd();
+// // //     if (lighting)
+// // //         glEnable(GL_LIGHTING);
+// // // 
+// // // 
+// // // }*/
 
-void Graph3D::drawGrid(float size,int nbSubdivisions)
+void View3D::generateDisplayLists()
 {
-
-    GLboolean lighting;
-    glGetBooleanv(GL_LIGHTING, &lighting);
-    glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
-    for (int i=0; i<=nbSubdivisions; ++i)
+    for (int i = 0; i < m_functionsFilterProxyModel->rowCount(); i+=1)
     {
-        const float pos = size*(2.0*i/nbSubdivisions-1.0);
-        glVertex2f(pos, -size);
-        glVertex2f(pos, +size);
-        glVertex2f(-size, pos);
-        glVertex2f( size, pos);
-    }
-    glEnd();
-    if (lighting)
-        glEnable(GL_LIGHTING);
+        QModelIndex mi = m_functionsFilterProxyModel->index(i,0);
+        int sourceRow = mi.row();
 
 
-}
+        
+        if (m_functionsFilterProxyModel->item(sourceRow)->spaceDimension() == 2) continue;
 
-void Graph3D::generateDisplayLists()
-{
-    for (int i = 0; i < m_functionsModel->rowCount(); i+=1)
-    {
-        AbstractMappingGraph *tempsol = m_functionsModel->funclist.at(i).solver();
+//         Solver3D *solver = static_cast<Solver3D*>(functionModel->funclist.at(sourceRow).solver());
 
-        if (tempsol->dimension() == 2) continue;
+        if (!m_functionsFilterProxyModel->item(sourceRow)->isVisible()) continue;
 
-        FunctionImpl3D *solver = static_cast<FunctionImpl3D*>(m_functionsModel->funclist.at(i).solver());
 
-        if (!m_functionsModel->funclist.at(i).isShown()) continue;
 
-        updateSurface(m_functionsModel->funclist.at(i));
+
+        //TODO
+//         updateSurface(functionModel->funclist.at(sourceRow));
+
     }
 }
-
-void Graph3D::setFunctionsModel(FunctionsModel *fm)
+/*
+void View3D::setSpaceId(const QString &spaceId)
 {
-    m_functionsModel = fm;
+    m_spaceId = spaceId;
+    m_functionsFilterProxyModel->setFilterSpaceId(m_spaceId);
+    clearDisplayLists();
+    generateDisplayLists();
+}*/
 
-    connect(m_functionsModel, SIGNAL(functionModified(FunctionGraph)), SLOT(updateSurface(FunctionGraph)));
-    connect(m_functionsModel, SIGNAL(functionImplicitCall(QUuid,QColor,int,QList<double>,int,int,bool,bool,bool,double)), SLOT(updateSurfaceImplicit(QUuid,QColor,int,QList<double>,int,int,bool,bool,bool,double)));
-    connect(m_functionsModel, SIGNAL(functionRemoved(QUuid,QString)), SLOT(removeSurface(QUuid,QString)));
+void View3D::setFunctionsModel(FunctionsFilterProxyModel *functionsFilterProxyModel)
+{
+//     m_functionsFilterProxyModel = functionsFilterProxyModel;
+//     FunctionsModel *functionModel = static_cast<FunctionsModel*>(m_functionsFilterProxyModel->sourceModel());
+// 
+//     connect(functionModel, SIGNAL(functionModified(Keomath::Function)), SLOT(updateSurface(Keomath::Function)));
+//     connect(functionModel, SIGNAL(functionImplicitCall(QUuid,QColor,int,QList<double>,int,int,bool,bool,bool,double)), SLOT(updateSurfaceImplicit(QUuid,QColor,int,QList<double>,int,int,bool,bool,bool,double)));
+// 
+
+
+
+
+//     connect(functionModel, SIGNAL(functionRemoved(QUuid,QString)), SLOT(removeSurface(QUuid,QString)));
+
+
 }
-
-void Graph3D::updateSurface(const FunctionGraph &function)
+//TODO
+/*
+void View3D::updateSurface(const Keomath::Function &function)
 {
+    
 
-
-    if (function.spaceDimension() == 2)
+    if (function.dimension() == 2)
         return ;
     if (function.name()=="Esfera")
         return;
 
-    m_currentSolver = static_cast<FunctionImpl3D*>(function.solver());
+    m_currentSolver = static_cast<Solver3D*>(function.solver());
 
-
+    
 
     m_color = function.color();
 
-
-
+    
+    
 
     static unsigned int dlnum = 0;
     ++dlnum;
 
-
+    
+    
+    
+    
     if (m_displayList.contains(function.id()))
     {
         glDeleteLists(m_displayList.value(function.id()), 1);
     }
 
-
+    
     glNewList(dlnum, GL_COMPILE);
 
     if (m_currentSolver->isCurve())
     {
 
         glEnable(GL_LINE_SMOOTH);
-        glLineWidth(function.lineWidth()*0.5);
+        glLineWidth(function.lineWidth()*0.5); 
 
         glColor3ub(function.color().red(), function.color().green(), function.color().blue());
 
@@ -189,7 +210,7 @@ void Graph3D::updateSurface(const FunctionGraph &function)
 
 
 
-                if (maxCurveSpaceRadius > v.length())
+                if (maxCurveSpaceRadius > v.length()) 
                 {
                     glVertex3d(v.x(), v.y(), v.z());
                     glVertex3d(v2.x(), v2.y(), v2.z());
@@ -203,7 +224,7 @@ void Graph3D::updateSurface(const FunctionGraph &function)
         glDisable(GL_LINE_SMOOTH);
 
     }
-    else
+    else 
     {
         m_drawingType = function.drawingType();
 
@@ -218,7 +239,7 @@ void Graph3D::updateSurface(const FunctionGraph &function)
 
     m_displayList.insert(function.id(), dlnum);
 
-
+    
 
     updateGL();
 
@@ -243,9 +264,9 @@ void Graph3D::updateSurface(const FunctionGraph &function)
 
 
 
-}
-
-void Graph3D::graficar_curvas(QUuid funcId,int tipo, QList<double> cons, bool plano, double pres)
+}*/
+/*
+void View3D::graficar_curvas(QUuid funcId,int tipo, QList<double> cons, bool plano, double pres)
 {
     ++dlnum;
     glNewList(dlnum, GL_COMPILE);
@@ -259,7 +280,7 @@ void Graph3D::graficar_curvas(QUuid funcId,int tipo, QList<double> cons, bool pl
             {
                 QVector3D v = evalCurve(tipo,tt,t,cons);
                 QVector3D v2 = evalCurve(tipo,tt,t+0.005,cons);
-                if (10.0 > v.length())
+                if (10.0 > v.length()) 
                 {
                     if(plano)
                     {
@@ -279,11 +300,11 @@ void Graph3D::graficar_curvas(QUuid funcId,int tipo, QList<double> cons, bool pl
     glEndList();
     num+=1;
     m_displayList.insert(funcId, dlnum);
-}
+}*/
 
 static int funcID = 0;
-
-void Graph3D::updateSurfaceImplicit(QUuid funId,QColor col,int index,QList<double> cons,int oct,int axi,bool solid,bool curva,bool xy,double pres)
+/*
+void View3D::updateSurfaceImplicit(QUuid funId,QColor col,int index,QList<double> cons,int oct,int axi,bool solid,bool curva,bool xy,double pres)
 {
 
     if(curva)
@@ -298,41 +319,39 @@ void Graph3D::updateSurfaceImplicit(QUuid funId,QColor col,int index,QList<doubl
         glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
         glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
         glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
-    //WARNING
-    //TODO
 
-//         switch(index)
-//         {
-//         case 0:
-//             cambiar_funcion(funId,col,esfera,cons,oct,axi,solid);
-//             break;
-//         case 1:
-//             cambiar_funcion(funId,col,elipsoide,cons,oct,axi,solid);
-//             break;
-//         case 2:
-//             cambiar_funcion(funId,col,cilindro,cons,oct,axi,solid);
-//             break;
-//         case 3:
-//             cambiar_funcion(funId,col,hiperboloide_1hoja,cons,oct,axi,solid);
-//             break;
-//         case 4:
-//             cambiar_funcion(funId,col,hiperboloide_2hojas,cons,oct,axi,solid);
-//             break;
-//         case 5:
-//             cambiar_funcion(funId,col,paraboloide_hiperbolico,cons,oct,axi,solid);
-//             break;
-//         case 6:
-//             cambiar_funcion(funId,col,paraboloide_eliptico,cons,oct,axi,solid);
-//             break;
-//         case 7:
-//             cambiar_funcion(funId,col,cono_eliptico,cons,oct,axi,solid);
-//             break;
-//         }
+        switch(index)
+        {
+        case 0:
+            cambiar_funcion(funId,col,esfera,cons,oct,axi,solid);
+            break;
+        case 1:
+            cambiar_funcion(funId,col,elipsoide,cons,oct,axi,solid);
+            break;
+        case 2:
+            cambiar_funcion(funId,col,cilindro,cons,oct,axi,solid);
+            break;
+        case 3:
+            cambiar_funcion(funId,col,hiperboloide_1hoja,cons,oct,axi,solid);
+            break;
+        case 4:
+            cambiar_funcion(funId,col,hiperboloide_2hojas,cons,oct,axi,solid);
+            break;
+        case 5:
+            cambiar_funcion(funId,col,paraboloide_hiperbolico,cons,oct,axi,solid);
+            break;
+        case 6:
+            cambiar_funcion(funId,col,paraboloide_eliptico,cons,oct,axi,solid);
+            break;
+        case 7:
+            cambiar_funcion(funId,col,cono_eliptico,cons,oct,axi,solid);
+            break;
+        }
     }
     updateGL();
-}
+}*/
 
-void Graph3D::removeSurface(const QUuid &funid, const QString &funlambda)
+void View3D::removeSurface(const QString &funid, const QString &funlambda)
 {
     glDeleteLists(m_displayList.value(funid), 1);
     m_displayList.remove(funid);
@@ -341,18 +360,41 @@ void Graph3D::removeSurface(const QUuid &funid, const QString &funlambda)
 }
 
 
-void Graph3D::draw()
+void View3D::draw()
 {
 
-    foreach (QUuid fid, m_displayList.keys())
-    {
-        glCallList(m_displayList.value(fid));
-    }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//TODO
+//     foreach (QUuid fid, m_displayList.keys())
+//     {
+//         glCallList(m_displayList.value(fid));
+//     }
+    
+    
 }
 
-void Graph3D::pintar_ejes(unsigned int modo)
+void View3D::pintar_ejes(unsigned int modo)
 {
     GLfloat color[4];
     switch(modo)
@@ -364,14 +406,14 @@ void Graph3D::pintar_ejes(unsigned int modo)
         color[3] = 1;
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
         glBegin(GL_LINES);
-
+        
         glVertex3f(-1.0f, 0.0f, 0.0f);
         glVertex3f(1.0f, 0.0f, 0.0f);
         glVertex3f(1.0f, 0.2f, 0.0f);
         glVertex3f(0.9f, 0.1f, 0.0f);
         glVertex3f(0.9f, 0.2f, 0.0f);
         glVertex3f(1.0f, 0.1f, 0.0f);
-
+        
         glVertex3f(0.0f, -1.0f, 0.0f);
         glVertex3f(0.0f, 1.0f, 0.0f);
         glVertex3f(0.1f, 1.0f, 0.0f);
@@ -380,7 +422,7 @@ void Graph3D::pintar_ejes(unsigned int modo)
         glVertex3f(0.12f, 0.97f, 0.0f);
         glVertex3f(0.12f, 0.97f, 0.0f);
         glVertex3f(0.12f, 0.9f, 0.0f);
-
+        
         glVertex3f(0.0f, 0.0f, -1.0f);
         glVertex3f(0.0f, 0.0f, 1.0f);
         glVertex3f(0.0f, 0.2f, 1.0f);
@@ -393,7 +435,7 @@ void Graph3D::pintar_ejes(unsigned int modo)
         break;
     case 1:
         glEnable(GL_CULL_FACE);
-
+        
         color[0] = 1;
         color[1] = 0;
         color[2] = 0;
@@ -408,7 +450,7 @@ void Graph3D::pintar_ejes(unsigned int modo)
         glVertex3f(1.0f, 1.0f, 1.0f);
         glVertex3f(1.0f, 0.0f, 1.0f);
         glVertex3f(0.0f, 0.0f, 1.0f);
-
+        
         color[0] = 0;
         color[1] = 1;
         color[2] = 0;
@@ -422,7 +464,7 @@ void Graph3D::pintar_ejes(unsigned int modo)
         glVertex3f(1.0f, 1.0f, 1.0f);
         glVertex3f(0.0f, 1.0f, 1.0f);
         glVertex3f(0.0f, 1.0f, 0.0f);
-
+        
         color[0] = 0;
         color[1] = 0;
         color[2] = 1;
@@ -452,7 +494,7 @@ static void qNormalizeAngle(int &angle)
         angle -= 360 * 16;
 }
 
-void Graph3D::setXRotation(int angle)
+void View3D::setXRotation(int angle)
 {
     qNormalizeAngle(angle);
     if (angle != xRot)
@@ -463,7 +505,7 @@ void Graph3D::setXRotation(int angle)
     }
 }
 
-void Graph3D::setYRotation(int angle)
+void View3D::setYRotation(int angle)
 {
     qNormalizeAngle(angle);
     if (angle != yRot)
@@ -474,7 +516,7 @@ void Graph3D::setYRotation(int angle)
     }
 }
 
-void Graph3D::setZRotation(int angle)
+void View3D::setZRotation(int angle)
 {
     qNormalizeAngle(angle);
     if (angle != zRot)
@@ -485,7 +527,7 @@ void Graph3D::setZRotation(int angle)
     }
 }
 
-QVector3D Graph3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
+QVector3D View3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
 {
 
     QVector3D ans;
@@ -500,7 +542,7 @@ QVector3D Graph3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
         ans.setZ(dZ);
         break;
 
-    case 1:
+    case 1: 
         tmp1=1-pow((dZ-lst.at(2))/lst.at(5),2);
         tmp2=sqrt(pow(lst.at(3),2)*tmp1);
         tmp3=sqrt(pow(lst.at(4),2)*tmp1);
@@ -515,7 +557,7 @@ QVector3D Graph3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
         ans.setZ(dZ);
         break;
 
-    case 3:
+    case 3: 
         tmp1=1+pow((dZ-lst.at(2))/lst.at(5),2);
         tmp2=sqrt(pow(lst.at(3),2)*tmp1);
         tmp3=sqrt(pow(lst.at(4),2)*tmp1);
@@ -524,7 +566,7 @@ QVector3D Graph3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
         ans.setZ(dZ);
         break;
 
-    case 4:
+    case 4: 
         tmp1=pow((dZ-lst.at(2))/lst.at(5),2)-1;
         tmp2=sqrt(pow(lst.at(3),2)*tmp1);
         tmp3=sqrt(pow(lst.at(4),2)*tmp1);
@@ -533,7 +575,7 @@ QVector3D Graph3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
         ans.setZ(dZ);
         break;
 
-    case 5:
+    case 5: 
         tmp1=(dZ-lst.at(2));
         tmp2=sqrt(pow(lst.at(3),2)*tmp1);
         tmp3=sqrt(pow(lst.at(4),2)*tmp1);
@@ -542,7 +584,7 @@ QVector3D Graph3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
         ans.setZ(dZ);
         break;
 
-    case 6:
+    case 6: 
         tmp1=(dZ-lst.at(2))/lst.at(5);
         tmp2=sqrt(pow(lst.at(3),2)*tmp1);
         tmp3=sqrt(pow(lst.at(4),2)*tmp1);
@@ -551,7 +593,7 @@ QVector3D Graph3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
         ans.setZ(dZ);
         break;
 
-    case 7:
+    case 7: 
         tmp1=pow((dZ-lst.at(2))/lst.at(5),2);
         tmp2=sqrt(pow(lst.at(3),2)*tmp1);
         tmp3=sqrt(pow(lst.at(4),2)*tmp1);
@@ -565,7 +607,7 @@ QVector3D Graph3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
 }
 
 
-void Graph3D::init()
+void View3D::init()
 {
 
 
@@ -577,26 +619,56 @@ void Graph3D::init()
 
     usteps=MAXALONG;
     vsteps=MAXAROUND;
-
-        //WARNING
-    //TODO
-
 //     QtLogo::constantes.clear();
 //     QtLogo::constantes.append(0.5);
 //     QtLogo::constantes.append(0.5);
 //     QtLogo::constantes.append(0.25);
 //     QtLogo::constantes.append(0.75);
 //     QtLogo::constantes.append(0.25);
-
-        //WARNING
-    //TODO
-
 //     logo = new QtLogo(this, &func_cilindro);
 //     logo->setColor(qtGreen.dark());
 
     glPushMatrix();
     glTranslatef(6,5,5);
     glRotatef(90.,0.,1.,0.);
+
+
+
+    
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -612,8 +684,17 @@ void Graph3D::init()
 
 
 
-    glEnable(GL_DEPTH_TEST);
 
+
+
+
+    
+
+
+
+
+    glEnable(GL_DEPTH_TEST);
+    
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -625,29 +706,54 @@ void Graph3D::init()
 }
 
 
-GLfloat Graph3D::UU(int i)
+GLfloat View3D::UU(int i)
 {
     return (umin+((umax-umin)/(float)(usteps-1))*(float)(i));
 }
 
 
-GLfloat Graph3D::VV(int j)
+GLfloat View3D::VV(int j)
 {
     return (vmin+((vmax-vmin)/(float)(vsteps-1))*(float)(j));
 }
 
-QVector3D Graph3D::shape(float u,float v)
+QVector3D View3D::shape(float u,float v)
 {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     QVector3D ret;
 
-    ret = m_currentSolver->evalSurface(u,v);
+
+
+    //TODO
+//     ret = m_currentSolver->evalSurface(u,v);
 
     return ret;
 }
 
-void Graph3D::doSurface()
+void View3D::doSurface()
 {
+
+
+
 
     int  i, j;
     float u, v;
@@ -673,24 +779,33 @@ void Graph3D::doSurface()
         }
 
 
-    for (i = 0; i < usteps -1; i++ )
-        for ( j=0; j<vsteps-1; j++ )
+    for (i = 0; i < usteps -1; i++ )    
+        for ( j=0; j<vsteps-1; j++ )    
         {
+            
+
+
+
+
+
+
             glColor3ub(m_color.red(), m_color.green(), m_color.blue());
-
-
-
+            
+            
+            
             doQuad(1, 1, surface[i][j], surface[i+1][j], surface[i][j+1], surface[i+1][j+1]);
         }
 
 }
 
-void Graph3D::doQuad(int n, int m, surfpoint p0, surfpoint p1, surfpoint p2, surfpoint p3)
+
+
+void View3D::doQuad(int n, int m, surfpoint p0, surfpoint p1, surfpoint p2, surfpoint p3)
 {
     int i;
 
-    surfpoint A, B, C, D;
-
+    surfpoint A, B, C, D;   
+    
 
     for (i=0; i<m; i++)
     {
@@ -713,7 +828,7 @@ void Graph3D::doQuad(int n, int m, surfpoint p0, surfpoint p1, surfpoint p2, sur
 
 
 
-void Graph3D::doStrip(int n, surfpoint p0, surfpoint p1, surfpoint p2, surfpoint p3)
+void View3D::doStrip(int n, surfpoint p0, surfpoint p1, surfpoint p2, surfpoint p3)
 {
     int i, j;
     surfpoint A, B, buffer[3];
@@ -729,9 +844,9 @@ void Graph3D::doStrip(int n, surfpoint p0, surfpoint p1, surfpoint p2, surfpoint
         theStrip[i][0] = A;
         theStrip[i][1] = B;
     }
-
-
-
+    
+    
+    
     buffer[0] = theStrip[0][0];
     buffer[1] = theStrip[0][1];
     for (i=1; i<=n; i++)
@@ -744,7 +859,10 @@ void Graph3D::doStrip(int n, surfpoint p0, surfpoint p1, surfpoint p2, surfpoint
         }
 }
 
-void Graph3D::_emit( surfpoint *buffer )
+
+
+
+void View3D::_emit( surfpoint *buffer )
 {
     surfpoint Normal, diff1, diff2;
 
@@ -758,15 +876,16 @@ void Graph3D::_emit( surfpoint *buffer )
     Normal.y = diff1.z*diff2.x - diff1.x*diff2.z;
     Normal.z = diff1.x*diff2.y - diff1.y*diff2.x;
 
+
     switch (m_drawingType)
     {
-    case FunctionGraph::Solid:
+    case Solid:
         glBegin(GL_POLYGON);
         break;
-    case FunctionGraph::Wired:
+    case Wired:
         glBegin(GL_LINES);
         break;
-    case FunctionGraph::Dots:
+    case Dots:
         glBegin(GL_POINTS);
         break;
 
@@ -785,86 +904,77 @@ void Graph3D::_emit( surfpoint *buffer )
 
 
 
-void Graph3D::mousePressEvent(QMouseEvent * event)
+void View3D::mousePressEvent(QMouseEvent * event)
 {
-
+    
     emit viewClicked();
     QGLViewer::mousePressEvent(event);
 }
 
-QSize Graph3D::minimumSizeHint() const
+QSize View3D::minimumSizeHint() const
 {
     return QSize(50, 50);
 }
 
-QSize Graph3D::sizeHint() const
+QSize View3D::sizeHint() const
 {
     return QSize(400, 400);
 }
-    //WARNING
-    //TODO
-
 /*
-void Graph3D::cambiar_funcion(QUuid funcId,QColor col,Figuras tipo, QList<double> constantes,int oct,int axi,bool solid)
+void View3D::cambiar_funcion(QString funcId,QColor col,Figuras tipo, QList<double> constantes,int oct,int axi,bool solid)
 {
-    //WARNING
-    //TODO
-//     delete logo;
-//     QtLogo::constantes = constantes;
-//     switch(tipo)
-//     {
-//     case esfera:
-//         logo = new QtLogo(this,&func_esfera);
-//         break;
-//     case elipsoide:
-//         logo = new QtLogo(this,&func_elipsoide);
-//         break;
-//     case cilindro:
-//         logo = new QtLogo(this,&func_cilindro);
-//         break;
-//     case hiperboloide_1hoja:
-//         logo = new QtLogo(this,&func_hiperboloide_1hoja);
-//         break;
-//     case hiperboloide_2hojas:
-//         logo = new QtLogo(this,&func_hiperboloide_2hojas);
-//         break;
-//     case paraboloide_hiperbolico:
-//         logo = new QtLogo(this,&func_paraboloide_hiperbolico);
-//         break;
-//     case paraboloide_eliptico:
-//         logo = new QtLogo(this,&func_paraboloide_eliptico);
-//         break;
-//     case cono_eliptico:
-//         logo = new QtLogo(this,&func_cono_eliptico);
-//         break;
-//     default:
-//         logo = new QtLogo(this,&func_esfera);
-//     }
-//     logo->ejecentral=axi;
-//     logo->octante=oct;
-//     logo->esSolido=solid;
+    delete logo;
+    QtLogo::constantes = constantes;
+    switch(tipo)
+    {
+    case esfera:
+        logo = new QtLogo(this,&func_esfera);
+        break;
+    case elipsoide:
+        logo = new QtLogo(this,&func_elipsoide);
+        break;
+    case cilindro:
+        logo = new QtLogo(this,&func_cilindro);
+        break;
+    case hiperboloide_1hoja:
+        logo = new QtLogo(this,&func_hiperboloide_1hoja);
+        break;
+    case hiperboloide_2hojas:
+        logo = new QtLogo(this,&func_hiperboloide_2hojas);
+        break;
+    case paraboloide_hiperbolico:
+        logo = new QtLogo(this,&func_paraboloide_hiperbolico);
+        break;
+    case paraboloide_eliptico:
+        logo = new QtLogo(this,&func_paraboloide_eliptico);
+        break;
+    case cono_eliptico:
+        logo = new QtLogo(this,&func_cono_eliptico);
+        break;
+    default:
+        logo = new QtLogo(this,&func_esfera);
+    }
+    logo->ejecentral=axi;
+    logo->octante=oct;
+    logo->esSolido=solid;
 
-
+    
     ++dlnum;
     glNewList(dlnum, GL_COMPILE);
 
     glColor3ub(col.red(),col.green(),col.blue());
-
-    //WARNING
-    //TODO
-
-//     if(logo->esSolido)
-//     {
-//         logo->buildGeometry();
-//         logo->draw();
-//         logo->esSolido=false;
-//     }
-//     logo->buildGeometry();
-//     logo->draw();
+    if(logo->esSolido)
+    {
+        logo->buildGeometry();
+        logo->draw();
+        logo->esSolido=false;
+    }
+    logo->buildGeometry();
+    logo->draw();
 
     glEndList();
-
-
+    
+    
     m_displayList.insert(funcId, dlnum);
 
 
@@ -875,6 +985,11 @@ void Graph3D::cambiar_funcion(QUuid funcId,QColor col,Figuras tipo, QList<double
     setYRotation(0);
     setZRotation(3600);
 }*/
+
+
+
+
+
 
 
 

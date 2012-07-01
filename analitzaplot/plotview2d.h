@@ -58,7 +58,9 @@ public:
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
-    explicit Graph2D(PlaneCurvesModel* fm, QWidget *parent = 0);
+    Graph2D(QWidget *parent = 0);
+    
+    Graph2D(PlaneCurvesModel* fm, QWidget *parent = 0);
     
     /** Destructor. */
     ~Graph2D();

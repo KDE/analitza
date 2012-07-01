@@ -53,7 +53,7 @@ spacecurve.cpp
 plotter2d.cpp
 #plotter3d.cpp
 plotview2d.cpp
-#plotview3d.cpp
+plotview3d.cpp
 surface.cpp
 
 private/backends/cartesiansurface.cpp

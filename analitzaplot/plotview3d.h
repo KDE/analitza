@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -16,49 +16,51 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+
+
 #ifndef KEOMATH_VIEW3D_H
 #define KEOMATH_VIEW3D_H
 
 #include "QGLViewer/qglviewer.h"
-#include "function.h"
 #include <QStackedWidget>
 #include <QMouseEvent>
-// #include "solvers/solvers3d/MarchingCubes/qtlogo.h"
-// #include "solvers/solvers3d/MarchingCubes/formulas.h"
+#include <analitzaplot/mathutils.h>
+#include <analitzaplot/private/functiongraph.h>
+
+class FunctionGraphsModel;
 
 #define MAXAROUND 64
 #define MAXSTRIP 64
 #define MAXALONG  64
 
-class FunctionsModel;
-
 typedef GLfloat point3[3];
+class FunctionsFilterProxyModel;
 
-class FunctionImpl3D;
-class ANALITZAPLOT_EXPORT Graph3D : public QGLViewer
+// class Solver3D;
+class ANALITZAPLOT_EXPORT View3D : public QGLViewer
 {
     Q_OBJECT
 
 private:
-
-    QMap<QUuid, int> m_displayList;
+    
+    QMap<QString, int> m_displayList;
     unsigned int num;
     unsigned int dlnum;
-    QUuid if_quuid;
+    QString if_quuid; 
 
-    //percy gsoc2012 was private
-public:
+private:
     void clearDisplayLists();
     void generateDisplayLists();
 
 public:
-    Graph3D(FunctionsModel *fm, QWidget *parent = 0);
-    void setFunctionsModel(FunctionsModel *fm);
+    View3D(QWidget *parent = 0);
+//     void setSpaceId(const QString &spaceId);
+    void setFunctionsModel(FunctionsFilterProxyModel *functionsFilterProxyModel);
 
 public slots:
-    void updateSurface(const FunctionGraph &function);
-    void updateSurfaceImplicit(QUuid funId,QColor col,int index,QList<double> cons,int oct,int axi,bool solid,bool curva,bool xy,double pres);
-    void removeSurface(const QUuid &funid, const QString &funlambda);
+//     void updateSurface(const FunctionGraph &function);
+//     void updateSurfaceImplicit(QUuid funId,QColor col,int index,QList<double> cons,int oct,int axi,bool solid,bool curva,bool xy,double pres);
+    void removeSurface(const QString &funid, const QString &funlambda);
     void pintar_ejes(unsigned int modo);
     void setXRotation(int angle);
     void setYRotation(int angle);
@@ -71,17 +73,14 @@ signals:
     void zRotationChanged(int angle);
 
 public:
-
+    
     void mousePressEvent(QMouseEvent * event);
-        //WARNING
-    //TODO
-
-//     void cambiar_funcion(QUuid funcId,QColor col,Figuras tipo, QList<double> constantes,int oct,int axi,bool solid);
-    void graficar_curvas(QUuid funcId,int tipo, QList<double> cons, bool plano, double pres);
-    void drawGrid(float size,int nbSubdivisions);
-
-
-
+//     void cambiar_funcion(QString funcId,QColor col,Figuras tipo, QList<double> constantes,int oct,int axi,bool solid);
+//     void graficar_curvas(QString funcId,int tipo, QList<double> cons, bool plano, double pres);
+//     void drawGrid(float size,int nbSubdivisions);
+    
+    
+    
 
 private:
     class surfpoint
@@ -100,15 +99,8 @@ private:
     GLfloat VV(int j);
     QVector3D shape(float u,float v);
 
-        //WARNING
-    //TODO
-
+    
 //     QtLogo *logo;
-
-
-
-
-
     int xRot;
     int yRot;
     int zRot;
@@ -117,12 +109,12 @@ private:
     QColor qtPurple;
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
-
+    
     float camara_x, camara_y, camara_z;
     unsigned int ejes_modo;
     QVector3D evalCurve(int tipo,double dZ,qreal t,QList<double> lst);
 
-
+    
 
     void doSurface();
     void doQuad(int, int, surfpoint, surfpoint, surfpoint, surfpoint);
@@ -137,13 +129,13 @@ private:
     int vsteps;
 
     GLuint m_indexDisplayList;
-    FunctionImpl3D *m_currentSolver;
-    FunctionGraph::DrawingType m_drawingType;
+//     Solver3D *m_currentSolver;
+    PlotStyle m_drawingType;
     QColor m_color;
 
 private:
-    FunctionsModel *m_functionsModel;
-    QUuid m_spaceId;
+    FunctionGraphsModel *m_functionsFilterProxyModel;
+    QString m_spaceId;
 };
 
 #endif

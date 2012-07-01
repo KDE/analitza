@@ -29,7 +29,7 @@
 ///
 
 PlaneCurvesModel::PlaneCurvesModel(Analitza::Variables *v, QObject * parent)
-    : FunctionGraphModel(v, parent)
+    : FunctionGraphsModel(v, parent)
 {
 }
 

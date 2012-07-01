@@ -42,6 +42,8 @@ QColor const FunctionsPainter::m_axeColor(100,100,255);
 QColor const FunctionsPainter::m_axe2Color(235,235,235);
 QColor const FunctionsPainter::m_derivativeColor(90,90,160);
 
+
+
 FunctionsPainter::FunctionsPainter(PlaneCurvesModel* model, const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model)
 {}

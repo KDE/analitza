@@ -26,7 +26,7 @@
 
 #include "private/functiongraphsmodel.h"
 
-class ANALITZAPLOT_EXPORT PlaneCurvesModel : public FunctionGraphModel
+class ANALITZAPLOT_EXPORT PlaneCurvesModel : public FunctionGraphsModel
 {
 Q_OBJECT
 
