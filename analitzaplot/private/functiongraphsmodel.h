@@ -25,6 +25,7 @@
 #include <QAbstractListModel>
 
 #include "analitzaplot/analitzaplotexport.h"
+#include <analitzaplot/mathutils.h>
 
 
 class FunctionGraph;
@@ -44,6 +45,8 @@ public:
     FunctionGraphsModel(Analitza::Variables *v, QObject * parent = 0);
     virtual ~FunctionGraphsModel();
     
+    void setVariables(Analitza::Variables *v); // set variables for all this items this not emit setdata signal
+    
     int columnCount(const QModelIndex & parent = QModelIndex()) const;
     Qt::ItemFlags flags(const QModelIndex & index) const;
     bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
@@ -61,11 +64,19 @@ public:
     const FunctionGraph * item(int curveIndex) const; //read only pointer the data CAN NOT be changed (is a good thing :) )... use this instead of roles ... razon: el uso de roles hace que el cliente deba hacer casts largos
 
     //planecurve setters and calculation/evaluation methods  .. don't forget to emit setdata signal' ... ninguno de estos metodos tiene cont al final
-    bool setItem(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
+
+    bool setItemExpression(int curveIndex, const Analitza::Expression &functionExpression);
+    void setItemName(int curveIndex, const QString &p);
+    void setItemColor(int curveIndex, const QColor &p);
+    void setItemVisible(int curveIndex, bool f);
+    void setItemPlotStyle(int curveIndex, PlotStyle ps);
+
+
     void setItemParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
     void setItemParameterInterval(int curveIndex, const QString &argname, double min, double max);
 
-    void setVisible(int curveIndex, bool f);
+    //setItem por conv
+    bool setItem(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
 
 protected:    
     QList<FunctionGraph*> items;

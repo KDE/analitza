@@ -33,13 +33,14 @@
 #include <QIcon>
 
 FunctionGraphsModel::FunctionGraphsModel(QObject* parent): QAbstractListModel(parent)
+, m_variables(0)
 {
 
 }
 
 
 FunctionGraphsModel::FunctionGraphsModel(Analitza::Variables *v, QObject * parent)
-    : QAbstractListModel(parent)
+    : QAbstractListModel(parent), m_variables(v)
 {
 //     Q_ASSERT(v);
 
@@ -51,6 +52,14 @@ FunctionGraphsModel::~FunctionGraphsModel()
     qDeleteAll(items);
     items.clear();
 }
+
+void FunctionGraphsModel::setVariables(Analitza::Variables* v)
+{
+    m_variables = v;
+    for(int i = 0; i < items.size(); ++i)
+        items[i]->setVariables(v);
+}
+
 
 int FunctionGraphsModel::columnCount(const QModelIndex & parent) const
 {
@@ -150,8 +159,11 @@ bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression
     {
         beginInsertRows (QModelIndex(), items.count(), items.count());
 
-        //TODO
-        items.append(new FunctionGraph(functionExpression, /*variablesModule, */ spaceDimension,name, col));
+        if (m_variables)
+            items.append(new FunctionGraph(functionExpression, m_variables, spaceDimension,name, col));
+        else
+            items.append(new FunctionGraph(functionExpression, spaceDimension,name, col));
+            
 
         endInsertRows();
         
@@ -201,35 +213,100 @@ const FunctionGraph* FunctionGraphsModel::item(int curveIndex) const
     return items[curveIndex];
 }
 
-bool FunctionGraphsModel::setItem(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
+bool FunctionGraphsModel::setItemExpression(int curveIndex, const Analitza::Expression& functionExpression)
 {
-//                 if (FunctionGraph::canDraw(fexp))
-//                 {
-//                     items[index.row()]->reset(fexp);
-// 
-//                     emit dataChanged(index, index);
-// 
-//                     return true;
-//                 }
-return false;
-}
-
-void FunctionGraphsModel::setItemParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
-{
+    Q_ASSERT(curveIndex<items.count());
     
-}
-
-
-void FunctionGraphsModel::setItemParameterInterval(int curveIndex, const QString &argname, double min, double max)
-{
     
+    if (FunctionGraph::canDraw(functionExpression, item(curveIndex)->spaceDimension()))
+    {
+        if (items[curveIndex]->reset(functionExpression, item(curveIndex)->spaceDimension()))
+        {
+
+            emit dataChanged(index(curveIndex), index(curveIndex));
+
+            return true;
+        
+        }
+    }
+
+    return false;
 }
 
-void FunctionGraphsModel::setVisible(int curveIndex, bool f)
+
+
+void FunctionGraphsModel::setItemName(int curveIndex, const QString& p)
 {
+        Q_ASSERT(curveIndex<items.count());
+
+        
+    items[curveIndex]->setName(p);
+        emit dataChanged(index(curveIndex), index(curveIndex));
+
+
+}
+
+void FunctionGraphsModel::setItemColor(int curveIndex, const QColor& p)
+{
+        Q_ASSERT(curveIndex<items.count());
+
+        
+    items[curveIndex]->setColor(p);
+    emit dataChanged(index(curveIndex), index(curveIndex));
+
+}
+
+
+void FunctionGraphsModel::setItemVisible(int curveIndex, bool f)
+{
+        Q_ASSERT(curveIndex<items.count());
+
+        
     items[curveIndex]->setVisible(f);
     
     emit dataChanged(index(curveIndex), index(curveIndex));
 }
 
+void FunctionGraphsModel::setItemPlotStyle(int curveIndex, PlotStyle ps)
+{
+        Q_ASSERT(curveIndex<items.count());
 
+        
+    items[curveIndex]->setPlotStyle(ps);
+    
+    emit dataChanged(index(curveIndex), index(curveIndex));
+
+}
+
+
+void FunctionGraphsModel::setItemParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
+{
+    Q_ASSERT(curveIndex<items.count());
+    items[curveIndex]->setInterval(argname, min, max);
+    emit dataChanged(index(curveIndex), index(curveIndex));
+
+}
+
+void FunctionGraphsModel::setItemParameterInterval(int curveIndex, const QString &argname, double min, double max)
+{
+    Q_ASSERT(curveIndex<items.count());
+    
+    items[curveIndex]->setInterval(argname, min, max);
+    emit dataChanged(index(curveIndex), index(curveIndex));
+
+}
+
+
+bool FunctionGraphsModel::setItem(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
+{
+    Q_ASSERT(curveIndex<items.count());
+    
+
+    if (setItemExpression(curveIndex, functionExpression))
+    {
+        setItemName(curveIndex, name);
+        setItemColor(curveIndex, col);
+    }
+
+    return false;
+}

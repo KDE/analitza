@@ -66,6 +66,29 @@ View3D::View3D(QWidget *parent)
     setGridIsDrawn(true);
 }
 
+View3D::View3D(FunctionGraphsModel* m, QWidget* parent): QGLViewer(parent)
+    , m_drawingType(Solid)
+    , m_color(Qt::white), m_functionsFilterProxyModel(0)
+{
+//     logo = 0;
+    xRot = 0;
+    yRot = 0;
+    zRot = 0;
+
+    
+    camara_x = camara_y = 0;
+    camara_z = -5;
+//     logo = NULL;
+    
+    
+    num=1000;
+    dlnum=1000;
+    qtGreen = QColor::fromCmykF(0.40, 0.0, 1.0, 0.0);
+    qtPurple = QColor::fromCmykF(0.39, 0.39, 0.0, 0.0);
+
+    setGridIsDrawn(true);
+}
+
 void View3D::clearDisplayLists()
 {
 
@@ -132,7 +155,7 @@ void View3D::setSpaceId(const QString &spaceId)
     generateDisplayLists();
 }*/
 
-void View3D::setFunctionsModel(FunctionsFilterProxyModel *functionsFilterProxyModel)
+void View3D::setFunctionsModel(FunctionGraphsModel *functionsFilterProxyModel)
 {
 //     m_functionsFilterProxyModel = functionsFilterProxyModel;
 //     FunctionsModel *functionModel = static_cast<FunctionsModel*>(m_functionsFilterProxyModel->sourceModel());

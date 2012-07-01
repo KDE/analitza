@@ -34,7 +34,6 @@ class FunctionGraphsModel;
 #define MAXALONG  64
 
 typedef GLfloat point3[3];
-class FunctionsFilterProxyModel;
 
 // class Solver3D;
 class ANALITZAPLOT_EXPORT View3D : public QGLViewer
@@ -54,8 +53,12 @@ private:
 
 public:
     View3D(QWidget *parent = 0);
+    View3D(FunctionGraphsModel *m, QWidget *parent = 0);
+
+    
+    
 //     void setSpaceId(const QString &spaceId);
-    void setFunctionsModel(FunctionsFilterProxyModel *functionsFilterProxyModel);
+    void setFunctionsModel(FunctionGraphsModel *m);
 
 public slots:
 //     void updateSurface(const FunctionGraph &function);

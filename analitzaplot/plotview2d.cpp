@@ -39,9 +39,25 @@
 #include <QtGui/qitemselectionmodel.h>
 
 Graph2D::Graph2D(QWidget *parent)
-:QWidget(parent), FunctionsPainter(0, size())
+:QWidget(parent), FunctionsPainter(size())
 {
+    this->setFocusPolicy(Qt::ClickFocus);
+    this->setCursor(Qt::CrossCursor);
     
+    this->setMouseTracking(!m_readonly);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    
+    defViewport = QRectF(QPointF(-12., 10.), QSizeF(24., -20.));
+    resetViewport();
+    
+    this->setAutoFillBackground(false);
+    
+    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+        this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+    connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+        this, SLOT(addFuncs(QModelIndex,int,int)));
+    connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
+        this, SLOT(removeFuncs(QModelIndex,int,int)));
 }
 
 
@@ -212,6 +228,7 @@ void Graph2D::mouseReleaseEvent(QMouseEvent *e)
 
 void Graph2D::mouseMoveEvent(QMouseEvent *e)
 {
+    
     mark=calcImage(fromWidget(e->pos()));
     
     if(!m_readonly && mode==Pan && ant != toViewport(e->pos())){
@@ -342,6 +359,8 @@ void Graph2D::viewportChanged()
 
 int Graph2D::currentFunction() const
 {
+    if (!model()) return -1; // guard
+    
     int ret=-1;
     if(m_selection) {
         ret=m_selection->currentIndex().row();

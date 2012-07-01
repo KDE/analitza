@@ -44,6 +44,10 @@ QColor const FunctionsPainter::m_derivativeColor(90,90,160);
 
 
 
+FunctionsPainter::FunctionsPainter(const QSizeF& size)
+    : m_squares(true), m_keepRatio(true), m_size(size), m_model(0)
+{}
+
 FunctionsPainter::FunctionsPainter(PlaneCurvesModel* model, const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model)
 {}
@@ -109,6 +113,7 @@ void FunctionsPainter::drawPolarAxes(QPainter *p)
 
 void FunctionsPainter::drawCartesianAxes(QPainter *painter)
 {
+    
     QPen ceixos;
     const QPointF center = toWidget(QPointF(0.,0.));
     
@@ -170,6 +175,7 @@ void FunctionsPainter::drawCartesianAxes(QPainter *painter)
 
 void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
 {
+
     QPen pfunc(QColor(0,150,0), 2);
     
     QPainter p;
@@ -183,12 +189,20 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
         //los cast producto de los itemroles son demaciado largos ... nada elegantes
 //         t=(CoordinateSystem)m_model->data(m_model->index(current), FunctionGraphModel::CoordinateSystemRole).toInt(); // editFunction(current)->axeType();
     //comparado con esto que es mucho mejor
-        t=m_model->item(current)->coordinateSystem();
+    
+
+        if (!m_model) t = Cartesian; 
+        else
+            t=m_model->item(current)->coordinateSystem();
     
     
     drawAxes(&p, t);
     p.setRenderHint(QPainter::Antialiasing, true);
     
+    if (!m_model) return; // guard
+
+
+
     int k=0;
 //     PlaneCurveModel::const_iterator it=m_model->constBegin(), itEnd=m_model->constEnd();
 //     for (; it!=itEnd; ++it, ++k ) {
@@ -282,6 +296,8 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
 
 void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModelIndex& endIdx)
 {
+    if (!m_model) return; // guard
+
     Q_ASSERT(startIdx.isValid() && endIdx.isValid());
     int start=startIdx.row(), end=endIdx.row();
     
@@ -294,6 +310,8 @@ void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModel
 
 QPointF FunctionsPainter::calcImage(const QPointF& ndp) const
 {
+    if (!m_model) return QPointF(); // guard
+    
     //DEPRECATED if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
     if (m_model->item(currentFunction())->isVisible())
         return m_model->curveImage(currentFunction(), ndp).first;
@@ -346,6 +364,8 @@ void FunctionsPainter::updateScale(bool repaint)
 
 void FunctionsPainter::setViewport(const QRectF& vp, bool repaint)
 {
+
+    
     userViewport = vp;
     Q_ASSERT(userViewport.top()>userViewport.bottom());
     Q_ASSERT(userViewport.right()>userViewport.left());
@@ -357,6 +377,8 @@ void FunctionsPainter::setViewport(const QRectF& vp, bool repaint)
 
 QLineF FunctionsPainter::slope(const QPointF& dp) const
 {
+    if (!m_model) return QLineF(); // guard
+
     if (m_model->item(currentFunction())->isVisible())
     {
         QLineF ret = m_model->curveTangent(currentFunction(), dp);

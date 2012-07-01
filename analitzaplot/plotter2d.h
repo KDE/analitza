@@ -29,7 +29,8 @@ class PlaneCurvesModel;
 class ANALITZAPLOT_EXPORT FunctionsPainter
 {
     public:
-        
+                FunctionsPainter(const QSizeF& size);
+
         FunctionsPainter(PlaneCurvesModel* model, const QSizeF& size);
         virtual ~FunctionsPainter();
         
