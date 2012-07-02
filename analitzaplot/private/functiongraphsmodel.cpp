@@ -21,6 +21,7 @@
 
 #include "functiongraphsmodel.h"
 #include "functiongraph.h"
+#include <surface.h>
 
 
 #include "analitza/analyzer.h"
@@ -312,3 +313,12 @@ bool FunctionGraphsModel::setItem(int curveIndex, const Analitza::Expression &fu
 
     return false;
 }
+
+void FunctionGraphsModel::updateItem(int curveIndex, const Box& viewport)
+{
+    Q_ASSERT(curveIndex<items.count());
+    
+    static_cast<Surface*>(items[curveIndex])->update(viewport);
+
+}
+

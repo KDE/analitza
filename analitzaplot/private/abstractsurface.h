@@ -36,10 +36,9 @@ public:
     virtual ~AbstractSurface();
 
     //Own
-    virtual void update(/*frumtum*/) = 0;
-    QVector<int> indexes;
-    QVector<QVector3D> points;
-    
+    virtual void update(const Box &viewport) = 0;
+    QVector<Face> faces;
+
 protected:
     AbstractSurface() {}
     AbstractSurface(const AbstractSurface& other) {}

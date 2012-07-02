@@ -54,22 +54,19 @@ bool Surface::reset(const Analitza::Expression& functionExpression)
     return FunctionGraph::reset(functionExpression, 3);
 }
 
-const QVector< int >& Surface::indexes() const
-{
-    
-    return static_cast<AbstractSurface*>(backend())->indexes;
-}
-    
-const QVector<QVector3D> & Surface::points() const
+
+const QVector< Face >& Surface::faces() const
 {
     Q_ASSERT(backend());
 
-    return static_cast<AbstractSurface*>(backend())->points;
+    return static_cast<AbstractSurface*>(backend())->faces;
 }
 
 void Surface::update(const Box& viewport)
 {
     Q_ASSERT(backend());
     
-//     static_cast<AbstractSurface*>(backend())->update(viewport);
+    static_cast<AbstractSurface*>(backend())->update(viewport);
+    
+
 }

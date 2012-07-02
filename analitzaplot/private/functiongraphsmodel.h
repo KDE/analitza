@@ -78,6 +78,8 @@ public:
     //setItem por conv
     bool setItem(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
 
+    void updateItem(int curveIndex, const Box &viewport);
+
 protected:    
     QList<FunctionGraph*> items;
     

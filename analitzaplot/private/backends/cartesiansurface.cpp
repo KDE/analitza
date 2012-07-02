@@ -49,9 +49,9 @@ public:
     ICON_NAME("none")
     EXAMPLES("x*x+y,x+y*sin(x),x*y")
     
-    
     //Own
-    void update();
+
+    void update(const Box& viewport);
     
 private:
     double UU(int i);
@@ -73,24 +73,27 @@ private:
     QVector3D theStrip[MAXSTRIP][2];
 };
 
-
-
-
-
-
-void CartesianSurface::update()
+void CartesianSurface::update(const Box& viewport)
 {
-
     usteps=MAXALONG;
     vsteps=MAXAROUND;
-}
 
+    static QPair<double, double> intervalx = interval("x");
+    static QPair<double, double> intervaly = interval("y");
+
+    umin = intervalx.first;
+    umax = intervalx.second;
+    vmin = intervaly.first;
+    vmax = intervalx.second;
+
+    faces.clear();
+    doSurface();
+}
 
 double CartesianSurface::UU(int i)
 {
     return (umin+((umax-umin)/(float)(usteps-1))*(float)(i));
 }
-
 
 double CartesianSurface::VV(int j)
 {
@@ -100,23 +103,11 @@ double CartesianSurface::VV(int j)
 QVector3D CartesianSurface::shape(float u,float v)
 {
     arg("x")->setValue(u);
-    arg("x")->setValue(v);
+    arg("y")->setValue(v);
+    
+//     qDebug() << QVector3D(u, v, analyzer->calculateLambda().toReal().value());
 
-    Analitza::Expression res = analyzer->calculateLambda();
-
-    Analitza::Object* vo = res.tree();
-    Analitza::Vector* vec = dynamic_cast<Analitza::Vector*>(vo);
-
-    if (vec)
-    {
-        Analitza::Cn* x = static_cast<Analitza::Cn*>(vec->at(0));
-        Analitza::Cn* y = static_cast<Analitza::Cn*>(vec->at(1));
-        Analitza::Cn* z = static_cast<Analitza::Cn*>(vec->at(2));
-
-        return QVector3D(x->value(), y->value(), z->value());
-    }
-
-    return QVector3D();
+    return QVector3D(u, v, analyzer->calculateLambda().toReal().value());
 }
 
 void CartesianSurface::doSurface()
@@ -203,46 +194,30 @@ void CartesianSurface::doStrip(int n, const QVector3D &p0,  const QVector3D &p1,
 
 void CartesianSurface::_emit( QVector3D *buffer )
 {
-    //TODO normal array too
-//     surfpoint Normal, diff1, diff2;
-// 
-//     diff1.x = buffer[1].x - buffer[0].x;
-//     diff1.y = buffer[1].y - buffer[0].y;
-//     diff1.z = buffer[1].z - buffer[0].z;
-//     diff2.x = buffer[2].x - buffer[1].x;
-//     diff2.y = buffer[2].y - buffer[1].y;
-//     diff2.z = buffer[2].z - buffer[1].z;
-//     Normal.x = diff1.y*diff2.z - diff2.y*diff1.z;
-//     Normal.y = diff1.z*diff2.x - diff1.x*diff2.z;
-//     Normal.z = diff1.x*diff2.y - diff1.y*diff2.x;
-// 
-//     switch (m_drawingType)
-//     {
-//     case Function::Solid:
-//         glBegin(GL_POLYGON);
-//         break;
-//     case Function::Wired:
-//         glBegin(GL_LINES);
-//         break;
-//     case Function::Dots:
-//         glBegin(GL_POINTS);
-//         break;
-// 
-//     }
-// 
-// 
-//     glNormal3f(Normal.x,Normal.y,Normal.z);
-//     glVertex3f(buffer[0].x,buffer[0].y,buffer[0].z);
-//     glVertex3f(buffer[1].x,buffer[1].y,buffer[1].z);
-//     glVertex3f(buffer[2].x,buffer[2].y,buffer[2].z);
-//     glEnd();
-// 
-//     glDisable(GL_POLYGON_OFFSET_FILL);
+    QVector3D Normal, diff1, diff2;
 
+    diff1 = QVector3D(buffer[1].x() - buffer[0].x(),
+                      buffer[1].y() - buffer[0].y(),
+                      buffer[1].z() - buffer[0].z());
+    
+    diff2 = QVector3D(buffer[2].x() - buffer[1].x(),
+                      buffer[2].y() - buffer[1].y(),
+                      buffer[2].z() - buffer[1].z());
+    
+    Normal = QVector3D(diff1.y()*diff2.z() - diff2.y()*diff1.z(),
+                       diff1.z()*diff2.x() - diff1.x()*diff2.z(),
+                       diff1.x()*diff2.y() - diff1.y()*diff2.x());
+
+    Face face;
+    face.normal = Normal;
+    face.p1 = buffer[0];
+    face.p2 = buffer[1];
+    face.p3 = buffer[2];     
+    
+//     qDebug() << face.p1 << face.p2 << face.p3;
+    
+    faces.append(face);
 }
 
-
 REGISTER_SURFACE(CartesianSurface)
-
-
 

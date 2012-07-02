@@ -176,7 +176,6 @@ void FunctionsPainter::drawCartesianAxes(QPainter *painter)
 
 void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
 {
-
     QPen pfunc(QColor(0,150,0), 2);
     
     QPainter p;

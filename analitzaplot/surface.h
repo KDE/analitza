@@ -36,10 +36,9 @@ public:
     bool reset(const Analitza::Expression& functionExpression);
 
     //Own
-    const QVector<int> & indexes() const;
-    const QVector<QVector3D> & points() const;
     void update(const Box &viewport);
-
+    const QVector<Face> & faces() const;
+    
 protected:
     Surface() {}
     Surface(const Surface &other) {}

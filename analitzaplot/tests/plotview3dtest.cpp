@@ -57,8 +57,8 @@ int main(int argc, char *argv[])
     view3d->setModel(model);
     view3d->setSelectionModel(selection);
     
-    model->addItem(Analitza::Expression("(x,y)->x*x+y*y"),3, "Hola", Qt::cyan);
-    model->addItem(Analitza::Expression("t->vector{t*t, t, t*t}"),3, "Hola", Qt::yellow);
+    model->addItem(Analitza::Expression("(x,y)->(x*x+y*y)"),3, "Hola", Qt::cyan);
+//     model->addItem(Analitza::Expression("t->vector{t*t, t, t*t}"),3, "Hola", Qt::yellow);
 
 //     if (model->rowCount()>0)
 //     {

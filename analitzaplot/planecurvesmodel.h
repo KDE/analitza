@@ -45,7 +45,7 @@ public:
     bool setCurve(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
 
     //DONT EMIT dataChanged ... solo emitir cuando se cambia EXTERNAMENTE la curva NO cuando el BACKEND CAMBIA la data interna
-    void updateCurve(int curveIndex, const QRect& viewport); //emit setdata signal
+    void updateCurve(int curveIndex, const QRect& viewport);
     
     QPair<QPointF, QString> curveImage(int curveIndex, const QPointF &mousepos); // image of curve
     QLineF curveTangent(int curveIndex, const QPointF &mousepos); //tangent to curve

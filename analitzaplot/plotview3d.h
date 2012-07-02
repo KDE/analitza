@@ -54,6 +54,9 @@ private:
 
     FunctionGraphsModel *m_model;
     QItemSelectionModel* m_selection;
+    
+//     <graphid, displaylistid>
+    QMap<QString, GLuint> m_displayLists;
 };
 
 #endif
