@@ -154,10 +154,10 @@ void FunctionY::calculateValues(double l_lim, double r_lim)
 {
     jumps.clear();
     points.clear();
-//     points.reserve(resolution()); //TODO port
+//     points.reserve(resolution());
     
-//     double step= double((-l_lim+r_lim)/resolution()); //TODO port
-    double step = 0.1;
+//     double step= double((-l_lim+r_lim)/resolution());
+    double step = double((-l_lim+r_lim)/500);
     
     bool jumping=true;
     for(double x=l_lim; x<r_lim-step; x+=step) {
@@ -181,7 +181,7 @@ void FunctionY::calculateValues(double l_lim, double r_lim)
             }
         }
     }
-//  qDebug() << "juuuumps" << jumps << resolution();
+//  qDebug() << "juuuumps" << m_jumps << resolution();
 }
 
 ///

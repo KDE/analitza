@@ -74,13 +74,9 @@ static bool traverse(double p1, double p2, double next)
 {
     static const double delta=3;
     double diff=p2-p1, diff2=next-p2;
-    bool ret=false;
-
-    if(diff>0 && diff2<-delta)
-        ret=true;
-    else if(diff<0 && diff2>delta)
-        ret=true;
-
+    
+    bool ret = (diff>0 && diff2<-delta) || (diff<0 && diff2>delta);
+    
     return ret;
 }
 

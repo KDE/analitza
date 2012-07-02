@@ -45,11 +45,11 @@ QColor const FunctionsPainter::m_derivativeColor(90,90,160);
 
 
 FunctionsPainter::FunctionsPainter(const QSizeF& size)
-    : m_squares(true), m_keepRatio(true), m_size(size), m_model(0)
+    : m_squares(true), m_keepRatio(true), m_size(size), m_model(0), m_dirty(true)
 {}
 
 FunctionsPainter::FunctionsPainter(PlaneCurvesModel* model, const QSizeF& size)
-    : m_squares(true), m_keepRatio(true), m_size(size), m_model(model)
+    : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true)
 {}
 
 FunctionsPainter::~FunctionsPainter()
@@ -185,13 +185,13 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
     
     int current=currentFunction();
     CoordinateSystem t=Cartesian;
-    if(current>=0)
+//     if(current>=0)
         //los cast producto de los itemroles son demaciado largos ... nada elegantes
 //         t=(CoordinateSystem)m_model->data(m_model->index(current), FunctionGraphModel::CoordinateSystemRole).toInt(); // editFunction(current)->axeType();
     //comparado con esto que es mucho mejor
     
 
-        if (!m_model) t = Cartesian; 
+        if (!m_model || current == -1) t = Cartesian; 
         else
             t=m_model->item(current)->coordinateSystem();
     
@@ -199,16 +199,19 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
     drawAxes(&p, t);
     p.setRenderHint(QPainter::Antialiasing, true);
     
-    if (!m_model) return; // guard
-
-
+    if (!m_model && m_dirty) return; // guard // si tenemos el model y ademas las funciones estan actualizadas pasamos este if y pintamos
 
     int k=0;
 //     PlaneCurveModel::const_iterator it=m_model->constBegin(), itEnd=m_model->constEnd();
 //     for (; it!=itEnd; ++it, ++k ) {
     for (int k = 0; k < m_model->rowCount(); ++k )
     {
-        if (!m_model->item(k)->isVisible())
+        
+        //NOTE GSOC POINTS=0
+        //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,
+        //por ejemplo en el caso de parametric se hace un clip para ver si la curva esta dentro o no del viewport
+        //entonces ademas de verificar que es sible si debe vericiar que existan puntos antes de pintar una funcion
+        if (!m_model->item(k)->isVisible() || m_model->curve(k)->points().isEmpty())
             continue;
         
         pfunc.setColor(m_model->item(k)->color());
@@ -221,15 +224,9 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
         unsigned int pointsCount = vect.count();
         QPointF ultim(toWidget(vect[0]));
         
-        //TODO port see new implicitcurve
-//         bool allJumps = it->allDisconnected();
-        
         int nextjump;
-//         if(allJumps)
-//             nextjump = 0;
-//         else
-        int ff_ = jumps.first(); jumps.remove(0); // GSCO instead of jumps.takeFirst()
-            nextjump = jumps.isEmpty() ? -1 : ff_;
+        nextjump = jumps.isEmpty() ? -1 : jumps.first();
+        if (!jumps.isEmpty()) jumps.remove(0);
         
 #ifdef DEBUG_GRAPH
         qDebug() << "---------" << jumps.count()+1;
@@ -272,8 +269,8 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
 //                     if(allJumps)
 //                         nextjump += 2;
 //                     else
-                        int fff_ = jumps.first(); jumps.remove(0); // GSCO instead of jumps.takeFirst()
-                        nextjump = jumps.isEmpty() ? -1 : fff_;
+                        nextjump = jumps.isEmpty() ? -1 : jumps.first();
+                        if (!jumps.isEmpty()) jumps.remove(0);
                     
                 } while(!jumps.isEmpty() && jumps.first()==nextjump+1);
 
@@ -302,15 +299,18 @@ void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModel
     int start=startIdx.row(), end=endIdx.row();
     
     for(int i=start; i<=end; i++) {
-        m_model->updateCurve(i, toBiggerRect(viewport));
+        QRect a = toBiggerRect(viewport);
+        m_model->updateCurve(i, a);
     }
+    
+    m_dirty = false;
     
     forceRepaint();
 }
 
 QPointF FunctionsPainter::calcImage(const QPointF& ndp) const
 {
-    if (!m_model) return QPointF(); // guard
+    if (!m_model || currentFunction() == -1) return QPointF(); // guard
     
     //DEPRECATED if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
     if (m_model->item(currentFunction())->isVisible())
@@ -350,13 +350,13 @@ void FunctionsPainter::updateScale(bool repaint)
         viewport.setLeft(userViewport.left()+mx);
         viewport.setTop(userViewport.bottom()-my);
         viewport.setWidth(newW);
-        viewport.setHeight(-newH);
+        viewport.setHeight(-newH); //NOTE WARNING POR QUE DISTANCIA NEGATIVA???
         //Commented because precision could make the program crash
 //      Q_ASSERT(userViewport.center() == viewport.center());
     }
     
     if(repaint) {
-        if(m_model && m_model->rowCount())
+        if(m_model && m_model->rowCount()>0)
             updateFunctions(m_model->index(0,0), m_model->index(m_model->rowCount()-1,0));
         forceRepaint();
     }
@@ -364,8 +364,6 @@ void FunctionsPainter::updateScale(bool repaint)
 
 void FunctionsPainter::setViewport(const QRectF& vp, bool repaint)
 {
-
-    
     userViewport = vp;
     Q_ASSERT(userViewport.top()>userViewport.bottom());
     Q_ASSERT(userViewport.right()>userViewport.left());
@@ -377,7 +375,7 @@ void FunctionsPainter::setViewport(const QRectF& vp, bool repaint)
 
 QLineF FunctionsPainter::slope(const QPointF& dp) const
 {
-    if (!m_model) return QLineF(); // guard
+    if (!m_model || currentFunction() == -1) return QLineF(); // guard
 
     if (m_model->item(currentFunction())->isVisible())
     {

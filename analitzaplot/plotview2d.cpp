@@ -54,12 +54,13 @@ Graph2D::Graph2D(QWidget *parent)
     
     this->setAutoFillBackground(false);
     
-    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-        this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-    connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-        this, SLOT(addFuncs(QModelIndex,int,int)));
-    connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
-        this, SLOT(removeFuncs(QModelIndex,int,int)));
+    //NOTE remove next iter
+//     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+//         this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+//     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+//         this, SLOT(addFuncs(QModelIndex,int,int)));
+//     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
+//         this, SLOT(removeFuncs(QModelIndex,int,int)));
 }
 
 
@@ -369,6 +370,17 @@ int Graph2D::currentFunction() const
     }
     
     return ret;
+}
+
+void Graph2D::modelChanged()
+{
+    //TODO disconnect prev model
+    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+        this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+    connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+        this, SLOT(addFuncs(QModelIndex,int,int)));
+    connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
+        this, SLOT(removeFuncs(QModelIndex,int,int)));
 }
 
 void Graph2D::setSelectionModel(QItemSelectionModel* selection)

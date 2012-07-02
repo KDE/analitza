@@ -183,6 +183,8 @@ bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression
 
         //TODO
         items.append(new FunctionGraph(functionExpression, /*variablesModule, */ spaceDimension, name, col));
+        
+       this->
 
         endInsertRows();
         

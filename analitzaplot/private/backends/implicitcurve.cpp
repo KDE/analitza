@@ -75,19 +75,28 @@ private:
 
 void FunctionImplicit::update(const QRect& vp)
 {
-    QRectF viewport(vp);
+//     QRectF viewport(vp);
+   
+    points.clear();
+    jumps.clear();
     
-    QList<QPointF> temppts;
+//     QList<QPointF> temppts;
 
-    temppts.clear();
+//     temppts.clear();
 
 //     int resolutionForImplicitCurves = 20*m_resolution;
+//     double area = abs(vp.size().height()*vp.size().width());
     int resolutionForImplicitCurves = 256;
+//     qDebug() << resolutionForImplicitCurves;
+    //10 es el min
+    
+//     if (resolutionForImplicitCurves < 100) resolutionForImplicitCurves = 100; //set the min res
+    
+//     qDebug() << area<<resolutionForImplicitCurves;
 
     //TODO CACHE en intervalvalues!!!
     static QPair<double, double> intervalx = interval("x");
     static QPair<double, double> intervaly = interval("y");
-    
     
     qreal w = intervalx.second - intervalx.first;
     qreal h = intervaly.second - intervaly.first;
@@ -142,8 +151,66 @@ void FunctionImplicit::update(const QRect& vp)
 
             if (((!cen) || (nPos >= 4)) && ((cen) || (nPos <= 0) )) continue;
 
-            temppts.append(QPointF(_xRelative, yNext));
+            //temppts.append(QPointF(_xRelative, yNext));
+//             addPoint(QPointF(_xRelative, yNext));
             
+            //simple poly procs
+            
+            if (west && cen && east && !south && north)
+            {
+                points.append(QPointF(_xRelative, yNext+dh));
+                points.append(QPointF(_xRelative+dw, yNext+dh));
+                jumps.append(points.size());
+            }
+            
+            if (west && cen && east && south && !north) // -
+            {
+                points.append(QPointF(_xRelative, yNext));
+                points.append(QPointF(_xRelative+dw, yNext));
+                jumps.append(points.size());
+            }
+            
+            if (!west && cen && east && south && north)
+            {
+                points.append(QPointF(_xRelative+dw, yNext));
+                points.append(QPointF(_xRelative+dw, yNext+dh));
+                jumps.append(points.size());
+            }
+
+            if (west && cen && !east && south && north) // |
+            {
+                points.append(QPointF(_xRelative, yNext));
+                points.append(QPointF(_xRelative, yNext+dh));
+                jumps.append(points.size());
+            }
+// 
+            if (!south && west && cen && !east && north) // /
+            {
+                points.append(QPointF(_xRelative, yNext));
+                points.append(QPointF(_xRelative+dw, yNext+dh));
+                jumps.append(points.size());
+            }
+
+            if (!south && !west && cen && east && north)
+            {
+                points.append(QPointF(_xRelative, yNext+dh));
+                points.append(QPointF(_xRelative+dw, yNext));
+                jumps.append(points.size());
+            }
+
+            if (south && west && cen && !east && !north) // ~/
+            {
+                points.append(QPointF(_xRelative, yNext+dh));
+                points.append(QPointF(_xRelative+dw, yNext));
+                jumps.append(points.size());
+            }
+            
+            if (south && !west && cen && east && !north)
+            {
+                points.append(QPointF(_xRelative, yNext));
+                points.append(QPointF(_xRelative+dw, yNext+dh));
+                jumps.append(points.size());
+            }
         }
 
         QBitArray temp = lastRow;
@@ -151,21 +218,30 @@ void FunctionImplicit::update(const QRect& vp)
         curRow = nextRow;
         nextRow = temp;
     }
+    
+//     points.append(QPointF(5,5));
+//     points.append(QPointF(5,5+dh));
+//     
+//     jumps.append(2);
+// 
+//     points.append(QPointF(0,0));
+//     points.append(QPointF(0+dw,0));
+    
 
-    for (int i = 1; i < temppts.size(); i++)
-    {
-        if (!std::isnan(temppts.at(i).x()) && !std::isnan(temppts.at(i).y()) &&
-                !std::isnan(temppts.at(i).x()) && !std::isnan(temppts.at(i).y()))
-        {
-            if (viewport.contains(temppts.at(i-1)) && viewport.contains(temppts.at(i)))
-            {
-                addPoint(temppts.at(i));
-                jumps.append(temppts.size());
-                addPoint(temppts.at(i) +QPointF(.001, 0.001));
-                jumps.append(temppts.size());
-            }
-        }
-    }
+//     for (int i = 1; i < temppts.size(); i++)
+//     {
+//         if (!std::isnan(temppts.at(i).x()) && !std::isnan(temppts.at(i).y()) &&
+//                 !std::isnan(temppts.at(i).x()) && !std::isnan(temppts.at(i).y()))
+//         {
+//             if (viewport.contains(temppts.at(i-1)) && viewport.contains(temppts.at(i)))
+//             {
+//                 addPoint(temppts.at(i));
+//                 jumps.append(temppts.size());
+//                 addPoint(temppts.at(i) +QPointF(.001, 0.001));
+//                 jumps.append(temppts.size());
+//             }
+//         }
+//     }
 
     if (points.size() <= 2)
     {

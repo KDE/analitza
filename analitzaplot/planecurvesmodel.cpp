@@ -28,6 +28,12 @@
 
 ///
 
+PlaneCurvesModel::PlaneCurvesModel(QObject* parent): FunctionGraphsModel(parent)
+{
+
+}
+
+
 PlaneCurvesModel::PlaneCurvesModel(Analitza::Variables *v, QObject * parent)
     : FunctionGraphsModel(v, parent)
 {
@@ -72,7 +78,8 @@ void PlaneCurvesModel::updateCurve(int curveIndex, const QRect& viewport)
 {
     static_cast<PlaneCurve*>(items[curveIndex])->update(viewport);
 
-    emit dataChanged(index(curveIndex), index(curveIndex));
+    //DONT EMIT dataChanged ... remove for next iter ... solo emitir cuando se cambia EXTERNAMENTE la curva NO cuando el BACKEND CAMBIA la data interna
+//     emit dataChanged(index(curveIndex), index(curveIndex));
 }
 
 QPair< QPointF, QString > PlaneCurvesModel::curveImage(int row, const QPointF& mousepos)

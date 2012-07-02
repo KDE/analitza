@@ -31,6 +31,7 @@ class ANALITZAPLOT_EXPORT PlaneCurvesModel : public FunctionGraphsModel
 Q_OBJECT
 
 public:
+    PlaneCurvesModel(QObject * parent = 0);
     PlaneCurvesModel(Analitza::Variables *v, QObject * parent = 0);
     virtual ~PlaneCurvesModel();
     
@@ -42,7 +43,10 @@ public:
     
     //planecurve setters and calculation/evaluation methods  .. don't forget to emit setdata signal' ... ninguno de estos metodos tiene cont al final
     bool setCurve(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
+
+    //DONT EMIT dataChanged ... solo emitir cuando se cambia EXTERNAMENTE la curva NO cuando el BACKEND CAMBIA la data interna
     void updateCurve(int curveIndex, const QRect& viewport); //emit setdata signal
+    
     QPair<QPointF, QString> curveImage(int curveIndex, const QPointF &mousepos); // image of curve
     QLineF curveTangent(int curveIndex, const QPointF &mousepos); //tangent to curve
 

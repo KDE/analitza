@@ -132,7 +132,7 @@ void FunctionParametric::update(const QRect& viewport)
     
     QPointF curp;
     
-    arg("t")->setValue(dlimit);
+//     arg("t")->setValue(dlimit);
     Expression res;
     
     int i = 0;
@@ -147,16 +147,22 @@ void FunctionParametric::update(const QRect& viewport)
         
         curp = QPointF(x.value(), y.value());
         
-        if (vp.contains(curp))
-        {
+        //NOTE GSOC POINTS=0
+        //este fragmento hace que cuando la curva no este en el viewport 
+        //no genera puntos y esto hace que falle en el assert del update al verificar que existan mas de 2 puntos
+        // la solucion es comentar el assert y el en plotter2d verificar que existan puntos antes de dibujar
+        //KALGEBRA funciona bien en modo release pero los aserts no se cumplen correctamente
+        //TODO mejora el clipping ... la idea es buena pero no causa buenos resultados
+//         if (vp.contains(curp))
+//         {
             addPoint(curp);
-            jlock = false;
-        }
-        else if (!jlock)
-        {
-            jumps.append(i);
-            jlock = true;
-        }
+//             jlock = false;
+//         }
+//         else if (!jlock)
+//         {
+//             jumps.append(i);
+//             jlock = true;
+//         }
         
         //      objectWalker(vo);
         Q_ASSERT(res.isVector());

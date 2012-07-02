@@ -29,8 +29,7 @@ class PlaneCurvesModel;
 class ANALITZAPLOT_EXPORT FunctionsPainter
 {
     public:
-                FunctionsPainter(const QSizeF& size);
-
+        FunctionsPainter(const QSizeF& size);
         FunctionsPainter(PlaneCurvesModel* model, const QSizeF& size);
         virtual ~FunctionsPainter();
         
@@ -38,7 +37,7 @@ class ANALITZAPLOT_EXPORT FunctionsPainter
         virtual void forceRepaint() = 0;
         virtual void viewportChanged() = 0;
         virtual int currentFunction() const = 0;
-        virtual void modelChanged() {}
+        virtual void modelChanged() = 0;
         
         /** Sets whether we will see a grid or only the axes. */
         void setSquares(bool newSquare) { m_squares=newSquare; forceRepaint(); }
@@ -92,7 +91,7 @@ class ANALITZAPLOT_EXPORT FunctionsPainter
         double rang_x, rang_y;
         bool m_squares;
         bool m_keepRatio;
-        bool m_dirty;
+        bool m_dirty; // or m_updated; como ahora contamos con setmodel, es necesario que se actualicen los datos antes de pintar, es necesario que no sea dirty
         QRectF viewport;
         QRectF userViewport;
         QSizeF m_size;

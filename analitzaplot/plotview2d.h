@@ -115,6 +115,7 @@ signals:
 private:
     virtual void viewportChanged();
     virtual int currentFunction() const;
+    virtual void modelChanged();
     
     //painting
     QPixmap buffer;

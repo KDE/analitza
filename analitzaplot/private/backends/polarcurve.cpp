@@ -78,7 +78,8 @@ void FunctionPolar::update(const QRect& viewport)
     
 //     analyzer.setStack(m_runStack);
 //     double inv_res= double((ulimit-dlimit)/resolution()); TODO
-       double inv_res = 0.1;
+    double inv_res = double((ulimit-dlimit)/500);
+    
     double final=ulimit-inv_res;
     for(double th=dlimit; th<final; th+=inv_res) {
         arg("q")->setValue(th);
