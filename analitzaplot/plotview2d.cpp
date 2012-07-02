@@ -385,6 +385,9 @@ void Graph2D::modelChanged()
 
 void Graph2D::setSelectionModel(QItemSelectionModel* selection)
 {
+    Q_ASSERT(selection);
+    Q_ASSERT(selection->model() == model());
+    
     m_selection = selection;
     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }

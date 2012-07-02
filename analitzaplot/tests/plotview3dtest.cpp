@@ -23,21 +23,22 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 
-#include "analitzaplot/planecurve.h"
-#include "analitzaplot/planecurvesmodel.h"
-#include "analitzaplot/plotview2d.h"
+#include "analitzaplot/surface.h"
+#include "analitzaplot/spacecurve.h"
+#include "analitzaplot/private/functiongraphsmodel.h"
+#include "analitzaplot/plotview3d.h"
 
 
 int main(int argc, char *argv[])
 {
-    KAboutData aboutData("PlotView2DTest",
+    KAboutData aboutData("PlotView3DTest",
                          0,
-                         ki18n("PlotView2DTest"),
+                         ki18n("PlotView3DTest"),
                          "1.0",
-                         ki18n("PlotView2DTest"),
+                         ki18n("PlotView3DTest"),
                          KAboutData::License_LGPL_V3,
                          ki18n("(c) 2012 Percy Camilo T. Aucahuasi"),
-                         ki18n("PlotView2DTest"),
+                         ki18n("PlotView3DTest"),
                          "http://www.kde.org");
 
     KCmdLineArgs::init(argc, argv, &aboutData);
@@ -48,28 +49,24 @@ int main(int argc, char *argv[])
     
     //BEGIN test calls
 
-    PlaneCurvesModel *model = new PlaneCurvesModel(mainWindow);
+    FunctionGraphsModel *model = new FunctionGraphsModel(mainWindow);
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
-    Graph2D *view2d = new Graph2D(mainWindow);
-//     view2d->setReadOnly(true);
-    view2d->setSquares(false);
-    view2d->setModel(model);
-    view2d->setSelectionModel(selection);
+    View3D *view3d = new View3D(mainWindow);
+    view3d->setModel(model);
+    view3d->setSelectionModel(selection);
     
-    model->addCurve(Analitza::Expression("x->x*x"), "Hola", Qt::cyan);
-    model->addCurve(Analitza::Expression("q->q+2"), "Hola", Qt::green);
-    model->addCurve(Analitza::Expression("t->vector{t*t, t}"), "Hola", Qt::yellow);
-    model->addCurve(Analitza::Expression("(x,y)->5*(x**2+y**2)**3-15*(x*y*72)**2"), "chau", Qt::blue);
+    model->addItem(Analitza::Expression("(x,y)->x*x+y*y"),3, "Hola", Qt::cyan);
+    model->addItem(Analitza::Expression("t->vector{t*t, t, t*t}"),3, "Hola", Qt::yellow);
 
-    if (model->rowCount()>0)
-    {
-        selection->setCurrentIndex(model->index(model->rowCount()-1), QItemSelectionModel::Select);
-    }
+//     if (model->rowCount()>0)
+//     {
+//         selection->setCurrentIndex(model->index(model->rowCount()-1), QItemSelectionModel::Select);
+//     }
 
     //END test calls
     
-    mainWindow->setCentralWidget(view2d);
+    mainWindow->setCentralWidget(view3d);
 
     mainWindow->show();
 

@@ -21,6 +21,7 @@
 #include "private/functiongraphsmodel.h"
 #include <QVector3D>
 #include <QVector2D>
+#include <qitemselectionmodel.h>
 #include <QVector>
 #include "analitza/analyzer.h"
 #include "analitza/value.h"
@@ -43,6 +44,7 @@ View3D::View3D(QWidget *parent)
     : QGLViewer(parent)
     , m_drawingType(Solid)
     , m_color(Qt::white)
+    ,m_model(0), m_selection(0)
 {
     
 
@@ -68,7 +70,8 @@ View3D::View3D(QWidget *parent)
 
 View3D::View3D(FunctionGraphsModel* m, QWidget* parent): QGLViewer(parent)
     , m_drawingType(Solid)
-    , m_color(Qt::white), m_functionsFilterProxyModel(0)
+    , m_color(Qt::white)  
+    ,m_model(m), m_selection(0)
 {
 //     logo = 0;
     xRot = 0;
@@ -125,18 +128,18 @@ void View3D::clearDisplayLists()
 
 void View3D::generateDisplayLists()
 {
-    for (int i = 0; i < m_functionsFilterProxyModel->rowCount(); i+=1)
+    for (int i = 0; i < m_model->rowCount(); i+=1)
     {
-        QModelIndex mi = m_functionsFilterProxyModel->index(i,0);
+        QModelIndex mi = m_model->index(i,0);
         int sourceRow = mi.row();
 
 
         
-        if (m_functionsFilterProxyModel->item(sourceRow)->spaceDimension() == 2) continue;
+        if (m_model->item(sourceRow)->spaceDimension() == 2) continue;
 
 //         Solver3D *solver = static_cast<Solver3D*>(functionModel->funclist.at(sourceRow).solver());
 
-        if (!m_functionsFilterProxyModel->item(sourceRow)->isVisible()) continue;
+        if (!m_model->item(sourceRow)->isVisible()) continue;
 
 
 
@@ -155,7 +158,7 @@ void View3D::setSpaceId(const QString &spaceId)
     generateDisplayLists();
 }*/
 
-void View3D::setFunctionsModel(FunctionGraphsModel *functionsFilterProxyModel)
+void View3D::setModel(FunctionGraphsModel *model)
 {
 //     m_functionsFilterProxyModel = functionsFilterProxyModel;
 //     FunctionsModel *functionModel = static_cast<FunctionsModel*>(m_functionsFilterProxyModel->sourceModel());
@@ -168,9 +171,44 @@ void View3D::setFunctionsModel(FunctionGraphsModel *functionsFilterProxyModel)
 
 
 //     connect(functionModel, SIGNAL(functionRemoved(QUuid,QString)), SLOT(removeSurface(QUuid,QString)));
+///
 
+    m_model=model;
 
+    //TODO disconnect prev model
+//     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+//         this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+//     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+//         this, SLOT(addFuncs(QModelIndex,int,int)));
+//     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
+//         this, SLOT(removeFuncs(QModelIndex,int,int)));
+    
+    updateGL();
 }
+
+void View3D::setSelectionModel(QItemSelectionModel* selection)
+{
+    Q_ASSERT(selection);
+    Q_ASSERT(selection->model() == m_model);
+    
+    
+    m_selection = selection;
+    connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
+}
+
+int View3D::currentFunction() const
+{
+    if (!m_model) return -1; // guard
+    
+    int ret=-1;
+    if(m_selection) {
+        ret=m_selection->currentIndex().row();
+    }
+    
+    return ret;
+}
+
+
 //TODO
 /*
 void View3D::updateSurface(const Keomath::Function &function)

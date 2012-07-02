@@ -15,5 +15,10 @@ kde4_add_executable(plotview2dtest ${plotview2dtest_SRCS})
 target_link_libraries(plotview2dtest ${testLibs} ${KDE4_KDEUI_LIBS})
 
 
+set(plotview3dtest_SRCS plotview3dtest.cpp)
+kde4_add_executable(plotview3dtest ${plotview3dtest_SRCS})
+target_link_libraries(plotview3dtest ${testLibs} ${KDE4_KDEUI_LIBS})
+
+
 
 

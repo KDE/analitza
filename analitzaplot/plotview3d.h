@@ -28,6 +28,7 @@
 #include <analitzaplot/private/functiongraph.h>
 
 class FunctionGraphsModel;
+class QItemSelectionModel;
 
 #define MAXAROUND 64
 #define MAXSTRIP 64
@@ -58,7 +59,8 @@ public:
     
     
 //     void setSpaceId(const QString &spaceId);
-    void setFunctionsModel(FunctionGraphsModel *m);
+    void setModel(FunctionGraphsModel *m);
+    void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:
 //     void updateSurface(const FunctionGraph &function);
@@ -137,7 +139,11 @@ private:
     QColor m_color;
 
 private:
-    FunctionGraphsModel *m_functionsFilterProxyModel;
+    virtual int currentFunction() const;
+    
+    
+    FunctionGraphsModel *m_model;
+    QItemSelectionModel* m_selection;
     QString m_spaceId;
 };
 
