@@ -30,158 +30,30 @@
 #include <QDebug>
 
 
-// #include "functionsmodel.h"
-// #include "solvers/solver.h"
-// #include "solvers/solvers3d/MarchingCubes/ctab.h"
-// #include "solvers/solvers3d/MarchingCubes/glwidget.h"
-
-#ifndef GL_MULTISAMPLE
-#define GL_MULTISAMPLE  0x809D
-#endif
-
-
 View3D::View3D(QWidget *parent)
     : QGLViewer(parent)
-    , m_drawingType(Solid)
-    , m_color(Qt::white)
     ,m_model(0), m_selection(0)
 {
-    
-
-
-//     logo = 0;
-    xRot = 0;
-    yRot = 0;
-    zRot = 0;
-
-    
-    camara_x = camara_y = 0;
-    camara_z = -5;
-//     logo = NULL;
-    
-    
-    num=1000;
-    dlnum=1000;
-    qtGreen = QColor::fromCmykF(0.40, 0.0, 1.0, 0.0);
-    qtPurple = QColor::fromCmykF(0.39, 0.39, 0.0, 0.0);
-
     setGridIsDrawn(true);
 }
 
 View3D::View3D(FunctionGraphsModel* m, QWidget* parent): QGLViewer(parent)
-    , m_drawingType(Solid)
-    , m_color(Qt::white)  
     ,m_model(m), m_selection(0)
 {
-//     logo = 0;
-    xRot = 0;
-    yRot = 0;
-    zRot = 0;
-
-    
-    camara_x = camara_y = 0;
-    camara_z = -5;
-//     logo = NULL;
-    
-    
-    num=1000;
-    dlnum=1000;
-    qtGreen = QColor::fromCmykF(0.40, 0.0, 1.0, 0.0);
-    qtPurple = QColor::fromCmykF(0.39, 0.39, 0.0, 0.0);
-
     setGridIsDrawn(true);
 }
 
-void View3D::clearDisplayLists()
-{
-
-
-    glDeleteLists(1, m_displayList.values().size());
-
-
-
-    m_displayList.clear();
-}
-
-// // // /*
-// // // void View3D::drawGrid(float size,int nbSubdivisions)
-// // // {
-// // // 
-// // //     GLboolean lighting;
-// // //     glGetBooleanv(GL_LIGHTING, &lighting);
-// // //     glDisable(GL_LIGHTING);
-// // //     glBegin(GL_LINES);
-// // //     for (int i=0; i<=nbSubdivisions; ++i)
-// // //     {
-// // //         const float pos = size*(2.0*i/nbSubdivisions-1.0);
-// // //         glVertex2f(pos, -size);
-// // //         glVertex2f(pos, +size);
-// // //         glVertex2f(-size, pos);
-// // //         glVertex2f( size, pos);
-// // //     }
-// // //     glEnd();
-// // //     if (lighting)
-// // //         glEnable(GL_LIGHTING);
-// // // 
-// // // 
-// // // }*/
-
-void View3D::generateDisplayLists()
-{
-    for (int i = 0; i < m_model->rowCount(); i+=1)
-    {
-        QModelIndex mi = m_model->index(i,0);
-        int sourceRow = mi.row();
-
-
-        
-        if (m_model->item(sourceRow)->spaceDimension() == 2) continue;
-
-//         Solver3D *solver = static_cast<Solver3D*>(functionModel->funclist.at(sourceRow).solver());
-
-        if (!m_model->item(sourceRow)->isVisible()) continue;
-
-
-
-
-        //TODO
-//         updateSurface(functionModel->funclist.at(sourceRow));
-
-    }
-}
-/*
-void View3D::setSpaceId(const QString &spaceId)
-{
-    m_spaceId = spaceId;
-    m_functionsFilterProxyModel->setFilterSpaceId(m_spaceId);
-    clearDisplayLists();
-    generateDisplayLists();
-}*/
-
 void View3D::setModel(FunctionGraphsModel *model)
 {
-//     m_functionsFilterProxyModel = functionsFilterProxyModel;
-//     FunctionsModel *functionModel = static_cast<FunctionsModel*>(m_functionsFilterProxyModel->sourceModel());
-// 
-//     connect(functionModel, SIGNAL(functionModified(Keomath::Function)), SLOT(updateSurface(Keomath::Function)));
-//     connect(functionModel, SIGNAL(functionImplicitCall(QUuid,QColor,int,QList<double>,int,int,bool,bool,bool,double)), SLOT(updateSurfaceImplicit(QUuid,QColor,int,QList<double>,int,int,bool,bool,bool,double)));
-// 
-
-
-
-
-//     connect(functionModel, SIGNAL(functionRemoved(QUuid,QString)), SLOT(removeSurface(QUuid,QString)));
-///
-
     m_model=model;
 
     //TODO disconnect prev model
-//     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-//         this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-//     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-//         this, SLOT(addFuncs(QModelIndex,int,int)));
-//     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
-//         this, SLOT(removeFuncs(QModelIndex,int,int)));
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+        this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+    connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+        this, SLOT(addFuncs(QModelIndex,int,int)));
+    connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
+        this, SLOT(removeFuncs(QModelIndex,int,int)));
     
     updateGL();
 }
@@ -195,6 +67,24 @@ void View3D::setSelectionModel(QItemSelectionModel* selection)
     m_selection = selection;
     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }
+
+void View3D::addFuncs(const QModelIndex & parent, int start, int end)
+{
+    Q_ASSERT(!parent.isValid());
+    
+//     updateFunctions(model()->index(start,0), model()->index(end,0));
+}
+
+void View3D::removeFuncs(const QModelIndex &, int, int)
+{
+//     forceRepaint();
+}
+
+void View3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
+{
+//     updateFunctions(start, end);
+}
+
 
 int View3D::currentFunction() const
 {
@@ -412,39 +302,8 @@ void View3D::updateSurfaceImplicit(QUuid funId,QColor col,int index,QList<double
     updateGL();
 }*/
 
-void View3D::removeSurface(const QString &funid, const QString &funlambda)
-{
-    glDeleteLists(m_displayList.value(funid), 1);
-    m_displayList.remove(funid);
-
-    updateGL();
-}
-
-
 void View3D::draw()
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //TODO
 //     foreach (QUuid fid, m_displayList.keys())
@@ -455,305 +314,15 @@ void View3D::draw()
     
 }
 
-void View3D::pintar_ejes(unsigned int modo)
-{
-    GLfloat color[4];
-    switch(modo)
-    {
-    case 0:
-        color[0] = 0;
-        color[1] = 0;
-        color[2] = 0;
-        color[3] = 1;
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glBegin(GL_LINES);
-        
-        glVertex3f(-1.0f, 0.0f, 0.0f);
-        glVertex3f(1.0f, 0.0f, 0.0f);
-        glVertex3f(1.0f, 0.2f, 0.0f);
-        glVertex3f(0.9f, 0.1f, 0.0f);
-        glVertex3f(0.9f, 0.2f, 0.0f);
-        glVertex3f(1.0f, 0.1f, 0.0f);
-        
-        glVertex3f(0.0f, -1.0f, 0.0f);
-        glVertex3f(0.0f, 1.0f, 0.0f);
-        glVertex3f(0.1f, 1.0f, 0.0f);
-        glVertex3f(0.12f, 0.97f, 0.0f);
-        glVertex3f(0.14f, 1.0f, 0.0f);
-        glVertex3f(0.12f, 0.97f, 0.0f);
-        glVertex3f(0.12f, 0.97f, 0.0f);
-        glVertex3f(0.12f, 0.9f, 0.0f);
-        
-        glVertex3f(0.0f, 0.0f, -1.0f);
-        glVertex3f(0.0f, 0.0f, 1.0f);
-        glVertex3f(0.0f, 0.2f, 1.0f);
-        glVertex3f(0.0f, 0.2f, 0.9f);
-        glVertex3f(0.0f, 0.2f, 0.9f);
-        glVertex3f(0.0f, 0.1f, 1.0f);
-        glVertex3f(0.0f, 0.1f, 1.0f);
-        glVertex3f(0.0f, 0.1f, 0.9f);
-        glEnd();
-        break;
-    case 1:
-        glEnable(GL_CULL_FACE);
-        
-        color[0] = 1;
-        color[1] = 0;
-        color[2] = 0;
-        color[3] = 1;
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glBegin(GL_QUADS);
-        glVertex3f(0.0f, 0.0f, 0.0f);
-        glVertex3f(1.0f, 0.0f, 0.0f);
-        glVertex3f(1.0f, 1.0f, 0.0f);
-        glVertex3f(0.0f, 1.0f, 0.0f);
-        glVertex3f(0.0f, 1.0f, 1.0f);
-        glVertex3f(1.0f, 1.0f, 1.0f);
-        glVertex3f(1.0f, 0.0f, 1.0f);
-        glVertex3f(0.0f, 0.0f, 1.0f);
-        
-        color[0] = 0;
-        color[1] = 1;
-        color[2] = 0;
-        color[3] = 1;
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glVertex3f(0.0f, 0.0f, 0.0f);
-        glVertex3f(0.0f, 0.0f, 1.0f);
-        glVertex3f(1.0f, 0.0f, 1.0f);
-        glVertex3f(1.0f, 0.0f, 0.0f);
-        glVertex3f(1.0f, 1.0f, 0.0f);
-        glVertex3f(1.0f, 1.0f, 1.0f);
-        glVertex3f(0.0f, 1.0f, 1.0f);
-        glVertex3f(0.0f, 1.0f, 0.0f);
-        
-        color[0] = 0;
-        color[1] = 0;
-        color[2] = 1;
-        color[3] = 1;
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glVertex3f(0.0f, 0.0f, 0.0f);
-        glVertex3f(0.0f, 1.0f, 0.0f);
-        glVertex3f(0.0f, 1.0f, 1.0f);
-        glVertex3f(0.0f, 0.0f, 1.0f);
-        glVertex3f(1.0f, 0.0f, 1.0f);
-        glVertex3f(1.0f, 1.0f, 1.0f);
-        glVertex3f(1.0f, 1.0f, 0.0f);
-        glVertex3f(1.0f, 0.0f, 0.0f);
-        glEnd();
-        glDisable(GL_CULL_FACE);
-        break;
-    default:
-        break;
-    }
-}
-
-static void qNormalizeAngle(int &angle)
-{
-    while (angle < 0)
-        angle += 360 * 16;
-    while (angle > 360 * 16)
-        angle -= 360 * 16;
-}
-
-void View3D::setXRotation(int angle)
-{
-    qNormalizeAngle(angle);
-    if (angle != xRot)
-    {
-        xRot = angle;
-        emit xRotationChanged(angle);
-        updateGL();
-    }
-}
-
-void View3D::setYRotation(int angle)
-{
-    qNormalizeAngle(angle);
-    if (angle != yRot)
-    {
-        yRot = angle;
-        emit yRotationChanged(angle);
-        updateGL();
-    }
-}
-
-void View3D::setZRotation(int angle)
-{
-    qNormalizeAngle(angle);
-    if (angle != zRot)
-    {
-        zRot = angle;
-        emit zRotationChanged(angle);
-        updateGL();
-    }
-}
-
-QVector3D View3D::evalCurve(int tipo,double dZ,qreal t,QList<double> lst)
-{
-
-    QVector3D ans;
-    double tmp1,tmp2,tmp3;
-    switch(tipo)
-    {
-
-    case 0:
-        tmp1=pow(lst.at(3),2)-pow(dZ-lst.at(2),2);
-        ans.setX(lst.at(0)+sqrt(tmp1)*cos(t));
-        ans.setY(lst.at(1)+sqrt(tmp1)*sin(t));
-        ans.setZ(dZ);
-        break;
-
-    case 1: 
-        tmp1=1-pow((dZ-lst.at(2))/lst.at(5),2);
-        tmp2=sqrt(pow(lst.at(3),2)*tmp1);
-        tmp3=sqrt(pow(lst.at(4),2)*tmp1);
-        ans.setX(tmp2*cos(t)+lst.at(0));
-        ans.setY(tmp3*sin(t)+lst.at(1));
-        ans.setZ(dZ);
-        break;
-
-    case 2:
-        ans.setX(lst.at(0)+lst.at(3)*cos(t));
-        ans.setY(lst.at(1)+lst.at(3)*sin(t));
-        ans.setZ(dZ);
-        break;
-
-    case 3: 
-        tmp1=1+pow((dZ-lst.at(2))/lst.at(5),2);
-        tmp2=sqrt(pow(lst.at(3),2)*tmp1);
-        tmp3=sqrt(pow(lst.at(4),2)*tmp1);
-        ans.setX(tmp2*cos(t)+lst.at(0));
-        ans.setY(tmp3*sin(t)+lst.at(1));
-        ans.setZ(dZ);
-        break;
-
-    case 4: 
-        tmp1=pow((dZ-lst.at(2))/lst.at(5),2)-1;
-        tmp2=sqrt(pow(lst.at(3),2)*tmp1);
-        tmp3=sqrt(pow(lst.at(4),2)*tmp1);
-        ans.setX(tmp2*cos(t)+lst.at(0));
-        ans.setY(tmp3*sin(t)+lst.at(1));
-        ans.setZ(dZ);
-        break;
-
-    case 5: 
-        tmp1=(dZ-lst.at(2));
-        tmp2=sqrt(pow(lst.at(3),2)*tmp1);
-        tmp3=sqrt(pow(lst.at(4),2)*tmp1);
-        ans.setX(tmp2*(1/cos(t))+lst.at(0));
-        ans.setY(tmp3*tan(t)+lst.at(1));
-        ans.setZ(dZ);
-        break;
-
-    case 6: 
-        tmp1=(dZ-lst.at(2))/lst.at(5);
-        tmp2=sqrt(pow(lst.at(3),2)*tmp1);
-        tmp3=sqrt(pow(lst.at(4),2)*tmp1);
-        ans.setX(tmp2*cos(t)+lst.at(0));
-        ans.setY(tmp3*sin(t)+lst.at(1));
-        ans.setZ(dZ);
-        break;
-
-    case 7: 
-        tmp1=pow((dZ-lst.at(2))/lst.at(5),2);
-        tmp2=sqrt(pow(lst.at(3),2)*tmp1);
-        tmp3=sqrt(pow(lst.at(4),2)*tmp1);
-        ans.setX(tmp2*cos(t)+lst.at(0));
-        ans.setY(tmp3*sin(t)+lst.at(1));
-        ans.setZ(dZ);
-        break;
-    }
-
-    return ans;
-}
-
-
 void View3D::init()
 {
-
-
-
-
-
-
-
-
-    usteps=MAXALONG;
-    vsteps=MAXAROUND;
-//     QtLogo::constantes.clear();
-//     QtLogo::constantes.append(0.5);
-//     QtLogo::constantes.append(0.5);
-//     QtLogo::constantes.append(0.25);
-//     QtLogo::constantes.append(0.75);
-//     QtLogo::constantes.append(0.25);
-//     logo = new QtLogo(this, &func_cilindro);
-//     logo->setColor(qtGreen.dark());
-
     glPushMatrix();
     glTranslatef(6,5,5);
     glRotatef(90.,0.,1.,0.);
-
-
-
-    
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
-
-
-
-
-
-
-
-    
-
-
-
-
     glEnable(GL_DEPTH_TEST);
     
     glShadeModel(GL_SMOOTH);
@@ -765,292 +334,4 @@ void View3D::init()
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
 }
-
-
-GLfloat View3D::UU(int i)
-{
-    return (umin+((umax-umin)/(float)(usteps-1))*(float)(i));
-}
-
-
-GLfloat View3D::VV(int j)
-{
-    return (vmin+((vmax-vmin)/(float)(vsteps-1))*(float)(j));
-}
-
-QVector3D View3D::shape(float u,float v)
-{
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    QVector3D ret;
-
-
-
-    //TODO
-//     ret = m_currentSolver->evalSurface(u,v);
-
-    return ret;
-}
-
-void View3D::doSurface()
-{
-
-
-
-
-    int  i, j;
-    float u, v;
-
-    qDebug() << "view3 colo surff" << m_color.red() << m_color.green() << m_color.blue();
-
-
-    GLfloat yellow[]= {m_color.redF(), m_color.greenF(), m_color.blueF(), 1.0};
-    GLfloat mat_shininess[]= { 8.0 };
-
-
-    for ( i=0; i<usteps; i++ )
-        for ( j=0; j<vsteps; j++ )
-        {
-            u = UU(i);
-            v = VV(j);
-
-            QVector3D point = shape(u,v);
-
-            surface[i][j].x = point.x();
-            surface[i][j].y = point.y();
-            surface[i][j].z = point.z();
-        }
-
-
-    for (i = 0; i < usteps -1; i++ )    
-        for ( j=0; j<vsteps-1; j++ )    
-        {
-            
-
-
-
-
-
-
-            glColor3ub(m_color.red(), m_color.green(), m_color.blue());
-            
-            
-            
-            doQuad(1, 1, surface[i][j], surface[i+1][j], surface[i][j+1], surface[i+1][j+1]);
-        }
-
-}
-
-
-
-void View3D::doQuad(int n, int m, surfpoint p0, surfpoint p1, surfpoint p2, surfpoint p3)
-{
-    int i;
-
-    surfpoint A, B, C, D;   
-    
-
-    for (i=0; i<m; i++)
-    {
-        A.x = (p0.x*(float)(m-i)   + p1.x*(float)i)/(float)m;
-        A.y = (p0.y*(float)(m-i)   + p1.y*(float)i)/(float)m;
-        A.z = (p0.z*(float)(m-i)   + p1.z*(float)i)/(float)m;
-        B.x = (p0.x*(float)(m-i-1) + p1.x*(float)(i+1))/(float)m;
-        B.y = (p0.y*(float)(m-i-1) + p1.y*(float)(i+1))/(float)m;
-        B.z = (p0.z*(float)(m-i-1) + p1.z*(float)(i+1))/(float)m;
-
-        C.x = (p2.x*(float)(m-i)   + p3.x*(float)i)/(float)m;
-        C.y = (p2.y*(float)(m-i)   + p3.y*(float)i)/(float)m;
-        C.z = (p2.z*(float)(m-i)   + p3.z*(float)i)/(float)m;
-        D.x = (p2.x*(float)(m-i-1) + p3.x*(float)(i+1))/(float)m;
-        D.y = (p2.y*(float)(m-i-1) + p3.y*(float)(i+1))/(float)m;
-        D.z = (p2.z*(float)(m-i-1) + p3.z*(float)(i+1))/(float)m;
-        doStrip(n, A, B, C, D);
-    }
-}
-
-
-
-void View3D::doStrip(int n, surfpoint p0, surfpoint p1, surfpoint p2, surfpoint p3)
-{
-    int i, j;
-    surfpoint A, B, buffer[3];
-
-    for (i=0; i<=n; i++)
-    {
-        A.x = (p0.x*(float)(n-i) + p2.x*(float)i)/(float)n;
-        A.y = (p0.y*(float)(n-i) + p2.y*(float)i)/(float)n;
-        A.z = (p0.z*(float)(n-i) + p2.z*(float)i)/(float)n;
-        B.x = (p1.x*(float)(n-i) + p3.x*(float)i)/(float)n;
-        B.y = (p1.y*(float)(n-i) + p3.y*(float)i)/(float)n;
-        B.z = (p1.z*(float)(n-i) + p3.z*(float)i)/(float)n;
-        theStrip[i][0] = A;
-        theStrip[i][1] = B;
-    }
-    
-    
-    
-    buffer[0] = theStrip[0][0];
-    buffer[1] = theStrip[0][1];
-    for (i=1; i<=n; i++)
-        for (j=0; j<2; j++)
-        {
-            buffer[2] = theStrip[i][j];
-            _emit(buffer);
-            buffer[0] = buffer[1];
-            buffer[1] = buffer[2];
-        }
-}
-
-
-
-
-void View3D::_emit( surfpoint *buffer )
-{
-    surfpoint Normal, diff1, diff2;
-
-    diff1.x = buffer[1].x - buffer[0].x;
-    diff1.y = buffer[1].y - buffer[0].y;
-    diff1.z = buffer[1].z - buffer[0].z;
-    diff2.x = buffer[2].x - buffer[1].x;
-    diff2.y = buffer[2].y - buffer[1].y;
-    diff2.z = buffer[2].z - buffer[1].z;
-    Normal.x = diff1.y*diff2.z - diff2.y*diff1.z;
-    Normal.y = diff1.z*diff2.x - diff1.x*diff2.z;
-    Normal.z = diff1.x*diff2.y - diff1.y*diff2.x;
-
-
-    switch (m_drawingType)
-    {
-    case Solid:
-        glBegin(GL_POLYGON);
-        break;
-    case Wired:
-        glBegin(GL_LINES);
-        break;
-    case Dots:
-        glBegin(GL_POINTS);
-        break;
-
-    }
-
-
-    glNormal3f(Normal.x,Normal.y,Normal.z);
-    glVertex3f(buffer[0].x,buffer[0].y,buffer[0].z);
-    glVertex3f(buffer[1].x,buffer[1].y,buffer[1].z);
-    glVertex3f(buffer[2].x,buffer[2].y,buffer[2].z);
-    glEnd();
-
-    glDisable(GL_POLYGON_OFFSET_FILL);
-
-}
-
-
-
-void View3D::mousePressEvent(QMouseEvent * event)
-{
-    
-    emit viewClicked();
-    QGLViewer::mousePressEvent(event);
-}
-
-QSize View3D::minimumSizeHint() const
-{
-    return QSize(50, 50);
-}
-
-QSize View3D::sizeHint() const
-{
-    return QSize(400, 400);
-}
-/*
-void View3D::cambiar_funcion(QString funcId,QColor col,Figuras tipo, QList<double> constantes,int oct,int axi,bool solid)
-{
-    delete logo;
-    QtLogo::constantes = constantes;
-    switch(tipo)
-    {
-    case esfera:
-        logo = new QtLogo(this,&func_esfera);
-        break;
-    case elipsoide:
-        logo = new QtLogo(this,&func_elipsoide);
-        break;
-    case cilindro:
-        logo = new QtLogo(this,&func_cilindro);
-        break;
-    case hiperboloide_1hoja:
-        logo = new QtLogo(this,&func_hiperboloide_1hoja);
-        break;
-    case hiperboloide_2hojas:
-        logo = new QtLogo(this,&func_hiperboloide_2hojas);
-        break;
-    case paraboloide_hiperbolico:
-        logo = new QtLogo(this,&func_paraboloide_hiperbolico);
-        break;
-    case paraboloide_eliptico:
-        logo = new QtLogo(this,&func_paraboloide_eliptico);
-        break;
-    case cono_eliptico:
-        logo = new QtLogo(this,&func_cono_eliptico);
-        break;
-    default:
-        logo = new QtLogo(this,&func_esfera);
-    }
-    logo->ejecentral=axi;
-    logo->octante=oct;
-    logo->esSolido=solid;
-
-    
-    ++dlnum;
-    glNewList(dlnum, GL_COMPILE);
-
-    glColor3ub(col.red(),col.green(),col.blue());
-    if(logo->esSolido)
-    {
-        logo->buildGeometry();
-        logo->draw();
-        logo->esSolido=false;
-    }
-    logo->buildGeometry();
-    logo->draw();
-
-    glEndList();
-    
-    
-    m_displayList.insert(funcId, dlnum);
-
-
-
-    updateGL();
-
-    setXRotation(4900);
-    setYRotation(0);
-    setZRotation(3600);
-}*/
-
-
-
-
-
-
-
 
