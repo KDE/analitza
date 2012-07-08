@@ -200,6 +200,12 @@ class ANALITZA_EXPORT Expression
 		/** renames the @p depth -th variable into @p newName */
 		void renameArgument(int depth, const QString& newName);
 		
+		/** @returns whether it's an equation */
+		bool isEquation() const;
+		
+		/** @returns the expression that evaluates the current equation to equal 0 */
+		Expression equationToFunction() const;
+		
 		/**
 		 *	Converts a @p tag to an object type.
 		 */

@@ -590,6 +590,41 @@ bool Expression::isLambda() const
 	return false;
 }
 
+bool Expression::isEquation() const
+{
+	if(d->m_tree && d->m_tree->type()==Object::container) {
+		Container* c = (Container*) d->m_tree;
+		if(c->containerType()==Container::math) {
+			if(c->m_params.first()->isApply()) {
+				Apply *c1 = (Apply*) c->m_params.first();
+				return c1->firstOperator().operatorType()==Operator::eq;
+			}
+		}
+	}
+}
+
+Expression Expression::equationToFunction() const
+{
+	if(d->m_tree && d->m_tree->type()==Object::container) {
+		Container* c = (Container*) d->m_tree;
+		if(c->containerType()==Container::math) {
+			if(c->m_params.first()->isApply()) {
+				Apply *c1 = (Apply*) c->m_params.first();
+				if(c1->firstOperator().operatorType()==Operator::eq) {
+					Container* c = new Container(Container::math);
+					Apply* a = new Apply;
+					a->appendBranch(new Operator(Operator::minus));
+					a->appendBranch(c1->at(0));
+					a->appendBranch(c1->at(1));
+					c->appendBranch(a);
+					return Expression(c);
+				}
+			}
+		}
+	}
+	return *this;
+}
+
 QList<Ci*> Expression::parameters() const
 {
 	QList<Ci*> ret;
