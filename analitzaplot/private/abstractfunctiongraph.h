@@ -31,10 +31,6 @@ static QString TypeName() { return QString(name); }
 #define EXPRESSION_TYPE(name) \
 static Analitza::ExpressionType ExpressionType() { return Analitza::ExpressionType(name); }
 
-#define SPACE_DIMENSION(name) \
-int spaceDimension() const { return SpaceDimension(); } \
-static int SpaceDimension() { return name; }
-
 #define COORDDINATE_SYSTEM(name) \
 CoordinateSystem coordinateSystem() const { return CoordSystem(); } \
 static CoordinateSystem CoordSystem() { return name; }
@@ -59,6 +55,8 @@ public:
     AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v);
     AbstractFunctionGraph(const Analitza::Expression& e);
     virtual ~AbstractFunctionGraph();
+    
+    int spaceDimension() const;
 
     Analitza::Variables *variables() const;
     void setVariables(Analitza::Variables *variables);

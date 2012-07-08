@@ -20,66 +20,118 @@
 
 #include "functiongraphfactory.h"
 
-AbstractFunctionGraphFactory* AbstractFunctionGraphFactory::m_self=0;
+FunctionGraphFactory* FunctionGraphFactory::m_self=0;
 
-QString AbstractFunctionGraphFactory::typeName(const QString& id) const
+QString FunctionGraphFactory::typeName(const QString& id) const
 {
     return typeNameFunctions[id]();
 }
 
-Analitza::ExpressionType AbstractFunctionGraphFactory::expressionType(const QString& id) const
+Analitza::ExpressionType FunctionGraphFactory::expressionType(const QString& id) const
 {
     return expressionTypeFunctions[id]();
 }
 
-int AbstractFunctionGraphFactory::spaceDimension(const QString& id) const
+int FunctionGraphFactory::spaceDimension(const Analitza::ExpressionType& etype) const
 {
-    return spaceDimensionFunctions[id]();
+    Analitza::ExpressionType ftype = etype;
+    
+    int dim = -1;
+
+    if (ftype.type() == Analitza::ExpressionType::Many)
+    {
+        //buscar solo las funciones de variable/parametro real
+        //evito los casos "(<num,-1> -> <num,-1> -> <num,-1>...)" y solo acepto casos
+        //"(num -> num -> num...)" 
+        foreach (const Analitza::ExpressionType &exptype, ftype.alternatives())
+            if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
+            {
+                ftype = exptype;
+                break;
+            }
+    }
+
+    switch (ftype.returnValue().type())
+    {
+        // implicit function
+        case Analitza::ExpressionType::Bool: //last bool means = operator is used (not <,>,...)
+        {
+            switch (ftype.parameters().size())
+            {
+                case 3: dim = 2; break; // implicit curve
+                case 4: dim = 3; break; // implicit surf
+            }
+
+            break;
+        }
+        
+        // vector valued function
+        case Analitza::ExpressionType::Vector:
+        {
+            switch (ftype.parameters().last().anyValue())
+            {
+                case 2: dim = 2; break; // param curve
+                case 3: dim = 3; break; // param surf
+            }
+            
+            break;
+        }
+        
+        // real valued function
+        case Analitza::ExpressionType::Value:
+        {
+            switch (ftype.parameters().size())
+            {
+                case 2: dim = 2; break; // f(x)
+                case 3: dim = 3; break; // f(x,y)
+            }
+
+            break;
+        }
+    }
+
+    return dim;
 }
 
-CoordinateSystem AbstractFunctionGraphFactory::coordinateSystem(const QString& id) const
+CoordinateSystem FunctionGraphFactory::coordinateSystem(const QString& id) const
 {
     return coordinateSystemFunctions[id]();
 }
 
-QStringList AbstractFunctionGraphFactory::arguments(const QString& id)
-{
-    return argumentsFunctions[id]();
-}
-
-QString AbstractFunctionGraphFactory::iconName(const QString& id) const
+QString FunctionGraphFactory::iconName(const QString& id) const
 {
     return iconNameFunctions[id]();
 }
 
-QStringList AbstractFunctionGraphFactory::examples(const QString& id) const
+QStringList FunctionGraphFactory::examples(const QString& id) const
 {
     return examplesFunctions[id]();
 }
 
-AbstractFunctionGraphFactory* AbstractFunctionGraphFactory::self()
+FunctionGraphFactory* FunctionGraphFactory::self()
 {
     if(!m_self)
-        m_self=new AbstractFunctionGraphFactory;
+        m_self=new FunctionGraphFactory;
     return m_self;
 }
 
-bool AbstractFunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, BuilderFunctionWithoutVars builderFunctionWithoutVars, TypeNameFunction typeNameFunction,
-        ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, BuilderFunctionWithoutVars builderFunctionWithoutVars, TypeNameFunction typeNameFunction,
+        ExpressionTypeFunction expressionTypeFunction, 
         CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
         IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
 {
-//     Q_ASSERT(!contains(argumentsFunction()));
-    
+    int dim = spaceDimension(expressionTypeFunction());
+
+//     Q_ASSERT(!contains(id(argumentsFunction(), dim)));
     Q_ASSERT(expressionTypeFunction().type() == Analitza::ExpressionType::Lambda);
     
-    QString id = QString::number(spaceDimensionFunction())+"|"+
+    QString id = QString::number(dim)+"|"+
                  QString::number((int)coordinateSystemFunction())+"|"+
                  argumentsFunction().join(",");
 
     typeNameFunctions[id] = typeNameFunction;
     expressionTypeFunctions[id] = expressionTypeFunction;
-    spaceDimensionFunctions[id] = spaceDimensionFunction;
+    spaceDimensions[id] = dim;
     coordinateSystemFunctions[id] = coordinateSystemFunction;
     argumentsFunctions[id] = argumentsFunction;
     iconNameFunctions[id] = iconNameFunction;
@@ -91,8 +143,13 @@ bool AbstractFunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars
     return true;
 }
 
-QString AbstractFunctionGraphFactory::id(const QStringList& args, int spaceDimension) const
+QString FunctionGraphFactory::trait(const Analitza::Expression &expression, int dim) const
 {
+    Analitza::Analyzer a;
+    a.setExpression(expression);
+    
+    QStringList args = expression.bvarList();
+
     QString key;
     
     bool found = false;
@@ -100,7 +157,7 @@ QString AbstractFunctionGraphFactory::id(const QStringList& args, int spaceDimen
     for (int i = 0; i < argumentsFunctions.values().size(); ++i)
     {
         if (argumentsFunctions.values()[i]() == args && 
-            spaceDimension == spaceDimensionFunctions.values()[i]())
+            dim == spaceDimensions.values()[i])
         {
             key = argumentsFunctions.key(argumentsFunctions.values()[i]);
 
@@ -111,22 +168,22 @@ QString AbstractFunctionGraphFactory::id(const QStringList& args, int spaceDimen
     }
 
     if (found)
-        return QString::number(spaceDimensionFunctions[key]())+"|"+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
+        return QString::number(spaceDimensions[key])+"|"+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
 
     return QString();    
 }
 
-bool AbstractFunctionGraphFactory::contains(const QString& id) const
+bool FunctionGraphFactory::contains(const QString& id) const
 {
     return builderFunctionsWithVars.contains(id);
 }
 
-AbstractFunctionGraph* AbstractFunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
+AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
 {
     return builderFunctionsWithVars[id](exp, v);
 }
 
-AbstractFunctionGraph* AbstractFunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp) const
+AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp) const
 {
     return builderFunctionsWithoutVars[id](exp);
 }

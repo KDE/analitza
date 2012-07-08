@@ -44,18 +44,7 @@ PlaneCurvesModel::~PlaneCurvesModel()
 
 }
 
-//agrego item al model y no como un puntero ... esto para manejar que el model maneje el scope del planecurve internamente
-bool PlaneCurvesModel::addCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
-{
-
-return addItem(functionExpression, 2, name, col);    
-}
-
-bool PlaneCurvesModel::addCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, QStringList &errors)
-{
-return addItem(functionExpression, 2, name, col, errors);    
-}
-
+//TODO review see item
 const PlaneCurve* PlaneCurvesModel::curve(int curveIndex) const
 {
     return static_cast<const PlaneCurve*>(item(curveIndex));

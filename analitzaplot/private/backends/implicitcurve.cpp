@@ -54,8 +54,7 @@ class ANALITZAPLOT_EXPORT FunctionImplicit : public AbstractPlaneCurve
 public:
     CONSTRUCTORS(FunctionImplicit)
     TYPE_NAME("FunctionImplicit implicit curve")
-    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
-    SPACE_DIMENSION(2)
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Bool)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y")
     ICON_NAME("newimplicit")

@@ -28,6 +28,11 @@
 #include "analitzaplot/spacecurve.h"
 #include "analitzaplot/private/functiongraphsmodel.h"
 #include "analitzaplot/plotview3d.h"
+#include <analitza/variables.h>
+#include <analitza/apply.h>
+#include <analitza/variable.h>
+#include <analitza/container.h>
+#include <analitza/polynomial.h>
 
 
 int main(int argc, char *argv[])
@@ -57,7 +62,94 @@ int main(int argc, char *argv[])
     view3d->setModel(model);
     view3d->setSelectionModel(selection);
     
-    model->addItem(Analitza::Expression("(x,y)->(x*x+y*y)"),3, "Hola", Qt::cyan);
+//     model->addItem(Analitza::Expression("x*x"), "Hola", Qt::cyan);
+
+//     qDebug() << model->item(0)->spaceDimension() << static_cast<const Surface*>(model->item(0))->faces().size();
+
+//     Analitza::Expression exp(QString("x*x-4*y+6"));
+// //     Analitza::Expression exp(QString("x*x+3*x=-y*y+5"));
+// 
+//     Analitza::Analyzer a;
+//     a.setExpression(exp);
+//     a.setExpression(a.dependenciesToLambda());
+// 
+//     qDebug() << a.type().toString() << a.type().parameters().last().toString() << a.type().parameters().size();
+//     
+    /*
+    Analitza::Container *eq = static_cast<Analitza::Container*>(exp.tree()->copy());
+    Analitza::Apply *apply = new Analitza::Apply(   );*/
+
+    
+    
+
+
+    
+    /*
+    
+    Analitza::Expression exp(QString("z*x+x+y=z+5"));
+/*
+    Analitza::Cn *x = new Analitza::Cn;
+    Analitza::Cn *y = new Analitza::Cn;
+    Analitza::Cn *z = new Analitza::Cn;
+
+    QVector<Analitza::Object*> stack;
+    stack << x << y << z;
+    x->setValue(3);
+    y->setValue(0);
+    z->setValue(1);
+    
+    Analitza::Analyzer a;
+//     a.setStack(stack);
+    a.setExpression(exp);
+    a.setExpression(a.dependenciesToLambda());
+
+    qDebug() << exp.tree()->type() << a.expression().lambdaBody().tree()->type();
+
+    
+    Analitza::Container *eq1 = static_cast<Analitza::Container*>(exp.tree()->copy());
+
+    Analitza::Apply *eq = static_cast<Analitza::Apply *>(a.expression().lambdaBody().tree()->copy());
+
+    Analitza::Apply *product = new Analitza::Apply;
+    product->appendBranch(new Analitza::Operator(Analitza::Operator::product));
+    product->appendBranch(new Analitza::Cn(-1.0));
+    product->appendBranch(eq->at(1)->copy());
+
+    Analitza::Apply *apply = new Analitza::Apply;
+    apply->appendBranch(new Analitza::Operator(Analitza::Operator::plus));
+    apply->appendBranch(eq->at(0)->copy());
+    apply->appendBranch(product);
+
+    */
+/*
+    Analitza::Operator *product = new Analitza::Operator(Analitza::Operator::product);
+    Analitza::Apply *apply3 = new Analitza::Apply;
+    apply3->appendBranch(product);
+    apply3->appendBranch(new Analitza::Cn(-1.0));
+    apply3->appendBranch(apply->at(1)->copy());
+
+    apply2->appendBranch(apply3);*/
+    
+    
+//     apply2.appendBranch(new Analitza::Operator(Analitza::Operator::product));
+
+//     qDebug() << Analitza::Expression(apply).toString();
+    
+    
+    
+/*
+    Analitza::Analyzer a;
+    a.setStack(stack);
+    a.setExpression(exp);
+    a.setExpression(a.dependenciesToLambda());
+    
+    Analitza::Expression implpart(a.expression().lambdaBody());
+    const Analitza::Apply *apply = static_cast<const Analitza::Apply *>(implpart.tree());
+
+    Analitza::Expression eq(apply->at(0)->toString()+"-"+apply->at(1)->toString());
+    
+    qDebug() << apply->toString() << eq.toString();
+    */
 //     model->addItem(Analitza::Expression("t->vector{t*t, t, t*t}"),3, "Hola", Qt::yellow);
 
 //     if (model->rowCount()>0)

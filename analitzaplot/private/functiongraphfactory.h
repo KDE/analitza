@@ -29,8 +29,8 @@
 #define REGISTER_FUNCTIONGRAPH(name) \
         static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         static AbstractFunctionGraph * create##name(const Analitza::Expression &exp) { return new name (exp); } \
-        namespace { bool _##name=AbstractFunctionGraphFactory::self()->registerFunctionGraph(vcreate##name, create##name, \
-        name ::TypeName, name ::ExpressionType, name ::SpaceDimension, name ::CoordSystem, name ::Parameters, \
+        namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(vcreate##name, create##name, \
+        name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Parameters, \
         name ::IconName, name ::Examples); }
 
         
@@ -40,7 +40,7 @@
         
 class AbstractFunctionGraph;
 
-class ANALITZAPLOT_EXPORT AbstractFunctionGraphFactory
+class ANALITZAPLOT_EXPORT FunctionGraphFactory
 {
 public:
     typedef AbstractFunctionGraph* (*BuilderFunctionWithVars)(const Analitza::Expression&, Analitza::Variables* );
@@ -48,7 +48,6 @@ public:
     
     typedef QString (*TypeNameFunction)();
     typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
-    typedef int (*SpaceDimensionFunction)();
     typedef CoordinateSystem (*CoordinateSystemFunction)();
     typedef QStringList (*ArgumentsFunction)();
     typedef QString (*IconNameFunction)();
@@ -56,36 +55,35 @@ public:
 
     QString typeName(const QString& id) const;
     Analitza::ExpressionType expressionType(const QString& id) const;
-    int spaceDimension(const QString& id) const;
+    int spaceDimension(const Analitza::ExpressionType& ftype) const;
     CoordinateSystem coordinateSystem(const QString& id) const;
-    QStringList arguments(const QString& id);
     QString iconName(const QString& id) const;
     QStringList examples(const QString& id) const;
     
-    static AbstractFunctionGraphFactory* self();
+    static FunctionGraphFactory* self();
 
     bool registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, BuilderFunctionWithoutVars builderFunctionWithoutVars, 
                   TypeNameFunction typeNameFunction,
-                         ExpressionTypeFunction expressionTypeFunction, SpaceDimensionFunction spaceDimensionFunction,
+                         ExpressionTypeFunction expressionTypeFunction, 
                          CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
                          IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);
-    QString id(const QStringList& args, int spaceDimension) const; // , spaceDimension will save a lot of code duplication (facory for curves, for surfaces etc...)
+    QString trait(const Analitza::Expression &expr, int dim) const;
     bool contains(const QString &id) const;
     
     AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
     AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp) const;
-    
+
 private:
     QMap<QString, TypeNameFunction> typeNameFunctions;
     QMap<QString, ExpressionTypeFunction> expressionTypeFunctions;
-    QMap<QString, SpaceDimensionFunction> spaceDimensionFunctions;
+    QMap<QString, int> spaceDimensions; //internal use (without a "getter")
     QMap<QString, CoordinateSystemFunction> coordinateSystemFunctions;
-    QMap<QString, ArgumentsFunction> argumentsFunctions;
+    QMap<QString, ArgumentsFunction> argumentsFunctions; //internal use (without a "getter")
     QMap<QString, IconNameFunction> iconNameFunctions;
     QMap<QString, ExamplesFunction> examplesFunctions;
-    
-    static AbstractFunctionGraphFactory* m_self;
-    AbstractFunctionGraphFactory() {
+
+    static FunctionGraphFactory* m_self;
+    FunctionGraphFactory() {
         Q_ASSERT(!m_self);
         m_self = this;
     }

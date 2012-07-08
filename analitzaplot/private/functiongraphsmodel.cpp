@@ -151,50 +151,6 @@ int FunctionGraphsModel::rowCount(const QModelIndex & parent) const
         return items.size();
 }
 
-//agrego item al model y no como un puntero ... esto para manejar que el model maneje el scope del planecurve internamente
-bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression, int spaceDimension, const QString& name, const QColor& col)
-{
-
-    //no se permiten items invalidos
-    if (FunctionGraph::canDraw(functionExpression, spaceDimension))
-    {
-        beginInsertRows (QModelIndex(), items.count(), items.count());
-
-        if (m_variables)
-            items.append(new FunctionGraph(functionExpression, m_variables, spaceDimension,name, col));
-        else
-            items.append(new FunctionGraph(functionExpression, spaceDimension,name, col));
-            
-
-        endInsertRows();
-        
-        return true;
-    }
-    
-    return false;
-    
-}
-
-bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression,int spaceDimension, const QString& name, const QColor& col, QStringList &errors)
-{
-    //no se permiten items invalidos
-    if (FunctionGraph::canDraw(functionExpression, spaceDimension,errors))
-    {
-        beginInsertRows (QModelIndex(), items.count(), items.count());
-
-        //TODO
-        items.append(new FunctionGraph(functionExpression, /*variablesModule, */ spaceDimension, name, col));
-        
-       this->
-
-        endInsertRows();
-        
-        return true;
-    }
-    
-    return false;
-}
-
 void FunctionGraphsModel::removeItem(int row)
 {
     Q_ASSERT(row<items.size());
@@ -216,25 +172,6 @@ const FunctionGraph* FunctionGraphsModel::item(int curveIndex) const
     return items[curveIndex];
 }
 
-bool FunctionGraphsModel::setItemExpression(int curveIndex, const Analitza::Expression& functionExpression)
-{
-    Q_ASSERT(curveIndex<items.count());
-    
-    
-    if (FunctionGraph::canDraw(functionExpression, item(curveIndex)->spaceDimension()))
-    {
-        if (items[curveIndex]->reset(functionExpression, item(curveIndex)->spaceDimension()))
-        {
-
-            emit dataChanged(index(curveIndex), index(curveIndex));
-
-            return true;
-        
-        }
-    }
-
-    return false;
-}
 
 
 
@@ -300,19 +237,20 @@ void FunctionGraphsModel::setItemParameterInterval(int curveIndex, const QString
 }
 
 
-bool FunctionGraphsModel::setItem(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
-{
-    Q_ASSERT(curveIndex<items.count());
-    
-
-    if (setItemExpression(curveIndex, functionExpression))
-    {
-        setItemName(curveIndex, name);
-        setItemColor(curveIndex, col);
-    }
-
-    return false;
-}
+//TODO en hijos
+// bool FunctionGraphsModel::setItem(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
+// {
+//     Q_ASSERT(curveIndex<items.count());
+//     
+// 
+//     if (setItemExpression(curveIndex, functionExpression,spaceDimension))
+//     {
+//         setItemName(curveIndex, name);
+//         setItemColor(curveIndex, col);
+//     }
+// 
+//     return false;
+// }
 
 void FunctionGraphsModel::updateItem(int curveIndex, const Box& viewport)
 {
@@ -322,3 +260,68 @@ void FunctionGraphsModel::updateItem(int curveIndex, const Box& viewport)
 
 }
 
+//TODO EN HIJOS TODOS LOS ADD
+// //agrego item al model y no como un puntero ... esto para manejar que el model maneje el scope del planecurve internamente
+// bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression,int spaceDimension, const QString& name, const QColor& col)
+// {
+// 
+//     //no se permiten items invalidos
+//     if (FunctionGraph::canDraw(functionExpression,spaceDimension))
+//     {
+//         beginInsertRows (QModelIndex(), items.count(), items.count());
+// 
+//         if (m_variables)
+//             items.append(new FunctionGraph(functionExpression, m_variables,spaceDimension, name, col));
+//         else
+//             items.append(new FunctionGraph(functionExpression,spaceDimension, name, col));
+//             
+// 
+//         endInsertRows();
+//         
+//         return true;
+//     }
+//     
+//     return false;
+//     
+// }
+// 
+// bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression,int spaceDimension,const QString& name, const QColor& col, QStringList &errors)
+// {
+//     //no se permiten items invalidos
+//     if (FunctionGraph::canDraw(functionExpression,spaceDimension, errors))
+//     {
+//         beginInsertRows (QModelIndex(), items.count(), items.count());
+// 
+//         //TODO
+//         items.append(new FunctionGraph(functionExpression,spaceDimension, /*variablesModule, */ name, col));
+//         
+//        this->
+// 
+//         endInsertRows();
+//         
+//         return true;
+//     }
+//     
+//     return false;
+// }
+//NOTE en hijos
+/*
+bool FunctionGraphsModel::setItemExpression(int curveIndex, const Analitza::Expression& functionExpression,int spaceDimension)
+{
+    Q_ASSERT(curveIndex<items.count());
+    
+    
+    if (FunctionGraph::canDraw(functionExpression,spaceDimension))
+    {
+        if (items[curveIndex]->reset(functionExpression,spaceDimension))
+        {
+
+            emit dataChanged(index(curveIndex), index(curveIndex));
+
+            return true;
+        
+        }
+    }
+
+    return false;
+}*/

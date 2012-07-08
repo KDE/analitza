@@ -35,9 +35,6 @@ public:
     PlaneCurvesModel(Analitza::Variables *v, QObject * parent = 0);
     virtual ~PlaneCurvesModel();
     
-    bool addCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
-    bool addCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, QStringList &errors);
-
     //planecurve getters
     const PlaneCurve * curve(int curveIndex) const; //read only pointer the data CAN NOT be changed (is a good thing :) )... use this instead of roles ... razon: el uso de roles hace que el cliente deba hacer casts largos
     

@@ -29,15 +29,18 @@
 #include <QStringList>
 #include <QColor>
 
-class ANALITZAPLOT_EXPORT MappingGraph
+class ANALITZAPLOT_EXPORT VisualItem
 {
 public:
-    explicit MappingGraph(const QString &name, const QColor& col);
-    virtual ~MappingGraph();
+    explicit VisualItem(const QString &name, const QColor& col);
+    virtual ~VisualItem();
     
     virtual Analitza::Variables * variables() const = 0;
     virtual void setVariables(Analitza::Variables *variables) = 0;
     
+    //TODO no necesario ya que siempre el id sera la direccion en memoria acutal ... ademas todas las clases de 
+    //la jerarqui se usaran como punteros 
+    //TODO borrar siguiente iter
     const QString id() const { return m_id; }
     virtual const QString typeName() const = 0;
     virtual const Analitza::Expression & expression() const = 0;
@@ -60,8 +63,8 @@ public:
     virtual bool isCorrect() const = 0;
 
 protected:
-    MappingGraph() {}
-    MappingGraph(const MappingGraph &other) {}
+    VisualItem() {}
+    VisualItem(const VisualItem &other) {}
 
 private:
     QString m_id; // from a QUuid

@@ -19,6 +19,7 @@
  *************************************************************************************/
 
 #include "abstractfunctiongraph.h"
+#include "functiongraphfactory.h"
 
 #include "analitza/variable.h"
 
@@ -76,6 +77,11 @@ AbstractFunctionGraph::~AbstractFunctionGraph()
     m_argumentValues.clear();
 
     delete analyzer;
+}
+
+int AbstractFunctionGraph::spaceDimension() const
+{
+    return FunctionGraphFactory::self()->spaceDimension(analyzer->type());
 }
 
 Analitza::Variables *AbstractFunctionGraph::variables() const 

@@ -76,7 +76,6 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Vector,
                                             Analitza::ExpressionType(Analitza::ExpressionType::Value), 3)))
-    SPACE_DIMENSION(3)
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("t")
     ICON_NAME("newparametric3d")

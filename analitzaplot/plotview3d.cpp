@@ -109,6 +109,7 @@ void View3D::addFuncs(const QModelIndex & parent, int start, int end)
 
     glEndList();
     //END display list
+    
 }
 
 void View3D::removeFuncs(const QModelIndex & parent, int start, int end)
@@ -123,7 +124,6 @@ void View3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 {
 //     updateFunctions(start, end);
 }
-
 
 int View3D::currentFunction() const
 {

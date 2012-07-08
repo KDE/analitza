@@ -22,12 +22,12 @@
 
 #include <QUuid>
 
-MappingGraph::MappingGraph(const QString &name, const QColor& col)
+VisualItem::VisualItem(const QString &name, const QColor& col)
     : m_name (name), m_color(col), m_graphVisible(true)
 {
     m_id = QUuid::createUuid().toString();
 }
 
-MappingGraph::~MappingGraph()
+VisualItem::~VisualItem()
 {
 }
