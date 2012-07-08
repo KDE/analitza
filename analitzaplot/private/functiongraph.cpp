@@ -45,6 +45,7 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int
 {
     m_errors.clear();
 
+    
     //NOTE GSOC see functionExpression.isLambda ask for
     if(!functionExpression.isCorrect() || !functionExpression.isLambda())
     {
@@ -73,10 +74,34 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int
         Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(id);
         Analitza::ExpressionType actual=a->type();
 
-        if(actual.canReduceTo(expected)) {
+        if (actual.type() == Analitza::ExpressionType::Many)
+        {
+            //buscar solo las funciones de variable/parametro real
+            //evito los casos "(<num,-1> -> <num,-1> -> <num,-1>...)" y solo acepto casos
+            //"(num -> num -> num...)" 
+            foreach (const Analitza::ExpressionType &exptype, actual.alternatives())
+                if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
+                {
+                    actual = exptype;
+                    break;
+                }
+        }
+
+        if(actual.canReduceTo(expected) || actual.returnValue() == expected.returnValue()) {
 
             delete m_functionGraph;
 
+            QString ff = a->expression().lambdaBody().toString();
+            //TODO actualmente el problema es que en 3d el usuario querra poner un f(x,y) pero solo con una sola variable 
+            //analitzaplot debe ser capas de reconocer esto
+            foreach (QString argn, id.split("|").last().split(","))
+                ff += "+"+argn+"*0";
+
+            Analitza::Expression finalexp(ff);
+            a->setExpression(finalexp);
+            a->setExpression(a->dependenciesToLambda());
+
+            
                 m_functionGraph=static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,a->expression()));
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
@@ -254,7 +279,7 @@ QStringList FunctionGraph::parameters() const
 bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int spaceDimension)
 {
     QStringList errors;
-    
+
     //NOTE GSOC see functionExpression.isLambda ask for
     if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
         errors << i18n("The expression is not correct");
@@ -283,11 +308,28 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int 
         Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension));
         Analitza::ExpressionType actual=a.type();
 
-        if(actual.canReduceTo(expected)) {
+        if (actual.type() == Analitza::ExpressionType::Many)
+        {
+            //buscar solo las funciones de variable/parametro real
+            //evito los casos "(<num,-1> -> <num,-1> -> <num,-1>...)" y solo acepto casos
+            //"(num -> num -> num...)" 
+            foreach (const Analitza::ExpressionType &exptype, actual.alternatives())
+                if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
+                {
+                    actual = exptype;
+                    break;
+                }
+        }
+
+        if(actual.canReduceTo(expected) || actual.returnValue() == expected.returnValue()) {
 //             delete m_functionGraph;
 //             m_functionGraph=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
+
+                qDebug() << FunctionGraphFactory::self()->typeName(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension));
+
         } else
             errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+        
     }
     
     return errors.empty();

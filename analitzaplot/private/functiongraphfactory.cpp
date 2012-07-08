@@ -156,8 +156,17 @@ QString FunctionGraphFactory::trait(const Analitza::Expression &expression, int 
     
     for (int i = 0; i < argumentsFunctions.values().size(); ++i)
     {
-        if (argumentsFunctions.values()[i]() == args && 
-            dim == spaceDimensions.values()[i])
+        QStringList storeargs = argumentsFunctions.values()[i]();
+        
+        int argsflag = 0;
+        
+        foreach (QString arg, args)
+            if (storeargs.contains(arg))
+                ++argsflag;
+
+            //TODO
+        if (argsflag > 0 && 
+            dim == spaceDimensions.values()[i] /*&& a.type().canReduceTo(expressionTypeFunctions.values(i)())*/)
         {
             key = argumentsFunctions.key(argumentsFunctions.values()[i]);
 

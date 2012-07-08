@@ -172,6 +172,26 @@ PlaneCurve * VisualItemsModel::addPlaneCurve(const Analitza::Expression& functio
     return ret;
 }
 
+Surface* VisualItemsModel::addSurface(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+{
+    Surface * ret = 0;
+    
+    //no se permiten items invalidos
+    if (Surface::canDraw(functionExpression))
+    {
+        beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
+
+        ret = new Surface(functionExpression, name, col);
+        m_items.append(ret);
+        
+        endInsertRows();
+        
+        return ret;
+    }
+    
+    return ret;
+}
+
 QList< PlaneCurve* > VisualItemsModel::planeCurves() const
 {
     QList< PlaneCurve* > ret;

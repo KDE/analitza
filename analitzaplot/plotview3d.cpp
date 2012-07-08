@@ -77,6 +77,7 @@ void View3D::addFuncs(const QModelIndex & parent, int start, int end)
     Q_ASSERT(!parent.isValid());
     Q_ASSERT(start == end); // siempre se agrega un solo item al model
 
+    
     Surface* surf = static_cast<Surface*>(m_model->item(start));
     surf->update(Box());
         
@@ -96,7 +97,8 @@ void View3D::addFuncs(const QModelIndex & parent, int start, int end)
 
     // set ambient and diffuse color using glColorMaterial (gold-yellow)
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glColor3fv(diffuseColor);
+//     glColor3fv(diffuseColor);
+    glColor3ub(surf->color().red(), surf->color().green(), surf->color().blue());
 
     foreach (const Face &face, surf->faces())
     {
