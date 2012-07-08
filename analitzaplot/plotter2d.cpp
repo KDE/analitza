@@ -23,6 +23,7 @@
 
 #include "mathutils.h"
 #include "planecurve.h"
+#include "private/functiongraphsmodel.h"
 
 #include <QPalette>
 #include <QPen>
@@ -49,7 +50,7 @@ FunctionsPainter::FunctionsPainter(const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(0), m_dirty(true)
 {}
 
-FunctionsPainter::FunctionsPainter(PlaneCurvesModel* model, const QSizeF& size)
+FunctionsPainter::FunctionsPainter(VisualItemsModel* model, const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true)
 {}
 
@@ -204,14 +205,14 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
     int k=0;
 //     PlaneCurveModel::const_iterator it=m_model->constBegin(), itEnd=m_model->constEnd();
 //     for (; it!=itEnd; ++it, ++k ) {
-    for (int k = 0; k < m_model->rowCount(); ++k )
+    for (int k = 0; k < m_model->planeCurves().size(); ++k )
     {
         
         //NOTE GSOC POINTS=0
         //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,
         //por ejemplo en el caso de parametric se hace un clip para ver si la curva esta dentro o no del viewport
         //entonces ademas de verificar que es sible si debe vericiar que existan puntos antes de pintar una funcion
-        if (!m_model->item(k)->isVisible() || m_model->curve(k)->points().isEmpty())
+        if (!m_model->item(k)->isVisible() || m_model->planeCurves()[k]->points().isEmpty())
             continue;
         
         pfunc.setColor(m_model->item(k)->color());
@@ -300,7 +301,7 @@ void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModel
     
     for(int i=start; i<=end; i++) {
         QRect a = toBiggerRect(viewport);
-        m_model->updateCurve(i, a);
+        dynamic_cast<PlaneCurve*>(m_model->item(i))->update(a);
     }
     
     m_dirty = false;
@@ -314,7 +315,9 @@ QPointF FunctionsPainter::calcImage(const QPointF& ndp) const
     
     //DEPRECATED if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
     if (m_model->item(currentFunction())->isVisible())
-        return m_model->curveImage(currentFunction(), ndp).first;
+                return dynamic_cast<PlaneCurve*>(m_model->item(currentFunction()))->image(ndp).first;
+
+//         return m_model->curveImage(currentFunction(), ndp).first;
 
     return QPointF();
 }
@@ -379,7 +382,7 @@ QLineF FunctionsPainter::slope(const QPointF& dp) const
 
     if (m_model->item(currentFunction())->isVisible())
     {
-        QLineF ret = m_model->curveTangent(currentFunction(), dp);
+        QLineF ret = dynamic_cast<PlaneCurve*>(m_model->item(currentFunction()))->tangent(dp);
         if(ret.isNull() && currentFunction()>=0) {
             QPointF a = calcImage(dp-QPointF(.1,.1));
             QPointF b = calcImage(dp+QPointF(.1,.1));
@@ -443,7 +446,7 @@ void FunctionsPainter::setKeepAspectRatio(bool ar)
     updateScale(true);
 }
 
-void FunctionsPainter::setModel(PlaneCurvesModel* f)
+void FunctionsPainter::setModel(VisualItemsModel* f)
 {
     m_model=f;
     modelChanged();

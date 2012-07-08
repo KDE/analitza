@@ -42,7 +42,7 @@
  */
 
 class QItemSelectionModel;
-class PlaneCurvesModel;
+class VisualItemsModel;
 
 class ANALITZAPLOT_EXPORT Graph2D : public QWidget, public FunctionsPainter
 {
@@ -61,7 +61,7 @@ public:
     /** Constructor. Constructs a new Graph2D. */
     Graph2D(QWidget *parent = 0); // this ctor es para que pueda ser usado en el designer
     
-    Graph2D(PlaneCurvesModel* fm, QWidget *parent = 0);
+    Graph2D(VisualItemsModel* fm, QWidget *parent = 0);
     
     /** Destructor. */
     ~Graph2D();

@@ -22,6 +22,7 @@
 #include "functiongraphsmodel.h"
 #include "functiongraph.h"
 #include <surface.h>
+#include <planecurve.h>
 
 
 #include "analitza/analyzer.h"
@@ -33,14 +34,14 @@
 #include <QFont>
 #include <QIcon>
 
-FunctionGraphsModel::FunctionGraphsModel(QObject* parent): QAbstractListModel(parent)
+VisualItemsModel::VisualItemsModel(QObject* parent): QAbstractListModel(parent)
 , m_variables(0)
 {
 
 }
 
 
-FunctionGraphsModel::FunctionGraphsModel(Analitza::Variables *v, QObject * parent)
+VisualItemsModel::VisualItemsModel(Analitza::Variables *v, QObject * parent)
     : QAbstractListModel(parent), m_variables(v)
 {
 //     Q_ASSERT(v);
@@ -48,28 +49,28 @@ FunctionGraphsModel::FunctionGraphsModel(Analitza::Variables *v, QObject * paren
 //     variablesModule = v;
 }
 
-FunctionGraphsModel::~FunctionGraphsModel()
+VisualItemsModel::~VisualItemsModel()
 {
-    qDeleteAll(items);
-    items.clear();
+    qDeleteAll(m_items);
+    m_items.clear();
 }
 
-void FunctionGraphsModel::setVariables(Analitza::Variables* v)
+void VisualItemsModel::setVariables(Analitza::Variables* v)
 {
     m_variables = v;
-    for(int i = 0; i < items.size(); ++i)
-        items[i]->setVariables(v);
+    for(int i = 0; i < m_items.size(); ++i)
+        m_items[i]->setVariables(v);
 }
 
 
-int FunctionGraphsModel::columnCount(const QModelIndex & parent) const
+int VisualItemsModel::columnCount(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
 
     return 2;
 }
 
-Qt::ItemFlags FunctionGraphsModel::flags(const QModelIndex & index) const
+Qt::ItemFlags VisualItemsModel::flags(const QModelIndex & index) const
 {
     if(index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsTristate;
@@ -77,14 +78,14 @@ Qt::ItemFlags FunctionGraphsModel::flags(const QModelIndex & index) const
         return 0;
 }
 
-bool FunctionGraphsModel::hasChildren(const QModelIndex & parent) const
+bool VisualItemsModel::hasChildren(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
 
     return false;
 }
 
-QVariant FunctionGraphsModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant VisualItemsModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     QVariant ret;
 
@@ -103,19 +104,19 @@ QVariant FunctionGraphsModel::headerData(int section, Qt::Orientation orientatio
 }
 
 
-Qt::DropActions FunctionGraphsModel::supportedDropActions() const
+Qt::DropActions VisualItemsModel::supportedDropActions() const
 {
     return Qt::IgnoreAction;
 }
 
-QVariant FunctionGraphsModel::data(const QModelIndex & index, int role) const
+QVariant VisualItemsModel::data(const QModelIndex & index, int role) const
 {
-    if(!index.isValid() || index.row()>=items.count())
+    if(!index.isValid() || index.row()>=m_items.count())
         return QVariant();
 
     int var=index.row();
 
-    FunctionGraph *tmpcurve = items.at(var);
+    VisualItem *tmpcurve = m_items.at(var);
 
     switch(role)
     {
@@ -143,147 +144,70 @@ QVariant FunctionGraphsModel::data(const QModelIndex & index, int role) const
     return QVariant();
 }
 
-int FunctionGraphsModel::rowCount(const QModelIndex & parent) const
+int VisualItemsModel::rowCount(const QModelIndex & parent) const
 {
     if(parent.isValid())
         return 0;
     else
-        return items.size();
+        return m_items.size();
 }
 
-void FunctionGraphsModel::removeItem(int row)
+PlaneCurve * VisualItemsModel::addPlaneCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
-    Q_ASSERT(row<items.size());
+    PlaneCurve * ret = 0;
+    
+    //no se permiten items invalidos
+    if (PlaneCurve::canDraw(functionExpression))
+    {
+        beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
+
+        ret = new PlaneCurve(functionExpression, name, col);
+        m_items.append(ret);
+        
+        endInsertRows();
+        
+        return ret;
+    }
+    
+    return ret;
+}
+
+QList< PlaneCurve* > VisualItemsModel::planeCurves() const
+{
+    QList< PlaneCurve* > ret;
+    
+    //TODO create a TYPE system for speed
+    foreach (VisualItem *i, m_items)
+    {
+        PlaneCurve * ci = dynamic_cast<PlaneCurve *>(i);
+        if (ci)
+            ret.append(ci);
+    }
+    
+    return ret;
+}
+
+VisualItem* VisualItemsModel::item(int curveIndex) const
+{
+    Q_ASSERT(curveIndex<m_items.count());
+
+    return m_items[curveIndex];
+}
+
+void VisualItemsModel::removeItem(int row)
+{
+    Q_ASSERT(row<m_items.size());
 
     beginRemoveRows(QModelIndex(), row, row);
 
-    FunctionGraph *tmpcurve = items[row];
+    VisualItem *tmpcurve = m_items[row];
     delete tmpcurve;
         
-    items.removeAt(row);
+    m_items.removeAt(row);
 
     endRemoveRows();
 }
 
-const FunctionGraph* FunctionGraphsModel::item(int curveIndex) const
-{
-    Q_ASSERT(curveIndex<items.count());
-
-    return items[curveIndex];
-}
-
-
-
-
-void FunctionGraphsModel::setItemName(int curveIndex, const QString& p)
-{
-        Q_ASSERT(curveIndex<items.count());
-
-        
-    items[curveIndex]->setName(p);
-        emit dataChanged(index(curveIndex), index(curveIndex));
-
-
-}
-
-void FunctionGraphsModel::setItemColor(int curveIndex, const QColor& p)
-{
-        Q_ASSERT(curveIndex<items.count());
-
-        
-    items[curveIndex]->setColor(p);
-    emit dataChanged(index(curveIndex), index(curveIndex));
-
-}
-
-
-void FunctionGraphsModel::setItemVisible(int curveIndex, bool f)
-{
-        Q_ASSERT(curveIndex<items.count());
-
-        
-    items[curveIndex]->setVisible(f);
-    
-    emit dataChanged(index(curveIndex), index(curveIndex));
-}
-
-void FunctionGraphsModel::setItemPlotStyle(int curveIndex, PlotStyle ps)
-{
-        Q_ASSERT(curveIndex<items.count());
-
-        
-    items[curveIndex]->setPlotStyle(ps);
-    
-    emit dataChanged(index(curveIndex), index(curveIndex));
-
-}
-
-
-void FunctionGraphsModel::setItemParameterInterval(int curveIndex, const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
-{
-    Q_ASSERT(curveIndex<items.count());
-    items[curveIndex]->setInterval(argname, min, max);
-    emit dataChanged(index(curveIndex), index(curveIndex));
-
-}
-
-void FunctionGraphsModel::setItemParameterInterval(int curveIndex, const QString &argname, double min, double max)
-{
-    Q_ASSERT(curveIndex<items.count());
-    
-    items[curveIndex]->setInterval(argname, min, max);
-    emit dataChanged(index(curveIndex), index(curveIndex));
-
-}
-
-
-//TODO en hijos
-// bool FunctionGraphsModel::setItem(int curveIndex, const Analitza::Expression &functionExpression, const QString &name, const QColor& col)
-// {
-//     Q_ASSERT(curveIndex<items.count());
-//     
-// 
-//     if (setItemExpression(curveIndex, functionExpression,spaceDimension))
-//     {
-//         setItemName(curveIndex, name);
-//         setItemColor(curveIndex, col);
-//     }
-// 
-//     return false;
-// }
-
-void FunctionGraphsModel::updateItem(int curveIndex, const Box& viewport)
-{
-    Q_ASSERT(curveIndex<items.count());
-    
-    static_cast<Surface*>(items[curveIndex])->update(viewport);
-
-}
-
-//TODO EN HIJOS TODOS LOS ADD
-// //agrego item al model y no como un puntero ... esto para manejar que el model maneje el scope del planecurve internamente
-// bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression,int spaceDimension, const QString& name, const QColor& col)
-// {
-// 
-//     //no se permiten items invalidos
-//     if (FunctionGraph::canDraw(functionExpression,spaceDimension))
-//     {
-//         beginInsertRows (QModelIndex(), items.count(), items.count());
-// 
-//         if (m_variables)
-//             items.append(new FunctionGraph(functionExpression, m_variables,spaceDimension, name, col));
-//         else
-//             items.append(new FunctionGraph(functionExpression,spaceDimension, name, col));
-//             
-// 
-//         endInsertRows();
-//         
-//         return true;
-//     }
-//     
-//     return false;
-//     
-// }
 // 
 // bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression,int spaceDimension,const QString& name, const QColor& col, QStringList &errors)
 // {

@@ -25,7 +25,7 @@
 	@author Percy Camilo
 */
 
-class PlaneCurvesModel;
+class VisualItemsModel;
 
 namespace Analitza { class Variables; }
 
@@ -46,7 +46,7 @@ Q_OBJECT
 		void cleanupTestCase();
 	private:
 		Analitza::Variables* m_vars;
-        PlaneCurvesModel *m_model;
+        VisualItemsModel *m_model;
 };
 
 #endif

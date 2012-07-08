@@ -26,6 +26,7 @@
 #include "analitzaplot/planecurve.h"
 #include "analitzaplot/planecurvesmodel.h"
 #include "analitzaplot/plotview2d.h"
+#include <analitzaplot/private/functiongraphsmodel.h>
 
 
 int main(int argc, char *argv[])
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
     
     //BEGIN test calls
 
-    PlaneCurvesModel *model = new PlaneCurvesModel(mainWindow);
+    VisualItemsModel *model = new VisualItemsModel(mainWindow);
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
     Graph2D *view2d = new Graph2D(mainWindow);
@@ -57,10 +58,10 @@ int main(int argc, char *argv[])
     view2d->setModel(model);
     view2d->setSelectionModel(selection);
     
-    model->addCurve(Analitza::Expression("x->x*x"), "Hola", Qt::cyan);
-    model->addCurve(Analitza::Expression("q->q+2"), "Hola", Qt::green);
-    model->addCurve(Analitza::Expression("t->vector{t*t, t}"), "Hola", Qt::yellow);
-    model->addCurve(Analitza::Expression("(x,y)->5*(x**2+y**2)**3-15*(x*y*72)**2"), "chau", Qt::blue);
+    model->addPlaneCurve(Analitza::Expression("x->x*x"), "Hola", Qt::cyan);
+    model->addPlaneCurve(Analitza::Expression("q->q+2"), "Hola", Qt::green);
+    model->addPlaneCurve(Analitza::Expression("t->vector{t*t, t}"), "Hola", Qt::yellow);
+    model->addPlaneCurve(Analitza::Expression("(x,y)->5*(x**2+y**2)**3-15*(x*y*72)**2"), "chau", Qt::blue);
 
     if (model->rowCount()>0)
     {

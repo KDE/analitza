@@ -27,7 +27,7 @@
 #include <analitzaplot/private/functiongraph.h>
 #include <QModelIndex>
 
-class FunctionGraphsModel;
+class VisualItemsModel;
 class QItemSelectionModel;
 
 // class Solver3D;
@@ -37,9 +37,9 @@ class ANALITZAPLOT_EXPORT View3D : public QGLViewer
 
 public:
     View3D(QWidget *parent = 0);
-    View3D(FunctionGraphsModel *m, QWidget *parent = 0);
+    View3D(VisualItemsModel *m, QWidget *parent = 0);
 
-    void setModel(FunctionGraphsModel *m);
+    void setModel(VisualItemsModel *m);
     void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:
@@ -52,7 +52,7 @@ private:
     void draw();
     void init();
 
-    FunctionGraphsModel *m_model;
+    VisualItemsModel *m_model;
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>

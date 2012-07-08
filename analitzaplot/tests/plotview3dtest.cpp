@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     
     //BEGIN test calls
 
-    FunctionGraphsModel *model = new FunctionGraphsModel(mainWindow);
+    VisualItemsModel *model = new VisualItemsModel(mainWindow);
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
     View3D *view3d = new View3D(mainWindow);

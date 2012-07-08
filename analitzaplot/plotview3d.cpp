@@ -20,6 +20,7 @@
 #include "plotview3d.h"
 #include "private/functiongraphsmodel.h"
 #include "surface.h"
+#include "mathutils.h"
 #include <QVector3D>
 #include <QVector2D>
 #include <qitemselectionmodel.h>
@@ -39,14 +40,14 @@ View3D::View3D(QWidget *parent)
     setAxisIsDrawn(true);
 }
 
-View3D::View3D(FunctionGraphsModel* m, QWidget* parent): QGLViewer(parent)
+View3D::View3D(VisualItemsModel* m, QWidget* parent): QGLViewer(parent)
     ,m_model(m), m_selection(0)
 {
     setGridIsDrawn(true);
     setAxisIsDrawn(true);
 }
 
-void View3D::setModel(FunctionGraphsModel *model)
+void View3D::setModel(VisualItemsModel *model)
 {
     m_model=model;
 
@@ -76,8 +77,8 @@ void View3D::addFuncs(const QModelIndex & parent, int start, int end)
     Q_ASSERT(!parent.isValid());
     Q_ASSERT(start == end); // siempre se agrega un solo item al model
 
-    const Surface* surf = static_cast<const Surface*>(m_model->item(start));
-    m_model->updateItem(start, Box());
+    Surface* surf = static_cast<Surface*>(m_model->item(start));
+    surf->update(Box());
         
     GLuint dlid = glGenLists(1);
     m_displayLists[m_model->item(start)->id()] = dlid;

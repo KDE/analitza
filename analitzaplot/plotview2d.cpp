@@ -36,6 +36,7 @@
 #include "planecurvesmodel.h"
 #include "mathutils.h"
 #include "plotter2d.h"
+#include "private/functiongraphsmodel.h"
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>
 
@@ -65,7 +66,7 @@ Graph2D::Graph2D(QWidget *parent)
 }
 
 
-Graph2D::Graph2D(PlaneCurvesModel* fm, QWidget *parent) :
+Graph2D::Graph2D(VisualItemsModel* fm, QWidget *parent) :
     QWidget(parent), FunctionsPainter(fm, size()),
     valid(false), mode(None),
     m_framed(false), m_readonly(false), m_selection(0)

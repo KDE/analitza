@@ -39,7 +39,7 @@ PlaneCurvesModelTest::PlaneCurvesModelTest(QObject *parent)
 {
     m_vars=new Analitza::Variables;
 
-    m_model = new PlaneCurvesModel(m_vars,this);
+    m_model = new VisualItemsModel(m_vars,this);
 }
 
 PlaneCurvesModelTest::~PlaneCurvesModelTest()
