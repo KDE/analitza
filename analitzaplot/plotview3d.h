@@ -16,8 +16,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
 #ifndef KEOMATH_VIEW3D_H
 #define KEOMATH_VIEW3D_H
 
@@ -56,7 +54,7 @@ private:
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>
-    QMap<QString, GLuint> m_displayLists;
+    QMap<VisualItem*, GLuint> m_displayLists;
 };
 
 #endif

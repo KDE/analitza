@@ -212,7 +212,7 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
         //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,
         //por ejemplo en el caso de parametric se hace un clip para ver si la curva esta dentro o no del viewport
         //entonces ademas de verificar que es sible si debe vericiar que existan puntos antes de pintar una funcion
-        if (!m_model->item(k)->isVisible() || m_model->planeCurves()[k]->points().isEmpty())
+        if (!m_model->item(k)->isVisible() || m_model->planeCurves().values()[k]->points().isEmpty())
             continue;
         
         pfunc.setColor(m_model->item(k)->color());

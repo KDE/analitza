@@ -325,7 +325,7 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int 
 //             delete m_functionGraph;
 //             m_functionGraph=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
 
-                qDebug() << FunctionGraphFactory::self()->typeName(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension));
+//                 qDebug() << FunctionGraphFactory::self()->typeName(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension));
 
         } else
             errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));

@@ -18,8 +18,8 @@
  *************************************************************************************/
 
 
-#ifndef FUNCTIONGRAPHMODEL_H
-#define FUNCTIONGRAPHMODEL_H
+#ifndef FUNCTIONGRAPHMODEL_H__2d__
+#define FUNCTIONGRAPHMODEL_H__2d__
 
 
 #include <QAbstractListModel>
@@ -42,6 +42,8 @@ class Expression;
 
 class ANALITZAPLOT_EXPORT VisualItemsModel : public QAbstractListModel
 {
+friend class VisualItem;    
+    
 Q_OBJECT
     
 public:
@@ -59,12 +61,14 @@ public:
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
-
+    
     PlaneCurve * addPlaneCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
 //     SpaceCurve * addSpaceCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow), double min_t = -4, double max_t = 4);
     Surface * addSurface(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
 
-    QList<PlaneCurve *> planeCurves() const;
+    //index-item
+    QMap<int, PlaneCurve *> planeCurves() const;
+    QMap<int, Surface *> surfaces() const;
 
     VisualItem * item(int curveIndex) const;
     void removeItem(int curveIndex);
@@ -73,6 +77,7 @@ public:
 private:
     Analitza::Variables *m_variables;
     QList<VisualItem*> m_items;
+    bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem
 };
 
 #endif // FUNCTIONGRAPHMODEL_H

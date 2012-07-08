@@ -17,20 +17,20 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #ifndef MAPPINGGRAPH_H
 #define MAPPINGGRAPH_H
 
-
-
 #include "analitzaplot/mathutils.h"
-
 
 #include <QStringList>
 #include <QColor>
 
+class VisualItemsModel;
+
 class ANALITZAPLOT_EXPORT VisualItem
 {
+friend class VisualItemsModel;    
+    
 public:
     explicit VisualItem(const QString &name, const QColor& col);
     virtual ~VisualItem();
@@ -38,10 +38,6 @@ public:
     virtual Analitza::Variables * variables() const = 0;
     virtual void setVariables(Analitza::Variables *variables) = 0;
     
-    //TODO no necesario ya que siempre el id sera la direccion en memoria acutal ... ademas todas las clases de 
-    //la jerarqui se usaran como punteros 
-    //TODO borrar siguiente iter
-    const QString id() const { return m_id; }
     virtual const QString typeName() const = 0;
     virtual const Analitza::Expression & expression() const = 0;
 
@@ -61,14 +57,16 @@ public:
 
     virtual QStringList errors() const = 0;
     virtual bool isCorrect() const = 0;
+    
+//     VisualItemsModel * model() const;
 
 protected:
     VisualItem() {}
     VisualItem(const VisualItem &other) {}
 
 private:
-    QString m_id; // from a QUuid
-
+    void setModel(VisualItemsModel *m);
+    
     //gui
     QString m_name;
     QColor m_color;
@@ -76,7 +74,10 @@ private:
     //graphDescription    
     PlotStyle m_plotStyle;
     bool m_graphVisible;
+    
+    //model expose item as write pointr ... so this will fix some situations (delete external, etc)
+    VisualItemsModel *m_model;
+    bool m_inDestructorSoDontDeleteMe; // lock para evitar que el removeitem del model llame al destructor de este item y se generen llamadas recursivas
 };
-
 
 #endif // MAPPINGGRAPH_H

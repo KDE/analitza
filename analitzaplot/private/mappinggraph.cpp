@@ -19,15 +19,38 @@
 
 
 #include "mappinggraph.h"
+#include "functiongraphsmodel.h"
 
 #include <QUuid>
 
 VisualItem::VisualItem(const QString &name, const QColor& col)
-    : m_name (name), m_color(col), m_graphVisible(true)
+    : m_name (name), m_color(col), m_graphVisible(true), m_model(0), m_inDestructorSoDontDeleteMe(false)
 {
-    m_id = QUuid::createUuid().toString();
 }
 
 VisualItem::~VisualItem()
 {
+    if (m_model && m_model->m_itemCanCallModelRemoveItem)
+    {
+        m_inDestructorSoDontDeleteMe = true;
+        m_model->removeItem(m_model->m_items.indexOf(this));
+        m_inDestructorSoDontDeleteMe = false;
+    }
 }
+
+// VisualItemsModel* VisualItem::model() const
+// {
+//     return m_model;
+// }
+//  
+void VisualItem::setModel(VisualItemsModel* m)
+{
+    Q_ASSERT(m);
+    Q_ASSERT(m != m_model);
+    
+    m_model = m;
+}
+
+
+
+

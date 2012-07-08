@@ -59,10 +59,16 @@ int main(int argc, char *argv[])
     view2d->setSelectionModel(selection);
     
     model->addPlaneCurve(Analitza::Expression("x->x*x"), "Hola", Qt::cyan);
-    model->addPlaneCurve(Analitza::Expression("q->q+2"), "Hola", Qt::green);
+    PlaneCurve *item = model->addPlaneCurve(Analitza::Expression("q->q+2"), "Hola", Qt::green);
     model->addPlaneCurve(Analitza::Expression("t->vector{t*t, t}"), "Hola", Qt::yellow);
     model->addPlaneCurve(Analitza::Expression("(x,y)->5*(x**2+y**2)**3-15*(x*y*72)**2"), "chau", Qt::blue);
 
+    qDebug() << model->rowCount();
+
+    delete item;
+
+    qDebug() << model->rowCount();
+    
     if (model->rowCount()>0)
     {
         selection->setCurrentIndex(model->index(model->rowCount()-1), QItemSelectionModel::Select);

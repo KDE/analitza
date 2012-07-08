@@ -82,8 +82,8 @@ void View3D::addFuncs(const QModelIndex & parent, int start, int end)
     surf->update(Box());
         
     GLuint dlid = glGenLists(1);
-    m_displayLists[m_model->item(start)->id()] = dlid;
-    
+    m_displayLists[surf] = dlid;
+
     float shininess = 15.0f;
     float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
     float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
@@ -120,7 +120,7 @@ void View3D::removeFuncs(const QModelIndex & parent, int start, int end)
     Q_ASSERT(!parent.isValid());
     Q_ASSERT(start == end); // siempre se agrega un solo item al model
     
-    glDeleteLists(m_displayLists[m_model->item(start)->id()], 1);
+    glDeleteLists(m_displayLists[m_model->item(start)], 1);
 }
 
 void View3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
@@ -142,9 +142,9 @@ int View3D::currentFunction() const
 
 void View3D::draw()
 {
-    foreach (const QString &itemid, m_displayLists.keys())
+    foreach (VisualItem *item, m_displayLists.keys())
     {
-        glCallList(m_displayLists[itemid]);
+        glCallList(m_displayLists[item]);
 //         qDebug() << itemid;
     }
 }

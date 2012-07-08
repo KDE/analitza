@@ -35,14 +35,14 @@
 #include <QIcon>
 
 VisualItemsModel::VisualItemsModel(QObject* parent): QAbstractListModel(parent)
-, m_variables(0)
+, m_variables(0), m_itemCanCallModelRemoveItem(true)
 {
 
 }
 
 
 VisualItemsModel::VisualItemsModel(Analitza::Variables *v, QObject * parent)
-    : QAbstractListModel(parent), m_variables(v)
+    : QAbstractListModel(parent), m_variables(v), m_itemCanCallModelRemoveItem(true)
 {
 //     Q_ASSERT(v);
 
@@ -162,6 +162,7 @@ PlaneCurve * VisualItemsModel::addPlaneCurve(const Analitza::Expression& functio
         beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
 
         ret = new PlaneCurve(functionExpression, name, col);
+        ret->setModel(this);
         m_items.append(ret);
         
         endInsertRows();
@@ -182,6 +183,7 @@ Surface* VisualItemsModel::addSurface(const Analitza::Expression& functionExpres
         beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
 
         ret = new Surface(functionExpression, name, col);
+        ret->setModel(this);
         m_items.append(ret);
         
         endInsertRows();
@@ -192,20 +194,36 @@ Surface* VisualItemsModel::addSurface(const Analitza::Expression& functionExpres
     return ret;
 }
 
-QList< PlaneCurve* > VisualItemsModel::planeCurves() const
+QMap< int,PlaneCurve* > VisualItemsModel::planeCurves() const
 {
-    QList< PlaneCurve* > ret;
+    QMap< int, PlaneCurve* > ret;
     
     //TODO create a TYPE system for speed
-    foreach (VisualItem *i, m_items)
+    for (int i = 0; i < m_items.size(); ++i)
     {
-        PlaneCurve * ci = dynamic_cast<PlaneCurve *>(i);
+        PlaneCurve * ci = dynamic_cast<PlaneCurve *>(m_items[i]);
         if (ci)
-            ret.append(ci);
+            ret[i] = ci;
     }
     
     return ret;
 }
+
+QMap< int, Surface* > VisualItemsModel::surfaces() const
+{
+    QMap< int, Surface* > ret;
+    
+    //TODO create a TYPE system for speed
+    for (int i = 0; i < m_items.size(); ++i)
+    {
+        Surface * ci = dynamic_cast<Surface *>(m_items[i]);
+        if (ci)
+            ret[i] = ci;
+    }
+    
+    return ret;
+}
+
 
 VisualItem* VisualItemsModel::item(int curveIndex) const
 {
@@ -218,14 +236,23 @@ void VisualItemsModel::removeItem(int row)
 {
     Q_ASSERT(row<m_items.size());
 
-    beginRemoveRows(QModelIndex(), row, row);
-
+     beginRemoveRows(QModelIndex(), row, row);
+    
     VisualItem *tmpcurve = m_items[row];
-    delete tmpcurve;
-        
+    
+    m_itemCanCallModelRemoveItem = false;
+    
+    if (!tmpcurve->m_inDestructorSoDontDeleteMe)
+    {
+        delete tmpcurve;
+        tmpcurve = 0;
+    }
+
+    m_itemCanCallModelRemoveItem = true;
+
     m_items.removeAt(row);
 
-    endRemoveRows();
+     endRemoveRows();
 }
 
 // 
