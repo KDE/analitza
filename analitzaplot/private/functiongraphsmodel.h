@@ -17,10 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #ifndef FUNCTIONGRAPHMODEL_H__2d__
 #define FUNCTIONGRAPHMODEL_H__2d__
-
 
 #include <QAbstractListModel>
 #include <QColor>
@@ -61,20 +59,26 @@ public:
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
-    
+
     PlaneCurve * addPlaneCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
-//     SpaceCurve * addSpaceCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow), double min_t = -4, double max_t = 4);
+    SpaceCurve * addSpaceCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
     Surface * addSurface(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
 
     //index-item
     QMap<int, PlaneCurve *> planeCurves() const;
+    QMap<int, SpaceCurve *> spaceCurves() const;
     QMap<int, Surface *> surfaces() const;
 
     VisualItem * item(int curveIndex) const;
     void removeItem(int curveIndex);
 
-    
 private:
+    template<typename VisualItemType>
+    VisualItemType * addItem(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
+
+    template<typename VisualItemType>
+    QMap<int, VisualItemType *> items() const;
+
     Analitza::Variables *m_variables;
     QList<VisualItem*> m_items;
     bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem

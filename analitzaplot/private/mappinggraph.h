@@ -29,8 +29,8 @@ class VisualItemsModel;
 
 class ANALITZAPLOT_EXPORT VisualItem
 {
-friend class VisualItemsModel;    
-    
+friend class VisualItemsModel; // use case: if this item gets deleted by "delete someitem" the model will emit/exec removeitem signal
+
 public:
     explicit VisualItem(const QString &name, const QColor& col);
     virtual ~VisualItem();

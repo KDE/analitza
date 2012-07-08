@@ -17,12 +17,11 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
 #include "functiongraphsmodel.h"
 #include "functiongraph.h"
 #include <surface.h>
 #include <planecurve.h>
+#include <spacecurve.h>
 
 
 #include "analitza/analyzer.h"
@@ -139,6 +138,9 @@ QVariant VisualItemsModel::data(const QModelIndex & index, int role) const
             return QIcon::fromTheme(tmpcurve->iconName());
         }
         break;
+        
+    case Qt::ToolTipRole:
+        return tmpcurve->typeName();
     }
 
     return QVariant();
@@ -154,76 +156,33 @@ int VisualItemsModel::rowCount(const QModelIndex & parent) const
 
 PlaneCurve * VisualItemsModel::addPlaneCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
-    PlaneCurve * ret = 0;
-    
-    //no se permiten items invalidos
-    if (PlaneCurve::canDraw(functionExpression))
-    {
-        beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
+    return addItem<PlaneCurve>(functionExpression, name, col);
+}
 
-        ret = new PlaneCurve(functionExpression, name, col);
-        ret->setModel(this);
-        m_items.append(ret);
-        
-        endInsertRows();
-        
-        return ret;
-    }
-    
-    return ret;
+SpaceCurve* VisualItemsModel::addSpaceCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+{
+    return addItem<SpaceCurve>(functionExpression, name, col);
 }
 
 Surface* VisualItemsModel::addSurface(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
-    Surface * ret = 0;
-    
-    //no se permiten items invalidos
-    if (Surface::canDraw(functionExpression))
-    {
-        beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
-
-        ret = new Surface(functionExpression, name, col);
-        ret->setModel(this);
-        m_items.append(ret);
-        
-        endInsertRows();
-        
-        return ret;
-    }
-    
-    return ret;
+    return addItem<Surface>(functionExpression, name, col);
 }
 
 QMap< int,PlaneCurve* > VisualItemsModel::planeCurves() const
 {
-    QMap< int, PlaneCurve* > ret;
-    
-    //TODO create a TYPE system for speed
-    for (int i = 0; i < m_items.size(); ++i)
-    {
-        PlaneCurve * ci = dynamic_cast<PlaneCurve *>(m_items[i]);
-        if (ci)
-            ret[i] = ci;
-    }
-    
-    return ret;
+    return items<PlaneCurve>();
+}
+
+QMap< int, SpaceCurve* > VisualItemsModel::spaceCurves() const
+{
+    return items<SpaceCurve>();
 }
 
 QMap< int, Surface* > VisualItemsModel::surfaces() const
 {
-    QMap< int, Surface* > ret;
-    
-    //TODO create a TYPE system for speed
-    for (int i = 0; i < m_items.size(); ++i)
-    {
-        Surface * ci = dynamic_cast<Surface *>(m_items[i]);
-        if (ci)
-            ret[i] = ci;
-    }
-    
-    return ret;
+    return items<Surface>();
 }
-
 
 VisualItem* VisualItemsModel::item(int curveIndex) const
 {
@@ -254,6 +213,46 @@ void VisualItemsModel::removeItem(int row)
 
      endRemoveRows();
 }
+
+
+template<typename VisualItemType>
+VisualItemType* VisualItemsModel::addItem(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+{
+    VisualItemType * ret = 0;
+    
+    //no se permiten items invalidos
+    if (VisualItemType::canDraw(functionExpression))
+    {
+        beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
+
+        ret = new VisualItemType(functionExpression, name, col);
+        ret->setModel(this);
+        m_items.append(ret);
+
+        endInsertRows();
+        
+        return ret;
+    }
+    
+    return ret;
+}
+
+template<typename VisualItemType>
+QMap< int, VisualItemType* > VisualItemsModel::items() const
+{
+    QMap< int, VisualItemType* > ret;
+    
+    //TODO create a TYPE system for speed
+    for (int i = 0; i < m_items.size(); ++i)
+    {
+        VisualItemType * ci = dynamic_cast<VisualItemType *>(m_items[i]);
+        if (ci)
+            ret[i] = ci;
+    }
+    
+    return ret;
+}
+
 
 // 
 // bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression,int spaceDimension,const QString& name, const QColor& col, QStringList &errors)

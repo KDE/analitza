@@ -65,6 +65,9 @@ int main(int argc, char *argv[])
     model->addSurface(Analitza::Expression("x*x"), "Hola", Qt::cyan);
     model->addSurface(Analitza::Expression("y*y"), "Hola", Qt::yellow);
     model->addSurface(Analitza::Expression("x*x+y*y"), "Hola", Qt::gray);
+    
+    model->removeItem(1);
+    
 
 //     qDebug() << model->item(0)->spaceDimension() << static_cast<const Surface*>(model->item(0))->faces().size();
 
