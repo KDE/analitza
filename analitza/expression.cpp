@@ -601,6 +601,7 @@ bool Expression::isEquation() const
 			}
 		}
 	}
+	return false;
 }
 
 Expression Expression::equationToFunction() const
@@ -614,8 +615,8 @@ Expression Expression::equationToFunction() const
 					Container* c = new Container(Container::math);
 					Apply* a = new Apply;
 					a->appendBranch(new Operator(Operator::minus));
-					a->appendBranch(c1->at(0));
-					a->appendBranch(c1->at(1));
+					a->appendBranch(c1->at(0)->copy());
+					a->appendBranch(c1->at(1)->copy());
 					c->appendBranch(a);
 					return Expression(c);
 				}
