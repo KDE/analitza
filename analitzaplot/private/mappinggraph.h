@@ -58,11 +58,13 @@ public:
     virtual QStringList errors() const = 0;
     virtual bool isCorrect() const = 0;
     
-//     VisualItemsModel * model() const;
-
 protected:
     VisualItem() {}
     VisualItem(const VisualItem &other) {}
+
+//     VisualItemsModel * model() const;
+
+    void emitDataChanged();
 
 private:
     void setModel(VisualItemsModel *m);

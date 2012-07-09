@@ -42,7 +42,17 @@ VisualItem::~VisualItem()
 // {
 //     return m_model;
 // }
-//  
+
+void VisualItem::emitDataChanged()
+{
+    if (m_model)
+    {
+        int row = m_model->m_items.indexOf(this);
+        m_model->dataChanged(m_model->index(row), m_model->index(row));
+    }
+}
+
+
 void VisualItem::setModel(VisualItemsModel* m)
 {
     Q_ASSERT(m);
@@ -50,6 +60,7 @@ void VisualItem::setModel(VisualItemsModel* m)
     
     m_model = m;
 }
+
 
 
 

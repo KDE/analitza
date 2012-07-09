@@ -103,7 +103,7 @@ void ParametricCurve3D::update(const Box& viewport)
     
     
             //TODO CACHE en intervalvalues!!!
-    static QPair<double, double> c_limits = interval("t");
+    QPair<double, double> c_limits = interval("t");
     
 //     if ()
 //     

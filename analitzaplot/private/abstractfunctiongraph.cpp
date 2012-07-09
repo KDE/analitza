@@ -138,6 +138,7 @@ QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interva
     }
     else
     {
+
         ret.first = m_argumentIntervals[argname].lowEndPoint().value();
         ret.second = m_argumentIntervals[argname].highEndPoint().value();
     }
@@ -168,15 +169,20 @@ QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) co
 {
     Q_ASSERT(m_argumentIntervals.contains(argname));
     
+//     QPair<double, double> ret;
+//     
+//     Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
+//     ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer).toReal().value();
+//     ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
+//     
+//     delete intervalsAnalizer;
+//     
+    
+    
     QPair<double, double> ret;
-    
-    Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
-    
-    ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer).toReal().value();
-    ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
-    
-    delete intervalsAnalizer;
-    
+    ret.first = m_argumentIntervals[argname].lowEndPoint().value().toReal().value();
+    ret.second = m_argumentIntervals[argname].highEndPoint().value().toReal().value();
+
     return ret;
 }
 
@@ -186,8 +192,8 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, double min, doub
     
     if (max < min)
         return false;
-    
+
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
-    
+
     return true;
 }

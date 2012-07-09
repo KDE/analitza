@@ -60,13 +60,13 @@ int main(int argc, char *argv[])
     view2d->setModel(model);
     view2d->setSelectionModel(selection);
 
-    model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
-    PlaneCurve *item = model->addPlaneCurve(Analitza::Expression("q->q+2"), "polar simple", Qt::green);
+    PlaneCurve *item = model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
+    model->addPlaneCurve(Analitza::Expression("q->q+2"), "polar simple", Qt::green);
     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
-    PlaneCurve *item2 = model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::blue);
-    model->addPlaneCurve(Analitza::Expression("x->x*x"), "otra simple", Qt::cyan);
+    PlaneCurve *item2 = model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
+    model->addPlaneCurve(Analitza::Expression("x->2+x*x"), "otra simple", Qt::blue);
 
-    qDebug() << item2->expression().toString();
+//     qDebug() << item2->expression().toString();
     
     if (model->rowCount()>0)
     {
@@ -79,6 +79,17 @@ int main(int argc, char *argv[])
 
     mainWindow->show();
 
+    
+//     item2->setVisible(false);
+//     item2->setColor(Qt::red);
+
+//     qDebug() << item << static_cast<PlaneCurve*>(model->item(0)) << model->item(0);
+    item->setInterval("x", 0, 4);
+
+//     item2->setInterval("x", 0, 4);
+//     item2->setInterval("y", 0, 4);
+    
+    
     return app.exec();
 }
 

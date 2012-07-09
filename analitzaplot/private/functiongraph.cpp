@@ -239,13 +239,18 @@ bool FunctionGraph::setInterval(const QString &argname, const Analitza::Expressi
 {
     Q_ASSERT(m_functionGraph);
     
-    return m_functionGraph->setInterval(argname, min, max);
+    bool ret = m_functionGraph->setInterval(argname, min, max);
+    
+    if (ret)
+        emitDataChanged();
+    
+    return ret;
 }
 
 QPair<double, double> FunctionGraph::interval(const QString &argname) const
 {
     Q_ASSERT(m_functionGraph);
-    
+
     return m_functionGraph->interval(argname);
 }
 
@@ -253,7 +258,12 @@ bool FunctionGraph::setInterval(const QString &argname, double min, double max)
 {
     Q_ASSERT(m_functionGraph);
     
-    return m_functionGraph->setInterval(argname, min, max);
+    bool ret = m_functionGraph->setInterval(argname, min, max);
+
+    if (ret)
+        emitDataChanged();
+    
+    return ret;
 }
 
 QStringList FunctionGraph::parameters() const

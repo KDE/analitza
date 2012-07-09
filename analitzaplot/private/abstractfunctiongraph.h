@@ -66,6 +66,7 @@ public:
     QStringList errors() const { return m_errors; }
     bool isCorrect() const { return m_errors.isEmpty() && analyzer->isCorrect(); }
 
+    //TODO CACHE para interval ... eg: currentcalculatedvals 
     //FunctionGraph
     //no lleva const porque se calcularan valores con m_argumentIntervals
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
@@ -147,11 +148,10 @@ public:
         return m_expressionValue;
     }
     
-    
     //no cambiar el exp de analyzer en setvalue por el costo ... solo cuando se quier calcular el value
     void setValue(double value)
     { 
-        m_expressionValue = Analitza::Expression(Analitza::Expression(Analitza::Cn(value))); 
+        m_expressionValue = Analitza::Expression(Analitza::Cn(value)); 
     }
     
     bool setValue(const Analitza::Expression &expression)
@@ -190,7 +190,8 @@ class RealInterval
 {
 public:
     RealInterval() {}
-    RealInterval(const EndPoint &lEndPoint, const EndPoint &hEndPoint) : m_lowEndPoint(lEndPoint), m_highEndPoint(hEndPoint) { }
+    RealInterval(const EndPoint &lEndPoint, const EndPoint &hEndPoint) : m_lowEndPoint(lEndPoint), m_highEndPoint(hEndPoint) {
+    }
     RealInterval(const RealInterval &other) : m_lowEndPoint(other.m_lowEndPoint), m_highEndPoint(other.m_highEndPoint) {}
 
     EndPoint lowEndPoint() const { return m_lowEndPoint; }

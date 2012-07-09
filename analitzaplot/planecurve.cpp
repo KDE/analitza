@@ -94,7 +94,10 @@ void PlaneCurve::update(const QRect& viewport)
     
     Q_ASSERT(backend());
     
+    
+    
     static_cast<AbstractPlaneCurve*>(backend())->update(viewport);
+    
     
     //NOTE GSOC POINTS=0
     //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,

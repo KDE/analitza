@@ -301,6 +301,7 @@ void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModel
     
     for(int i=start; i<=end; i++) {
         QRect a = toBiggerRect(viewport);
+//         qDebug() << dynamic_cast<PlaneCurve*>(m_model->item(i))->interval(dynamic_cast<PlaneCurve*>(m_model->item(i))->parameters().first());
         dynamic_cast<PlaneCurve*>(m_model->item(i))->update(a);
     }
     

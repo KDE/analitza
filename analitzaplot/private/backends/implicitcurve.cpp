@@ -94,8 +94,8 @@ void FunctionImplicit::update(const QRect& vp)
 //     qDebug() << area<<resolutionForImplicitCurves;
 
     //TODO CACHE en intervalvalues!!!
-    static QPair<double, double> intervalx = interval("x");
-    static QPair<double, double> intervaly = interval("y");
+    QPair<double, double> intervalx = interval("x");
+    QPair<double, double> intervaly = interval("y");
     
     qreal w = intervalx.second - intervalx.first;
     qreal h = intervaly.second - intervaly.first;

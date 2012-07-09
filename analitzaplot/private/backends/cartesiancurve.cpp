@@ -56,7 +56,14 @@ private:
 
 void FunctionY::update(const QRect& viewport)
 {
-    double l_lim=viewport.left()-.1, r_lim=viewport.right()+.1;
+//     double l_lim=viewport.left()-.1, r_lim=viewport.right()+.1;
+
+
+    QPair<double, double> intervalx = interval("x");
+
+    double l_lim=intervalx.first, r_lim=intervalx.second;
+
+//     qDebug() << l_lim << r_lim << interval("x", false).first.toString();
     
     if(!points.isEmpty()
             && isSimilar(points.first().x(), l_lim)
@@ -72,6 +79,12 @@ void FunctionY::update(const QRect& viewport)
 QPair<QPointF, QString> FunctionY::image(const QPointF &p)
 {
     QPointF dp=p;
+
+    QPair<double, double> intervalx = interval("x");
+
+    
+    if (intervalx.first >=dp.x() || dp.x() >= intervalx.second)
+        return QPair<QPointF, QString>(QPointF(), QString());
     
     arg("x")->setValue(dp.x());
     Analitza::Expression r=analyzer->calculateLambda();
