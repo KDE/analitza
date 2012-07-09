@@ -24,7 +24,7 @@
 #include "analitza/variable.h"
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractMappingGraph(), analyzer(new Analitza::Analyzer(v))
+: AbstractMappingGraph(), analyzer(new Analitza::Analyzer(v)), m_e(e)
 {
     //TODO intervalparameter tiene que ser const ... no es necesario que no lo sea ... siempre es preferible que algo sea inmutable :)
 //     m_intervalsAnalizer = new Analitza::Analyzer(v);
@@ -48,12 +48,22 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
 }
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e)
-: AbstractMappingGraph(), analyzer(new Analitza::Analyzer)
+: AbstractMappingGraph(), analyzer(new Analitza::Analyzer), m_e(e)
 {
     //TODO intervalparameter tiene que ser const ... no es necesario que no lo sea ... siempre es preferible que algo sea inmutable :)
 //     m_intervalsAnalizer = new Analitza::Analyzer(v);
+
     
-        analyzer->setExpression(e);
+    if (e.isEquation())
+    {
+        analyzer->setExpression(e.equationToFunction());
+        analyzer->setExpression(analyzer->dependenciesToLambda());
+        
+    }
+        else
+                analyzer->setExpression(e);
+
+    
     analyzer->simplify();
     analyzer->flushErrors();
     
@@ -81,7 +91,9 @@ AbstractFunctionGraph::~AbstractFunctionGraph()
 
 int AbstractFunctionGraph::spaceDimension() const
 {
-    return FunctionGraphFactory::self()->spaceDimension(analyzer->type());
+//     qDebug() <<"ktype " << analyzer->type().toString() << typeName() << analyzer->expression().toString();
+    
+    return FunctionGraphFactory::self()->spaceDimension(analyzer->type(), parameters());
 }
 
 Analitza::Variables *AbstractFunctionGraph::variables() const 
@@ -104,7 +116,7 @@ void AbstractFunctionGraph::setVariables(Analitza::Variables* variables)
 
 const Analitza::Expression& AbstractFunctionGraph::expression() const
 {
-    return analyzer->expression();
+    return m_e;
 }
 
 

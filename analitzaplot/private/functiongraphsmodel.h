@@ -51,10 +51,8 @@ public:
     
     void setVariables(Analitza::Variables *v); // set variables for all this items this not emit setdata signal
     
-    int columnCount(const QModelIndex & parent = QModelIndex()) const;
     Qt::ItemFlags flags(const QModelIndex & index) const;
     bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     Qt::DropActions supportedDropActions() const;
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;

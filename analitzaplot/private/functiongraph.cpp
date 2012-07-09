@@ -57,52 +57,39 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int
         a = new Analitza::Analyzer;
 
     a->setExpression(functionExpression);
-    a->setExpression(a->dependenciesToLambda());
+    if (functionExpression.isEquation())
+    {
+        a->setExpression(a->expression().equationToFunction());
+        a->setExpression(a->dependenciesToLambda());
+    }
+    else
+        a->setExpression(a->dependenciesToLambda());
 
-    QStringList bvars;
+    QStringList bvars = a->expression().bvarList();
 
-    foreach (Analitza::Ci *arg, a->expression().parameters())
-        bvars.append(arg->name());
-
+    
+    if (functionExpression.isEquation())
+        a->setExpression(functionExpression);
+    
+    
     //TODO: turn into assertion
-    if(!FunctionGraphFactory::self()->contains(FunctionGraphFactory::self()->trait(a->expression(), spaceDimension)))
+    QString id = FunctionGraphFactory::self()->trait(a->expression(), spaceDimension);
+
+    
+    
+    if(!FunctionGraphFactory::self()->contains(id))
         m_errors << i18n("Function type not recognized");
     else if(!a->isCorrect())
         m_errors << a->errors();
     else {
-        QString id = FunctionGraphFactory::self()->trait(a->expression(), spaceDimension);
         Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(id);
         Analitza::ExpressionType actual=a->type();
 
-        if (actual.type() == Analitza::ExpressionType::Many)
-        {
-            //buscar solo las funciones de variable/parametro real
-            //evito los casos "(<num,-1> -> <num,-1> -> <num,-1>...)" y solo acepto casos
-            //"(num -> num -> num...)" 
-            foreach (const Analitza::ExpressionType &exptype, actual.alternatives())
-                if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
-                {
-                    actual = exptype;
-                    break;
-                }
-        }
-
-        if(actual.canReduceTo(expected) || actual.returnValue() == expected.returnValue()) {
+        if(actual.canReduceTo(expected)) {
 
             delete m_functionGraph;
 
-            QString ff = a->expression().lambdaBody().toString();
-            //TODO actualmente el problema es que en 3d el usuario querra poner un f(x,y) pero solo con una sola variable 
-            //analitzaplot debe ser capas de reconocer esto
-            foreach (QString argn, id.split("|").last().split(","))
-                ff += "+"+argn+"*0";
-
-            Analitza::Expression finalexp(ff);
-            a->setExpression(finalexp);
-            a->setExpression(a->dependenciesToLambda());
-
-            
-                m_functionGraph=static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,a->expression()));
+            m_functionGraph=static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,a->expression()));
         } else
             m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
     }
@@ -289,13 +276,27 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int 
 
     Analitza::Analyzer a;
     a.setExpression(functionExpression);
-    a.setExpression(a.dependenciesToLambda());
+//     a.setExpression(a.dependenciesToLambda());
 
-    QStringList bvars;
 
-    foreach (Analitza::Ci *arg, a.expression().parameters())
-        bvars.append(arg->name());
+    
+    a.setExpression(functionExpression);
+    if (functionExpression.isEquation())
+    {
+        a.setExpression(a.expression().equationToFunction());
+        a.setExpression(a.dependenciesToLambda());
+    }
+    else
+        a.setExpression(a.dependenciesToLambda());
 
+    QStringList bvars = a.expression().bvarList();
+
+    
+    if (functionExpression.isEquation())
+        a.setExpression(functionExpression);
+    
+            
+            
     //TODO: turn into assertion
     if(!FunctionGraphFactory::self()->contains(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension)))
     {
@@ -332,6 +333,8 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int 
         
     }
     
+//     qDebug() << errors;
+    
     return errors.empty();
 }
 
@@ -354,6 +357,9 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int 
     foreach (Analitza::Ci *arg, a.expression().parameters())
         bvars.append(arg->name());
 
+    
+
+    
     //TODO: turn into assertion
     if(!FunctionGraphFactory::self()->contains(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension)))
         errors << i18n("Function type not recognized");
@@ -395,12 +401,15 @@ bool FunctionGraph::reset(const Analitza::Expression& functionExpression, int sp
     foreach (Analitza::Ci *arg, a->expression().parameters())
         bvars.append(arg->name());
 
+    
     //TODO: turn into assertion
     if(!FunctionGraphFactory::self()->contains(FunctionGraphFactory::self()->trait(a->expression(), spaceDimension)))
         m_errors << i18n("Function type not recognized");
     else if(!a->isCorrect())
         m_errors << a->errors();
     else {
+        
+        
         QString id = FunctionGraphFactory::self()->trait(a->expression(), spaceDimension);
         Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(id);
         Analitza::ExpressionType actual=a->type();

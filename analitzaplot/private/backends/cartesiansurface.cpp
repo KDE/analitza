@@ -38,7 +38,7 @@ class ANALITZAPLOT_EXPORT CartesianSurface : public AbstractSurface/*, static cl
 {
 public:
     CONSTRUCTORS(CartesianSurface)
-    TYPE_NAME("CartesianSurface z=f(x,y)")
+    TYPE_NAME("CartesianSurfacez=f(x,y)")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(

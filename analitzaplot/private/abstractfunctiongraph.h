@@ -91,6 +91,7 @@ protected:
     Analitza::Cn* arg(const QString &argname) { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
     
 private:
+Analitza::Expression m_e;
 
 //BEGIN private types
 class EndPoint

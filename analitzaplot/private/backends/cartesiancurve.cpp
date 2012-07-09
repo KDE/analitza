@@ -190,7 +190,7 @@ class FunctionX : public AbstractPlaneCurve
 {
 public:
     CONSTRUCTORS(FunctionX)
-    TYPE_NAME("FunctionX ... su variable es y ")
+    TYPE_NAME("FunctionX")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))

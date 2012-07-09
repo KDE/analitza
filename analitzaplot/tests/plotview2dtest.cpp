@@ -18,6 +18,7 @@
 
 #include <QMainWindow>
 #include <QStringListModel>
+#include <QAction>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
@@ -27,7 +28,6 @@
 #include "analitzaplot/planecurvesmodel.h"
 #include "analitzaplot/plotview2d.h"
 #include <analitzaplot/private/functiongraphsmodel.h>
-
 
 int main(int argc, char *argv[])
 {
@@ -46,28 +46,27 @@ int main(int argc, char *argv[])
 
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setMinimumSize(640, 480);
+
+    QTabWidget *tabs = new QTabWidget(mainWindow);
     
     //BEGIN test calls
 
-    VisualItemsModel *model = new VisualItemsModel(mainWindow);
+    VisualItemsModel *model = new VisualItemsModel(tabs);
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
-    Graph2D *view2d = new Graph2D(mainWindow);
+    Graph2D *view2d = new Graph2D(tabs);
 //     view2d->setReadOnly(true);
     view2d->setSquares(false);
     view2d->setModel(model);
     view2d->setSelectionModel(selection);
-    
-    model->addPlaneCurve(Analitza::Expression("x->x*x"), "Hola", Qt::cyan);
-    PlaneCurve *item = model->addPlaneCurve(Analitza::Expression("q->q+2"), "Hola", Qt::green);
-    model->addPlaneCurve(Analitza::Expression("t->vector{t*t, t}"), "Hola", Qt::yellow);
-    model->addPlaneCurve(Analitza::Expression("(x,y)->5*(x**2+y**2)**3-15*(x*y*72)**2"), "chau", Qt::blue);
 
-    qDebug() << model->rowCount();
+    model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
+    PlaneCurve *item = model->addPlaneCurve(Analitza::Expression("q->q+2"), "polar simple", Qt::green);
+    model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
+    PlaneCurve *item2 = model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::blue);
+    model->addPlaneCurve(Analitza::Expression("x->x*x"), "otra simple", Qt::cyan);
 
-    delete item;
-
-    qDebug() << model->rowCount();
+    qDebug() << item2->expression().toString();
     
     if (model->rowCount()>0)
     {
@@ -75,10 +74,11 @@ int main(int argc, char *argv[])
     }
 
     //END test calls
-    
+
     mainWindow->setCentralWidget(view2d);
 
     mainWindow->show();
 
     return app.exec();
 }
+

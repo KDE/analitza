@@ -32,6 +32,7 @@
 #include <QPixmap>
 #include <QFont>
 #include <QIcon>
+#include <kcategorizedsortfilterproxymodel.h>
 
 VisualItemsModel::VisualItemsModel(QObject* parent): QAbstractListModel(parent)
 , m_variables(0), m_itemCanCallModelRemoveItem(true)
@@ -61,14 +62,6 @@ void VisualItemsModel::setVariables(Analitza::Variables* v)
         m_items[i]->setVariables(v);
 }
 
-
-int VisualItemsModel::columnCount(const QModelIndex & parent) const
-{
-    Q_UNUSED(parent);
-
-    return 2;
-}
-
 Qt::ItemFlags VisualItemsModel::flags(const QModelIndex & index) const
 {
     if(index.isValid())
@@ -83,25 +76,6 @@ bool VisualItemsModel::hasChildren(const QModelIndex & parent) const
 
     return false;
 }
-
-QVariant VisualItemsModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    QVariant ret;
-
-    if(role==Qt::DisplayRole && orientation==Qt::Horizontal)
-    {
-        switch(section) {
-        case 0:
-            ret=i18nc("@title:column", "Name");
-            break;
-        case 1:
-            ret=i18nc("@title:column", "Function");
-            break;
-        }
-    }
-    return ret;
-}
-
 
 Qt::DropActions VisualItemsModel::supportedDropActions() const
 {
@@ -120,27 +94,31 @@ QVariant VisualItemsModel::data(const QModelIndex & index, int role) const
     switch(role)
     {
     case Qt::DisplayRole:
-        switch(index.column()) {
-        case 0:
-            return tmpcurve->name();
-            break;
-        case 1:
             return tmpcurve->expression().toString();
-            break;
-        }
         break;
     case Qt::DecorationRole:
-        if(index.column()==0) {
+    {
             QPixmap ico(15, 15);
             ico.fill(tmpcurve->color());
             return  QIcon(ico);
-        } else {
-            return QIcon::fromTheme(tmpcurve->iconName());
-        }
+        break;
+     }   
+    case Qt::ToolTipRole:
+        return tmpcurve->name();
+        
         break;
         
-    case Qt::ToolTipRole:
-        return tmpcurve->typeName();
+        case KCategorizedSortFilterProxyModel::CategoryDisplayRole: 
+        {
+            return tmpcurve->typeName();
+            break;
+        }
+        case KCategorizedSortFilterProxyModel::CategorySortRole:
+        {    
+            return tmpcurve->typeName();
+            break;
+        }
+        default: break;
     }
 
     return QVariant();

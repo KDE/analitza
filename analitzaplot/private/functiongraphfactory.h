@@ -55,7 +55,7 @@ public:
 
     QString typeName(const QString& id) const;
     Analitza::ExpressionType expressionType(const QString& id) const;
-    int spaceDimension(const Analitza::ExpressionType& ftype) const;
+    int spaceDimension(const Analitza::ExpressionType& ftype, const QStringList &bvars) const;
     CoordinateSystem coordinateSystem(const QString& id) const;
     QString iconName(const QString& id) const;
     QStringList examples(const QString& id) const;

@@ -32,62 +32,75 @@ Analitza::ExpressionType FunctionGraphFactory::expressionType(const QString& id)
     return expressionTypeFunctions[id]();
 }
 
-int FunctionGraphFactory::spaceDimension(const Analitza::ExpressionType& etype) const
+int FunctionGraphFactory::spaceDimension(const Analitza::ExpressionType& etype, const QStringList &bvars) const
 {
+    Q_ASSERT(!bvars.isEmpty());
+    
     Analitza::ExpressionType ftype = etype;
     
     int dim = -1;
 
-    if (ftype.type() == Analitza::ExpressionType::Many)
+//     if (ftype.type() == Analitza::ExpressionType::Many)
+//     {
+//         //buscar solo las funciones de variable/parametro real
+//         //evito los casos "(<num,-1> -> <num,-1> -> <num,-1>...)" y solo acepto casos
+//         //"(num -> num -> num...)" 
+//         foreach (const Analitza::ExpressionType &exptype, ftype.alternatives())
+//             if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
+//             {
+//                 ftype = exptype;
+//                 break;
+//             }
+//     }
+
+    if (ftype.type() == Analitza::ExpressionType::Lambda)
     {
-        //buscar solo las funciones de variable/parametro real
-        //evito los casos "(<num,-1> -> <num,-1> -> <num,-1>...)" y solo acepto casos
-        //"(num -> num -> num...)" 
-        foreach (const Analitza::ExpressionType &exptype, ftype.alternatives())
-            if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
+        switch (ftype.returnValue().type())
+        {
+
+            
+            // vector valued function
+            case Analitza::ExpressionType::Vector:
             {
-                ftype = exptype;
+                
+
+                switch (ftype.parameters().last().anyValue())
+                {
+                    case 2: dim = 2; break; // param curve
+                    case 3: dim = 3; break; // param surf
+                }
+                
+                
+
                 break;
             }
-    }
-
-    switch (ftype.returnValue().type())
-    {
-        // implicit function
-        case Analitza::ExpressionType::Bool: //last bool means = operator is used (not <,>,...)
-        {
-            switch (ftype.parameters().size())
-            {
-                case 3: dim = 2; break; // implicit curve
-                case 4: dim = 3; break; // implicit surf
-            }
-
-            break;
-        }
-        
-        // vector valued function
-        case Analitza::ExpressionType::Vector:
-        {
-            switch (ftype.parameters().last().anyValue())
-            {
-                case 2: dim = 2; break; // param curve
-                case 3: dim = 3; break; // param surf
-            }
             
-            break;
-        }
-        
-        // real valued function
-        case Analitza::ExpressionType::Value:
-        {
-            switch (ftype.parameters().size())
+            // real valued function
+            case Analitza::ExpressionType::Value:
             {
-                case 2: dim = 2; break; // f(x)
-                case 3: dim = 3; break; // f(x,y)
+                switch (ftype.parameters().size())
+                {
+                    case 2: dim = 2; break; // f(x)
+                    case 3: dim = 3; break; // f(x,y)
+                }
+
+                break;
+            }
+        }
+    }
+    else // implicit
+    {
+            if (ftype.type() == Analitza::ExpressionType::Bool)
+            {
+                
+                // implicit function
+                    switch (bvars.size())
+                    {
+                        case 2: dim = 2; break; // implicit curve
+                        case 3: dim = 3; break; // implicit surf
+                    }
             }
 
-            break;
-        }
     }
 
     return dim;
@@ -120,10 +133,10 @@ bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builder
         CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
         IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
 {
-    int dim = spaceDimension(expressionTypeFunction());
+    int dim = spaceDimension(expressionTypeFunction(), argumentsFunction() );
 
 //     Q_ASSERT(!contains(id(argumentsFunction(), dim)));
-    Q_ASSERT(expressionTypeFunction().type() == Analitza::ExpressionType::Lambda);
+//     Q_ASSERT(expressionTypeFunction().type() == Analitza::ExpressionType::Lambda); DEPRECATED implicit is not a lambda
     
     QString id = QString::number(dim)+"|"+
                  QString::number((int)coordinateSystemFunction())+"|"+
@@ -147,26 +160,32 @@ QString FunctionGraphFactory::trait(const Analitza::Expression &expression, int 
 {
     Analitza::Analyzer a;
     a.setExpression(expression);
-    
-    QStringList args = expression.bvarList();
+    if (expression.isEquation())
+    {
+        a.setExpression(a.expression().equationToFunction());
+        a.setExpression(a.dependenciesToLambda());
+    }
+    else
+        a.setExpression(a.dependenciesToLambda());
 
+    QStringList args = a.expression().bvarList();
+
+    if (expression.isEquation())
+        a.setExpression(expression);
+
+    
+    
     QString key;
     
     bool found = false;
     
+    
     for (int i = 0; i < argumentsFunctions.values().size(); ++i)
     {
-        QStringList storeargs = argumentsFunctions.values()[i]();
+//         qDebug() << a.type().canReduceTo(expressionTypeFunctions.values()[i]()) << argumentsFunctions.values()[i]() << args << spaceDimensions.values()[i] << dim;
         
-        int argsflag = 0;
-        
-        foreach (QString arg, args)
-            if (storeargs.contains(arg))
-                ++argsflag;
-
-            //TODO
-        if (argsflag > 0 && 
-            dim == spaceDimensions.values()[i] /*&& a.type().canReduceTo(expressionTypeFunctions.values(i)())*/)
+        if (args == argumentsFunctions.values()[i]() && dim == spaceDimensions.values()[i] &&
+            a.type().canReduceTo(expressionTypeFunctions.values()[i]()))
         {
             key = argumentsFunctions.key(argumentsFunctions.values()[i]);
 
@@ -175,6 +194,7 @@ QString FunctionGraphFactory::trait(const Analitza::Expression &expression, int 
             break;
         }
     }
+    
 
     if (found)
         return QString::number(spaceDimensions[key])+"|"+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
