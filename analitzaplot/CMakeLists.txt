@@ -9,8 +9,6 @@ find_package ( OpenGL REQUIRED )
 if(NOT OPENGL_GLU_FOUND)
     message(FATAL_ERROR "GLU was not found")
 endif(NOT OPENGL_GLU_FOUND)
-#TODO no more qglviewer ... remove this next iter
-# find_library(QGLVIEWER_LIBRARY NAMES qglviewer-qt4 QGLViewer)
 find_path(IEEEFP_DIR ieeefp.h)
 if(IEEEFP_DIR)
     include_directories(${IEEEFP_DIR})
@@ -98,8 +96,6 @@ target_link_libraries ( analitzaplot
   #${KDE4_KDECORE_LIBS}
   ${KDE4_KDEUI_LIBS}
   analitza
-  #TODO no more qglviewer ... remove this next iter
-#   ${QGLVIEWER_LIBRARY}
 )
 set_target_properties(analitzaplot PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 

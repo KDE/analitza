@@ -1,6 +1,7 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *  Copyright (C) 2008 Rivo Laks <rivolaks@hot.ee>                                   *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -34,6 +35,7 @@
 #include <QPair>
 #include <QVector2D>
 #include <QVector3D>
+#include <QMatrix4x4>
 #include <QLineF>
 
 using std::acos;
@@ -51,7 +53,7 @@ class Expression;
 }
 
 enum CoordinateSystem { Cartesian = 1, Polar, Cylindrical, Spherical };
-enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };
+
 
 //math utils
 
@@ -59,10 +61,6 @@ enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };
 
 // an   Oriented Bounding Box class 
 
-class Box
-{
-    
-};
 
 class Face
 {
@@ -72,6 +70,158 @@ public:
     QVector3D p3;
     QVector3D normal;
 };
+
+class Box
+{
+    
+};
+
+//NOTE reduced version of Camera from kgllib credits: Copyright (C) 2008 Rivo Laks <rivolaks@hot.ee>
+// class Camera
+// {
+// public:
+//     Camera();
+//     virtual ~Camera();
+// 
+//     /**
+//      * return the viewport that has been specified using the @ref setViewport
+//      *  method.
+//      **/
+//     QRect viewport() const;
+// 
+//     /**
+//      * Specifies the current viewport.
+//      **/
+//     void setViewport(int x, int y, int width, int height);
+// 
+//     /**
+//      * Sets the aspect ration to @p aspect.
+//      * Aspect ratio is usually window's width divided by its height.
+//      **/
+//     void setAspect(float aspect);
+//     /**
+//      * Sets the depth buffer's range.
+//      *
+//      * @p near is distance from the camera to the near clipping plane and
+//      *  @p far is distance to the far clipping plane. Everything that is not
+//      *  between those two planes will be clipped away (not rendered), so you
+//      *  should make sure that all your objects are within that range.
+//      * At the same time, the depth range should be as small as possible (i.e.
+//      *  @p near should be as big and @p far as small as possible) to increase
+//      *  depth buffer precision.
+//      **/
+//     void setDepthRange(float near, float far);
+// 
+//     /**
+//      * Sets the camera's positionto @p pos.
+//      **/
+//     void setPosition(const QVector3D& pos);
+//     void setPosition(float x, float y, float z)  { setPosition(QVector3D(x, y, z)); }
+//     /**
+//      * Sets the lookat point to @p lookat.
+//      * LookAt is the point at which the camera is looking at.
+//      **/
+//     void setLookAt(const QVector3D& lookat);
+//     void setLookAt(float x, float y, float z)  { setLookAt(QVector3D(x, y, z)); }
+//     /**
+//      * Sets the up vector to @p up.
+//      * Up vector is the one pointing upwards in the viewport.
+//      **/
+//     void setUp(const QVector3D& up);
+//     void setUp(float x, float y, float z)  { setUp(QVector3D(x, y, z)); }
+//     /**
+//      * Sets the viewing direction of the camera to @p dir.
+//      * This method sets lookat point to @ref position() + dir, thus
+//      *  you will need to set camera's position before using this method.
+//      **/
+//     void setDirection(const QVector3D& dir);
+//     void setDirection(float x, float y, float z)  { setDirection(QVector3D(x, y, z)); }
+// 
+//     QVector3D position() const  { return mPosition; }
+//     QVector3D lookAt() const  { return mLookAt; }
+//     QVector3D up() const  { return mUp; }
+// 
+//     /**
+//      * Sets the modelview matrix.
+//      *
+//      * If you specify the modelview matrix using this method then parameters
+//      *  specified using @ref setPosition, @ref setLookAt and @ref setUp
+//      *  methods will be ignored.
+//      *
+//      * If you call any of @ref setPosition, @ref setLookAt or @ref setUp
+//      *  after calling this method, then the modelview matrix specified here
+//      *  will be ignored and new modelview matrix will be calculated using
+//      *  specified position, lookat and up vectors.
+//      **/
+//     void setModelviewMatrix(const QMatrix4x4& modelview);
+//     /**
+//      * Sets the projection matrix.
+//      *
+//      * If you specify the projection matrix using this method then parameters
+//      *  specified using @ref setFoV, @ref setAspect and @ref setDepthRange
+//      *  methods will be ignored.
+//      *
+//      * If you call any of @ref setFoV, @ref setAspect or @ref setDepthRange
+//      *  after calling this method, then the projection matrix specified here
+//      *  will be ignored and new projection matrix will be calculated using
+//      *  specified fov, aspect and depth range parameters.
+//      **/
+//     void setProjectionMatrix(const QMatrix4x4& projection);
+// 
+//     /**
+//      * @return current modelview matrix.
+//      * Modelview matrix is either set using the @ref setModelviewMatrix method
+//      *  or automatically calculated using position, lookAt and up vectors.
+//      **/
+//     QMatrix4x4 modelviewMatrix() const;
+//     /**
+//      * @return current projection matrix.
+//      * Projection matrix is either set using the @ref setProjectionMatrix
+//      *   method or automatically calculated using fov, aspect and depth range
+//      *   parameters.
+//      **/
+//     QMatrix4x4 projectionMatrix() const;
+// 
+// protected:
+//     void recalculateProjectionMatrix();
+// 
+// protected:
+//     QVector3D mPosition;
+//     QVector3D mLookAt;
+//     QVector3D mUp;
+//     float mFoV, mAspect, mDepthNear, mDepthFar;
+// 
+//     QMatrix4x4 mModelviewMatrix;
+//     QMatrix4x4 mProjectionMatrix;
+//     QRect mViewport;
+// };
+// 
+// //NOTE reduced version of TrackBall from kgllib credits: Copyright (C) 2008 Rivo Laks <rivolaks@hot.ee>
+// class TrackBall
+// {
+// public:
+//     TrackBall();
+//     virtual ~TrackBall();
+// 
+//     virtual void rotate(float dx, float dy);
+// 
+//     QVector3D transform(const QVector3D& v) const;
+//     Camera transform(const Camera& c);
+// 
+//     QVector3D xAxis() const;
+//     QVector3D yAxis() const;
+//     QVector3D zAxis() const;
+// 
+//     void rotateX(float degrees);
+//     void rotateY(float degrees);
+//     void rotateZ(float degrees);
+// 
+//     void rotate(float degrees, QVector3D axis);
+// 
+// protected:
+//     QMatrix4x4 mMatrix;
+// };
+
 
 static bool isSimilar(double a, double b, double diff = .0000001)
 {

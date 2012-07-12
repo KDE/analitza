@@ -20,10 +20,16 @@
 #ifndef MAPPINGGRAPH_H
 #define MAPPINGGRAPH_H
 
-#include "analitzaplot/mathutils.h"
-
 #include <QStringList>
 #include <QColor>
+
+#include "../mathutils.h"
+
+namespace Analitza
+{
+class Variables;
+class Expression;
+};
 
 class VisualItemsModel;
 
@@ -32,6 +38,8 @@ class ANALITZAPLOT_EXPORT VisualItem
 friend class VisualItemsModel; // use case: if this item gets deleted by "delete someitem" the model will emit/exec removeitem signal
 
 public:
+    enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };    
+    
     explicit VisualItem(const QString &name, const QColor& col);
     virtual ~VisualItem();
     
