@@ -72,7 +72,7 @@ public:
     QVector3D p3;
     QVector3D normal;
 };
- 
+
 static bool isSimilar(double a, double b, double diff = .0000001)
 {
     return fabs(a-b) < diff;

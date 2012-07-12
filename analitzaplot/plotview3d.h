@@ -19,17 +19,17 @@
 #ifndef KEOMATH_VIEW3D_H
 #define KEOMATH_VIEW3D_H
 
-#include "QGLViewer/qglviewer.h"
 #include <QMouseEvent>
 #include <analitzaplot/mathutils.h>
 #include <analitzaplot/private/functiongraph.h>
 #include <QModelIndex>
+#include <QGLWidget>
 
 class VisualItemsModel;
 class QItemSelectionModel;
 
 // class Solver3D;
-class ANALITZAPLOT_EXPORT View3D : public QGLViewer
+class ANALITZAPLOT_EXPORT View3D : public QGLWidget
 {
     Q_OBJECT
 
@@ -39,22 +39,51 @@ public:
 
     void setModel(VisualItemsModel *m);
     void setSelectionModel(QItemSelectionModel* selection);
-
+        /** Returns the pixmap painting. */
+        
+        QPixmap toPixmap();
 public slots:
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);
 
+    void resetView();
 private:
     int currentFunction() const;
-    void draw();
-    void init();
+
+    void initializeGL();
+    void resizeGL(int w, int h);
+    void paintGL();
 
     VisualItemsModel *m_model;
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>
     QMap<VisualItem*, GLuint> m_displayLists;
+    
+    
+            void drawAxes();
+        
+        void keyPressEvent(QKeyEvent *e);
+        void keyReleaseEvent(QKeyEvent *e);
+        void timeOut();
+        void mousePressEvent(QMouseEvent *e); QPoint press;
+        void mouseReleaseEvent(QMouseEvent *e);
+        void mouseMoveEvent(QMouseEvent *e);
+        void wheelEvent(QWheelEvent *e);
+
+        
+        /** Sets the @p max maximum size. */
+        void setSize(double max);
+        double zoom;
+        float rotation[3];
+        float alpha;
+        bool trans;
+        unsigned short keyspressed;
+                double default_size;
+        double default_step;
+
+        int m_n;
 };
 
 #endif

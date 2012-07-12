@@ -32,10 +32,10 @@
 #include <QPixmap>
 #include <QFont>
 #include <QIcon>
-#include <kcategorizedsortfilterproxymodel.h>
+// #include <kcategorizedsortfilterproxymodel.h>
 
 VisualItemsModel::VisualItemsModel(QObject* parent): QAbstractListModel(parent)
-, m_variables(0), m_itemCanCallModelRemoveItem(true)
+    , m_variables(0), m_itemCanCallModelRemoveItem(true)
 {
 
 }
@@ -94,31 +94,32 @@ QVariant VisualItemsModel::data(const QModelIndex & index, int role) const
     switch(role)
     {
     case Qt::DisplayRole:
-            return tmpcurve->expression().toString();
+        return tmpcurve->expression().toString();
         break;
     case Qt::DecorationRole:
     {
-            QPixmap ico(15, 15);
-            ico.fill(tmpcurve->color());
-            return  QIcon(ico);
+        QPixmap ico(32, 32);
+        ico.fill(tmpcurve->color());
+        return  QIcon(ico);
         break;
-     }   
+    }
     case Qt::ToolTipRole:
-        return tmpcurve->name();
-        
+//         return tmpcurve->name();
+
         break;
-        
-        case KCategorizedSortFilterProxyModel::CategoryDisplayRole: 
-        {
-            return tmpcurve->typeName();
-            break;
-        }
-        case KCategorizedSortFilterProxyModel::CategorySortRole:
-        {    
-            return tmpcurve->typeName();
-            break;
-        }
-        default: break;
+
+//     case KCategorizedSortFilterProxyModel::CategoryDisplayRole:
+//     {
+//         return tmpcurve->typeName();
+//         break;
+//     }
+//     case KCategorizedSortFilterProxyModel::CategorySortRole:
+//     {
+//         return tmpcurve->typeName();
+//         break;
+//     }
+    default:
+        break;
     }
 
     return QVariant();
@@ -173,12 +174,12 @@ void VisualItemsModel::removeItem(int row)
 {
     Q_ASSERT(row<m_items.size());
 
-     beginRemoveRows(QModelIndex(), row, row);
-    
+    beginRemoveRows(QModelIndex(), row, row);
+
     VisualItem *tmpcurve = m_items[row];
-    
+
     m_itemCanCallModelRemoveItem = false;
-    
+
     if (!tmpcurve->m_inDestructorSoDontDeleteMe)
     {
         delete tmpcurve;
@@ -189,7 +190,7 @@ void VisualItemsModel::removeItem(int row)
 
     m_items.removeAt(row);
 
-     endRemoveRows();
+    endRemoveRows();
 }
 
 
@@ -197,7 +198,7 @@ template<typename VisualItemType>
 VisualItemType* VisualItemsModel::addItem(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
     VisualItemType * ret = 0;
-    
+
     //no se permiten items invalidos
     if (VisualItemType::canDraw(functionExpression))
     {
@@ -208,10 +209,10 @@ VisualItemType* VisualItemsModel::addItem(const Analitza::Expression& functionEx
         m_items.append(ret);
 
         endInsertRows();
-        
+
         return ret;
     }
-    
+
     return ret;
 }
 
@@ -219,7 +220,7 @@ template<typename VisualItemType>
 QMap< int, VisualItemType* > VisualItemsModel::items() const
 {
     QMap< int, VisualItemType* > ret;
-    
+
     //TODO create a TYPE system for speed
     for (int i = 0; i < m_items.size(); ++i)
     {
@@ -227,29 +228,29 @@ QMap< int, VisualItemType* > VisualItemsModel::items() const
         if (ci)
             ret[i] = ci;
     }
-    
+
     return ret;
 }
 
 
-// 
+//
 // bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression,int spaceDimension,const QString& name, const QColor& col, QStringList &errors)
 // {
 //     //no se permiten items invalidos
 //     if (FunctionGraph::canDraw(functionExpression,spaceDimension, errors))
 //     {
 //         beginInsertRows (QModelIndex(), items.count(), items.count());
-// 
+//
 //         //TODO
 //         items.append(new FunctionGraph(functionExpression,spaceDimension, /*variablesModule, */ name, col));
-//         
+//
 //        this->
-// 
+//
 //         endInsertRows();
-//         
+//
 //         return true;
 //     }
-//     
+//
 //     return false;
 // }
 //NOTE en hijos
@@ -257,8 +258,8 @@ QMap< int, VisualItemType* > VisualItemsModel::items() const
 bool FunctionGraphsModel::setItemExpression(int curveIndex, const Analitza::Expression& functionExpression,int spaceDimension)
 {
     Q_ASSERT(curveIndex<items.count());
-    
-    
+
+
     if (FunctionGraph::canDraw(functionExpression,spaceDimension))
     {
         if (items[curveIndex]->reset(functionExpression,spaceDimension))
@@ -267,7 +268,7 @@ bool FunctionGraphsModel::setItemExpression(int curveIndex, const Analitza::Expr
             emit dataChanged(index(curveIndex), index(curveIndex));
 
             return true;
-        
+
         }
     }
 

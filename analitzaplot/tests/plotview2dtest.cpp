@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
 //     qDebug() << item << static_cast<PlaneCurve*>(model->item(0)) << model->item(0);
     item->setInterval("x", 0, 4);
 
-//     item2->setInterval("x", 0, 4);
-//     item2->setInterval("y", 0, 4);
+    item2->setInterval("x", 0, 4);
+    item2->setInterval("y", 0, 4);
     
     
     return app.exec();
