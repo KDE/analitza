@@ -27,6 +27,9 @@
 name (const Analitza::Expression &functionExpression) : AbstractSurface(functionExpression) { } \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) : AbstractSurface(functionExpression, variables) { }
 
+#include <functional>
+
+
 
 class ANALITZAPLOT_EXPORT AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
 {
@@ -42,6 +45,17 @@ public:
 protected:
     AbstractSurface() {}
     AbstractSurface(const AbstractSurface& other) {}
+
+    template<typename BinaryFunctor>
+    bool buildParametricSurface();
+
+private:
+    void doQuad(int n, int m, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3);
+    void doStrip(int n, const QVector3D &p0,  const QVector3D &p1, const QVector3D &p2, const QVector3D &p3);
+    void createFace( QVector3D *buffer );
+    
+
+    
 };
 
 #endif // ABSTRACTSURFACE_H

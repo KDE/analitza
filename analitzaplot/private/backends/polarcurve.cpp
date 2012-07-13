@@ -48,8 +48,6 @@ public:
     //
     
 
-private:
-    inline QPointF fromPolar(double r, double th) { return QPointF(r*std::cos(th), r*std::sin(th)); }
 
 };
 
@@ -84,7 +82,10 @@ void FunctionPolar::update(const QRect& viewport)
         arg("q")->setValue(th);
         double r = analyzer->calculateLambda().toReal().value();
         
-        addPoint(fromPolar(r, th));
+        double x = 0;
+        double y = 0;
+        polarToCartesian(r,th, x,y);
+        addPoint(QPointF(x,y));
     }
 }
 
@@ -125,13 +126,22 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     do {
         arg("q")->setValue(th);
         r = analyzer->calculateLambda().toReal().value();
-        dp = fromPolar(r, th);
+        
+        
+        double x = 0;
+        double y = 0;
+        polarToCartesian(r,th, x,y);
+
+        dp = QPointF(x,y);
         dist = (dp-p);
         d = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
         
         arg("q")->setValue(th+2.*pi);
         r = analyzer->calculateLambda().toReal().value();
-        dp = fromPolar(r, th);
+
+        polarToCartesian(r,th, x,y);
+
+        dp = QPointF(x,y);
         dist = (dp-p);
         d2 = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
         
@@ -145,7 +155,13 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     if(!res.isReal())
        appendError(i18n("We can only draw Real results."));
     r = res.toReal().value();
-    dp = fromPolar(r, th);
+    
+    
+        double x = 0;
+        double y = 0;
+        polarToCartesian(r,th, x,y);
+        
+    dp = QPointF(x, y);
     
     pos = QString("r=%1 th=%2").arg(r,3,'f',2).arg(th,3,'f',2);
     return QPair<QPointF, QString>(dp, pos);

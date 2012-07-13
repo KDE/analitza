@@ -38,12 +38,14 @@ class Variables;
 class Expression;
 }
 
+
+// QStandardItemModel
 class ANALITZAPLOT_EXPORT VisualItemsModel : public QAbstractListModel
 {
 friend class VisualItem;    
     
 Q_OBJECT
-    
+//     if(item->type()==CurveType)
 public:
     VisualItemsModel(QObject * parent = 0);
     VisualItemsModel(Analitza::Variables *v, QObject * parent = 0);

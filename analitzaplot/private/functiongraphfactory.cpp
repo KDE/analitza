@@ -135,12 +135,16 @@ bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builder
 {
     int dim = spaceDimension(expressionTypeFunction(), argumentsFunction() );
 
-//     Q_ASSERT(!contains(id(argumentsFunction(), dim)));
 //     Q_ASSERT(expressionTypeFunction().type() == Analitza::ExpressionType::Lambda); DEPRECATED implicit is not a lambda
+    
+    
+    
     
     QString id = QString::number(dim)+"|"+
                  QString::number((int)coordinateSystemFunction())+"|"+
                  argumentsFunction().join(",");
+                 
+    Q_ASSERT(!contains(id)); // verificar que no se registren los mismos tipos
 
     typeNameFunctions[id] = typeNameFunction;
     expressionTypeFunctions[id] = expressionTypeFunction;

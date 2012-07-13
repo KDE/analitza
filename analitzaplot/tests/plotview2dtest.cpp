@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
     PlaneCurve *item2 = model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
     model->addPlaneCurve(Analitza::Expression("x->2+x*x"), "otra simple", Qt::blue);
+    
 
 //     qDebug() << item2->expression().toString();
     

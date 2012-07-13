@@ -61,10 +61,14 @@ public:
     /** Constructor. Constructs a new Graph2D. */
     Graph2D(QWidget *parent = 0); // this ctor es para que pueda ser usado en el designer
     
+    //prererenciteme 1 constructor
+    
     Graph2D(VisualItemsModel* fm, QWidget *parent = 0);
     
     /** Destructor. */
     ~Graph2D();
+    
+//     setmodel
     
     QSize sizeHint() const { return QSize(100, 100); }
     

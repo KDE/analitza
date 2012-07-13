@@ -22,6 +22,7 @@
 
 #include <QStringList>
 #include <QColor>
+#include <qstandarditemmodel.h>
 
 #include "../mathutils.h"
 
@@ -33,16 +34,16 @@ class Expression;
 
 class VisualItemsModel;
 
-class ANALITZAPLOT_EXPORT VisualItem
+class ANALITZAPLOT_EXPORT VisualItem 
 {
-friend class VisualItemsModel; // use case: if this item gets deleted by "delete someitem" the model will emit/exec removeitem signal
-
+friend class VisualItemsModel;
+    
 public:
     enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };    
     
     explicit VisualItem(const QString &name, const QColor& col);
     virtual ~VisualItem();
-    
+
     virtual Analitza::Variables * variables() const = 0;
     virtual void setVariables(Analitza::Variables *variables) = 0;
     

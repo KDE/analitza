@@ -256,4 +256,28 @@ static QLineF mirrorXY(const QLineF& l)
     return QLineF(l.y1(), l.x1(), l.y2(), l.x2());
 }
 
+//NOTE
+//qvector3d/qpointf no soporta doble precision, es mejor trabajar los calculos en double y para mostrarlos usar recien qvector3d
+//por esa razon no pongo un return qvector3d y pongo las nuevas coords by ref
+
+static void polarToCartesian(double radial, double polar, double &x, double &y)
+{
+    x = radial*cos(polar);
+    y = radial*sin(polar); 
+}
+
+static void cylindricalToCartesian(double rho, double azimuth, double height, double &x, double &y, double &z)
+{
+    x = rho*cos(azimuth);
+    y = rho*sin(azimuth);
+    z = height;
+}
+
+static void sphericalToCartesian(double radial, double azimuth, double polar, double &x, double &y, double &z)
+{
+    x = radial*cos(azimuth)*sin(polar);
+    y = radial*cos(azimuth)*sin(polar);
+    z = radial*cos(polar);
+}
+
 #endif // ANALITZAPLOT_FUNCTIONUTILS

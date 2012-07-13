@@ -35,6 +35,12 @@
 #include <analitza/polynomial.h>
 
 
+#include <functional>
+
+
+
+
+
 int main(int argc, char *argv[])
 {
     KAboutData aboutData("PlotView3DTest",
@@ -55,6 +61,7 @@ int main(int argc, char *argv[])
     
     //BEGIN test calls
 
+    
     VisualItemsModel *model = new VisualItemsModel(mainWindow);
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
@@ -62,11 +69,14 @@ int main(int argc, char *argv[])
     view3d->setModel(model);
     view3d->setSelectionModel(selection);
     
-    model->addSurface(Analitza::Expression("(x,y)->x*x"), "Hola", Qt::cyan);
-    model->addSurface(Analitza::Expression("(x,y)->y*y"), "Hola", Qt::yellow);
-    model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "Hola", Qt::gray);
-    
-    model->removeItem(1);
+//     model->addSurface(Analitza::Expression("(x,y)->x*x"), "Hola", Qt::cyan);
+//     model->addSurface(Analitza::Expression("(x,y)->y*y"), "Hola", Qt::yellow);
+//     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "Hola", Qt::gray);
+//     
+//     model->removeItem(1);
+//     model->removeItem(1);
+//     model->removeItem(1);
+//     model->removeItem(1);
     
 
 //     qDebug() << model->item(0)->spaceDimension() << static_cast<const Surface*>(model->item(0))->faces().size();

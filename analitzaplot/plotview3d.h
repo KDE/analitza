@@ -19,118 +19,42 @@
 #ifndef KEOMATH_VIEW3D_H
 #define KEOMATH_VIEW3D_H
 
+#include "QGLViewer/qglviewer.h"
 #include <QMouseEvent>
 #include <analitzaplot/mathutils.h>
 #include <analitzaplot/private/functiongraph.h>
 #include <QModelIndex>
-#include <QTime>
-#include <QGLWidget>
 
 class VisualItemsModel;
 class QItemSelectionModel;
 
-
- class TrackBall
- {
- public:
-     enum TrackMode
-     {
-         Plane,
-         Sphere,
-     };
-     TrackBall(TrackMode mode = Sphere);
-     TrackBall(float angularVelocity, const QVector3D& axis, TrackMode mode = Sphere);
-     // coordinates in [-1,1]x[-1,1]
-     void push(const QPointF& p, const QQuaternion &transformation);
-     void move(const QPointF& p, const QQuaternion &transformation);
-     void release(const QPointF& p, const QQuaternion &transformation);
-     void start(); // starts clock
-     void stop(); // stops clock
-     QQuaternion rotation() const;
- private:
-     QQuaternion m_rotation;
-     QVector3D m_axis;
-     float m_angularVelocity;
-
-     QPointF m_lastPos;
-     QTime m_lastTime;
-     bool m_paused;
-     bool m_pressed;
-     TrackMode m_mode;
- };
-
- 
 // class Solver3D;
-class ANALITZAPLOT_EXPORT View3D : public QGLWidget
+class ANALITZAPLOT_EXPORT View3D : public QGLViewer
 {
     Q_OBJECT
 
 public:
     View3D(QWidget *parent = 0);
     View3D(VisualItemsModel *m, QWidget *parent = 0);
-    virtual ~View3D();
 
     void setModel(VisualItemsModel *m);
     void setSelectionModel(QItemSelectionModel* selection);
-        /** Returns the pixmap painting. */
-        
-//         Camera *camera() const { return mCamera; }
-        
-        QPixmap toPixmap();
+
 public slots:
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);
 
-    void resetView();
 private:
     int currentFunction() const;
-
-    void initializeGL();
-    void resizeGL(int w, int h);
-    void paintGL();
+    void draw();
+    void init();
 
     VisualItemsModel *m_model;
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>
     QMap<VisualItem*, GLuint> m_displayLists;
-    
-    
-            void drawAxes();
-        
-        void keyPressEvent(QKeyEvent *e);
-        void keyReleaseEvent(QKeyEvent *e);
-        void timeOut();
-        void mousePressEvent(QMouseEvent *e); QPoint press;
-        void mouseMoveEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent* e);
-        void wheelEvent(QWheelEvent *e);
-QPointF pixelPosToViewPos(const QPointF& p);
-
-        
-        /** Sets the @p max maximum size. */
-        void setSize(double max);
-        double zoom;
-        float rotation[3];
-        float alpha;
-        bool trans;
-        unsigned short keyspressed;
-                double default_size;
-        double default_step;
-
-        int m_n;
-        
-//     Camera* mCamera;
-//     TrackBall trackball;
-    float mRotation;
-        QPoint lastMousePos;
-
-    
-        
-        ///
-        
-        TrackBall _trackball;
 };
 
 #endif

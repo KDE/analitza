@@ -19,6 +19,9 @@
 
 #include "abstractsurface.h"
 
+#define MAXAROUND 64
+#define MAXSTRIP 64
+#define MAXALONG  64
 
 AbstractSurface::AbstractSurface(const Analitza::Expression& e)
 : AbstractFunctionGraph(e)
@@ -36,6 +39,239 @@ AbstractSurface::~AbstractSurface()
 {
 
 }
+
+
+template<typename BinaryFunctor>
+bool AbstractSurface::buildParametricSurface()
+{
+
+    QStringList bvars = parameters();
+
+    //TODO remove the assert en el caso de implicitas se deberia tratar siempre de crear la superficies parametrica primero
+    Q_ASSERT(bvars.size() == 2); // solo para superficies que puedan ser parametrizadas
     
+    static QPair<double, double> intervalx = interval(bvars.at(0));
+    static QPair<double, double> intervaly = interval(bvars.at(1));
+
+    
+    
+    ///
+    qreal umin;
+    qreal umax;
+    qreal vmin;
+    qreal vmax;
+    int usteps;
+    int vsteps;
+    
+    ///
+    usteps=MAXALONG;
+    vsteps=MAXAROUND;
+/*    
+    qDebug() << intervalx;
+    umin = intervalx.first;
+    umax = intervalx.second;
+    vmin = intervaly.first;
+    vmax = intervalx.second;*/
+
+
+// //     umin = 0;
+//     umax = 0.9;
+//     vmin = 0;
+//     vmax = 3.141/4;
+    
+    
+    switch (coordinateSystem())
+    {
+        case Cylindrical:
+        {
+//             Q_ASSERT()
+        
+            break;
+        }
+        case Spherical:
+        {
+        
+            break;
+        }
+    }
+    
+    
+    faces.clear();
+    
+    
+///
+
+    QVector3D surface[MAXALONG][MAXAROUND];
+
+    int  i, j;
+    float u, v;
+
+    for ( i=0; i<usteps; i++ )
+        for ( j=0; j<vsteps; j++ )
+        {
+            u = (umin+((umax-umin)/(float)(usteps-1))*(float)(i));
+            v = (vmin+((vmax-vmin)/(float)(vsteps-1))*(float)(j));
+
+
+            //BEGIN 
+
+            arg(bvars.at(0))->setValue(u);
+            arg(bvars.at(1))->setValue(v);
+    
+            //     qDebug() << QVector3D(u, v, analyzer->calculateLambda().toReal().value());
+
+            QVector3D point;
+
+//             switch (analyzer->type().returnValue().type())
+//             {
+//                 case Analitza::ExpressionType::Vector:
+//                 {
+//                 
+//                     break;
+//                 }
+//                 
+//                 case Analitza::ExpressionType::Value:
+//                 {
+//                     point.setX(1);
+//                     point.setY(1);
+//                     point.setZ(analyzer->calculateLambda().toReal().value());
+//                     
+//                     switch (coordinateSystem())
+//                     {
+//                         case Cylindrical:
+//                         {
+//                             point.setX(u*cos(v));
+//                             point.setY(u*sin(v));
+//                             point.setZ(analyzer->calculateLambda().toReal().value());
+                                //out
+            ///
+//                                 double h=analyzer->calculateLambda().toReal().value();
+//                                 double x = 0;
+//                                 double y = 0;
+//                                 double z = 0;
+//                                 cylindricalToCartesian(u,v,h,x,y,z);
+//                                 point.setX(x);
+//                                 point.setY(y);
+//                                 point.setZ(z);
+                                
+                                ///
+                                
+//                             break;
+//                         }
+//                         case Spherical:
+//                         {
+//                             point.setX(point.x()*sin(u)*cos(v));
+//                             point.setY(point.y()*sin(u)*sin(v));
+//                             point.setZ(point.z()*cos(u));
+//                         
+//                             break;
+//                         }
+//                     }
+//                 
+//                     break;
+//                 }
+//             }
+//             
+            //END
+
+            surface[i][j] = BinaryFunctor(u,v);
+        }
+
+    for (i = 0; i < usteps -1; i++ )    
+        for ( j=0; j<vsteps-1; j++ )    
+        {
+            doQuad(1, 1, surface[i][j], surface[i+1][j], surface[i][j+1], surface[i+1][j+1]);
+        }
+        
+    return !faces.isEmpty();
+}
+
+void AbstractSurface::doQuad(int n, int m, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3)
+{
+    int i;
+
+    QVector3D A, B, C, D;   
+
+    for (i=0; i<m; i++)
+    {
+        A = QVector3D((p0.x()*(float)(m-i) + p1.x()*(float)i)/(float)m, 
+                      (p0.y()*(float)(m-i) + p1.y()*(float)i)/(float)m,
+                      (p0.z()*(float)(m-i) + p1.z()*(float)i)/(float)m);
+        
+        B = QVector3D((p0.x()*(float)(m-i-1) + p1.x()*(float)(i+1))/(float)m,
+                      (p0.y()*(float)(m-i-1) + p1.y()*(float)(i+1))/(float)m,
+                      (p0.z()*(float)(m-i-1) + p1.z()*(float)(i+1))/(float)m);
+
+        C = QVector3D((p2.x()*(float)(m-i)   + p3.x()*(float)i)/(float)m,
+                      (p2.y()*(float)(m-i)   + p3.y()*(float)i)/(float)m,
+                      (p2.z()*(float)(m-i)   + p3.z()*(float)i)/(float)m);
+
+        D = QVector3D((p2.x()*(float)(m-i-1) + p3.x()*(float)(i+1))/(float)m, 
+                      (p2.y()*(float)(m-i-1) + p3.y()*(float)(i+1))/(float)m,
+                      (p2.z()*(float)(m-i-1) + p3.z()*(float)(i+1))/(float)m);
+        
+        doStrip(n, A, B, C, D);
+    }
+}
+
+void AbstractSurface::doStrip(int n, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3)
+{
+    int i, j;
+    QVector3D A, B, buffer[3];
+    QVector3D theStrip[MAXSTRIP][2];
+
+    for (i=0; i<=n; i++)
+    {
+        A = QVector3D((p0.x()*(float)(n-i) + p2.x()*(float)i)/(float)n,
+                      (p0.y()*(float)(n-i) + p2.y()*(float)i)/(float)n,
+                      (p0.z()*(float)(n-i) + p2.z()*(float)i)/(float)n);
+
+        B = QVector3D((p1.x()*(float)(n-i) + p3.x()*(float)i)/(float)n, 
+                      (p1.y()*(float)(n-i) + p3.y()*(float)i)/(float)n,
+                      (p1.z()*(float)(n-i) + p3.z()*(float)i)/(float)n);
+
+        theStrip[i][0] = A;
+        theStrip[i][1] = B;
+    }
+    
+    buffer[0] = theStrip[0][0];
+    buffer[1] = theStrip[0][1];
+    for (i=1; i<=n; i++)
+        for (j=0; j<2; j++)
+        {
+            buffer[2] = theStrip[i][j];
+            createFace(buffer);
+            buffer[0] = buffer[1];
+            buffer[1] = buffer[2];
+        }
+}
+
+void AbstractSurface::createFace( QVector3D *buffer )
+{
+    QVector3D Normal, diff1, diff2;
+
+    diff1 = QVector3D(buffer[1].x() - buffer[0].x(),
+                      buffer[1].y() - buffer[0].y(),
+                      buffer[1].z() - buffer[0].z());
+    
+    diff2 = QVector3D(buffer[2].x() - buffer[1].x(),
+                      buffer[2].y() - buffer[1].y(),
+                      buffer[2].z() - buffer[1].z());
+    
+    Normal = QVector3D(diff1.y()*diff2.z() - diff2.y()*diff1.z(),
+                       diff1.z()*diff2.x() - diff1.x()*diff2.z(),
+                       diff1.x()*diff2.y() - diff1.y()*diff2.x());
+
+    Face face;
+    face.normal = Normal;
+    face.p1 = buffer[0];
+    face.p2 = buffer[1];
+    face.p3 = buffer[2];     
+    
+//     qDebug() << face.p1 << face.p2 << face.p3;
+    
+    faces.append(face);
+}
+
     
     
