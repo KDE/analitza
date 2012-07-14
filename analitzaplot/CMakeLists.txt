@@ -61,7 +61,7 @@ surface.cpp
 private/backends/cartesiansurface.cpp
 private/backends/implicitcurve.cpp
 private/backends/cartesiancurve.cpp
-# functiongraphtypes/cylindricalsurface.cpp
+private/backends/cylindricalsurface.cpp
 private/backends/parametriccurve2d.cpp
 private/backends/parametriccurve3d.cpp
 # functiongraphtypes/parametricsurface.cpp

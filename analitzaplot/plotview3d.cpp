@@ -38,6 +38,12 @@ View3D::View3D(QWidget *parent)
 {
     setGridIsDrawn(true);
     setAxisIsDrawn(true);
+    
+        
+    setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
+    setSceneRadius(5); // TODO no magic number 5 es el size de las coords (alrededor )
+    
+    camera()->setPosition(qglviewer::Vec(0,0,15));
 }
 
 View3D::View3D(VisualItemsModel* m, QWidget* parent): QGLViewer(parent)
@@ -45,6 +51,9 @@ View3D::View3D(VisualItemsModel* m, QWidget* parent): QGLViewer(parent)
 {
     setGridIsDrawn(true);
     setAxisIsDrawn(true);
+    
+    setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
+    setSceneRadius(5); // TODO no magic number 5 es el size de las coords (alrededor )
 }
 
 void View3D::setModel(VisualItemsModel *model)
@@ -152,16 +161,16 @@ void View3D::draw()
 void View3D::init()
 {
     glPushMatrix();
-    glTranslatef(6,5,5);
+//     glTranslatef(6,5,5);
     glRotatef(90.,0.,1.,0.);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
-    glEnable(GL_DEPTH_TEST);
+//     glEnable(GL_DEPTH_TEST);
     
     glShadeModel(GL_SMOOTH);
-    glEnable(GL_LIGHTING);
+//     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_MULTISAMPLE);
     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };

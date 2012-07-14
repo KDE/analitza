@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -36,26 +36,33 @@ public:
     CONSTRUCTORS(Fxy)
     TYPE_NAME("CartesianSurfacez=f(x,y)")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+                        Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                        Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                        Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y")
     ICON_NAME("none")
     EXAMPLES("x*x+y,x+y*sin(x),x*y")
-    
+
     //Own
 
+    QVector3D fromParametricArgs(double u, double v);
     void update(const Box& viewport);
-    
-private:
-
 };
+
+QVector3D Fxy::fromParametricArgs(double u, double v)
+{
+    arg("x")->setValue(u);
+    arg("y")->setValue(v);    
+    
+    return QVector3D(u,v,analyzer->calculateLambda().toReal().value());
+}
 
 void Fxy::update(const Box& viewport)
 {
-//     buildParametricSurface();
+    buildParametricSurface();
 }
+
 
 REGISTER_SURFACE(Fxy)
 
@@ -65,25 +72,29 @@ public:
     CONSTRUCTORS(Fxz)
     TYPE_NAME("CartesianSurfaceY=f(x,z)")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+                        Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                        Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                        Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,z")
     ICON_NAME("none")
     EXAMPLES("x+z")
-    
-    //Own
 
+    QVector3D fromParametricArgs(double u, double v);
     void update(const Box& viewport);
-    
-private:
-
 };
+
+QVector3D Fxz::fromParametricArgs(double u, double v)
+{
+    arg("x")->setValue(u);
+    arg("z")->setValue(v);    
+    
+    return QVector3D(u,analyzer->calculateLambda().toReal().value(),v);
+}
 
 void Fxz::update(const Box& viewport)
 {
-//     buildParametricSurface();
+    buildParametricSurface();
 }
 
 REGISTER_SURFACE(Fxz)

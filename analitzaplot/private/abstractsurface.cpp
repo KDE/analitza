@@ -40,11 +40,8 @@ AbstractSurface::~AbstractSurface()
 
 }
 
-
-template<typename BinaryFunctor>
 bool AbstractSurface::buildParametricSurface()
 {
-
     QStringList bvars = parameters();
 
     //TODO remove the assert en el caso de implicitas se deberia tratar siempre de crear la superficies parametrica primero
@@ -66,16 +63,16 @@ bool AbstractSurface::buildParametricSurface()
     ///
     usteps=MAXALONG;
     vsteps=MAXAROUND;
-/*    
-    qDebug() << intervalx;
+
+//     qDebug() << intervalx;
     umin = intervalx.first;
     umax = intervalx.second;
     vmin = intervaly.first;
-    vmax = intervalx.second;*/
+    vmax = intervalx.second;
 
 
-// //     umin = 0;
-//     umax = 0.9;
+//     umin = 0;
+//     umax = 3;
 //     vmin = 0;
 //     vmax = 3.141/4;
     
@@ -115,12 +112,11 @@ bool AbstractSurface::buildParametricSurface()
 
             //BEGIN 
 
-            arg(bvars.at(0))->setValue(u);
-            arg(bvars.at(1))->setValue(v);
+
     
             //     qDebug() << QVector3D(u, v, analyzer->calculateLambda().toReal().value());
 
-            QVector3D point;
+//             QVector3D point;
 
 //             switch (analyzer->type().returnValue().type())
 //             {
@@ -174,7 +170,7 @@ bool AbstractSurface::buildParametricSurface()
 //             
             //END
 
-            surface[i][j] = BinaryFunctor(u,v);
+            surface[i][j] = fromParametricArgs(u,v);
         }
 
     for (i = 0; i < usteps -1; i++ )    

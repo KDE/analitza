@@ -46,7 +46,7 @@ protected:
     AbstractSurface() {}
     AbstractSurface(const AbstractSurface& other) {}
 
-    template<typename BinaryFunctor>
+    virtual QVector3D fromParametricArgs(double u, double v) { return QVector3D(); }
     bool buildParametricSurface();
 
 private:

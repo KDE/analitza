@@ -266,10 +266,9 @@ static void polarToCartesian(double radial, double polar, double &x, double &y)
     y = radial*sin(polar); 
 }
 
-static void cylindricalToCartesian(double rho, double azimuth, double height, double &x, double &y, double &z)
+static void cylindricalToCartesian(double radial, double polar, double height, double &x, double &y, double &z)
 {
-    x = rho*cos(azimuth);
-    y = rho*sin(azimuth);
+    polarToCartesian(radial, polar, x, y);
     z = height;
 }
 
