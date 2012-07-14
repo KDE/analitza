@@ -64,9 +64,9 @@ private/backends/cartesiancurve.cpp
 private/backends/cylindricalsurface.cpp
 private/backends/parametriccurve2d.cpp
 private/backends/parametriccurve3d.cpp
-# functiongraphtypes/parametricsurface.cpp
+private/backends/parametricsurface.cpp
 private/backends/polarcurve.cpp
-# functiongraphtypes/sphericalsurface.cpp
+private/backends/sphericalsurface.cpp
 
 #   solvers/solvers3d/implicitsurface.cpp
 #

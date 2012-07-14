@@ -70,10 +70,10 @@ public:
     //FunctionGraph
     //no lleva const porque se calcularan valores con m_argumentIntervals
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
-    bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
+    virtual bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
     
     QPair<double, double> interval(const QString &argname) const;
-    bool setInterval(const QString &argname, double min, double max);
+    virtual bool setInterval(const QString &argname, double min, double max);
     
     virtual QStringList parameters() const = 0;
 

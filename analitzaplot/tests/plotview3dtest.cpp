@@ -69,7 +69,12 @@ int main(int argc, char *argv[])
     view3d->setModel(model);
     view3d->setSelectionModel(selection);
     
-    qDebug() << model->addSurface(Analitza::Expression("(r,p)->2"), "Hola", Qt::cyan);
+//     qDebug() << model->addSurface(Analitza::Expression("(r,p)->2"), "Hola", Qt::cyan);
+//     qDebug() << model->addSurface(Analitza::Expression("(a,p)->2"), "Hola", Qt::cyan);
+    qDebug() << model->addSurface(Analitza::Expression("(u,v)->vector{u,v,u*u+v*v}"), "Hola", Qt::cyan);
+    
+    
+
     
 //     model->addSurface(Analitza::Expression("(x,y)->y*y"), "Hola", Qt::yellow);
 //     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "Hola", Qt::gray);

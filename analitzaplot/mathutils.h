@@ -275,7 +275,7 @@ static void cylindricalToCartesian(double radial, double polar, double height, d
 static void sphericalToCartesian(double radial, double azimuth, double polar, double &x, double &y, double &z)
 {
     x = radial*cos(azimuth)*sin(polar);
-    y = radial*cos(azimuth)*sin(polar);
+    y = radial*sin(azimuth)*sin(polar);
     z = radial*cos(polar);
 }
 

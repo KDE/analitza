@@ -68,9 +68,10 @@ bool AbstractSurface::buildParametricSurface()
     umin = intervalx.first;
     umax = intervalx.second;
     vmin = intervaly.first;
-    vmax = intervalx.second;
+    vmax = intervaly.second;
 
 
+//     qDebug() << "rr" << intervalx << "pol" << intervaly;
 //     umin = 0;
 //     umax = 3;
 //     vmin = 0;

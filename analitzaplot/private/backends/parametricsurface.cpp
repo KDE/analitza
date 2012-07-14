@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -17,145 +17,58 @@
  *************************************************************************************/
 
 
-#include "functiongraph.h"
-#include "functiongraphfactory.h"
+
+
+#include "private/abstractsurface.h"
+// #include "private/surfacefactory.h"
+#include "private/functiongraphfactory.h"
+
 
 #include "analitza/value.h"
 #include <analitza/vector.h>
 
+//TODO macros para las prop e abajo
 
-class ANALITZAPLOT_EXPORT ParametricSurface : public FunctionImpl3D
+
+class ANALITZAPLOT_EXPORT ParamSurf : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
-    explicit ParametricSurface(const Analitza::Expression &expression, Analitza::Variables *variables);
-    ParametricSurface(const ParametricSurface &parametricSurface);
-    virtual ~ParametricSurface();
+    CONSTRUCTORS(ParamSurf)
+    TYPE_NAME("pasurf")
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
+                Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(
+                Analitza::ExpressionType::Value), 3)))
+    COORDDINATE_SYSTEM(Cartesian)
+    PARAMETERS("u,v")
+    ICON_NAME("none")
+    EXAMPLES("")
 
-    static QStringList supportedBVars()
-    {
-        return QStringList() << "u" << "v";
-    }
-    static Analitza::ExpressionType expectedType()
-    {
+    //Own
 
-        return Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(
-                                                Analitza::ExpressionType::Value), 3));
-
-
-    }
-    static QStringList examples()
-    {
-        QStringList ret;
-
-
-        return ret;
-    }
-
-    const Analitza::Expression & lambda() const;
-
-    QStringList arguments() const
-    {
-        return supportedBVars();
-    }
-    FunctionGraph::Axe axeType() const
-    {
-        return FunctionGraph::Cartesian;
-    }
-    void solve(const RealInterval::List &spaceBounds);
-    AbstractMappingGraph * copy()
-    {
-        return new ParametricSurface(*this);
-    }
-
-    QVector3D evalSurface(qreal u, qreal v);
-
-
-protected:
-    Analitza::Cn* m_u;
-    Analitza::Cn* m_v;
-
-    Analitza::Expression m_originalCartesianLambda;
+    QVector3D fromParametricArgs(double u, double v);
+    void update(const Box& viewport);
 };
 
-ParametricSurface::ParametricSurface(const Analitza::Expression &expression, Analitza::Variables *variables)
-    : FunctionImpl3D(expression, variables)
-    , m_u(new Analitza::Cn)
-    , m_v(new Analitza::Cn)
+QVector3D ParamSurf::fromParametricArgs(double u, double v)
 {
-    m_originalCartesianLambda = Analitza::Expression(m_evaluator.expression());
-
-    m_runStack.append(m_u);
-    m_runStack.append(m_v);
-    m_evaluator.setStack(m_runStack);
-
-    if(m_evaluator.isCorrect())
-    {
-
-
-
-
-
-
-        m_evaluator.flushErrors();
-    }
+    arg("u")->setValue(u);
+    arg("v")->setValue(v);    
+    
+    Analitza::Expression res = analyzer->calculateLambda();
+    Analitza::Cn x=res.elementAt(0).toReal();
+    Analitza::Cn y=res.elementAt(1).toReal();
+    Analitza::Cn z=res.elementAt(2).toReal();
+        
+    
+    return QVector3D(x.value(), y.value(), z.value());
 }
 
-ParametricSurface::ParametricSurface(const ParametricSurface &parametricSurface)
-    : FunctionImpl3D(parametricSurface)
-    , m_u(new Analitza::Cn)
-    , m_v(new Analitza::Cn)
+void ParamSurf::update(const Box& viewport)
 {
-    m_originalCartesianLambda = Analitza::Expression(m_evaluator.expression());
-
-    m_runStack.append(m_u);
-    m_runStack.append(m_v);
-    m_evaluator.setStack(m_runStack);
-
-}
-
-ParametricSurface::~ParametricSurface()
-{
-    delete m_u;
-    delete m_v;
-}
-
-const Analitza::Expression & ParametricSurface::lambda() const
-{
-    return m_originalCartesianLambda;
+    buildParametricSurface();
 }
 
 
-void ParametricSurface::solve(const RealInterval::List &spaceBounds)
-{
-
-
-}
-
-QVector3D ParametricSurface::evalSurface(qreal u, qreal v)
-{
-    m_u->setValue(u);
-    m_v->setValue(v);
-
-    Analitza::Expression res = m_evaluator.calculateLambda();
-
-    Analitza::Object* vo = res.tree();
-    Analitza::Vector* vec = dynamic_cast<Analitza::Vector*>(vo);
-
-    if (vec)
-    {
-        Analitza::Cn* x = static_cast<Analitza::Cn*>(vec->at(0));
-        Analitza::Cn* y = static_cast<Analitza::Cn*>(vec->at(1));
-        Analitza::Cn* z = static_cast<Analitza::Cn*>(vec->at(2));
-
-        return QVector3D(x->value(), y->value(), z->value());
-    }
-
-    return QVector3D();
-}
-
-REGISTER_FUNCTION_3D(ParametricSurface)
-
-
+REGISTER_SURFACE(ParamSurf)
