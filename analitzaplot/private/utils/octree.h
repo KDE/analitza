@@ -59,6 +59,8 @@ struct sNodo{
     sNodo* nodos[8];
 };
 
+
+//TODO replace by kdtree using ANN library
 class Octree
 {
 private:

@@ -43,7 +43,10 @@ struct sArista{
     unsigned int vertices[2];
 };
 
-
+//TODO esta clase se debe parametrizar para que pueda ser usada por implictcurves:
+//MarchingSquares ... en general debe recibir como parametro el tree (octree,kdtree...)
+//y las subclases deben implementar evalScalarfield ...pues esta clase sirve para eso:
+//para convertir un campo K escalar en poligonos.
 class MarchingCubes
 {
     
