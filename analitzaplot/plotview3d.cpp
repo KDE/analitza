@@ -41,7 +41,7 @@ View3D::View3D(QWidget *parent)
     
         
     setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
-    setSceneRadius(5); // TODO no magic number 5 es el size de las coords (alrededor )
+    setSceneRadius(6); // TODO no magic number 5 es el size de las coords (alrededor )
     
     camera()->setPosition(qglviewer::Vec(0,0,15));
 }
@@ -53,7 +53,7 @@ View3D::View3D(VisualItemsModel* m, QWidget* parent): QGLViewer(parent)
     setAxisIsDrawn(true);
     
     setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
-    setSceneRadius(5); // TODO no magic number 5 es el size de las coords (alrededor )
+    setSceneRadius(6); // TODO no magic number 5 es el size de las coords (alrededor )
 }
 
 void View3D::setModel(VisualItemsModel *model)

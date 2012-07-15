@@ -1,7 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
- *  Copyright (C) 2008 Rivo Laks <rivolaks@hot.ee>                                   *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -19,8 +18,8 @@
  *************************************************************************************/
 
 
-#ifndef ANALITZAPLOT_FUNCTIONUTILS
-#define ANALITZAPLOT_FUNCTIONUTILS
+#ifndef ANALITZAPLOT_FUNCTIONUTILS__G
+#define ANALITZAPLOT_FUNCTIONUTILS__G
 
 #include <cmath>
 #include <limits>
@@ -53,7 +52,8 @@ class Expression;
 }
 
 enum CoordinateSystem { Cartesian = 1, Polar, Cylindrical, Spherical };
-
+enum CartesianAxis { XAxis = 1, YAxis, ZAxis };
+enum PolarAxis { R = 1, p };
 
 //math utils
 
@@ -71,157 +71,83 @@ public:
     QVector3D normal;
 };
 
+//T u,v,w son vectores ortonormales ... verificar eso en los asserts
+//TODO completar muchos metodos y conceptos relacionados a esta clase ma adelante
+// por el momento es posible usarla como un aligned bounding box o como un cubo
 class Box
 {
+public:
+    Box(const QVector3D &cent = QVector3D(0,0,0), 
+        double hw = 1, double hh = 1, double hd = 1, 
+        const QVector3D &bu = QVector3D(1,0,0), 
+        const QVector3D &bv = QVector3D(0,1,0), const QVector3D &bw = QVector3D(0,0,1));
+    Box(const Box &other);
+
+    QVector3D center() const { return m_center; }
+    void setCenter(const QVector3D &c) { m_center = c; }
+
+    //TODO
+    void setHalfWidth(double hw) { m_halfHeight = hw; }
+    void setHalfDepth(double hd) { m_halfDepth = hd; }
     
+    double halfWidth() const { return m_halfWidth; }
+    double halfHeight() const { return m_halfHeight; }
+    double halfDepth() const { return m_halfDepth; }
+
+    QVector3D u() const { return m_u; }
+    QVector3D v() const { return m_v; }
+    QVector3D w() const { return m_w; }
+
+    bool operator == (const Box &other) const;
+    Box operator=(const Box& other);
+
+private:
+    QVector3D m_center;
+    QVector3D m_u;
+    QVector3D m_v;
+    QVector3D m_w;
+    double m_halfWidth;
+    double m_halfHeight;
+    double m_halfDepth;
 };
 
-//NOTE reduced version of Camera from kgllib credits: Copyright (C) 2008 Rivo Laks <rivolaks@hot.ee>
-// class Camera
+// class Cube : protected Box
 // {
 // public:
-//     Camera();
-//     virtual ~Camera();
+//     Cube(const QVector3D &cent = QVector3D(0,0,0), double he = 1); // with u,v,w = x,y,z => cube ctr
+//     Cube(const Cube &other);
 // 
-//     /**
-//      * return the viewport that has been specified using the @ref setViewport
-//      *  method.
-//      **/
-//     QRect viewport() const;
+//     QVector3D center() const { return Box::center(); }
+//     void setCenter(double x, double y, double z) { Box::setCenter(QVector3D(x,y,z)); }
+//     void setCenter(const QVector3D &c) { Box::setCenter(c); }
 // 
-//     /**
-//      * Specifies the current viewport.
-//      **/
-//     void setViewport(int x, int y, int width, int height);
-// 
-//     /**
-//      * Sets the aspect ration to @p aspect.
-//      * Aspect ratio is usually window's width divided by its height.
-//      **/
-//     void setAspect(float aspect);
-//     /**
-//      * Sets the depth buffer's range.
-//      *
-//      * @p near is distance from the camera to the near clipping plane and
-//      *  @p far is distance to the far clipping plane. Everything that is not
-//      *  between those two planes will be clipped away (not rendered), so you
-//      *  should make sure that all your objects are within that range.
-//      * At the same time, the depth range should be as small as possible (i.e.
-//      *  @p near should be as big and @p far as small as possible) to increase
-//      *  depth buffer precision.
-//      **/
-//     void setDepthRange(float near, float far);
-// 
-//     /**
-//      * Sets the camera's positionto @p pos.
-//      **/
-//     void setPosition(const QVector3D& pos);
-//     void setPosition(float x, float y, float z)  { setPosition(QVector3D(x, y, z)); }
-//     /**
-//      * Sets the lookat point to @p lookat.
-//      * LookAt is the point at which the camera is looking at.
-//      **/
-//     void setLookAt(const QVector3D& lookat);
-//     void setLookAt(float x, float y, float z)  { setLookAt(QVector3D(x, y, z)); }
-//     /**
-//      * Sets the up vector to @p up.
-//      * Up vector is the one pointing upwards in the viewport.
-//      **/
-//     void setUp(const QVector3D& up);
-//     void setUp(float x, float y, float z)  { setUp(QVector3D(x, y, z)); }
-//     /**
-//      * Sets the viewing direction of the camera to @p dir.
-//      * This method sets lookat point to @ref position() + dir, thus
-//      *  you will need to set camera's position before using this method.
-//      **/
-//     void setDirection(const QVector3D& dir);
-//     void setDirection(float x, float y, float z)  { setDirection(QVector3D(x, y, z)); }
-// 
-//     QVector3D position() const  { return mPosition; }
-//     QVector3D lookAt() const  { return mLookAt; }
-//     QVector3D up() const  { return mUp; }
-// 
-//     /**
-//      * Sets the modelview matrix.
-//      *
-//      * If you specify the modelview matrix using this method then parameters
-//      *  specified using @ref setPosition, @ref setLookAt and @ref setUp
-//      *  methods will be ignored.
-//      *
-//      * If you call any of @ref setPosition, @ref setLookAt or @ref setUp
-//      *  after calling this method, then the modelview matrix specified here
-//      *  will be ignored and new modelview matrix will be calculated using
-//      *  specified position, lookat and up vectors.
-//      **/
-//     void setModelviewMatrix(const QMatrix4x4& modelview);
-//     /**
-//      * Sets the projection matrix.
-//      *
-//      * If you specify the projection matrix using this method then parameters
-//      *  specified using @ref setFoV, @ref setAspect and @ref setDepthRange
-//      *  methods will be ignored.
-//      *
-//      * If you call any of @ref setFoV, @ref setAspect or @ref setDepthRange
-//      *  after calling this method, then the projection matrix specified here
-//      *  will be ignored and new projection matrix will be calculated using
-//      *  specified fov, aspect and depth range parameters.
-//      **/
-//     void setProjectionMatrix(const QMatrix4x4& projection);
-// 
-//     /**
-//      * @return current modelview matrix.
-//      * Modelview matrix is either set using the @ref setModelviewMatrix method
-//      *  or automatically calculated using position, lookAt and up vectors.
-//      **/
-//     QMatrix4x4 modelviewMatrix() const;
-//     /**
-//      * @return current projection matrix.
-//      * Projection matrix is either set using the @ref setProjectionMatrix
-//      *   method or automatically calculated using fov, aspect and depth range
-//      *   parameters.
-//      **/
-//     QMatrix4x4 projectionMatrix() const;
-// 
-// protected:
-//     void recalculateProjectionMatrix();
-// 
-// protected:
-//     QVector3D mPosition;
-//     QVector3D mLookAt;
-//     QVector3D mUp;
-//     float mFoV, mAspect, mDepthNear, mDepthFar;
-// 
-//     QMatrix4x4 mModelviewMatrix;
-//     QMatrix4x4 mProjectionMatrix;
-//     QRect mViewport;
-// };
-// 
-// //NOTE reduced version of TrackBall from kgllib credits: Copyright (C) 2008 Rivo Laks <rivolaks@hot.ee>
-// class TrackBall
-// {
-// public:
-//     TrackBall();
-//     virtual ~TrackBall();
-// 
-//     virtual void rotate(float dx, float dy);
-// 
-//     QVector3D transform(const QVector3D& v) const;
-//     Camera transform(const Camera& c);
-// 
-//     QVector3D xAxis() const;
-//     QVector3D yAxis() const;
-//     QVector3D zAxis() const;
-// 
-//     void rotateX(float degrees);
-//     void rotateY(float degrees);
-//     void rotateZ(float degrees);
-// 
-//     void rotate(float degrees, QVector3D axis);
-// 
-// protected:
-//     QMatrix4x4 mMatrix;
+//     double halfEdge() const { return Box::halfWidth(); }
+//     void setHalfEdge(double he) { Box::setHalfWidth(he); }
+//     
+//     //TODO
+// //     QVector3D u() const { return m_u; }
+// //     QVector3D v() const { return m_v; }
+// //     QVector3D w() const { return m_w; }
+//     
+//     
+//     
 // };
 
+struct Cube
+{
+    Cube(const QVector3D cent = QVector3D(0,0,0), double halfe = 1) {}
+    Cube(const Cube &other) :c(other.c), he(other.he) {}
+
+    QVector3D c;
+    double he;
+    
+    QVector3D center() const { return c; }
+    double halfEdge() const { return he; }
+    void setCenter(double x, double y, double z) { c = QVector3D(x,y,z); }
+    void setCenter(const QVector3D &cent) { c = cent; }
+    void setHalfEdge(double halfe) { he = halfe; }
+
+};
 
 static bool isSimilar(double a, double b, double diff = .0000001)
 {
@@ -260,23 +186,231 @@ static QLineF mirrorXY(const QLineF& l)
 //qvector3d/qpointf no soporta doble precision, es mejor trabajar los calculos en double y para mostrarlos usar recien qvector3d
 //por esa razon no pongo un return qvector3d y pongo las nuevas coords by ref
 
-static void polarToCartesian(double radial, double polar, double &x, double &y)
+static QPointF polarToCartesian(double radial, double polar)
 {
-    x = radial*cos(polar);
-    y = radial*sin(polar); 
+    return QPointF(radial*cos(polar), radial*sin(polar)); 
 }
 
-static void cylindricalToCartesian(double radial, double polar, double height, double &x, double &y, double &z)
+static QVector3D cylindricalToCartesian(double radial, double polar, double height)
 {
-    polarToCartesian(radial, polar, x, y);
-    z = height;
+    return QVector3D(radial*cos(polar), radial*sin(polar), height);
 }
 
-static void sphericalToCartesian(double radial, double azimuth, double polar, double &x, double &y, double &z)
+static QVector3D sphericalToCartesian(double radial, double azimuth, double polar)
 {
-    x = radial*cos(azimuth)*sin(polar);
-    y = radial*sin(azimuth)*sin(polar);
-    z = radial*cos(polar);
+    return QVector3D(radial*cos(azimuth)*sin(polar), radial*sin(azimuth)*sin(polar), radial*cos(polar));
 }
+
+
+//PRIVATE utils folder colocar estas clases
+
+
+/*
+ Indice de los nodos
+
+ Capa z+
+y+
+ -----
+ |3|7|
+ -----
+ |1|5|
+ ----- x+
+
+ Capa z-
+y+
+ -----
+ |2|6|
+ -----
+ |0|4|
+ ----- x+
+*/
+struct sNodo{
+    Cube cubo;
+    sNodo* nodos[8];
+};
+
+class Octree
+{
+private:
+    sNodo* raiz;
+
+    //Crea los hijos con los valores adecuados en los vertices
+    void inicializar_nodos(sNodo* padre);
+
+    void borrar_rec(sNodo* nodo);
+    void crear_rec(sNodo* nodo, unsigned int nivel_actual, unsigned int nivel_max);
+public:
+    Octree(double largo_mundo);
+    Octree(Cube cubo);
+    ~Octree();
+
+    sNodo* get_raiz();
+    void crearNivel(unsigned int nivel);
+    void bajarNivel(sNodo* nodo);
+    void borrarHijos(sNodo* padre);
+
+};
+
+///
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///
+
+
+
+struct sLimitesEspacio {
+    int minX;
+    int maxX;
+    int minY;
+    int maxY;
+    int minZ;
+    int maxZ;
+};
+
+struct sMarching_Cube{
+    QVector3D centro;
+    double medio_lado;
+    unsigned short int tipo;
+    double vertices[8];
+};
+
+struct sArista{
+    QVector3D corte;
+    unsigned int vertices[2];
+};
+
+
+class MarchingCubes
+{
+    
+public:
+    virtual double evalScalarField(double x, double y, double z) = 0;
+
+public:
+    
+//     double funcion(double x, double y, double z)
+//     {
+// //     if(MarchingCubes::esSolido) {
+// //         if(punto.x()==0 || punto.y()==0 || punto.z()==0)
+// //             return qPow(punto.x()-MarchingCubes::constantes.at(0),2) + qPow(punto.y()-MarchingCubes::constantes.at(1),2) + qPow(punto.z()-MarchingCubes::constantes.at(2),2) - qPow(MarchingCubes::constantes.at(3),2);
+// //         else
+// //            return 1;
+// //     }else {
+// //             return qPow(punto.x()-MarchingCubes::constantes.at(0),2) + qPow(punto.y()-MarchingCubes::constantes.at(1),2) + qPow(punto.z()-MarchingCubes::constantes.at(2),2) - qPow(MarchingCubes::constantes.at(3),2);
+// //     } return 0.0;
+// 
+// //     return punto.x()*punto.x() + punto.y()*punto.y() + punto.z()*punto.z() - 4;
+// 
+// 
+// // return cos(x) + cos(y) + cos(z);
+// 
+// // return   3*(cos(x) + cos(y) + cos(z)) + 4* cos(x) * cos(y) * cos(z);
+// 
+//         float ret = 0;
+//         if (x*x + y*y +z*z < 35)
+//             ret = 2 - (cos(x + (1+sqrt(5))/2*y) + cos(x - (1+sqrt(5))/2*y) + cos(y +
+//                        (1+sqrt(5))/2*z) + cos(y - (1+sqrt(5))/2*z) + cos(z - (1+sqrt(5))/2*x) + cos(z + (1+sqrt(5))/2*x));
+//         else ret = 1;
+// 
+// 
+//         return ret;
+// 
+// 
+//     }
+    
+private:
+    /*
+     largo_mundo: arista del mundo
+     min_grid: arista minima del cubo a evaluar
+    */
+    double largo_mundo;
+    double min_grid;
+    sLimitesEspacio mundo;
+    //Evaluar un cubo
+    sMarching_Cube evaluar_cubo(Cube cubo);
+
+    //Busqueda recursiva (breadth search)
+    QList<Cube> breadth_rec(int cubos_lado);
+
+    //Busqueda recursiva (depth search)
+    QList<sMarching_Cube> depth_rec(Octree *arbol, sNodo *nodo);
+
+public:
+    //Recibe el tamaño de grilla deseado y el largo del mundo
+    //Produce un min_grid menor o igual al proporcionado
+    MarchingCubes(/*double min_grid, double arista_mundo, sLimitesEspacio limites*/);
+
+    //Destructor
+    ~MarchingCubes();
+
+    //Ejecutar
+    QList<sMarching_Cube> ejecutar();
+    
+    friend class ImplicitSurf;
+public:
+    void buildGeometry();
+
+    QVector<Face> _faces_;
+
+    void _addTri(const QVector3D &a, const QVector3D &b, const QVector3D &c);
+    
+private:
+
+
+    //Calcular los cortes
+    QList<sArista> calcular_cortes(sMarching_Cube cubo);
+    bool signo_opuesto(double a, double b);
+
+    //Calcular la posicion en la arista
+    double lineal(double vert_1, double vert_2);
+
+    //Agregar triangulos
+    void agregar_triangulos(QList<QVector3D> &lista_triangulos);
+
+    //Tipos:
+    void identificar_tipo(sMarching_Cube cubo);
+    void tipo01(QList<sArista> aristas, QList<unsigned int> vertices);
+    void tipo02(QList<sArista> aristas);
+    void tipo04(QList<sArista> aristas, QList<unsigned int> vertices);
+    void tipo05(QList<sArista> aristas, QList<unsigned int> vertices);
+    void tipo06(QList<sArista> aristas, QList<unsigned int> vertices, int ind_vertice_solitario);
+    void tipo08(QList<sArista> aristas, QList<unsigned int> vertices, unsigned int ind_vertice_solitario);
+    void tipo09(QList<sArista> aristas, QList<unsigned int> vertices);
+    void tipo11(QList<sArista> aristas, QList<unsigned int> vertices);
+    void tipo13(QList<sArista> aristas, QList<unsigned int> vertices);
+};
+
+
 
 #endif // ANALITZAPLOT_FUNCTIONUTILS

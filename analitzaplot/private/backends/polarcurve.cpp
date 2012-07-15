@@ -82,10 +82,7 @@ void FunctionPolar::update(const QRect& viewport)
         arg("q")->setValue(th);
         double r = analyzer->calculateLambda().toReal().value();
         
-        double x = 0;
-        double y = 0;
-        polarToCartesian(r,th, x,y);
-        addPoint(QPointF(x,y));
+        addPoint(polarToCartesian(r,th));
     }
 }
 
@@ -127,21 +124,14 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
         arg("q")->setValue(th);
         r = analyzer->calculateLambda().toReal().value();
         
-        
-        double x = 0;
-        double y = 0;
-        polarToCartesian(r,th, x,y);
-
-        dp = QPointF(x,y);
+        dp = polarToCartesian(r,th);
         dist = (dp-p);
         d = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
         
         arg("q")->setValue(th+2.*pi);
         r = analyzer->calculateLambda().toReal().value();
 
-        polarToCartesian(r,th, x,y);
-
-        dp = QPointF(x,y);
+        dp = polarToCartesian(r,th);
         dist = (dp-p);
         d2 = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
         
@@ -157,11 +147,8 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     r = res.toReal().value();
     
     
-        double x = 0;
-        double y = 0;
-        polarToCartesian(r,th, x,y);
         
-    dp = QPointF(x, y);
+    dp = polarToCartesian(r,th);
     
     pos = QString("r=%1 th=%2").arg(r,3,'f',2).arg(th,3,'f',2);
     return QPair<QPointF, QString>(dp, pos);

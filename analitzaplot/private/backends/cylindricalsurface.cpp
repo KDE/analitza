@@ -110,14 +110,8 @@ QVector3D Frp::fromParametricArgs(double r, double p)
     arg("p")->setValue(p);    
 
     double h = analyzer->calculateLambda().toReal().value();
-
-    double x = 0;
-    double y = 0;
-    double z = 0;
     
-    cylindricalToCartesian(r,p,h,x,y,z);
-    
-    return QVector3D(x,y,z);
+    return cylindricalToCartesian(r,p,h);
 }
 
 void Frp::update(const Box& viewport)

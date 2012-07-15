@@ -117,13 +117,7 @@ QVector3D Fap::fromParametricArgs(double a, double p)
 
     double r = analyzer->calculateLambda().toReal().value();
 
-    double x = 0;
-    double y = 0;
-    double z = 0;
-    
-    sphericalToCartesian(r,a,p,x,y,z);
-
-    return QVector3D(x,y,z);
+    return sphericalToCartesian(r,a,p);
 }
 
 void Fap::update(const Box& viewport)

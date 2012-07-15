@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -16,58 +16,58 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
-
 #include "private/abstractsurface.h"
 // #include "private/surfacefactory.h"
 #include "private/functiongraphfactory.h"
 
-
 #include "analitza/value.h"
 #include <analitza/vector.h>
 
-//TODO macros para las prop e abajo
 
-
-class ANALITZAPLOT_EXPORT ParamSurf : public AbstractSurface/*, static class? better macros FooClass*/
+class ANALITZAPLOT_EXPORT ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static class? better macros FooClass*/
 {
 public:
-    CONSTRUCTORS(ParamSurf)
-    TYPE_NAME("pasurf")
-    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(
-                Analitza::ExpressionType::Value), 3)))
+    explicit ImplicitSurf(const Analitza::Expression& e);
+    ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v);
+
+    TYPE_NAME("implsurf")
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Bool)) // is a equation
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("u,v")
+    PARAMETERS("x,y,z")
     ICON_NAME("none")
     EXAMPLES("")
 
     //Own
-
-    QVector3D fromParametricArgs(double u, double v);
+    virtual ~ImplicitSurf() {
+    }
     void update(const Box& viewport);
+    
+    double evalScalarField(double x, double y, double z);
 };
 
-QVector3D ParamSurf::fromParametricArgs(double u, double v)
+double ImplicitSurf::evalScalarField(double x, double y, double z)
 {
-    arg("u")->setValue(u);
-    arg("v")->setValue(v);    
+    arg("x")->setValue(x);
+    arg("y")->setValue(y);
+    arg("z")->setValue(z);
     
-    Analitza::Expression res = analyzer->calculateLambda();
-    Analitza::Cn x=res.elementAt(0).toReal();
-    Analitza::Cn y=res.elementAt(1).toReal();
-    Analitza::Cn z=res.elementAt(2).toReal();
-    
-    return QVector3D(x.value(), y.value(), z.value());
+    return analyzer->calculateLambda().toReal().value();
 }
 
-void ParamSurf::update(const Box& viewport)
+ImplicitSurf::ImplicitSurf(const Analitza::Expression& e): AbstractSurface(e)
 {
-    buildParametricSurface();
+    buildGeometry();
 }
 
+ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e)
+{
 
-REGISTER_SURFACE(ParamSurf)
+}
+
+void ImplicitSurf::update(const Box& viewport)
+{
+    faces.clear();
+    faces << MarchingCubes::_faces_;
+}
+
+REGISTER_SURFACE(ImplicitSurf)

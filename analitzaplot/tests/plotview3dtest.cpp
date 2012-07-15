@@ -71,10 +71,11 @@ int main(int argc, char *argv[])
     
 //     qDebug() << model->addSurface(Analitza::Expression("(r,p)->2"), "Hola", Qt::cyan);
 //     qDebug() << model->addSurface(Analitza::Expression("(a,p)->2"), "Hola", Qt::cyan);
-    qDebug() << model->addSurface(Analitza::Expression("(u,v)->vector{u,v,u*u+v*v}"), "Hola", Qt::cyan);
-    
-    
+//     qDebug() << model->addSurface(Analitza::Expression("(u,v)->vector{u,v,u*u+v*v}"), "Hola", Qt::cyan);
+//     qDebug() << model->addSurface(Analitza::Expression("x*x+y*y+z*z=5"), "Hola", Qt::cyan);
+//    qDebug() << model->addSurface(Analitza::Expression("cos(x) + cos(y) + cos(z)=0"), "Hola", Qt::cyan);
 
+    qDebug() << model->addSurface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan);
     
 //     model->addSurface(Analitza::Expression("(x,y)->y*y"), "Hola", Qt::yellow);
 //     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "Hola", Qt::gray);
