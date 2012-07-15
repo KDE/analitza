@@ -67,6 +67,8 @@ int main(int argc, char *argv[])
 //     
     model->addPlaneCurve(Analitza::Expression("x+y=9"), "otra simple", Qt::lightGray);
 
+    qDebug() << model->item(2)->name();
+    
 //     qDebug() << item2->expression().toString();
     
     if (model->rowCount()>0)

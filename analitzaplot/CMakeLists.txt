@@ -96,22 +96,31 @@ plotter3d.h
 plotsview3d.h
         DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
 
+                install(FILES
 
-#api privada no se instala
-# install(FILES
-# 
-# #private api/files only for compile by using the headers
-# 
-# # private/abstractplotitem.h
-# # private/abstractfunctiongraph.h
-# # private/abstractplanecurve.h
-# # private/abstractspacecurve.h
-# # private/abstractsurface.h
-# # private/functiongraphfactory.h
-# # private/plotitem.h
-# # private/functiongraph.h
-# 
-#         DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
+#private api/files only for compile by using the headers
+private/utils/mathutils.h
+
+
+        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private/utils COMPONENT Devel)
+
+#api privada no es necesairo instalar todos los items
+install(FILES
+
+#private api/files only for compile by using the headers
+
+# private/abstractplotitem.h
+# private/abstractfunctiongraph.h
+# private/abstractplanecurve.h
+# private/abstractspacecurve.h
+# private/abstractsurface.h
+# private/functiongraphfactory.h
+private/plotitem.h
+private/functiongraph.h
+
+        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
+
+
 
         
 add_subdirectory(tests)
