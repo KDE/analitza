@@ -27,6 +27,10 @@ include_directories (
 
 set ( keomath_SRCS
 private/utils/mathutils.cpp
+private/utils/plane3d.cpp
+private/utils/ray3d.cpp
+private/utils/box3d.cpp
+private/utils/triangle3d.cpp
 
 private/abstractplotitem.cpp
 private/abstractfunctiongraph.cpp

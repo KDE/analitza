@@ -47,7 +47,7 @@ public:
     //Own
 
     QVector3D fromParametricArgs(double u, double v);
-    void update(const Box& viewport);
+    void update(const Box3D& viewport);
 };
 
 QVector3D Fxy::fromParametricArgs(double u, double v)
@@ -58,7 +58,7 @@ QVector3D Fxy::fromParametricArgs(double u, double v)
     return QVector3D(u,v,analyzer->calculateLambda().toReal().value());
 }
 
-void Fxy::update(const Box& viewport)
+void Fxy::update(const Box3D& viewport)
 {
     buildParametricSurface();
 }
@@ -81,7 +81,7 @@ public:
     EXAMPLES("x+z")
 
     QVector3D fromParametricArgs(double u, double v);
-    void update(const Box& viewport);
+    void update(const Box3D& viewport);
 };
 
 QVector3D Fxz::fromParametricArgs(double u, double v)
@@ -92,7 +92,7 @@ QVector3D Fxz::fromParametricArgs(double u, double v)
     return QVector3D(u,analyzer->calculateLambda().toReal().value(),v);
 }
 
-void Fxz::update(const Box& viewport)
+void Fxz::update(const Box3D& viewport)
 {
     buildParametricSurface();
 }

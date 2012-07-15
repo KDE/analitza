@@ -37,8 +37,8 @@ public:
     virtual ~AbstractSurface();
 
     //Own
-    virtual void update(const Box &viewport) = 0;
-    QVector<Face> faces;
+    virtual void update(const Box3D &viewport) = 0;
+    QVector<Triangle3D> faces;
 
 protected:
     AbstractSurface() {}

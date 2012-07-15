@@ -259,11 +259,7 @@ void AbstractSurface::createFace( QVector3D *buffer )
                        diff1.z()*diff2.x() - diff1.x()*diff2.z(),
                        diff1.x()*diff2.y() - diff1.y()*diff2.x());
 
-    Face face;
-    face.normal = Normal;
-    face.p1 = buffer[0];
-    face.p2 = buffer[1];
-    face.p3 = buffer[2];     
+    Triangle3D face(buffer[0], buffer[1], buffer[2]);
     
 //     qDebug() << face.p1 << face.p2 << face.p3;
     

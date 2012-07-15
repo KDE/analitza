@@ -52,7 +52,7 @@ public:
     virtual bool setInterval(const QString& argname, double min, double max);
     
     QVector3D fromParametricArgs(double u, double v);
-    void update(const Box& viewport);
+    void update(const Box3D& viewport);
     
     
 };
@@ -120,7 +120,7 @@ QVector3D Fap::fromParametricArgs(double a, double p)
     return sphericalToCartesian(r,a,p);
 }
 
-void Fap::update(const Box& viewport)
+void Fap::update(const Box3D& viewport)
 {
     buildParametricSurface();
 }

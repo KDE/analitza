@@ -24,10 +24,15 @@
 #include <cmath>
 #include <limits>
 
+#include "plane3d.h"
+#include "ray3d.h"
+#include "box3d.h"
+#include "triangle3d.h"
 
 #include "analitza/expression.h"
 #include "analitza/value.h"
 #include "analitza/analyzer.h"
+#include <../../../apps/local/include/analitzaplot/private/utils/mathutils.h>
 
 
 #include <QPair>
@@ -42,6 +47,7 @@ using std::fabs;
 using std::cos;
 using std::sin;
 using std::sqrt;
+
 
 const double PI = std::acos(-1.0);
 
@@ -60,77 +66,6 @@ enum PolarAxis { R = 1, p };
 
 // an   Oriented Bounding Box class 
 
-
-class Face
-{
-public:
-    QVector3D p1;
-    QVector3D p2;
-    QVector3D p3;
-    QVector3D normal;
-};
-
-//T u,v,w son vectores ortonormales ... verificar eso en los asserts
-//TODO completar muchos metodos y conceptos relacionados a esta clase ma adelante
-// por el momento es posible usarla como un aligned bounding box o como un cubo
-class Box
-{
-public:
-    Box(const QVector3D &cent = QVector3D(0,0,0), 
-        double hw = 1, double hh = 1, double hd = 1, 
-        const QVector3D &bu = QVector3D(1,0,0), 
-        const QVector3D &bv = QVector3D(0,1,0), const QVector3D &bw = QVector3D(0,0,1));
-    Box(const Box &other);
-
-    QVector3D center() const { return m_center; }
-    void setCenter(const QVector3D &c) { m_center = c; }
-
-    //TODO
-    void setHalfWidth(double hw) { m_halfHeight = hw; }
-    void setHalfDepth(double hd) { m_halfDepth = hd; }
-    
-    double halfWidth() const { return m_halfWidth; }
-    double halfHeight() const { return m_halfHeight; }
-    double halfDepth() const { return m_halfDepth; }
-
-    QVector3D u() const { return m_u; }
-    QVector3D v() const { return m_v; }
-    QVector3D w() const { return m_w; }
-
-    bool operator == (const Box &other) const;
-    Box operator=(const Box& other);
-
-private:
-    QVector3D m_center;
-    QVector3D m_u;
-    QVector3D m_v;
-    QVector3D m_w;
-    double m_halfWidth;
-    double m_halfHeight;
-    double m_halfDepth;
-};
-
-// class Cube : protected Box
-// {
-// public:
-//     Cube(const QVector3D &cent = QVector3D(0,0,0), double he = 1); // with u,v,w = x,y,z => cube ctr
-//     Cube(const Cube &other);
-// 
-//     QVector3D center() const { return Box::center(); }
-//     void setCenter(double x, double y, double z) { Box::setCenter(QVector3D(x,y,z)); }
-//     void setCenter(const QVector3D &c) { Box::setCenter(c); }
-// 
-//     double halfEdge() const { return Box::halfWidth(); }
-//     void setHalfEdge(double he) { Box::setHalfWidth(he); }
-//     
-//     //TODO
-// //     QVector3D u() const { return m_u; }
-// //     QVector3D v() const { return m_v; }
-// //     QVector3D w() const { return m_w; }
-//     
-//     
-//     
-// };
 
 struct Cube
 {
@@ -380,7 +315,7 @@ public:
 public:
     void buildGeometry();
 
-    QVector<Face> _faces_;
+    QVector<Triangle3D> _faces_;
 
     void _addTri(const QVector3D &a, const QVector3D &b, const QVector3D &c);
     

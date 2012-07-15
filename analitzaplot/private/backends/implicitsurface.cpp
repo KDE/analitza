@@ -40,7 +40,7 @@ public:
     //Own
     virtual ~ImplicitSurf() {
     }
-    void update(const Box& viewport);
+    void update(const Box3D& viewport);
     
     double evalScalarField(double x, double y, double z);
 };
@@ -64,7 +64,7 @@ ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v
 
 }
 
-void ImplicitSurf::update(const Box& viewport)
+void ImplicitSurf::update(const Box3D& viewport)
 {
     faces.clear();
     faces << MarchingCubes::_faces_;

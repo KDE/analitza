@@ -18,73 +18,6 @@
 
 #include "mathutils.h"
 
-// Box::Box()
-// : m_center(QVector3D(0,0,0)), m_u(QVector3D(1,0,0)), m_v(QVector3D(0,1,0)), m_w(QVector3D(0,0,1)),
-// m_halfWidth(1), m_halfHeight(1), m_halfDepth(1)
-// {
-// 
-// }
-
-Box::Box(const Box& other)
-:m_center(other.m_center), m_u(other.m_u), m_v(other.m_v), m_w(other.m_w),
-m_halfWidth(other.m_halfWidth), m_halfHeight(other.m_halfHeight), m_halfDepth(other.m_halfDepth)
-{
-
-}
-
-// Box::Box(const QVector3D& cent, double halfEdge)
-// : m_center(cent), m_u(QVector3D(1,0,0)), m_v(QVector3D(0,1,0)), m_w(QVector3D(0,0,1)),
-// m_halfWidth(halfEdge), m_halfHeight(halfEdge), m_halfDepth(halfEdge)
-// {
-// 
-// }
-
-Box::Box(const QVector3D& cent, double hw, double hh, double hd, const QVector3D& bu, const QVector3D& bv, const QVector3D& bw)
-:m_center(cent), m_u(bu), m_v(bv), m_w(bw),
-m_halfWidth(hw), m_halfHeight(hh), m_halfDepth(hd)
-{
-
-}
-
-bool Box::operator==(const Box& other) const
-{
-    return m_center == other.m_center && m_u == other.m_u && 
-    m_v == other.m_v && m_w == other.m_w && m_halfWidth == other.m_halfWidth && 
-    m_halfHeight == other.m_halfWidth && m_halfDepth == other.m_halfDepth;
-}
-
-Box Box::operator=(const Box& other)
-{
-//TODO assert para los lados ... deben ser todos positivos
-    if(&other!=this) 
-    {
-        m_center = other.m_center;
-        m_u = other.m_center;
-        m_v = other.m_center;
-        m_w = other.m_center;
-        m_halfWidth = other.m_halfWidth;
-        m_halfHeight = other.m_halfHeight;
-        m_halfDepth = other.m_halfDepth;
-    }
-
-    return *this;
-}
-
-
-///
-/*
-Cube::Cube(const QVector3D& cent, double he): Box(cent, he)
-{
-
-}
-
-Cube::Cube(const Cube& other)
-{
-
-}*/
-
-
-
 Octree::Octree(double largo_mundo){
     raiz = new sNodo;
 
@@ -327,16 +260,7 @@ QList<sMarching_Cube> MarchingCubes::ejecutar(){
 
 void MarchingCubes::_addTri(const QVector3D& a, const QVector3D& b, const QVector3D& c)
 {
-        Face _f;
-    _f.p1 = a;
-    _f.p2 = b;
-    _f.p3 = c;
-    QVector3D norm =QVector3D::normal(a, b, c);
-
-    norm.normalized();
-    
-    _f.normal = norm;
-
+        Triangle3D _f(a,b,c);
     _faces_.append(_f);
 
 }

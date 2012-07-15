@@ -78,7 +78,7 @@ QVector< int > SpaceCurve::jumps() const
     return static_cast<AbstractSpaceCurve*>(backend())->jumps;
 }
 
-void SpaceCurve::update(const Box& viewport)
+void SpaceCurve::update(const Box3D& viewport)
 {
     
     Q_ASSERT(backend());

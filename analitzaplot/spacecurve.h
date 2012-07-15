@@ -45,7 +45,7 @@ public:
 
     //Own 
     const QVector<QVector3D> & points() const;
-    void update(const Box& viewport);
+    void update(const Box3D& viewport);
 
 protected:
     SpaceCurve() {}

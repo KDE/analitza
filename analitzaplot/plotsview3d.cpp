@@ -87,7 +87,7 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 
     
     Surface* surf = static_cast<Surface*>(m_model->item(start));
-    surf->update(Box());
+    surf->update(Box3D());
         
     GLuint dlid = glGenLists(1);
     m_displayLists[surf] = dlid;
@@ -108,13 +108,14 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 //     glColor3fv(diffuseColor);
     glColor3ub(surf->color().red(), surf->color().green(), surf->color().blue());
 
-    foreach (const Face &face, surf->faces())
+    foreach (const Triangle3D &face, surf->faces())
     {
         glBegin(GL_TRIANGLES);
-        glNormal3d(face.normal.x(), face.normal.y(), face.normal.z());
-        glVertex3d(face.p1.x(), face.p1.y(), face.p1.z());
-        glVertex3d(face.p2.x(), face.p2.y(), face.p2.z());
-        glVertex3d(face.p3.x(), face.p3.y(), face.p3.z());
+        QVector3D n = face.faceNormal().normalized();
+        glNormal3d(n.x(), n.y(), n.z());
+        glVertex3d(face.p().x(), face.p().y(), face.p().z());
+        glVertex3d(face.q().x(), face.q().y(), face.q().z());
+        glVertex3d(face.r().x(), face.r().y(), face.r().z());
         glEnd();
     }
 

@@ -81,7 +81,7 @@ public:
     ICON_NAME("newparametric3d")
     EXAMPLES("t->vector {t,t**2,t}")    
     
-    void update(const Box& viewport);
+    void update(const Box3D& viewport);
     
     
     //
@@ -94,7 +94,7 @@ private:
 
 // 
 
-void ParametricCurve3D::update(const Box& viewport)
+void ParametricCurve3D::update(const Box3D& viewport)
 {
   Q_UNUSED(viewport);
     Q_ASSERT(analyzer->expression().isCorrect());
@@ -125,7 +125,7 @@ void ParametricCurve3D::update(const Box& viewport)
 //  double final=ulimit-inv_res;
     
         //by percy
-    Box vp(viewport);
+    Box3D vp(viewport);
     
 //     vp.setTop(viewport.top() - 2);
 //     vp.setBottom(viewport.bottom() + 2);

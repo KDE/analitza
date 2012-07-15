@@ -37,8 +37,8 @@ public:
     bool reset(const Analitza::Expression& functionExpression);
 
     //Own
-    void update(const Box &viewport);
-    const QVector<Face> & faces() const;
+    void update(const Box3D &viewport);
+    const QVector<Triangle3D> & faces() const;
     
 protected:
     Surface() {}

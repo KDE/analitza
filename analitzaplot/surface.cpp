@@ -50,14 +50,14 @@ bool Surface::reset(const Analitza::Expression& functionExpression)
 }
 
 
-const QVector< Face >& Surface::faces() const
+const QVector< Triangle3D >& Surface::faces() const
 {
     Q_ASSERT(backend());
 
     return static_cast<AbstractSurface*>(backend())->faces;
 }
 
-void Surface::update(const Box& viewport)
+void Surface::update(const Box3D& viewport)
 {
     Q_ASSERT(backend());
     

@@ -17,8 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef MAPPINGGRAPH_H
-#define MAPPINGGRAPH_H
+#ifndef PLOTITEM_H
+#define PLOTITEM_H
 
 #include <QStringList>
 #include <QColor>
@@ -92,4 +92,4 @@ private:
     bool m_inDestructorSoDontDeleteMe; // lock para evitar que el removeitem del model llame al destructor de este item y se generen llamadas recursivas
 };
 
-#endif // MAPPINGGRAPH_H
+#endif // PLOTITEM_H

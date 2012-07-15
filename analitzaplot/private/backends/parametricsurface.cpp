@@ -48,7 +48,7 @@ public:
     //Own
 
     QVector3D fromParametricArgs(double u, double v);
-    void update(const Box& viewport);
+    void update(const Box3D& viewport);
 };
 
 QVector3D ParamSurf::fromParametricArgs(double u, double v)
@@ -64,7 +64,7 @@ QVector3D ParamSurf::fromParametricArgs(double u, double v)
     return QVector3D(x.value(), y.value(), z.value());
 }
 
-void ParamSurf::update(const Box& viewport)
+void ParamSurf::update(const Box3D& viewport)
 {
     buildParametricSurface();
 }

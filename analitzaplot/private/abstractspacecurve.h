@@ -45,7 +45,7 @@ public:
     QVector<int> jumps;
 
     //Own
-    virtual void update(const Box& viewport) = 0;
+    virtual void update(const Box3D& viewport) = 0;
 
 protected:
     AbstractSpaceCurve() {}
