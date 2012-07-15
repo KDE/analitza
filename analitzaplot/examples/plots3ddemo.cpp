@@ -1,5 +1,4 @@
 /*************************************************************************************
- *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> * 
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
@@ -26,8 +25,8 @@
 
 #include "analitzaplot/surface.h"
 #include "analitzaplot/spacecurve.h"
-#include "analitzaplot/private/functiongraphsmodel.h"
-#include "analitzaplot/plotview3d.h"
+#include "analitzaplot/plotsmodel.h"
+#include "analitzaplot/plotsview3d.h"
 #include <analitza/variables.h>
 #include <analitza/apply.h>
 #include <analitza/variable.h>
@@ -36,8 +35,6 @@
 
 
 #include <functional>
-
-
 
 
 
@@ -62,10 +59,10 @@ int main(int argc, char *argv[])
     //BEGIN test calls
 
     
-    VisualItemsModel *model = new VisualItemsModel(mainWindow);
+    PlotsModel *model = new PlotsModel(mainWindow);
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
-    View3D *view3d = new View3D(mainWindow);
+    PlotsView3D *view3d = new PlotsView3D(mainWindow);
     view3d->setModel(model);
     view3d->setSelectionModel(selection);
     
@@ -75,7 +72,13 @@ int main(int argc, char *argv[])
 //     qDebug() << model->addSurface(Analitza::Expression("x*x+y*y+z*z=5"), "Hola", Qt::cyan);
 //    qDebug() << model->addSurface(Analitza::Expression("cos(x) + cos(y) + cos(z)=0"), "Hola", Qt::cyan);
 
-    qDebug() << model->addSurface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan);
+    Surface * item = model->addSurface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan);
+    
+    qDebug() << item;
+    
+    qDebug() << item->expression().toString() << item->interval("x");
+    
+    
     
 //     model->addSurface(Analitza::Expression("(x,y)->y*y"), "Hola", Qt::yellow);
 //     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "Hola", Qt::gray);

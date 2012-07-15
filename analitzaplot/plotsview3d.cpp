@@ -17,10 +17,9 @@
  *************************************************************************************/
 
 
-#include "plotview3d.h"
-#include "private/functiongraphsmodel.h"
+#include "plotsview3d.h"
+#include "plotsmodel.h"
 #include "surface.h"
-#include "mathutils.h"
 #include <QVector3D>
 #include <QVector2D>
 #include <qitemselectionmodel.h>
@@ -32,7 +31,7 @@
 #include <QDebug>
 
 
-View3D::View3D(QWidget *parent)
+PlotsView3D::PlotsView3D(QWidget *parent)
     : QGLViewer(parent)
     ,m_model(0), m_selection(0)
 {
@@ -46,7 +45,7 @@ View3D::View3D(QWidget *parent)
     camera()->setPosition(qglviewer::Vec(0,0,15));
 }
 
-View3D::View3D(VisualItemsModel* m, QWidget* parent): QGLViewer(parent)
+PlotsView3D::PlotsView3D(PlotsModel* m, QWidget* parent): QGLViewer(parent)
     ,m_model(m), m_selection(0)
 {
     setGridIsDrawn(true);
@@ -56,7 +55,7 @@ View3D::View3D(VisualItemsModel* m, QWidget* parent): QGLViewer(parent)
     setSceneRadius(6); // TODO no magic number 5 es el size de las coords (alrededor )
 }
 
-void View3D::setModel(VisualItemsModel *model)
+void PlotsView3D::setModel(PlotsModel *model)
 {
     m_model=model;
 
@@ -71,7 +70,7 @@ void View3D::setModel(VisualItemsModel *model)
     updateGL();
 }
 
-void View3D::setSelectionModel(QItemSelectionModel* selection)
+void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
 {
     Q_ASSERT(selection);
     Q_ASSERT(selection->model() == m_model);
@@ -81,7 +80,7 @@ void View3D::setSelectionModel(QItemSelectionModel* selection)
     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }
 
-void View3D::addFuncs(const QModelIndex & parent, int start, int end)
+void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
     Q_ASSERT(!parent.isValid());
     Q_ASSERT(start == end); // siempre se agrega un solo item al model
@@ -124,7 +123,7 @@ void View3D::addFuncs(const QModelIndex & parent, int start, int end)
     
 }
 
-void View3D::removeFuncs(const QModelIndex & parent, int start, int end)
+void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 {
     Q_ASSERT(!parent.isValid());
     Q_ASSERT(start == end); // siempre se agrega un solo item al model
@@ -132,12 +131,12 @@ void View3D::removeFuncs(const QModelIndex & parent, int start, int end)
     glDeleteLists(m_displayLists[m_model->item(start)], 1);
 }
 
-void View3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
+void PlotsView3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 {
 //     updateFunctions(start, end);
 }
 
-int View3D::currentFunction() const
+int PlotsView3D::currentFunction() const
 {
     if (!m_model) return -1; // guard
     
@@ -149,16 +148,16 @@ int View3D::currentFunction() const
     return ret;
 }
 
-void View3D::draw()
+void PlotsView3D::draw()
 {
-    foreach (VisualItem *item, m_displayLists.keys())
+    foreach (PlotItem *item, m_displayLists.keys())
     {
         glCallList(m_displayLists[item]);
 //         qDebug() << itemid;
     }
 }
 
-void View3D::init()
+void PlotsView3D::init()
 {
     glPushMatrix();
 //     glTranslatef(6,5,5);

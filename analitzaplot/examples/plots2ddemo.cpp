@@ -25,9 +25,8 @@
 #include <kcmdlineargs.h>
 
 #include "analitzaplot/planecurve.h"
-#include "analitzaplot/planecurvesmodel.h"
-#include "analitzaplot/plotview2d.h"
-#include <analitzaplot/private/functiongraphsmodel.h>
+#include "analitzaplot/plotsview2d.h"
+#include <analitzaplot/plotsmodel.h>
 
 int main(int argc, char *argv[])
 {
@@ -51,10 +50,10 @@ int main(int argc, char *argv[])
     
     //BEGIN test calls
 
-    VisualItemsModel *model = new VisualItemsModel(tabs);
+    PlotsModel *model = new PlotsModel(tabs);
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
-    Graph2D *view2d = new Graph2D(tabs);
+    PlotsView2D *view2d = new PlotsView2D(tabs);
 //     view2d->setReadOnly(true);
     view2d->setSquares(false);
     view2d->setModel(model);
@@ -65,7 +64,8 @@ int main(int argc, char *argv[])
     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
     PlaneCurve *item2 = model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
     model->addPlaneCurve(Analitza::Expression("x->2+x*x"), "otra simple", Qt::blue);
-    
+//     
+    model->addPlaneCurve(Analitza::Expression("x+y=9"), "otra simple", Qt::lightGray);
 
 //     qDebug() << item2->expression().toString();
     

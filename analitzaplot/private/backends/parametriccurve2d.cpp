@@ -65,7 +65,7 @@ namespace
 
 
 
-class ANALITZAPLOT_EXPORT FunctionParametric : public AbstractPlaneCurve
+class FunctionParametric : public AbstractPlaneCurve
 {
 public:
     CONSTRUCTORS(FunctionParametric)

@@ -27,7 +27,7 @@
 
 #include "analitza/localize.h"
 
-class ANALITZAPLOT_EXPORT FunctionPolar : public AbstractPlaneCurve
+class FunctionPolar : public AbstractPlaneCurve
 {
 public:
     CONSTRUCTORS(FunctionPolar)

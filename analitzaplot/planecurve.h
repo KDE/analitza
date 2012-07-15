@@ -23,10 +23,11 @@
 #include "private/functiongraph.h"
 
 #include "analitza/expression.h"
-#include "mathutils.h"
 
 #include <QMap>
 #include <QColor>
+
+#include "analitzaplotexport.h"
 
 namespace Analitza
 {
@@ -39,8 +40,7 @@ class AbstractSurface;
 class ANALITZAPLOT_EXPORT PlaneCurve : public FunctionGraph 
 {
 public:
-    PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
-    PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
+    PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, Analitza::Variables *variables = 0);
     virtual ~PlaneCurve();
 
     static bool canDraw(const Analitza::Expression &functionExpression);

@@ -17,7 +17,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "plotview2d.h"
+#include "plotsview2d.h"
 
 #include <QSvgGenerator>
 #include <QWheelEvent>
@@ -33,14 +33,12 @@
 #include <QDebug>
 
 #include <analitza/analyzer.h>
-#include "planecurvesmodel.h"
-#include "mathutils.h"
 #include "plotter2d.h"
-#include "private/functiongraphsmodel.h"
+#include "plotsmodel.h"
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>
 
-Graph2D::Graph2D(QWidget *parent)
+PlotsView2D::PlotsView2D(QWidget *parent)
 :QWidget(parent), FunctionsPainter( size()),
     valid(false), mode(None),
     m_framed(false), m_readonly(false), m_selection(0)
@@ -66,7 +64,7 @@ Graph2D::Graph2D(QWidget *parent)
 }
 
 
-Graph2D::Graph2D(VisualItemsModel* fm, QWidget *parent) :
+PlotsView2D::PlotsView2D(PlotsModel* fm, QWidget *parent) :
     QWidget(parent), FunctionsPainter(fm, size()),
     valid(false), mode(None),
     m_framed(false), m_readonly(false), m_selection(0)
@@ -90,9 +88,9 @@ Graph2D::Graph2D(VisualItemsModel* fm, QWidget *parent) :
         this, SLOT(removeFuncs(QModelIndex,int,int)));
 }
 
-Graph2D::~Graph2D() {}
+PlotsView2D::~PlotsView2D() {}
 
-void Graph2D::drawFunctions(QPaintDevice* pd)
+void PlotsView2D::drawFunctions(QPaintDevice* pd)
 {
     if(buffer.isNull() || buffer.size()!=size())
         buffer = QPixmap(size());
@@ -103,7 +101,7 @@ void Graph2D::drawFunctions(QPaintDevice* pd)
     valid=true;
 }
 
-void Graph2D::paintEvent(QPaintEvent * )
+void PlotsView2D::paintEvent(QPaintEvent * )
 {
     if(!valid)
         drawFunctions(&buffer);
@@ -170,7 +168,7 @@ void Graph2D::paintEvent(QPaintEvent * )
 //  qDebug() << "xxx2 " << viewport;
 }
 
-void Graph2D::wheelEvent(QWheelEvent *e)
+void PlotsView2D::wheelEvent(QWheelEvent *e)
 {
     QRectF viewport=lastViewport();
     int steps = e->delta()/(8*15);
@@ -181,7 +179,7 @@ void Graph2D::wheelEvent(QWheelEvent *e)
     }
 }
 
-void Graph2D::mousePressEvent(QMouseEvent *e)
+void PlotsView2D::mousePressEvent(QMouseEvent *e)
 {
     if(!m_readonly && (e->button()==Qt::LeftButton || e->button()==Qt::MidButton)) {
         last = press = e->pos();
@@ -194,7 +192,7 @@ void Graph2D::mousePressEvent(QMouseEvent *e)
     }
 }
 
-void Graph2D::mouseReleaseEvent(QMouseEvent *e)
+void PlotsView2D::mouseReleaseEvent(QMouseEvent *e)
 {
     if(m_readonly)
         this->setCursor(Qt::ArrowCursor);
@@ -231,7 +229,7 @@ void Graph2D::mouseReleaseEvent(QMouseEvent *e)
     this->repaint();
 }
 
-void Graph2D::mouseMoveEvent(QMouseEvent *e)
+void PlotsView2D::mouseMoveEvent(QMouseEvent *e)
 {
     
     mark=calcImage(fromWidget(e->pos()));
@@ -248,7 +246,7 @@ void Graph2D::mouseMoveEvent(QMouseEvent *e)
     this->repaint();
 }
 
-void Graph2D::keyPressEvent(QKeyEvent * e)
+void PlotsView2D::keyPressEvent(QKeyEvent * e)
 {
     const double xstep=lastViewport().width()/12., ystep=lastViewport().height()/10.;
     
@@ -276,13 +274,13 @@ void Graph2D::keyPressEvent(QKeyEvent * e)
     }
 }
 
-void Graph2D::resizeEvent(QResizeEvent *)
+void PlotsView2D::resizeEvent(QResizeEvent *)
 {
     buffer=QPixmap(size());
     setPaintedSize(size());
 }
 
-bool Graph2D::toImage(const QString &path, Format f)
+bool PlotsView2D::toImage(const QString &path, Format f)
 {
     Q_ASSERT(!path.isEmpty());
     bool b=false;
@@ -306,7 +304,7 @@ bool Graph2D::toImage(const QString &path, Format f)
     return b;
 }
 
-void Graph2D::zoomIn()
+void PlotsView2D::zoomIn()
 {
     QRectF userViewport = lastUserViewport();
     if(userViewport.height() < -3. && userViewport.width() > 3.){
@@ -315,7 +313,7 @@ void Graph2D::zoomIn()
     }
 }
 
-void Graph2D::zoomOut()
+void PlotsView2D::zoomOut()
 {
     QRectF userViewport = lastUserViewport();
     //FIXME:Bad solution
@@ -324,36 +322,36 @@ void Graph2D::zoomOut()
                 userViewport.width() +2., userViewport.height() -2.));
 }
 
-void Graph2D::addFuncs(const QModelIndex & parent, int start, int end)
+void PlotsView2D::addFuncs(const QModelIndex & parent, int start, int end)
 {
     Q_ASSERT(!parent.isValid());
     
     updateFunctions(model()->index(start,0), model()->index(end,0));
 }
 
-void Graph2D::removeFuncs(const QModelIndex &, int, int)
+void PlotsView2D::removeFuncs(const QModelIndex &, int, int)
 {
     forceRepaint();
 }
 
-void Graph2D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
+void PlotsView2D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 {
     updateFunctions(start, end);
 }
 
-void Graph2D::setReadOnly(bool ro)
+void PlotsView2D::setReadOnly(bool ro)
 {
     m_readonly=ro;
     this->setCursor(ro ? Qt::ArrowCursor : Qt::CrossCursor);
     setMouseTracking(!ro);
 }
 
-QRectF Graph2D::definedViewport() const
+QRectF PlotsView2D::definedViewport() const
 {
     return lastUserViewport();
 }
 
-void Graph2D::viewportChanged()
+void PlotsView2D::viewportChanged()
 {
     QRectF userViewport=lastUserViewport(), viewport=lastViewport();
     
@@ -362,7 +360,7 @@ void Graph2D::viewportChanged()
     emit viewportChanged(userViewport);
 }
 
-int Graph2D::currentFunction() const
+int PlotsView2D::currentFunction() const
 {
     if (!model()) return -1; // guard
     
@@ -374,7 +372,7 @@ int Graph2D::currentFunction() const
     return ret;
 }
 
-void Graph2D::modelChanged()
+void PlotsView2D::modelChanged()
 {
     //TODO disconnect prev model
     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
@@ -385,7 +383,7 @@ void Graph2D::modelChanged()
         this, SLOT(removeFuncs(QModelIndex,int,int)));
 }
 
-void Graph2D::setSelectionModel(QItemSelectionModel* selection)
+void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)
 {
     Q_ASSERT(selection);
     Q_ASSERT(selection->model() == model());

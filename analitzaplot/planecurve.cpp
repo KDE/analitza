@@ -38,13 +38,8 @@
 
 
 
-PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col)
-    : FunctionGraph(functionExpression,2, name, col)
-{
-}
-
-PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-    : FunctionGraph(functionExpression, v,2,name, col)
+PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables )
+    : FunctionGraph(functionExpression,2, name, col, variables)
 {
 }
 

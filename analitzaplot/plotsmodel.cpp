@@ -17,8 +17,10 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "functiongraphsmodel.h"
-#include "functiongraph.h"
+#include "plotsmodel.h"
+
+#include "private/functiongraph.h"
+
 #include <surface.h>
 #include <planecurve.h>
 #include <spacecurve.h>
@@ -34,14 +36,14 @@
 #include <QIcon>
 // #include <kcategorizedsortfilterproxymodel.h>
 
-VisualItemsModel::VisualItemsModel(QObject* parent): QAbstractListModel(parent)
+PlotsModel::PlotsModel(QObject* parent): QAbstractListModel(parent)
     , m_variables(0), m_itemCanCallModelRemoveItem(true)
 {
 
 }
 
 
-VisualItemsModel::VisualItemsModel(Analitza::Variables *v, QObject * parent)
+PlotsModel::PlotsModel(Analitza::Variables *v, QObject * parent)
     : QAbstractListModel(parent), m_variables(v), m_itemCanCallModelRemoveItem(true)
 {
 //     Q_ASSERT(v);
@@ -49,20 +51,20 @@ VisualItemsModel::VisualItemsModel(Analitza::Variables *v, QObject * parent)
 //     variablesModule = v;
 }
 
-VisualItemsModel::~VisualItemsModel()
+PlotsModel::~PlotsModel()
 {
     qDeleteAll(m_items);
     m_items.clear();
 }
 
-void VisualItemsModel::setVariables(Analitza::Variables* v)
+void PlotsModel::setVariables(Analitza::Variables* v)
 {
     m_variables = v;
     for(int i = 0; i < m_items.size(); ++i)
         m_items[i]->setVariables(v);
 }
 
-Qt::ItemFlags VisualItemsModel::flags(const QModelIndex & index) const
+Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
 {
     if(index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsTristate;
@@ -70,26 +72,26 @@ Qt::ItemFlags VisualItemsModel::flags(const QModelIndex & index) const
         return 0;
 }
 
-bool VisualItemsModel::hasChildren(const QModelIndex & parent) const
+bool PlotsModel::hasChildren(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
 
     return false;
 }
 
-Qt::DropActions VisualItemsModel::supportedDropActions() const
+Qt::DropActions PlotsModel::supportedDropActions() const
 {
     return Qt::IgnoreAction;
 }
 
-QVariant VisualItemsModel::data(const QModelIndex & index, int role) const
+QVariant PlotsModel::data(const QModelIndex & index, int role) const
 {
     if(!index.isValid() || index.row()>=m_items.count())
         return QVariant();
 
     int var=index.row();
 
-    VisualItem *tmpcurve = m_items.at(var);
+    PlotItem *tmpcurve = m_items.at(var);
 
     switch(role)
     {
@@ -125,7 +127,7 @@ QVariant VisualItemsModel::data(const QModelIndex & index, int role) const
     return QVariant();
 }
 
-int VisualItemsModel::rowCount(const QModelIndex & parent) const
+int PlotsModel::rowCount(const QModelIndex & parent) const
 {
     if(parent.isValid())
         return 0;
@@ -133,50 +135,50 @@ int VisualItemsModel::rowCount(const QModelIndex & parent) const
         return m_items.size();
 }
 
-PlaneCurve * VisualItemsModel::addPlaneCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+PlaneCurve * PlotsModel::addPlaneCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
     return addItem<PlaneCurve>(functionExpression, name, col);
 }
 
-SpaceCurve* VisualItemsModel::addSpaceCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+SpaceCurve* PlotsModel::addSpaceCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
     return addItem<SpaceCurve>(functionExpression, name, col);
 }
 
-Surface* VisualItemsModel::addSurface(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+Surface* PlotsModel::addSurface(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
     return addItem<Surface>(functionExpression, name, col);
 }
 
-QMap< int,PlaneCurve* > VisualItemsModel::planeCurves() const
+QMap< int,PlaneCurve* > PlotsModel::planeCurves() const
 {
     return items<PlaneCurve>();
 }
 
-QMap< int, SpaceCurve* > VisualItemsModel::spaceCurves() const
+QMap< int, SpaceCurve* > PlotsModel::spaceCurves() const
 {
     return items<SpaceCurve>();
 }
 
-QMap< int, Surface* > VisualItemsModel::surfaces() const
+QMap< int, Surface* > PlotsModel::surfaces() const
 {
     return items<Surface>();
 }
 
-VisualItem* VisualItemsModel::item(int curveIndex) const
+PlotItem* PlotsModel::item(int curveIndex) const
 {
     Q_ASSERT(curveIndex<m_items.count());
 
     return m_items[curveIndex];
 }
 
-void VisualItemsModel::removeItem(int row)
+void PlotsModel::removeItem(int row)
 {
     Q_ASSERT(row<m_items.size());
 
     beginRemoveRows(QModelIndex(), row, row);
 
-    VisualItem *tmpcurve = m_items[row];
+    PlotItem *tmpcurve = m_items[row];
 
     m_itemCanCallModelRemoveItem = false;
 
@@ -195,7 +197,7 @@ void VisualItemsModel::removeItem(int row)
 
 
 template<typename VisualItemType>
-VisualItemType* VisualItemsModel::addItem(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+VisualItemType* PlotsModel::addItem(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
     VisualItemType * ret = 0;
 
@@ -217,7 +219,7 @@ VisualItemType* VisualItemsModel::addItem(const Analitza::Expression& functionEx
 }
 
 template<typename VisualItemType>
-QMap< int, VisualItemType* > VisualItemsModel::items() const
+QMap< int, VisualItemType* > PlotsModel::items() const
 {
     QMap< int, VisualItemType* > ret;
 

@@ -23,7 +23,9 @@
 #define ABSTRACTFUNCTIONGRAPHFACTORY_H
 
 #include "analitzaplotexport.h"
-#include "mathutils.h"
+
+#include "utils/mathutils.h"
+
 #include "analitza/expressiontype.h"
 
 #define REGISTER_FUNCTIONGRAPH(name) \
@@ -40,7 +42,7 @@
         
 class AbstractFunctionGraph;
 
-class ANALITZAPLOT_EXPORT FunctionGraphFactory
+class FunctionGraphFactory
 {
 public:
     typedef AbstractFunctionGraph* (*BuilderFunctionWithVars)(const Analitza::Expression&, Analitza::Variables* );

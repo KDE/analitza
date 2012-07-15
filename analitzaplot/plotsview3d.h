@@ -21,23 +21,24 @@
 
 #include "QGLViewer/qglviewer.h"
 #include <QMouseEvent>
-#include <analitzaplot/mathutils.h>
+
+
 #include <analitzaplot/private/functiongraph.h>
 #include <QModelIndex>
-
-class VisualItemsModel;
+#include "analitzaplotexport.h"
+class PlotsModel;
 class QItemSelectionModel;
 
 // class Solver3D;
-class ANALITZAPLOT_EXPORT View3D : public QGLViewer
+class ANALITZAPLOT_EXPORT PlotsView3D : public QGLViewer
 {
     Q_OBJECT
 
 public:
-    View3D(QWidget *parent = 0);
-    View3D(VisualItemsModel *m, QWidget *parent = 0);
+    PlotsView3D(QWidget *parent = 0);
+    PlotsView3D(PlotsModel *m, QWidget *parent = 0);
 
-    void setModel(VisualItemsModel *m);
+    void setModel(PlotsModel *m);
     void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:
@@ -50,11 +51,11 @@ private:
     void draw();
     void init();
 
-    VisualItemsModel *m_model;
+    PlotsModel *m_model;
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>
-    QMap<VisualItem*, GLuint> m_displayLists;
+    QMap<PlotItem*, GLuint> m_displayLists;
 };
 
 #endif

@@ -67,7 +67,7 @@ namespace
 
 
 
-class ANALITZAPLOT_EXPORT ParametricCurve3D : public AbstractSpaceCurve
+class ParametricCurve3D : public AbstractSpaceCurve
 {
 public:
     CONSTRUCTORS(ParametricCurve3D)

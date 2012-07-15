@@ -25,13 +25,8 @@
 #include "private/functiongraphfactory.h"
 #include "private/abstractsurface.h"
 
-Surface::Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor &col)
-    : FunctionGraph(functionExpression, 3,name, col)
-{
-}
-
-Surface::Surface(const Analitza::Expression &functionExpression, Analitza::Variables *v, const QString &name, const QColor &col)
-    : FunctionGraph(functionExpression, v,3, name, col)
+Surface::Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables)
+    : FunctionGraph(functionExpression, 3,name, col, variables)
 {
 }
 

@@ -30,7 +30,7 @@
 //TODO macros para las prop e abajo
 
 
-class ANALITZAPLOT_EXPORT Fap : public AbstractSurface/*, static class? better macros FooClass*/
+class Fap : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     explicit Fap(const Analitza::Expression& e);

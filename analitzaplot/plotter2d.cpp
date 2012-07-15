@@ -19,11 +19,10 @@
 
 #include "plotter2d.h"
 
-#include  "planecurvesmodel.h"
 
-#include "mathutils.h"
 #include "planecurve.h"
-#include "private/functiongraphsmodel.h"
+
+#include "plotsmodel.h"
 
 #include <QPalette>
 #include <QPen>
@@ -50,7 +49,7 @@ FunctionsPainter::FunctionsPainter(const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(0), m_dirty(true)
 {}
 
-FunctionsPainter::FunctionsPainter(VisualItemsModel* model, const QSizeF& size)
+FunctionsPainter::FunctionsPainter(PlotsModel* model, const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true)
 {}
 
@@ -447,7 +446,7 @@ void FunctionsPainter::setKeepAspectRatio(bool ar)
     updateScale(true);
 }
 
-void FunctionsPainter::setModel(VisualItemsModel* f)
+void FunctionsPainter::setModel(PlotsModel* f)
 {
     m_model=f;
     modelChanged();

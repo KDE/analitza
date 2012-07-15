@@ -27,11 +27,9 @@
 name (const Analitza::Expression &functionExpression) : AbstractSurface(functionExpression) { } \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) : AbstractSurface(functionExpression, variables) { }
 
-#include <functional>
 
 
-
-class ANALITZAPLOT_EXPORT AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
+class AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
 {
 public:
     explicit AbstractSurface(const Analitza::Expression& e);

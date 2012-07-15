@@ -31,7 +31,7 @@ namespace Analitza
     class Variables;
 }
 
-class ANALITZAPLOT_EXPORT AbstractSpaceCurve : public AbstractFunctionGraph 
+class AbstractSpaceCurve : public AbstractFunctionGraph 
 {
 public:
     AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v);

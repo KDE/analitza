@@ -25,13 +25,13 @@
 #include <QPen>
 
 class QModelIndex;
-class VisualItemsModel;
+class PlotsModel;
 
 class ANALITZAPLOT_EXPORT FunctionsPainter
 {
     public:
         FunctionsPainter(const QSizeF& size);
-        FunctionsPainter(VisualItemsModel* model, const QSizeF& size);
+        FunctionsPainter(PlotsModel* model, const QSizeF& size);
         virtual ~FunctionsPainter();
         
         virtual void drawFunctions(QPaintDevice *qpd);
@@ -55,8 +55,8 @@ class ANALITZAPLOT_EXPORT FunctionsPainter
         /** Force the functions from @p start to @p end to be recalculated. */
         void updateFunctions( const QModelIndex & start, const QModelIndex& end );
         
-        void setModel(VisualItemsModel* f);
-        VisualItemsModel* model() const { return m_model; }
+        void setModel(PlotsModel* f);
+        PlotsModel* model() const { return m_model; }
         
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
@@ -96,7 +96,7 @@ class ANALITZAPLOT_EXPORT FunctionsPainter
         QRectF viewport;
         QRectF userViewport;
         QSizeF m_size;
-        VisualItemsModel* m_model;
+        PlotsModel* m_model;
         
         static const QColor m_axeColor;
         static const QColor m_axe2Color;

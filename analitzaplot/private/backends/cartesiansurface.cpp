@@ -30,7 +30,7 @@
 //TODO macros para las prop e abajo
 
 
-class ANALITZAPLOT_EXPORT Fxy : public AbstractSurface/*, static class? better macros FooClass*/
+class  Fxy : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxy)
@@ -66,7 +66,7 @@ void Fxy::update(const Box& viewport)
 
 REGISTER_SURFACE(Fxy)
 
-class ANALITZAPLOT_EXPORT Fxz : public AbstractSurface/*, static class? better macros FooClass*/
+class Fxz : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxz)

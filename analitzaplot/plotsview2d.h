@@ -42,9 +42,9 @@
  */
 
 class QItemSelectionModel;
-class VisualItemsModel;
+class PlotsModel;
 
-class ANALITZAPLOT_EXPORT Graph2D : public QWidget, public FunctionsPainter
+class ANALITZAPLOT_EXPORT PlotsView2D : public QWidget, public FunctionsPainter
 {
 Q_OBJECT
 Q_PROPERTY(bool squares READ squares WRITE setSquares)
@@ -59,14 +59,14 @@ public:
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
-    Graph2D(QWidget *parent = 0); // this ctor es para que pueda ser usado en el designer
+    PlotsView2D(QWidget *parent = 0); // this ctor es para que pueda ser usado en el designer
     
     //prererenciteme 1 constructor
     
-    Graph2D(VisualItemsModel* fm, QWidget *parent = 0);
+    PlotsView2D(PlotsModel* fm, QWidget *parent = 0);
     
     /** Destructor. */
-    ~Graph2D();
+    ~PlotsView2D();
     
 //     setmodel
     

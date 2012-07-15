@@ -33,7 +33,7 @@ namespace Analitza
 }
 
 
-class ANALITZAPLOT_EXPORT AbstractPlaneCurve : public AbstractFunctionGraph 
+class AbstractPlaneCurve : public AbstractFunctionGraph 
 {
 public:
     AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v);

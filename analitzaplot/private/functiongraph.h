@@ -21,15 +21,14 @@
 #ifndef FUNCTIONGRAPH2_H
 #define FUNCTIONGRAPH2_H
 
-#include "mappinggraph.h"
+#include "plotitem.h"
 
 class AbstractFunctionGraph;
 
-class ANALITZAPLOT_EXPORT FunctionGraph : public VisualItem
+class ANALITZAPLOT_EXPORT FunctionGraph : public PlotItem
 {
 public:
-    FunctionGraph(const Analitza::Expression &functionExpression, int spaceDimension, const QString &name, const QColor& col);
-    FunctionGraph(const Analitza::Expression &functionExpression, Analitza::Variables *variables,int spaceDimension, const QString &name, const QColor& col);
+    FunctionGraph(const Analitza::Expression &functionExpression, int spaceDimension, const QString &name, const QColor& col, Analitza::Variables *variables = 0);
     virtual ~FunctionGraph();
 
     Analitza::Variables *variables() const;

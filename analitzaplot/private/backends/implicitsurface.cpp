@@ -24,7 +24,7 @@
 #include <analitza/vector.h>
 
 
-class ANALITZAPLOT_EXPORT ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static class? better macros FooClass*/
+class ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static class? better macros FooClass*/
 {
 public:
     explicit ImplicitSurf(const Analitza::Expression& e);

@@ -24,13 +24,12 @@
 #include <QColor>
 
 #include "analitzaplot/analitzaplotexport.h"
-#include <analitzaplot/mathutils.h>
 
 class Surface;
 class SpaceCurve;
 class PlaneCurve;
 
-class VisualItem;
+class PlotItem;
 
 namespace Analitza
 {
@@ -40,16 +39,16 @@ class Expression;
 
 
 // QStandardItemModel
-class ANALITZAPLOT_EXPORT VisualItemsModel : public QAbstractListModel
+class ANALITZAPLOT_EXPORT PlotsModel : public QAbstractListModel
 {
-friend class VisualItem;    
+friend class PlotItem;    
     
 Q_OBJECT
 //     if(item->type()==CurveType)
 public:
-    VisualItemsModel(QObject * parent = 0);
-    VisualItemsModel(Analitza::Variables *v, QObject * parent = 0);
-    virtual ~VisualItemsModel();
+    PlotsModel(QObject * parent = 0);
+    PlotsModel(Analitza::Variables *v, QObject * parent = 0);
+    virtual ~PlotsModel();
     
     void setVariables(Analitza::Variables *v); // set variables for all this items this not emit setdata signal
     
@@ -69,7 +68,7 @@ public:
     QMap<int, SpaceCurve *> spaceCurves() const;
     QMap<int, Surface *> surfaces() const;
 
-    VisualItem * item(int curveIndex) const;
+    PlotItem * item(int curveIndex) const;
     void removeItem(int curveIndex);
 
 private:
@@ -80,7 +79,7 @@ private:
     QMap<int, VisualItemType *> items() const;
 
     Analitza::Variables *m_variables;
-    QList<VisualItem*> m_items;
+    QList<PlotItem*> m_items;
     bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem
 };
 

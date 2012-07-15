@@ -49,7 +49,7 @@ QStringList examples() const { return Examples(); } \
 static QStringList Examples() { return QString(name).split(","); }
 
 
-class ANALITZAPLOT_EXPORT AbstractFunctionGraph : public AbstractMappingGraph
+class AbstractFunctionGraph : public AbstractMappingGraph
 {
 public:
     AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v);

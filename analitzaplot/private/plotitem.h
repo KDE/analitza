@@ -22,9 +22,10 @@
 
 #include <QStringList>
 #include <QColor>
-#include <qstandarditemmodel.h>
 
-#include "../mathutils.h"
+#include "utils/mathutils.h"
+
+#include "../analitzaplotexport.h"
 
 namespace Analitza
 {
@@ -32,17 +33,17 @@ class Variables;
 class Expression;
 };
 
-class VisualItemsModel;
+class PlotsModel;
 
-class ANALITZAPLOT_EXPORT VisualItem 
+class  ANALITZAPLOT_EXPORT PlotItem 
 {
-friend class VisualItemsModel;
+friend class PlotsModel;
     
 public:
     enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };    
     
-    explicit VisualItem(const QString &name, const QColor& col);
-    virtual ~VisualItem();
+    explicit PlotItem(const QString &name, const QColor& col);
+    virtual ~PlotItem();
 
     virtual Analitza::Variables * variables() const = 0;
     virtual void setVariables(Analitza::Variables *variables) = 0;
@@ -68,15 +69,15 @@ public:
     virtual bool isCorrect() const = 0;
     
 protected:
-    VisualItem() {}
-    VisualItem(const VisualItem &other) {}
+    PlotItem() {}
+    PlotItem(const PlotItem &other) {}
 
 //     VisualItemsModel * model() const;
 
     void emitDataChanged();
 
 private:
-    void setModel(VisualItemsModel *m);
+    void setModel(PlotsModel *m);
     
     //gui
     QString m_name;
@@ -87,7 +88,7 @@ private:
     bool m_graphVisible;
     
     //model expose item as write pointr ... so this will fix some situations (delete external, etc)
-    VisualItemsModel *m_model;
+    PlotsModel *m_model;
     bool m_inDestructorSoDontDeleteMe; // lock para evitar que el removeitem del model llame al destructor de este item y se generen llamadas recursivas
 };
 

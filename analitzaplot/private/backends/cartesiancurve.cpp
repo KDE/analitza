@@ -27,7 +27,7 @@
 #include "analitza/localize.h"
 
 ///Functions where the x is bounding. like x->sin(x)
-class ANALITZAPLOT_EXPORT FunctionY : public AbstractPlaneCurve
+class FunctionY : public AbstractPlaneCurve
 {
 public:
     CONSTRUCTORS(FunctionY)

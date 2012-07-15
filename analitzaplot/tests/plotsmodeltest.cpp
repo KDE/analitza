@@ -16,12 +16,10 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "planecurvesmodeltest.h"
+#include "plotsmodeltest.h"
 
 #include "analitzaplot/planecurve.h"
-#include "analitzaplot/planecurvesmodel.h"
-#include "analitzaplot/surface.h"
-#include <analitzaplot/private/functiongraphsmodel.h>
+#include "analitzaplot/plotsmodel.h"
 
 #include "analitza/expression.h"
 #include "analitza/variables.h"
@@ -40,7 +38,7 @@ PlaneCurvesModelTest::PlaneCurvesModelTest(QObject *parent)
 {
     m_vars=new Analitza::Variables;
 
-    m_model = new VisualItemsModel(m_vars,this);
+    m_model = new PlotsModel(m_vars,this);
 }
 
 PlaneCurvesModelTest::~PlaneCurvesModelTest()
@@ -84,19 +82,17 @@ void PlaneCurvesModelTest::testAppend_data()
 
     QTest::newRow("parametric") << "t->vector{t,t**2}";
     QTest::newRow("parametric1") << "t->vector{16*sin(t)^3, abs(t)^0.3*root(t,2)}";
-    QTest::newRow("implicit") << "(x,y)->x+y";
+    QTest::newRow("implicit") << "x+y=9";
 
 }
 
 void PlaneCurvesModelTest::testAppend()
 {
     QFETCH(QString, input);
-
     
-    QVERIFY(m_model->addPlaneCurve(Expression(input), "Hola", Qt::yellow));
-
-//     QCOMPARE(m_model->curve(m_model->rowCount()-1)->expression().bvarList(), Analitza::Expression(input).bvarList());
-    QVERIFY(m_model->item(m_model->rowCount()-1)->isCorrect()); // all corrects
+    PlaneCurve *item = 0;
+    QVERIFY(item = m_model->addPlaneCurve(Expression(input), "Hola", Qt::yellow));
+    QVERIFY(item->isCorrect());
 }
 
-#include "planecurvesmodeltest.moc"
+#include "plotsmodeltest.moc"

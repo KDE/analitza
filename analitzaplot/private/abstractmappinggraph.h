@@ -42,8 +42,7 @@ class Expression;
 
 ///
 
-#include "analitzaplotexport.h"
-#include "mathutils.h"
+#include "utils/mathutils.h"
 ///
 
 
@@ -54,7 +53,7 @@ class Expression;
 //en la funcion y en el metodo factory id es donde se requiere que tenga mas detalle ademas de exp y varsmod
 // por ejemolo coordsys en el caso de surf
 
-class ANALITZAPLOT_EXPORT AbstractMappingGraph //strategy pattern
+class AbstractMappingGraph //strategy pattern
 {
 public:
     virtual ~AbstractMappingGraph();

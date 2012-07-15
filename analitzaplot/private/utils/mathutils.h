@@ -24,7 +24,6 @@
 #include <cmath>
 #include <limits>
 
-#include "analitzaplotexport.h"
 
 #include "analitza/expression.h"
 #include "analitza/value.h"

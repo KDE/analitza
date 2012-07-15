@@ -30,7 +30,7 @@
 //TODO macros para las prop e abajo
 
 
-class ANALITZAPLOT_EXPORT ParamSurf : public AbstractSurface/*, static class? better macros FooClass*/
+class ParamSurf : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(ParamSurf)

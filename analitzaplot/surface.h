@@ -21,13 +21,14 @@
 
 #include "private/functiongraph.h"
 
+#include "analitzaplotexport.h"
+
 class AbstractSurface;
 
 class ANALITZAPLOT_EXPORT Surface : public FunctionGraph 
 {
 public:
-    Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
-    Surface(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
+    Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, Analitza::Variables *variables = 0);
     virtual ~Surface();
 
     static bool canDraw(const Analitza::Expression &functionExpression);

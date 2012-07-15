@@ -27,16 +27,7 @@ include_directories (
 )
 
 set ( keomath_SRCS
-# functionutils.cpp
-# function.cpp
-# functiongraph.cpp
-# functiongraphfactory.cpp
-# functionsmodel.cpp
-# 
-# plotter2d.cpp
-# plotview2d.cpp
-# # plotter3d.cpp
-# # plotview3d.cpp
+private/utils/mathutils.cpp
 
 private/abstractfunctiongraph.cpp
 private/functiongraphfactory.cpp
@@ -44,19 +35,8 @@ private/abstractmappinggraph.cpp
 private/abstractplanecurve.cpp
 private/abstractspacecurve.cpp
 private/abstractsurface.cpp
-private/functiongraphsmodel.cpp
-private/mappinggraph.cpp
+private/plotitem.cpp
 private/functiongraph.cpp
-
-mathutils.cpp
-planecurve.cpp
-planecurvesmodel.cpp
-spacecurve.cpp
-plotter2d.cpp
-#plotter3d.cpp
-plotview2d.cpp
-plotview3d.cpp
-surface.cpp
 
 private/backends/cartesiansurface.cpp
 private/backends/implicitcurve.cpp
@@ -69,20 +49,16 @@ private/backends/polarcurve.cpp
 private/backends/sphericalsurface.cpp
 private/backends/implicitsurface.cpp
 
-#   solvers/solvers3d/implicitsurface.cpp
-#
-#   #MarchingCubes
-#   solvers/solvers3d/MarchingCubes/ctab.h
-#   solvers/solvers3d/MarchingCubes/ctab.cpp
-#   solvers/solvers3d/MarchingCubes/formulas.h
-#   solvers/solvers3d/MarchingCubes/glwidget.h
-#   solvers/solvers3d/MarchingCubes/glwidget.cpp
-#   solvers/solvers3d/MarchingCubes/marchingcubes.cpp
-#   solvers/solvers3d/MarchingCubes/marchingcubes.h
-#   solvers/solvers3d/MarchingCubes/octree.h
-#   solvers/solvers3d/MarchingCubes/octree.cpp
-#   solvers/solvers3d/MarchingCubes/qtlogo.h
-#   solvers/solvers3d/MarchingCubes/qtlogo.cpp
+#public API
+planecurve.cpp
+spacecurve.cpp
+surface.cpp
+plotsmodel.cpp
+plotter2d.cpp
+plotsview3d.cpp
+plotter3d.cpp
+plotsview2d.cpp
+
 )
 
 kde4_add_library( analitzaplot SHARED ${keomath_SRCS} )

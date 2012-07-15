@@ -23,6 +23,8 @@
 
 #include "private/functiongraph.h"
 
+#include "analitzaplotexport.h"
+
 class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {
     //3D
@@ -30,8 +32,7 @@ class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
     //curvature, length of arc, curvature
     
 public:
-    SpaceCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col);
-    SpaceCurve(const Analitza::Expression &functionExpression, Analitza::Variables *variables, const QString &name, const QColor& col);
+    SpaceCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, Analitza::Variables *variables = 0);
     virtual ~SpaceCurve();
 
     static bool canDraw(const Analitza::Expression &functionExpression);
