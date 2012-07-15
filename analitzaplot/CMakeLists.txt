@@ -2,7 +2,6 @@ project(analitzaplot)
 
 
 
-add_subdirectory(tests)
 
 find_package ( OpenGL REQUIRED )
 
@@ -29,12 +28,12 @@ include_directories (
 set ( keomath_SRCS
 private/utils/mathutils.cpp
 
+private/abstractplotitem.cpp
 private/abstractfunctiongraph.cpp
-private/functiongraphfactory.cpp
-private/abstractmappinggraph.cpp
 private/abstractplanecurve.cpp
 private/abstractspacecurve.cpp
 private/abstractsurface.cpp
+private/functiongraphfactory.cpp
 private/plotitem.cpp
 private/functiongraph.cpp
 
@@ -87,49 +86,34 @@ install(FILES
 
 #public api
 analitzaplotexport.h
-mathutils.h
 planecurve.h
-planecurvesmodel.h
 spacecurve.h
-plotter2d.h
-plotter3d.h
-plotview2d.h
-plotview3d.h
 surface.h
+plotsmodel.h
+plotter2d.h
+plotsview2d.h
+plotter3d.h
+plotsview3d.h
         DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
 
 
-install(FILES
-
-#private api/files only for compile by using the headers
-
-private/functiongraphfactory.h
-private/abstractfunctiongraph.h
-private/abstractmappinggraph.h
-private/abstractplanecurve.h
-private/abstractsurface.h
-private/functiongraph.h
-private/functiongraphsmodel.h
-private/mappinggraph.h
-
-        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
-
-
-
-
-
-
-# analitzaplotexport.h
+#api privada no se instala
+# install(FILES
 # 
-# functionutils.h
-# function.h
-# functiongraph.h
-# functiongraphfactory.h
-# functionsmodel.h
+# #private api/files only for compile by using the headers
 # 
-# plotter2d.h
-# plotter3d.h
-# plotview2d.h
-# plotview3d.h
+# # private/abstractplotitem.h
+# # private/abstractfunctiongraph.h
+# # private/abstractplanecurve.h
+# # private/abstractspacecurve.h
+# # private/abstractsurface.h
+# # private/functiongraphfactory.h
+# # private/plotitem.h
+# # private/functiongraph.h
+# 
+#         DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
 
+        
+add_subdirectory(tests)
+add_subdirectory(examples)
 

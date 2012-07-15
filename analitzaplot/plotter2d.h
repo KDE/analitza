@@ -27,12 +27,12 @@
 class QModelIndex;
 class PlotsModel;
 
-class ANALITZAPLOT_EXPORT FunctionsPainter
+class ANALITZAPLOT_EXPORT Plotter2D
 {
     public:
-        FunctionsPainter(const QSizeF& size);
-        FunctionsPainter(PlotsModel* model, const QSizeF& size);
-        virtual ~FunctionsPainter();
+        Plotter2D(const QSizeF& size);
+        Plotter2D(PlotsModel* model, const QSizeF& size);
+        virtual ~Plotter2D();
         
         virtual void drawFunctions(QPaintDevice *qpd);
         virtual void forceRepaint() = 0;

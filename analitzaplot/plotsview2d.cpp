@@ -39,7 +39,7 @@
 #include <QtGui/qitemselectionmodel.h>
 
 PlotsView2D::PlotsView2D(QWidget *parent)
-:QWidget(parent), FunctionsPainter( size()),
+:QWidget(parent), Plotter2D( size()),
     valid(false), mode(None),
     m_framed(false), m_readonly(false), m_selection(0)
 {
@@ -65,7 +65,7 @@ PlotsView2D::PlotsView2D(QWidget *parent)
 
 
 PlotsView2D::PlotsView2D(PlotsModel* fm, QWidget *parent) :
-    QWidget(parent), FunctionsPainter(fm, size()),
+    QWidget(parent), Plotter2D(fm, size()),
     valid(false), mode(None),
     m_framed(false), m_readonly(false), m_selection(0)
 {
@@ -96,7 +96,7 @@ void PlotsView2D::drawFunctions(QPaintDevice* pd)
         buffer = QPixmap(size());
     buffer.fill(palette().color(QPalette::Active, QPalette::Base));
     
-    FunctionsPainter::drawFunctions(pd);
+    Plotter2D::drawFunctions(pd);
     
     valid=true;
 }

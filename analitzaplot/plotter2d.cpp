@@ -39,24 +39,24 @@ using namespace std;
 
 // #define DEBUG_GRAPH
 
-QColor const FunctionsPainter::m_axeColor(100,100,255);
-QColor const FunctionsPainter::m_axe2Color(235,235,235);
-QColor const FunctionsPainter::m_derivativeColor(90,90,160);
+QColor const Plotter2D::m_axeColor(100,100,255);
+QColor const Plotter2D::m_axe2Color(235,235,235);
+QColor const Plotter2D::m_derivativeColor(90,90,160);
 
 
 
-FunctionsPainter::FunctionsPainter(const QSizeF& size)
+Plotter2D::Plotter2D(const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(0), m_dirty(true)
 {}
 
-FunctionsPainter::FunctionsPainter(PlotsModel* model, const QSizeF& size)
+Plotter2D::Plotter2D(PlotsModel* model, const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true)
 {}
 
-FunctionsPainter::~FunctionsPainter()
+Plotter2D::~Plotter2D()
 {}
 
-void FunctionsPainter::drawAxes(QPainter *p, CoordinateSystem a)
+void Plotter2D::drawAxes(QPainter *p, CoordinateSystem a)
 {
     p->setRenderHint(QPainter::Antialiasing, false);
     
@@ -79,7 +79,7 @@ void FunctionsPainter::drawAxes(QPainter *p, CoordinateSystem a)
     //EO write coords
 }
 
-void FunctionsPainter::drawPolarAxes(QPainter *p)
+void Plotter2D::drawPolarAxes(QPainter *p)
 {
     QPen ceixos;
     ceixos.setColor(m_axeColor);
@@ -112,7 +112,7 @@ void FunctionsPainter::drawPolarAxes(QPainter *p)
     p->drawLine(QPointF(center.x(), 0.), QPointF(center.x(),this->height()));
 }
 
-void FunctionsPainter::drawCartesianAxes(QPainter *painter)
+void Plotter2D::drawCartesianAxes(QPainter *painter)
 {
     
     QPen ceixos;
@@ -174,7 +174,7 @@ void FunctionsPainter::drawCartesianAxes(QPainter *painter)
     painter->drawPie(rectY, startAngleY, spanAngle);
 }
 
-void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
+void Plotter2D::drawFunctions(QPaintDevice *qpd)
 {
     QPen pfunc(QColor(0,150,0), 2);
     
@@ -291,7 +291,7 @@ void FunctionsPainter::drawFunctions(QPaintDevice *qpd)
     p.end();
 }
 
-void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModelIndex& endIdx)
+void Plotter2D::updateFunctions(const QModelIndex& startIdx, const QModelIndex& endIdx)
 {
     if (!m_model) return; // guard
 
@@ -309,7 +309,7 @@ void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModel
     forceRepaint();
 }
 
-QPointF FunctionsPainter::calcImage(const QPointF& ndp) const
+QPointF Plotter2D::calcImage(const QPointF& ndp) const
 {
     if (!m_model || currentFunction() == -1) return QPointF(); // guard
     
@@ -322,7 +322,7 @@ QPointF FunctionsPainter::calcImage(const QPointF& ndp) const
     return QPointF();
 }
 
-QRect FunctionsPainter::toBiggerRect(const QRectF& ent)
+QRect Plotter2D::toBiggerRect(const QRectF& ent)
 {
     QRect ret;
     ret.setTop(static_cast<int>(std::ceil(ent.top())));
@@ -333,7 +333,7 @@ QRect FunctionsPainter::toBiggerRect(const QRectF& ent)
     return ret;
 }
 
-void FunctionsPainter::updateScale(bool repaint)
+void Plotter2D::updateScale(bool repaint)
 {
     viewport=userViewport;
     rang_x= width()/viewport.width();
@@ -365,7 +365,7 @@ void FunctionsPainter::updateScale(bool repaint)
     }
 }
 
-void FunctionsPainter::setViewport(const QRectF& vp, bool repaint)
+void Plotter2D::setViewport(const QRectF& vp, bool repaint)
 {
     userViewport = vp;
     Q_ASSERT(userViewport.top()>userViewport.bottom());
@@ -376,7 +376,7 @@ void FunctionsPainter::setViewport(const QRectF& vp, bool repaint)
     viewportChanged();
 }
 
-QLineF FunctionsPainter::slope(const QPointF& dp) const
+QLineF Plotter2D::slope(const QPointF& dp) const
 {
     if (!m_model || currentFunction() == -1) return QLineF(); // guard
 
@@ -395,30 +395,30 @@ QLineF FunctionsPainter::slope(const QPointF& dp) const
     return QLineF();
 }
 
-QLineF FunctionsPainter::toWidget(const QLineF &f) const
+QLineF Plotter2D::toWidget(const QLineF &f) const
 {
     return QLineF(toWidget(f.p1()), toWidget(f.p2()));
 }
 
-QPointF FunctionsPainter::toWidget(const QPointF& p) const
+QPointF Plotter2D::toWidget(const QPointF& p) const
 {
     double left=-viewport.left(), top=-viewport.top();
     return QPointF((left + p.x()) * rang_x,  (top + p.y()) * rang_y);
 }
 
-QPointF FunctionsPainter::fromWidget(const QPoint& p) const
+QPointF Plotter2D::fromWidget(const QPoint& p) const
 {
     double part_negativa_x = -viewport.left();
     double part_negativa_y = -viewport.top();
     return QPointF(p.x()/rang_x-part_negativa_x, p.y()/rang_y-part_negativa_y);
 }
 
-QPointF FunctionsPainter::toViewport(const QPoint &mv) const
+QPointF Plotter2D::toViewport(const QPoint &mv) const
 {
     return QPointF(mv.x()/rang_x, mv.y()/rang_y);
 }
 
-void FunctionsPainter::moveViewport(const QPoint& delta)
+void Plotter2D::moveViewport(const QPoint& delta)
 {
     QPointF rel = toViewport(delta);
     QRectF viewport = lastViewport();
@@ -427,7 +427,7 @@ void FunctionsPainter::moveViewport(const QPoint& delta)
     setViewport(viewport);
 }
 
-void FunctionsPainter::scaleViewport(qreal s, const QPoint& center)
+void Plotter2D::scaleViewport(qreal s, const QPoint& center)
 {
     QPointF p = fromWidget(center);
     QSizeF ns = viewport.size()*s;
@@ -440,20 +440,20 @@ void FunctionsPainter::scaleViewport(qreal s, const QPoint& center)
     setViewport(nv);
 }
 
-void FunctionsPainter::setKeepAspectRatio(bool ar)
+void Plotter2D::setKeepAspectRatio(bool ar)
 {
     m_keepRatio=ar;
     updateScale(true);
 }
 
-void FunctionsPainter::setModel(PlotsModel* f)
+void Plotter2D::setModel(PlotsModel* f)
 {
     m_model=f;
     modelChanged();
     forceRepaint();
 }
 
-void FunctionsPainter::setPaintedSize(const QSize& size)
+void Plotter2D::setPaintedSize(const QSize& size)
 {
     m_size=size;
     updateScale(true);

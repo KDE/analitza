@@ -44,7 +44,7 @@
 class QItemSelectionModel;
 class PlotsModel;
 
-class ANALITZAPLOT_EXPORT PlotsView2D : public QWidget, public FunctionsPainter
+class ANALITZAPLOT_EXPORT PlotsView2D : public QWidget, public Plotter2D
 {
 Q_OBJECT
 Q_PROPERTY(bool squares READ squares WRITE setSquares)

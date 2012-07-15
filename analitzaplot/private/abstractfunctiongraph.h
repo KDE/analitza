@@ -21,7 +21,7 @@
 #ifndef _ABSTRACTFUNCTIONGRAPH_H
 #define _ABSTRACTFUNCTIONGRAPH_H
 
-#include "abstractmappinggraph.h"
+#include "abstractplotitem.h"
 
 
 #define TYPE_NAME(name) \
