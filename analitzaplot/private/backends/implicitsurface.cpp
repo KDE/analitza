@@ -23,6 +23,7 @@
 #include "analitza/value.h"
 #include <analitza/vector.h>
 
+#include "private/utils/marchingcubes.h"
 
 class ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static class? better macros FooClass*/
 {
