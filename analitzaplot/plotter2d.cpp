@@ -295,9 +295,10 @@ void Plotter2D::updateFunctions(const QModelIndex& startIdx, const QModelIndex& 
     int start=startIdx.row(), end=endIdx.row();
     
     for(int i=start; i<=end; i++) {
-        QRect a = toBiggerRect(viewport);
+//         QRect a = toBiggerRect(viewport);// WARNING GSOC porque se le pasa un qrect
 //         qDebug() << dynamic_cast<PlaneCurve*>(m_model->item(i))->interval(dynamic_cast<PlaneCurve*>(m_model->item(i))->parameters().first());
-        dynamic_cast<PlaneCurve*>(m_model->item(i))->update(a);
+//         dynamic_cast<PlaneCurve*>(m_model->item(i))->update(a);
+dynamic_cast<PlaneCurve*>(m_model->item(i))->update(viewport);
     }
     
     m_dirty = false;

@@ -1,5 +1,4 @@
 /*************************************************************************************
- *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
@@ -49,6 +48,8 @@ using Analitza::Variables;
 using Analitza::Object;
 using Analitza::Cn;
 
+//WARNING BRUTE FORCE implementation ... naive aproach ... improve 
+//the code by using marching squares
 class ANALITZAPLOT_EXPORT FunctionImplicit : public AbstractPlaneCurve
 {
 public:
@@ -60,7 +61,7 @@ public:
     ICON_NAME("newimplicit")
     EXAMPLES("x^3-y^2+2,y^2*(y^2-10)-x^2*(x^2-9)")    
     
-    void update(const QRect& viewport);
+    void update(const QRectF& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
@@ -72,7 +73,7 @@ private:
     double getFValue(double xValue, double yValue);
 };
 
-void FunctionImplicit::update(const QRect& vp)
+void FunctionImplicit::update(const QRectF& vp)
 {
 //     QRectF viewport(vp);
    

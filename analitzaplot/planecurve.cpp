@@ -84,7 +84,7 @@ QVector< int > PlaneCurve::jumps() const
     return static_cast<AbstractPlaneCurve*>(backend())->jumps;
 }
 
-void PlaneCurve::update(const QRect& viewport)
+void PlaneCurve::update(const QRectF& viewport)
 {
     
     Q_ASSERT(backend());

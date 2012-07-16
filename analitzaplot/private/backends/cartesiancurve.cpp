@@ -40,7 +40,7 @@ public:
     ICON_NAME("noane")
     EXAMPLES("x,x*x,x+4")    
 
-    void update(const QRect& viewport);
+    void update(const QRectF& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
@@ -54,7 +54,7 @@ private:
     
 };
 
-void FunctionY::update(const QRect& viewport)
+void FunctionY::update(const QRectF& viewport)
 {
 //     double l_lim=viewport.left()-.1, r_lim=viewport.right()+.1;
 
@@ -212,7 +212,7 @@ public:
     ICON_NAME("nYYoane")
     EXAMPLES("y,y*y,y+4")  
     
-    void update(const QRect& viewport);
+    void update(const QRectF& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos);
@@ -239,7 +239,7 @@ QPair<QPointF, QString> FunctionX::image(const QPointF& p)
     return QPair<QPointF, QString>(dp, pos);
 }
 
-void FunctionX::update(const QRect& viewport)
+void FunctionX::update(const QRectF& viewport)
 {
     double l_lim=viewport.bottom()-.1, r_lim=viewport.top()+.1;
     calculateValues(l_lim, r_lim);

@@ -55,9 +55,15 @@ double ImplicitSurf::evalScalarField(double x, double y, double z)
     return analyzer->calculateLambda().toReal().value();
 }
 
+
 ImplicitSurf::ImplicitSurf(const Analitza::Expression& e): AbstractSurface(e)
 {
     buildGeometry();
+    
+    
+    
+    
+    
 }
 
 ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e)

@@ -47,7 +47,7 @@ public:
     QVector<int> jumps;
     
     //Own
-    virtual void update(const QRect& viewport) = 0;
+    virtual void update(const QRectF& viewport) = 0;
     virtual QPair<QPointF, QString> image(const QPointF &mousepos) = 0;
     virtual QLineF tangent(const QPointF &mousepos) = 0;
 

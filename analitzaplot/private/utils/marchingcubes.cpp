@@ -858,6 +858,9 @@ void MarchingCubes::tipo13(QList<sArista> aristas, QList<unsigned int> vertices)
 
 void MarchingCubes::buildGeometry()
 {
+        _faces_.clear();
+
+        
     QList<sMarching_Cube> cubos;
     sMarching_Cube cubo;
     

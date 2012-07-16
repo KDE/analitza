@@ -40,7 +40,7 @@ y+
 
 struct Cube
 {
-    Cube(const QVector3D cent = QVector3D(0,0,0), double halfe = 1) {}
+    Cube(const QVector3D cent = QVector3D(0,0,0), double halfe = 1) : c(cent), he(halfe) {}
     Cube(const Cube &other) :c(other.c), he(other.he) {}
 
     QVector3D c;

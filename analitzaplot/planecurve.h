@@ -50,7 +50,7 @@ public:
 
     QVector<int> jumps() const;
     const QVector<QPointF> & points() const;
-    void update(const QRect& viewport);
+    void update(const QRectF& viewport);
     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
     QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse postion 
 

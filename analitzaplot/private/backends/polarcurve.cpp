@@ -40,7 +40,7 @@ public:
     ICON_NAME("newpolar")
     EXAMPLES("q->3*sin(q/0.142),q->q+3")    
     
-    void update(const QRect& viewport);
+    void update(const QRectF& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
@@ -51,7 +51,7 @@ public:
 
 };
 
-void FunctionPolar::update(const QRect& viewport)
+void FunctionPolar::update(const QRectF& viewport)
 {
 //     Q_ASSERT(analyzer.expression().isCorrect());
 //     if(int(resolution())==points.capacity())

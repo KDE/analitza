@@ -65,9 +65,9 @@ int main(int argc, char *argv[])
     PlaneCurve *item2 = model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
     model->addPlaneCurve(Analitza::Expression("x->2+x*x"), "otra simple", Qt::blue);
 //     
-    model->addPlaneCurve(Analitza::Expression("x+y=9"), "otra simple", Qt::lightGray);
+    model->addPlaneCurve(Analitza::Expression("5=x*x+y*y"), "otra simple", Qt::lightGray);
 
-    qDebug() << model->item(2)->name();
+//     qDebug() << model->item(2)->name();
     
 //     qDebug() << item2->expression().toString();
     
@@ -84,10 +84,10 @@ int main(int argc, char *argv[])
 
     
 //     item2->setVisible(false);
-//     item2->setColor(Qt::red);
+    item2->setColor(Qt::red);
 
 //     qDebug() << item << static_cast<PlaneCurve*>(model->item(0)) << model->item(0);
-    item->setInterval("x", 0, 4);
+//     item->setInterval("x", 0, 4);
 
     item2->setInterval("x", 0, 4);
     item2->setInterval("y", 0, 4);

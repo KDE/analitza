@@ -76,7 +76,7 @@ public:
     ICON_NAME("newparametric")
     EXAMPLES("t->vector {t,t**2}")    
     
-    void update(const QRect& viewport);
+    void update(const QRectF& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
@@ -91,7 +91,7 @@ private:
 
 // 
 
-void FunctionParametric::update(const QRect& viewport)
+void FunctionParametric::update(const QRectF& viewport)
 {
   Q_UNUSED(viewport);
     Q_ASSERT(analyzer->expression().isCorrect());
