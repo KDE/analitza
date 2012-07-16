@@ -59,7 +59,7 @@ planecurve.cpp
 spacecurve.cpp
 surface.cpp
 plotsmodel.cpp
-plotsdictionary.cpp
+plotsdictionarymodel.cpp
 plotter2d.cpp
 plotsview3d.cpp
 plotter3d.cpp
@@ -97,7 +97,7 @@ planecurve.h
 spacecurve.h
 surface.h
 plotsmodel.h
-plotsdictionary.h
+plotsdictionarymodel.h
 plotter2d.h
 plotsview2d.h
 plotter3d.h

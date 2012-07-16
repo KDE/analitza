@@ -27,6 +27,7 @@
 #include "analitzaplot/spacecurve.h"
 #include "analitzaplot/plotsmodel.h"
 #include "analitzaplot/plotsview3d.h"
+#include <analitzaplot/plotsdictionarymodel.h>
 #include <analitza/variables.h>
 #include <analitza/apply.h>
 #include <analitza/variable.h>
@@ -79,6 +80,10 @@ int main(int argc, char *argv[])
     qDebug() << item->expression().toString() << item->interval("x");
     
     
+//     PlotsDictionaryModel *dict = new PlotsDictionaryModel(mainWindow);
+    
+//     qDebug() << dict->isLoaded() << dict->errors();
+
     
 //     model->addSurface(Analitza::Expression("(x,y)->y*y"), "Hola", Qt::yellow);
 //     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "Hola", Qt::gray);

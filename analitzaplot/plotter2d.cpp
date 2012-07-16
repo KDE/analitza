@@ -45,11 +45,7 @@ QColor const Plotter2D::m_derivativeColor(90,90,160);
 
 
 
-Plotter2D::Plotter2D(const QSizeF& size)
-    : m_squares(true), m_keepRatio(true), m_size(size), m_model(0), m_dirty(true)
-{}
-
-Plotter2D::Plotter2D(PlotsModel* model, const QSizeF& size)
+Plotter2D::Plotter2D(const QSizeF& size, PlotsModel* model)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true)
 {}
 

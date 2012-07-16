@@ -20,38 +20,29 @@
 
 #ifndef ANALITZAPLOT_FUNCTION_H_DICT
 #define ANALITZAPLOT_FUNCTION_H_DICT
-#include <qstringlist.h>
 
-class PlotItem;
-class PlotsModel;
 
-//NOTE
-//WIP
-//singleton class ofrecera un modelo de los plots leidos de un archivo
-// dicho archivo debe estar an algun path conocido de kde
-// el archivo contine una bd de plots famosos (curvas famosas y superficies famosas)
-// Esta clase es la interface a esa base de datos
-class PlotsDictionary
+#include "plotsmodel.h"
+
+//TODO debe adivinar las variables
+//El ctr carga el archivo, en la documentacion final se debe indicar
+// que solo es necesario usar una sola instancia de esta clase
+
+class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public PlotsModel
 {
 public:
-    //TODO query interface
+    PlotsDictionaryModel(QObject* parent = 0);
+    ~PlotsDictionaryModel();
     
 //     PlotItem *getByName() ...
     
-    //
-    PlotsModel * model() const;
-    
-    QStringList log() const; // ofrece errores al cargar o warnings ...
-    
+    bool isLoaded() const { return rowCount() > 0 && m_errors.isEmpty(); }
+    QStringList errors() const { return m_errors; }
+
 private:
-    // casi todo lo demas será private
-    
-    bool load();
-    
-    
-//     static self ...
+    void loadEntries();
+
+    QStringList m_errors;
 };
 
-
 #endif
-

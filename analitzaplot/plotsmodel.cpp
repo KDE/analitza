@@ -36,25 +36,20 @@
 #include <QIcon>
 // #include <kcategorizedsortfilterproxymodel.h>
 
-PlotsModel::PlotsModel(QObject* parent): QAbstractListModel(parent)
-    , m_variables(0), m_itemCanCallModelRemoveItem(true)
+PlotsModel::PlotsModel(QObject* parent, Analitza::Variables *v): QAbstractListModel(parent)
+    , m_variables(v), m_itemCanCallModelRemoveItem(true)
 {
-
-}
-
-
-PlotsModel::PlotsModel(Analitza::Variables *v, QObject * parent)
-    : QAbstractListModel(parent), m_variables(v), m_itemCanCallModelRemoveItem(true)
-{
-//     Q_ASSERT(v);
-
-//     variablesModule = v;
 }
 
 PlotsModel::~PlotsModel()
 {
     qDeleteAll(m_items);
     m_items.clear();
+}
+
+Analitza::Variables * PlotsModel::variables() const
+{
+    return m_variables;
 }
 
 void PlotsModel::setVariables(Analitza::Variables* v)

@@ -31,9 +31,8 @@
 #include <QDebug>
 
 
-PlotsView3D::PlotsView3D(QWidget *parent)
-    : QGLViewer(parent)
-    ,m_model(0), m_selection(0)
+PlotsView3D::PlotsView3D(QWidget *parent, PlotsModel* m)
+    : QGLViewer(parent), m_model(m),m_selection(0)
 {
     setGridIsDrawn(true);
     setAxisIsDrawn(true);
@@ -45,20 +44,24 @@ PlotsView3D::PlotsView3D(QWidget *parent)
     camera()->setPosition(qglviewer::Vec(0,0,15));
 }
 
-PlotsView3D::PlotsView3D(PlotsModel* m, QWidget* parent): QGLViewer(parent)
-    ,m_model(m), m_selection(0)
+PlotsView3D::~PlotsView3D()
 {
-    setGridIsDrawn(true);
-    setAxisIsDrawn(true);
-    
-    setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
-    setSceneRadius(6); // TODO no magic number 5 es el size de las coords (alrededor )
+
 }
 
 void PlotsView3D::setModel(PlotsModel *model)
 {
     m_model=model;
 
+    if (model->rowCount( ) > 0)
+    {
+    for (int i = 0; i < model->rowCount(); ++i)
+        glDeleteLists(m_displayLists[m_model->item(i)], 1);
+    
+    addFuncs(QModelIndex(), 0, model->rowCount()-1);
+
+    }
+    
     //TODO disconnect prev model
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
         this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
@@ -83,7 +86,7 @@ void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
     Q_ASSERT(!parent.isValid());
-    Q_ASSERT(start == end); // siempre se agrega un solo item al model
+//     Q_ASSERT(start == end); // siempre se agrega un solo item al model
 
     
     Surface* surf = static_cast<Surface*>(m_model->item(start));
@@ -111,7 +114,12 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
     foreach (const Triangle3D &face, surf->faces())
     {
         glBegin(GL_TRIANGLES);
-        QVector3D n = face.faceNormal().normalized();
+        QVector3D n;
+        
+        //TODO no magic numbers
+        if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
+        else n = QVector3D(0.5, 0.1, 0.2).normalized();
+        
         glNormal3d(n.x(), n.y(), n.z());
         glVertex3d(face.p().x(), face.p().y(), face.p().z());
         glVertex3d(face.q().x(), face.q().y(), face.q().z());

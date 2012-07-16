@@ -35,8 +35,8 @@ class ANALITZAPLOT_EXPORT PlotsView3D : public QGLViewer
     Q_OBJECT
 
 public:
-    PlotsView3D(QWidget *parent = 0);
-    PlotsView3D(PlotsModel *m, QWidget *parent = 0);
+    PlotsView3D(QWidget *parent = 0, PlotsModel *m = 0);
+    virtual ~PlotsView3D();
 
     void setModel(PlotsModel *m);
     void setSelectionModel(QItemSelectionModel* selection);

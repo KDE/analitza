@@ -30,8 +30,7 @@ class PlotsModel;
 class ANALITZAPLOT_EXPORT Plotter2D
 {
     public:
-        Plotter2D(const QSizeF& size);
-        Plotter2D(PlotsModel* model, const QSizeF& size);
+        Plotter2D(const QSizeF& size, PlotsModel* model = 0);
         virtual ~Plotter2D();
         
         virtual void drawFunctions(QPaintDevice *qpd);

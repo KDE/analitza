@@ -46,10 +46,10 @@ friend class PlotItem;
 Q_OBJECT
 //     if(item->type()==CurveType)
 public:
-    PlotsModel(QObject * parent = 0);
-    PlotsModel(Analitza::Variables *v, QObject * parent = 0);
+    PlotsModel(QObject * parent = 0, Analitza::Variables *v = 0);
     virtual ~PlotsModel();
     
+    Analitza::Variables * variables() const;
     void setVariables(Analitza::Variables *v); // set variables for all this items this not emit setdata signal
     
     Qt::ItemFlags flags(const QModelIndex & index) const;

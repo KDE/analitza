@@ -38,8 +38,8 @@
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>
 
-PlotsView2D::PlotsView2D(QWidget *parent)
-:QWidget(parent), Plotter2D( size()),
+PlotsView2D::PlotsView2D(QWidget *parent,PlotsModel* fm)
+:QWidget(parent), Plotter2D(size(), fm),
     valid(false), mode(None),
     m_framed(false), m_readonly(false), m_selection(0)
 {
@@ -61,31 +61,6 @@ PlotsView2D::PlotsView2D(QWidget *parent)
 //         this, SLOT(addFuncs(QModelIndex,int,int)));
 //     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
 //         this, SLOT(removeFuncs(QModelIndex,int,int)));
-}
-
-
-PlotsView2D::PlotsView2D(PlotsModel* fm, QWidget *parent) :
-    QWidget(parent), Plotter2D(fm, size()),
-    valid(false), mode(None),
-    m_framed(false), m_readonly(false), m_selection(0)
-{
-    this->setFocusPolicy(Qt::ClickFocus);
-    this->setCursor(Qt::CrossCursor);
-    
-    this->setMouseTracking(!m_readonly);
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
-    defViewport = QRectF(QPointF(-12., 10.), QSizeF(24., -20.));
-    resetViewport();
-    
-    this->setAutoFillBackground(false);
-    
-    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-        this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-    connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-        this, SLOT(addFuncs(QModelIndex,int,int)));
-    connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
-        this, SLOT(removeFuncs(QModelIndex,int,int)));
 }
 
 PlotsView2D::~PlotsView2D() {}
