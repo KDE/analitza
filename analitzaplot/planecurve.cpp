@@ -30,14 +30,6 @@
 
 #include "private/abstractplanecurve.h"
 
-
-
-///
-
-///
-
-
-
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables )
     : FunctionGraph(functionExpression,2, name, col, variables)
 {
@@ -86,10 +78,7 @@ QVector< int > PlaneCurve::jumps() const
 
 void PlaneCurve::update(const QRectF& viewport)
 {
-    
     Q_ASSERT(backend());
-    
-    
     
     static_cast<AbstractPlaneCurve*>(backend())->update(viewport);
     

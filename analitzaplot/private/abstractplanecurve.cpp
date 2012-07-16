@@ -27,15 +27,7 @@
 
 using std::atan2;
 
-
-///
-
-
-
-
-
 #include "abstractplanecurve.h"
-
 
 AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)

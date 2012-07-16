@@ -37,8 +37,6 @@ class Variables;
 class Expression;
 }
 
-
-// QStandardItemModel
 class ANALITZAPLOT_EXPORT PlotsModel : public QAbstractListModel
 {
 friend class PlotItem;    

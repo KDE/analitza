@@ -119,7 +119,6 @@ const Analitza::Expression& AbstractFunctionGraph::expression() const
     return m_e;
 }
 
-
 QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interval(const QString &argname, bool evaluate) const
 {
     Q_ASSERT(m_argumentIntervals.contains(argname));

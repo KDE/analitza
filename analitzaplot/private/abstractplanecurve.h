@@ -17,7 +17,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #ifndef ANALITZAPLOT_FUNCTIONGRAPH_H
 #define ANALITZAPLOT_FUNCTIONGRAPH_H
 
@@ -31,7 +30,6 @@ namespace Analitza
 {
     class Variables;
 }
-
 
 class AbstractPlaneCurve : public AbstractFunctionGraph 
 {
@@ -56,9 +54,6 @@ protected:
     AbstractPlaneCurve(const AbstractPlaneCurve& other) {}
     
     bool addPoint(const QPointF& p);
-
-
 };
-
 
 #endif // ANALITZAPLOT_FUNCTIONGRAPH_H

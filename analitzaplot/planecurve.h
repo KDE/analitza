@@ -59,18 +59,4 @@ protected:
     PlaneCurve(const PlaneCurve &other) {}
 };
 
-
-///
-
-
-///
-
-
-
-/// sacar khipu  mockups 
-//fines de mes khipu ui!!
-
-
-///
-
 #endif // ANALITZAPLOT_FUNCTION_H

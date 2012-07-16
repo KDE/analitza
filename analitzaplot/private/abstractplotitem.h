@@ -35,18 +35,7 @@ class Cn;
 class Expression;
 }
 
-
-
-
-///
-
-///
-
 #include "utils/mathutils.h"
-///
-
-
-
 
 //NOTE
 //para construir estos backends/abstract solo re necesitaa que su ctor tenga exp y varmod ... 
@@ -68,8 +57,6 @@ public:
 protected:
     AbstractMappingGraph() {}
     AbstractMappingGraph(const AbstractMappingGraph& other) {}
-    
-
 };
 
 #endif // ABSTRACTMAPPINGGRAPH_H

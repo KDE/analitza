@@ -22,7 +22,9 @@
 #define FUNCTIONSPAINTER_H
 
 #include "planecurve.h"
-#include <QPen>
+
+class QPainter;
+class QPaintDevice;
 
 class QModelIndex;
 class PlotsModel;

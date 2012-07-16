@@ -35,6 +35,11 @@ class Expression;
 
 class PlotsModel;
 
+//NOTE Algunos algoritmos pueden comptarse mas rapido si se paralelizan
+//TODO
+//FUTURE
+//para eso seria bueno soportar hilos o algun sistema asincrono en el cual el la *vista haga un update cuando se acabe el computo*
+//aparte del hehco que el modelo agrega o no items
 class  ANALITZAPLOT_EXPORT PlotItem 
 {
 friend class PlotsModel;
@@ -72,6 +77,12 @@ protected:
     PlotItem() {}
     PlotItem(const PlotItem &other) {}
 
+    //NOTE es bueno que se le pase el model pues algunos items calcularan 
+    //en funcion de otros, por ejemplo intersecciones o si una curva es 
+    //paralela a otra
+    //TODO
+    //FUTURE 
+    //#aditionalinformation ... asi que descomenar esta linea mas adelante
 //     VisualItemsModel * model() const;
 
     void emitDataChanged();

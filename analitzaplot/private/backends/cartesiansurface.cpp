@@ -29,6 +29,21 @@
 
 //TODO macros para las prop e abajo
 
+//NOTE 
+//FUTURE
+//TODO GSOC Equipotential Curve -> Contour Plot : se puede lograr separando el tipo de superfcie
+//por ejemplo una suprficies generada por un f(a,b) posee isolines ... 
+//de esta manera es posible tener una funcion f(a,b,c,d) y dibujar sus contourplot3d
+//esta es la propuesta:
+// class SurfaceByFunctionOfTwoVars // cambiar el nombre obviamente
+// {
+//     ...
+// public:
+//     setISOCONTOURSValues(lista de valores constantes)
+//     setISOCONTOURSVale(un solo valor constante) -- un solo valor al que todos los cntornos son equipotenciales
+//     ...
+// }
+//
 
 class  Fxy : public AbstractSurface/*, static class? better macros FooClass*/
 {
