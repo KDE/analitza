@@ -24,15 +24,12 @@
 #include <cmath>
 #include <limits>
 
-#include "plane3d.h"
-#include "ray3d.h"
 #include "box3d.h"
 #include "triangle3d.h"
 
 #include "analitza/expression.h"
 #include "analitza/value.h"
 #include "analitza/analyzer.h"
-
 
 #include <QPair>
 #include <QVector2D>

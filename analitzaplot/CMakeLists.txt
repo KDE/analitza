@@ -92,7 +92,6 @@ install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_AR
 
 install(FILES
 
-
 #public api
 analitzaplotexport.h
 planecurve.h
@@ -104,15 +103,19 @@ plotter2d.h
 plotsview2d.h
 plotter3d.h
 plotsview3d.h
-        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
 
-                install(FILES
+DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
+
+install(FILES
 
 #private api/files only for compile by using the headers
 private/utils/mathutils.h
+private/utils/ray3d.h
+private/utils/plane3d.h
+private/utils/box3d.h
+private/utils/triangle3d.h
 
-
-        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private/utils COMPONENT Devel)
+DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private/utils COMPONENT Devel)
 
 #api privada no es necesairo instalar todos los items
 install(FILES
@@ -128,11 +131,7 @@ install(FILES
 private/plotitem.h
 private/functiongraph.h
 
-        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
+DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
 
-
-
-        
 add_subdirectory(tests)
 add_subdirectory(examples)
-
