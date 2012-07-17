@@ -53,7 +53,7 @@ void FunctionTest::cleanupTestCase()
 void FunctionTest::testCorrect_data()
 {
     QTest::addColumn<QString>("input");
-    
+
     //QTest::newRow("empty function") << ""; // se elimina este test porque no se podran crear graficos sin una expresion correcta o con una vacia
     QTest::newRow("undefined var") << "x:=w";
     QTest::newRow("parametric-novector") << "t->3";
@@ -64,50 +64,25 @@ void FunctionTest::testCorrect_data()
     QTest::newRow("wrong-parametric") << "t->v";
     QTest::newRow("wrong-variable") << "x->x(x)";
     QTest::newRow("wrong-call") << "(x+1)(x+2)";
-    
+
     QTest::newRow("implicit.notindomain") << "(x,y)->3-sin(x)*sin(y)";
-    
+
     QTest::newRow("not a function") << "t";
 }
 
 void FunctionTest::testCorrect()
 {
     QFETCH(QString, input);
-    
-    if(PlaneCurve::canDraw(Analitza::Expression(input))) {
-        PlaneCurve f3(Expression(input, false), "hola", Qt::red, m_vars);
 
-//         f3.setResolution(resolution); // Resolution/DrawingPrecision removed
-        f3.image(QPointF(1,1));
-
-        //solo se tienen graficos con expresiones correctas
-//         if(f3.isCorrect())
-//             f3.update(QRect(-10, 10, 10, -10));
-        
-        f3.update(QRect(-10, 10, 10, -10));
-        
-        if(f3.isCorrect())
-        {
-            QVERIFY(f3.points().size()>1);
-            QVERIFY(f3.points().size()<=100);
-        }
-        
-        QVERIFY(!f3.isCorrect());
-    }
-//     esle
-//         QVERIFY(!f3.isCorrect());
-
-
-                   
-
+    QVERIFY(!PlaneCurve::canDraw(Analitza::Expression(input)));
 }
 
 void FunctionTest::testJumps_data()
 {
     QTest::addColumn<QString>("input");
     QTest::addColumn<int>("jumps");
-    
-    QTest::newRow("tanx") << "x->tan x" << 6;
+
+    QTest::newRow("tanx") << "x->tan x" << 5;
     QTest::newRow("divx") << "x->1/x" << 1;
 }
 
@@ -115,16 +90,14 @@ void FunctionTest::testJumps()
 {
     QFETCH(QString, input);
     QFETCH(int, jumps);
-    
+
     PlaneCurve f3(Expression(input, false), "hola", Qt::red, m_vars);
     QVERIFY(f3.isCorrect());
     f3.update(QRect(-10, 10, 20, -20));
     QVERIFY(f3.isCorrect());
-    
-//     f3.setResolution(resolution); // Resolution/DrawingPrecision removed
+
     f3.image(QPointF(1,1));
-    
-    qDebug() << f3.jumps(); /// ??
+
     QCOMPARE(f3.jumps().count(), jumps);
 }
 
@@ -140,12 +113,12 @@ void FunctionTest::testParamIntervals_data()
     QTest::addColumn<QString>("param");
     QTest::addColumn<IntervalValue>("interval_value");
     QTest::addColumn<IntervalExpression>("interval_expression");
-    
-    QTest::newRow("simple_interval_vals") << "x->x*x" << "x" << 
-        qMakePair(-7.0, 5.0) << qMakePair(Analitza::Expression("a+b-4"), Analitza::Expression("16"));
-        
-    QTest::newRow("implicit_curve_1_interval_vals") << "(x,y)->x*x+y*y-8" << "y" << 
-        qMakePair(-9.0+2, 15.0) << qMakePair(Analitza::Expression("-abs(a*b)"), Analitza::Expression("cos(0)*a*a"));
+
+    QTest::newRow("simple_interval_vals") << "x->x*x" << "x" <<
+                                          qMakePair(-7.0, 5.0) << qMakePair(Analitza::Expression("a+b-4"), Analitza::Expression("16"));
+
+    QTest::newRow("implicit_curve_1_interval_vals") << "x*x+y*y=8" << "y" <<
+            qMakePair(-9.0+2, 15.0) << qMakePair(Analitza::Expression("-abs(a*b)"), Analitza::Expression("cos(0)*a*a"));
 }
 
 void FunctionTest::testParamIntervals()
@@ -157,10 +130,10 @@ void FunctionTest::testParamIntervals()
 
     m_vars->modify("a", -4.0);
     m_vars->modify("b", -9.5);
-    
+
     PlaneCurve f3(Expression(input, false), "hola", Qt::red, m_vars);
     QVERIFY(f3.isCorrect());
-    
+
     QVERIFY(f3.setInterval(param, interval_value.first, interval_value.second));
     QCOMPARE(f3.interval(param).first, -7.0);
 
