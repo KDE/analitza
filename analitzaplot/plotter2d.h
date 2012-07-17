@@ -62,8 +62,6 @@ class ANALITZAPLOT_EXPORT Plotter2D
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
         
-        static QRect toBiggerRect(const QRectF&);
-        
         /** Sets the graph's viewport to @p v. */
         void setViewport(const QRectF& vp, bool repaint=true);
         

@@ -319,17 +319,6 @@ QPointF Plotter2D::calcImage(const QPointF& ndp) const
     return QPointF();
 }
 
-QRect Plotter2D::toBiggerRect(const QRectF& ent)
-{
-    QRect ret;
-    ret.setTop(static_cast<int>(std::ceil(ent.top())));
-    ret.setBottom(static_cast<int>(std::floor(ent.bottom())));
-    ret.setLeft(static_cast<int>(std::floor(ent.left())));
-    ret.setRight(static_cast<int>(std::ceil(ent.right())));
-    
-    return ret;
-}
-
 void Plotter2D::updateScale(bool repaint)
 {
     viewport=userViewport;
