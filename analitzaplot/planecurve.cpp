@@ -30,6 +30,9 @@
 
 #include "private/abstractplanecurve.h"
 
+#include "private/functiongraphfactory.h"
+
+
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables )
     : FunctionGraph(functionExpression,2, name, col, variables)
 {
@@ -37,6 +40,20 @@ PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QSt
 
 PlaneCurve::~PlaneCurve()
 {
+}
+
+QMap< QString, QPair< QStringList, Analitza::ExpressionType > > PlaneCurve::registeredCurves()
+{
+    QMap< QString, QPair< QStringList, Analitza::ExpressionType > > ret;
+
+    QMap< QString, QPair< QStringList, Analitza::ExpressionType > > total;
+    total = FunctionGraphFactory::self()->registeredFunctionGraphs();
+    
+    for (int i = 0; i < total.size(); ++i)
+        if (FunctionGraphFactory::self()->spaceDimension(total.values()[i].second, total.values()[i].first) == 2)
+            ret[total.keys()[i]] = qMakePair(total.values()[i].first, total.values()[i].second);
+        
+    return ret;
 }
 
 bool PlaneCurve::canDraw(const Analitza::Expression& functionExpression)

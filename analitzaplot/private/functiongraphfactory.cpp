@@ -215,3 +215,23 @@ AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Anal
     return builderFunctionsWithVars[id](exp, v);
 }
 
+QMap< QString, QPair< QStringList, Analitza::ExpressionType > > FunctionGraphFactory::registeredFunctionGraphs() const
+{
+    QMap< QString, QPair< QStringList, Analitza::ExpressionType > > ret;
+    
+    for (int i = 0; i < typeNameFunctions.values().size(); ++i)
+        ret[typeNameFunctions.values()[i]()] = qMakePair( argumentsFunctions.values()[i](),
+            expressionTypeFunctions.values()[i]()); 
+
+    return ret;
+}
+
+
+
+
+
+
+
+
+
+

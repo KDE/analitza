@@ -55,6 +55,7 @@ public:
 
     QString typeName(const QString& id) const;
     Analitza::ExpressionType expressionType(const QString& id) const;
+    //swap args 
     int spaceDimension(const Analitza::ExpressionType& ftype, const QStringList &bvars) const;
     CoordinateSystem coordinateSystem(const QString& id) const;
     QString iconName(const QString& id) const;
@@ -71,6 +72,8 @@ public:
     bool contains(const QString &id) const;
     
     AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
+
+    QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredFunctionGraphs() const;
 
 private:
     QMap<QString, TypeNameFunction> typeNameFunctions;
