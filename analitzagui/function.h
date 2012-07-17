@@ -65,7 +65,7 @@ class ANALITZAGUI_EXPORT Function
 		/** Defines a new function behaviour.
 			@param viewport sets the coordinates the function will fit to.
 		*/
-		void update_points(const QRect& viewport);
+		void update_points(const QRectF& viewport);
 		
 		/** @param resolution sets how many points will the function have. */
 		void setResolution(unsigned int resolution);

@@ -42,7 +42,7 @@ struct FunctionImpl
 	//To reimplement
 	virtual Function::Axe axeType() const { return Function::Cartesian; }
 	virtual QPair<QPointF, QString> calc(const QPointF& dp)=0;
-	virtual void updatePoints(const QRect& viewport)=0;
+	virtual void updatePoints(const QRectF& viewport)=0;
 	virtual FunctionImpl* copy()=0;
     virtual QLineF derivative(const QPointF& p)=0;
 	virtual QStringList boundings() const=0;

@@ -101,7 +101,7 @@ Function Function::operator=(const Function& f)
 	return *this;
 }
 
-void Function::update_points(const QRect& viewport)
+void Function::update_points(const QRectF& viewport)
 {
 	Q_ASSERT(m_function);
 	Q_ASSERT(resolution()>2);

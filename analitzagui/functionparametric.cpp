@@ -77,7 +77,7 @@ struct FunctionParametric : public FunctionImpl
 	
     virtual ~FunctionParametric() { delete vx; }
 	
-	void updatePoints(const QRect& viewport);
+	void updatePoints(const QRectF& viewport);
 	QPair<QPointF, QString> calc(const QPointF& dp);
 	QLineF derivative(const QPointF& p);
 	virtual FunctionImpl* copy() { return new FunctionParametric(*this); }
@@ -95,7 +95,7 @@ struct FunctionParametric : public FunctionImpl
 };
 REGISTER_FUNCTION(FunctionParametric)
 
-void FunctionParametric::updatePoints(const QRect& viewport)
+void FunctionParametric::updatePoints(const QRectF& viewport)
 {
 	Q_UNUSED(viewport);
 	Q_ASSERT(func.expression().isCorrect());

@@ -219,7 +219,7 @@ bool FunctionsModel::setData(const QModelIndex & idx, const QVariant &value, int
 	return false;
 }
 
-void FunctionsModel::updatePoints(int i, const QRect & viewport)
+void FunctionsModel::updatePoints(int i, const QRectF& viewport)
 {
 	Q_ASSERT(i<funclist.count());
 	funclist[i].update_points(viewport);

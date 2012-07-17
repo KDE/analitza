@@ -269,7 +269,7 @@ void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModel
 	int start=startIdx.row(), end=endIdx.row();
 	
 	for(int i=start; i<=end; i++) {
-		m_model->updatePoints(i, toBiggerRect(viewport));
+		m_model->updatePoints(i, viewport);
 	}
 	
 	forceRepaint();
@@ -278,17 +278,6 @@ void FunctionsPainter::updateFunctions(const QModelIndex& startIdx, const QModel
 QPointF FunctionsPainter::calcImage(const QPointF& ndp) const
 {
 	return m_model->calcImage(currentFunction(), ndp).first;
-}
-
-QRect FunctionsPainter::toBiggerRect(const QRectF& ent)
-{
-	QRect ret;
-	ret.setTop(static_cast<int>(std::ceil(ent.top())));
-	ret.setBottom(static_cast<int>(std::floor(ent.bottom())));
-	ret.setLeft(static_cast<int>(std::floor(ent.left())));
-	ret.setRight(static_cast<int>(std::ceil(ent.right())));
-	
-	return ret;
 }
 
 void FunctionsPainter::updateScale(bool repaint)

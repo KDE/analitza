@@ -39,7 +39,7 @@ struct FunctionPolar : public FunctionImpl
 	FunctionPolar(const FunctionPolar &fp);
 	virtual ~FunctionPolar() { delete m_th; }
 	
-	void updatePoints(const QRect& viewport);
+	void updatePoints(const QRectF& viewport);
 	QPair<QPointF, QString> calc(const QPointF& dp);
 	Function::Axe axeType() const { return Function::Polar; }
 	QLineF derivative(const QPointF& p);
@@ -48,7 +48,6 @@ struct FunctionPolar : public FunctionImpl
 	virtual QString iconName() const { return "newpolar"; }
 	
 	inline QPointF fromPolar(double r, double th) { return QPointF(r*std::cos(th), r*std::sin(th)); }
-	QRect m_last_viewport;
 	QStringList boundings() const { return supportedBVars(); }
 	static QStringList supportedBVars() { return QStringList("q"); }
 	static ExpressionType expectedType() { return ExpressionType(ExpressionType::Lambda).addParameter(ExpressionType(ExpressionType::Value)).addParameter(ExpressionType(ExpressionType::Value)); }
@@ -78,7 +77,7 @@ FunctionPolar::FunctionPolar(const FunctionPolar &fp)
 	m_runStack.append(m_th);
 }
 
-void FunctionPolar::updatePoints(const QRect& viewport)
+void FunctionPolar::updatePoints(const QRectF& )
 {
 	Q_ASSERT(func.expression().isCorrect());
 	if(int(resolution())==points.capacity())

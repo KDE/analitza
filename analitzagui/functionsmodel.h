@@ -66,7 +66,7 @@ class ANALITZAGUI_EXPORT FunctionsModel : public QAbstractTableModel
 		
 		void sendStatus(const QString& msg) { emit status(msg); }
 		
-		void updatePoints(int i, const QRect& viewport);
+		void updatePoints(int i, const QRectF& viewport);
 		
 		const_iterator constBegin() const { return funclist.constBegin(); }
 		const_iterator constEnd() const { return funclist.constEnd(); }

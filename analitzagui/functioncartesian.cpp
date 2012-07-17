@@ -61,7 +61,7 @@ struct FunctionY : public FunctionImpl
 	}
 	virtual ~FunctionY() { delete vx; }
 	
-	void updatePoints(const QRect& viewport);
+	void updatePoints(const QRectF& viewport);
 	QPair<QPointF, QString> calc(const QPointF& dp);
 	QLineF derivative(const QPointF& p);
 	virtual FunctionImpl* copy() { return new FunctionY(*this); }
@@ -84,7 +84,7 @@ struct FunctionX : public FunctionY
 	explicit FunctionX(const Expression &e, Variables* v) : FunctionY(e, v, "y") {}
 	FunctionX(const FunctionX &fx) : FunctionY(fx) {}
 	
-	void updatePoints(const QRect& viewport);
+	void updatePoints(const QRectF& viewport);
 	QPair<QPointF, QString> calc(const QPointF& dp);
     QLineF derivative(const QPointF& p);
 	virtual FunctionImpl* copy() { return new FunctionX(*this); }
@@ -163,7 +163,7 @@ void FunctionY::optimizeJump()
 	points.last()=after;
 }
 
-void FunctionY::updatePoints(const QRect& viewport)
+void FunctionY::updatePoints(const QRectF& viewport)
 {
 	double l_lim=viewport.left()-.1, r_lim=viewport.right()+.1;
 	
@@ -233,7 +233,7 @@ QLineF FunctionY::derivative(const QPointF& p)
 	return FunctionUtils::slopeToLine(ret);
 }
 
-void FunctionX::updatePoints(const QRect& viewport)
+void FunctionX::updatePoints(const QRectF& viewport)
 {
 	double l_lim=viewport.bottom()-.1, r_lim=viewport.top()+.1;
 	calculateValues(l_lim, r_lim);

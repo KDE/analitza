@@ -135,7 +135,7 @@ struct FunctionImplicit : public FunctionImpl
     
     virtual ~FunctionImplicit() { delete vx; delete vy; }
 
-    void updatePoints(const QRect& viewport);
+    void updatePoints(const QRectF& viewport);
     QPair<QPointF, QString> calc(const QPointF& dp);
     QLineF derivative(const QPointF& p);
     virtual FunctionImpl* copy() { return new FunctionImplicit(*this); }
@@ -361,7 +361,7 @@ void FunctionImplicit::subdivideSpace(const Box &root)
 
 //End Quadtree
 
-void FunctionImplicit::updatePoints(const QRect& viewport)
+void FunctionImplicit::updatePoints(const QRectF& viewport)
 {
 //    Q_UNUSED(viewport);
     Q_ASSERT(func.expression().isCorrect());
