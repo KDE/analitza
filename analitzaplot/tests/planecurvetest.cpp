@@ -50,7 +50,7 @@ void FunctionTest::initTestCase()
 void FunctionTest::cleanupTestCase()
 {}
 
-void FunctionTest::testCorrect_data()
+void FunctionTest::testIncorrect_data()
 {
     QTest::addColumn<QString>("input");
 
@@ -70,7 +70,7 @@ void FunctionTest::testCorrect_data()
     QTest::newRow("not a function") << "t";
 }
 
-void FunctionTest::testCorrect()
+void FunctionTest::testIncorrect()
 {
     QFETCH(QString, input);
 

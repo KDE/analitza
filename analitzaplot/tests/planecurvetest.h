@@ -37,12 +37,8 @@ Q_OBJECT
 	private slots:
 		void initTestCase();
 
-		void testCorrect();
-		void testCorrect_data();
-
-        //NOTE gsoc2012  PlaneCurve no es copiable ... no es value object
-// 		void testCopy();
-// 		void testCopy_data();
+		void testIncorrect(); // cases that can not be drawn
+		void testIncorrect_data();
 
 		void testJumps();
 		void testJumps_data();
