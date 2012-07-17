@@ -245,5 +245,4 @@ double FunctionImplicit::evalScalarField(double x, double y)
     return getFValue(x,y);
 }
 
-
 REGISTER_PLANECURVE(FunctionImplicit)

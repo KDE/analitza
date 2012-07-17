@@ -24,36 +24,13 @@
 #include "analitza/variable.h"
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractMappingGraph(), analyzer(new Analitza::Analyzer(v)), m_e(e)
+: AbstractMappingGraph(), m_e(e)
 {
-    //TODO intervalparameter tiene que ser const ... no es necesario que no lo sea ... siempre es preferible que algo sea inmutable :)
-//     m_intervalsAnalizer = new Analitza::Analyzer(v);
-    
-        analyzer->setExpression(e);
-    analyzer->simplify();
-    analyzer->flushErrors();
-    
-    foreach (const Analitza::Ci *var, analyzer->expression().parameters())
-    {
-        m_argumentValues[var->name()] = new Analitza::Cn;
-        
-        //WARNING FIX magic numbers
-        EndPoint min(-5.0);
-        EndPoint max(8.0);
-        
-        m_argumentIntervals[var->name()] = RealInterval(min, max);
-    }
+    if (v)
+         analyzer = new Analitza::Analyzer(v);
+    else
+     analyzer = new Analitza::Analyzer;
 
-    analyzer->setStack(m_argumentValues.values().toVector());
-}
-
-AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e)
-: AbstractMappingGraph(), analyzer(new Analitza::Analyzer), m_e(e)
-{
-    //TODO intervalparameter tiene que ser const ... no es necesario que no lo sea ... siempre es preferible que algo sea inmutable :)
-//     m_intervalsAnalizer = new Analitza::Analyzer(v);
-
-    
     if (e.isEquation())
     {
         analyzer->setExpression(e.equationToFunction());
@@ -61,8 +38,7 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e)
         
     }
         else
-                analyzer->setExpression(e);
-
+            analyzer->setExpression(e);
     
     analyzer->simplify();
     analyzer->flushErrors();

@@ -28,7 +28,6 @@
 class ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static class? better macros FooClass*/
 {
 public:
-    explicit ImplicitSurf(const Analitza::Expression& e);
     ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v);
 
     TYPE_NAME("implsurf")
@@ -56,20 +55,11 @@ double ImplicitSurf::evalScalarField(double x, double y, double z)
 }
 
 
-ImplicitSurf::ImplicitSurf(const Analitza::Expression& e): AbstractSurface(e)
+ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e, v)
 {
-    buildGeometry();
-    
-    
-    
-    
-    
+buildGeometry();
 }
 
-ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e)
-{
-
-}
 
 void ImplicitSurf::update(const Box3D& viewport)
 {

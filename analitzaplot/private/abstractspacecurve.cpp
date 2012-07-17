@@ -63,12 +63,6 @@ AbstractSpaceCurve::AbstractSpaceCurve(const Analitza::Expression& e, Analitza::
 
 }
 
-AbstractSpaceCurve::AbstractSpaceCurve(const Analitza::Expression& e)
-: AbstractFunctionGraph(e)
-{
-
-}
-
 AbstractSpaceCurve::~AbstractSpaceCurve()
 {
 

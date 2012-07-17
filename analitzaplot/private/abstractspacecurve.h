@@ -23,7 +23,6 @@
 #include "abstractfunctiongraph.h"
 
 #define CONSTRUCTORS(name) \
-name (const Analitza::Expression &functionExpression) : AbstractSpaceCurve(functionExpression) { } \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractSpaceCurve(functionExpression, variables) { }
 
 namespace Analitza
@@ -34,8 +33,7 @@ namespace Analitza
 class AbstractSpaceCurve : public AbstractFunctionGraph 
 {
 public:
-    AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v);
-    AbstractSpaceCurve(const Analitza::Expression& e);
+    AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v = 0);
     virtual ~AbstractSpaceCurve();
 
     //Curve ... los expongo como publicos tanto para planecurve como para los backend (

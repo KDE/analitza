@@ -30,8 +30,7 @@
 
 #define REGISTER_FUNCTIONGRAPH(name) \
         static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
-        static AbstractFunctionGraph * create##name(const Analitza::Expression &exp) { return new name (exp); } \
-        namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(vcreate##name, create##name, \
+        namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(vcreate##name, \
         name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Parameters, \
         name ::IconName, name ::Examples); }
 
@@ -46,7 +45,6 @@ class FunctionGraphFactory
 {
 public:
     typedef AbstractFunctionGraph* (*BuilderFunctionWithVars)(const Analitza::Expression&, Analitza::Variables* );
-    typedef AbstractFunctionGraph* (*BuilderFunctionWithoutVars)(const Analitza::Expression&);
     
     typedef QString (*TypeNameFunction)();
     typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
@@ -64,7 +62,7 @@ public:
     
     static FunctionGraphFactory* self();
 
-    bool registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, BuilderFunctionWithoutVars builderFunctionWithoutVars, 
+    bool registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars,
                   TypeNameFunction typeNameFunction,
                          ExpressionTypeFunction expressionTypeFunction, 
                          CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
@@ -73,7 +71,6 @@ public:
     bool contains(const QString &id) const;
     
     AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
-    AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp) const;
 
 private:
     QMap<QString, TypeNameFunction> typeNameFunctions;
@@ -91,7 +88,6 @@ private:
     }
 
     QMap<QString, BuilderFunctionWithVars> builderFunctionsWithVars;
-    QMap<QString, BuilderFunctionWithoutVars> builderFunctionsWithoutVars;
 };
 
 

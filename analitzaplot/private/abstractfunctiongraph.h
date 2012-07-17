@@ -52,8 +52,7 @@ static QStringList Examples() { return QString(name).split(","); }
 class AbstractFunctionGraph : public AbstractMappingGraph
 {
 public:
-    AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v);
-    AbstractFunctionGraph(const Analitza::Expression& e);
+    AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v = 0);
     virtual ~AbstractFunctionGraph();
     
     int spaceDimension() const;

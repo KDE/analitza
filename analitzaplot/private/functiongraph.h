@@ -28,7 +28,7 @@ class AbstractFunctionGraph;
 class ANALITZAPLOT_EXPORT FunctionGraph : public PlotItem
 {
 public:
-    FunctionGraph(const Analitza::Expression &functionExpression, int spaceDimension, const QString &name, const QColor& col, Analitza::Variables *variables = 0);
+    FunctionGraph(const Analitza::Expression &functionExpression, int spacedim, const QString &nam, const QColor& col, Analitza::Variables *vars = 0);
     virtual ~FunctionGraph();
 
     Analitza::Variables *variables() const;
@@ -59,15 +59,22 @@ protected:
     FunctionGraph() {}
     FunctionGraph(const FunctionGraph &other) {}
     
-    static bool canDraw(const Analitza::Expression &functionExpression, int spaceDimension);
+    static bool canDraw(const Analitza::Expression &functionExpression, int spacedim);
     //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
-    static bool canDraw(const Analitza::Expression &functionExpression, int spaceDimension, QStringList &errors);
+    static bool canDraw(const Analitza::Expression &functionExpression, int spacedim, QStringList &errs);
 
-    bool reset(const Analitza::Expression &functionExpression, int spaceDimension);
+    bool reset(const Analitza::Expression &functionExpression, int spacedim);
     
     AbstractFunctionGraph *backend() const { return m_functionGraph; }
 
 private:
+    //prueba si es posible graficar la expresion input, En caso que sea posible retorna true, el id para crearlo del factory y la expresion de salida
+    //output que sirve para que se pueda crear en el factory
+    //en caso que no sea posible retorna false con un id y expresion de salida vacio, 
+    //en ambos casos se resetea la lista de strings
+    
+    static bool canDraw(const Analitza::Expression &testexp, int spacedim, QStringList &errs, QString &id);
+    
     AbstractFunctionGraph *m_functionGraph;
 
     QStringList m_errors;

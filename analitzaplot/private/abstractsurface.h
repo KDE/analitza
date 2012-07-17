@@ -24,7 +24,6 @@
 
 
 #define CONSTRUCTORS(name) \
-name (const Analitza::Expression &functionExpression) : AbstractSurface(functionExpression) { } \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) : AbstractSurface(functionExpression, variables) { }
 
 
@@ -32,8 +31,7 @@ name (const Analitza::Expression &functionExpression, Analitza::Variables *varia
 class AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
 {
 public:
-    explicit AbstractSurface(const Analitza::Expression& e);
-    AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v);
+    explicit AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v = 0);
     virtual ~AbstractSurface();
 
     //Own

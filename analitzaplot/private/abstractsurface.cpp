@@ -23,12 +23,6 @@
 #define MAXSTRIP 64
 #define MAXALONG  64
 
-AbstractSurface::AbstractSurface(const Analitza::Expression& e)
-: AbstractFunctionGraph(e)
-{
-
-}
-
 AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)
 {

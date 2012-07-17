@@ -128,7 +128,7 @@ FunctionGraphFactory* FunctionGraphFactory::self()
     return m_self;
 }
 
-bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, BuilderFunctionWithoutVars builderFunctionWithoutVars, TypeNameFunction typeNameFunction,
+bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, TypeNameFunction typeNameFunction,
         ExpressionTypeFunction expressionTypeFunction, 
         CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
         IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
@@ -155,7 +155,6 @@ bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builder
     examplesFunctions[id] = examplesFunction;
 
     builderFunctionsWithVars[id] = builderFunctionWithVars;
-    builderFunctionsWithoutVars[id] = builderFunctionWithoutVars;
 
     return true;
 }
@@ -216,7 +215,3 @@ AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Anal
     return builderFunctionsWithVars[id](exp, v);
 }
 
-AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp) const
-{
-    return builderFunctionsWithoutVars[id](exp);
-}

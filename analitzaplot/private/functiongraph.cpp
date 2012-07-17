@@ -21,112 +21,29 @@
 
 #include <QUuid>
 
-#include <KDE/KLocalizedString>
-
 #include "analitza/analyzer.h"
 #include "analitza/variable.h"
 #include <analitza/variables.h>
+#include <analitza/localize.h>
 
-#include "private/abstractplanecurve.h"
+#include "abstractfunctiongraph.h"
+
 #include "functiongraphfactory.h"
 
-
-
-///
-
-///
-
-
-
-
-FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int spaceDimension, const QString &name, const QColor &col, Analitza::Variables *variables)
-    : PlotItem(name, col), m_functionGraph(0)
+FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int spacedim, const QString &nam, const QColor &col, Analitza::Variables *vars)
+    : PlotItem(nam, col), m_functionGraph(0)
 {
-    m_errors.clear();
+    QString id;
+    
+    Q_ASSERT(canDraw(functionExpression, spacedim, m_errors, id));
 
-    
-    //NOTE GSOC see functionExpression.isLambda ask for
-    //se comenta || !functionExpression.isLambda() pues ahora hay expresiones que son ecuaciones: como las superficies implicitas
-    if(!functionExpression.isCorrect() )
-    {
-        m_errors << i18n("The expression is not correct");
-//         return false;
-    }
-    
-    Analitza::Analyzer *a = 0;
-    
-    if (variables)
-        a = new Analitza::Analyzer(variables);
-    else
-        a = new Analitza::Analyzer;
-
-
-    a->setExpression(functionExpression);
-    if (functionExpression.isEquation())
-    {
-        a->setExpression(a->expression().equationToFunction());
-        a->setExpression(a->dependenciesToLambda());
-    }
-    else
-        if (functionExpression.isLambda())
-            a->setExpression(a->dependenciesToLambda());
-        else
-        {
-            //pues no es ni ecuacion ni lambda
-                    m_errors << i18n("The expression is not correct");
-
-                    
-                    
-                    
-        }
-        
-    Q_ASSERT(m_errors.isEmpty());
-    
-    
-    
-    
-    
-    QStringList bvars = a->expression().bvarList();
-
-    
-    if (functionExpression.isEquation())
-        a->setExpression(functionExpression);
-    
-    
-    //TODO: turn into assertion
-    QString id = FunctionGraphFactory::self()->trait(a->expression(), spaceDimension);
-
-    
-    
-    if(!FunctionGraphFactory::self()->contains(id))
-        m_errors << i18n("Function type not recognized");
-    else if(!a->isCorrect())
-        m_errors << a->errors();
-    else {
-        Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(id);
-        Analitza::ExpressionType actual=a->type();
-
-        if(actual.canReduceTo(expected)) {
-
-            delete m_functionGraph;
-
-            m_functionGraph=static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,a->expression()));
-        } else
-            m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-    }
-    
-    
-    delete a;
-    
-//     return m_errors.empty();
-    
+    m_functionGraph = static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,functionExpression, vars));
 }
 
 FunctionGraph::~FunctionGraph()
 {
     delete m_functionGraph;
 }
-
 
 Analitza::Variables* FunctionGraph::variables() const
 {
@@ -151,7 +68,6 @@ const Analitza::Expression & FunctionGraph::expression() const
 {
     Q_ASSERT(m_functionGraph);
     
-//     return m_functionGraph->
     return m_functionGraph->expression();
 }
 
@@ -246,238 +162,100 @@ QStringList FunctionGraph::parameters() const
     return m_functionGraph->parameters();
 }
 
-bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int spaceDimension)
+bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int spacedim)
 {
-//     QStringList errors;
-// 
-//     //NOTE GSOC see functionExpression.isLambda ask for
-//     if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
-//         errors << i18n("The expression is not correct");
-//         return false;
-//     }
-// 
-// 
-//     Analitza::Analyzer a;
-//     a.setExpression(functionExpression);
-// //     a.setExpression(a.dependenciesToLambda());
-// 
-// 
-//     
-//     a.setExpression(functionExpression);
-//     if (functionExpression.isEquation())
-//     {
-//         a.setExpression(a.expression().equationToFunction());
-//         a.setExpression(a.dependenciesToLambda());
-//     }
-//     else
-//         a.setExpression(a.dependenciesToLambda());
-// 
-//     QStringList bvars = a.expression().bvarList();
-// 
-//     
-//     if (functionExpression.isEquation())
-//         a.setExpression(functionExpression);
-//     
-//             
-//             
-//     //TODO: turn into assertion
-//     if(!FunctionGraphFactory::self()->contains(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension)))
-//     {
-//         
-//         errors << i18n("Function type not recognized");
-//     }
-//     else if(!a.isCorrect())
-//         errors << a.errors();
-//     else {
-//         Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension));
-//         Analitza::ExpressionType actual=a.type();
-// 
-//         if (actual.type() == Analitza::ExpressionType::Many)
-//         {
-//             //buscar solo las funciones de variable/parametro real
-//             //evito los casos "(<num,-1> -> <num,-1> -> <num,-1>...)" y solo acepto casos
-//             //"(num -> num -> num...)" 
-//             foreach (const Analitza::ExpressionType &exptype, actual.alternatives())
-//                 if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
-//                 {
-//                     actual = exptype;
-//                     break;
-//                 }
-//         }
-// 
-//         if(actual.canReduceTo(expected) || actual.returnValue() == expected.returnValue()) {
-// //             delete m_functionGraph;
-// //             m_functionGraph=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
-// 
-// //                 qDebug() << FunctionGraphFactory::self()->typeName(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension));
-// 
-//         } else
-//             errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-//         
-//     }
-//     
-// //     qDebug() << errors;
-//     
-//     return errors.empty();
+    QStringList nonusederr;
+    QString nonusedid;    
+    return canDraw(functionExpression, spacedim, nonusederr, nonusedid);
+}
 
+bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int spacedim, QStringList &errs)
+{
+    QString nonusedid;    
+    return canDraw(functionExpression, spacedim, errs, nonusedid);
+}
 
-
-
-
-    QStringList errors;
-
+bool FunctionGraph::reset(const Analitza::Expression& functionExpression, int spacedim)
+{
+    QString id;
+    Analitza::Expression expr;
     
-    //NOTE GSOC see functionExpression.isLambda ask for
-    //se comenta || !functionExpression.isLambda() pues ahora hay expresiones que son ecuaciones: como las superficies implicitas
-    if(!functionExpression.isCorrect() )
+    Q_ASSERT(canDraw(functionExpression, spacedim, m_errors, id));
+
+    delete m_functionGraph;
+
+    m_functionGraph = static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,functionExpression, variables()));
+    
+    return true;
+}
+
+bool FunctionGraph::canDraw(const Analitza::Expression& testexp, int spacedim, QStringList& errs, QString& id)
+{
+    errs.clear();
+    id = QString();
+    
+    if(!testexp.isCorrect())
     {
-        errors << i18n("The expression is not correct");
+        errs << i18n("The expression is not correct");
+        
         return false;
     }
     
-    Analitza::Analyzer *a = 0;
- 
-        a = new Analitza::Analyzer;
+    Analitza::Analyzer *a = new Analitza::Analyzer;
+    
+    QString expectedid;
 
-    a->setExpression(functionExpression);
-    if (functionExpression.isEquation())
+    a->setExpression(testexp);
+    if (testexp.isEquation())
     {
         a->setExpression(a->expression().equationToFunction());
         a->setExpression(a->dependenciesToLambda());
     }
     else
-        if (functionExpression.isLambda())
+        if (testexp.isLambda())
             a->setExpression(a->dependenciesToLambda());
         else
         {
             //pues no es ni ecuacion ni lambda
-                    errors << i18n("The expression is not correct");
-                    return false;
+            errs << i18n("The expression is not correct");
 
+            delete a;
+            
+            return false;
         }
-
+        
+    Q_ASSERT(errs.isEmpty());
+    
     QStringList bvars = a->expression().bvarList();
-
     
-    if (functionExpression.isEquation())
-        a->setExpression(functionExpression);
+    if (testexp.isEquation())
+        a->setExpression(testexp);
     
+    expectedid = FunctionGraphFactory::self()->trait(a->expression(), spacedim);
     
-    //TODO: turn into assertion
-    QString id = FunctionGraphFactory::self()->trait(a->expression(), spaceDimension);
-
-    
-    
-    if(!FunctionGraphFactory::self()->contains(id))
-        errors << i18n("Function type not recognized");
+    if(!FunctionGraphFactory::self()->contains(expectedid))
+        errs << i18n("Function type not recognized");
     else if(!a->isCorrect())
-        errors << a->errors();
-    else {
-        Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(id);
-        Analitza::ExpressionType actual=a->type();
-
-        if(actual.canReduceTo(expected)) {
-
-//             delete m_functionGraph;
-// 
-//             m_functionGraph=static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,a->expression()));
-            return true;
-        } else
-            errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-    }
-    
-    
-    delete a;
-    
-    return errors.isEmpty();
-}
-
-bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int spaceDimension, QStringList &errors)
-{
-    Q_ASSERT(errors.isEmpty()); // el usuario deberia ingresar un lista vacia 
-    
-    //NOTE GSOC see functionExpression.isLambda ask for
-    if(!functionExpression.isCorrect() && !functionExpression.isLambda()) {
-        errors << i18n("The expression is not correct");
-        return false;
-    }
-
-    Analitza::Analyzer a;
-    a.setExpression(functionExpression);
-    a.setExpression(a.dependenciesToLambda());
-
-    QStringList bvars;
-
-    foreach (Analitza::Ci *arg, a.expression().parameters())
-        bvars.append(arg->name());
-
-    
-
-    
-    //TODO: turn into assertion
-    if(!FunctionGraphFactory::self()->contains(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension)))
-        errors << i18n("Function type not recognized");
-    else if(!a.isCorrect())
-        errors << a.errors();
-    else {
-        Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(FunctionGraphFactory::self()->trait(a.expression(), spaceDimension));
-        Analitza::ExpressionType actual=a.type();
-
-        if(actual.canReduceTo(expected)) {
-//             delete m_functionGraph;
-//             m_functionGraph=AbstractFunctionGraphFactory::self()->build(bvars, a.expression(), m_varsModule);
-        } else
-            errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-    }
-
-    return errors.empty();
-}
-
-bool FunctionGraph::reset(const Analitza::Expression& functionExpression, int spaceDimension)
-{
-    m_errors.clear();
-
-    //NOTE GSOC see functionExpression.isLambda ask for
-    if(!functionExpression.isCorrect() || !functionExpression.isLambda())
+        errs << a->errors();
+    else 
     {
-        m_errors << i18n("The expression is not correct");
-        return false;
-    }
-    
-    Analitza::Analyzer *a;
-        a = new Analitza::Analyzer(m_functionGraph->variables());
-
-    a->setExpression(functionExpression);
-    a->setExpression(a->dependenciesToLambda());
-
-    QStringList bvars;
-
-    foreach (Analitza::Ci *arg, a->expression().parameters())
-        bvars.append(arg->name());
-
-    
-    //TODO: turn into assertion
-    if(!FunctionGraphFactory::self()->contains(FunctionGraphFactory::self()->trait(a->expression(), spaceDimension)))
-        m_errors << i18n("Function type not recognized");
-    else if(!a->isCorrect())
-        m_errors << a->errors();
-    else {
-        
-        
-        QString id = FunctionGraphFactory::self()->trait(a->expression(), spaceDimension);
-        Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(id);
+        Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(expectedid);
         Analitza::ExpressionType actual=a->type();
 
-        if(actual.canReduceTo(expected)) {
-
-            delete m_functionGraph;
-//TODO if vars
-                m_functionGraph= static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,a->expression(), m_functionGraph->variables()));
-        } else
-            m_errors << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+        if(!actual.canReduceTo(expected)) 
+        {
+            delete a;
+            
+            errs << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
+            
+            return false;
+        }
     }
     
     delete a;
     
-    return m_errors.empty();
+    if (errs.empty())
+        id = expectedid;
+    
+    return errs.empty();
 }
