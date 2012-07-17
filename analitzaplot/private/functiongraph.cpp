@@ -60,6 +60,7 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int
     else
         a = new Analitza::Analyzer;
 
+
     a->setExpression(functionExpression);
     if (functionExpression.isEquation())
     {
@@ -67,8 +68,24 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int
         a->setExpression(a->dependenciesToLambda());
     }
     else
-        a->setExpression(a->dependenciesToLambda());
+        if (functionExpression.isLambda())
+            a->setExpression(a->dependenciesToLambda());
+        else
+        {
+            //pues no es ni ecuacion ni lambda
+                    m_errors << i18n("The expression is not correct");
 
+                    
+                    
+                    
+        }
+        
+    Q_ASSERT(m_errors.isEmpty());
+    
+    
+    
+    
+    
     QStringList bvars = a->expression().bvarList();
 
     
@@ -315,7 +332,7 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int 
     if(!functionExpression.isCorrect() )
     {
         errors << i18n("The expression is not correct");
-//         return false;
+        return false;
     }
     
     Analitza::Analyzer *a = 0;
@@ -329,7 +346,15 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int 
         a->setExpression(a->dependenciesToLambda());
     }
     else
-        a->setExpression(a->dependenciesToLambda());
+        if (functionExpression.isLambda())
+            a->setExpression(a->dependenciesToLambda());
+        else
+        {
+            //pues no es ni ecuacion ni lambda
+                    errors << i18n("The expression is not correct");
+                    return false;
+
+        }
 
     QStringList bvars = a->expression().bvarList();
 
@@ -364,8 +389,7 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int 
     
     delete a;
     
-    
-    return !errors.isEmpty();
+    return errors.isEmpty();
 }
 
 bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int spaceDimension, QStringList &errors)

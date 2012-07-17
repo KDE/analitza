@@ -121,6 +121,8 @@ void FunctionParametric::update(const QRectF& viewport)
     double inv_res= 0.01; 
 //  double final=ulimit-inv_res;
     
+//     qDebug() << viewport;
+    
         //by percy
     QRectF vp(viewport);
     

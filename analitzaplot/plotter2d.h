@@ -44,6 +44,9 @@ class ANALITZAPLOT_EXPORT Plotter2D
         /** Sets whether we will see a grid or only the axes. */
         void setSquares(bool newSquare) { m_squares=newSquare; forceRepaint(); }
         
+        //NOTE GSOC api para no dibujar los ejes 
+        void setAxis(bool newa) { m_axis=newa; forceRepaint();  }
+        
         /** Returns whether we have chosen to see the grid. */
         bool squares() const {return m_squares;}
         
@@ -90,6 +93,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         
         double rang_x, rang_y;
         bool m_squares;
+        bool m_axis; // NOTE GSOC para eligir no dibujar los ejes
         bool m_keepRatio;
         bool m_dirty; // or m_updated; como ahora contamos con setmodel, es necesario que se actualicen los datos antes de pintar, es necesario que no sea dirty
         QRectF viewport;

@@ -31,6 +31,8 @@ private/utils/plane3d.cpp
 private/utils/ray3d.cpp
 private/utils/box3d.cpp
 private/utils/triangle3d.cpp
+private/utils/quadtree.cpp
+private/utils/marchingsquares.cpp
 private/utils/octree.cpp
 private/utils/marchingcubes.cpp
 

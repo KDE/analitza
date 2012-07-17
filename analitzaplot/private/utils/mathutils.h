@@ -32,7 +32,6 @@
 #include "analitza/expression.h"
 #include "analitza/value.h"
 #include "analitza/analyzer.h"
-#include <../../../apps/local/include/analitzaplot/private/utils/mathutils.h>
 
 
 #include <QPair>

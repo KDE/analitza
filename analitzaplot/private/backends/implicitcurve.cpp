@@ -22,14 +22,13 @@
 
 
 #include <QRect>
-#include <QBitArray>
 
 #include "analitza/value.h"
 
 
-#include <QVector2D>
 #include <qmath.h>
 #include <QDebug>
+#include <QBitArray>
 #include <analitza/localize.h>
 
 #include "analitza/value.h"
@@ -37,20 +36,18 @@
 #include "analitza/variable.h"
 #include "analitza/variables.h"
 
+
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
 #endif
 static const double pi=M_PI;
 
-using Analitza::Expression;
-using Analitza::ExpressionType;
-using Analitza::Variables;
-using Analitza::Object;
-using Analitza::Cn;
 
-//WARNING BRUTE FORCE implementation ... naive aproach ... improve 
-//the code by using marching squares
-class ANALITZAPLOT_EXPORT FunctionImplicit : public AbstractPlaneCurve
+#include "private/utils/marchingsquares.h"
+
+
+
+class ANALITZAPLOT_EXPORT FunctionImplicit : public AbstractPlaneCurve, public MarchingSquares
 {
 public:
     CONSTRUCTORS(FunctionImplicit)
@@ -59,15 +56,16 @@ public:
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y")
     ICON_NAME("newimplicit")
-    EXAMPLES("x^3-y^2+2,y^2*(y^2-10)-x^2*(x^2-9)")    
-    
+    EXAMPLES("x^3-y^2+2,y^2*(y^2-10)-x^2*(x^2-9)")
+
     void update(const QRectF& viewport);
-    
+
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
-    
+
     //
-    
+    virtual double evalScalarField(double x, double y);
+
 
 private:
     double getFValue(double xValue, double yValue);
@@ -75,205 +73,56 @@ private:
 
 void FunctionImplicit::update(const QRectF& vp)
 {
-//     QRectF viewport(vp);
-   
     points.clear();
     jumps.clear();
+
+    double minx = vp.left();
+    double maxx = vp.right();
+    double miny = vp.top();
+    double maxy = vp.bottom();
     
-//     QList<QPointF> temppts;
+//     qDebug() << minx << maxx << miny << maxy;
 
-//     temppts.clear();
+//     setWorld(minx, maxx, miny, maxy);
+    buildGeometry();
 
-//     int resolutionForImplicitCurves = 20*m_resolution;
-//     double area = abs(vp.size().height()*vp.size().width());
-    int resolutionForImplicitCurves = 256;
-//     qDebug() << resolutionForImplicitCurves;
-    //10 es el min
-    
-//     if (resolutionForImplicitCurves < 100) resolutionForImplicitCurves = 100; //set the min res
-    
-//     qDebug() << area<<resolutionForImplicitCurves;
-
-    //TODO CACHE en intervalvalues!!!
-    QPair<double, double> intervalx = interval("x");
-    QPair<double, double> intervaly = interval("y");
-    
-    qreal w = intervalx.second - intervalx.first;
-    qreal h = intervaly.second - intervaly.first;
-
-    unsigned int widthFlags = resolutionForImplicitCurves;
-    unsigned int heightFlags = resolutionForImplicitCurves;
-
-    qreal dw = w/resolutionForImplicitCurves;
-    qreal dh = h/resolutionForImplicitCurves;
-
-    QBitArray lastRow(widthFlags);
-    QBitArray curRow(widthFlags);
-    QBitArray nextRow(widthFlags);
-
-    qreal xZero = intervalx.first;
-    qreal yZero = intervaly.first;
-    qreal yOne = intervaly.first + dh;
-
-//     m_resolutionWasImproved = false;
-
-    for (int xAbsolute = 0; xAbsolute < widthFlags; xAbsolute+=1)
+    for (int i = 0;  i < _faces_.size(); ++i)
     {
-        qreal _xRelative = xZero + xAbsolute*dw;
-        qreal resZero = getFValue(_xRelative, yZero);
-        lastRow.setBit(xAbsolute, resZero >= 0.0);
-        double resOne = getFValue(_xRelative, yOne);
-        curRow.setBit(xAbsolute, resOne >= 0.0);
+        points << _faces_[i].first <<  _faces_[i].second;
+        jumps.append(points.size());
     }
 
-    for (int yAbsolute = 1; yAbsolute < heightFlags - 1; yAbsolute++)
+    if (points.size() <= 2) // y aunque/PESE a que el viewport se corta con el dominio
     {
-        double yNext = yOne + yAbsolute*dh;
-
-        for (int xAbsolute = 0; xAbsolute < widthFlags; xAbsolute+=1)
-        {
-            qreal _xRelative = xZero + xAbsolute*dw;
-            qreal resNext = getFValue(_xRelative, yNext);
-            bool south = resNext >= 0.0;
-            nextRow.setBit(xAbsolute, south);
-
-            if ((xAbsolute == 0) || (xAbsolute == widthFlags - 1))
-                continue;
-
-            bool north = lastRow.at(xAbsolute);
-            bool east = curRow.at(xAbsolute - 1);
-            bool west = curRow.at(xAbsolute + 1);
-            bool cen = curRow.at(xAbsolute);
-            int nPos = south ? 1 : 0;
-            nPos += (north ? 1 : 0);
-            nPos += (east ? 1 : 0);
-            nPos += (west ? 1 : 0);
-
-            if (((!cen) || (nPos >= 4)) && ((cen) || (nPos <= 0) )) continue;
-
-            //temppts.append(QPointF(_xRelative, yNext));
-//             addPoint(QPointF(_xRelative, yNext));
-            
-            //simple poly procs
-            
-            if (west && cen && east && !south && north)
-            {
-                points.append(QPointF(_xRelative, yNext+dh));
-                points.append(QPointF(_xRelative+dw, yNext+dh));
-                jumps.append(points.size());
-            }
-            
-            if (west && cen && east && south && !north) // -
-            {
-                points.append(QPointF(_xRelative, yNext));
-                points.append(QPointF(_xRelative+dw, yNext));
-                jumps.append(points.size());
-            }
-            
-            if (!west && cen && east && south && north)
-            {
-                points.append(QPointF(_xRelative+dw, yNext));
-                points.append(QPointF(_xRelative+dw, yNext+dh));
-                jumps.append(points.size());
-            }
-
-            if (west && cen && !east && south && north) // |
-            {
-                points.append(QPointF(_xRelative, yNext));
-                points.append(QPointF(_xRelative, yNext+dh));
-                jumps.append(points.size());
-            }
-// 
-            if (!south && west && cen && !east && north) // /
-            {
-                points.append(QPointF(_xRelative, yNext));
-                points.append(QPointF(_xRelative+dw, yNext+dh));
-                jumps.append(points.size());
-            }
-
-            if (!south && !west && cen && east && north)
-            {
-                points.append(QPointF(_xRelative, yNext+dh));
-                points.append(QPointF(_xRelative+dw, yNext));
-                jumps.append(points.size());
-            }
-
-            if (south && west && cen && !east && !north) // ~/
-            {
-                points.append(QPointF(_xRelative, yNext+dh));
-                points.append(QPointF(_xRelative+dw, yNext));
-                jumps.append(points.size());
-            }
-            
-            if (south && !west && cen && east && !north)
-            {
-                points.append(QPointF(_xRelative, yNext));
-                points.append(QPointF(_xRelative+dw, yNext+dh));
-                jumps.append(points.size());
-            }
-        }
-
-        QBitArray temp = lastRow;
-        lastRow = curRow;
-        curRow = nextRow;
-        nextRow = temp;
-    }
-    
-//     points.append(QPointF(5,5));
-//     points.append(QPointF(5,5+dh));
-//     
-//     jumps.append(2);
-// 
-//     points.append(QPointF(0,0));
-//     points.append(QPointF(0+dw,0));
-    
-
-//     for (int i = 1; i < temppts.size(); i++)
-//     {
-//         if (!std::isnan(temppts.at(i).x()) && !std::isnan(temppts.at(i).y()) &&
-//                 !std::isnan(temppts.at(i).x()) && !std::isnan(temppts.at(i).y()))
-//         {
-//             if (viewport.contains(temppts.at(i-1)) && viewport.contains(temppts.at(i)))
-//             {
-//                 addPoint(temppts.at(i));
-//                 jumps.append(temppts.size());
-//                 addPoint(temppts.at(i) +QPointF(.001, 0.001));
-//                 jumps.append(temppts.size());
-//             }
-//         }
-//     }
-
-    if (points.size() <= 2)
-    {
-        appendError(i18nc("This function can't be represented as a curve. To draw implicit curve, the function has to satisfy the implicit function theorem.", "Implicit function undefined in the plane"));
+//         appendError(i18nc("This function can't be represented as a curve. To draw implicit curve, the function has to satisfy the implicit function theorem.", "Implicit function undefined in the plane"));
     }
 }
 
 //Own
 QPair<QPointF, QString> FunctionImplicit::image(const QPointF &point)
 {
-    
+
     return qMakePair(QPointF(), QString());
-    
+
     //TODO port
-    
+
 //     QVector<Analitza::Object*> vxStack;
 //     vxStack.append(m_x);
 //     QVector<Analitza::Object*> vyStack;
 //     vyStack.append(m_y);
-// 
+//
 //     QString expLiteral = analyzer.expression().lambdaBody().toString();
 //     expLiteral.replace("y", QString::number(point.y()));
 //     expLiteral.prepend("x->");
-// 
+//
 //     Analitza::Analyzer f(analyzer.variables());
 //     f.setExpression(Analitza::Expression(expLiteral, false));
 //     f.setStack(vxStack);
-// 
+//
 //     Analitza::Analyzer df(analyzer.variables());
 //     df.setExpression(f.derivative("x"));
 //     df.setStack(vxStack);
-// 
+//
 //     const int MAX_I = 256;
 //     const double E = 0.0001;
 //     double x0 = point.x();
@@ -281,76 +130,76 @@ QPair<QPointF, QString> FunctionImplicit::image(const QPointF &point)
 //     double error = 1000.0;
 //     int i = 0;
 //     bool has_root_x = true;
-// 
-// 
+//
+//
 //     if (!f.isCorrect() || !df.isCorrect())
 //     {
 //         return QPair<QPointF, QString>(QPointF(), QString());
 //     }
-// 
+//
 //     while (true)
 //     {
 //         arg("x")->setValue(x0);
-// 
+//
 //         double r = f.calculateLambda().toReal().value();
 //         double d = df.calculateLambda().toReal().value();
-// 
+//
 //         i++;
 //         x = x0 - r/d;
-// 
+//
 //         if (error < E) break;
 //         if (i > MAX_I)
 //         {
 //             has_root_x = false;
 //             break;
 //         }
-// 
+//
 //         error = fabs(x - x0);
 //         x0 = x;
 //     }
-// 
-//     
+//
+//
 //     if (!has_root_x)
 //     {
 //         expLiteral = analyzer.expression().lambdaBody().toString();
 //         expLiteral.replace("x", QString::number(point.x()));
 //         expLiteral.prepend("y->");
-// 
+//
 //         Analitza::Analyzer f(analyzer.variables());
 //         f.setExpression(Analitza::Expression(expLiteral, false));
 //         f.setStack(vyStack);
-// 
+//
 //         Analitza::Analyzer df(analyzer.variables());
 //         df.setExpression(f.derivative("y"));
 //         df.setStack(vyStack);
-// 
+//
 //         double y0 = point.y();
 //         double y = y0;
 //         error = 1000.0;
 //         i = 0;
 //         bool has_root_y = true;
-// 
+//
 //         while (true)
 //         {
 //             arg("y")->setValue(y0);
-// 
+//
 //             double r = f.calculateLambda().toReal().value();
 //             double d = df.calculateLambda().toReal().value();
-// 
+//
 //             i++;
 //             y = y0 - r/d;
-// 
+//
 //             if (error < E) break;
 //             if (i > MAX_I)
 //             {
 //                 has_root_y = false;
 //                 break;
 //             }
-// 
+//
 //             error = fabs(y - y0);
 //             y0 = y;
 //         }
-// 
+//
 //         if (has_root_y)
 //             last_calc = QPointF(point.x(), y);
 //         return QPair<QPointF, QString>(last_calc, QString());
@@ -358,18 +207,15 @@ QPair<QPointF, QString> FunctionImplicit::image(const QPointF &point)
 //     else
 //     {
 //         last_calc = QPointF(x, point.y());
-// 
+//
 //         return QPair<QPointF, QString>(last_calc, QString());
 //     }
 
 }
 
-QLineF FunctionImplicit::tangent(const QPointF &mousepos) 
+QLineF FunctionImplicit::tangent(const QPointF &mousepos)
 {
-
-
-return QLineF();
-    
+    return QLineF();
 }
 
 double FunctionImplicit::getFValue(double xValue, double yValue)
@@ -377,7 +223,27 @@ double FunctionImplicit::getFValue(double xValue, double yValue)
     arg("x")->setValue(xValue);
     arg("y")->setValue(yValue);
 
-    return analyzer->calculateLambda().toReal().value();
+//     return analyzer->calculateLambda().toReal().value();
+    
+    Analitza::Expression r=analyzer->calculateLambda();
+
+    if(r.isReal())
+    {
+        Analitza::Cn z = analyzer->calculateLambda().toReal();
+
+        if(z.format()==Analitza::Cn::Real)
+            return z.value();
+    }
+    
+    return 0;
 }
+
+double FunctionImplicit::evalScalarField(double x, double y)
+{
+//     qDebug() << x << y;
+
+    return getFValue(x,y);
+}
+
 
 REGISTER_PLANECURVE(FunctionImplicit)

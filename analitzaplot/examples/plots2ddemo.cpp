@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
     view2d->setSquares(false);
     view2d->setModel(model);
     view2d->setSelectionModel(selection);
+//     view2d->setAxis(false);
 
     PlaneCurve *item = model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
     model->addPlaneCurve(Analitza::Expression("q->q+2"), "polar simple", Qt::green);
@@ -65,8 +66,17 @@ int main(int argc, char *argv[])
     PlaneCurve *item2 = model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
     model->addPlaneCurve(Analitza::Expression("x->2+x*x"), "otra simple", Qt::blue);
 //     
-    model->addPlaneCurve(Analitza::Expression("5=x*x+y*y"), "otra simple", Qt::lightGray);
+    model->addPlaneCurve(Analitza::Expression("(x**2+y**2)**3=4*(x**2)*(y**2)"), "otra simple", Qt::lightGray);
+    model->addPlaneCurve(Analitza::Expression("(y-x**2)**2=x*y**3"), "otra simple", Qt::lightGray);
+    model->addPlaneCurve(Analitza::Expression("sin(x)*sin(y)=1/2"), "otra simple", Qt::yellow);
+    
+    //que curva tan malvada y lo peor es que es algebraica #evil //TODO improve MS 
+    model->addPlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "ESTO NO ES SIMPLE", Qt::black);
+    
+    model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
 
+//     qDebug() << itemi << itemi->expression().equationToFunction().toString();
+    
 //     qDebug() << model->item(2)->name();
     
 //     qDebug() << item2->expression().toString();
@@ -84,13 +94,13 @@ int main(int argc, char *argv[])
 
     
 //     item2->setVisible(false);
-    item2->setColor(Qt::red);
-
-//     qDebug() << item << static_cast<PlaneCurve*>(model->item(0)) << model->item(0);
-//     item->setInterval("x", 0, 4);
-
-    item2->setInterval("x", 0, 4);
-    item2->setInterval("y", 0, 4);
+//     item2->setColor(Qt::red);
+// 
+// //     qDebug() << item << static_cast<PlaneCurve*>(model->item(0)) << model->item(0);
+// //     item->setInterval("x", 0, 4);
+// 
+//     item2->setInterval("x", 0, 4);
+//     item2->setInterval("y", 0, 4);
     
     
     return app.exec();

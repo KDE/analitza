@@ -17,6 +17,9 @@
  *************************************************************************************/
 
 
+#ifndef FUNCTIONGRAPH2_H_mcub
+#define FUNCTIONGRAPH2_H_mcub
+
 #include "octree.h"
 ///
 
@@ -147,3 +150,4 @@ private:
     void tipo13(QList<sArista> aristas, QList<unsigned int> vertices);
 };
 
+#endif

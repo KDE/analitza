@@ -46,7 +46,7 @@ QColor const Plotter2D::m_derivativeColor(90,90,160);
 
 
 Plotter2D::Plotter2D(const QSizeF& size, PlotsModel* model)
-    : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true)
+    : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true), m_axis(true)
 {}
 
 Plotter2D::~Plotter2D()
@@ -191,8 +191,9 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
         else
             t=m_model->item(current)->coordinateSystem();
     
+    if (m_axis)
+        drawAxes(&p, t);
     
-    drawAxes(&p, t);
     p.setRenderHint(QPainter::Antialiasing, true);
     
     if (!m_model && m_dirty) return; // guard // si tenemos el model y ademas las funciones estan actualizadas pasamos este if y pintamos
@@ -295,10 +296,14 @@ void Plotter2D::updateFunctions(const QModelIndex& startIdx, const QModelIndex& 
     int start=startIdx.row(), end=endIdx.row();
     
     for(int i=start; i<=end; i++) {
-//         QRect a = toBiggerRect(viewport);// WARNING GSOC porque se le pasa un qrect
-//         qDebug() << dynamic_cast<PlaneCurve*>(m_model->item(i))->interval(dynamic_cast<PlaneCurve*>(m_model->item(i))->parameters().first());
-//         dynamic_cast<PlaneCurve*>(m_model->item(i))->update(a);
-dynamic_cast<PlaneCurve*>(m_model->item(i))->update(viewport);
+        QRectF viewport_fixed = viewport;
+        viewport_fixed.setTopLeft(viewport.bottomLeft());
+        viewport_fixed.setHeight(fabs(viewport.height()));
+        //NOTE GSOC 
+//         qDebug() << "ORI" << viewport << viewport.center() <<  "CH" << viewport_fixed<< viewport_fixed.center();
+        //it works con este parche se le pasa a las curvas la informacion adecuada basada en centro y size
+        // y se conserva la semantica de qrectf la esquina superior izquierda es el origen
+        dynamic_cast<PlaneCurve*>(m_model->item(i))->update(viewport_fixed);
     }
     
     m_dirty = false;
