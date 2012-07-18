@@ -177,11 +177,11 @@ void PlotsModel::removeItem(int row)
 
     m_itemCanCallModelRemoveItem = false;
 
-//     if (!tmpcurve->m_inDestructorSoDontDeleteMe)
-//     {
-//         delete tmpcurve;
-//         tmpcurve = 0;
-//     }
+    if (!tmpcurve->m_inDestructorSoDontDeleteMe)
+    {
+        delete tmpcurve;
+        tmpcurve = 0;
+    }
 
     m_itemCanCallModelRemoveItem = true;
 

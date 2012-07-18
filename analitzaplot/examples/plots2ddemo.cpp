@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     model->addPlaneCurve(Analitza::Expression("sin(x)*sin(y)=1/2"), "otra simple", Qt::yellow);
     
     //que curva tan malvada y lo peor es que es algebraica #evil //TODO improve MS 
-    model->addPlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "ESTO NO ES SIMPLE", Qt::black);
+    PlaneCurve *eitem = model->addPlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "ESTO NO ES SIMPLE", Qt::black);
     
     model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
 
@@ -80,6 +80,10 @@ int main(int argc, char *argv[])
 //     qDebug() << model->item(2)->name();
     
 //     qDebug() << item2->expression().toString();
+    
+    
+//     delete eitem;
+    model->removeItem(model->rowCount()-2);
     
     if (model->rowCount()>0)
     {
