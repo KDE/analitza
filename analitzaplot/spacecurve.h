@@ -21,9 +21,7 @@
 #ifndef SPACECURVE_H
 #define SPACECURVE_H
 
-#include "private/functiongraph.h"
-
-#include "analitzaplotexport.h"
+#include "functiongraph.h"
 
 class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {

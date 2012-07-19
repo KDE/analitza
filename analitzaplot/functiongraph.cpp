@@ -26,9 +26,9 @@
 #include <analitza/variables.h>
 #include <analitza/localize.h>
 
-#include "abstractfunctiongraph.h"
+#include "private/abstractfunctiongraph.h"
 
-#include "functiongraphfactory.h"
+#include "private/functiongraphfactory.h"
 
 FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int spacedim, const QString &nam, const QColor &col, Analitza::Variables *vars)
     : PlotItem(nam, col), m_functionGraph(0)

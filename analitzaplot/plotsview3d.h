@@ -23,9 +23,10 @@
 #include <QMouseEvent>
 
 
-#include <analitzaplot/private/functiongraph.h>
 #include <QModelIndex>
 #include "analitzaplotexport.h"
+
+class PlotItem;
 class PlotsModel;
 class QItemSelectionModel;
 

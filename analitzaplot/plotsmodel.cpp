@@ -19,8 +19,6 @@
 
 #include "plotsmodel.h"
 
-#include "private/functiongraph.h"
-
 #include <surface.h>
 #include <planecurve.h>
 #include <spacecurve.h>

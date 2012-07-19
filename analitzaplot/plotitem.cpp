@@ -20,9 +20,7 @@
 
 #include "plotitem.h"
 
-#include "../plotsmodel.h"
-
-#include <QUuid>
+#include "plotsmodel.h"
 
 PlotItem::PlotItem(const QString &name, const QColor& col)
     : m_name (name), m_color(col), m_graphVisible(true), m_model(0), m_inDestructorSoDontDeleteMe(false)

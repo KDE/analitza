@@ -42,8 +42,6 @@ private/abstractplanecurve.cpp
 private/abstractspacecurve.cpp
 private/abstractsurface.cpp
 private/functiongraphfactory.cpp
-private/plotitem.cpp
-private/functiongraph.cpp
 
 private/backends/cartesiansurface.cpp
 private/backends/implicitcurve.cpp
@@ -57,6 +55,8 @@ private/backends/sphericalsurface.cpp
 private/backends/implicitsurface.cpp
 
 #public API
+plotitem.cpp
+functiongraph.cpp
 planecurve.cpp
 spacecurve.cpp
 surface.cpp
@@ -94,6 +94,8 @@ install(FILES
 
 #public api
 analitzaplotexport.h
+plotitem.h
+functiongraph.h
 planecurve.h
 spacecurve.h
 surface.h
@@ -128,8 +130,6 @@ install(FILES
 # private/abstractspacecurve.h
 # private/abstractsurface.h
 # private/functiongraphfactory.h
-private/plotitem.h
-private/functiongraph.h
 
 DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
 

@@ -23,9 +23,9 @@
 #include <QStringList>
 #include <QColor>
 
-#include "utils/mathutils.h"
+#include "private/utils/mathutils.h"
 
-#include "../analitzaplotexport.h"
+#include "analitzaplotexport.h"
 
 namespace Analitza
 {

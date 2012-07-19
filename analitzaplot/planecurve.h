@@ -20,14 +20,10 @@
 #ifndef ANALITZAPLOT_FUNCTION_H
 #define ANALITZAPLOT_FUNCTION_H
 
-#include "private/functiongraph.h"
-
-#include "analitza/expression.h"
+#include "functiongraph.h"
 
 #include <QMap>
 #include <QColor>
-
-#include "analitzaplotexport.h"
 
 namespace Analitza
 {

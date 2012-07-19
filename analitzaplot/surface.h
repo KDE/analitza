@@ -19,9 +19,7 @@
 #ifndef SURFACE_H
 #define SURFACE_H
 
-#include "private/functiongraph.h"
-
-#include "analitzaplotexport.h"
+#include "functiongraph.h"
 
 class AbstractSurface;
 
