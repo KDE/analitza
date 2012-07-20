@@ -18,6 +18,7 @@
 
 #include <QMainWindow>
 #include <QStringListModel>
+#include <qtreeview.h>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
@@ -28,6 +29,7 @@
 #include "analitzaplot/plotsmodel.h"
 #include "analitzaplot/plotsview3d.h"
 #include <analitzaplot/plotsdictionarymodel.h>
+#include <planecurve.h>
 #include <analitza/variables.h>
 #include <analitza/apply.h>
 #include <analitza/variable.h>
@@ -57,14 +59,22 @@ int main(int argc, char *argv[])
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setMinimumSize(640, 480);
     
+        QTabWidget *tabs = new QTabWidget(mainWindow);
+    QTreeView *viewsource = new QTreeView(tabs);
+    QTreeView *viewproxy = new QTreeView(tabs);
+    
     //BEGIN test calls
 
     
     PlotsModel *model = new PlotsModel(mainWindow);
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
+    PlotsFilterProxyModel *proxy = new PlotsFilterProxyModel(mainWindow);
+    proxy->setFilterSpaceDimension(3);
+    proxy->setSourceModel(model);
+    
     PlotsView3D *view3d = new PlotsView3D(mainWindow);
-    view3d->setModel(model);
+    view3d->setModel(proxy);
     view3d->setSelectionModel(selection);
     
 //     qDebug() << model->addSurface(Analitza::Expression("(r,p)->2"), "Hola", Qt::cyan);
@@ -73,11 +83,14 @@ int main(int argc, char *argv[])
 //     qDebug() << model->addSurface(Analitza::Expression("x*x+y*y+z*z=5"), "Hola", Qt::cyan);
 //    qDebug() << model->addSurface(Analitza::Expression("cos(x) + cos(y) + cos(z)=0"), "Hola", Qt::cyan);
 
-    Surface * item = model->addSurface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan);
+    model->addSurface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan)->spaceDimension();
+    model->addPlaneCurve(Analitza::Expression("x+3-y=7"), "asdasd, ", Qt::red)->spaceDimension();
+    model->addSurface(Analitza::Expression("x*x+y*y-z*z= 1/2"), "Hola", Qt::yellow)->spaceDimension();
+
     
-    qDebug() << item << item->spaceDimension();
+//     qDebug() << item << item->spaceDimension();
     
-    qDebug() << item->expression().toString() << item->interval("x");
+//     qDebug() << item->expression().toString() << item->interval("x");
     
     
 //     PlotsDictionaryModel *dict = new PlotsDictionaryModel(mainWindow);
@@ -189,8 +202,14 @@ int main(int argc, char *argv[])
 
     //END test calls
     
-    mainWindow->setCentralWidget(view3d);
+    viewsource->setModel(model);
+    viewproxy->setModel(proxy);
+    
+    tabs->addTab(viewsource, "source");
+    tabs->addTab(viewproxy, "proxy3d");
+    tabs->addTab(view3d, "view3d");
 
+    mainWindow->setCentralWidget(tabs);
     mainWindow->show();
 
     return app.exec();

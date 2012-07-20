@@ -184,15 +184,12 @@ PlotItem* Plotter2D::fromProxy(int proxy_row) const
 
 PlotItem* Plotter2D::fromSource(int realmodel_row) const
 {
-    
-    QModelIndex si = m_model->mapFromSource(qobject_cast<PlotsModel *>(m_model->sourceModel())->index(realmodel_row,0));
-    
+    QModelIndex si = m_model->mapFromSource(m_model->sourceModel()->index(realmodel_row,0));
+
     if (si.isValid())
-        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(si.row());
-    
+        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(realmodel_row);
     
     return 0;
-//     .row());
 }
 
 void Plotter2D::drawFunctions(QPaintDevice *qpd)
@@ -326,18 +323,18 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     p.end();
 }
 
-void Plotter2D::updateFunctions(const QModelIndex& startIdx, const QModelIndex& endIdx)
+void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end) // indices del proxy
 {
     if (!m_model) return; // guard
 
-    Q_ASSERT(startIdx.isValid() && endIdx.isValid());
-    int start=startIdx.row(), end=endIdx.row();
+//     Q_ASSERT(startIdx.isValid() && endIdx.isValid());
+//     int start=startIdx.row(), end=endIdx.row();
     
     
     PlaneCurve *curve = 0;
     for(int i=start; i<=end; i++) 
     {
-        curve = dynamic_cast<PlaneCurve *>(fromSource(i));
+        curve = dynamic_cast<PlaneCurve *>(fromProxy(i));
 
         if (!curve) continue;
         
@@ -397,7 +394,7 @@ void Plotter2D::updateScale(bool repaint)
     
     if(repaint) {
         if(m_model && m_model->rowCount()>0)
-            updateFunctions(m_model->index(0,0), m_model->index(m_model->rowCount()-1,0));
+            updateFunctions(QModelIndex(), 0, m_model->rowCount()-1);
         forceRepaint();
     }
 }

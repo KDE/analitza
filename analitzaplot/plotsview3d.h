@@ -27,7 +27,7 @@
 #include "analitzaplotexport.h"
 
 class PlotItem;
-class PlotsModel;
+class PlotsFilterProxyModel;
 class QItemSelectionModel;
 
 // class Solver3D;
@@ -36,13 +36,14 @@ class ANALITZAPLOT_EXPORT PlotsView3D : public QGLViewer
     Q_OBJECT
 
 public:
-    PlotsView3D(QWidget *parent = 0, PlotsModel *m = 0);
+    PlotsView3D(QWidget *parent = 0, PlotsFilterProxyModel *m = 0);
     virtual ~PlotsView3D();
 
-    void setModel(PlotsModel *m);
+    void setModel(PlotsFilterProxyModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:
+    //los index son del modelo original es decir del PlotsModel ... NO DEL PROXY
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);
@@ -51,8 +52,11 @@ private:
     int currentFunction() const;
     void draw();
     void init();
-
-    PlotsModel *m_model;
+    
+    PlotItem *fromProxy(int proxy_row) const; // get the real item from proxy
+    PlotItem *fromSource(int realmodel_row) const; // get the item filtered by the proxy
+    
+    PlotsFilterProxyModel *m_model;
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>

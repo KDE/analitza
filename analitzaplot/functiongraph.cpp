@@ -33,6 +33,7 @@
 FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int spacedim, const QString &nam, const QColor &col, Analitza::Variables *vars)
     : PlotItem(nam, col), m_functionGraph(0)
 {
+    
     QString id;
     
     Q_ASSERT(canDraw(functionExpression, spacedim, m_errors, id));
@@ -201,6 +202,7 @@ bool FunctionGraph::canDraw(const Analitza::Expression& testexp, int spacedim, Q
         
         return false;
     }
+    
     
     Analitza::Analyzer *a = new Analitza::Analyzer;
     

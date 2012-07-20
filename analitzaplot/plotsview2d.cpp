@@ -299,9 +299,9 @@ void PlotsView2D::zoomOut()
 
 void PlotsView2D::addFuncs(const QModelIndex & parent, int start, int end)
 {
-    Q_ASSERT(!parent.isValid());
+//     Q_ASSERT(!parent.isValid());
     
-    updateFunctions(model()->index(start,0), model()->index(end,0));
+    updateFunctions(parent, start, end);
 }
 
 void PlotsView2D::removeFuncs(const QModelIndex &, int, int)
@@ -309,9 +309,14 @@ void PlotsView2D::removeFuncs(const QModelIndex &, int, int)
     forceRepaint();
 }
 
+void PlotsView2D::updateFuncs(const QModelIndex & parent, int start, int end)
+{
+    updateFunctions(parent,start, end);
+}
+
 void PlotsView2D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 {
-    updateFunctions(start, end);
+    updateFuncs(QModelIndex(), start.row(), end.row());
 }
 
 void PlotsView2D::setReadOnly(bool ro)
@@ -350,12 +355,10 @@ int PlotsView2D::currentFunction() const
 void PlotsView2D::modelChanged()
 {
     //TODO disconnect prev model
-    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-        this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-    connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-        this, SLOT(addFuncs(QModelIndex,int,int)));
-    connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
-        this, SLOT(removeFuncs(QModelIndex,int,int)));
+    //NOTE Estas signal son del PROXY ... para evitar que este widget reciba signals que no le interesan 
+    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+    connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+    connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
 }
 
 void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)

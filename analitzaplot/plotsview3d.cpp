@@ -31,7 +31,7 @@
 #include <QDebug>
 
 
-PlotsView3D::PlotsView3D(QWidget *parent, PlotsModel* m)
+PlotsView3D::PlotsView3D(QWidget *parent, PlotsFilterProxyModel* m)
     : QGLViewer(parent), m_model(m),m_selection(0)
 {
     setGridIsDrawn(true);
@@ -49,26 +49,32 @@ PlotsView3D::~PlotsView3D()
 
 }
 
-void PlotsView3D::setModel(PlotsModel *model)
+void PlotsView3D::setModel(PlotsFilterProxyModel* f)
 {
-    m_model=model;
+    //esto proxy debe ser del plotsmodel ... no de otro modelo
+    Q_ASSERT(qobject_cast< PlotsModel* >(f->sourceModel()));
+//     Q_ASSERT(f->filterSpaceDimension() == 3); // este widget renderiza solo plots que esten en un spacio 3D
+    
+
+    m_model=f;
+    PlotsFilterProxyModel* model = m_model;
 
     if (model->rowCount( ) > 0)
     {
     for (int i = 0; i < model->rowCount(); ++i)
-        glDeleteLists(m_displayLists[m_model->item(i)], 1);
+        if (fromProxy(i))
+        {
+            glDeleteLists(m_displayLists[fromProxy(i)], 1);
     
-    addFuncs(QModelIndex(), 0, model->rowCount()-1);
-
+            addFuncs(QModelIndex(), 0, model->rowCount()-1);
+        }
     }
     
     //TODO disconnect prev model
-    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-        this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-    connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-        this, SLOT(addFuncs(QModelIndex,int,int)));
-    connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-        this, SLOT(removeFuncs(QModelIndex,int,int)));
+    //NOTE Estas signal son del PROXY ... para evitar que este widget reciba signals que no le interesan 
+//     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+    connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+//     connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
     
     updateGL();
 }
@@ -76,20 +82,32 @@ void PlotsView3D::setModel(PlotsModel *model)
 void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
 {
     Q_ASSERT(selection);
-    Q_ASSERT(selection->model() == m_model);
+//     Q_ASSERT(selection->model() == m_model);
+    
+        //El item selection es del modelo original no del proxy
+    Q_ASSERT(qobject_cast< const PlotsModel* >(selection->model()));
     
     
     m_selection = selection;
     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }
-
+//los index son del modelo original es decir del PlotsModel ... NO DEL PROXY
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
     Q_ASSERT(!parent.isValid());
 //     Q_ASSERT(start == end); // siempre se agrega un solo item al model
 
+        qDebug() << start << end;
+
     
-    Surface* surf = static_cast<Surface*>(m_model->item(start));
+    PlotItem *item = fromProxy(start);
+    
+//     if (item)
+//     qDebug() << item->expression().toString() << item->spaceDimension();
+
+    if (!item) return ;// no agregar nada que no cumpla las politicas/filtros del proxy
+    
+    Surface* surf = static_cast<Surface*>(item);
     surf->update(Box3D());
         
     GLuint dlid = glGenLists(1);
@@ -130,6 +148,7 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
     glEndList();
     //END display list
     
+    
 }
 
 void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
@@ -137,7 +156,11 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
     Q_ASSERT(!parent.isValid());
     Q_ASSERT(start == end); // siempre se agrega un solo item al model
     
-    glDeleteLists(m_displayLists[m_model->item(start)], 1);
+        PlotItem *item = fromSource(start);
+
+    if (!item) return ;// no eliminar  nada que no cumpla las politicas/filtros del proxy
+    
+    glDeleteLists(m_displayLists[item], 1);
 }
 
 void PlotsView3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
@@ -186,4 +209,30 @@ void PlotsView3D::init()
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
 }
+
+
+PlotItem* PlotsView3D::fromProxy(int proxy_row) const
+{
+    QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
+    
+//     qDebug() << "de" << m_model->rowCount();
+    
+    if (pi.isValid())
+        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row());
+    
+    return 0;
+}
+
+PlotItem* PlotsView3D::fromSource(int realmodel_row) const
+{
+    
+    QModelIndex si = m_model->mapFromSource(m_model->sourceModel()->index(realmodel_row,0));
+
+    if (si.isValid())
+        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(realmodel_row);
+    
+    return 0;
+//     .row());
+}
+
 

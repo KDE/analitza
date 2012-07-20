@@ -103,7 +103,8 @@ public slots:
     void setReadOnly(bool ro);
     
 private slots:
-    void updateFuncs(const QModelIndex& start, const QModelIndex& end);
+    void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
+    void updateFuncs(const QModelIndex& start, const QModelIndex& end); //update al setdata 
     void addFuncs(const QModelIndex & parent, int start, int end);
     void removeFuncs(const QModelIndex & parent, int start, int end);
     void changeViewport(const QRectF& vp) { setViewport(vp); }

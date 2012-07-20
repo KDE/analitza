@@ -57,7 +57,8 @@ class ANALITZAPLOT_EXPORT Plotter2D
         bool keepAspectRatio() const { return m_keepRatio; }
         
         /** Force the functions from @p start to @p end to be recalculated. */
-        void updateFunctions( const QModelIndex & start, const QModelIndex& end );
+        //los index son de PROXY , esto para evitar que el widget escuche signal inecesarias
+        void updateFunctions( const QModelIndex & parent, int start, int end );
         
         void setModel(PlotsFilterProxyModel* f);
         PlotsFilterProxyModel* model() const { return m_model; }

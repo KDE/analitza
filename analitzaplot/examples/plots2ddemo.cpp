@@ -28,6 +28,7 @@
 #include "analitzaplot/planecurve.h"
 #include "analitzaplot/plotsview2d.h"
 #include <analitzaplot/plotsmodel.h>
+#include <surface.h>
 
 int main(int argc, char *argv[])
 {
@@ -71,10 +72,12 @@ int main(int argc, char *argv[])
 //     view2d->setAxis(false);
 
     PlaneCurve *item = model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
-    qDebug() << "el antees y despues debe ser congruente ... la dimension no debe fallar" << item << item->spaceDimension();
+//     qDebug() << "el antees y despues debe ser congruente ... la dimension no debe fallar" << item << item->spaceDimension();
     model->addPlaneCurve(Analitza::Expression("q->q+2"), "polar simple", Qt::green);
     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
     PlaneCurve *item2 = model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
+    qDebug() <<    model->addSurface(Analitza::Expression("x=y-z"), "fsdfs", Qt::yellow)->spaceDimension();
+
     model->addPlaneCurve(Analitza::Expression("x->2+x*x"), "otra simple", Qt::blue);
 //     
     model->addPlaneCurve(Analitza::Expression("(x**2+y**2)**3=4*(x**2)*(y**2)"), "otra simple", Qt::lightGray);
@@ -87,9 +90,8 @@ int main(int argc, char *argv[])
     model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
     
     //a todos mas cero en khipu
-    model->addSurface(Analitza::Expression("x=y-z"), "fsdfs", Qt::yellow);
     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfssss", Qt::yellow);
-    model->removeItem(model->rowCount()-8);
+//     model->removeItem(model->rowCount()-8);
     
 
 //     qDebug() << itemi << itemi->expression().equationToFunction().toString();
