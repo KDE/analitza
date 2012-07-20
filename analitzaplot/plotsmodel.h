@@ -60,7 +60,7 @@ public:
 
     //si es tru entonces los items pueden ocultar por medio de checks en la vista
     bool isCheckable () const { return m_isCheckable; }
-    void aaasetCheckable ( bool b) { m_isCheckable = b; }
+    void setCheckable ( bool b) { m_isCheckable = b; }
 
     PlaneCurve * addPlaneCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
     SpaceCurve * addSpaceCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
