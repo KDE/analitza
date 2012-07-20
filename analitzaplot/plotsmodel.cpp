@@ -290,3 +290,42 @@ bool FunctionGraphsModel::setItemExpression(int curveIndex, const Analitza::Expr
 
     return false;
 }*/
+
+///
+
+
+PlotsFilterProxyModel::PlotsFilterProxyModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+    , m_dimension(-1)
+{
+     setDynamicSortFilter(true);
+}
+
+PlotsFilterProxyModel::~PlotsFilterProxyModel()
+{
+
+}
+
+void PlotsFilterProxyModel::setFilterSpaceDimension(int dimension)
+{
+    m_dimension = dimension;
+    invalidateFilter();
+}
+
+bool PlotsFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+{
+    Q_ASSERT(sourceModel());
+    
+    PlotItem *item = qobject_cast<PlotsModel *>(sourceModel())->item(sourceRow);
+    
+//     qDebug() << item->spaceDimension() << item->typeName() << item->name() <<  (item->spaceDimension() != m_dimension);
+    
+    if (item->spaceDimension() != m_dimension)
+        return false;
+    
+    return true;
+/*
+    return item->name().contains(filterRegExp()) ||
+        item->expression().toString().contains(filterRegExp());*/
+}
+

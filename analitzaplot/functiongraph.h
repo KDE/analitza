@@ -27,6 +27,7 @@ class AbstractFunctionGraph;
 
 class ANALITZAPLOT_EXPORT FunctionGraph : public PlotItem
 {
+    
 public:
     FunctionGraph(const Analitza::Expression &functionExpression, int spacedim, const QString &nam, const QColor& col, Analitza::Variables *vars = 0);
     virtual ~FunctionGraph();

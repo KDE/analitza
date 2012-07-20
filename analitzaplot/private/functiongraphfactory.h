@@ -56,6 +56,8 @@ public:
     QString typeName(const QString& id) const;
     Analitza::ExpressionType expressionType(const QString& id) const;
     //swap args 
+    int spaceDimension(const QString& id) const;
+    // falla cuando hay multiples cassos ...mult expressio
     int spaceDimension(const Analitza::ExpressionType& ftype, const QStringList &bvars) const;
     CoordinateSystem coordinateSystem(const QString& id) const;
     QString iconName(const QString& id) const;

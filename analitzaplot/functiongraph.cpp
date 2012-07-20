@@ -38,6 +38,7 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int
     Q_ASSERT(canDraw(functionExpression, spacedim, m_errors, id));
 
     m_functionGraph = static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,functionExpression, vars));
+    m_functionGraph->setInternalId(id);
 }
 
 FunctionGraph::~FunctionGraph()

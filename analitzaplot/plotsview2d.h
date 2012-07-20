@@ -59,7 +59,7 @@ public:
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
-    PlotsView2D(QWidget *parent = 0, PlotsModel* fm = 0); // this ctor es para que pueda ser usado en el designer
+    PlotsView2D(QWidget *parent = 0, PlotsFilterProxyModel* fm = 0); // this ctor es para que pueda ser usado en el designer
     
     /** Destructor. */
     ~PlotsView2D();
@@ -74,8 +74,9 @@ public:
     /** Returns the viewing port */
     QRectF definedViewport() const;
     
+    // selectionmodel from the plotsmodel (NOT from the proxy)
     void setSelectionModel(QItemSelectionModel* selection);
-    
+
 public slots:
     /** Marks the image as dirty and repaints everything. */
     void forceRepaint() { valid=false; repaint(); }

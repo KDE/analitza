@@ -19,6 +19,7 @@
 #include <QMainWindow>
 #include <QStringListModel>
 #include <QAction>
+#include <qtreeview.h>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
@@ -47,20 +48,30 @@ int main(int argc, char *argv[])
     mainWindow->setMinimumSize(640, 480);
 
     QTabWidget *tabs = new QTabWidget(mainWindow);
+    QTreeView *viewsource = new QTreeView(tabs);
+    QTreeView *viewproxy = new QTreeView(tabs);
     
     //BEGIN test calls
 
     PlotsModel *model = new PlotsModel(tabs);
+    
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
+    PlotsFilterProxyModel *proxy = new PlotsFilterProxyModel(tabs);
+    proxy->setFilterSpaceDimension(2);
+    proxy->setSourceModel(model);
+    
+    
     PlotsView2D *view2d = new PlotsView2D(tabs);
+
 //     view2d->setReadOnly(true);
     view2d->setSquares(false);
-    view2d->setModel(model);
+    view2d->setModel(proxy);
     view2d->setSelectionModel(selection);
 //     view2d->setAxis(false);
 
     PlaneCurve *item = model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
+    qDebug() << "el antees y despues debe ser congruente ... la dimension no debe fallar" << item << item->spaceDimension();
     model->addPlaneCurve(Analitza::Expression("q->q+2"), "polar simple", Qt::green);
     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
     PlaneCurve *item2 = model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
@@ -74,6 +85,12 @@ int main(int argc, char *argv[])
     PlaneCurve *eitem = model->addPlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "ESTO NO ES SIMPLE", Qt::black);
     
     model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
+    
+    //a todos mas cero en khipu
+    model->addSurface(Analitza::Expression("x=y-z"), "fsdfs", Qt::yellow);
+    model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfssss", Qt::yellow);
+    model->removeItem(model->rowCount()-8);
+    
 
 //     qDebug() << itemi << itemi->expression().equationToFunction().toString();
     
@@ -83,7 +100,7 @@ int main(int argc, char *argv[])
     
     
 //     delete eitem;
-    model->removeItem(model->rowCount()-2);
+//     model->removeItem(model->rowCount()-2);
     
     if (model->rowCount()>0)
     {
@@ -92,7 +109,14 @@ int main(int argc, char *argv[])
 
     //END test calls
 
-    mainWindow->setCentralWidget(view2d);
+    viewsource->setModel(model);
+    viewproxy->setModel(proxy);
+    
+    tabs->addTab(viewsource, "source");
+    tabs->addTab(viewproxy, "proxy2d");
+    tabs->addTab(view2d, "view2d");
+
+    mainWindow->setCentralWidget(tabs);
 
     mainWindow->show();
 

@@ -51,6 +51,7 @@ static QStringList Examples() { return QString(name).split(","); }
 
 class AbstractFunctionGraph : public AbstractMappingGraph
 {
+friend class FunctionGraph; // para que pueda cambiar el internalid
 public:
     AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v = 0);
     virtual ~AbstractFunctionGraph();
@@ -86,11 +87,16 @@ protected:
     //WARNING see if errorCount is necesary ...
     int errorCount() const { return m_errors.count(); } // if some method throws many erros perhaps the user (child-class) want to stop something
     
+    //una vez creado podemos guardar su id para consultas posteriores
+    void setInternalId(const QString &iid) { m_internalId = iid; }
+    
     Analitza::Analyzer *analyzer;
     
     Analitza::Cn* arg(const QString &argname) { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
     
 private:
+QString m_internalId;    
+    
 Analitza::Expression m_e;
 
 //BEGIN private types

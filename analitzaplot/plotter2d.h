@@ -23,16 +23,16 @@
 
 #include "planecurve.h"
 
+class PlotsFilterProxyModel;
 class QPainter;
 class QPaintDevice;
 
 class QModelIndex;
-class PlotsModel;
 
 class ANALITZAPLOT_EXPORT Plotter2D
 {
     public:
-        Plotter2D(const QSizeF& size, PlotsModel* model = 0);
+        Plotter2D(const QSizeF& size, PlotsFilterProxyModel* model = 0);
         virtual ~Plotter2D();
         
         virtual void drawFunctions(QPaintDevice *qpd);
@@ -59,8 +59,8 @@ class ANALITZAPLOT_EXPORT Plotter2D
         /** Force the functions from @p start to @p end to be recalculated. */
         void updateFunctions( const QModelIndex & start, const QModelIndex& end );
         
-        void setModel(PlotsModel* f);
-        PlotsModel* model() const { return m_model; }
+        void setModel(PlotsFilterProxyModel* f);
+        PlotsFilterProxyModel* model() const { return m_model; }
         
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
@@ -90,6 +90,9 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void drawAxes(QPainter *f, CoordinateSystem a);
         void drawPolarAxes(QPainter *f);
         void drawCartesianAxes(QPainter *f);
+        PlotItem *fromProxy(int proxy_row) const; // get the real item from proxy
+        PlotItem *fromSource(int realmodel_row) const; // get the item filtered by the proxy
+
         
         double rang_x, rang_y;
         bool m_squares;
@@ -99,7 +102,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QRectF viewport;
         QRectF userViewport;
         QSizeF m_size;
-        PlotsModel* m_model;
+        PlotsFilterProxyModel* m_model;
         
         static const QColor m_axeColor;
         static const QColor m_axe2Color;

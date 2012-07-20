@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
     Surface * item = model->addSurface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan);
     
-    qDebug() << item;
+    qDebug() << item << item->spaceDimension();
     
     qDebug() << item->expression().toString() << item->interval("x");
     

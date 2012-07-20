@@ -38,7 +38,7 @@
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>
 
-PlotsView2D::PlotsView2D(QWidget *parent,PlotsModel* fm)
+PlotsView2D::PlotsView2D(QWidget *parent,PlotsFilterProxyModel* fm)
 :QWidget(parent), Plotter2D(size(), fm),
     valid(false), mode(None),
     m_framed(false), m_readonly(false), m_selection(0)
@@ -361,7 +361,11 @@ void PlotsView2D::modelChanged()
 void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)
 {
     Q_ASSERT(selection);
-    Q_ASSERT(selection->model() == model());
+//     Q_ASSERT(selection->model() == model());
+
+    //El item selection es del modelo original no del proxy
+    Q_ASSERT(qobject_cast< const PlotsModel* >(selection->model()));
+
     
     m_selection = selection;
     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));

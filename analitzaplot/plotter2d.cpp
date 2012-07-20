@@ -45,7 +45,7 @@ QColor const Plotter2D::m_derivativeColor(90,90,160);
 
 
 
-Plotter2D::Plotter2D(const QSizeF& size, PlotsModel* model)
+Plotter2D::Plotter2D(const QSizeF& size, PlotsFilterProxyModel* model)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true), m_axis(true)
 {}
 
@@ -170,6 +170,31 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     painter->drawPie(rectY, startAngleY, spanAngle);
 }
 
+PlotItem* Plotter2D::fromProxy(int proxy_row) const
+{
+    QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
+    
+//     qDebug() << "de" << m_model->rowCount();
+    
+    if (pi.isValid())
+        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row());
+    
+    return 0;
+}
+
+PlotItem* Plotter2D::fromSource(int realmodel_row) const
+{
+    
+    QModelIndex si = m_model->mapFromSource(qobject_cast<PlotsModel *>(m_model->sourceModel())->index(realmodel_row,0));
+    
+    if (si.isValid())
+        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(si.row());
+    
+    
+    return 0;
+//     .row());
+}
+
 void Plotter2D::drawFunctions(QPaintDevice *qpd)
 {
     QPen pfunc(QColor(0,150,0), 2);
@@ -189,7 +214,13 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
         if (!m_model || current == -1) t = Cartesian; 
         else
-            t=m_model->item(current)->coordinateSystem();
+        {
+            if (fromProxy(current))
+                t=fromProxy(current)->coordinateSystem();
+            else
+                t = Cartesian;
+
+        }
     
     if (m_axis)
         drawAxes(&p, t);
@@ -201,22 +232,28 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     int k=0;
 //     PlaneCurveModel::const_iterator it=m_model->constBegin(), itEnd=m_model->constEnd();
 //     for (; it!=itEnd; ++it, ++k ) {
-    for (int k = 0; k < m_model->planeCurves().size(); ++k )
+
+    //funtiongraph
+    PlaneCurve *curve = 0;
+    
+    for (int k = 0; k < m_model->rowCount(); ++k )
     {
+        curve = dynamic_cast<PlaneCurve *>(fromProxy(k));
         
         //NOTE GSOC POINTS=0
         //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,
         //por ejemplo en el caso de parametric se hace un clip para ver si la curva esta dentro o no del viewport
         //entonces ademas de verificar que es sible si debe vericiar que existan puntos antes de pintar una funcion
-        if (!m_model->item(k)->isVisible() || m_model->planeCurves().values()[k]->points().isEmpty())
+        
+        if (!curve->isVisible() || curve->points().isEmpty())
             continue;
         
-        pfunc.setColor(m_model->item(k)->color());
+        pfunc.setColor(curve->color());
         pfunc.setWidth((k==current)+1);
         p.setPen(pfunc);
         
-        const QVector<QPointF> &vect=static_cast<const PlaneCurve*>(m_model->item(k))->points();
-        QVector<int> jumps=static_cast<const PlaneCurve*>(m_model->item(k))->jumps();
+        const QVector<QPointF> &vect=curve->points();
+        QVector<int> jumps=curve->jumps();
         
         unsigned int pointsCount = vect.count();
         QPointF ultim(toWidget(vect[0]));
@@ -228,7 +265,8 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 #ifdef DEBUG_GRAPH
         qDebug() << "---------" << jumps.count()+1;
 #endif
-        for(unsigned int j=0; j<pointsCount; j++) {
+        for(unsigned int j=0; j<pointsCount; j++)
+        {
             QPointF act=toWidget(vect.at(j));
             
 //          qDebug() << "xxxxx" << act << ultim << isnan(act.y()) << isnan(ultim.y());
@@ -295,7 +333,14 @@ void Plotter2D::updateFunctions(const QModelIndex& startIdx, const QModelIndex& 
     Q_ASSERT(startIdx.isValid() && endIdx.isValid());
     int start=startIdx.row(), end=endIdx.row();
     
-    for(int i=start; i<=end; i++) {
+    
+    PlaneCurve *curve = 0;
+    for(int i=start; i<=end; i++) 
+    {
+        curve = dynamic_cast<PlaneCurve *>(fromSource(i));
+
+        if (!curve) continue;
+        
         QRectF viewport_fixed = viewport;
         viewport_fixed.setTopLeft(viewport.bottomLeft());
         viewport_fixed.setHeight(fabs(viewport.height()));
@@ -303,9 +348,9 @@ void Plotter2D::updateFunctions(const QModelIndex& startIdx, const QModelIndex& 
 //         qDebug() << "ORI" << viewport << viewport.center() <<  "CH" << viewport_fixed<< viewport_fixed.center();
         //it works con este parche se le pasa a las curvas la informacion adecuada basada en centro y size
         // y se conserva la semantica de qrectf la esquina superior izquierda es el origen
-        dynamic_cast<PlaneCurve*>(m_model->item(i))->update(viewport_fixed);
+        curve->update(viewport_fixed);
     }
-    
+
     m_dirty = false;
     
     forceRepaint();
@@ -316,8 +361,9 @@ QPointF Plotter2D::calcImage(const QPointF& ndp) const
     if (!m_model || currentFunction() == -1) return QPointF(); // guard
     
     //DEPRECATED if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
-    if (m_model->item(currentFunction())->isVisible())
-                return dynamic_cast<PlaneCurve*>(m_model->item(currentFunction()))->image(ndp).first;
+    if (fromSource(currentFunction()))
+        if (fromSource(currentFunction())->isVisible())
+            return dynamic_cast<PlaneCurve*>(fromSource(currentFunction()))->image(ndp).first;
 
 //         return m_model->curveImage(currentFunction(), ndp).first;
 
@@ -371,17 +417,18 @@ QLineF Plotter2D::slope(const QPointF& dp) const
 {
     if (!m_model || currentFunction() == -1) return QLineF(); // guard
 
-    if (m_model->item(currentFunction())->isVisible())
-    {
-        QLineF ret = dynamic_cast<PlaneCurve*>(m_model->item(currentFunction()))->tangent(dp);
-        if(ret.isNull() && currentFunction()>=0) {
-            QPointF a = calcImage(dp-QPointF(.1,.1));
-            QPointF b = calcImage(dp+QPointF(.1,.1));
-            
-            ret = slopeToLine((a.y()-b.y())/(a.x()-b.x()));
+    if (fromSource(currentFunction()))
+        if (fromSource(currentFunction())->isVisible())
+        {
+            QLineF ret = dynamic_cast<PlaneCurve*>(fromSource(currentFunction()))->tangent(dp);
+            if(ret.isNull() && currentFunction()>=0) {
+                QPointF a = calcImage(dp-QPointF(.1,.1));
+                QPointF b = calcImage(dp+QPointF(.1,.1));
+                
+                ret = slopeToLine((a.y()-b.y())/(a.x()-b.x()));
+            }
+            return ret;
         }
-        return ret;
-    }
     
     return QLineF();
 }
@@ -437,8 +484,12 @@ void Plotter2D::setKeepAspectRatio(bool ar)
     updateScale(true);
 }
 
-void Plotter2D::setModel(PlotsModel* f)
+void Plotter2D::setModel(PlotsFilterProxyModel* f)
 {
+    //esto proxy debe ser del plotsmodel ... no de otro modelo
+    Q_ASSERT(qobject_cast< PlotsModel* >(f->sourceModel()));
+    Q_ASSERT(f->filterSpaceDimension() == 2); // este widget renderiza solo plots que esten en un spacio 2D
+    
     m_model=f;
     modelChanged();
     forceRepaint();

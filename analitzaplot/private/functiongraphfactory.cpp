@@ -32,9 +32,16 @@ Analitza::ExpressionType FunctionGraphFactory::expressionType(const QString& id)
     return expressionTypeFunctions[id]();
 }
 
+int FunctionGraphFactory::spaceDimension(const QString& id) const
+{
+    return spaceDimensions[id];
+}
+
 int FunctionGraphFactory::spaceDimension(const Analitza::ExpressionType& etype, const QStringList &bvars) const
 {
     Q_ASSERT(!bvars.isEmpty());
+    
+//     qDebug() << "el tipo " << etype.type() << bvars;
     
     Analitza::ExpressionType ftype = etype;
     

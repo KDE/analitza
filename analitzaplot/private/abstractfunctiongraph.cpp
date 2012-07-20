@@ -68,8 +68,14 @@ AbstractFunctionGraph::~AbstractFunctionGraph()
 int AbstractFunctionGraph::spaceDimension() const
 {
 //     qDebug() <<"ktype " << analyzer->type().toString() << typeName() << analyzer->expression().toString();
+    Analitza::Analyzer a(variables());
+    a.setExpression(m_e);
+    // como los backend pueden necesitar un tipo diferente en forma se tiene que evaluar con la expresion
+    //original
+    //falla cuando hay multples casos por eso se agrega un get scapce by id
+//     return FunctionGraphFactory::self()->spaceDimension(a.type(), parameters());
     
-    return FunctionGraphFactory::self()->spaceDimension(analyzer->type(), parameters());
+    return FunctionGraphFactory::self()->spaceDimension(m_internalId); // se usa el internal id que es una valor correcto pues se asigo cuando en el ctr de item
 }
 
 Analitza::Variables *AbstractFunctionGraph::variables() const 

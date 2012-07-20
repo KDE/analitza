@@ -22,6 +22,7 @@
 
 #include <QAbstractListModel>
 #include <QColor>
+#include <QSortFilterProxyModel>
 
 #include "analitzaplot/analitzaplotexport.h"
 
@@ -87,5 +88,28 @@ private:
     bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem
     bool m_isCheckable;
 };
+
+
+class ANALITZAPLOT_EXPORT PlotsFilterProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+    public:
+        PlotsFilterProxyModel(QObject *parent = 0);
+        virtual ~PlotsFilterProxyModel();
+
+        int filterSpaceDimension() const { return m_dimension; }
+        void setFilterSpaceDimension(int dimension);
+
+        //functiontype ... if the item is a functiongraph TODO
+
+    protected:
+        virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+
+    private:
+        int m_dimension; // 2 => 2D, 3 => 3D, -1 => ALL
+};
+
+
 
 #endif // FUNCTIONGRAPHMODEL_H
