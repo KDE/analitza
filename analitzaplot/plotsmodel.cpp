@@ -32,10 +32,11 @@
 #include <QPixmap>
 #include <QFont>
 #include <QIcon>
+#include <KIcon>
 // #include <kcategorizedsortfilterproxymodel.h>
 
 PlotsModel::PlotsModel(QObject* parent, Analitza::Variables *v): QAbstractListModel(parent)
-    , m_variables(v), m_itemCanCallModelRemoveItem(true)
+    , m_variables(v), m_itemCanCallModelRemoveItem(true), m_isCheckable(true)
 {
 }
 
@@ -60,21 +61,27 @@ void PlotsModel::setVariables(Analitza::Variables* v)
 Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
 {
     if(index.isValid())
-        return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsTristate;
+        return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEditable;
     else
         return 0;
-}
-
-bool PlotsModel::hasChildren(const QModelIndex & parent) const
-{
-    Q_UNUSED(parent);
-
-    return false;
 }
 
 Qt::DropActions PlotsModel::supportedDropActions() const
 {
     return Qt::IgnoreAction;
+}
+
+QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    QVariant ret;
+    if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
+        switch(section) {
+        case 0:
+            ret=i18nc("@title:column", "Plot");
+            break;
+        }
+    }
+    return ret;
 }
 
 QVariant PlotsModel::data(const QModelIndex & index, int role) const
@@ -85,39 +92,53 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
     int var=index.row();
 
     PlotItem *tmpcurve = m_items.at(var);
-
+    
     switch(role)
     {
     case Qt::DisplayRole:
         return tmpcurve->expression().toString();
-        break;
     case Qt::DecorationRole:
     {
-        QPixmap ico(32, 32);
-        ico.fill(tmpcurve->color());
-        return  QIcon(ico);
-        break;
+//         QPixmap ico(32, 32);
+//         ico.fill(tmpcurve->color());
+//         return  QIcon(ico);
+        return KIcon(tmpcurve->iconName());
     }
     case Qt::ToolTipRole:
-//         return tmpcurve->name();
+        return tmpcurve->name();
+    case Qt::StatusTipRole:
+        return tmpcurve->typeName();
+        
 
-        break;
-
-//     case KCategorizedSortFilterProxyModel::CategoryDisplayRole:
-//     {
-//         return tmpcurve->typeName();
-//         break;
-//     }
-//     case KCategorizedSortFilterProxyModel::CategorySortRole:
-//     {
-//         return tmpcurve->typeName();
-//         break;
-//     }
-    default:
-        break;
     }
 
+    if (role == Qt::CheckStateRole && m_isCheckable)
+        return tmpcurve->isVisible()?Qt::Checked:Qt::Unchecked;
+    
+    
     return QVariant();
+}
+
+bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+// //     if(role==Shown) {
+// //         bool isshown=value.toBool();
+// //         funclist[idx.row()].setShown(isshown);
+// //         
+// //         QModelIndex idx1=index(idx.row(), 0), idxEnd=index(idx.row(), columnCount()-1);
+// //         emit dataChanged(idx1, idxEnd);
+// //     }
+//     return false;
+
+    if (index.isValid() && role == Qt::CheckStateRole && m_isCheckable) 
+    {
+        m_items[index.row()]->setVisible(value.toBool());
+        
+//         qDebug() << m_items[index.row()]->name() << " is now " << m_items[index.row()]->isVisible();
+         emit dataChanged(index, index);
+         return true;
+     }
+     return QAbstractListModel::setData(index,value,role);
 }
 
 int PlotsModel::rowCount(const QModelIndex & parent) const

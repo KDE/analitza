@@ -51,11 +51,16 @@ public:
     void setVariables(Analitza::Variables *v); // set variables for all this items this not emit setdata signal
     
     Qt::ItemFlags flags(const QModelIndex & index) const;
-    bool hasChildren(const QModelIndex & parent = QModelIndex()) const;
     Qt::DropActions supportedDropActions() const;
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
+
+    //si es tru entonces los items pueden ocultar por medio de checks en la vista
+    bool isCheckable () const { return m_isCheckable; }
+    void aaasetCheckable ( bool b) { m_isCheckable = b; }
 
     PlaneCurve * addPlaneCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
     SpaceCurve * addSpaceCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
@@ -70,6 +75,7 @@ public:
     void removeItem(int curveIndex);
 
 private:
+    //WARNING no poner nada encima de los templates causan un bug al momento de detruir #qtbug
     template<typename VisualItemType>
     VisualItemType * addItem(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
 
@@ -79,6 +85,7 @@ private:
     Analitza::Variables *m_variables;
     QList<PlotItem*> m_items;
     bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem
+    bool m_isCheckable;
 };
 
 #endif // FUNCTIONGRAPHMODEL_H
