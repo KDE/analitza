@@ -196,19 +196,19 @@ bool FunctionGraph::canDraw(const Analitza::Expression& testexp, int spacedim, Q
     errs.clear();
     id = QString();
     
-    if(!testexp.isCorrect())
+    if(!testexp.isCorrect() || testexp.toString().isEmpty())
     {
         errs << i18n("The expression is not correct");
         
         return false;
     }
     
-    
     Analitza::Analyzer *a = new Analitza::Analyzer;
     
     QString expectedid;
 
     a->setExpression(testexp);
+    
     if (testexp.isEquation())
     {
         a->setExpression(a->expression().equationToFunction());
