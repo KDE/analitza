@@ -30,6 +30,7 @@
 #include "analitzaplot/plotsview3d.h"
 #include <analitzaplot/plotsdictionarymodel.h>
 #include <planecurve.h>
+#include <plotsfilterproxymodel.h>
 #include <analitza/variables.h>
 #include <analitza/apply.h>
 #include <analitza/variable.h>
