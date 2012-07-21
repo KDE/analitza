@@ -308,6 +308,8 @@ PlotsFilterProxyModel::~PlotsFilterProxyModel()
 
 void PlotsFilterProxyModel::setFilterSpaceDimension(int dimension)
 {
+    Q_ASSERT(dimension == 2 || dimension == 3);
+    
     m_dimension = dimension;
     invalidateFilter();
 }
@@ -328,4 +330,3 @@ bool PlotsFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &s
     return item->name().contains(filterRegExp()) ||
         item->expression().toString().contains(filterRegExp());*/
 }
-

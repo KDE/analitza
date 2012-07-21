@@ -182,16 +182,6 @@ PlotItem* Plotter2D::fromProxy(int proxy_row) const
     return 0;
 }
 
-PlotItem* Plotter2D::fromSource(int realmodel_row) const
-{
-    QModelIndex si = m_model->mapFromSource(m_model->sourceModel()->index(realmodel_row,0));
-
-    if (si.isValid())
-        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(realmodel_row);
-    
-    return 0;
-}
-
 void Plotter2D::drawFunctions(QPaintDevice *qpd)
 {
     QPen pfunc(QColor(0,150,0), 2);
@@ -330,13 +320,14 @@ void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end) 
 //     Q_ASSERT(startIdx.isValid() && endIdx.isValid());
 //     int start=startIdx.row(), end=endIdx.row();
     
-    
     PlaneCurve *curve = 0;
     for(int i=start; i<=end; i++) 
     {
         curve = dynamic_cast<PlaneCurve *>(fromProxy(i));
 
         if (!curve) continue;
+        
+        if (!curve->isVisible()) continue;
         
         QRectF viewport_fixed = viewport;
         viewport_fixed.setTopLeft(viewport.bottomLeft());
@@ -345,6 +336,7 @@ void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end) 
 //         qDebug() << "ORI" << viewport << viewport.center() <<  "CH" << viewport_fixed<< viewport_fixed.center();
         //it works con este parche se le pasa a las curvas la informacion adecuada basada en centro y size
         // y se conserva la semantica de qrectf la esquina superior izquierda es el origen
+        
         curve->update(viewport_fixed);
     }
 
@@ -358,9 +350,9 @@ QPointF Plotter2D::calcImage(const QPointF& ndp) const
     if (!m_model || currentFunction() == -1) return QPointF(); // guard
     
     //DEPRECATED if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
-    if (fromSource(currentFunction()))
-        if (fromSource(currentFunction())->isVisible())
-            return dynamic_cast<PlaneCurve*>(fromSource(currentFunction()))->image(ndp).first;
+    if (fromProxy(currentFunction()))
+        if (fromProxy(currentFunction())->isVisible())
+            return dynamic_cast<PlaneCurve*>(fromProxy(currentFunction()))->image(ndp).first;
 
 //         return m_model->curveImage(currentFunction(), ndp).first;
 
@@ -393,8 +385,10 @@ void Plotter2D::updateScale(bool repaint)
     }
     
     if(repaint) {
-        if(m_model && m_model->rowCount()>0)
-            updateFunctions(QModelIndex(), 0, m_model->rowCount()-1);
+        //WARNING estas 2 lineas cuasan que se actulicen los plots cuando no es necesario hacerlo
+        //tener en cuenta que el costo de actualizarlo es alto pues alli es donde se poligoniza la curva
+//         if(m_model && m_model->rowCount()>0)
+//             updateFunctions(QModelIndex(), 0, m_model->rowCount()-1);
         forceRepaint();
     }
 }
@@ -414,10 +408,10 @@ QLineF Plotter2D::slope(const QPointF& dp) const
 {
     if (!m_model || currentFunction() == -1) return QLineF(); // guard
 
-    if (fromSource(currentFunction()))
-        if (fromSource(currentFunction())->isVisible())
+    if (fromProxy(currentFunction()))
+        if (fromProxy(currentFunction())->isVisible())
         {
-            QLineF ret = dynamic_cast<PlaneCurve*>(fromSource(currentFunction()))->tangent(dp);
+            QLineF ret = dynamic_cast<PlaneCurve*>(fromProxy(currentFunction()))->tangent(dp);
             if(ret.isNull() && currentFunction()>=0) {
                 QPointF a = calcImage(dp-QPointF(.1,.1));
                 QPointF b = calcImage(dp+QPointF(.1,.1));

@@ -74,7 +74,7 @@ public:
     /** Returns the viewing port */
     QRectF definedViewport() const;
     
-    // selectionmodel from the plotsmodel (NOT from the proxy)
+    // selectionmodel from the the PROXY
     void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:

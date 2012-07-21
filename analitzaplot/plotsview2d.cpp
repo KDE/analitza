@@ -206,7 +206,6 @@ void PlotsView2D::mouseReleaseEvent(QMouseEvent *e)
 
 void PlotsView2D::mouseMoveEvent(QMouseEvent *e)
 {
-    
     mark=calcImage(fromWidget(e->pos()));
     
     if(!m_readonly && mode==Pan && ant != toViewport(e->pos())){
@@ -366,8 +365,8 @@ void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)
     Q_ASSERT(selection);
 //     Q_ASSERT(selection->model() == model());
 
-    //El item selection es del modelo original no del proxy
-    Q_ASSERT(qobject_cast< const PlotsModel* >(selection->model()));
+    //El item selection es del proxy
+    Q_ASSERT(qobject_cast< const PlotsFilterProxyModel* >(selection->model()));
 
     
     m_selection = selection;

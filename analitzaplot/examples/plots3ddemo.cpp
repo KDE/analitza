@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
     proxy->setSourceModel(model);
     
     PlotsView3D *view3d = new PlotsView3D(mainWindow);
+//     view3d->setGridIsDrawn(false);
     view3d->setModel(proxy);
     view3d->setSelectionModel(selection);
     
@@ -86,6 +87,8 @@ int main(int argc, char *argv[])
     model->addSurface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan)->spaceDimension();
     model->addPlaneCurve(Analitza::Expression("x+3-y=7"), "asdasd, ", Qt::red)->spaceDimension();
     model->addSurface(Analitza::Expression("x*x+y*y-z*z= 1/2"), "Hola", Qt::yellow)->spaceDimension();
+    qDebug() << model->addSurface(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), "aaa", Qt::lightGray);
+    model->addPlaneCurve(Analitza::Expression("t->vector{t,t*t}"), "asdasd, ", Qt::blue)->spaceDimension();
 
     
 //     qDebug() << item << item->spaceDimension();
