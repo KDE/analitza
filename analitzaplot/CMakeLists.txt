@@ -61,6 +61,7 @@ planecurve.cpp
 spacecurve.cpp
 surface.cpp
 plotsmodel.cpp
+plotsfilterproxymodel.cpp
 plotsdictionarymodel.cpp
 plotter2d.cpp
 plotsview3d.cpp
@@ -100,6 +101,7 @@ planecurve.h
 spacecurve.h
 surface.h
 plotsmodel.h
+plotsfilterproxymodel.h
 plotsdictionarymodel.h
 plotter2d.h
 plotsview2d.h

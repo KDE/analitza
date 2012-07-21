@@ -23,6 +23,7 @@
 #include "planecurve.h"
 
 #include "plotsmodel.h"
+#include "plotsfilterproxymodel.h"
 
 #include <QPalette>
 #include <QPen>

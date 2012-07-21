@@ -19,6 +19,7 @@
 
 #include "plotsview3d.h"
 #include "plotsmodel.h"
+#include "plotsfilterproxymodel.h"
 #include "surface.h"
 #include <QVector3D>
 #include <QVector2D>
