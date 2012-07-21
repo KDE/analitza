@@ -85,8 +85,8 @@ void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
     Q_ASSERT(selection);
 //     Q_ASSERT(selection->model() == m_model);
     
-        //El item selection es del modelo original no del proxy
-    Q_ASSERT(qobject_cast< const PlotsModel* >(selection->model()));
+    //El item selection es del proxy
+    Q_ASSERT(qobject_cast< const PlotsProxyModel* >(selection->model()));
     
     
     m_selection = selection;

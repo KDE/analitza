@@ -33,6 +33,7 @@
 #include <analitzaplot/plotsmodel.h>
 #include <surface.h>
 #include <plotsproxymodel.h>
+#include <KSelectionProxyModel>
 
 int main(int argc, char *argv[])
 {
@@ -57,27 +58,18 @@ int main(int argc, char *argv[])
     
     //BEGIN test calls
     
-    QTreeView *viewsource = new QTreeView(tabs);
-    viewsource->setMouseTracking(true);
-    viewsource->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    
-    QTreeView *viewproxy = new QTreeView(tabs);
-    viewproxy->setMouseTracking(true);
-    viewproxy->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    
     PlotsModel *model = new PlotsModel(tabs);
-    viewsource->setModel(model);
 
     PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
     proxy->setFilterSpaceDimension(2);
     proxy->setSourceModel(model);
     
-    viewproxy->setModel(proxy);
+    QItemSelectionModel *selection = new QItemSelectionModel(proxy);
 
     PlotsView2D *view2d = new PlotsView2D(tabs);
     view2d->setSquares(false);
     view2d->setModel(proxy);
-    view2d->setSelectionModel(viewproxy->selectionModel());
+    view2d->setSelectionModel(selection);
     view2d->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
 
     model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
@@ -96,6 +88,17 @@ int main(int argc, char *argv[])
 
     //END test calls
 
+    QTreeView *viewsource = new QTreeView(tabs);
+    viewsource->setMouseTracking(true);
+    viewsource->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    viewsource->setModel(model);
+    
+    QTreeView *viewproxy = new QTreeView(tabs);
+    viewproxy->setMouseTracking(true);
+    viewproxy->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    viewproxy->setModel(proxy);
+    viewproxy->setSelectionModel(selection);
+    
     tabs->addWidget(viewsource);
     tabs->addWidget(viewproxy);
     tabs->addWidget(view2d);
