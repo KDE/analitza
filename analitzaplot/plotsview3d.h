@@ -27,7 +27,7 @@
 #include "analitzaplotexport.h"
 
 class PlotItem;
-class PlotsFilterProxyModel;
+class PlotsProxyModel;
 class QItemSelectionModel;
 
 // class Solver3D;
@@ -36,10 +36,10 @@ class ANALITZAPLOT_EXPORT PlotsView3D : public QGLViewer
     Q_OBJECT
 
 public:
-    PlotsView3D(QWidget *parent = 0, PlotsFilterProxyModel *m = 0);
+    PlotsView3D(QWidget *parent = 0, PlotsProxyModel *m = 0);
     virtual ~PlotsView3D();
 
-    void setModel(PlotsFilterProxyModel* f);
+    void setModel(PlotsProxyModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:
@@ -56,7 +56,7 @@ private:
     PlotItem *fromProxy(int proxy_row) const; // get the real item from proxy
     PlotItem *fromSource(int realmodel_row) const; // get the item filtered by the proxy
     
-    PlotsFilterProxyModel *m_model;
+    PlotsProxyModel *m_model;
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>

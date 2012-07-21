@@ -26,13 +26,13 @@
 
 //si no se establece ningun filter2d entonces no hay filtro y muetra todos los items sin importar que dimension
 //estoy es util para un vista (itemview) que quiera mostrar todo el modelo por ejemplo 
-class ANALITZAPLOT_EXPORT PlotsFilterProxyModel : public QSortFilterProxyModel
+class ANALITZAPLOT_EXPORT PlotsProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
     public:
-        PlotsFilterProxyModel(QObject *parent = 0);
-        virtual ~PlotsFilterProxyModel();
+        PlotsProxyModel(QObject *parent = 0);
+        virtual ~PlotsProxyModel();
 
         int filterSpaceDimension() const { return m_dimension; }
         void setFilterSpaceDimension(int dimension);

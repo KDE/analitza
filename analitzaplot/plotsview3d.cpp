@@ -19,7 +19,7 @@
 
 #include "plotsview3d.h"
 #include "plotsmodel.h"
-#include "plotsfilterproxymodel.h"
+#include "plotsproxymodel.h"
 #include "surface.h"
 #include <QVector3D>
 #include <QVector2D>
@@ -32,7 +32,7 @@
 #include <QDebug>
 
 
-PlotsView3D::PlotsView3D(QWidget *parent, PlotsFilterProxyModel* m)
+PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
     : QGLViewer(parent), m_model(m),m_selection(0)
 {
     setGridIsDrawn(true);
@@ -50,7 +50,7 @@ PlotsView3D::~PlotsView3D()
 
 }
 
-void PlotsView3D::setModel(PlotsFilterProxyModel* f)
+void PlotsView3D::setModel(PlotsProxyModel* f)
 {
     //esto proxy debe ser del plotsmodel ... no de otro modelo
     Q_ASSERT(qobject_cast< PlotsModel* >(f->sourceModel()));
@@ -58,7 +58,7 @@ void PlotsView3D::setModel(PlotsFilterProxyModel* f)
     
 
     m_model=f;
-    PlotsFilterProxyModel* model = m_model;
+    PlotsProxyModel* model = m_model;
 
     if (model->rowCount( ) > 0)
     {

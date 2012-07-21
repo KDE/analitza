@@ -23,7 +23,7 @@
 #include "planecurve.h"
 
 #include "plotsmodel.h"
-#include "plotsfilterproxymodel.h"
+#include "plotsproxymodel.h"
 
 #include <QPalette>
 #include <QPen>
@@ -46,7 +46,7 @@ QColor const Plotter2D::m_derivativeColor(90,90,160);
 
 
 
-Plotter2D::Plotter2D(const QSizeF& size, PlotsFilterProxyModel* model)
+Plotter2D::Plotter2D(const QSizeF& size, PlotsProxyModel* model)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true), m_axis(true)
 {}
 
@@ -476,7 +476,7 @@ void Plotter2D::setKeepAspectRatio(bool ar)
     updateScale(true);
 }
 
-void Plotter2D::setModel(PlotsFilterProxyModel* f)
+void Plotter2D::setModel(PlotsProxyModel* f)
 {
     //esto proxy debe ser del plotsmodel ... no de otro modelo
     Q_ASSERT(qobject_cast< PlotsModel* >(f->sourceModel()));

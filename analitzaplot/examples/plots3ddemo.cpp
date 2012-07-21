@@ -30,7 +30,7 @@
 #include "analitzaplot/plotsview3d.h"
 #include <analitzaplot/plotsdictionarymodel.h>
 #include <planecurve.h>
-#include <plotsfilterproxymodel.h>
+#include <plotsproxymodel.h>
 #include <analitza/variables.h>
 #include <analitza/apply.h>
 #include <analitza/variable.h>
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     PlotsModel *model = new PlotsModel(mainWindow);
     QItemSelectionModel *selection = new QItemSelectionModel(model);
     
-    PlotsFilterProxyModel *proxy = new PlotsFilterProxyModel(mainWindow);
+    PlotsProxyModel *proxy = new PlotsProxyModel(mainWindow);
     proxy->setFilterSpaceDimension(3);
     proxy->setSourceModel(model);
     

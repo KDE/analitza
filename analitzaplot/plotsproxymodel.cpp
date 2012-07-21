@@ -16,25 +16,25 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "plotsfilterproxymodel.h"
+#include "plotsproxymodel.h"
 
 #include "plotitem.h"
 #include "plotsmodel.h"
 
 
-PlotsFilterProxyModel::PlotsFilterProxyModel(QObject *parent)
+PlotsProxyModel::PlotsProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
     , m_dimension(-1)
 {
      setDynamicSortFilter(true);
 }
 
-PlotsFilterProxyModel::~PlotsFilterProxyModel()
+PlotsProxyModel::~PlotsProxyModel()
 {
 
 }
 
-void PlotsFilterProxyModel::setFilterSpaceDimension(int dimension)
+void PlotsProxyModel::setFilterSpaceDimension(int dimension)
 {
     Q_ASSERT(dimension == 2 || dimension == 3);
     
@@ -42,7 +42,7 @@ void PlotsFilterProxyModel::setFilterSpaceDimension(int dimension)
     invalidateFilter();
 }
 
-bool PlotsFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+bool PlotsProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     Q_ASSERT(sourceModel());
     

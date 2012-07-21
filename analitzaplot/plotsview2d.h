@@ -59,7 +59,7 @@ public:
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
-    PlotsView2D(QWidget *parent = 0, PlotsFilterProxyModel* fm = 0); // this ctor es para que pueda ser usado en el designer
+    PlotsView2D(QWidget *parent = 0, PlotsProxyModel* fm = 0); // this ctor es para que pueda ser usado en el designer
     
     /** Destructor. */
     ~PlotsView2D();

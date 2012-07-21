@@ -23,7 +23,7 @@
 
 #include "planecurve.h"
 
-class PlotsFilterProxyModel;
+class PlotsProxyModel;
 class QPainter;
 class QPaintDevice;
 
@@ -32,7 +32,7 @@ class QModelIndex;
 class ANALITZAPLOT_EXPORT Plotter2D
 {
     public:
-        Plotter2D(const QSizeF& size, PlotsFilterProxyModel* model = 0);
+        Plotter2D(const QSizeF& size, PlotsProxyModel* model = 0);
         virtual ~Plotter2D();
         
         virtual void drawFunctions(QPaintDevice *qpd);
@@ -60,8 +60,8 @@ class ANALITZAPLOT_EXPORT Plotter2D
         //los index son de PROXY , esto para evitar que el widget escuche signal inecesarias
         void updateFunctions( const QModelIndex & parent, int start, int end );
         
-        void setModel(PlotsFilterProxyModel* f);
-        PlotsFilterProxyModel* model() const { return m_model; }
+        void setModel(PlotsProxyModel* f);
+        PlotsProxyModel* model() const { return m_model; }
         
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
@@ -103,7 +103,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QRectF viewport;
         QRectF userViewport;
         QSizeF m_size;
-        PlotsFilterProxyModel* m_model;
+        PlotsProxyModel* m_model;
         
         static const QColor m_axeColor;
         static const QColor m_axe2Color;

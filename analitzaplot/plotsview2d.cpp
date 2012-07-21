@@ -35,11 +35,11 @@
 #include <analitza/analyzer.h>
 #include "plotter2d.h"
 #include "plotsmodel.h"
-#include "plotsfilterproxymodel.h"
+#include "plotsproxymodel.h"
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>
 
-PlotsView2D::PlotsView2D(QWidget *parent,PlotsFilterProxyModel* fm)
+PlotsView2D::PlotsView2D(QWidget *parent,PlotsProxyModel* fm)
 :QWidget(parent), Plotter2D(size(), fm),
     valid(false), mode(None),
     m_framed(false), m_readonly(false), m_selection(0)
@@ -367,7 +367,7 @@ void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)
 //     Q_ASSERT(selection->model() == model());
 
     //El item selection es del proxy
-    Q_ASSERT(qobject_cast< const PlotsFilterProxyModel* >(selection->model()));
+    Q_ASSERT(qobject_cast< const PlotsProxyModel* >(selection->model()));
 
     
     m_selection = selection;

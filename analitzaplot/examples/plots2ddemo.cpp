@@ -32,7 +32,7 @@
 #include "analitzaplot/plotsview2d.h"
 #include <analitzaplot/plotsmodel.h>
 #include <surface.h>
-#include <plotsfilterproxymodel.h>
+#include <plotsproxymodel.h>
 
 int main(int argc, char *argv[])
 {
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     PlotsModel *model = new PlotsModel(tabs);
     viewsource->setModel(model);
 
-    PlotsFilterProxyModel *proxy = new PlotsFilterProxyModel(tabs);
+    PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
     proxy->setFilterSpaceDimension(2);
     proxy->setSourceModel(model);
     
