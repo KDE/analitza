@@ -20,6 +20,10 @@
 #include <QStringListModel>
 #include <qtreeview.h>
 #include <qsplitter.h>
+#include <QVBoxLayout>
+#include <QCheckBox>
+#include <QPushButton>
+#include <QStatusBar>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
@@ -38,11 +42,6 @@
 #include <analitza/container.h>
 #include <analitza/polynomial.h>
 
-
-#include <functional>
-
-
-
 int main(int argc, char *argv[])
 {
     KAboutData aboutData("PlotView3DTest",
@@ -60,22 +59,34 @@ int main(int argc, char *argv[])
 
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setMinimumSize(640, 480);
+    mainWindow->statusBar()->show();
+
+    QWidget *central = new QWidget(mainWindow);
+    QVBoxLayout *layout = new QVBoxLayout(central);
     
-    QSplitter *tabs = new QSplitter(mainWindow);
-    QTreeView *viewsource = new QTreeView(tabs);
-    QTreeView *viewproxy = new QTreeView(tabs);
+    QCheckBox *checkvisible = new QCheckBox(central);
+    checkvisible->setText("Allow to the model can change the visibility of items");
+    checkvisible->setCheckState(Qt::Checked);
+    checkvisible->setTristate(false);
+
+    QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
+
+    layout->addWidget(checkvisible);
+    layout->addWidget(tabs);
     
     //BEGIN test calls
     
-    PlotsModel *model = new PlotsModel(mainWindow);
+    PlotsModel *model = new PlotsModel(tabs);
     
-    PlotsProxyModel *proxy = new PlotsProxyModel(mainWindow);
+    checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
+
+    PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
     proxy->setFilterSpaceDimension(3);
     proxy->setSourceModel(model);
     
     QItemSelectionModel *selection = new QItemSelectionModel(proxy);
     
-    PlotsView3D *view3d = new PlotsView3D(mainWindow);
+    PlotsView3D *view3d = new PlotsView3D(tabs);
     view3d->setModel(proxy);
     view3d->setSelectionModel(selection);
 
@@ -93,14 +104,24 @@ int main(int argc, char *argv[])
 
     //END test calls
     
+    QTreeView *viewsource = new QTreeView(tabs);
+    viewsource->setRootIsDecorated(false);
+    viewsource->setMouseTracking(true);
+    viewsource->setEditTriggers(QAbstractItemView::NoEditTriggers);
     viewsource->setModel(model);
+    
+    QTreeView *viewproxy = new QTreeView(tabs);
+    viewproxy->setRootIsDecorated(false);
+    viewproxy->setMouseTracking(true);
+    viewproxy->setEditTriggers(QAbstractItemView::NoEditTriggers);
     viewproxy->setModel(proxy);
+    viewproxy->setSelectionModel(selection);
     
     tabs->addWidget(viewsource);
     tabs->addWidget(viewproxy);
     tabs->addWidget(view3d);
 
-    mainWindow->setCentralWidget(tabs);
+    mainWindow->setCentralWidget(central);
     mainWindow->show();
 
     return app.exec();

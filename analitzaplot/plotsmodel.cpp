@@ -149,6 +149,15 @@ int PlotsModel::rowCount(const QModelIndex & parent) const
         return m_items.size();
 }
 
+void PlotsModel::setCheckable(bool b)
+{
+    emit layoutAboutToBeChanged();
+    
+    m_isCheckable = b;
+
+    emit layoutChanged();
+}
+
 PlaneCurve * PlotsModel::addPlaneCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
 {
     return addItem<PlaneCurve>(functionExpression, name, col);

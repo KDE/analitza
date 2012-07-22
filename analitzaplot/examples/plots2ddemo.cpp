@@ -23,6 +23,7 @@
 #include <qsplitter.h>
 #include <QStatusBar>
 #include <qboxlayout.h>
+#include <QCheckBox>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
@@ -54,11 +55,24 @@ int main(int argc, char *argv[])
     mainWindow->setMinimumSize(640, 480);
     mainWindow->statusBar()->show();
 
-    QSplitter *tabs = new QSplitter(Qt::Horizontal, mainWindow);
+    QWidget *central = new QWidget(mainWindow);
+    QVBoxLayout *layout = new QVBoxLayout(central);
     
+    QCheckBox *checkvisible = new QCheckBox(central);
+    checkvisible->setText("Allow to the model can change the visibility of items");
+    checkvisible->setCheckState(Qt::Checked);
+    checkvisible->setTristate(false);
+    
+    QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
+
+    layout->addWidget(checkvisible);
+    layout->addWidget(tabs);
+
     //BEGIN test calls
     
     PlotsModel *model = new PlotsModel(tabs);
+    
+    checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
 
     PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
     proxy->setFilterSpaceDimension(2);
@@ -70,7 +84,6 @@ int main(int argc, char *argv[])
     view2d->setSquares(false);
     view2d->setModel(proxy);
     view2d->setSelectionModel(selection);
-    view2d->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
 
     model->addPlaneCurve(Analitza::Expression("y->y*y"), "y->", Qt::magenta);
     model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
@@ -90,11 +103,13 @@ int main(int argc, char *argv[])
     //END test calls
 
     QTreeView *viewsource = new QTreeView(tabs);
+    viewsource->setRootIsDecorated(false);
     viewsource->setMouseTracking(true);
     viewsource->setEditTriggers(QAbstractItemView::NoEditTriggers);
     viewsource->setModel(model);
     
     QTreeView *viewproxy = new QTreeView(tabs);
+    viewproxy->setRootIsDecorated(false);
     viewproxy->setMouseTracking(true);
     viewproxy->setEditTriggers(QAbstractItemView::NoEditTriggers);
     viewproxy->setModel(proxy);
@@ -104,7 +119,7 @@ int main(int argc, char *argv[])
     tabs->addWidget(viewproxy);
     tabs->addWidget(view2d);
 
-    mainWindow->setCentralWidget(tabs);
+    mainWindow->setCentralWidget(central);
 
     mainWindow->show();
 

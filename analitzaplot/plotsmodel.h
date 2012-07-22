@@ -58,9 +58,13 @@ public:
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
+    //TODO pensar en mejores nombres
     //si es tru entonces los items pueden ocultar por medio de checks en la vista
     bool isCheckable () const { return m_isCheckable; }
-    void setCheckable ( bool b) { m_isCheckable = b; }
+    
+public slots:
+    void setCheckable ( bool b);
+public:
 
     PlaneCurve * addPlaneCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
     SpaceCurve * addSpaceCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
