@@ -37,7 +37,7 @@ PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
 {
     setGridIsDrawn(true);
     setAxisIsDrawn(true);
-    
+//     
     setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
     setSceneRadius(6); // TODO no magic number 5 es el size de las coords (alrededor )
     
@@ -108,6 +108,78 @@ void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
 //     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }
 
+
+void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(int modelindex) // modelindex del proxy
+{
+    //NOTE 
+    //IMPORTANT SIEMPRE HACER UN MAKECURRENT ANTES DE OPERACIONES OPENGL : EL CLIENTE PUEDE TERNER MAS DE UN GLWIDGET A LA VEZ
+    makeCurrent();
+    
+    
+//     Q_ASSERT(!parent.isValid());
+//     Q_ASSERT(start == end); // siempre se agrega un solo item al model
+
+    PlotItem *item = fromProxy(modelindex);
+//         qDebug() << start << end<< item->spaceDimension();
+    
+//     if (item)
+//     qDebug() << item->expression().toString() << item->spaceDimension();
+
+    if (!item) return ;// no agregar nada que no cumpla las politicas/filtros del proxy
+
+    if (item->spaceDimension() != 3) return ;
+    
+    Surface* surf = static_cast<Surface*>(item);
+    
+    if (!surf) return ;
+
+//     qDebug() << surf->faces().isEmpty();
+    
+    if (surf->faces().isEmpty()) // si no esta vacio no es necesario generar nada 
+        surf->update(Box3D());
+        
+    GLuint dlid = glGenLists(1);
+    m_displayLists[surf] = dlid;
+
+    float shininess = 15.0f;
+    float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
+    float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
+
+    //BEGIN display list
+    glNewList(dlid, GL_COMPILE);
+
+    // set specular and shiniess using glMaterial (gold-yellow)
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
+
+    // set ambient and diffuse color using glColorMaterial (gold-yellow)
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+//     glColor3fv(diffuseColor);
+    glColor3ub(surf->color().red(), surf->color().green(), surf->color().blue());
+
+//     qDebug() << "FACES -> " << surf->faces().size();
+    
+    foreach (const Triangle3D &face, surf->faces())
+    {
+        glBegin(GL_TRIANGLES);
+        QVector3D n;
+        
+        //TODO no magic numbers
+        if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
+        else n = QVector3D(0.5, 0.1, 0.2).normalized();
+        
+        glNormal3d(n.x(), n.y(), n.z());
+        glVertex3d(face.p().x(), face.p().y(), face.p().z());
+        glVertex3d(face.q().x(), face.q().y(), face.q().z());
+        glVertex3d(face.r().x(), face.r().y(), face.r().z());
+        glEnd();
+    }
+
+    glEndList();
+    //END display list
+}
+
+
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
     //NOTE 
@@ -115,7 +187,7 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
     makeCurrent();
     
     
-    Q_ASSERT(!parent.isValid());
+//     Q_ASSERT(!parent.isValid());
 //     Q_ASSERT(start == end); // siempre se agrega un solo item al model
 
 
@@ -127,8 +199,13 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 //     qDebug() << item->expression().toString() << item->spaceDimension();
 
     if (!item) return ;// no agregar nada que no cumpla las politicas/filtros del proxy
+
+    if (item->spaceDimension() != 3) return ;
     
     Surface* surf = static_cast<Surface*>(item);
+    
+    if (!surf) return ;
+    
     surf->update(Box3D());
         
     GLuint dlid = glGenLists(1);
@@ -231,11 +308,61 @@ int PlotsView3D::currentFunction() const
 
 void PlotsView3D::draw()
 {
-    foreach (PlotItem *item, m_displayLists.keys())
+    PlotsProxyModel* model = m_model;
+    
+    if (!model) return ; // si no hay modelo retornar ... //NOTE guard
+    
+    //NOTE si esto pasa entonces quiere decir que el proxy empezado a filtrar otros items
+    // y si es asi borro todo lo que esta agregado al la memoria de la tarjeta
+    //esto se hace pues m_displayLists es una copia del estado actual de model
+    if (m_model->rowCount() != m_displayLists.count())
     {
-        glCallList(m_displayLists[item]);
-//         qDebug() << itemid;
+        foreach (PlotItem *item, m_displayLists.keys())
+        {
+            glDeleteLists(m_displayLists[item], 1);
+            
+            m_displayLists.remove(item);
+        }
     }
+    
+    /// luego paso a verificar el map de display list no este vacio ... si lo esta lo reconstruyo 
+    
+    if (m_displayLists.isEmpty())
+    {
+        //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
+        for (int i = 0; i < model->rowCount(); ++i)
+            addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i);
+    }
+    
+    
+    ///
+
+    for (int i = 0; i < model->rowCount(); ++i)
+    {
+        PlotItem *item = fromProxy(i);
+
+        if (!item) continue;
+
+        if (item->spaceDimension() != 3) continue;
+        
+        Surface* surf = static_cast<Surface*>(item);
+        
+        //TODO GSOC
+        // por el momento solo se dibujan superficies
+        if (!surf) continue;
+        
+        glCallList(m_displayLists[item]);
+    }
+    
+    //TODO 
+    //WARNING eliminar next iter
+    //no dibujar para cada display list ... puede que ya halla sido borrado .. en vez dibujar para cada item en el proxy
+    /// algo similar al updatefunctions
+//     foreach (PlotItem *item, m_displayLists.keys())
+//     {
+//         glCallList(m_displayLists[item]);
+// //         qDebug() << itemid;
+//     }
 }
 
 void PlotsView3D::init()
