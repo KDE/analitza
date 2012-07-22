@@ -90,7 +90,7 @@ void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
     
     
     m_selection = selection;
-    connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
+//     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }
 //los index son del modelo original es decir del PlotsModel ... NO DEL PROXY
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
