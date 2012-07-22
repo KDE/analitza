@@ -176,7 +176,11 @@ PlotItem* Plotter2D::fromProxy(int proxy_row) const
     QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
     
 //     qDebug() << "de" << m_model->rowCount();
+//     qDebug() << "2"<< qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row())->spaceDimension();
     
+    if (qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row())->spaceDimension() != 2)
+        return 0; // evitamos que los proxies de los usuario causen un bug
+
     if (pi.isValid())
         return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row());
     
@@ -227,6 +231,8 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     for (int k = 0; k < m_model->rowCount(); ++k )
     {
         curve = dynamic_cast<PlaneCurve *>(fromProxy(k));
+        
+        if (!curve) continue;
         
         //NOTE GSOC POINTS=0
         //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,

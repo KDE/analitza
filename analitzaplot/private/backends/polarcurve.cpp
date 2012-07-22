@@ -36,9 +36,9 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Polar)
-    PARAMETERS("q")
+    PARAMETERS("p")
     ICON_NAME("newpolar")
-    EXAMPLES("q->3*sin(q/0.142),q->q+3")    
+    EXAMPLES("p->3*sin(p/0.142),p->p+3")    
     
     void update(const QRectF& viewport);
     
@@ -59,7 +59,7 @@ void FunctionPolar::update(const QRectF& viewport)
     
     
     //TODO CACHE en intervalvalues!!!
-    QPair<double, double> c_limits = interval("q");
+    QPair<double, double> c_limits = interval("p");
     
 //     if ()
 //     
@@ -79,7 +79,7 @@ void FunctionPolar::update(const QRectF& viewport)
     
     double final=ulimit-inv_res;
     for(double th=dlimit; th<final; th+=inv_res) {
-        arg("q")->setValue(th);
+        arg("p")->setValue(th);
         double r = analyzer->calculateLambda().toReal().value();
         
         addPoint(polarToCartesian(r,th));
@@ -104,7 +104,7 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     
     
         //TODO CACHE en intervalvalues!!!
-    static QPair<double, double> c_limits = interval("q");
+    static QPair<double, double> c_limits = interval("p");
     
 //     if ()
 //     
@@ -119,16 +119,16 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     
 //     analyzer.setStack(m_runStack);
     QPointF dist;
-    arg("q")->setValue(th);
+    arg("p")->setValue(th);
     do {
-        arg("q")->setValue(th);
+        arg("p")->setValue(th);
         r = analyzer->calculateLambda().toReal().value();
         
         dp = polarToCartesian(r,th);
         dist = (dp-p);
         d = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
         
-        arg("q")->setValue(th+2.*pi);
+        arg("p")->setValue(th+2.*pi);
         r = analyzer->calculateLambda().toReal().value();
 
         dp = polarToCartesian(r,th);
@@ -139,7 +139,7 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     } while(d>d2);
     th -= 2.*pi;
     
-    arg("q")->setValue(th);
+    arg("p")->setValue(th);
     Analitza::Expression res=analyzer->calculateLambda();
     
     if(!res.isReal())
