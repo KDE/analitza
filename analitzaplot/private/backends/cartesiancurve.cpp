@@ -241,11 +241,20 @@ QPair<QPointF, QString> FunctionX::image(const QPointF& p)
 
 void FunctionX::update(const QRectF& viewport)
 {
-    double l_lim=viewport.bottom()-.1, r_lim=viewport.top()+.1;
-    calculateValues(l_lim, r_lim);
-    for(int i=0; i<points.size(); i++) {
-        QPointF p=points[i];
-        points[i]=QPointF(p.y(), p.x());
+//     double l_lim=viewport.bottom()-.1, r_lim=viewport.top()+.1;
+//     calculateValues(l_lim, r_lim);
+//     for(int i=0; i<points.size(); i++) {
+//         QPointF p=points[i];
+//         points[i]=QPointF(p.y(), p.x());
+//     }
+
+//BUG he movido algo debo verificar que el cidogo de arriva genera puntos ... por mientras algo mas simple que se ve igual :p
+//TODO
+    for (double eps = -10.0; eps <= 10.0; eps += 0.1)
+    {
+        arg("y")->setValue(eps);
+        double fy = analyzer->calculateLambda().toReal().value();
+        points.append(QPointF(fy, eps));
     }
 }
 

@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
     view2d->setSelectionModel(selection);
     view2d->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
 
+    model->addPlaneCurve(Analitza::Expression("y->y*y"), "y->", Qt::magenta);
     model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
     model->addPlaneCurve(Analitza::Expression("p->p+2"), "polar simple", Qt::green);
     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
