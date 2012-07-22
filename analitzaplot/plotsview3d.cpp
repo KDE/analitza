@@ -38,7 +38,6 @@ PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
     setGridIsDrawn(true);
     setAxisIsDrawn(true);
     
-        
     setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
     setSceneRadius(6); // TODO no magic number 5 es el size de las coords (alrededor )
     
@@ -47,7 +46,19 @@ PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
 
 PlotsView3D::~PlotsView3D()
 {
+    PlotsProxyModel* model = m_model;
 
+    if (model)
+        if (model->rowCount( ) > 0)
+        {
+            for (int i = 0; i < model->rowCount(); ++i)
+                if (fromProxy(i))
+                {
+                    glDeleteLists(m_displayLists[fromProxy(i)], 1);
+            
+                    addFuncs(QModelIndex(), 0, model->rowCount()-1);
+                }
+        }
 }
 
 void PlotsView3D::setModel(PlotsProxyModel* f)
@@ -62,13 +73,13 @@ void PlotsView3D::setModel(PlotsProxyModel* f)
 
     if (model->rowCount( ) > 0)
     {
-    for (int i = 0; i < model->rowCount(); ++i)
-        if (fromProxy(i))
-        {
-            glDeleteLists(m_displayLists[fromProxy(i)], 1);
-    
-            addFuncs(QModelIndex(), 0, model->rowCount()-1);
-        }
+        for (int i = 0; i < model->rowCount(); ++i)
+            if (fromProxy(i))
+            {
+                glDeleteLists(m_displayLists[fromProxy(i)], 1);
+        
+                addFuncs(QModelIndex(), 0, model->rowCount()-1);
+            }
     }
     
     //TODO disconnect prev model
@@ -76,6 +87,10 @@ void PlotsView3D::setModel(PlotsProxyModel* f)
 //     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
 //     connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+    
+    //visible off on
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(testvisible(QModelIndex,QModelIndex)));
+
     
     updateGL();
 }
@@ -92,16 +107,21 @@ void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
     m_selection = selection;
 //     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }
-//los index son del modelo original es decir del PlotsModel ... NO DEL PROXY
+
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
+    //NOTE 
+    //IMPORTANT SIEMPRE HACER UN MAKECURRENT ANTES DE OPERACIONES OPENGL : EL CLIENTE PUEDE TERNER MAS DE UN GLWIDGET A LA VEZ
+    makeCurrent();
+    
+    
     Q_ASSERT(!parent.isValid());
 //     Q_ASSERT(start == end); // siempre se agrega un solo item al model
 
-        qDebug() << start << end;
 
     
     PlotItem *item = fromProxy(start);
+//         qDebug() << start << end<< item->spaceDimension();
     
 //     if (item)
 //     qDebug() << item->expression().toString() << item->spaceDimension();
@@ -130,6 +150,8 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 //     glColor3fv(diffuseColor);
     glColor3ub(surf->color().red(), surf->color().green(), surf->color().blue());
 
+//     qDebug() << "FACES -> " << surf->faces().size();
+    
     foreach (const Triangle3D &face, surf->faces())
     {
         glBegin(GL_TRIANGLES);
@@ -149,7 +171,7 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
     glEndList();
     //END display list
     
-    
+    updateGL();
 }
 
 void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
@@ -157,11 +179,37 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
     Q_ASSERT(!parent.isValid());
     Q_ASSERT(start == end); // siempre se agrega un solo item al model
     
-        PlotItem *item = fromSource(start);
+        PlotItem *item = fromProxy(start);
 
     if (!item) return ;// no eliminar  nada que no cumpla las politicas/filtros del proxy
     
     glDeleteLists(m_displayLists[item], 1);
+}
+
+//NOTE
+//si hay un cambio aki es desetvisible (que no es necesario configurar en el plotitem) o es del 
+//setinterval (que si es necesario configurarlo en el plotitem)
+//el enfoque es: si hay un cambio borro el displaylist y lo genero de nuevo (no lo genero si el item no es visible)
+void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
+{
+    PlotItem *item = fromProxy(s.row());
+        
+    if (!item) return;
+
+    Surface* surf = static_cast<Surface*>(item);
+
+    //primero borro el displaylist
+    glDeleteLists(m_displayLists[surf], 1);
+
+    //si es visible lo quenero de nuevo .. pues seuro cambio el setinterval
+    if (surf->isVisible())
+    {
+        addFuncs(QModelIndex(), s.row(), s.row());
+
+    }
+    //caso contrario .. no hago nada 
+    
+    updateGL();
 }
 
 void PlotsView3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)

@@ -42,18 +42,21 @@ public:
     void setModel(PlotsProxyModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
 
-public slots:
+private slots:
     //los index son del modelo original es decir del PlotsModel ... NO DEL PROXY
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);
 
+    void testvisible(const QModelIndex &, const QModelIndex &);
+    
 private:
     int currentFunction() const;
     void draw();
     void init();
     
     PlotItem *fromProxy(int proxy_row) const; // get the real item from proxy
+    //TODO borrar fromsource next item 2d version too
     PlotItem *fromSource(int realmodel_row) const; // get the item filtered by the proxy
     
     PlotsProxyModel *m_model;
