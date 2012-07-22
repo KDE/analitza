@@ -75,10 +75,10 @@ void PlaneCurvesModelTest::testAppend_data()
     QTest::newRow("x->diffx") << "x->(diff(x^2:x))(x)";
     QTest::newRow("y->flat") << "y->1";
     QTest::newRow("y->trigonometric") << "y->sin y";
-    QTest::newRow("polar->scalar") << "q->2";
-    QTest::newRow("polar->function") << "q->sin q";
-    QTest::newRow("polar->hard") << "q->ceiling(q/(2*pi))";
-    QTest::newRow("polar->strange") << "q->q/q";
+    QTest::newRow("polar->scalar") << "p->2";
+    QTest::newRow("polar->function") << "p->sin p";
+    QTest::newRow("polar->hard") << "p->ceiling(p/(2*pi))";
+    QTest::newRow("polar->strange") << "p->p/p";
 
     QTest::newRow("parametric") << "t->vector{t,t**2}";
     QTest::newRow("parametric1") << "t->vector{16*sin(t)^3, abs(t)^0.3*root(t,2)}";

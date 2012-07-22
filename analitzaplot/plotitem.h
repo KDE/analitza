@@ -70,6 +70,8 @@ public:
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool f) { m_graphVisible = f; }
 
+    //NOTE GSOC candidatos a ser borrados .. no es posible contruir items invalidos
+    //TODO borrar next iter
     virtual QStringList errors() const = 0;
     virtual bool isCorrect() const = 0;
     

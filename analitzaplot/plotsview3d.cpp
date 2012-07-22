@@ -127,6 +127,9 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i
 
     if (!item) return ;// no agregar nada que no cumpla las politicas/filtros del proxy
 
+//NOTE si el item no es visible salir ... no generar listas de acceso 
+    if (!item->isVisible()) return ;
+
     if (item->spaceDimension() != 3) return ;
     
     Surface* surf = static_cast<Surface*>(item);
@@ -137,7 +140,7 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i
     
     if (surf->faces().isEmpty()) // si no esta vacio no es necesario generar nada 
         surf->update(Box3D());
-        
+
     GLuint dlid = glGenLists(1);
     m_displayLists[surf] = dlid;
 
@@ -281,7 +284,9 @@ void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
     //si es visible lo quenero de nuevo .. pues seuro cambio el setinterval
     if (surf->isVisible())
     {
-        addFuncs(QModelIndex(), s.row(), s.row());
+//         addFuncs(QModelIndex(), s.row(), s.row());
+//igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data 
+        addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(s.row());
 
     }
     //caso contrario .. no hago nada 
