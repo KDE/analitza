@@ -394,8 +394,30 @@ void Plotter2D::updateScale(bool repaint)
     if(repaint) {
         //WARNING estas 2 lineas cuasan que se actulicen los plots cuando no es necesario hacerlo
         //tener en cuenta que el costo de actualizarlo es alto pues alli es donde se poligoniza la curva
-//         if(m_model && m_model->rowCount()>0)
+        if(m_model && m_model->rowCount()>0)
+        {
 //             updateFunctions(QModelIndex(), 0, m_model->rowCount()-1);
+            PlaneCurve *curve = 0;
+            for(int i=0; i<m_model->rowCount(); i++)  //<=??
+            {
+                curve = dynamic_cast<PlaneCurve *>(fromProxy(i));
+
+                if (!curve) continue;
+                
+                //NOTE si no es visble o si no debe actualizarce segun el viewport (solo segun los intervalos)
+                if (!curve->isVisible() || !curve->isAutoUpdate()) continue;
+                
+                QRectF viewport_fixed = viewport;
+                viewport_fixed.setTopLeft(viewport.bottomLeft());
+                viewport_fixed.setHeight(fabs(viewport.height()));
+                //NOTE GSOC 
+        //         qDebug() << "ORI" << viewport << viewport.center() <<  "CH" << viewport_fixed<< viewport_fixed.center();
+                //it works con este parche se le pasa a las curvas la informacion adecuada basada en centro y size
+                // y se conserva la semantica de qrectf la esquina superior izquierda es el origen
+                curve->update(viewport_fixed);
+            }
+        }
+
         forceRepaint();
     }
 }

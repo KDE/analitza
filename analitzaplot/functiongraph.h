@@ -45,8 +45,18 @@ public:
     QStringList errors() const;
     bool isCorrect() const;
     
+    //NOTE KAlgebra use case
+    // if true then the graph will be updated always and follow the viewport limits instead of intervals
+    // by default is false, so the intervals can decide the limits for update 
+    // true or false the update always clip the point acording to the viewport
+    //WARNING some function compute complex algorithms for generate its geometry, that is why you may use
+    //intervals for those
+    bool isAutoUpdate() const;
+    void setAutoUpdate(bool b);
+    
     //if evaluate true then result of expressiones will be strings of the value
     //if evaluate is false then the expressions will not evaluate
+ 
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
     bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
 

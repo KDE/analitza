@@ -119,6 +119,21 @@ bool FunctionGraph::isCorrect() const
     return m_errors.isEmpty() && m_functionGraph->isCorrect();
 }
 
+bool FunctionGraph::isAutoUpdate() const
+{
+    Q_ASSERT(m_functionGraph);
+
+    return m_functionGraph->isAutoUpdate();
+}
+
+void FunctionGraph::setAutoUpdate(bool b)
+{
+    Q_ASSERT(m_functionGraph);
+
+    m_functionGraph->setAutoUpdate(b);
+}
+
+
 QPair<Analitza::Expression, Analitza::Expression> FunctionGraph::interval(const QString &argname, bool evaluate) const
 {
     Q_ASSERT(m_functionGraph);

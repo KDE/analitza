@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     view2d->setSelectionModel(selection);
 
     model->addPlaneCurve(Analitza::Expression("y->y*y"), "y->", Qt::magenta);
-    model->addPlaneCurve(Analitza::Expression("x->x*x"), "para", Qt::cyan);
+    model->addPlaneCurve(Analitza::Expression("x->x*x/12"), "para", Qt::cyan);
     model->addPlaneCurve(Analitza::Expression("p->p+2"), "polar simple", Qt::green);
     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
     model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
@@ -99,7 +99,15 @@ int main(int argc, char *argv[])
     model->addPlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "ESTO NO ES SIMPLE", Qt::black);
     model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfssss", Qt::yellow);
-
+    
+    //if you want to obey viewport changes always, then set to true AutoUpdate flag
+    //WARNING some functions have to compute complex algorithms in order to generate its geometry, that is why you may use intervals instead
+    //AutoUpdate ignores intervals
+    
+    PlaneCurve *curve = 0;
+    for(int i=0; i<model->rowCount(); ++i)
+        static_cast<FunctionGraph*>(model->item(i))->setAutoUpdate(true);
+    
     //END test calls
 
     QTreeView *viewsource = new QTreeView(tabs);

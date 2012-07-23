@@ -65,27 +65,50 @@ public:
 
     void setWorld(double minx, double maxx, double miny, double maxy)
     {
-        sLimitesEspacio2D _esp;
+//         sLimitesEspacio2D _esp;
+// 
+//         double a = 4;
+// 
+//         _esp.minX = minx;
+//         _esp.maxX = maxx;
+//         _esp.minY = miny;
+//         _esp.maxY = maxy;
+// 
+// //         qDebug() << _esp.minX << _esp.maxX << _esp.minY << _esp.maxY;
+//         
+//         largo_mundo = qMax(fabs(maxx-minx), fabs(maxy-miny));
+// 
+// //         qDebug() << largo_mundo;
+//         if (largo_mundo < 2)
+//             min_grid = 0.005;
+//         else
+//             min_grid = 0.09;
+//             
+//         largo_mundo = 2*4;
+//         mundo = _esp;
 
-        double a = 4;
+///
 
-        _esp.minX = minx;
-        _esp.maxX = maxx;
-        _esp.minY = miny;
-        _esp.maxY = maxy;
+    sLimitesEspacio2D _esp;
 
-//         qDebug() << _esp.minX << _esp.maxX << _esp.minY << _esp.maxY;
-        
-        largo_mundo = qMax(fabs(maxx-minx), fabs(maxy-miny));
+    double w = maxx-minx;
+    double h = maxy-miny;
+    
+    double presc = 0.1;
+    
+    _esp.minX = minx-presc*w;
+    _esp.maxX = maxx+presc*w;
+    _esp.minY = miny-presc*w;
+    _esp.maxY = maxy+presc*w;
 
-//         qDebug() << largo_mundo;
-        if (largo_mundo < 2)
-            min_grid = 0.005;
-        else
-            min_grid = 0.09;
-            
-        largo_mundo = 2*4;
-        mundo = _esp;
+    //a mas pequenio el size se detectan las singularidades
+    min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
+    
+    if (min_grid>0.05 && min_grid < 1)
+        min_grid = 0.05; // 0.05 es el minimo valor para la presicion
+    
+    largo_mundo = 1;
+    mundo = _esp;
     }
 
 

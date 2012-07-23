@@ -83,7 +83,7 @@ void FunctionImplicit::update(const QRectF& vp)
     
 //     qDebug() << minx << maxx << miny << maxy;
 
-//     setWorld(minx, maxx, miny, maxy);
+    setWorld(minx, maxx, miny, maxy);
     buildGeometry();
 
     for (int i = 0;  i < _faces_.size(); ++i)

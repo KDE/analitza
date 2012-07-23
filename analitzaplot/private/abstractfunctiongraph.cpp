@@ -24,7 +24,7 @@
 #include "analitza/variable.h"
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractMappingGraph(), m_e(e)
+: AbstractMappingGraph(), m_e(e), m_autoUpdate(false)
 {
     if (v)
          analyzer = new Analitza::Analyzer(v);

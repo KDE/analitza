@@ -59,11 +59,20 @@ void FunctionY::update(const QRectF& viewport)
 //     double l_lim=viewport.left()-.1, r_lim=viewport.right()+.1;
 
 
-    QPair<double, double> intervalx = interval("x");
+    double l_lim=0, r_lim=0;
+    
+    if (isAutoUpdate())
+    {
+        l_lim=viewport.left();
+        r_lim=viewport.right();
+    }
+    else // obey intervals
+    {
+        QPair< double, double> limits = interval("x");
+        l_lim = limits.first;
+        r_lim = limits.second;
+    }
 
-    double l_lim=intervalx.first, r_lim=intervalx.second;
-
-//     qDebug() << l_lim << r_lim << interval("x", false).first.toString();
     
     if(!points.isEmpty()
             && isSimilar(points.first().x(), l_lim)
@@ -241,21 +250,36 @@ QPair<QPointF, QString> FunctionX::image(const QPointF& p)
 
 void FunctionX::update(const QRectF& viewport)
 {
-//     double l_lim=viewport.bottom()-.1, r_lim=viewport.top()+.1;
-//     calculateValues(l_lim, r_lim);
-//     for(int i=0; i<points.size(); i++) {
-//         QPointF p=points[i];
-//         points[i]=QPointF(p.y(), p.x());
-//     }
-
-//BUG he movido algo debo verificar que el cidogo de arriva genera puntos ... por mientras algo mas simple que se ve igual :p
-//TODO
-    for (double eps = -10.0; eps <= 10.0; eps += 0.1)
+    double l_lim=0, r_lim=0;
+    
+    if (isAutoUpdate())
     {
-        arg("y")->setValue(eps);
-        double fy = analyzer->calculateLambda().toReal().value();
-        points.append(QPointF(fy, eps));
+        l_lim=viewport.top();
+        r_lim=viewport.bottom();
     }
+    else // obey intervals
+    {
+        QPair< double, double> limits = interval("y");
+        l_lim = limits.first;
+        r_lim = limits.second;
+    }    
+    
+//     qDebug() << l_lim << r_lim << isAutoUpdate();
+    
+    calculateValues(l_lim, r_lim);
+    for(int i=0; i<points.size(); i++) {
+        QPointF p=points[i];
+        points[i]=QPointF(p.y(), p.x());
+    }
+
+// //BUG he movido algo debo verificar que el cidogo de arriva genera puntos ... por mientras algo mas simple que se ve igual :p
+// //TODO
+//     for (double eps = -10.0; eps <= 10.0; eps += 0.1)
+//     {
+//         arg("y")->setValue(eps);
+//         double fy = analyzer->calculateLambda().toReal().value();
+//         points.append(QPointF(fy, eps));
+//     }
 }
 
 QLineF FunctionX::tangent(const QPointF &p) 
@@ -279,7 +303,7 @@ void FunctionX::optimizeJump()
         qreal dist = x2-x1;
         qreal x=x1+dist/2;
         
-        arg("x")->setValue(x);
+        arg("y")->setValue(x);
         qreal y = analyzer->calculateLambda().toReal().value();
         
         if(fabs(y1-y)<fabs(y2-y)) {
@@ -310,7 +334,7 @@ void FunctionX::calculateValues(double l_lim, double r_lim)
     
     bool jumping=true;
     for(double x=l_lim; x<r_lim-step; x+=step) {
-        arg("x")->setValue(x);
+        arg("y")->setValue(x);
         Analitza::Cn y = analyzer->calculateLambda().toReal();
         QPointF p(x, y.value());
         bool ch=addPoint(p);
