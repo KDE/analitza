@@ -198,7 +198,10 @@ QMap< int, Surface* > PlotsModel::surfaces() const
 
 PlotItem* PlotsModel::item(int curveIndex) const
 {
-    Q_ASSERT(curveIndex<m_items.count());
+//     qDebug() << curveIndex << m_items.size();
+    
+    //curveIndex<=0 si la lista solo tiene un item y se solicita item(0)
+    Q_ASSERT(curveIndex<=0 || curveIndex<m_items.count());
 
     return m_items[curveIndex];
 }
