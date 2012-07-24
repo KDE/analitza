@@ -197,11 +197,14 @@ bool FunctionGraph::reset(const Analitza::Expression& functionExpression, Dimens
     QString id;
     Analitza::Expression expr;
     
-    Q_ASSERT(canDraw(functionExpression, spacedim, m_errors, id));
+    if (!canDraw(functionExpression, spacedim, m_errors, id)) return false;
 
     delete m_functionGraph;
 
     m_functionGraph = static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,functionExpression, variables()));
+    m_functionGraph->setInternalId(id);
+    
+    emitDataChanged();
     
     return true;
 }

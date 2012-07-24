@@ -325,6 +325,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
 void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end) // indices del proxy
 {
+    
     if (!m_model) return; // guard
 
 //     Q_ASSERT(startIdx.isValid() && endIdx.isValid());
@@ -335,8 +336,11 @@ void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end) 
     {
         curve = dynamic_cast<PlaneCurve *>(fromProxy(i));
 
+//         qDebug() << "emitnewexp" << start << i << fromProxy(i)->isCorrect() << fromProxy(i)->errors();
+        
         if (!curve) continue;
         
+
         if (!curve->isVisible()) continue;
         
         QRectF viewport_fixed = viewport;
@@ -348,6 +352,7 @@ void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end) 
         // y se conserva la semantica de qrectf la esquina superior izquierda es el origen
         
         curve->update(viewport_fixed);
+
     }
 
     m_dirty = false;
