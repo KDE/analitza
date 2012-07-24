@@ -257,7 +257,7 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 {
     Q_ASSERT(!parent.isValid());
-    Q_ASSERT(start == end); // siempre se agrega un solo item al model
+//     Q_ASSERT(start == end); // siempre se agrega un solo item al model
     
     PlotItem *item = fromProxy(start);
 
