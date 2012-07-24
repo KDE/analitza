@@ -86,7 +86,7 @@ void PlotsView3D::setModel(PlotsProxyModel* f)
     //NOTE Estas signal son del PROXY ... para evitar que este widget reciba signals que no le interesan 
 //     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-//     connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+    connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
     
     //visible off on
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(testvisible(QModelIndex,QModelIndex)));
@@ -259,11 +259,14 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
     Q_ASSERT(!parent.isValid());
     Q_ASSERT(start == end); // siempre se agrega un solo item al model
     
-        PlotItem *item = fromProxy(start);
+    PlotItem *item = fromProxy(start);
 
-    if (!item) return ;// no eliminar  nada que no cumpla las politicas/filtros del proxy
-    
+    //pese a que el item no es valido igual ejecuto el updategl pues seguro alguien emitio la signal removerows y el widget necetia ser actualizado
+    if (!item) {updateGL(); return ;}// no eliminar  nada que no cumpla las politicas/filtros del proxy
+
     glDeleteLists(m_displayLists[item], 1);
+
+    updateGL();
 }
 
 //NOTE
@@ -397,6 +400,9 @@ PlotItem* PlotsView3D::fromProxy(int proxy_row) const
     QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
     
 //     qDebug() << "de" << m_model->rowCount();
+
+    if (!pi.isValid())
+        return 0;
     
     if (qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row())->spaceDimension() != 3)
         return 0; // evitamos que los proxies de los usuario causen un bug

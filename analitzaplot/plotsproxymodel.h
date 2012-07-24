@@ -24,6 +24,8 @@
 
 #include "analitzaplotexport.h"
 
+#include "private/utils/mathutils.h"
+
 //si no se establece ningun filter2d entonces no hay filtro y muetra todos los items sin importar que dimension
 //estoy es util para un vista (itemview) que quiera mostrar todo el modelo por ejemplo 
 class ANALITZAPLOT_EXPORT PlotsProxyModel : public QSortFilterProxyModel
@@ -31,19 +33,21 @@ class ANALITZAPLOT_EXPORT PlotsProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
     public:
+
         PlotsProxyModel(QObject *parent = 0);
         virtual ~PlotsProxyModel();
 
         int filterSpaceDimension() const { return m_dimension; }
-        void setFilterSpaceDimension(int dimension);
+        void setFilterSpaceDimension(Dimension dimension);
 
         //functiontype ... if the item is a functiongraph TODO
 
     protected:
         virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+        virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
 
     private:
-        int m_dimension; // 2 => 2D, 3 => 3D, -1 => ALL
+        Dimension m_dimension; // 2 => 2D, 3 => 3D, -1 => ALL
 };
 
 #endif 

@@ -65,7 +65,7 @@ AbstractFunctionGraph::~AbstractFunctionGraph()
     delete analyzer;
 }
 
-int AbstractFunctionGraph::spaceDimension() const
+Dimension AbstractFunctionGraph::spaceDimension() const
 {
 //     qDebug() <<"ktype " << analyzer->type().toString() << typeName() << analyzer->expression().toString();
     Analitza::Analyzer a(variables());

@@ -24,7 +24,7 @@
 
 PlotsProxyModel::PlotsProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
-    , m_dimension(-1)
+    , m_dimension(All)
 {
      setDynamicSortFilter(true);
 }
@@ -34,10 +34,8 @@ PlotsProxyModel::~PlotsProxyModel()
 
 }
 
-void PlotsProxyModel::setFilterSpaceDimension(int dimension)
+void PlotsProxyModel::setFilterSpaceDimension(Dimension dimension)
 {
-    Q_ASSERT(dimension == 2 || dimension == 3);
-    
     m_dimension = dimension;
     invalidateFilter();
 }
@@ -46,15 +44,17 @@ bool PlotsProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceP
 {
     Q_ASSERT(sourceModel());
     
+    if (m_dimension == All) return true;
+
     PlotItem *item = qobject_cast<PlotsModel *>(sourceModel())->item(sourceRow);
-    
-//     qDebug() << item->spaceDimension() << item->typeName() << item->name() <<  (item->spaceDimension() != m_dimension);
     
     if (item->spaceDimension() != m_dimension)
         return false;
     
     return true;
-/*
-    return item->name().contains(filterRegExp()) ||
-        item->expression().toString().contains(filterRegExp());*/
+}
+
+bool PlotsProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
+{
+    return QString::localeAwareCompare(left.data().toString(), right.data().toString())>=0;
 }

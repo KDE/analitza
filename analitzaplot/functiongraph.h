@@ -29,7 +29,7 @@ class ANALITZAPLOT_EXPORT FunctionGraph : public PlotItem
 {
     
 public:
-    FunctionGraph(const Analitza::Expression &functionExpression, int spacedim, const QString &nam, const QColor& col, Analitza::Variables *vars = 0);
+    FunctionGraph(const Analitza::Expression &functionExpression, Dimension spacedim, const QString &nam, const QColor& col, Analitza::Variables *vars = 0);
     virtual ~FunctionGraph();
 
     Analitza::Variables *variables() const;
@@ -40,7 +40,7 @@ public:
     const Analitza::Expression &expression() const;
     QString iconName() const;
     QStringList examples() const;
-    int spaceDimension() const;
+    Dimension spaceDimension() const;
     CoordinateSystem coordinateSystem() const;
     QStringList errors() const;
     bool isCorrect() const;
@@ -70,11 +70,11 @@ protected:
     FunctionGraph() {}
     FunctionGraph(const FunctionGraph &other) {}
     
-    static bool canDraw(const Analitza::Expression &functionExpression, int spacedim);
+    static bool canDraw(const Analitza::Expression& functionExpression, Dimension spacedim);
     //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
-    static bool canDraw(const Analitza::Expression &functionExpression, int spacedim, QStringList &errs);
+    static bool canDraw(const Analitza::Expression& functionExpression, Dimension spacedim, QStringList& errs);
 
-    bool reset(const Analitza::Expression &functionExpression, int spacedim);
+    bool reset(const Analitza::Expression &functionExpression, Dimension spacedim);
     
     AbstractFunctionGraph *backend() const { return m_functionGraph; }
 
@@ -84,7 +84,7 @@ private:
     //en caso que no sea posible retorna false con un id y expresion de salida vacio, 
     //en ambos casos se resetea la lista de strings
     
-    static bool canDraw(const Analitza::Expression &testexp, int spacedim, QStringList &errs, QString &id);
+    static bool canDraw(const Analitza::Expression &testexp, Dimension spacedim, QStringList &errs, QString &id);
     
     AbstractFunctionGraph *m_functionGraph;
 

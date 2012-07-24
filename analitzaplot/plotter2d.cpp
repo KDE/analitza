@@ -178,6 +178,9 @@ PlotItem* Plotter2D::fromProxy(int proxy_row) const
 //     qDebug() << "de" << m_model->rowCount();
 //     qDebug() << "2"<< qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row())->spaceDimension();
     
+    if (!pi.isValid())
+        return 0;
+    
     if (qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row())->spaceDimension() != 2)
         return 0; // evitamos que los proxies de los usuario causen un bug
 

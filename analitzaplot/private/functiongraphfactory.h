@@ -56,9 +56,9 @@ public:
     QString typeName(const QString& id) const;
     Analitza::ExpressionType expressionType(const QString& id) const;
     //swap args 
-    int spaceDimension(const QString& id) const;
+    Dimension spaceDimension(const QString& id) const;
     // falla cuando hay multiples cassos ...mult expressio
-    int spaceDimension(const Analitza::ExpressionType& ftype, const QStringList &bvars) const;
+    Dimension spaceDimension(const Analitza::ExpressionType& ftype, const QStringList &bvars) const;
     CoordinateSystem coordinateSystem(const QString& id) const;
     QString iconName(const QString& id) const;
     QStringList examples(const QString& id) const;
@@ -70,7 +70,7 @@ public:
                          ExpressionTypeFunction expressionTypeFunction, 
                          CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
                          IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);
-    QString trait(const Analitza::Expression &expr, int dim) const;
+    QString trait(const Analitza::Expression &expr, Dimension dim) const;
     bool contains(const QString &id) const;
     
     AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
@@ -80,7 +80,7 @@ public:
 private:
     QMap<QString, TypeNameFunction> typeNameFunctions;
     QMap<QString, ExpressionTypeFunction> expressionTypeFunctions;
-    QMap<QString, int> spaceDimensions; //internal use (without a "getter")
+    QMap<QString, Dimension> spaceDimensions; //internal use (without a "getter")
     QMap<QString, CoordinateSystemFunction> coordinateSystemFunctions;
     QMap<QString, ArgumentsFunction> argumentsFunctions; //internal use (without a "getter")
     QMap<QString, IconNameFunction> iconNameFunctions;

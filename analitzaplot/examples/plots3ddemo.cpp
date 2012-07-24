@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
 
     PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
-    proxy->setFilterSpaceDimension(3);
+    proxy->setFilterSpaceDimension(Dim3D);
     proxy->setSourceModel(model);
     
     QItemSelectionModel *selection = new QItemSelectionModel(proxy);

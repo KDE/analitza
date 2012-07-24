@@ -63,7 +63,7 @@ public:
     void setColor(const QColor& newColor) { m_color = newColor; }
     virtual QStringList examples() const = 0;
 
-    virtual int spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
+    virtual Dimension spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
     virtual CoordinateSystem coordinateSystem() const = 0;
     PlotStyle plotStyle() { return m_plotStyle; }
     void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }

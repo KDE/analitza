@@ -21,23 +21,25 @@
 #include <KStandardDirs>
 #include <KLocale>
 #include <QFile>
+#include <qthread.h>
+#include <QTimer>
 #include <QDomDocument>
 
-PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent): PlotsModel(parent)
-{
-    setCheckable(false);
 
-    loadEntries();
-}
-
-PlotsDictionaryModel::~PlotsDictionaryModel()
+DictionaryLoader::DictionaryLoader(PlotsModel* model, QObject* parent)
+: QObject(parent), m_model(model)
 {
 
 }
 
-void PlotsDictionaryModel::loadEntries()
+DictionaryLoader::~DictionaryLoader()
 {
-    //por el momento usaremos esta base de datos, luego sera la de las traducciones en el nuevo formato
+
+}
+
+void DictionaryLoader::load()
+{
+//     por el momento usaremos esta base de datos, luego sera la de las traducciones en el nuevo formato
     QString localurl = KStandardDirs::locate("data", QString("khipu/data/functionlibrary.kfl"));
 
     QFile device(localurl);
@@ -52,7 +54,9 @@ void PlotsDictionaryModel::loadEntries()
 
         if (!domDocument.setContent(&device, true, &errorStr, &errorLine, &errorColumn))
         {
-            m_errors << "Parse error" << errorStr << QString::number(errorLine) << QString::number(errorColumn);
+//             m_errors << "Parse error" << errorStr << QString::number(errorLine) << QString::number(errorColumn);
+//TODO mejorar el envio de error
+                emit errorFound(errorStr);
             return ;
         }
 
@@ -79,21 +83,72 @@ void PlotsDictionaryModel::loadEntries()
 
             if (dimension == 2)
             {
-                addPlaneCurve(Analitza::Expression(lambda), name);
+                m_model->addPlaneCurve(Analitza::Expression(lambda), name);
             }
             else if (dimension == 3)
             {
                 if (arguments.size() == 1&& arguments.first() == "t")
                 {
-                    addSpaceCurve(Analitza::Expression(lambda), name);
+                    m_model->addSpaceCurve(Analitza::Expression(lambda), name);
                 }
                 else
                 {
 //                     qDebug() << "("+arguments.join(",")+")->"+ lambda;
-                    addSurface(Analitza::Expression("("+arguments.join(",")+")->"+ lambda), name);
+                    m_model->addSurface(Analitza::Expression("("+arguments.join(",")+")->"+ lambda), name);
                 }
             }
             functionElement = functionElement.nextSiblingElement("function");
         }
     }
+    
+    emit loaded();
+}
+
+///
+
+PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent): PlotsProxyModel(parent)
+{
+    m_model = new PlotsModel(this);
+    m_model->setCheckable(false);
+    
+}
+
+PlotsDictionaryModel::~PlotsDictionaryModel()
+{
+
+}
+
+void PlotsDictionaryModel::setupModelSourceModel()
+{
+    setFilterSpaceDimension(All);
+    setSourceModel(m_model);
+}
+
+void PlotsDictionaryModel::registerError(const QString& error)
+{
+    m_errors.append(error);
+}
+
+///TODO
+//Diseniar encapsulando en una clase ... 
+PlotsDictionaryModel* getDictionary(QObject *parent)
+{
+    PlotsDictionaryModel *ret = new PlotsDictionaryModel(parent);
+
+   QThread* thread = new QThread(parent);
+   
+   DictionaryLoader* loader = new DictionaryLoader(ret->m_model);
+
+   loader->moveToThread(thread);
+
+   ret->connect(thread, SIGNAL(started()), loader, SLOT(load()));
+   ret->connect(loader, SIGNAL(errorFound(QString)),ret, SLOT(registerError(QString)));
+   ret->connect(loader, SIGNAL(loaded()), ret, SLOT(setupModelSourceModel()));
+   ret->connect(loader, SIGNAL(loaded()), thread, SLOT(quit()));
+//    ret->connect(loader, SIGNAL(loaded()), thread, SLOT(deleteLater()));
+   ret->connect(loader, SIGNAL(loaded()), loader, SLOT(deleteLater()));
+
+    thread->start();
+    
+    return ret;
 }

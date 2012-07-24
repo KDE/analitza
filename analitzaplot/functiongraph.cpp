@@ -30,7 +30,7 @@
 
 #include "private/functiongraphfactory.h"
 
-FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, int spacedim, const QString &nam, const QColor &col, Analitza::Variables *vars)
+FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dimension spacedim, const QString &nam, const QColor &col, Analitza::Variables *vars)
     : PlotItem(nam, col), m_functionGraph(0)
 {
     
@@ -87,7 +87,7 @@ QStringList FunctionGraph::examples() const
     return m_functionGraph->examples();
 }
 
-int FunctionGraph::spaceDimension() const
+Dimension FunctionGraph::spaceDimension() const
 {
     Q_ASSERT(m_functionGraph);
     
@@ -179,20 +179,20 @@ QStringList FunctionGraph::parameters() const
     return m_functionGraph->parameters();
 }
 
-bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int spacedim)
+bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, Dimension spacedim)
 {
     QStringList nonusederr;
     QString nonusedid;    
     return canDraw(functionExpression, spacedim, nonusederr, nonusedid);
 }
 
-bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, int spacedim, QStringList &errs)
+bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, Dimension spacedim, QStringList &errs)
 {
     QString nonusedid;    
     return canDraw(functionExpression, spacedim, errs, nonusedid);
 }
 
-bool FunctionGraph::reset(const Analitza::Expression& functionExpression, int spacedim)
+bool FunctionGraph::reset(const Analitza::Expression& functionExpression, Dimension spacedim)
 {
     QString id;
     Analitza::Expression expr;
@@ -206,7 +206,7 @@ bool FunctionGraph::reset(const Analitza::Expression& functionExpression, int sp
     return true;
 }
 
-bool FunctionGraph::canDraw(const Analitza::Expression& testexp, int spacedim, QStringList& errs, QString& id)
+bool FunctionGraph::canDraw(const Analitza::Expression& testexp, Dimension spacedim, QStringList& errs, QString& id)
 {
     errs.clear();
     id = QString();

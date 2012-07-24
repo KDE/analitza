@@ -201,7 +201,7 @@ PlotItem* PlotsModel::item(int curveIndex) const
 //     qDebug() << curveIndex << m_items.size();
     
     //curveIndex<=0 si la lista solo tiene un item y se solicita item(0)
-    Q_ASSERT(curveIndex<=0 || curveIndex<m_items.count());
+    Q_ASSERT(rowCount()>0? curveIndex<m_items.count():curveIndex<=m_items.count());
 
     return m_items[curveIndex];
 }

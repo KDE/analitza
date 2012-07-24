@@ -51,7 +51,7 @@ public:
     virtual QString iconName() const = 0;
     virtual QStringList examples() const = 0;
 
-    virtual int spaceDimension() const = 0;
+    virtual Dimension spaceDimension() const = 0;
     virtual CoordinateSystem coordinateSystem() const = 0;
     
 protected:

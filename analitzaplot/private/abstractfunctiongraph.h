@@ -56,7 +56,7 @@ public:
     AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v = 0);
     virtual ~AbstractFunctionGraph();
     
-    int spaceDimension() const;
+    Dimension spaceDimension() const;
 
     Analitza::Variables *variables() const;
     void setVariables(Analitza::Variables *variables);

@@ -34,7 +34,7 @@
 
 
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables )
-    : FunctionGraph(functionExpression,2, name, col, variables)
+    : FunctionGraph(functionExpression,Dim2D, name, col, variables)
 {
 }
 
@@ -58,18 +58,18 @@ QMap< QString, QPair< QStringList, Analitza::ExpressionType > > PlaneCurve::regi
 
 bool PlaneCurve::canDraw(const Analitza::Expression& functionExpression)
 {
-return FunctionGraph::canDraw(functionExpression, 2);
+return FunctionGraph::canDraw(functionExpression, Dim2D);
 }
 
 
 bool PlaneCurve::canDraw(const Analitza::Expression& functionExpression, QStringList& errors)
 {
-return FunctionGraph::canDraw(functionExpression, 2, errors);
+return FunctionGraph::canDraw(functionExpression, Dim2D, errors);
 }
 
 bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
 {
-    return FunctionGraph::reset(functionExpression, 2);
+    return FunctionGraph::reset(functionExpression, Dim2D);
 }
 
 

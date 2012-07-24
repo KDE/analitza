@@ -23,13 +23,44 @@
 
 
 #include "plotsmodel.h"
+#include "plotsproxymodel.h"
+#include <kjob.h>
 
 //TODO debe adivinar las variables
 //El ctr carga el archivo, en la documentacion final se debe indicar
 // que solo es necesario usar una sola instancia de esta clase
 
-class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public PlotsModel
+
+//TODO 
+//static QStringlist registred dictionaries
+//ctor (QString dic, QObjetc ...)
+
+//load the registred dictionary with a thread
+class DictionaryLoader : public QObject
 {
+    Q_OBJECT
+    
+public:
+    DictionaryLoader(PlotsModel *model, QObject *parent = 0);
+    ~DictionaryLoader();
+    
+public slots:
+    void load();
+
+signals:
+    void loaded();
+    void errorFound(const QString &error);
+    
+private:
+    PlotsModel *m_model;
+};
+
+class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public PlotsProxyModel
+{
+Q_OBJECT    
+
+friend PlotsDictionaryModel * getDictionary(QObject *); // for private slots
+
 public:
     PlotsDictionaryModel(QObject* parent = 0);
     ~PlotsDictionaryModel();
@@ -38,11 +69,22 @@ public:
     
     bool isLoaded() const { return rowCount() > 0 && m_errors.isEmpty(); }
     QStringList errors() const { return m_errors; }
+    
+private slots:
+    //al terminar de cargar el archivo del dictionay entonces configuramos el proxy (this)
+    void setupModelSourceModel();
+    void registerError(const QString &error);
 
-private:
-    void loadEntries();
+private: //TODO gsoc pimpl
+
+
+    PlotsModel *m_model;
 
     QStringList m_errors;
 };
+
+
+//load the dict in a thread
+ANALITZAPLOT_EXPORT PlotsDictionaryModel * getDictionary(QObject *parent);
 
 #endif
