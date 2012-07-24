@@ -25,6 +25,8 @@
 
 PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent): PlotsModel(parent)
 {
+    setCheckable(false);
+
     loadEntries();
 }
 

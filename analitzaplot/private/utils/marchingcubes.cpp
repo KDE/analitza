@@ -189,9 +189,14 @@ MarchingCubes::MarchingCubes(/*double min_grid, double arista_mundo, sLimitesEsp
 
     
     
+//     this->min_grid = 0.2;
+//     largo_mundo = 2;
+//     mundo = _esp;
+        
     this->min_grid = 0.4;
-    largo_mundo = 5;
+    largo_mundo = 2;
     mundo = _esp;
+
 }
 
 MarchingCubes::~MarchingCubes(){

@@ -531,7 +531,10 @@ bool Expression::isCorrect() const
 
 QStringList Expression::bvarList() const
 {
-	Q_ASSERT(d->m_tree);
+// 	Q_ASSERT(d->m_tree);
+    if (!d->m_tree)
+        return QStringList();
+    
 	const Object *o = d->m_tree;
 	
 	if(o->isContainer() && static_cast<const Container*>(o)->containerType()==Container::math) {

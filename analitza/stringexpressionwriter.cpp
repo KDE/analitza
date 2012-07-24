@@ -61,7 +61,8 @@ const QMap<Operator::OperatorType, QString> StringExpressionWriter::s_operators=
 
 StringExpressionWriter::StringExpressionWriter(const Object* o)
 {
-	m_result=o->visit(this);
+//     if (o)
+        m_result=o->visit(this);
 }
 
 QString StringExpressionWriter::accept(const Ci* var)

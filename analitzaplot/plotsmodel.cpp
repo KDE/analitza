@@ -73,15 +73,15 @@ Qt::DropActions PlotsModel::supportedDropActions() const
 
 QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    QVariant ret;
     if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
-        switch(section) {
-        case 0:
-            ret=i18nc("@title:column", "Plot");
-            break;
+        switch(section) 
+        {
+            case 0: return i18nc("@title:column", "Name");
+            case 1: return i18nc("@title:column", "Plot");
         }
     }
-    return ret;
+    
+    return QVariant();
 }
 
 QVariant PlotsModel::data(const QModelIndex & index, int role) const
@@ -95,26 +95,34 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
     
     switch(role)
     {
-    case Qt::DisplayRole:
-        return tmpcurve->expression().toString();
-    case Qt::DecorationRole:
-    {
-//         QPixmap ico(32, 32);
-//         ico.fill(tmpcurve->color());
-//         return  QIcon(ico);
-        return KIcon(tmpcurve->iconName());
-    }
-    case Qt::ToolTipRole:
-        return tmpcurve->name();
-    case Qt::StatusTipRole:
-        return tmpcurve->typeName();
-        
-
+        case Qt::DisplayRole:
+            switch(index.column()) {
+                case 0:
+                    return tmpcurve->name();
+                    break;
+                case 1:
+                    return tmpcurve->expression().toString();
+                    break;
+            }
+            break;
+        case Qt::DecorationRole:
+            if(index.column()==0) {
+                QPixmap ico(15, 15);
+                ico.fill(tmpcurve->color());
+                return QIcon(ico);
+            } else {
+                return QIcon::fromTheme(tmpcurve->iconName());
+            }
+            break;
+        case Qt::ToolTipRole:
+            return tmpcurve->name();
+        case Qt::StatusTipRole:
+            return tmpcurve->typeName();
     }
 
     if (role == Qt::CheckStateRole && m_isCheckable)
-        return tmpcurve->isVisible()?Qt::Checked:Qt::Unchecked;
-    
+        if(index.column()==0) 
+            return tmpcurve->isVisible()?Qt::Checked:Qt::Unchecked;
     
     return QVariant();
 }
