@@ -44,9 +44,6 @@ class ANALITZAPLOT_EXPORT Plotter2D
         /** Sets whether we will see a grid or only the axes. */
         void setSquares(bool newSquare) { m_squares=newSquare; forceRepaint(); }
         
-        //NOTE GSOC api para no dibujar los ejes 
-        void setAxis(bool newa) { m_axis=newa; forceRepaint();  }
-        
         /** Returns whether we have chosen to see the grid. */
         bool squares() const {return m_squares;}
         
@@ -71,6 +68,10 @@ class ANALITZAPLOT_EXPORT Plotter2D
         
         /** Moves the viewport @p delta */
         void moveViewport(const QPoint& delta);
+        
+        void updateTickScale(QString tickScaleSymbol, qreal tickScaleSymbolValue,
+        /*bool tickScaleUseSymbols,*/ int tickScaleNumerator,
+        int tickScaleDenominator);
         
     protected:
         QRectF lastViewport() const { return viewport; }
@@ -97,7 +98,6 @@ class ANALITZAPLOT_EXPORT Plotter2D
         
         double rang_x, rang_y;
         bool m_squares;
-        bool m_axis; // NOTE GSOC para eligir no dibujar los ejes
         bool m_keepRatio;
         bool m_dirty; // or m_updated; como ahora contamos con setmodel, es necesario que se actualicen los datos antes de pintar, es necesario que no sea dirty
         QRectF viewport;
@@ -108,6 +108,22 @@ class ANALITZAPLOT_EXPORT Plotter2D
         static const QColor m_axeColor;
         static const QColor m_axe2Color;
         static const QColor m_derivativeColor;
+        
+        //GSOC scale ticks & axis
+    QString m_tickScaleSymbol;
+    qreal m_tickScaleSymbolValue;
+    bool m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
+    int m_tickScaleNumerator;
+    int m_tickScaleDenominator;
+    bool m_showHTicks;
+    bool m_showVTicks;
+    bool m_showHAxes;
+    bool m_showVAxes;
+    QString m_axisXLabel;
+    QString m_axisYLabel;
+    
+    QColor m_gridColor;
+    bool m_meshGridShown;
 };
 
 #endif // FUNCTIONSPAINTER_H
