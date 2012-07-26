@@ -326,6 +326,38 @@ void PlotsView2D::setReadOnly(bool ro)
     setMouseTracking(!ro);
 }
 
+
+///
+void PlotsView2D::setXAxisLabel(const QString &label)
+{
+    m_axisXLabel = label;
+    update();
+}
+
+void PlotsView2D::setYAxisLabel(const QString &label)
+{
+    m_axisYLabel = label;
+    update();
+
+}
+
+void PlotsView2D::updateTickScale(QString tickScaleSymbol, qreal tickScaleSymbolValue,
+        /*bool tickScaleUseSymbols,*/ int tickScaleNumerator,
+        int tickScaleDenominator)
+{
+    m_tickScaleSymbol = tickScaleSymbol;
+    m_tickScaleSymbolValue = tickScaleSymbolValue;
+    //m_tickScaleUseSymbols = tickScaleUseSymbols;
+    m_tickScaleNumerator = tickScaleNumerator;
+    m_tickScaleDenominator = tickScaleDenominator;
+
+    update();
+}
+
+
+///
+
+
 QRectF PlotsView2D::definedViewport() const
 {
     return lastUserViewport();

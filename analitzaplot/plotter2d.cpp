@@ -138,24 +138,18 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
 
     int correctScale = 1;// usado cuando el zoom es muy alto y se ve un vp muy grande
 
-    
-        if (viewport.width()>10)
-        {
-            int vpwi = ((int)viewport.width());
-            int decs = 0; // cifras decimales
-            while ((vpwi = vpwi/10) > 0) ++decs;
+    if (viewport.width()>25)
+    {
+        int vpwi = ((int)viewport.width());
+        int decs = 0; // cifras decimales
+        while ((vpwi = vpwi/10) > 0) ++decs;
 
-            correctScale = m_tickScaleSymbolValue*pow(10, decs)/10;
-        }
-        
-//     //Draw less lines on large viewports
-//     if (viewport.width()>50)
-//     {
-//         correctScale = 10;
-        inc *= correctScale;
-        xini = floor(xini/inc)*inc;
-        yini = floor(yini/inc)*inc;
-//     }
+        correctScale = m_tickScaleSymbolValue*pow(10, decs)/2;
+    }
+
+    inc *= correctScale;
+    xini = floor(xini/inc)*inc;
+    yini = floor(yini/inc)*inc;
 
     QFontMetrics fm(w->font());
 
@@ -173,7 +167,8 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
     QPointF p;
     // tick labels color = black
     QPen tickpen;
-    tickpen.setColor(Qt::black);
+    //NOTE GSOC 2012 accessibility code :)
+    tickpen.setColor(QPalette().text().color());
     tickpen.setStyle(Qt::SolidLine);
 
     QFont serifFont("Times", 10, QFont::Bold);
@@ -398,7 +393,8 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     const QPointF center = toWidget(QPointF(0.,0.));
     QPointF p;
 
-    ceixos.setColor(m_gridColor);//m_axe2Color
+//     ceixos.setColor(KColorUtils::shade(m_gridColor, -0.5));//m_axe2Color
+    ceixos.setColor(m_gridColor);
     ceixos.setStyle(Qt::SolidLine);
     finestra->setPen(ceixos);
 
@@ -413,7 +409,6 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
 
     // sqrt(2)
-
 
     QString symbol =m_tickScaleSymbol;
     qreal symbolValue = m_tickScaleSymbolValue;
@@ -448,27 +443,24 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
     int correctScale = 1;// usado cuando el zoom es muy alto y se ve un vp muy grande
 
-    //Draw less lines on large viewports
-//     if (viewport.width()>50 && viewport.width() <100)
+    if (viewport.width()>25)
     {
-        if (viewport.width()>10)
-        {
-            int vpwi = ((int)viewport.width());
-            int decs = 0; // cifras decimales
-            while ((vpwi = vpwi/10) > 0) ++decs;
+        int vpwi = ((int)viewport.width());
+        int decs = 0; // cifras decimales
+        while ((vpwi = vpwi/10) > 0) ++decs;
 
-            correctScale = m_tickScaleSymbolValue*pow(10, decs)/10;
-        }
-
-        inc *= correctScale;
-        xini = floor(xini/inc)*inc;
-        yini = floor(yini/inc)*inc;
+        correctScale = m_tickScaleSymbolValue*pow(10, decs)/2;
     }
+    
 
+    inc *= correctScale;
+    xini = floor(xini/inc)*inc;
+    yini = floor(yini/inc)*inc;
 
     // tick labels color = black
     QPen tickpen;
-    tickpen.setColor(Qt::black);
+    //NOTE GSOC 2012 accessibility code :)
+    tickpen.setColor(QPalette().text().color());
     tickpen.setStyle(Qt::SolidLine);
 
     QFont serifFont("Times", 10, QFont::Bold);
@@ -1039,19 +1031,6 @@ void Plotter2D::moveViewport(const QPoint& delta)
     viewport.moveLeft(viewport.left() - rel.x());
     viewport.moveTop(viewport.top() - rel.y());
     setViewport(viewport);
-}
-
-void Plotter2D::updateTickScale(QString tickScaleSymbol, qreal tickScaleSymbolValue,
-                                /*bool tickScaleUseSymbols,*/ int tickScaleNumerator,
-                                int tickScaleDenominator)
-{
-    m_tickScaleSymbol = tickScaleSymbol;
-    m_tickScaleSymbolValue = tickScaleSymbolValue;
-    //m_tickScaleUseSymbols = tickScaleUseSymbols;
-    m_tickScaleNumerator = tickScaleNumerator;
-    m_tickScaleDenominator = tickScaleDenominator;
-
-    forceRepaint();
 }
 
 void Plotter2D::scaleViewport(qreal s, const QPoint& center)

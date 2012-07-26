@@ -69,10 +69,6 @@ class ANALITZAPLOT_EXPORT Plotter2D
         /** Moves the viewport @p delta */
         void moveViewport(const QPoint& delta);
         
-        void updateTickScale(QString tickScaleSymbol, qreal tickScaleSymbolValue,
-        /*bool tickScaleUseSymbols,*/ int tickScaleNumerator,
-        int tickScaleDenominator);
-        
     protected:
         QRectF lastViewport() const { return viewport; }
         QRectF lastUserViewport() const { return userViewport; }
@@ -109,6 +105,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         static const QColor m_axe2Color;
         static const QColor m_derivativeColor;
         
+protected: /// TODO improve this ... it should be private
         //GSOC scale ticks & axis
     QString m_tickScaleSymbol;
     qreal m_tickScaleSymbolValue;

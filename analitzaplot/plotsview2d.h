@@ -102,6 +102,18 @@ public slots:
     /** Sets whether it is a read-only widget. */
     void setReadOnly(bool ro);
     
+    //ticks & axis
+    void setXAxisLabel(const QString &label);
+    void setYAxisLabel(const QString &label);
+    // tick symbols
+    void updateTickScale(QString m_tickScaleSymbol, qreal m_tickScaleSymbolValue, int m_tickScaleNumerator, int m_tickScaleDenominator);
+    void setUseTickSymbols(bool flag) { m_tickScaleUseSymbols = flag; update(); }
+    void showHTicks(bool flag) { m_showHTicks = flag; update(); }
+    void showVTicks(bool flag) { m_showVTicks = flag; update(); }
+    void showHAxes(bool flag) { m_showHAxes = flag; update(); }
+    void showVAxes(bool flag) { m_showVAxes = flag; update(); }
+
+    
 private slots:
     void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
     void updateFuncs(const QModelIndex& start, const QModelIndex& end); //update al setdata 
