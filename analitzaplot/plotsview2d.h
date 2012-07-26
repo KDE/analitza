@@ -106,13 +106,14 @@ public slots:
     void setXAxisLabel(const QString &label);
     void setYAxisLabel(const QString &label);
     // tick symbols
+    void updateGridColor(const QColor &color) { m_gridColor = color;  forceRepaint(); }
     void updateTickScale(QString m_tickScaleSymbol, qreal m_tickScaleSymbolValue, int m_tickScaleNumerator, int m_tickScaleDenominator);
-    void setUseTickSymbols(bool flag) { m_tickScaleUseSymbols = flag; update(); }
-    void showHTicks(bool flag) { m_showHTicks = flag; update(); }
-    void showVTicks(bool flag) { m_showVTicks = flag; update(); }
-    void showHAxes(bool flag) { m_showHAxes = flag; update(); }
-    void showVAxes(bool flag) { m_showVAxes = flag; update(); }
-
+    void setUseTickSymbols(bool flag) { m_tickScaleUseSymbols = flag; forceRepaint(); }
+    void showHTicks(bool flag) { m_showHTicks = flag; forceRepaint(); }
+    void showVTicks(bool flag) { m_showVTicks = flag; forceRepaint(); }
+    void showHAxes(bool flag) { m_showHAxes = flag; forceRepaint(); }
+    void showVAxes(bool flag) { m_showVAxes = flag; forceRepaint(); }
+    void useCoorSys(int i) { m_useCoordSys = i; forceRepaint(); }
     
 private slots:
     void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
@@ -137,6 +138,7 @@ private:
     bool valid;
     QLabel *micepos;
     QPointF mark;
+    QPoint cursorPos; // a diferencia de mark esta variable no sale de un calculo es solo el pos del cursor ... el mark es por ahora muchas veces invalido y genera puntos nulls
     
     //events
     void paintEvent( QPaintEvent * );

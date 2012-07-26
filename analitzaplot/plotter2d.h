@@ -118,6 +118,7 @@ protected: /// TODO improve this ... it should be private
     bool m_showVAxes;
     QString m_axisXLabel;
     QString m_axisYLabel;
+    int m_useCoordSys; // polar 2 cart 1 none 0 y case 3 es automatic (es decir el plot acutal elije su coordenada)
     
     QColor m_gridColor;
     bool m_meshGridShown;

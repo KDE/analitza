@@ -46,8 +46,6 @@ QColor const Plotter2D::m_axeColor(100,100,255);
 QColor const Plotter2D::m_axe2Color(235,235,235);
 QColor const Plotter2D::m_derivativeColor(90,90,160);
 
-
-
 Plotter2D::Plotter2D(const QSizeF& size, PlotsProxyModel* model)
     : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true)
     , m_axisXLabel(i18n("x"))
@@ -57,11 +55,12 @@ Plotter2D::Plotter2D(const QSizeF& size, PlotsProxyModel* model)
     , m_tickScaleUseSymbols(true)
     , m_tickScaleNumerator(1)
     , m_tickScaleDenominator(1)
-    , m_gridColor(KColorUtils::lighten(QColor(85,190,255), .35))
+    , m_gridColor(QColor(128,128,128))
     , m_meshGridShown(true)
     , m_showHAxes(true)
     , m_showVAxes(true)
     , m_tickScaleSymbolValue(1)
+    , m_useCoordSys(1) //default cartesian coords style grid
 {}
 
 Plotter2D::~Plotter2D()
@@ -144,7 +143,7 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
         int decs = 0; // cifras decimales
         while ((vpwi = vpwi/10) > 0) ++decs;
 
-        correctScale = m_tickScaleSymbolValue*pow(10, decs)/2;
+        correctScale = pow(10, decs)/2;
     }
 
     inc *= correctScale;
@@ -449,9 +448,8 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
         int decs = 0; // cifras decimales
         while ((vpwi = vpwi/10) > 0) ++decs;
 
-        correctScale = m_tickScaleSymbolValue*pow(10, decs)/2;
+        correctScale = pow(10, decs)/2;
     }
-    
 
     inc *= correctScale;
     xini = floor(xini/inc)*inc;
@@ -747,7 +745,6 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 //         t=(CoordinateSystem)m_model->data(m_model->index(current), FunctionGraphModel::CoordinateSystemRole).toInt(); // editFunction(current)->axeType();
     //comparado con esto que es mucho mejor
 
-
     if (!m_model || current == -1) t = Cartesian;
     else
     {
@@ -758,6 +755,20 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
     }
 
+        if (m_useCoordSys == 0) 
+            m_meshGridShown = false;
+        else
+        {
+            m_meshGridShown = true;
+            
+            if (m_useCoordSys == 2 && t == Cartesian) 
+                t = Polar;
+            
+            if (m_useCoordSys == 1 && t == Polar) 
+                t = Cartesian;
+        }
+            
+            
     drawAxes(&p, t);
 
     p.setRenderHint(QPainter::Antialiasing, true);

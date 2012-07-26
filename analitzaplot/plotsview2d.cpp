@@ -38,6 +38,7 @@
 #include "plotsproxymodel.h"
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>
+#include <KColorUtils>
 
 PlotsView2D::PlotsView2D(QWidget *parent,PlotsProxyModel* fm)
 :QWidget(parent), Plotter2D(size(), fm),
@@ -88,24 +89,31 @@ void PlotsView2D::paintEvent(QPaintEvent * )
     
 //  finestra.setRenderHint(QPainter::Antialiasing, true);
     
+    //NOTE GSOC 2012 better guards : model()->rowCount() > 0 && !mark.isNull() ... si no se cumplen que no dibuje las lineas rojas
     if(!m_readonly && mode==None) {
-        QPointF ultim = toWidget(mark);
+        //QPointF ultim = toWidget(mark);
+        QPointF ultim(cursorPos);
         
         //Draw derivative
-        ccursor.setColor(palette().color(QPalette::Active, QPalette::Link));
-        ccursor.setStyle(Qt::SolidLine);
-        QLineF sl=slope(mark);
-        sl.translate(mark);
-        
-        p.setPen(ccursor);
-        p.setRenderHint(QPainter::Antialiasing, true);
-#ifndef Q_CC_MSVC
-        if(!sl.isNull() && !std::isnan(sl.length()))
-#else
-        if(!sl.isNull() && !_isnan(sl.length()))
-#endif
-            p.drawLine(toWidget(sl));
-        p.setRenderHint(QPainter::Antialiasing, false);
+        if (!mark.isNull()) 
+        {
+            ultim = toWidget(mark); // si no es nulo apunto al lugar del punto de pendiente
+            
+            ccursor.setColor(palette().color(QPalette::Active, QPalette::Link));
+            ccursor.setStyle(Qt::SolidLine);
+            QLineF sl=slope(mark);
+            sl.translate(mark);
+            
+            p.setPen(ccursor);
+            p.setRenderHint(QPainter::Antialiasing, true);
+    #ifndef Q_CC_MSVC
+            if(!sl.isNull() && !std::isnan(sl.length()))
+    #else
+            if(!sl.isNull() && !_isnan(sl.length()))
+    #endif
+                p.drawLine(toWidget(sl));
+            p.setRenderHint(QPainter::Antialiasing, false);
+        }
         //EOderivative
         
         ccursor.setColor(QColor(0xc0,0,0));
@@ -127,10 +135,16 @@ void PlotsView2D::paintEvent(QPaintEvent * )
         p.setPen(QPen(Qt::black));
         p.drawText(QPointF(ultim.x()+15., ultim.y()+15.), m_posText);
     } else if(!m_readonly && mode==Selection) {
-        ccursor.setColor(QColor(0xc0,0,0));
+           //NOTE GSOC 2012 accessibility code, the selection follow system rules :)
+
+//         ccursor.setColor(QColor(0xc0,0,0));
+        QColor selcol = QPalette().highlight().color();
+        ccursor.setColor(QPalette().highlightedText().color());
         ccursor.setStyle(Qt::SolidLine);
         p.setPen(ccursor);
-        p.setBrush(QColor(0xff,0xff, 0,0x90));
+//         p.setBrush(QColor(0xff,0xff, 0,0x90));
+        selcol.setAlpha(0x90);
+        p.setBrush(selcol);
         p.drawRect(QRect(press,last));
     }
     
@@ -207,6 +221,7 @@ void PlotsView2D::mouseReleaseEvent(QMouseEvent *e)
 
 void PlotsView2D::mouseMoveEvent(QMouseEvent *e)
 {
+    cursorPos = e->pos();
     mark=calcImage(fromWidget(e->pos()));
     
     if(!m_readonly && mode==Pan && ant != toViewport(e->pos())){
@@ -331,13 +346,13 @@ void PlotsView2D::setReadOnly(bool ro)
 void PlotsView2D::setXAxisLabel(const QString &label)
 {
     m_axisXLabel = label;
-    update();
+    forceRepaint();
 }
 
 void PlotsView2D::setYAxisLabel(const QString &label)
 {
     m_axisYLabel = label;
-    update();
+    forceRepaint();
 
 }
 
@@ -351,7 +366,7 @@ void PlotsView2D::updateTickScale(QString tickScaleSymbol, qreal tickScaleSymbol
     m_tickScaleNumerator = tickScaleNumerator;
     m_tickScaleDenominator = tickScaleDenominator;
 
-    update();
+    forceRepaint();
 }
 
 
