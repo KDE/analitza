@@ -747,6 +747,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
     bool coordsysfromplot = false;
     
+    //TODO use selectionmodel ... hasselection
     if (!m_model || current == -1) t = Cartesian;
     else
     {
@@ -766,16 +767,13 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     {
         m_meshGridShown = true;
         
-        if (m_useCoordSys == 2 && t == Cartesian && coordsysfromplot) 
+        if (m_useCoordSys == 2) 
             t = Polar;
 
-        if (m_useCoordSys == 1 && t == Polar && coordsysfromplot) 
+        if (m_useCoordSys == 1) 
             t = Cartesian;
     }
-    //resetamos m_useCoordSys esperando que el usuario vualva a cambiar el style (desde el combo en khipu por ejemplo)
-    m_useCoordSys = -1;
 
-            
     drawAxes(&p, t);
 
     p.setRenderHint(QPainter::Antialiasing, true);

@@ -69,7 +69,7 @@ class FunctionParametric : public AbstractPlaneCurve
 {
 public:
     CONSTRUCTORS(FunctionParametric)
-    TYPE_NAME("FunctionParametricVecto")
+    TYPE_NAME("Parametric Curve 2D")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("t")

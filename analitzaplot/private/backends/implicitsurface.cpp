@@ -30,7 +30,7 @@ class ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static cla
 public:
     ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v);
 
-    TYPE_NAME("implsurf")
+    TYPE_NAME("Implicit Surface")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Bool)) // is a equation
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y,z")

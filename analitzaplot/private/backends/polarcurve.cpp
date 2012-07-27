@@ -31,7 +31,7 @@ class FunctionPolar : public AbstractPlaneCurve
 {
 public:
     CONSTRUCTORS(FunctionPolar)
-    TYPE_NAME("FunctionPolarFunctionPolar")
+    TYPE_NAME("Polar Curve r=F(p: Polar)")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))

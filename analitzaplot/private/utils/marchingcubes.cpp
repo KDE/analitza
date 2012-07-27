@@ -129,6 +129,8 @@ QList<Cube> MarchingCubes::breadth_rec(int cubos_lado){
     double y = 0;
     double z = 0;
     
+// static const double iteration_square_val = 0.5;
+
     for(int i=mundo.minX;i<=mundo.maxX;i++){
 //         cubo.centro.x() = (2*i+1)*cubo.medio_lado;
         x = (2*i+1)*cubo.halfEdge();
@@ -163,7 +165,7 @@ QList<sMarching_Cube> MarchingCubes::depth_rec(Octree *arbol, sNodo *nodo){
 
     if(m_cubo.tipo != 0 && m_cubo.tipo != 255){
         //Superfice corta
-        if(m_cubo.medio_lado*2 > min_grid){
+        if(m_cubo.medio_lado*2 > min_grid){ 
             //Seguir bajando
             arbol->bajarNivel(nodo);
             for(unsigned int i=0; i<8; i++){
@@ -183,9 +185,9 @@ MarchingCubes::MarchingCubes(/*double min_grid, double arista_mundo, sLimitesEsp
     //TODO enlazar con arg interval
         sLimitesEspacio _esp;
 
-            _esp.minX = -6; _esp.maxX = 6;
-        _esp.minY = -6; _esp.maxY = 6;
-        _esp.minZ = -6; _esp.maxZ = 6;
+            _esp.minX = -7.1; _esp.maxX = 6.6;
+        _esp.minY = -6.3; _esp.maxY = 7.1;
+        _esp.minZ = -7.2; _esp.maxZ = 6.5;
 
     
     
@@ -193,13 +195,14 @@ MarchingCubes::MarchingCubes(/*double min_grid, double arista_mundo, sLimitesEsp
 //     largo_mundo = 2;
 //     mundo = _esp;
         
-    this->min_grid = 0.4;
-    largo_mundo = 2;
+    this->min_grid = 0.2;
+    largo_mundo = 1;
     mundo = _esp;
 
 }
 
-MarchingCubes::~MarchingCubes(){
+MarchingCubes::~MarchingCubes()
+{
 }
 
 QList<sMarching_Cube> MarchingCubes::ejecutar(){
@@ -425,7 +428,7 @@ void MarchingCubes::identificar_tipo(sMarching_Cube cubo){
         //Tipo 3, 8, 9, 10, 14
         if(vertices.count() == 2){
             //Tipo 3 o 10 -> El tipo01 es capaz de dibujar estos casos
-            return tipo01(aristas, vertices);
+             tipo01(aristas, vertices); return ;
         } else {
             for(int i=0; i<vertices.count(); i++){
                 bool tiene_arista = false;
@@ -463,6 +466,7 @@ void MarchingCubes::identificar_tipo(sMarching_Cube cubo){
                    vertices.at(j) - vertices.at(i) == 4 ){
                     encontrado = false;
                     break;
+                    
                 }
             }
             if(encontrado){
@@ -485,10 +489,10 @@ void MarchingCubes::identificar_tipo(sMarching_Cube cubo){
         //Tipo 7 -> El tipo01 es capaz de dibujar este caso
         {
                     tipo01(aristas, vertices);
-return ;
+            return ;
             
         }
-//     default:
+    default: qDebug() << "Error al calcular el tipo"; break;
 //         printf("Error al calcular tipo\n");
     }
 }

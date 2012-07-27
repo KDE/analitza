@@ -37,7 +37,7 @@ public:
     Frp(const Analitza::Expression& e, Analitza::Variables* v);
     
     
-    TYPE_NAME("cilsurf")
+    TYPE_NAME("Cylindrical Surface z=F(r: Radial, p: Polar)")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(

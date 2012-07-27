@@ -104,9 +104,9 @@ int main(int argc, char *argv[])
     //WARNING some functions have to compute complex algorithms in order to generate its geometry, that is why you may use intervals instead
     //AutoUpdate ignores intervals
     
-    PlaneCurve *curve = 0;
-    for(int i=0; i<model->rowCount(); ++i)
-        static_cast<FunctionGraph*>(model->item(i))->setAutoUpdate(true);
+//     PlaneCurve *curve = 0;
+//     for(int i=0; i<model->rowCount(); ++i)
+//         static_cast<FunctionGraph*>(model->item(i))->setAutoUpdate(true);
     
     //END test calls
 

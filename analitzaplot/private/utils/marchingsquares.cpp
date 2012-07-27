@@ -17,6 +17,8 @@
  *************************************************************************************/
 
 #include "marchingsquares.h"
+#include <QLineF>
+#include <QDebug>
 
 
 
@@ -75,11 +77,14 @@ QList<Square> MarchingSquares::breadth_rec(int cubos_lado) {
     double x = 0;
     double y = 0;
 
-    for(int i=mundo.minX; i<=mundo.maxX; i++) {
-//         cubo.centro.x() = (2*i+1)*cubo.medio_lado;
+    static const double iteration_square_val = 0.5;
+    
+    for(double i=mundo.minX; i<=mundo.maxX; i+=iteration_square_val) 
+    {
         x = (2*i+1)*cubo.halfEdge();
 
-        for(int j=mundo.minY; j<=mundo.maxY; j++) {
+        for(double j=mundo.minY; j<=mundo.maxY; j+=iteration_square_val) 
+        {
             y = (2*j+1)*cubo.halfEdge();
             cubo.setCenter(x,y);
             m_cubo = evaluar_cubo(cubo);
@@ -89,12 +94,11 @@ QList<Square> MarchingSquares::breadth_rec(int cubos_lado) {
                 cubos.append(cubo);
             }
         }
-
     }
-    if(!salir && 2*cubo.halfEdge() > min_grid) {
+    
+    if(!salir && 2*cubo.halfEdge() > min_grid) 
         cubos.append(breadth_rec(cubos_lado*2));
-        //mundo.maxX*=2; mundo.maxY*=2; mundo.maxZ*=2;
-    }
+    
     return cubos;
 }
 
@@ -127,19 +131,19 @@ MarchingSquares::MarchingSquares(/*double min_grid, double arista_mundo, sLimite
 
 ) {
     //TODO enlazar con arg interval
-    sLimitesEspacio2D _esp;
-
-    double a = 4;
-
-    _esp.minX = -a;
-    _esp.maxX = a;
-    _esp.minY = -a;
-    _esp.maxY = a;
-
-    //a mas pequenio el size se detectan las singularidades
-    this->min_grid = 0.05;
-    largo_mundo = 2*4;
-    mundo = _esp;
+//     sLimitesEspacio2D _esp;
+// 
+//     double a = 4;
+// 
+//     _esp.minX = -a;
+//     _esp.maxX = a;
+//     _esp.minY = -a;
+//     _esp.maxY = a;
+// 
+//     //a mas pequenio el size se detectan las singularidades
+//     this->min_grid = 0.05;
+//     largo_mundo = 2*4;
+//     mundo = _esp;
 }
 
 MarchingSquares::~MarchingSquares() {
@@ -179,10 +183,36 @@ void MarchingSquares::_addTri(const QPointF& a, const QPointF& b)
 
 }
 
+// #include <boost/math/tools/roots.hpp>
+// #include "boost/bind.hpp"
+// 
+// struct TerminationCondition  {
+//   bool operator() (double min, double max)  {
+//     return abs(min - max) <= 0.0000001;
+//   }
+// };
+/*
+// ...
+using boost::math::tools::bisect;
+using boost::math::tools::toms748_solve;
+
+// double root = (result.first + result.second) / 2;  // = 0.381966...
+
+using namespace boost::math::policies;
+typedef policy<
+  domain_error<ignore_error>,
+  pole_error<ignore_error>,
+  overflow_error<ignore_error>,
+  evaluation_error<ignore_error>
+> my_policy;
+
+uintmax_t maxiters = 100;*/
 
 QList<sArista2D> MarchingSquares::calcular_cortes(sMarching_Square cubo) {
     QList<sArista2D> aristas;
     sArista2D temp;
+
+    
 
 //  -----
 //  |1|3|
@@ -190,7 +220,26 @@ QList<sArista2D> MarchingSquares::calcular_cortes(sMarching_Square cubo) {
 //  |0|2|
 //  -----
 
+    double x = cubo.centro.x();
+    double y = cubo.centro.y();
+    double hedge = cubo.medio_lado;
 
+    QPointF v0 = QPointF(x-hedge, y-hedge);
+    QPointF v1 = QPointF(x-hedge, y+hedge);
+    QPointF v2 = QPointF(x+hedge, y-hedge);
+    QPointF v3 = QPointF(x+hedge, y+hedge);
+
+    //0-1
+//     fixed_x = v0.x();
+//     std::pair<double, double> r = bisect(boost::bind(&MarchingSquares::fy,this, _1), v0.y(), v1.y(), TerminationCondition(),maxiters, my_policy());
+//     if (fy(r.first) * fy(r.second) <= 0) //corte
+//     {
+//         temp.corte = QPointF(cubo.centro.x()-cubo.medio_lado,
+//                              cubo.centro.y()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[0],cubo.vertices[1]));
+//         temp.vertices[0] = 0;
+//         temp.vertices[1] = 1;
+//         aristas.append(temp);        
+//     }
 
     //0-1
     if(signo_opuesto(cubo.vertices[0],cubo.vertices[1])) {
@@ -203,6 +252,18 @@ QList<sArista2D> MarchingSquares::calcular_cortes(sMarching_Square cubo) {
     }
 
     //1-3
+//     fixed_y = v1.y();
+//     r = bisect(boost::bind(&MarchingSquares::fx,this, _1), v1.x(), v3.x(), TerminationCondition(),maxiters, my_policy());
+//     if (fx(r.first) * fx(r.second) <= 0) //corte
+//     {
+//         temp.corte = QPointF(cubo.centro.x()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[1],cubo.vertices[3]),
+//                              cubo.centro.y()+cubo.medio_lado);
+//         temp.vertices[0] = 1;
+//         temp.vertices[1] = 3;
+//         aristas.append(temp);     
+//     }
+    
+    //1-3
     if(signo_opuesto(cubo.vertices[1],cubo.vertices[3])) {
         temp.corte = QPointF(cubo.centro.x()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[1],cubo.vertices[3]),
                              cubo.centro.y()+cubo.medio_lado);
@@ -211,6 +272,18 @@ QList<sArista2D> MarchingSquares::calcular_cortes(sMarching_Square cubo) {
         aristas.append(temp);
     }
 
+    //2-3
+//     fixed_x = v2.x();
+//     r = bisect(boost::bind(&MarchingSquares::fy,this, _1), v2.y(), v3.y(), TerminationCondition(),maxiters, my_policy());
+//     if (fy(r.first) * fy(r.second) <= 0) //corte
+//     {
+//         temp.corte = QPointF(cubo.centro.x()+cubo.medio_lado,
+//                              cubo.centro.y()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[2],cubo.vertices[3]));
+//         temp.vertices[0] = 2;
+//         temp.vertices[1] = 3;
+//         aristas.append(temp);      
+//     }
+    
     //2-3
     if(signo_opuesto(cubo.vertices[2],cubo.vertices[3])) {
         temp.corte = QPointF(cubo.centro.x()+cubo.medio_lado,
@@ -226,6 +299,18 @@ QList<sArista2D> MarchingSquares::calcular_cortes(sMarching_Square cubo) {
 //  |0|2|
 //  -----
 
+    //0-2
+//     fixed_y = v0.y();
+//     r = bisect(boost::bind(&MarchingSquares::fx,this, _1), v0.x(), v2.x(), TerminationCondition(),maxiters, my_policy());
+//     if (fx(r.first) * fx(r.second) <= 0) //corte
+//     {
+//         temp.corte = QPointF(cubo.centro.x()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[0],cubo.vertices[2]),
+//                              cubo.centro.y()-cubo.medio_lado);
+//         temp.vertices[0] = 0;
+//         temp.vertices[1] = 2;
+//         aristas.append(temp);    
+//     }
+    
     //0-2
     if(signo_opuesto(cubo.vertices[0],cubo.vertices[2])) {
         temp.corte = QPointF(cubo.centro.x()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[0],cubo.vertices[2]),
@@ -311,6 +396,8 @@ void MarchingSquares::identificar_tipo(sMarching_Square cubo) {
 
 void MarchingSquares::tipo01(QList<sArista2D> aristas)
 {
+    
+    if (aristas.isEmpty()) return;
 
     QList<QPointF> triangulos;
 
@@ -323,6 +410,8 @@ void MarchingSquares::tipo01(QList<sArista2D> aristas)
 
 void MarchingSquares::tipo05(QList<sArista2D> aristas,sMarching_Square cubo)
 {
+    if (aristas.isEmpty()) return;
+    
     // en los tipos 10 y 5 hay 4 aristas
     QList<QPointF> triangulos;
 

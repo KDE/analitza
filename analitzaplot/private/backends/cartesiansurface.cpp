@@ -49,7 +49,7 @@ class  Fxy : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxy)
-    TYPE_NAME("CartesianSurfacez=f(x,y)")
+    TYPE_NAME("Surface z=F(x,y)")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -85,7 +85,7 @@ class Fxz : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxz)
-    TYPE_NAME("CartesianSurfaceY=f(x,z)")
+    TYPE_NAME("Surface y=F(x,z)")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(

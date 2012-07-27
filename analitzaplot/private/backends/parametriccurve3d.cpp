@@ -71,7 +71,7 @@ class ParametricCurve3D : public AbstractSpaceCurve
 {
 public:
     CONSTRUCTORS(ParametricCurve3D)
-    TYPE_NAME("ParametricCurve3DVecto3D")
+    TYPE_NAME("Parametric Curve 3D")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Vector,

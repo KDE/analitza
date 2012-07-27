@@ -98,8 +98,8 @@ public:
     
     _esp.minX = minx-presc*w;
     _esp.maxX = maxx+presc*w;
-    _esp.minY = miny-presc*w;
-    _esp.maxY = maxy+presc*w;
+    _esp.minY = miny-presc*h;
+    _esp.maxY = maxy+presc*h;
 
     //a mas pequenio el size se detectan las singularidades
     min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
@@ -171,6 +171,14 @@ private:
     //el tipo 5 cubre los casos 5 y 10
     // los casos 5 y 10 son donde se presnetan singularidades: cortes, cusps, etc
     void tipo05(QList<sArista2D> aristas, sMarching_Square cubo);
+    
+    
+private:
+    double fixed_x;
+    double fixed_y;
+    
+    double fy(double y) { return evalScalarField(fixed_x, y); }
+    double fx(double x) { return evalScalarField(x, fixed_y); }
 };
 
 #endif 

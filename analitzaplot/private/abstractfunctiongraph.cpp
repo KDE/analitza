@@ -52,7 +52,7 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
         
         //WARNING FIX magic numbers
         EndPoint min(-5.0);
-        EndPoint max(8.0);
+        EndPoint max(5.0);
         
         m_argumentIntervals[var->name()] = RealInterval(min, max);
     }

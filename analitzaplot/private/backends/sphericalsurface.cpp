@@ -36,8 +36,7 @@ public:
     explicit Fap(const Analitza::Expression& e);
     Fap(const Analitza::Expression& e, Analitza::Variables* v);
     
-    
-    TYPE_NAME("esfe")
+    TYPE_NAME("Spherical Surface Radial=F(t:Azimuth, p: Polar)")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(

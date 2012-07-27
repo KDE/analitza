@@ -51,7 +51,7 @@ class ANALITZAPLOT_EXPORT FunctionImplicit : public AbstractPlaneCurve, public M
 {
 public:
     CONSTRUCTORS(FunctionImplicit)
-    TYPE_NAME("FunctionImplicit")
+    TYPE_NAME("Implicit Curve")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Bool))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y")
@@ -76,12 +76,20 @@ void FunctionImplicit::update(const QRectF& vp)
     points.clear();
     jumps.clear();
 
-    double minx = vp.left();
-    double maxx = vp.right();
-    double miny = vp.top();
-    double maxy = vp.bottom();
-    
-//     qDebug() << minx << maxx << miny << maxy;
+    QPair<double, double> ix = interval("x");
+    QPair<double, double> iy = interval("y");    
+    double minx = ix.first;
+    double maxx = ix.second;
+    double miny = iy.first;
+    double maxy = iy.second;
+
+    if (isAutoUpdate())
+    {
+        minx = vp.left();
+        maxx = vp.right();
+        miny = vp.top();
+        maxy = vp.bottom();
+    }
 
     setWorld(minx, maxx, miny, maxy);
     buildGeometry();
