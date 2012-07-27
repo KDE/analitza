@@ -38,6 +38,8 @@
 #include "plotsproxymodel.h"
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>
+#include <qapplication.h>
+#include <QClipboard>
 #include <KColorUtils>
 
 PlotsView2D::PlotsView2D(QWidget *parent,PlotsProxyModel* fm)
@@ -310,6 +312,13 @@ void PlotsView2D::zoomOut()
     //resolucio=(resolucio*viewport.width())/(viewport.width()+2.);
     setViewport(QRect(userViewport.left() -1., userViewport.top() +1.,
                 userViewport.width() +2., userViewport.height() -2.));
+}
+
+void PlotsView2D::snapshotToClipboard()
+{
+    QClipboard *cb = QApplication::clipboard();
+
+    cb->setImage(buffer.toImage());
 }
 
 void PlotsView2D::addFuncs(const QModelIndex & parent, int start, int end)

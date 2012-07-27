@@ -199,9 +199,12 @@ bool FunctionGraph::reset(const Analitza::Expression& functionExpression, Dimens
     
     if (!canDraw(functionExpression, spacedim, m_errors, id)) return false;
 
+    //NOTE antes de borrar el analyzer de backend se debe almacenar que variables obtuvo cuando fue construido
+    //caso contrario se generara un nuevo backend con variables independientes
+    Analitza::Variables *vars = m_functionGraph->variables();
     delete m_functionGraph;
 
-    m_functionGraph = static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,functionExpression, variables()));
+    m_functionGraph = static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,functionExpression, vars));
     m_functionGraph->setInternalId(id);
     
     emitDataChanged();

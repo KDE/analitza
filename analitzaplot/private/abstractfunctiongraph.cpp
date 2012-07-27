@@ -22,10 +22,13 @@
 #include "functiongraphfactory.h"
 
 #include "analitza/variable.h"
+#include <analitza/variables.h>
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractMappingGraph(), m_e(e), m_autoUpdate(false)
 {
+//     qDebug() << "vars" << v;
+//     qDebug() << v->count();
     if (v)
          analyzer = new Analitza::Analyzer(v);
     else
@@ -37,8 +40,8 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
         analyzer->setExpression(analyzer->dependenciesToLambda());
         
     }
-        else
-            analyzer->setExpression(e);
+    else
+        analyzer->setExpression(e);
     
     analyzer->simplify();
     analyzer->flushErrors();

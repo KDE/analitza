@@ -240,7 +240,7 @@ VisualItemType* PlotsModel::addItem(const Analitza::Expression& functionExpressi
     {
         beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
 
-        ret = new VisualItemType(functionExpression, name, col);
+        ret = new VisualItemType(functionExpression, name, col, m_variables);
         ret->setModel(this);
         m_items.append(ret);
 

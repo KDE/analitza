@@ -615,13 +615,13 @@ Expression Expression::equationToFunction() const
 			if(c->m_params.first()->isApply()) {
 				Apply *c1 = (Apply*) c->m_params.first();
 				if(c1->firstOperator().operatorType()==Operator::eq) {
-					Container* c = new Container(Container::math);
+					Container* nc = new Container(Container::math);
 					Apply* a = new Apply;
 					a->appendBranch(new Operator(Operator::minus));
 					a->appendBranch(c1->at(0)->copy());
 					a->appendBranch(c1->at(1)->copy());
-					c->appendBranch(a);
-					return Expression(c);
+					nc->appendBranch(a);
+					return Expression(nc);
 				}
 			}
 		}

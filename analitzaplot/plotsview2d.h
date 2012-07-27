@@ -115,6 +115,8 @@ public slots:
     void showVAxes(bool flag) { m_showVAxes = flag; forceRepaint(); }
     void useCoorSys(int i) { m_useCoordSys = i; forceRepaint(); }
     
+    void snapshotToClipboard();
+    
 private slots:
     void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
     void updateFuncs(const QModelIndex& start, const QModelIndex& end); //update al setdata 

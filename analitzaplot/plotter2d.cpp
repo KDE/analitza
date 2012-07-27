@@ -745,29 +745,36 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 //         t=(CoordinateSystem)m_model->data(m_model->index(current), FunctionGraphModel::CoordinateSystemRole).toInt(); // editFunction(current)->axeType();
     //comparado con esto que es mucho mejor
 
+    bool coordsysfromplot = false;
+    
     if (!m_model || current == -1) t = Cartesian;
     else
     {
         if (fromProxy(current))
+        {
             t=fromProxy(current)->coordinateSystem();
+            coordsysfromplot = true;
+        }
         else
             t = Cartesian;
 
     }
 
-        if (m_useCoordSys == 0) 
-            m_meshGridShown = false;
-        else
-        {
-            m_meshGridShown = true;
-            
-            if (m_useCoordSys == 2 && t == Cartesian) 
-                t = Polar;
-            
-            if (m_useCoordSys == 1 && t == Polar) 
-                t = Cartesian;
-        }
-            
+    if (m_useCoordSys == 0) 
+        m_meshGridShown = false;
+    else
+    {
+        m_meshGridShown = true;
+        
+        if (m_useCoordSys == 2 && t == Cartesian && coordsysfromplot) 
+            t = Polar;
+
+        if (m_useCoordSys == 1 && t == Polar && coordsysfromplot) 
+            t = Cartesian;
+    }
+    //resetamos m_useCoordSys esperando que el usuario vualva a cambiar el style (desde el combo en khipu por ejemplo)
+    m_useCoordSys = -1;
+
             
     drawAxes(&p, t);
 
