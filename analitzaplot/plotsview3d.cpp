@@ -108,6 +108,14 @@ void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
 //     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }
 
+void PlotsView3D::resizeScene(int v)
+{
+    qreal si = (qreal)v;
+    setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
+    setSceneRadius(si);
+
+    updateGL();
+}
 
 void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(int modelindex) // modelindex del proxy
 {

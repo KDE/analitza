@@ -42,6 +42,11 @@ public:
     void setModel(PlotsProxyModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
 
+public slots:
+    void resizeScene(int v);
+
+
+    
 private slots:
     //los index son del DEL PROXY
     //como addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw se llema desde el draw no debe tener updategl
