@@ -56,7 +56,6 @@ Plotter2D::Plotter2D(const QSizeF& size, PlotsProxyModel* model)
     , m_tickScaleNumerator(1)
     , m_tickScaleDenominator(1)
     , m_gridColor(QColor(128,128,128))
-    , m_meshGridShown(true)
     , m_showHAxes(true)
     , m_showVAxes(true)
     , m_tickScaleSymbolValue(1)
@@ -152,7 +151,7 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
 
     QFontMetrics fm(w->font());
 
-    if (m_meshGridShown)
+    if (m_squares)
         for (qreal i = inc; i < until; i +=inc )
         {
             QPointF p(toWidget(QPointF(i,i)));
@@ -478,7 +477,7 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
         finestra->setPen(ceixos);
 
-        if(m_meshGridShown)
+        if(m_squares)
             finestra->drawLine(QPointF(p.x(), this->height()), QPointF(p.x(), 0.));
         else
             finestra->drawLine(p, p+QPointF(0.,-3.));
@@ -519,7 +518,7 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
         finestra->setPen(ceixos);
 
-        if(m_meshGridShown)
+        if(m_squares)
             finestra->drawLine(QPointF(p.x(), this->height()), QPointF(p.x(), 0.));
         else
             finestra->drawLine(p, p+QPointF(0.,-3.));
@@ -564,7 +563,7 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
         finestra->setPen(ceixos);
 
-        if(m_meshGridShown)
+        if(m_squares)
             finestra->drawLine(QPointF(0., p.y()), QPointF(width(), p.y()));
         else
             finestra->drawLine(p, p+QPointF(3.,0.));
@@ -608,7 +607,7 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
         finestra->setPen(ceixos);
 
-        if(m_meshGridShown)
+        if(m_squares)
             finestra->drawLine(QPointF(0., p.y()), QPointF(width(), p.y()));
         else
             finestra->drawLine(p, p+QPointF(3.,0.));
@@ -762,11 +761,11 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     }
 
     if (m_useCoordSys == 0) 
-        m_meshGridShown = false;
+        m_squares = false;
     else
     {
-        m_meshGridShown = true;
-        
+        m_squares = true;
+
         if (m_useCoordSys == 2) 
             t = Polar;
 
