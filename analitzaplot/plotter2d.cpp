@@ -19,7 +19,6 @@
 
 #include "plotter2d.h"
 
-
 #include "planecurve.h"
 
 #include "plotsmodel.h"
@@ -169,7 +168,8 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
     tickpen.setColor(QPalette().text().color());
     tickpen.setStyle(Qt::SolidLine);
 
-    QFont serifFont("Times", 10, QFont::Bold);
+//     QFont serifFont("Times", 10, QFont::Bold);
+    QFont serifFont = painter->font();
     w->setFont(serifFont);
 
     if (m_showHTicks)
@@ -460,7 +460,8 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     tickpen.setColor(QPalette().text().color());
     tickpen.setStyle(Qt::SolidLine);
 
-    QFont serifFont("Times", 10, QFont::Bold);
+//     QFont serifFont("Times", 10, QFont::Bold);
+    QFont serifFont = painter->font();
     finestra->setFont(serifFont);
 
     //BEGIN Draw ticks X
