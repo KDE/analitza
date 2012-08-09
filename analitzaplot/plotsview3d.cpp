@@ -268,9 +268,11 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 //     Q_ASSERT(start == end); // siempre se agrega un solo item al model
     
     PlotItem *item = fromProxy(start);
+    
+    
 
     //pese a que el item no es valido igual ejecuto el updategl pues seguro alguien emitio la signal removerows y el widget necetia ser actualizado
-    if (!item) {updateGL(); return ;}// no eliminar  nada que no cumpla las politicas/filtros del proxy
+    if (!item) {return ;}// no eliminar  nada que no cumpla las politicas/filtros del proxy
 
     glDeleteLists(m_displayLists[item], 1);
 
@@ -406,7 +408,7 @@ void PlotsView3D::init()
 PlotItem* PlotsView3D::fromProxy(int proxy_row) const
 {
     QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
-    
+
 //     qDebug() << "de" << m_model->rowCount();
 
     if (!pi.isValid())
