@@ -758,21 +758,21 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
         }
         else
             t = Cartesian;
-
     }
 
-    if (m_useCoordSys == 0) 
-        m_squares = false;
-    else
-    {
-        m_squares = true;
+//     if (coordsysfromplot)
+        if (m_useCoordSys == 0) 
+            m_squares = false;
+        else
+        {
+            m_squares = true;
 
-        if (m_useCoordSys == 2) 
-            t = Polar;
+            if (m_useCoordSys == 2) 
+                t = Polar;
 
-        if (m_useCoordSys == 1) 
-            t = Cartesian;
-    }
+            if (m_useCoordSys == 1) 
+                t = Cartesian;
+        }
 
     drawAxes(&p, t);
 
