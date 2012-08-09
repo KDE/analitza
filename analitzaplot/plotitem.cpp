@@ -60,6 +60,13 @@ void PlotItem::setModel(PlotsModel* m)
     m_model = m;
 }
 
+void PlotItem::setColor(const QColor& newColor)
+{ 
+    m_color = newColor; 
+   emitDataChanged(); 
+}
+
+
 
 
 

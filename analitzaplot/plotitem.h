@@ -60,7 +60,7 @@ public:
     void setName(const QString &newName) { m_name = newName; }
     virtual QString iconName() const = 0;
     QColor color() const { return m_color; }
-    void setColor(const QColor& newColor) { m_color = newColor; }
+    void setColor(const QColor& newColor);
     virtual QStringList examples() const = 0;
 
     virtual Dimension spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
