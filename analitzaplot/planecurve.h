@@ -36,7 +36,7 @@ class AbstractSurface;
 class ANALITZAPLOT_EXPORT PlaneCurve : public FunctionGraph 
 {
 public:
-    PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, Analitza::Variables *variables = 0);
+    PlaneCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(), Analitza::Variables *variables = 0);
     virtual ~PlaneCurve();
 
     //registeredCurves devuelve un map de key igual al nombre del tipo/backendr egistrado
@@ -48,7 +48,7 @@ public:
     static bool canDraw(const Analitza::Expression &functionExpression);
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
 
-    bool reset(const Analitza::Expression& functionExpression);
+    bool setExpression(const Analitza::Expression& functionExpression);
 
     QVector<int> jumps() const;
     const QVector<QPointF> & points() const;

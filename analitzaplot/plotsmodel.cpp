@@ -152,7 +152,7 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                     {
                         //TODO GSOC todo por el momento debemos hacer un typcast a functiongraph pues es el unico hijo de plotitem
                         FunctionGraph *fg = static_cast<FunctionGraph*>(m_items[index.row()]);
-                        fg->reset(Analitza::Expression(value.toString()), m_items[index.row()]->spaceDimension());
+                        fg->setExpression(Analitza::Expression(value.toString()), m_items[index.row()]->spaceDimension());
                         emit dataChanged(index, index);
                         return true;
                     }
@@ -207,6 +207,19 @@ QMap< int, SpaceCurve* > PlotsModel::spaceCurves() const
 QMap< int, Surface* > PlotsModel::surfaces() const
 {
     return items<Surface>();
+}
+
+void PlotsModel::addItem(PlotItem* it)
+{
+    Q_ASSERT(it);
+
+    beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
+
+    it->setModel(this);
+    it->setVariables(m_variables);
+    m_items.append(it);
+
+    endInsertRows();
 }
 
 PlotItem* PlotsModel::item(int curveIndex) const

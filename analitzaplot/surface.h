@@ -26,13 +26,13 @@ class AbstractSurface;
 class ANALITZAPLOT_EXPORT Surface : public FunctionGraph 
 {
 public:
-    Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, Analitza::Variables *variables = 0);
+    Surface(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(), Analitza::Variables *variables = 0);
     virtual ~Surface();
 
     static bool canDraw(const Analitza::Expression &functionExpression);
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
 
-    bool reset(const Analitza::Expression& functionExpression);
+    bool setExpression(const Analitza::Expression& functionExpression);
 
     //Own
     void update(const Box3D &viewport);

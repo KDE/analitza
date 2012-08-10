@@ -17,8 +17,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
 #include "private/abstractplanecurve.h"
 #include "private/functiongraphfactory.h"
 
@@ -44,11 +42,6 @@ public:
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
-    
-    //
-    
-
-
 };
 
 void FunctionPolar::update(const QRectF& viewport)

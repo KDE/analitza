@@ -98,7 +98,7 @@ const Analitza::Expression& AbstractFunctionGraph::expression() const
 
 QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interval(const QString &argname, bool evaluate) const
 {
-    Q_ASSERT(m_argumentIntervals.contains(argname));
+    Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
     QPair<Analitza::Expression, Analitza::Expression> ret;
     
@@ -124,7 +124,7 @@ QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interva
 
 bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
 {
-    Q_ASSERT(m_argumentIntervals.contains(argname));
+    Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
     Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
 
@@ -143,28 +143,28 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::
 
 QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) const
 {
-    Q_ASSERT(m_argumentIntervals.contains(argname));
-    
-//     QPair<double, double> ret;
-//     
-//     Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
-//     ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer).toReal().value();
-//     ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
-//     
-//     delete intervalsAnalizer;
-//     
-    
+    Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
     QPair<double, double> ret;
-    ret.first = m_argumentIntervals[argname].lowEndPoint().value().toReal().value();
-    ret.second = m_argumentIntervals[argname].highEndPoint().value().toReal().value();
+    
+    Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
+    ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer).toReal().value();
+    ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
+    
+    delete intervalsAnalizer;
+//     
+    
+    
+//     QPair<double, double> ret;
+//     ret.first = m_argumentIntervals[argname].lowEndPoint().value().toReal().value();
+//     ret.second = m_argumentIntervals[argname].highEndPoint().value().toReal().value();
 
     return ret;
 }
 
 bool AbstractFunctionGraph::setInterval(const QString &argname, double min, double max)
 {
-    Q_ASSERT(m_argumentIntervals.contains(argname));
+    Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
     if (max < min)
         return false;

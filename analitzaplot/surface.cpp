@@ -44,9 +44,9 @@ bool Surface::canDraw(const Analitza::Expression &functionExpression, QStringLis
         return FunctionGraph::canDraw(functionExpression, Dim3D, errors);
 }
 
-bool Surface::reset(const Analitza::Expression& functionExpression)
+bool Surface::setExpression(const Analitza::Expression& functionExpression)
 {
-    return FunctionGraph::reset(functionExpression, Dim3D);
+    return FunctionGraph::setExpression(functionExpression, Dim3D);
 }
 
 

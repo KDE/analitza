@@ -67,9 +67,9 @@ bool PlaneCurve::canDraw(const Analitza::Expression& functionExpression, QString
 return FunctionGraph::canDraw(functionExpression, Dim2D, errors);
 }
 
-bool PlaneCurve::reset(const Analitza::Expression& functionExpression)
+bool PlaneCurve::setExpression(const Analitza::Expression& functionExpression)
 {
-    return FunctionGraph::reset(functionExpression, Dim2D);
+    return FunctionGraph::setExpression(functionExpression, Dim2D);
 }
 
 

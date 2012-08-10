@@ -70,6 +70,7 @@ public:
     QMap<int, SpaceCurve *> spaceCurves() const;
     QMap<int, Surface *> surfaces() const;
 
+    void addItem(PlotItem *it);
     PlotItem * item(int curveIndex) const;
     void removeItem(int curveIndex);
 

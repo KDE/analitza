@@ -30,13 +30,13 @@ class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
     //curvature, length of arc, curvature
     
 public:
-    SpaceCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor& col, Analitza::Variables *variables = 0);
+    SpaceCurve(const Analitza::Expression &functionExpression, const QString &name= QString(), const QColor& col = QColor(), Analitza::Variables *variables = 0);
     virtual ~SpaceCurve();
 
     static bool canDraw(const Analitza::Expression &functionExpression);
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
 
-    bool reset(const Analitza::Expression& functionExpression);
+    bool setExpression(const Analitza::Expression& functionExpression);
 
     //Curve
     QVector<int> jumps() const;

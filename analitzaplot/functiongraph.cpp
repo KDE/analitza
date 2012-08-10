@@ -146,7 +146,7 @@ bool FunctionGraph::setInterval(const QString &argname, const Analitza::Expressi
     Q_ASSERT(m_functionGraph);
     
     bool ret = m_functionGraph->setInterval(argname, min, max);
-    
+
     if (ret)
         emitDataChanged();
     
@@ -192,12 +192,14 @@ bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, Dime
     return canDraw(functionExpression, spacedim, errs, nonusedid);
 }
 
-bool FunctionGraph::reset(const Analitza::Expression& functionExpression, Dimension spacedim)
+bool FunctionGraph::setExpression(const Analitza::Expression& functionExpression, Dimension spacedim)
 {
     QString id;
     Analitza::Expression expr;
     
     if (!canDraw(functionExpression, spacedim, m_errors, id)) return false;
+
+    QMap<QString, AbstractFunctionGraph::RealInterval > argumentIntervals = m_functionGraph->m_argumentIntervals;
 
     //NOTE antes de borrar el analyzer de backend se debe almacenar que variables obtuvo cuando fue construido
     //caso contrario se generara un nuevo backend con variables independientes
@@ -206,6 +208,8 @@ bool FunctionGraph::reset(const Analitza::Expression& functionExpression, Dimens
 
     m_functionGraph = static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,functionExpression, vars));
     m_functionGraph->setInternalId(id);
+    
+    m_functionGraph->m_argumentIntervals = argumentIntervals;
     
     emitDataChanged();
     
