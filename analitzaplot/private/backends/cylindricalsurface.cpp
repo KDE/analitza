@@ -44,7 +44,7 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("r,p")
-    ICON_NAME("none")
+    ICON_NAME("newcylindrical")
     EXAMPLES("")
 
     //Own

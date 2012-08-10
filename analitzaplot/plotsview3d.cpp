@@ -283,6 +283,7 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 //si hay un cambio aki es desetvisible (que no es necesario configurar en el plotitem) o es del 
 //setinterval (que si es necesario configurarlo en el plotitem)
 //el enfoque es: si hay un cambio borro el displaylist y lo genero de nuevo (no lo genero si el item no es visible)
+//TODO cache para exp e interval ... pues del resto es solo cuestion de update
 void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
 {
     PlotItem *item = fromProxy(s.row());
@@ -310,6 +311,7 @@ void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
 void PlotsView3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 {
 //     updateFunctions(start, end);
+//     updateGL();
 }
 
 int PlotsView3D::currentFunction() const
@@ -368,7 +370,9 @@ void PlotsView3D::draw()
         //TODO GSOC
         // por el momento solo se dibujan superficies
         if (!surf) continue;
-        
+
+        if (!surf->isVisible()) continue;
+
         glCallList(m_displayLists[item]);
     }
     

@@ -59,12 +59,6 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     int columnCount(const QModelIndex& parent) const { return 2; }
 
-    //TODO pensar en mejores nombres
-    //si es tru entonces los items pueden ocultar por medio de checks en la vista
-    bool isCheckable () const { return m_isCheckable; }
-    
-public slots:
-    void setCheckable ( bool b);
 public:
 
     PlaneCurve * addPlaneCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(Qt::yellow));
@@ -90,7 +84,6 @@ private:
     Analitza::Variables *m_variables;
     QList<PlotItem*> m_items;
     bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem
-    bool m_isCheckable;
 };
 
 #endif // FUNCTIONGRAPHMODEL_H

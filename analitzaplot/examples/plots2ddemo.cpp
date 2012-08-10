@@ -58,21 +58,21 @@ int main(int argc, char *argv[])
     QWidget *central = new QWidget(mainWindow);
     QVBoxLayout *layout = new QVBoxLayout(central);
     
-    QCheckBox *checkvisible = new QCheckBox(central);
-    checkvisible->setText("Allow to the model can change the visibility of items");
-    checkvisible->setCheckState(Qt::Checked);
-    checkvisible->setTristate(false);
+//     QCheckBox *checkvisible = new QCheckBox(central);
+//     checkvisible->setText("Allow to the model can change the visibility of items");
+//     checkvisible->setCheckState(Qt::Checked);
+//     checkvisible->setTristate(false);
     
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
 
-    layout->addWidget(checkvisible);
+//     layout->addWidget(checkvisible);
     layout->addWidget(tabs);
 
     //BEGIN test calls
     
     PlotsModel *model = new PlotsModel(tabs);
     
-    checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
+//     checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
 
     PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
     proxy->setFilterSpaceDimension(Dim2D);
@@ -113,13 +113,13 @@ int main(int argc, char *argv[])
     QTreeView *viewsource = new QTreeView(tabs);
     viewsource->setRootIsDecorated(false);
     viewsource->setMouseTracking(true);
-    viewsource->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
     viewsource->setModel(model);
     
     QTreeView *viewproxy = new QTreeView(tabs);
     viewproxy->setRootIsDecorated(false);
     viewproxy->setMouseTracking(true);
-    viewproxy->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    viewproxy->setEditTriggers(QAbstractItemView::AllEditTriggers);
     viewproxy->setModel(proxy);
     viewproxy->setSelectionModel(selection);
     

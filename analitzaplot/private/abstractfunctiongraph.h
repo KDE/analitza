@@ -106,7 +106,8 @@ protected:
 private:
 QString m_internalId;    
     
-Analitza::Expression m_e;
+    Analitza::Expression m_e;
+    Analitza::Variables *m_varsmod;
 
 bool m_autoUpdate;
 

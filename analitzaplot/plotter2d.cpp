@@ -66,8 +66,6 @@ Plotter2D::~Plotter2D()
 
 void Plotter2D::drawAxes(QPainter *p, CoordinateSystem a)
 {
-    p->setRenderHint(QPainter::Antialiasing, false);
-
     switch(a) {
     case Polar:
         drawPolarAxes(p);
@@ -774,9 +772,9 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
                 t = Cartesian;
         }
 
-    drawAxes(&p, t);
-
     p.setRenderHint(QPainter::Antialiasing, true);
+    
+    drawAxes(&p, t);
 
     if (!m_model && m_dirty) return; // guard // si tenemos el model y ademas las funciones estan actualizadas pasamos este if y pintamos
 

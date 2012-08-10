@@ -42,7 +42,7 @@ public:
                 Analitza::ExpressionType::Value), 3)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("u,v")
-    ICON_NAME("none")
+    ICON_NAME("draw-donut")
     EXAMPLES("")
 
     //Own

@@ -24,10 +24,12 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include <QStatusBar>
+#include <QItemEditorFactory>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
+#include <kcolorcombo.h>
 
 #include "analitzaplot/surface.h"
 #include "analitzaplot/spacecurve.h"
@@ -41,6 +43,8 @@
 #include <analitza/variable.h>
 #include <analitza/container.h>
 #include <analitza/polynomial.h>
+
+
 
 int main(int argc, char *argv[])
 {
@@ -61,24 +65,29 @@ int main(int argc, char *argv[])
     mainWindow->setMinimumSize(640, 480);
     mainWindow->statusBar()->show();
 
+//     QItemEditorFactory *factory = new QItemEditorFactory;
+//     QItemEditorCreatorBase *colorListCreator = new QStandardItemEditorCreator<KColorCombo>();
+//     factory->registerEditor(QVariant::Color, colorListCreator);
+//     QItemEditorFactory::setDefaultFactory(factory);
+
     QWidget *central = new QWidget(mainWindow);
     QVBoxLayout *layout = new QVBoxLayout(central);
     
-    QCheckBox *checkvisible = new QCheckBox(central);
-    checkvisible->setText("Allow to the model can change the visibility of items");
-    checkvisible->setCheckState(Qt::Checked);
-    checkvisible->setTristate(false);
+//     QCheckBox *checkvisible = new QCheckBox(central);
+//     checkvisible->setText("Editable view");
+//     checkvisible->setCheckState(Qt::Checked);
+//     checkvisible->setTristate(false);
 
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
 
-    layout->addWidget(checkvisible);
+//     layout->addWidget(checkvisible);
     layout->addWidget(tabs);
     
     //BEGIN test calls
     
     PlotsModel *model = new PlotsModel(tabs);
     
-    checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
+//     checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
 
     PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
     proxy->setFilterSpaceDimension(Dim3D);
@@ -107,13 +116,13 @@ int main(int argc, char *argv[])
     QTreeView *viewsource = new QTreeView(tabs);
     viewsource->setRootIsDecorated(false);
     viewsource->setMouseTracking(true);
-    viewsource->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
     viewsource->setModel(model);
-    
+
     QTreeView *viewproxy = new QTreeView(tabs);
     viewproxy->setRootIsDecorated(false);
     viewproxy->setMouseTracking(true);
-    viewproxy->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    viewproxy->setEditTriggers(QAbstractItemView::AllEditTriggers);
     viewproxy->setModel(proxy);
     viewproxy->setSelectionModel(selection);
     

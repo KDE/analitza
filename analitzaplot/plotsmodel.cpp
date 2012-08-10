@@ -36,7 +36,7 @@
 // #include <kcategorizedsortfilterproxymodel.h>
 
 PlotsModel::PlotsModel(QObject* parent, Analitza::Variables *v): QAbstractListModel(parent)
-    , m_variables(v), m_itemCanCallModelRemoveItem(true), m_isCheckable(true)
+    , m_variables(v), m_itemCanCallModelRemoveItem(true)
 {
 }
 
@@ -61,7 +61,12 @@ void PlotsModel::setVariables(Analitza::Variables* v)
 Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
 {
     if(index.isValid())
-        return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    {
+//         if (index.column() == 0 && index.data(Qt::DecorationRole).canConvert(QVariant::Color))
+//             return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+//         else
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+    }
     else
         return 0;
 }
@@ -96,31 +101,26 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
     switch(role)
     {
         case Qt::DisplayRole:
-            switch(index.column()) {
-                case 0:
-                    return tmpcurve->name();
-                    break;
-                case 1:
-                    return tmpcurve->expression().toString();
-                    break;
+        case Qt::EditRole:
+            switch(index.column()) 
+            {
+                case 0: return tmpcurve->name();
+                case 1: return tmpcurve->expression().toString();
             }
-            break;
         case Qt::DecorationRole:
-            if(index.column()==0) {
+            if(index.column()==0)
+            {
                 QPixmap ico(15, 15);
                 ico.fill(tmpcurve->color());
                 return QIcon(ico);
-            } else {
+            } 
+            else 
                 return QIcon::fromTheme(tmpcurve->iconName());
-            }
-            break;
-        case Qt::ToolTipRole:
-            return tmpcurve->name();
-        case Qt::StatusTipRole:
-            return tmpcurve->typeName();
+        case Qt::ToolTipRole: return tmpcurve->name();
+        case Qt::StatusTipRole: return tmpcurve->typeName();
     }
 
-    if (role == Qt::CheckStateRole && m_isCheckable)
+    if (role == Qt::CheckStateRole)
         if(index.column()==0) 
             return tmpcurve->isVisible()?Qt::Checked:Qt::Unchecked;
     
@@ -129,24 +129,46 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
 
 bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-// //     if(role==Shown) {
-// //         bool isshown=value.toBool();
-// //         funclist[idx.row()].setShown(isshown);
-// //         
-// //         QModelIndex idx1=index(idx.row(), 0), idxEnd=index(idx.row(), columnCount()-1);
-// //         emit dataChanged(idx1, idxEnd);
-// //     }
-//     return false;
+    if (!index.isValid()) return false;
 
-    if (index.isValid() && role == Qt::CheckStateRole && m_isCheckable) 
+    switch(role)
     {
-        m_items[index.row()]->setVisible(value.toBool());
-        
-//         qDebug() << m_items[index.row()]->name() << " is now " << m_items[index.row()]->isVisible();
-         emit dataChanged(index, index);
-         return true;
-     }
-     return QAbstractListModel::setData(index,value,role);
+        case Qt::EditRole:
+            switch(index.column()) 
+            {
+                case 0:
+                {
+                    if (m_items[index.row()]->name() == value.toString()) return false;
+                    
+                    m_items[index.row()]->setName(value.toString());
+                    emit dataChanged(index, index);
+                    return true;
+                }
+                case 1: //exp
+                {
+                    if (m_items[index.row()]->expression().toString() == value.toString()) return false;
+
+                    if (FunctionGraph::canDraw(Analitza::Expression(value.toString()), m_items[index.row()]->spaceDimension()))
+                    {
+                        //TODO GSOC todo por el momento debemos hacer un typcast a functiongraph pues es el unico hijo de plotitem
+                        FunctionGraph *fg = static_cast<FunctionGraph*>(m_items[index.row()]);
+                        fg->reset(Analitza::Expression(value.toString()), m_items[index.row()]->spaceDimension());
+                        emit dataChanged(index, index);
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        case Qt::CheckStateRole:
+        {
+            m_items[index.row()]->setVisible(value.toBool());
+            emit dataChanged(index, index);
+            return true;
+        }
+
+    }
+     
+    return false;
 }
 
 int PlotsModel::rowCount(const QModelIndex & parent) const
@@ -155,15 +177,6 @@ int PlotsModel::rowCount(const QModelIndex & parent) const
         return 0;
     else
         return m_items.size();
-}
-
-void PlotsModel::setCheckable(bool b)
-{
-    emit layoutAboutToBeChanged();
-    
-    m_isCheckable = b;
-
-    emit layoutChanged();
 }
 
 PlaneCurve * PlotsModel::addPlaneCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)

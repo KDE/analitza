@@ -34,7 +34,7 @@ public:
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Bool)) // is a equation
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y,z")
-    ICON_NAME("none")
+    ICON_NAME("draw-square-inverted-corners")
     EXAMPLES("")
 
     //Own

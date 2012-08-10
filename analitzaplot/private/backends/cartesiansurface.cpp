@@ -56,7 +56,7 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y")
-    ICON_NAME("none")
+    ICON_NAME("newfunction3d")
     EXAMPLES("x*x+y,x+y*sin(x),x*y")
 
     //Own
@@ -92,7 +92,7 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,z")
-    ICON_NAME("none")
+    ICON_NAME("newfunction3d")
     EXAMPLES("x+z")
 
     QVector3D fromParametricArgs(double u, double v);

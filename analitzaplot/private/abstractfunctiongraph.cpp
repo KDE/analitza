@@ -25,7 +25,7 @@
 #include <analitza/variables.h>
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractMappingGraph(), m_e(e), m_autoUpdate(false)
+: AbstractMappingGraph(), m_e(e), m_autoUpdate(false), m_varsmod(v)
 {
 //     qDebug() << "vars" << v;
 //     qDebug() << v->count();
@@ -75,7 +75,7 @@ Dimension AbstractFunctionGraph::spaceDimension() const
 
 Analitza::Variables *AbstractFunctionGraph::variables() const 
 { 
-    return analyzer->variables(); 
+    return m_varsmod; // no devualvo del analizar porque este siempre tendra un vars atachado //// analyzer->variables(); 
 }
 
 void AbstractFunctionGraph::setVariables(Analitza::Variables* variables)

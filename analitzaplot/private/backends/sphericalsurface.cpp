@@ -43,7 +43,7 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("t,p") // t azimuth p polar
-    ICON_NAME("none")
+    ICON_NAME("newspherical")
     EXAMPLES("")
 
     //Own

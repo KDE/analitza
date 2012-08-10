@@ -37,7 +37,7 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x")
-    ICON_NAME("noane")
+    ICON_NAME("newfunction")
     EXAMPLES("x,x*x,x+4")    
 
     void update(const QRectF& viewport);
@@ -218,7 +218,7 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("y")
-    ICON_NAME("nYYoane")
+    ICON_NAME("newfunction")
     EXAMPLES("y,y*y,y+4")  
     
     void update(const QRectF& viewport);

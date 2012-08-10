@@ -109,7 +109,7 @@ void DictionaryLoader::load()
 PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent): PlotsProxyModel(parent)
 {
     m_model = new PlotsModel(this);
-    m_model->setCheckable(false);
+//     m_model->setCheckable(false);
     
 }
 

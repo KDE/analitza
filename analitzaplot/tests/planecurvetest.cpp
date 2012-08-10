@@ -82,7 +82,7 @@ void FunctionTest::testJumps_data()
     QTest::addColumn<QString>("input");
     QTest::addColumn<int>("jumps");
 
-    QTest::newRow("tanx") << "x->tan x" << 5;
+    QTest::newRow("tanx") << "x->tan x" << 4;
     QTest::newRow("divx") << "x->1/x" << 1;
 }
 

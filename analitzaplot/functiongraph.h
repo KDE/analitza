@@ -65,16 +65,16 @@ public:
     bool setInterval(const QString &argname, double min, double max);
 
     QStringList parameters() const;
+
+    static bool canDraw(const Analitza::Expression& functionExpression, Dimension spacedim);
+    //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
+    static bool canDraw(const Analitza::Expression& functionExpression, Dimension spacedim, QStringList& errs);
+    bool reset(const Analitza::Expression &functionExpression, Dimension spacedim);
     
 protected:
     FunctionGraph() {}
     FunctionGraph(const FunctionGraph &other) {}
-    
-    static bool canDraw(const Analitza::Expression& functionExpression, Dimension spacedim);
-    //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
-    static bool canDraw(const Analitza::Expression& functionExpression, Dimension spacedim, QStringList& errs);
 
-    bool reset(const Analitza::Expression &functionExpression, Dimension spacedim);
     
     AbstractFunctionGraph *backend() const { return m_functionGraph; }
 
