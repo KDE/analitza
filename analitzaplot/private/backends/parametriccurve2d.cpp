@@ -99,23 +99,16 @@ void FunctionParametric::update(const QRectF& viewport)
     //  return;
     
     
-            //TODO CACHE en intervalvalues!!!
-    static QPair<double, double> c_limits = interval("t");
-    
-//     if ()
-//     
-//     static QPair<double, double> o_limits = c_limits;
-    
+    //TODO CACHE en intervalvalues!!!
+    QPair<double, double> c_limits = interval("t");
     
     double ulimit=c_limits.second;
     double dlimit=c_limits.first;
     
     
-    
     points.clear();
     jumps.clear();
     //points.reserve(resolution());
-
     
 //  double inv_res= double((ulimit-dlimit)/resolution());
     double inv_res= 0.01; 
