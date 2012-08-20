@@ -1,5 +1,4 @@
 /*************************************************************************************
- *  Copyright (C) 2007-2011 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
@@ -17,58 +16,76 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+#include "dictionaryitem.h"
+#include "dictionariesmodel.h"
 
-#include "plotitem.h"
-
-#include "plotsmodel.h"
-
-PlotItem::PlotItem(const QString &name, const QColor& col)
-    : m_name (name), m_color(col), m_graphVisible(true), m_model(0), m_inDestructorSoDontDeleteMe(false)
+DictionaryItem::DictionaryItem(Dimension dimension)
+    : m_dimension(dimension), m_inDestructorSoDontDeleteMe(false), m_callingCtrFromMode(true)
 {
+    m_dateTime = KDateTime::currentLocalDateTime(); 
+    
     m_id = QUuid::createUuid();
 }
 
-PlotItem::~PlotItem()
+void DictionaryItem::setTitle(const QString& name)
+{
+    m_name = name;
+    
+    emitDataChanged();
+}
+
+void DictionaryItem::setDescription(const QString& description)
+{
+    m_description = description; 
+    
+    emitDataChanged();
+}
+
+void DictionaryItem::setThumbnail(const QPixmap thumbnail)
+{
+    m_thumbnail = thumbnail;
+    
+    emitDataChanged();
+}
+
+void DictionaryItem::stamp()
+{
+    m_dateTime = KDateTime::currentLocalDateTime(); 
+    
+    emitDataChanged(); // actualimos las vistas itemviews
+}
+
+DictionaryItem::~DictionaryItem()
 {
     if (m_model && m_model->m_itemCanCallModelRemoveItem)
     {
         m_inDestructorSoDontDeleteMe = true;
-        m_model->removePlot(m_model->m_items.indexOf(this));
+        m_model->removeRow(m_model->m_items.indexOf(this));
         m_inDestructorSoDontDeleteMe = false;
     }
 }
 
-// VisualItemsModel* VisualItem::model() const
-// {
-//     return m_model;
-// }
-
-void PlotItem::emitDataChanged()
-{
-    if (m_model)
-    {
-        int row = m_model->m_items.indexOf(this);
-        m_model->dataChanged(m_model->index(row), m_model->index(row));
-    }
-}
-
-
-void PlotItem::setModel(PlotsModel* m)
+void DictionaryItem::setModel(DictionariesModel * m)
 {
     Q_ASSERT(m);
     Q_ASSERT(m != m_model);
     
     m_model = m;
+    
+    m_callingCtrFromMode = false;
 }
 
-void PlotItem::setColor(const QColor& newColor)
-{ 
-    m_color = newColor; 
-   emitDataChanged(); 
+void DictionaryItem::emitDataChanged()
+{
+    if (m_callingCtrFromMode)
+        return ; // no emitir la signal datachange cuando se esta agregando un item desde el model
+    
+    if (m_model)
+    {
+        if (m_model->rowCount()>0)
+        {
+            int row = m_model->m_items.indexOf(this);
+            m_model->dataChanged(m_model->index(row), m_model->index(row));
+        }
+    }
 }
-
-
-
-
-
-

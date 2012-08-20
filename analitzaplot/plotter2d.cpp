@@ -718,11 +718,11 @@ PlotItem* Plotter2D::fromProxy(int proxy_row) const
     if (!pi.isValid())
         return 0;
 
-    if (qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row())->spaceDimension() != 2)
+    if (qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row())->spaceDimension() != 2)
         return 0; // evitamos que los proxies de los usuario causen un bug
 
     if (pi.isValid())
-        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row());
+        return qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row());
 
     return 0;
 }

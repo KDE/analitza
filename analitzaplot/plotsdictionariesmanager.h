@@ -16,45 +16,37 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "plotsproxymodel.h"
+#ifndef ANALITZAPLOT_FUNCTION_H_DICT_MNGR
+#define ANALITZAPLOT_FUNCTION_H_DICT_MNGR
 
-#include "plotitem.h"
+
 #include "plotsmodel.h"
+#include "plotsdictionarymodel.h"
+#include "plotitem.h"
+#include <kjob.h>
 
 
-PlotsProxyModel::PlotsProxyModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
-    , m_dimension(All)
+//administa los dictionarios instalados y entrega un modelo 
+class ANALITZAPLOT_EXPORT PlotsDictionariesManager : public QObject
 {
-     setDynamicSortFilter(true);
-}
+Q_OBJECT    
 
-PlotsProxyModel::~PlotsProxyModel()
-{
+// friend PlotsDictionaryModel * getDictionary(QObject *); // for private slots
 
-}
-
-void PlotsProxyModel::setFilterSpaceDimension(Dimension dimension)
-{
-    m_dimension = dimension;
-    invalidateFilter();
-}
-
-bool PlotsProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
-{
-    Q_ASSERT(sourceModel());
+public:
+    //primero lee el dicmodel y crea los parents
+    //luego lee el plostmodel para llenar los childs
+    PlotsDictionariesManager(QObject* parent = 0);
+    ~PlotsDictionariesManager();
     
-    if (m_dimension == All) return true;
+    QStringList availableDictionaries() const;
 
-    PlotItem *item = qobject_cast<PlotsModel *>(sourceModel())->plot(sourceRow);
-    
-    if (item->spaceDimension() != m_dimension)
-        return false;
-    
-    return true;
-}
+    PlotsDictionariesModel *model() const;
 
-bool PlotsProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
-{
-    return QString::localeAwareCompare(left.data().toString(), right.data().toString())>=0;
-}
+private:
+    PlotsDictionariesModel *m_model;
+    QStringList m_errors;
+};
+
+
+#endif

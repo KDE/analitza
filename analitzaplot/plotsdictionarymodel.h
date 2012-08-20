@@ -24,67 +24,39 @@
 
 #include "plotsmodel.h"
 #include "plotsproxymodel.h"
-#include <kjob.h>
-
-//TODO debe adivinar las variables
-//El ctr carga el archivo, en la documentacion final se debe indicar
-// que solo es necesario usar una sola instancia de esta clase
+#include "plotitem.h"
+#include <QStandardItemModel>
 
 
-//TODO 
-//static QStringlist registred dictionaries
-//ctor (QString dic, QObjetc ...)
-
-//load the registred dictionary with a thread
-class DictionaryLoader : public QObject
-{
-    Q_OBJECT
-    
-public:
-    DictionaryLoader(PlotsModel *model, QObject *parent = 0);
-    ~DictionaryLoader();
-    
-public slots:
-    void load();
-
-signals:
-    void loaded();
-    void errorFound(const QString &error);
-    
-private:
-    PlotsModel *m_model;
-};
-
-class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public PlotsProxyModel
+//si se agrega nuevos archvivos se debe cargar mediante un filewatch ... en general QAbstractItemModel es mas flexible que qstandaritemmodel
+//too complex rescandiction on signals like export as dic ...
+//cunado lo use el dicmanager borrar los models luego de cargar la data
+class ANALITZAPLOT_EXPORT PlotsDictionariesModel : public QStandardItemModel
 {
 Q_OBJECT    
 
-friend PlotsDictionaryModel * getDictionary(QObject *); // for private slots
+// friend PlotsDictionaryModel * getDictionary(QObject *); // for private slots
 
 public:
-    PlotsDictionaryModel(QObject* parent = 0);
-    ~PlotsDictionaryModel();
-    
-//     PlotItem *getByName() ...
-    
-    bool isLoaded() const { return rowCount() > 0 && m_errors.isEmpty(); }
-    QStringList errors() const { return m_errors; }
+    //primero lee el dicmodel y crea los parents
+    //luego lee el plostmodel para llenar los childs
+    PlotsDictionariesModel(DictionariesModel* dmodel, PlotsModel* pmodel, QObject* parent = 0);
+    ~PlotsDictionariesModel();
     
 private slots:
-    //al terminar de cargar el archivo del dictionay entonces configuramos el proxy (this)
-    void setupModelSourceModel();
-    void registerError(const QString &error);
+        void addParent(const QModelIndex & parent, int start, int end);
+        void setParentData(const QModelIndex & topLeft, const QModelIndex & bottomRight );
+        void removeParent(const QModelIndex & parent, int start, int end);
+        void addChild(const QModelIndex & parent, int start, int end);
+        void removeChild(const QModelIndex & parent, int start, int end);
+        void setChildData(const QModelIndex & topLeft, const QModelIndex & bottomRight );
 
 private: //TODO gsoc pimpl
+    DictionariesModel *m_dictionaryModel;
+    PlotsModel *m_plotsModel;
 
-
-    PlotsModel *m_model;
-
-    QStringList m_errors;
+    QHash<DictionaryItem*, QStandardItem*> m_parentsMap; //<dic,dictnameentryitem>
+    QHash<PlotItem*, QStandardItem*> m_childrenMap; //<plot,plotnameentryitem>
 };
-
-
-//load the dict in a thread
-ANALITZAPLOT_EXPORT PlotsDictionaryModel * getDictionary(QObject *parent);
 
 #endif

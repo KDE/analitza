@@ -55,6 +55,8 @@ private/backends/sphericalsurface.cpp
 private/backends/implicitsurface.cpp
 
 #public API
+dictionaryitem.cpp
+dictionariesmodel.cpp
 plotitem.cpp
 functiongraph.cpp
 planecurve.cpp
@@ -63,6 +65,7 @@ surface.cpp
 plotsmodel.cpp
 plotsproxymodel.cpp
 plotsdictionarymodel.cpp
+plotsdictionariesmanager.cpp
 plotter2d.cpp
 plotsview3d.cpp
 plotter3d.cpp
@@ -94,6 +97,8 @@ install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_AR
 install(FILES
 
 #public api
+dictionaryitem.h
+dictionariesmodel.h
 analitzaplotexport.h
 plotitem.h
 functiongraph.h
@@ -103,6 +108,7 @@ surface.h
 plotsmodel.h
 plotsproxymodel.h
 plotsdictionarymodel.h
+plotsdictionariesmanager.h
 plotter2d.h
 plotsview2d.h
 plotter3d.h
@@ -135,5 +141,7 @@ install(FILES
 
 DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
 
+add_subdirectory(data)
 add_subdirectory(tests)
 add_subdirectory(examples)
+

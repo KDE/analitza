@@ -51,7 +51,7 @@ namespace Analitza
 {
 class Expression;
 }
-enum Dimension { All = 0, Dim1D = 1, Dim2D = 2, Dim3D = 3}; 
+enum Dimension { All = 0, Dim1D = 1, Dim2D = 2, Dim3D = 3, DimAll = 4}; // dimall or dimnd TODO better name 
 
 enum CoordinateSystem { Cartesian = 1, Polar, Cylindrical, Spherical };
 enum CartesianAxis { XAxis = 1, YAxis, ZAxis };

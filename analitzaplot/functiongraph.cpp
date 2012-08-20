@@ -116,7 +116,7 @@ bool FunctionGraph::isCorrect() const
 {
     Q_ASSERT(m_functionGraph);
 
-    return m_errors.isEmpty() && m_functionGraph->isCorrect();
+    return m_errors.isEmpty() && m_functionGraph->isCorrect() && m_functionGraph;
 }
 
 bool FunctionGraph::isAutoUpdate() const

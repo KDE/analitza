@@ -21,11 +21,17 @@
 #define PLOTITEM_H
 
 #include <QStringList>
+#include <QUuid>
 #include <QColor>
+#include <QPixmap>
+#include <KDateTime>
 
 #include "private/utils/mathutils.h"
 
 #include "analitzaplotexport.h"
+
+#include "dictionaryitem.h"
+
 
 namespace Analitza
 {
@@ -40,15 +46,20 @@ class PlotsModel;
 //FUTURE
 //para eso seria bueno soportar hilos o algun sistema asincrono en el cual el la *vista haga un update cuando se acabe el computo*
 //aparte del hehco que el modelo agrega o no items
-class  ANALITZAPLOT_EXPORT PlotItem 
+class ANALITZAPLOT_EXPORT PlotItem 
 {
 friend class PlotsModel;
-    
+
 public:
     enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };    
     
     explicit PlotItem(const QString &name, const QColor& col);
     virtual ~PlotItem();
+
+    QUuid id() const { return m_id; }
+    
+    void setSpace(DictionaryItem *dict) { m_space = dict; }
+    DictionaryItem * space() const { return m_space; }
 
     virtual Analitza::Variables * variables() const = 0;
     virtual void setVariables(Analitza::Variables *variables) = 0;
@@ -92,6 +103,10 @@ protected:
 private:
     void setModel(PlotsModel *m);
     
+    //persistence
+    QUuid m_id;
+    DictionaryItem *m_space; //opt
+    
     //gui
     QString m_name;
     QColor m_color;
@@ -104,5 +119,7 @@ private:
     PlotsModel *m_model;
     bool m_inDestructorSoDontDeleteMe; // lock para evitar que el removeitem del model llame al destructor de este item y se generen llamadas recursivas
 };
+
+
 
 #endif // PLOTITEM_H

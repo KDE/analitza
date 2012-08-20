@@ -34,6 +34,9 @@
 #include <analitzaplot/plotsmodel.h>
 #include <surface.h>
 #include <plotsproxymodel.h>
+#include <dictionariesmodel.h>
+#include <plotsdictionarymodel.h>
+#include <analitza/variables.h>
 #include <KSelectionProxyModel>
 
 int main(int argc, char *argv[])
@@ -55,14 +58,14 @@ int main(int argc, char *argv[])
     mainWindow->setMinimumSize(640, 480);
     mainWindow->statusBar()->show();
 
-    QWidget *central = new QWidget(mainWindow);
-    QVBoxLayout *layout = new QVBoxLayout(central);
+//     QWidget *central = new QWidget(mainWindow);
+//     QVBoxLayout *layout = new QVBoxLayout(central);
     
 //     QCheckBox *checkvisible = new QCheckBox(central);
 //     checkvisible->setText("Allow to the model can change the visibility of items");
 //     checkvisible->setCheckState(Qt::Checked);
 //     checkvisible->setTristate(false);
-    
+/*    
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
 
 //     layout->addWidget(checkvisible);
@@ -85,20 +88,21 @@ int main(int argc, char *argv[])
     view2d->setModel(proxy);
     view2d->setSelectionModel(selection);
 
-    model->addPlaneCurve(Analitza::Expression("y->y*y"), "y->", Qt::magenta);
-    model->addPlaneCurve(Analitza::Expression("x->x*x/12"), "para", Qt::cyan);
-    model->addPlaneCurve(Analitza::Expression("p->p+2"), "polar simple", Qt::green);
-    model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
-    model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
-    model->addSurface(Analitza::Expression("x=y-z"), "fsdfs", Qt::yellow);
-    model->addPlaneCurve(Analitza::Expression("x->2+x*x"), "otra simple", Qt::blue);
-    model->addPlaneCurve(Analitza::Expression("(x**2+y**2)**3=4*(x**2)*(y**2)"), "otra simple", Qt::lightGray);
-    model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfs", Qt::yellow);
-    model->addPlaneCurve(Analitza::Expression("(y-x**2)**2=x*y**3"), "otra simple", Qt::lightGray);
-    model->addPlaneCurve(Analitza::Expression("sin(x)*sin(y)=1/2"), "otra simple", Qt::yellow);
-    model->addPlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "ESTO NO ES SIMPLE", Qt::black);
-    model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
-    model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfssss", Qt::yellow);
+    //TODO*/
+//     model->addPlaneCurve(Analitza::Expression("y->y*y"), "y->", Qt::magenta);
+//     model->addPlaneCurve(Analitza::Expression("x->x*x/12"), "para", Qt::cyan);
+//     model->addPlaneCurve(Analitza::Expression("p->p+2"), "polar simple", Qt::green);
+//     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
+//     model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
+//     model->addSurface(Analitza::Expression("x=y-z"), "fsdfs", Qt::yellow);
+//     model->addPlaneCurve(Analitza::Expression("x->2+x*x"), "otra simple", Qt::blue);
+//     model->addPlaneCurve(Analitza::Expression("(x**2+y**2)**3=4*(x**2)*(y**2)"), "otra simple", Qt::lightGray);
+//     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfs", Qt::yellow);
+//     model->addPlaneCurve(Analitza::Expression("(y-x**2)**2=x*y**3"), "otra simple", Qt::lightGray);
+//     model->addPlaneCurve(Analitza::Expression("sin(x)*sin(y)=1/2"), "otra simple", Qt::yellow);
+//     model->addPlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "ESTO NO ES SIMPLE", Qt::black);
+//     model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
+//     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfssss", Qt::yellow);
     
     //if you want to obey viewport changes always, then set to true AutoUpdate flag
     //WARNING some functions have to compute complex algorithms in order to generate its geometry, that is why you may use intervals instead
@@ -110,25 +114,55 @@ int main(int argc, char *argv[])
     
     //END test calls
 
-    QTreeView *viewsource = new QTreeView(tabs);
-    viewsource->setRootIsDecorated(false);
-    viewsource->setMouseTracking(true);
-    viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
-    viewsource->setModel(model);
-    
-    QTreeView *viewproxy = new QTreeView(tabs);
-    viewproxy->setRootIsDecorated(false);
-    viewproxy->setMouseTracking(true);
-    viewproxy->setEditTriggers(QAbstractItemView::AllEditTriggers);
-    viewproxy->setModel(proxy);
-    viewproxy->setSelectionModel(selection);
-    
-    tabs->addWidget(viewsource);
-    tabs->addWidget(viewproxy);
-    tabs->addWidget(view2d);
+//     QTreeView *viewsource = new QTreeView(tabs);
+//     viewsource->setRootIsDecorated(false);
+//     viewsource->setMouseTracking(true);
+//     viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
+//     viewsource->setModel(model);
+//     
+//     QTreeView *viewproxy = new QTreeView(tabs);
+//     viewproxy->setRootIsDecorated(false);
+//     viewproxy->setMouseTracking(true);
+//     viewproxy->setEditTriggers(QAbstractItemView::AllEditTriggers);
+//     viewproxy->setModel(proxy);
+//     viewproxy->setSelectionModel(selection);
+//     
+//     tabs->addWidget(viewsource);
+//     tabs->addWidget(viewproxy);
+//     tabs->addWidget(view2d);
 
-    mainWindow->setCentralWidget(central);
+//     mainWindow->setCentralWidget(central);
 
+///
+
+    DictionariesModel *m_spacesModel = new DictionariesModel(mainWindow);
+
+    Analitza::Variables *m_variables = new Analitza::Variables;
+
+    PlotsModel *m_plotsModel = new PlotsModel(mainWindow, m_variables);
+    PlotsDictionariesModel *m_plotsDictionaryModel = new PlotsDictionariesModel(m_spacesModel, m_plotsModel, mainWindow);
+    
+    PlaneCurve *c = new PlaneCurve(Analitza::Expression("x->x*x"), "plot1_1");
+    c->setSpace(m_spacesModel->addSpace(Dim2D, "space1", "space1 des"));
+    m_plotsModel->addPlot(c);
+    
+    c = new PlaneCurve(Analitza::Expression("x->x"), "plot1_2");
+    c->setSpace(m_spacesModel->space(0));
+    m_plotsModel->addPlot(c);    
+    
+    c = new PlaneCurve(Analitza::Expression("y->y**3"), "plot2_1");
+    c->setSpace(m_spacesModel->addSpace(Dim2D, "space2", "space2 des"));
+    m_plotsModel->addPlot(c);
+    
+
+
+    QTreeView *v = new QTreeView(mainWindow);
+    v->setModel(m_plotsDictionaryModel);
+
+//     m_spacesModel->removeRow(0);
+
+    mainWindow->setCentralWidget(v);
+    
     mainWindow->show();
 
     return app.exec();

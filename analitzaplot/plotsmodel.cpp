@@ -23,7 +23,6 @@
 #include <planecurve.h>
 #include <spacecurve.h>
 
-
 #include "analitza/analyzer.h"
 #include "analitza/variables.h"
 #include "analitza/localize.h"
@@ -179,160 +178,89 @@ int PlotsModel::rowCount(const QModelIndex & parent) const
         return m_items.size();
 }
 
-PlaneCurve * PlotsModel::addPlaneCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+int PlotsModel::columnCount(const QModelIndex& parent) const
 {
-    return addItem<PlaneCurve>(functionExpression, name, col);
+//     if(parent.isValid())
+//         return 0;
+//     else
+        return 2;
 }
 
-SpaceCurve* PlotsModel::addSpaceCurve(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+
+bool PlotsModel::removeRows(int row, int count, const QModelIndex& parent)
 {
-    return addItem<SpaceCurve>(functionExpression, name, col);
+    Q_ASSERT(row<m_items.size());
+
+    beginRemoveRows(QModelIndex(), row, row+count-1);
+
+    for (int i = 0; i < count; ++i) 
+    {
+        PlotItem *tmpcurve = m_items[row];
+
+        m_itemCanCallModelRemoveItem = false;
+
+        if (!tmpcurve->m_inDestructorSoDontDeleteMe)
+        {
+            delete tmpcurve;
+            tmpcurve = 0;
+        }
+
+        m_itemCanCallModelRemoveItem = true;
+
+        m_items.removeAt(row);
+    }
+
+    endRemoveRows();
+    
+    return true;
 }
 
-Surface* PlotsModel::addSurface(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
+PlotItem* PlotsModel::getItemBySpace(DictionaryItem* parent) const
 {
-    return addItem<Surface>(functionExpression, name, col);
+    //asertnullparent
+    for (int i =0; i < m_items.size(); ++i)
+        if (m_items[i]->space() == parent)
+                return m_items[i];
+        
+        return 0;
 }
 
-QMap< int,PlaneCurve* > PlotsModel::planeCurves() const
+int PlotsModel::getNumberOfPlotsBySpace(DictionaryItem* parent) const
 {
-    return items<PlaneCurve>();
+    int asd =0 ;
+    //asertnullparent
+    for (int i =0; i < m_items.size(); ++i)
+        if (m_items[i]->space() == parent)
+            ++asd;
+        
+        return asd;
+
 }
 
-QMap< int, SpaceCurve* > PlotsModel::spaceCurves() const
-{
-    return items<SpaceCurve>();
-}
 
-QMap< int, Surface* > PlotsModel::surfaces() const
-{
-    return items<Surface>();
-}
-
-void PlotsModel::addItem(PlotItem* it)
+void PlotsModel::addPlot(PlotItem* it)
 {
     Q_ASSERT(it);
+    Q_ASSERT(it->isCorrect());
 
     beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
 
     it->setModel(this);
-    it->setVariables(m_variables);
+    if (m_variables)
+        it->setVariables(m_variables);
     m_items.append(it);
 
     endInsertRows();
 }
 
-PlotItem* PlotsModel::item(int curveIndex) const
+PlotItem* PlotsModel::plot(int curveIndex) const
 {
-//     qDebug() << curveIndex << m_items.size();
-    
-    //curveIndex<=0 si la lista solo tiene un item y se solicita item(0)
     Q_ASSERT(rowCount()>0? curveIndex<m_items.count():curveIndex<=m_items.count());
 
     return m_items[curveIndex];
 }
 
-void PlotsModel::removeItem(int row)
+void PlotsModel::removePlot(int row)
 {
-    Q_ASSERT(row<m_items.size());
-
-    beginRemoveRows(QModelIndex(), row, row);
-
-    PlotItem *tmpcurve = m_items[row];
-
-    m_itemCanCallModelRemoveItem = false;
-
-    if (!tmpcurve->m_inDestructorSoDontDeleteMe)
-    {
-        delete tmpcurve;
-        tmpcurve = 0;
-    }
-
-    m_itemCanCallModelRemoveItem = true;
-
-    m_items.removeAt(row);
-
-    endRemoveRows();
+    removeRow(row);
 }
-
-
-template<typename VisualItemType>
-VisualItemType* PlotsModel::addItem(const Analitza::Expression& functionExpression, const QString& name, const QColor& col)
-{
-    VisualItemType * ret = 0;
-
-    //no se permiten items invalidos
-    if (VisualItemType::canDraw(functionExpression))
-    {
-        beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
-
-        ret = new VisualItemType(functionExpression, name, col, m_variables);
-        ret->setModel(this);
-        m_items.append(ret);
-
-        endInsertRows();
-
-        return ret;
-    }
-
-    return ret;
-}
-
-template<typename VisualItemType>
-QMap< int, VisualItemType* > PlotsModel::items() const
-{
-    QMap< int, VisualItemType* > ret;
-
-    //TODO create a TYPE system for speed
-    for (int i = 0; i < m_items.size(); ++i)
-    {
-        VisualItemType * ci = dynamic_cast<VisualItemType *>(m_items[i]);
-        if (ci)
-            ret[i] = ci;
-    }
-
-    return ret;
-}
-
-
-//
-// bool FunctionGraphsModel::addItem(const Analitza::Expression& functionExpression,int spaceDimension,const QString& name, const QColor& col, QStringList &errors)
-// {
-//     //no se permiten items invalidos
-//     if (FunctionGraph::canDraw(functionExpression,spaceDimension, errors))
-//     {
-//         beginInsertRows (QModelIndex(), items.count(), items.count());
-//
-//         //TODO
-//         items.append(new FunctionGraph(functionExpression,spaceDimension, /*variablesModule, */ name, col));
-//
-//        this->
-//
-//         endInsertRows();
-//
-//         return true;
-//     }
-//
-//     return false;
-// }
-//NOTE en hijos
-/*
-bool FunctionGraphsModel::setItemExpression(int curveIndex, const Analitza::Expression& functionExpression,int spaceDimension)
-{
-    Q_ASSERT(curveIndex<items.count());
-
-
-    if (FunctionGraph::canDraw(functionExpression,spaceDimension))
-    {
-        if (items[curveIndex]->reset(functionExpression,spaceDimension))
-        {
-
-            emit dataChanged(index(curveIndex), index(curveIndex));
-
-            return true;
-
-        }
-    }
-
-    return false;
-}*/

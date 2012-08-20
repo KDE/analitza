@@ -44,7 +44,7 @@ public:
     CoordinateSystem coordinateSystem() const;
     QStringList errors() const;
     bool isCorrect() const;
-    
+
     //NOTE KAlgebra use case
     // if true then the graph will be updated always and follow the viewport limits instead of intervals
     // by default is false, so the intervals can decide the limits for update 

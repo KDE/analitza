@@ -418,12 +418,12 @@ PlotItem* PlotsView3D::fromProxy(int proxy_row) const
     if (!pi.isValid())
         return 0;
     
-    if (qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row())->spaceDimension() != 3)
+    if (qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row())->spaceDimension() != 3)
         return 0; // evitamos que los proxies de los usuario causen un bug
 
     
     if (pi.isValid())
-        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row());
+        return qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row());
     
     return 0;
 }
@@ -434,7 +434,7 @@ PlotItem* PlotsView3D::fromSource(int realmodel_row) const
     QModelIndex si = m_model->mapFromSource(m_model->sourceModel()->index(realmodel_row,0));
 
     if (si.isValid())
-        return qobject_cast<PlotsModel *>(m_model->sourceModel())->item(realmodel_row);
+        return qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(realmodel_row);
     
     return 0;
 //     .row());

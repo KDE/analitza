@@ -1,5 +1,4 @@
 /*************************************************************************************
- *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
@@ -17,62 +16,57 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef FUNCTIONGRAPHMODEL_H__2d__
-#define FUNCTIONGRAPHMODEL_H__2d__
 
-#include <QAbstractListModel>
-#include <QColor>
+#ifndef KEOMATH_SPACESMODEL_H__k
+#define KEOMATH_SPACESMODEL_H__k
 
-#include "analitzaplot/analitzaplotexport.h"
+#include <QtCore/QAbstractListModel>
+#include <KIcon>
 
-class DictionaryItem;
-class Surface;
-class SpaceCurve;
-class PlaneCurve;
-
-class PlotItem;
+#include "dictionaryitem.h"
 
 namespace Analitza
 {
-class Variables;
 class Expression;
 }
-// los fonts labes del editorplot estan mal revertir a font normal ...al menos los del combon
-class ANALITZAPLOT_EXPORT PlotsModel : public QAbstractListModel
-{
-friend class PlotItem;    
-    
-Q_OBJECT
-//     if(item->type()==CurveType)
-public:
-    PlotsModel(QObject * parent = 0, Analitza::Variables *v = 0);
-    virtual ~PlotsModel();
-    
-    Analitza::Variables * variables() const;
-    void setVariables(Analitza::Variables *v); // set variables for all this items this not emit setdata signal
-    
-    Qt::ItemFlags flags(const QModelIndex & index) const;
-    Qt::DropActions supportedDropActions() const;
 
+#include "analitzaplotexport.h"
+
+class ANALITZAPLOT_EXPORT DictionariesModel : public QAbstractListModel 
+{
+
+friend class DictionaryItem;   
+Q_OBJECT
+
+public:
+    DictionariesModel(QObject *parent=0);
+
+    Qt::ItemFlags flags ( const QModelIndex & index ) const;
+    
     QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole); // only title and check=visible
-    int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const;
+    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+    int rowCount(const QModelIndex &parent=QModelIndex()) const;
     int columnCount(const QModelIndex& parent) const;
+    //TODO implementar removeRows en analitzaplot (plotsmodel)
     bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
 
-    QModelIndex plotIndex(PlotItem *it) const { return index(m_items.indexOf(it)); }
-    PlotItem *getItemBySpace(DictionaryItem *parent) const;
-    int getNumberOfPlotsBySpace(DictionaryItem *parent) const;
+    DictionaryItem * addSpace(Dimension dim, const QString & title = QString(), const QString &description = QString(), 
+                         const QPixmap &thumbnail=KIcon("khipu").pixmap(QSize(256,256)));
 
-    void addPlot(PlotItem *it);
-    PlotItem * plot(int curveIndex) const;
-    void removePlot(int curveIndex);
+    DictionaryItem * space(int row) const;
+    DictionaryItem * spacebyid(const QString &id) const;
 
+    QModelIndex spaceIndex(DictionaryItem *it) const { return index(m_items.indexOf(it)); }
+//     removeitem or removerow????
+//     por conveniencia removeitem ... pero debe usar el removerow
+//     es additem ... no es addspace nia ddplot
+    //DEPRECATED
+//     void removeItem(int row);
+    
 private:
-    Analitza::Variables *m_variables;
-    QList<PlotItem*> m_items;
+    SpaceItemList m_items;
     bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem
 };
 
-#endif // FUNCTIONGRAPHMODEL_H
+#endif 

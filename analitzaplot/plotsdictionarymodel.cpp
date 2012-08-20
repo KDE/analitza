@@ -17,138 +17,158 @@
  *************************************************************************************/
 
 #include "plotsdictionarymodel.h"
+#include "dictionariesmodel.h"
 #include <analitza/expression.h>
-#include <KStandardDirs>
 #include <KLocale>
 #include <QFile>
-#include <qthread.h>
-#include <QTimer>
 #include <QDomDocument>
 
-
-DictionaryLoader::DictionaryLoader(PlotsModel* model, QObject* parent)
-: QObject(parent), m_model(model)
+PlotsDictionariesModel::PlotsDictionariesModel(DictionariesModel *dmodel, PlotsModel *pmodel , QObject* parent)
+    : QStandardItemModel(parent)
+    , m_dictionaryModel(dmodel)
+    , m_plotsModel(pmodel)
 {
-
-}
-
-DictionaryLoader::~DictionaryLoader()
-{
-
-}
-
-void DictionaryLoader::load()
-{
-//     por el momento usaremos esta base de datos, luego sera la de las traducciones en el nuevo formato
-    QString localurl = KStandardDirs::locate("data", QString("khipu/data/functionlibrary.kfl"));
-
-    QFile device(localurl);
-
-    if (device.open(QFile::ReadOnly | QFile::Text))
-    {
-        QDomDocument domDocument;
-
-        QString errorStr;
-        int errorLine;
-        int errorColumn;
-
-        if (!domDocument.setContent(&device, true, &errorStr, &errorLine, &errorColumn))
-        {
-//             m_errors << "Parse error" << errorStr << QString::number(errorLine) << QString::number(errorColumn);
-//TODO mejorar el envio de error
-                emit errorFound(errorStr);
-            return ;
-        }
-
-        QDomElement root = domDocument.documentElement();
-        QDomElement functionElement = root.firstChildElement("function");
-        QString lang = KGlobal::locale()->language();
-
-        QString name;
-        QString lambda;
-        int dimension =  -1;
-        QStringList arguments;
-
-        while (!functionElement.isNull())
-        {
-            QDomNodeList functionDataElements = functionElement.childNodes();
-
-            name = functionDataElements.at(0).toElement().text();
-            lambda = functionDataElements.at(1).toElement().text();
-            dimension = functionDataElements.at(2).toElement().text().toInt();
-            arguments.clear();
-
-            for (int i = 0; i < functionDataElements.at(3).toElement().childNodes().size(); i +=1)
-                arguments << functionDataElements.at(3).toElement().childNodes().at(i).toElement().text();
-
-            if (dimension == 2)
-            {
-                m_model->addPlaneCurve(Analitza::Expression(lambda), name);
-            }
-            else if (dimension == 3)
-            {
-                if (arguments.size() == 1&& arguments.first() == "t")
-                {
-                    m_model->addSpaceCurve(Analitza::Expression(lambda), name);
-                }
-                else
-                {
-//                     qDebug() << "("+arguments.join(",")+")->"+ lambda;
-                    m_model->addSurface(Analitza::Expression("("+arguments.join(",")+")->"+ lambda), name);
-                }
-            }
-            functionElement = functionElement.nextSiblingElement("function");
-        }
-    }
+    //TODO newdic if models notempy load data
+    setColumnCount(2);
+    setHorizontalHeaderLabels(QStringList() << i18nc("@title:column", "Name") << i18nc("@title:column", "Description"));
     
-    emit loaded();
-}
-
-///
-
-PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent): PlotsProxyModel(parent)
-{
-    m_model = new PlotsModel(this);
-//     m_model->setCheckable(false);
+    connect(m_dictionaryModel, SIGNAL(rowsInserted (QModelIndex , int , int )), SLOT(addParent(QModelIndex,int,int)));
+    connect(m_dictionaryModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(setParentData(QModelIndex,QModelIndex)));    
+    connect(m_dictionaryModel, SIGNAL(rowsAboutToBeRemoved (QModelIndex, int, int)), SLOT(removeParent(QModelIndex,int,int)));
     
+    connect(m_plotsModel, SIGNAL(rowsInserted (QModelIndex , int , int )), SLOT(addChild(QModelIndex,int,int)));
+    connect(m_plotsModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(setChildData(QModelIndex,QModelIndex)));    
+    connect(m_plotsModel, SIGNAL(rowsAboutToBeRemoved (QModelIndex, int, int)), SLOT(removeChild(QModelIndex,int,int)));
 }
 
-PlotsDictionaryModel::~PlotsDictionaryModel()
+void PlotsDictionariesModel::addParent(const QModelIndex& parent, int start, int end)
 {
-
-}
-
-void PlotsDictionaryModel::setupModelSourceModel()
-{
-    setFilterSpaceDimension(All);
-    setSourceModel(m_model);
-}
-
-void PlotsDictionaryModel::registerError(const QString& error)
-{
-    m_errors.append(error);
-}
-
-///TODO
-//Diseniar encapsulando en una clase ... 
-PlotsDictionaryModel* getDictionary(QObject *parent)
-{
-    PlotsDictionaryModel *ret = new PlotsDictionaryModel(parent);
-
-   QThread* thread = new QThread(parent);
-   
-   DictionaryLoader* loader = new DictionaryLoader(ret->m_model);
-
-   loader->moveToThread(thread);
-
-   ret->connect(thread, SIGNAL(started()), loader, SLOT(load()));
-   ret->connect(loader, SIGNAL(errorFound(QString)),ret, SLOT(registerError(QString)));
-   ret->connect(loader, SIGNAL(loaded()), ret, SLOT(setupModelSourceModel()));
-   ret->connect(loader, SIGNAL(loaded()), thread, SLOT(quit()));
-//    ret->connect(loader, SIGNAL(loaded()), thread, SLOT(deleteLater()));
-   ret->connect(loader, SIGNAL(loaded()), loader, SLOT(deleteLater()));
-
-    thread->start();
+    DictionaryItem *dictionary = m_dictionaryModel->space(start);
     
-    return ret;
+    QStandardItem *dictionaryName = new QStandardItem();
+    dictionaryName->setText(dictionary->title());
+    dictionaryName->setIcon(dictionary->thumbnail());
+    //TODO
+//     dictionaryName->setStatusTip(dictionary->timestamp().toString("%A %l:%M %p %B %Y"));
+    dictionaryName->setData(dictionary->id().toString(), Qt::UserRole);
+    
+    QStandardItem *dictionaryDescription = new QStandardItem();
+    dictionaryDescription->setText(dictionary->description());
+//     dictionaryDescription->setData(dictionary->id().toString(), Qt::UserRole);
+
+    invisibleRootItem()->appendRow(dictionaryName);
+    invisibleRootItem()->setChild(dictionaryName->row(), 1, dictionaryDescription);
+    
+    m_parentsMap[dictionary] = dictionaryName;
+}
+
+void PlotsDictionariesModel::setParentData(const QModelIndex& topLeft, const QModelIndex& bottomRight)
+{
+    DictionaryItem *dictionary = m_dictionaryModel->space(topLeft.row());
+
+    QStandardItem *dictionaryEntry = m_parentsMap.value(dictionary);
+
+    if (!dictionaryEntry) 
+        return ;
+
+    dictionaryEntry->setText(dictionary->title());
+    dictionaryEntry->setIcon(dictionary->thumbnail());
+    invisibleRootItem()->child(dictionaryEntry->row(), 1)->setText(dictionary->description());
+}
+
+void PlotsDictionariesModel::removeParent(const QModelIndex& parent, int start, int end)
+{
+    //TODO remove many
+    QStandardItem *dictionaryEntry = m_parentsMap.value(m_dictionaryModel->space(start));
+
+    if (!dictionaryEntry) 
+        return ;
+
+    invisibleRootItem()->removeRow(dictionaryEntry->row());
+    m_parentsMap.remove(m_dictionaryModel->space(start));
+}
+
+void PlotsDictionariesModel::addChild(const QModelIndex& parent, int start, int end)
+{
+    PlotItem *plot = m_plotsModel->plot(start); // se que siempre se agrega 1 en 1 no se inserta varios
+    
+    if (!m_parentsMap.contains(plot->space())) //l padre no corresponde con el dic del plot assert?
+        return ;
+
+    QStandardItem *dictionaryEntry = m_parentsMap.value(plot->space());
+
+    if (!dictionaryEntry)
+        return ;
+
+    QPixmap ico(16, 16);
+    ico.fill(plot->color());
+
+    QStandardItem *plotName = new QStandardItem();
+    plotName->setText(plot->name());
+    plotName->setIcon(QIcon(ico));
+    plotName->setData(plot->id().toString(), Qt::UserRole);
+
+    QStandardItem *plotExpression = new QStandardItem();
+    plotExpression->setText(plot->expression().toString());
+    plotExpression->setIcon(KIcon(plot->iconName()));
+//     plotExpression->setData(plot->id().toString(), Qt::UserRole);
+
+    dictionaryEntry->setChild(dictionaryEntry->rowCount(), 0, plotName);
+    dictionaryEntry->setChild(dictionaryEntry->rowCount()-1, 1, plotExpression);
+    
+    m_childrenMap[plot] = plotName;
+}
+
+void PlotsDictionariesModel::setChildData(const QModelIndex& topLeft, const QModelIndex& bottomRight)
+{
+    PlotItem *plot = m_plotsModel->plot(topLeft.row()); // se que siempre se agrega 1 en 1 no se inserta varios
+    
+    if (!m_parentsMap.contains(plot->space())) //l padre no corresponde con el dic del plot assert?
+        return ;
+
+    QStandardItem *dictionaryEntry = m_parentsMap.value(plot->space());
+
+    if (!dictionaryEntry)
+        return ;
+
+    QStandardItem *plotEntry = m_childrenMap.value(plot);
+
+    if (!plotEntry)
+        return ;
+
+    QPixmap ico(16, 16);
+    ico.fill(plot->color());
+
+    plotEntry->setText(plot->name());
+    plotEntry->setIcon(ico);
+    dictionaryEntry->child(plotEntry->row(), 1)->setText(plot->expression().toString());
+    dictionaryEntry->child(plotEntry->row(), 1)->setIcon(KIcon(plot->iconName()));
+
+
+}
+
+void PlotsDictionariesModel::removeChild(const QModelIndex& parent, int start, int end)
+{
+    PlotItem *plot = m_plotsModel->plot(start); // se que siempre se agrega 1 en 1 no se inserta varios
+    
+    if (!m_parentsMap.contains(plot->space())) //l padre no corresponde con el dic del plot assert?
+        return ;
+
+    QStandardItem *dictionaryEntry = m_parentsMap.value(plot->space());
+
+    if (!dictionaryEntry)
+        return ;
+
+    QStandardItem *plotEntry = m_childrenMap.value(plot);
+
+    if (!plotEntry)
+        return ;
+
+    dictionaryEntry->removeRow(plotEntry->row());
+    m_childrenMap.remove(plot);
+}
+
+PlotsDictionariesModel::~PlotsDictionariesModel()
+{
+// delete rootItem;
 }
