@@ -27,15 +27,9 @@
 #include "box3d.h"
 #include "triangle3d.h"
 
-#include "analitza/expression.h"
-#include "analitza/value.h"
-#include "analitza/analyzer.h"
-
-#include <QPair>
-#include <QVector2D>
 #include <QVector3D>
-#include <QMatrix4x4>
 #include <QLineF>
+
 
 using std::acos;
 using std::atan;

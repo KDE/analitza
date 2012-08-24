@@ -22,10 +22,11 @@
 
 #include "plotsmodel.h"
 
-PlotItem::PlotItem(const QString &name, const QColor& col)
-    : m_name (name), m_color(col), m_graphVisible(true), m_model(0), m_inDestructorSoDontDeleteMe(false)
+PlotItem::PlotItem(const QString &n, const QColor& col)
+    : m_name(n)
+    ,m_color(col),
+    m_graphVisible(true), m_model(0), m_inDestructorSoDontDeleteMe(false)
 {
-    m_id = QUuid::createUuid();
 }
 
 PlotItem::~PlotItem()

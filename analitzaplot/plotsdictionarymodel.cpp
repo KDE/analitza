@@ -20,155 +20,66 @@
 #include "dictionariesmodel.h"
 #include <analitza/expression.h>
 #include <KLocale>
-#include <QFile>
 #include <QDomDocument>
 
-PlotsDictionariesModel::PlotsDictionariesModel(DictionariesModel *dmodel, PlotsModel *pmodel , QObject* parent)
-    : QStandardItemModel(parent)
-    , m_dictionaryModel(dmodel)
-    , m_plotsModel(pmodel)
+PlotsDictionariesModel::PlotsDictionariesModel(QObject* parent)
+    : PlotsModel(parent)
 {
-    //TODO newdic if models notempy load data
-    setColumnCount(2);
-    setHorizontalHeaderLabels(QStringList() << i18nc("@title:column", "Name") << i18nc("@title:column", "Description"));
-    
-    connect(m_dictionaryModel, SIGNAL(rowsInserted (QModelIndex , int , int )), SLOT(addParent(QModelIndex,int,int)));
-    connect(m_dictionaryModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(setParentData(QModelIndex,QModelIndex)));    
-    connect(m_dictionaryModel, SIGNAL(rowsAboutToBeRemoved (QModelIndex, int, int)), SLOT(removeParent(QModelIndex,int,int)));
-    
-    connect(m_plotsModel, SIGNAL(rowsInserted (QModelIndex , int , int )), SLOT(addChild(QModelIndex,int,int)));
-    connect(m_plotsModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(setChildData(QModelIndex,QModelIndex)));    
-    connect(m_plotsModel, SIGNAL(rowsAboutToBeRemoved (QModelIndex, int, int)), SLOT(removeChild(QModelIndex,int,int)));
-}
-
-void PlotsDictionariesModel::addParent(const QModelIndex& parent, int start, int end)
-{
-    DictionaryItem *dictionary = m_dictionaryModel->space(start);
-    
-    QStandardItem *dictionaryName = new QStandardItem();
-    dictionaryName->setText(dictionary->title());
-    dictionaryName->setIcon(dictionary->thumbnail());
-    //TODO
-//     dictionaryName->setStatusTip(dictionary->timestamp().toString("%A %l:%M %p %B %Y"));
-    dictionaryName->setData(dictionary->id().toString(), Qt::UserRole);
-    
-    QStandardItem *dictionaryDescription = new QStandardItem();
-    dictionaryDescription->setText(dictionary->description());
-//     dictionaryDescription->setData(dictionary->id().toString(), Qt::UserRole);
-
-    invisibleRootItem()->appendRow(dictionaryName);
-    invisibleRootItem()->setChild(dictionaryName->row(), 1, dictionaryDescription);
-    
-    m_parentsMap[dictionary] = dictionaryName;
-}
-
-void PlotsDictionariesModel::setParentData(const QModelIndex& topLeft, const QModelIndex& bottomRight)
-{
-    DictionaryItem *dictionary = m_dictionaryModel->space(topLeft.row());
-
-    QStandardItem *dictionaryEntry = m_parentsMap.value(dictionary);
-
-    if (!dictionaryEntry) 
-        return ;
-
-    dictionaryEntry->setText(dictionary->title());
-    dictionaryEntry->setIcon(dictionary->thumbnail());
-    invisibleRootItem()->child(dictionaryEntry->row(), 1)->setText(dictionary->description());
-}
-
-void PlotsDictionariesModel::removeParent(const QModelIndex& parent, int start, int end)
-{
-    //TODO remove many
-    QStandardItem *dictionaryEntry = m_parentsMap.value(m_dictionaryModel->space(start));
-
-    if (!dictionaryEntry) 
-        return ;
-
-    invisibleRootItem()->removeRow(dictionaryEntry->row());
-    m_parentsMap.remove(m_dictionaryModel->space(start));
-}
-
-void PlotsDictionariesModel::addChild(const QModelIndex& parent, int start, int end)
-{
-    PlotItem *plot = m_plotsModel->plot(start); // se que siempre se agrega 1 en 1 no se inserta varios
-    
-    if (!m_parentsMap.contains(plot->space())) //l padre no corresponde con el dic del plot assert?
-        return ;
-
-    QStandardItem *dictionaryEntry = m_parentsMap.value(plot->space());
-
-    if (!dictionaryEntry)
-        return ;
-
-    QPixmap ico(16, 16);
-    ico.fill(plot->color());
-
-    QStandardItem *plotName = new QStandardItem();
-    plotName->setText(plot->name());
-    plotName->setIcon(QIcon(ico));
-    plotName->setData(plot->id().toString(), Qt::UserRole);
-
-    QStandardItem *plotExpression = new QStandardItem();
-    plotExpression->setText(plot->expression().toString());
-    plotExpression->setIcon(KIcon(plot->iconName()));
-//     plotExpression->setData(plot->id().toString(), Qt::UserRole);
-
-    dictionaryEntry->setChild(dictionaryEntry->rowCount(), 0, plotName);
-    dictionaryEntry->setChild(dictionaryEntry->rowCount()-1, 1, plotExpression);
-    
-    m_childrenMap[plot] = plotName;
-}
-
-void PlotsDictionariesModel::setChildData(const QModelIndex& topLeft, const QModelIndex& bottomRight)
-{
-    PlotItem *plot = m_plotsModel->plot(topLeft.row()); // se que siempre se agrega 1 en 1 no se inserta varios
-    
-    if (!m_parentsMap.contains(plot->space())) //l padre no corresponde con el dic del plot assert?
-        return ;
-
-    QStandardItem *dictionaryEntry = m_parentsMap.value(plot->space());
-
-    if (!dictionaryEntry)
-        return ;
-
-    QStandardItem *plotEntry = m_childrenMap.value(plot);
-
-    if (!plotEntry)
-        return ;
-
-    QPixmap ico(16, 16);
-    ico.fill(plot->color());
-
-    plotEntry->setText(plot->name());
-    plotEntry->setIcon(ico);
-    dictionaryEntry->child(plotEntry->row(), 1)->setText(plot->expression().toString());
-    dictionaryEntry->child(plotEntry->row(), 1)->setIcon(KIcon(plot->iconName()));
-
-
-}
-
-void PlotsDictionariesModel::removeChild(const QModelIndex& parent, int start, int end)
-{
-    PlotItem *plot = m_plotsModel->plot(start); // se que siempre se agrega 1 en 1 no se inserta varios
-    
-    if (!m_parentsMap.contains(plot->space())) //l padre no corresponde con el dic del plot assert?
-        return ;
-
-    QStandardItem *dictionaryEntry = m_parentsMap.value(plot->space());
-
-    if (!dictionaryEntry)
-        return ;
-
-    QStandardItem *plotEntry = m_childrenMap.value(plot);
-
-    if (!plotEntry)
-        return ;
-
-    dictionaryEntry->removeRow(plotEntry->row());
-    m_childrenMap.remove(plot);
 }
 
 PlotsDictionariesModel::~PlotsDictionariesModel()
 {
-// delete rootItem;
 }
+/*
+QVariant PlotsDictionariesModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(role==Qt::DisplayRole && orientation==Qt::Horizontal) 
+    {
+        switch(section) 
+        {
+            case 2: return i18nc("@title:column", "Dictionary");
+        }
+    }
+    
+    return PlotsModel::headerData(section, orientation, role);
+}
+
+QVariant PlotsDictionariesModel::data(const QModelIndex& index, int role) const
+{
+    if(!index.isValid() || index.row()>=rowCount())
+        return QVariant();
+
+    int var=index.row();
+
+    PlotItem *tmpcurve = plot(var);
+    
+    switch(role)
+    {
+        case Qt::DisplayRole:
+        case Qt::EditRole:
+            switch(index.column()) 
+            {
+                case 2:
+                {
+                    if (tmpcurve->space())
+                    {
+                        return tmpcurve->space()->title();
+                    }
+                }
+                    break;
+            }
+        case Qt::DecorationRole:
+            if(index.column()==2)
+                return QVariant();
+    }
+
+    return PlotsModel::data(index, role);
+}
+
+int PlotsDictionariesModel::columnCount(const QModelIndex& parent) const
+{
+    return 3;
+}*/
+
+
+

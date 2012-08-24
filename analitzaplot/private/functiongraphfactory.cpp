@@ -20,6 +20,9 @@
 
 #include "functiongraphfactory.h"
 
+#include <QStringList>
+#include <analitza/analyzer.h>
+
 FunctionGraphFactory* FunctionGraphFactory::m_self=0;
 
 QString FunctionGraphFactory::typeName(const QString& id) const

@@ -32,45 +32,30 @@ class PlaneCurve;
 
 class PlotItem;
 
-namespace Analitza
-{
-class Variables;
-class Expression;
-}
-// los fonts labes del editorplot estan mal revertir a font normal ...al menos los del combon
 class ANALITZAPLOT_EXPORT PlotsModel : public QAbstractListModel
 {
 friend class PlotItem;    
     
 Q_OBJECT
-//     if(item->type()==CurveType)
+
 public:
-    PlotsModel(QObject * parent = 0, Analitza::Variables *v = 0);
+    PlotsModel(QObject * parent = 0);
     virtual ~PlotsModel();
     
-    Analitza::Variables * variables() const;
-    void setVariables(Analitza::Variables *v); // set variables for all this items this not emit setdata signal
-    
-    Qt::ItemFlags flags(const QModelIndex & index) const;
-    Qt::DropActions supportedDropActions() const;
-
-    QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole); // only title and check=visible
-    int rowCount(const QModelIndex & parent = QModelIndex()) const;
-    int columnCount(const QModelIndex& parent) const;
-    bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
-
-    QModelIndex plotIndex(PlotItem *it) const { return index(m_items.indexOf(it)); }
-    PlotItem *getItemBySpace(DictionaryItem *parent) const;
-    int getNumberOfPlotsBySpace(DictionaryItem *parent) const;
+    virtual Qt::ItemFlags flags(const QModelIndex & index) const;
+    virtual Qt::DropActions supportedDropActions() const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
+    virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole); // only title and check=visible
+    virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    virtual int columnCount(const QModelIndex& parent) const;
+    virtual bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
 
     void addPlot(PlotItem *it);
     PlotItem * plot(int curveIndex) const;
     void removePlot(int curveIndex);
 
 private:
-    Analitza::Variables *m_variables;
     QList<PlotItem*> m_items;
     bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem
 };

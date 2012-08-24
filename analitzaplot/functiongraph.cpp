@@ -30,10 +30,11 @@
 
 #include "private/functiongraphfactory.h"
 
-FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dimension spacedim, const QString &nam, const QColor &col, Analitza::Variables *vars)
-    : PlotItem(nam, col), m_functionGraph(0)
+FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dimension spacedim, const QString &n, const QColor &col, Analitza::Variables *vars)
+    : PlotItem(n, col), m_functionGraph(0)
 {
-    
+    setName(n);
+    setColor(col);
     QString id;
     
     Q_ASSERT(canDraw(functionExpression, spacedim, m_errors, id));
@@ -47,18 +48,6 @@ FunctionGraph::~FunctionGraph()
     delete m_functionGraph;
 }
 
-Analitza::Variables* FunctionGraph::variables() const
-{
-    return m_functionGraph->variables();
-}
-
-void FunctionGraph::setVariables(Analitza::Variables* variables)
-{
-    Q_ASSERT(variables);
-    
-    m_functionGraph->setVariables(variables);
-}
-
 const QString FunctionGraph::typeName() const
 {
     Q_ASSERT(m_functionGraph);
@@ -66,12 +55,21 @@ const QString FunctionGraph::typeName() const
     return m_functionGraph->typeName();
 }
 
-const Analitza::Expression & FunctionGraph::expression() const
+const Analitza::Expression& FunctionGraph::expression() const
 {
     Q_ASSERT(m_functionGraph);
     
     return m_functionGraph->expression();
 }
+
+Analitza::Variables* FunctionGraph::variables() const
+{
+    Q_ASSERT(m_functionGraph);
+    
+    return m_functionGraph->variables();
+
+}
+
 
 QString FunctionGraph::iconName() const
 {

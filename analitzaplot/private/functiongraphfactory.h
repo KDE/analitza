@@ -41,6 +41,10 @@
         
 class AbstractFunctionGraph;
 
+namespace Analitza{
+    class Variables;
+}
+
 class FunctionGraphFactory
 {
 public:

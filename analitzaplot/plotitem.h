@@ -17,14 +17,11 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef PLOTITEM_H
-#define PLOTITEM_H
+#ifndef ANALITZAPLOT_PLOTITEM_H
+#define ANALITZAPLOT_PLOTITEM_H
 
 #include <QStringList>
-#include <QUuid>
 #include <QColor>
-#include <QPixmap>
-#include <KDateTime>
 
 #include "private/utils/mathutils.h"
 
@@ -32,20 +29,13 @@
 
 #include "dictionaryitem.h"
 
-
 namespace Analitza
 {
 class Variables;
-class Expression;
 };
-
+#include "analitza/expression.h"
 class PlotsModel;
 
-//NOTE Algunos algoritmos pueden comptarse mas rapido si se paralelizan
-//TODO
-//FUTURE
-//para eso seria bueno soportar hilos o algun sistema asincrono en el cual el la *vista haga un update cuando se acabe el computo*
-//aparte del hehco que el modelo agrega o no items
 class ANALITZAPLOT_EXPORT PlotItem 
 {
 friend class PlotsModel;
@@ -56,17 +46,10 @@ public:
     explicit PlotItem(const QString &name, const QColor& col);
     virtual ~PlotItem();
 
-    QUuid id() const { return m_id; }
-    
-    void setSpace(DictionaryItem *dict) { m_space = dict; }
-    DictionaryItem * space() const { return m_space; }
-
-    virtual Analitza::Variables * variables() const = 0;
-    virtual void setVariables(Analitza::Variables *variables) = 0;
-    
-    virtual const QString typeName() const = 0;
     virtual const Analitza::Expression & expression() const = 0;
+    virtual Analitza::Variables * variables() const = 0;
 
+    virtual const QString typeName() const = 0;
     QString name() const { return m_name; }
     void setName(const QString &newName) { m_name = newName; }
     virtual QString iconName() const = 0;
@@ -81,36 +64,20 @@ public:
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool f) { m_graphVisible = f; }
 
-    //NOTE GSOC candidatos a ser borrados .. no es posible contruir items invalidos
-    //TODO borrar next iter
-    virtual QStringList errors() const = 0;
-    virtual bool isCorrect() const = 0;
-    
+
 protected:
     PlotItem() {}
     PlotItem(const PlotItem &other) {}
-
-    //NOTE es bueno que se le pase el model pues algunos items calcularan 
-    //en funcion de otros, por ejemplo intersecciones o si una curva es 
-    //paralela a otra
-    //TODO
-    //FUTURE 
-    //#aditionalinformation ... asi que descomenar esta linea mas adelante
-//     VisualItemsModel * model() const;
 
     void emitDataChanged();
 
 private:
     void setModel(PlotsModel *m);
     
-    //persistence
-    QUuid m_id;
-    DictionaryItem *m_space; //opt
-    
     //gui
     QString m_name;
     QColor m_color;
-
+    
     //graphDescription    
     PlotStyle m_plotStyle;
     bool m_graphVisible;
@@ -120,6 +87,4 @@ private:
     bool m_inDestructorSoDontDeleteMe; // lock para evitar que el removeitem del model llame al destructor de este item y se generen llamadas recursivas
 };
 
-
-
-#endif // PLOTITEM_H
+#endif // ANALITZAPLOT_PLOTITEM_H

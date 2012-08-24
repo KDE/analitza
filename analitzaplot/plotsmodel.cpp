@@ -34,8 +34,8 @@
 #include <KIcon>
 // #include <kcategorizedsortfilterproxymodel.h>
 
-PlotsModel::PlotsModel(QObject* parent, Analitza::Variables *v): QAbstractListModel(parent)
-    , m_variables(v), m_itemCanCallModelRemoveItem(true)
+PlotsModel::PlotsModel(QObject* parent): QAbstractListModel(parent)
+    , m_itemCanCallModelRemoveItem(true)
 {
 }
 
@@ -43,18 +43,6 @@ PlotsModel::~PlotsModel()
 {
     qDeleteAll(m_items);
     m_items.clear();
-}
-
-Analitza::Variables * PlotsModel::variables() const
-{
-    return m_variables;
-}
-
-void PlotsModel::setVariables(Analitza::Variables* v)
-{
-    m_variables = v;
-    for(int i = 0; i < m_items.size(); ++i)
-        m_items[i]->setVariables(v);
 }
 
 Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
@@ -215,39 +203,13 @@ bool PlotsModel::removeRows(int row, int count, const QModelIndex& parent)
     return true;
 }
 
-PlotItem* PlotsModel::getItemBySpace(DictionaryItem* parent) const
-{
-    //asertnullparent
-    for (int i =0; i < m_items.size(); ++i)
-        if (m_items[i]->space() == parent)
-                return m_items[i];
-        
-        return 0;
-}
-
-int PlotsModel::getNumberOfPlotsBySpace(DictionaryItem* parent) const
-{
-    int asd =0 ;
-    //asertnullparent
-    for (int i =0; i < m_items.size(); ++i)
-        if (m_items[i]->space() == parent)
-            ++asd;
-        
-        return asd;
-
-}
-
-
 void PlotsModel::addPlot(PlotItem* it)
 {
     Q_ASSERT(it);
-    Q_ASSERT(it->isCorrect());
 
     beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
 
     it->setModel(this);
-    if (m_variables)
-        it->setVariables(m_variables);
     m_items.append(it);
 
     endInsertRows();

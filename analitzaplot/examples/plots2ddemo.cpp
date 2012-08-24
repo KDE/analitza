@@ -58,14 +58,14 @@ int main(int argc, char *argv[])
     mainWindow->setMinimumSize(640, 480);
     mainWindow->statusBar()->show();
 
-//     QWidget *central = new QWidget(mainWindow);
-//     QVBoxLayout *layout = new QVBoxLayout(central);
+    QWidget *central = new QWidget(mainWindow);
+    QVBoxLayout *layout = new QVBoxLayout(central);
     
-//     QCheckBox *checkvisible = new QCheckBox(central);
-//     checkvisible->setText("Allow to the model can change the visibility of items");
-//     checkvisible->setCheckState(Qt::Checked);
-//     checkvisible->setTristate(false);
-/*    
+    QCheckBox *checkvisible = new QCheckBox(central);
+    checkvisible->setText("Allow to the model can change the visibility of items");
+    checkvisible->setCheckState(Qt::Checked);
+    checkvisible->setTristate(false);
+
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
 
 //     layout->addWidget(checkvisible);
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     view2d->setModel(proxy);
     view2d->setSelectionModel(selection);
 
-    //TODO*/
+    //TODO
 //     model->addPlaneCurve(Analitza::Expression("y->y*y"), "y->", Qt::magenta);
 //     model->addPlaneCurve(Analitza::Expression("x->x*x/12"), "para", Qt::cyan);
 //     model->addPlaneCurve(Analitza::Expression("p->p+2"), "polar simple", Qt::green);
@@ -103,66 +103,36 @@ int main(int argc, char *argv[])
 //     model->addPlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "ESTO NO ES SIMPLE", Qt::black);
 //     model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
 //     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfssss", Qt::yellow);
-    
-    //if you want to obey viewport changes always, then set to true AutoUpdate flag
-    //WARNING some functions have to compute complex algorithms in order to generate its geometry, that is why you may use intervals instead
-    //AutoUpdate ignores intervals
-    
-//     PlaneCurve *curve = 0;
-//     for(int i=0; i<model->rowCount(); ++i)
-//         static_cast<FunctionGraph*>(model->item(i))->setAutoUpdate(true);
-    
-    //END test calls
-
-//     QTreeView *viewsource = new QTreeView(tabs);
-//     viewsource->setRootIsDecorated(false);
-//     viewsource->setMouseTracking(true);
-//     viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
-//     viewsource->setModel(model);
 //     
-//     QTreeView *viewproxy = new QTreeView(tabs);
-//     viewproxy->setRootIsDecorated(false);
-//     viewproxy->setMouseTracking(true);
-//     viewproxy->setEditTriggers(QAbstractItemView::AllEditTriggers);
-//     viewproxy->setModel(proxy);
-//     viewproxy->setSelectionModel(selection);
-//     
-//     tabs->addWidget(viewsource);
-//     tabs->addWidget(viewproxy);
-//     tabs->addWidget(view2d);
-
-//     mainWindow->setCentralWidget(central);
-
-///
-
-    DictionariesModel *m_spacesModel = new DictionariesModel(mainWindow);
-
-    Analitza::Variables *m_variables = new Analitza::Variables;
-
-    PlotsModel *m_plotsModel = new PlotsModel(mainWindow, m_variables);
-    PlotsDictionariesModel *m_plotsDictionaryModel = new PlotsDictionariesModel(m_spacesModel, m_plotsModel, mainWindow);
+//     if you want to obey viewport changes always, then set to true AutoUpdate flag
+//     WARNING some functions have to compute complex algorithms in order to generate its geometry, that is why you may use intervals instead
+//     AutoUpdate ignores intervals
     
-    PlaneCurve *c = new PlaneCurve(Analitza::Expression("x->x*x"), "plot1_1");
-    c->setSpace(m_spacesModel->addSpace(Dim2D, "space1", "space1 des"));
-    m_plotsModel->addPlot(c);
+    PlaneCurve *curve = 0;
+    for(int i=0; i<model->rowCount(); ++i)
+        static_cast<FunctionGraph*>(model->plot(i))->setAutoUpdate(true);
     
-    c = new PlaneCurve(Analitza::Expression("x->x"), "plot1_2");
-    c->setSpace(m_spacesModel->space(0));
-    m_plotsModel->addPlot(c);    
+//     END test calls
+
+    QTreeView *viewsource = new QTreeView(tabs);
+    viewsource->setRootIsDecorated(false);
+    viewsource->setMouseTracking(true);
+    viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
+    viewsource->setModel(model);
     
-    c = new PlaneCurve(Analitza::Expression("y->y**3"), "plot2_1");
-    c->setSpace(m_spacesModel->addSpace(Dim2D, "space2", "space2 des"));
-    m_plotsModel->addPlot(c);
+    QTreeView *viewproxy = new QTreeView(tabs);
+    viewproxy->setRootIsDecorated(false);
+    viewproxy->setMouseTracking(true);
+    viewproxy->setEditTriggers(QAbstractItemView::AllEditTriggers);
+    viewproxy->setModel(proxy);
+    viewproxy->setSelectionModel(selection);
     
+    tabs->addWidget(viewsource);
+    tabs->addWidget(viewproxy);
+    tabs->addWidget(view2d);
 
+    mainWindow->setCentralWidget(central);
 
-    QTreeView *v = new QTreeView(mainWindow);
-    v->setModel(m_plotsDictionaryModel);
-
-//     m_spacesModel->removeRow(0);
-
-    mainWindow->setCentralWidget(v);
-    
     mainWindow->show();
 
     return app.exec();

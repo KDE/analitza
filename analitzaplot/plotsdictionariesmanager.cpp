@@ -35,12 +35,9 @@ PlotsDictionariesManager::PlotsDictionariesManager(QObject* parent)
 : QObject(parent)
 , m_model(0)
 {
-    PlotsModel *plots = new PlotsModel(this);
-    DictionariesModel *dicts = new DictionariesModel(this);
-    
-    m_model = new PlotsDictionariesModel(dicts,plots, this);
+    m_model = new PlotsDictionariesModel(this);
 
-    DictionaryItem *space = dicts->addSpace(DimAll, "Hola", "holadescrp");
+    DictionaryItem *space = new DictionaryItem(DimAll);
     QString localurl = KStandardDirs::locate("data", QString("libanalitza/data/plots/es/basic_curves.plots"));
 
     QFile device(localurl);
@@ -67,88 +64,88 @@ PlotsDictionariesManager::PlotsDictionariesManager(QObject* parent)
             if (PlaneCurve::canDraw(expression))
             {
                 PlaneCurve *plot = new PlaneCurve(expression);
-                plot->setSpace(space);
+//                 plot->setSpace(space);
                 
-                plots->addPlot(plot);
+                m_model->addPlot(plot);
             }
         }
         while (!line.isNull());
     }
 
     
-    ///TODDDOO
-    
-    space = dicts->addSpace(DimAll, "Hola2", "holadescrp2");
-    localurl = KStandardDirs::locate("data", QString("libanalitza/data/plots/es/conics.plots"));
-
-    QFile device2(localurl);
-
-    if (device2.open(QFile::ReadOnly | QFile::Text))
-    {
-        QTextStream stream(&device2);
-        
-        QString line;
-        
-        do 
-        {
-            line = stream.readLine();
-            
-            if (line.isEmpty())
-                continue;
-            
-            Analitza::Expression expression(line);
-            
-            if (!expression.isCorrect())
-                continue;
-            //TODO :)
-            
-            if (PlaneCurve::canDraw(expression))
-            {
-                PlaneCurve *plot = new PlaneCurve(expression);
-                plot->setSpace(space);
-                
-                plots->addPlot(plot);
-            }
-        }
-        while (!line.isNull());
-    }    
-    
-    ///TODDDOO
-    
-    space = dicts->addSpace(DimAll, "hola3", "polarrde");
-    localurl = KStandardDirs::locate("data", QString("libanalitza/data/plots/es/polar.plots"));
-
-    QFile device3(localurl);
-
-    if (device3.open(QFile::ReadOnly | QFile::Text))
-    {
-        QTextStream stream(&device3);
-        
-        QString line;
-        
-        do 
-        {
-            line = stream.readLine();
-            
-            if (line.isEmpty())
-                continue;
-            
-            Analitza::Expression expression(line);
-            
-            if (!expression.isCorrect())
-                continue;
-            //TODO :)
-            
-            if (PlaneCurve::canDraw(expression))
-            {
-                PlaneCurve *plot = new PlaneCurve(expression);
-                plot->setSpace(space);
-                
-                plots->addPlot(plot);
-            }
-        }
-        while (!line.isNull());
-    }    
+//     ///TODDDOO
+//     
+//     space = dicts->addSpace(DimAll, "Hola2", "holadescrp2");
+//     localurl = KStandardDirs::locate("data", QString("libanalitza/data/plots/es/conics.plots"));
+// 
+//     QFile device2(localurl);
+// 
+//     if (device2.open(QFile::ReadOnly | QFile::Text))
+//     {
+//         QTextStream stream(&device2);
+//         
+//         QString line;
+//         
+//         do 
+//         {
+//             line = stream.readLine();
+//             
+//             if (line.isEmpty())
+//                 continue;
+//             
+//             Analitza::Expression expression(line);
+//             
+//             if (!expression.isCorrect())
+//                 continue;
+//             //TODO :)
+//             
+//             if (PlaneCurve::canDraw(expression))
+//             {
+//                 PlaneCurve *plot = new PlaneCurve(expression);
+//                 plot->setSpace(space);
+//                 
+//                 plots->addPlot(plot);
+//             }
+//         }
+//         while (!line.isNull());
+//     }    
+//     
+//     ///TODDDOO
+//     
+//     space = dicts->addSpace(DimAll, "hola3", "polarrde");
+//     localurl = KStandardDirs::locate("data", QString("libanalitza/data/plots/es/polar.plots"));
+// 
+//     QFile device3(localurl);
+// 
+//     if (device3.open(QFile::ReadOnly | QFile::Text))
+//     {
+//         QTextStream stream(&device3);
+//         
+//         QString line;
+//         
+//         do 
+//         {
+//             line = stream.readLine();
+//             
+//             if (line.isEmpty())
+//                 continue;
+//             
+//             Analitza::Expression expression(line);
+//             
+//             if (!expression.isCorrect())
+//                 continue;
+//             //TODO :)
+//             
+//             if (PlaneCurve::canDraw(expression))
+//             {
+//                 PlaneCurve *plot = new PlaneCurve(expression);
+//                 plot->setSpace(space);
+//                 
+//                 plots->addPlot(plot);
+//             }
+//         }
+//         while (!line.isNull());
+//     }    
 }
 
 PlotsDictionariesManager::~PlotsDictionariesManager()

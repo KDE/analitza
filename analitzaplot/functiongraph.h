@@ -33,8 +33,7 @@ public:
     virtual ~FunctionGraph();
 
     Analitza::Variables *variables() const;
-    void setVariables(Analitza::Variables *variables);
-
+    
     //MappingGraph
     const QString typeName() const;
     const Analitza::Expression &expression() const;

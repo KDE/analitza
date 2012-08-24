@@ -31,32 +31,22 @@
 //si se agrega nuevos archvivos se debe cargar mediante un filewatch ... en general QAbstractItemModel es mas flexible que qstandaritemmodel
 //too complex rescandiction on signals like export as dic ...
 //cunado lo use el dicmanager borrar los models luego de cargar la data
-class ANALITZAPLOT_EXPORT PlotsDictionariesModel : public QStandardItemModel
+class ANALITZAPLOT_EXPORT PlotsDictionariesModel : public PlotsModel
 {
-Q_OBJECT    
-
-// friend PlotsDictionaryModel * getDictionary(QObject *); // for private slots
-
+// Q_OBJECT    
+// 
+// // friend PlotsDictionaryModel * getDictionary(QObject *); // for private slots
+// 
 public:
     //primero lee el dicmodel y crea los parents
     //luego lee el plostmodel para llenar los childs
-    PlotsDictionariesModel(DictionariesModel* dmodel, PlotsModel* pmodel, QObject* parent = 0);
+    PlotsDictionariesModel(QObject* parent = 0);
     ~PlotsDictionariesModel();
     
-private slots:
-        void addParent(const QModelIndex & parent, int start, int end);
-        void setParentData(const QModelIndex & topLeft, const QModelIndex & bottomRight );
-        void removeParent(const QModelIndex & parent, int start, int end);
-        void addChild(const QModelIndex & parent, int start, int end);
-        void removeChild(const QModelIndex & parent, int start, int end);
-        void setChildData(const QModelIndex & topLeft, const QModelIndex & bottomRight );
-
-private: //TODO gsoc pimpl
-    DictionariesModel *m_dictionaryModel;
-    PlotsModel *m_plotsModel;
-
-    QHash<DictionaryItem*, QStandardItem*> m_parentsMap; //<dic,dictnameentryitem>
-    QHash<PlotItem*, QStandardItem*> m_childrenMap; //<plot,plotnameentryitem>
+//     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+//     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+//     virtual int columnCount(const QModelIndex& parent) const;
+    
 };
 
 #endif

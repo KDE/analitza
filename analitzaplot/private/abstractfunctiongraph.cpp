@@ -24,6 +24,13 @@
 #include "analitza/variable.h"
 #include <analitza/variables.h>
 
+// combobox For 3 or fewer options, use a set of radio buttons. 
+// no combo para dict For more than 10 options, use a list. 
+// get new plots 
+// 
+// Make the list control large enough that it can show at least four items at a time without scrolling. 
+// For lists of ten or more items, increase this minimum size as appropriate. 
+
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractMappingGraph(), m_e(e), m_autoUpdate(false), m_varsmod(v)
 {

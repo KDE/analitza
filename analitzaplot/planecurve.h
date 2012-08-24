@@ -28,8 +28,9 @@
 namespace Analitza
 {
 class Variables;
+class Expression;
 }
-
+#include <analitza/expressiontype.h>
 class AbstractPlaneCurve;
 class AbstractSurface;
 
@@ -44,7 +45,7 @@ public:
     // y par.segundo es el tipo de expression
     //registeredCurves evita que se tenga que instalar el FunctionFactory en private, es decir evita que el usuario sepa algo
     //de las partes internes de analitzaplot
-    static QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredCurves();
+//     static QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredCurves();
     static bool canDraw(const Analitza::Expression &functionExpression);
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
 

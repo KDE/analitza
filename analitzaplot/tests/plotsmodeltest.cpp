@@ -38,7 +38,7 @@ PlaneCurvesModelTest::PlaneCurvesModelTest(QObject *parent)
 {
     m_vars=new Analitza::Variables;
 
-    m_model = new PlotsModel(this, m_vars);
+    m_model = new PlotsModel(this);
 }
 
 PlaneCurvesModelTest::~PlaneCurvesModelTest()
