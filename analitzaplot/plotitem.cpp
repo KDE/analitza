@@ -24,7 +24,7 @@
 
 PlotItem::PlotItem(const QString &n, const QColor& col)
     : m_name(n)
-    ,m_color(col),
+    ,m_color(col),m_space(0),
     m_graphVisible(true), m_model(0), m_inDestructorSoDontDeleteMe(false)
 {
 }

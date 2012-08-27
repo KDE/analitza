@@ -30,7 +30,7 @@ PlotsDictionariesModel::PlotsDictionariesModel(QObject* parent)
 PlotsDictionariesModel::~PlotsDictionariesModel()
 {
 }
-/*
+
 QVariant PlotsDictionariesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if(role==Qt::DisplayRole && orientation==Qt::Horizontal) 
@@ -79,7 +79,7 @@ QVariant PlotsDictionariesModel::data(const QModelIndex& index, int role) const
 int PlotsDictionariesModel::columnCount(const QModelIndex& parent) const
 {
     return 3;
-}*/
+}
 
 
 

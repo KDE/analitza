@@ -38,6 +38,7 @@ PlotsDictionariesManager::PlotsDictionariesManager(QObject* parent)
     m_model = new PlotsDictionariesModel(this);
 
     DictionaryItem *space = new DictionaryItem(DimAll);
+    space->setTitle("Dictionary1");
     QString localurl = KStandardDirs::locate("data", QString("libanalitza/data/plots/es/basic_curves.plots"));
 
     QFile device(localurl);
@@ -64,7 +65,7 @@ PlotsDictionariesManager::PlotsDictionariesManager(QObject* parent)
             if (PlaneCurve::canDraw(expression))
             {
                 PlaneCurve *plot = new PlaneCurve(expression);
-//                 plot->setSpace(space);
+                plot->setSpace(space);
                 
                 m_model->addPlot(plot);
             }

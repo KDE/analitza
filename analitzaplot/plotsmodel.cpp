@@ -97,7 +97,7 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
         case Qt::DecorationRole:
             if(index.column()==0)
             {
-                QPixmap ico(15, 15);
+                QPixmap ico(16, 16);
                 ico.fill(tmpcurve->color());
                 return QIcon(ico);
             } 

@@ -35,13 +35,13 @@ class PlotItem;
 class ANALITZAPLOT_EXPORT PlotsModel : public QAbstractListModel
 {
 friend class PlotItem;    
-    
+
 Q_OBJECT
 
 public:
     PlotsModel(QObject * parent = 0);
     virtual ~PlotsModel();
-    
+
     virtual Qt::ItemFlags flags(const QModelIndex & index) const;
     virtual Qt::DropActions supportedDropActions() const;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
