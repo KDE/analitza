@@ -25,7 +25,7 @@
 
 #include "analitzaplot/analitzaplotexport.h"
 
-class DictionaryItem;
+class SpaceItem;
 class Surface;
 class SpaceCurve;
 class PlaneCurve;

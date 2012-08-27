@@ -154,13 +154,13 @@ DictionaryItem* DictionariesModel::spacebyid(const QString& id) const
 }
 
 
-// void SpacesModel::removeItem(int row)
+// void DictionariesModel::removeItem(int row)
 // {
 //     Q_ASSERT(row<m_items.size());
 // 
 //     beginRemoveRows(QModelIndex(), row, row);
 // 
-//     SpaceItem *tmpcurve = m_items[row];
+//     DictionaryItem *tmpcurve = m_items[row];
 // 
 //     m_itemCanCallModelRemoveItem = false;
 // 

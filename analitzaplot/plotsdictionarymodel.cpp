@@ -37,7 +37,7 @@ QVariant PlotsDictionariesModel::headerData(int section, Qt::Orientation orienta
     {
         switch(section) 
         {
-            case 2: return i18nc("@title:column", "Dictionary");
+            case 2: return i18nc("@title:column", "Collection");
         }
     }
     
