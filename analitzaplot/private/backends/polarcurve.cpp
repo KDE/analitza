@@ -35,7 +35,7 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Polar)
     PARAMETERS("p")
-    ICON_NAME("draw-spiral")
+    ICON_NAME("newpolar")
     EXAMPLES("p->3*sin(p/0.142),p->p+3")    
     
     void update(const QRectF& viewport);
