@@ -219,14 +219,14 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 						QMap<QString, ExpressionType> assumptions=first.assumptions();
 						bool valid=ExpressionType::assumptionsMerge(assumptions, second.assumptions());
 						
-// 						qDebug() << "fifuuuuuuu" << first << (*(it-1))->toString() << 
-// 													second << (*it)->toString() << assumptions << valid;
+// 						qDebug() << "fifuuuuuuu" << first << (it-1)->toString() << 
+// 													second << it->toString() << assumptions << valid;
 						
 						valid &= !first.isError() && !second.isError();
 						valid &= first .canReduceTo(opt.parameters()[0].starsToType(starToParam));
 						valid &= second.canReduceTo(opt.parameters()[1].starsToType(starToParam));
 						
-// 						qDebug() << "POPOPO" << (*(it-1))->toString() << (*(it))->toString() << valid << first << second << starToParam;
+// 						qDebug() << "POPOPO" << (it-1)->toString() << it->toString() << valid << first << second << starToParam;
 						if(valid) {
 							ExpressionType toadd=opt.parameters().last();
 							toadd.addAssumptions(assumptions);
