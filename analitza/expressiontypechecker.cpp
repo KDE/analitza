@@ -222,6 +222,7 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 // 						qDebug() << "fifuuuuuuu" << first << (*(it-1))->toString() << 
 // 													second << (*it)->toString() << assumptions << valid;
 						
+						valid &= !first.isError() && !second.isError();
 						valid &= first .canReduceTo(opt.parameters()[0].starsToType(starToParam));
 						valid &= second.canReduceTo(opt.parameters()[1].starsToType(starToParam));
 						
