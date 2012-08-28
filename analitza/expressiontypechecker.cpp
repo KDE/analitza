@@ -468,14 +468,9 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 				
 				exps += current;
 			}
-// 			qDebug() << "---------" << exps << returned;
 			
-			if(returned.type()==ExpressionType::Any || returned.isError()) {
-				ExpressionType ret;
-				if(returned.isError())
-					ret=ExpressionType(ExpressionType::Error);
-				else
-					ret=ExpressionType(ExpressionType::Any, m_stars++);
+			if(returned.type()==ExpressionType::Any) {
+				ExpressionType ret=ExpressionType(ExpressionType::Any, m_stars++);
 // 				qDebug() << "fffffffffffffff" << m_stars;
 				ret.addAssumptions(assumptions);
 				
@@ -526,6 +521,8 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 					current=ExpressionType(ExpressionType::Error);
 				} else
 					current=ret2;
+			} else if(returned.isError()) {
+				current=ExpressionType(ExpressionType::Error);
 			} else {
 				ExpressionType ret(ExpressionType::Many), signature(returned);
 				
