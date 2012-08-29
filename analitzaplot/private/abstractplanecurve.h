@@ -21,6 +21,7 @@
 #define ANALITZAPLOT_FUNCTIONGRAPH_H
 
 #include "abstractfunctiongraph.h"
+#include <QLineF>
 
 #define CONSTRUCTORS(name) \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractPlaneCurve(functionExpression, variables) { }

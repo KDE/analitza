@@ -102,19 +102,6 @@ public slots:
     /** Sets whether it is a read-only widget. */
     void setReadOnly(bool ro);
     
-    //ticks & axis
-    void setXAxisLabel(const QString &label);
-    void setYAxisLabel(const QString &label);
-    // tick symbols
-    void updateGridColor(const QColor &color) { m_gridColor = color;  forceRepaint(); }
-    void updateTickScale(QString m_tickScaleSymbol, qreal m_tickScaleSymbolValue, int m_tickScaleNumerator, int m_tickScaleDenominator);
-    void setUseTickSymbols(bool flag) { m_tickScaleUseSymbols = flag; forceRepaint(); }
-    void showHTicks(bool flag) { m_showHTicks = flag; forceRepaint(); }
-    void showVTicks(bool flag) { m_showVTicks = flag; forceRepaint(); }
-    void showHAxes(bool flag) { m_showHAxes = flag; forceRepaint(); }
-    void showVAxes(bool flag) { m_showVAxes = flag; forceRepaint(); }
-    void useCoorSys(int i) { m_useCoordSys = i; forceRepaint(); }
-    
     void snapshotToClipboard();
     
 private slots:

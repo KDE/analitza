@@ -16,7 +16,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #include "plotsview3d.h"
 #include "plotsmodel.h"
 #include "plotsproxymodel.h"
@@ -30,7 +29,6 @@
 #include "analitza/variables.h"
 #include "analitza/vector.h"
 #include <QDebug>
-
 
 PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
     : QGLViewer(parent), m_model(m),m_selection(0)
@@ -155,6 +153,7 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i
     float shininess = 15.0f;
     float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
     float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
+    Q_UNUSED(diffuseColor); //TODO: Percy?
 
     //BEGIN display list
     glNewList(dlid, GL_COMPILE);
@@ -225,6 +224,7 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
     float shininess = 15.0f;
     float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
     float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
+    Q_UNUSED(diffuseColor); //TODO: Percy?
 
     //BEGIN display list
     glNewList(dlid, GL_COMPILE);
@@ -328,9 +328,7 @@ int PlotsView3D::currentFunction() const
 
 void PlotsView3D::draw()
 {
-    PlotsProxyModel* model = m_model;
-    
-    if (!model) return ; // si no hay modelo retornar ... //NOTE guard
+    if (!m_model) return ; // si no hay modelo retornar ... //NOTE guard
     
     //NOTE si esto pasa entonces quiere decir que el proxy empezado a filtrar otros items
     // y si es asi borro todo lo que esta agregado al la memoria de la tarjeta
@@ -350,14 +348,14 @@ void PlotsView3D::draw()
     if (m_displayLists.isEmpty())
     {
         //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
-        for (int i = 0; i < model->rowCount(); ++i)
+        for (int i = 0; i < m_model->rowCount(); ++i)
             addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i);
     }
     
     
     ///
 
-    for (int i = 0; i < model->rowCount(); ++i)
+    for (int i = 0; i < m_model->rowCount(); ++i)
     {
         PlotItem *item = fromProxy(i);
 
@@ -408,7 +406,6 @@ void PlotsView3D::init()
 
 }
 
-
 PlotItem* PlotsView3D::fromProxy(int proxy_row) const
 {
     QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
@@ -421,7 +418,6 @@ PlotItem* PlotsView3D::fromProxy(int proxy_row) const
     if (qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row())->spaceDimension() != 3)
         return 0; // evitamos que los proxies de los usuario causen un bug
 
-    
     if (pi.isValid())
         return qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row());
     
@@ -430,14 +426,12 @@ PlotItem* PlotsView3D::fromProxy(int proxy_row) const
 
 PlotItem* PlotsView3D::fromSource(int realmodel_row) const
 {
-    
     QModelIndex si = m_model->mapFromSource(m_model->sourceModel()->index(realmodel_row,0));
 
     if (si.isValid())
         return qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(realmodel_row);
     
     return 0;
-//     .row());
 }
 
 

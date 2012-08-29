@@ -58,7 +58,7 @@ public:
 
 private:
     DictionaryItem() {}
-    DictionaryItem(const DictionaryItem &other) {}
+    DictionaryItem(const DictionaryItem &other);
 
     void setModel(DictionariesModel *m);
     

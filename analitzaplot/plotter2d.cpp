@@ -41,24 +41,37 @@ using namespace std;
 
 // #define DEBUG_GRAPH
 
+static QLineF slopeToLine(const double &der)
+{
+    double arcder = atan(der);
+    const double len=6.*der;
+    QPointF from, to;
+    from.setX(len*cos(arcder));
+    from.setY(len*sin(arcder));
+
+    to.setX(-len*cos(arcder));
+    to.setY(-len*sin(arcder));
+    return QLineF(from, to);
+}
+
 QColor const Plotter2D::m_axeColor(100,100,255);
 QColor const Plotter2D::m_axe2Color(235,235,235);
 QColor const Plotter2D::m_derivativeColor(90,90,160);
 
 Plotter2D::Plotter2D(const QSizeF& size, PlotsProxyModel* model)
-    : m_squares(true), m_keepRatio(true), m_size(size), m_model(model), m_dirty(true)
-    , m_axisXLabel(i18n("x"))
-    , m_axisYLabel(i18n("y"))
-    , m_showHTicks(true)
-    , m_showVTicks(true)
+    : m_squares(true), m_keepRatio(true), m_dirty(true), m_size(size), m_model(model)
+    , m_tickScaleSymbolValue(1)
     , m_tickScaleUseSymbols(true)
     , m_tickScaleNumerator(1)
     , m_tickScaleDenominator(1)
-    , m_gridColor(QColor(128,128,128))
+    , m_showHTicks(true)
+    , m_showVTicks(true)
     , m_showHAxes(true)
     , m_showVAxes(true)
-    , m_tickScaleSymbolValue(1)
+    , m_axisXLabel("x")
+    , m_axisYLabel("y")
     , m_useCoordSys(1) //default cartesian coords style grid
+    , m_gridColor(QColor(128,128,128))
 {}
 
 Plotter2D::~Plotter2D()
@@ -743,8 +756,6 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 //         t=(CoordinateSystem)m_model->data(m_model->index(current), FunctionGraphModel::CoordinateSystemRole).toInt(); // editFunction(current)->axeType();
     //comparado con esto que es mucho mejor
 
-    bool coordsysfromplot = false;
-    
     //TODO use selectionmodel ... hasselection
     if (!m_model || current == -1) t = Cartesian;
     else
@@ -778,7 +789,6 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
     if (!m_model && m_dirty) return; // guard // si tenemos el model y ademas las funciones estan actualizadas pasamos este if y pintamos
 
-    int k=0;
 //     PlaneCurveModel::const_iterator it=m_model->constBegin(), itEnd=m_model->constEnd();
 //     for (; it!=itEnd; ++it, ++k ) {
 
@@ -877,25 +887,21 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     p.end();
 }
 
-void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end) // indices del proxy
+void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end)
 {
-
-    if (!m_model) return; // guard
+    if (!m_model || parent.isValid())
+        return; // guard
 
 //     Q_ASSERT(startIdx.isValid() && endIdx.isValid());
 //     int start=startIdx.row(), end=endIdx.row();
 
-    PlaneCurve *curve = 0;
     for(int i=start; i<=end; i++)
     {
-        curve = dynamic_cast<PlaneCurve *>(fromProxy(i));
+        PlaneCurve* curve = dynamic_cast<PlaneCurve *>(fromProxy(i));
 
 //         qDebug() << "emitnewexp" << start << i << fromProxy(i)->isCorrect() << fromProxy(i)->errors();
 
-        if (!curve) continue;
-
-
-        if (!curve->isVisible()) continue;
+        if (!curve || !curve->isVisible()) continue;
 
         QRectF viewport_fixed = viewport;
         viewport_fixed.setTopLeft(viewport.bottomLeft());
@@ -906,7 +912,6 @@ void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end) 
         // y se conserva la semantica de qrectf la esquina superior izquierda es el origen
 
         curve->update(viewport_fixed);
-
     }
 
     m_dirty = false;
@@ -919,11 +924,9 @@ QPointF Plotter2D::calcImage(const QPointF& ndp) const
     if (!m_model || currentFunction() == -1) return QPointF(); // guard
 
     //DEPRECATED if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
-    if (fromProxy(currentFunction()))
-        if (fromProxy(currentFunction())->isVisible())
-            return dynamic_cast<PlaneCurve*>(fromProxy(currentFunction()))->image(ndp).first;
-
-//         return m_model->curveImage(currentFunction(), ndp).first;
+    PlaneCurve* curve = dynamic_cast<PlaneCurve*>(fromProxy(currentFunction()));
+    if (curve && curve->isVisible())
+        return curve->image(ndp).first;
 
     return QPointF();
 }
@@ -959,10 +962,9 @@ void Plotter2D::updateScale(bool repaint)
         if(m_model && m_model->rowCount()>0)
         {
 //             updateFunctions(QModelIndex(), 0, m_model->rowCount()-1);
-            PlaneCurve *curve = 0;
             for(int i=0; i<m_model->rowCount(); i++)  //<=??
             {
-                curve = dynamic_cast<PlaneCurve *>(fromProxy(i));
+                PlaneCurve* curve = dynamic_cast<PlaneCurve *>(fromProxy(i));
 
                 if (!curve) continue;
 
@@ -1081,4 +1083,30 @@ void Plotter2D::setPaintedSize(const QSize& size)
 {
     m_size=size;
     updateScale(true);
+}
+
+void Plotter2D::setXAxisLabel(const QString &label)
+{
+    m_axisXLabel = label;
+    forceRepaint();
+}
+
+void Plotter2D::setYAxisLabel(const QString &label)
+{
+    m_axisYLabel = label;
+    forceRepaint();
+
+}
+
+void Plotter2D::updateTickScale(QString tickScaleSymbol, qreal tickScaleSymbolValue,
+        /*bool tickScaleUseSymbols,*/ int tickScaleNumerator,
+        int tickScaleDenominator)
+{
+    m_tickScaleSymbol = tickScaleSymbol;
+    m_tickScaleSymbolValue = tickScaleSymbolValue;
+    //m_tickScaleUseSymbols = tickScaleUseSymbols;
+    m_tickScaleNumerator = tickScaleNumerator;
+    m_tickScaleDenominator = tickScaleDenominator;
+
+    forceRepaint();
 }

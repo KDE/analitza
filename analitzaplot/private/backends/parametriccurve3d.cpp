@@ -19,6 +19,7 @@
 
 #include "private/abstractspacecurve.h"
 #include "private/functiongraphfactory.h"
+#include <private/utils/box3d.h>
 
 #include "analitza/value.h"
 #include <analitza/vector.h>

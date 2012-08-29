@@ -17,8 +17,6 @@
  *************************************************************************************/
 
 
-
-
 #include "private/abstractsurface.h"
 // #include "private/surfacefactory.h"
 #include "private/functiongraphfactory.h"
@@ -26,6 +24,7 @@
 
 #include "analitza/value.h"
 #include <analitza/vector.h>
+#include <QVector3D>
 
 //TODO macros para las prop e abajo
 

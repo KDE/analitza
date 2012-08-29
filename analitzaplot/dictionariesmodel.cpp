@@ -24,7 +24,7 @@ DictionariesModel::DictionariesModel(QObject *parent)
 {}
 
 
-Qt::ItemFlags DictionariesModel::flags(const QModelIndex &idx) const
+Qt::ItemFlags DictionariesModel::flags(const QModelIndex &) const
 {
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }

@@ -16,19 +16,19 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
-
 #include "private/abstractsurface.h"
 // #include "private/surfacefactory.h"
 #include "private/functiongraphfactory.h"
 
-
-#include "analitza/value.h"
+#include <analitza/value.h>
 #include <analitza/vector.h>
 
 //TODO macros para las prop e abajo
 
+static QVector3D cylindricalToCartesian(double radial, double polar, double height)
+{
+    return QVector3D(radial*cos(polar), radial*sin(polar), height);
+}
 
 class Frp : public AbstractSurface/*, static class? better macros FooClass*/
 {

@@ -22,6 +22,7 @@
 #include "private/functiongraphfactory.h"
 
 #include <QRectF>
+#include <QLineF>
 #include "analitza/value.h"
 #include "analitza/variable.h"
 #include "analitza/localize.h"
@@ -134,8 +135,7 @@ QLineF FunctionY::tangent(const QPointF &mousepos)
 //     
 //     return FunctionUtils::slopeToLine(ret);
 
-return QLineF();
-    
+    return QLineF();
 }
 
 

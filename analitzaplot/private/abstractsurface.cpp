@@ -18,6 +18,8 @@
 
 
 #include "abstractsurface.h"
+#include "utils/triangle3d.h"
+#include <QVector3D>
 
 #define MAXAROUND 64
 #define MAXSTRIP 64
@@ -25,14 +27,10 @@
 
 AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)
-{
-
-}
+{}
 
 AbstractSurface::~AbstractSurface()
-{
-
-}
+{}
 
 bool AbstractSurface::buildParametricSurface()
 {
@@ -44,65 +42,23 @@ bool AbstractSurface::buildParametricSurface()
     static QPair<double, double> intervalx = interval(bvars.at(0));
     static QPair<double, double> intervaly = interval(bvars.at(1));
 
-    
-    
-    ///
-    qreal umin;
-    qreal umax;
-    qreal vmin;
-    qreal vmax;
-    int usteps;
-    int vsteps;
-    
-    ///
-    usteps=MAXALONG;
-    vsteps=MAXAROUND;
-
-//     qDebug() << intervalx;
-    umin = intervalx.first;
-    umax = intervalx.second;
-    vmin = intervaly.first;
-    vmax = intervaly.second;
-
-
-//     qDebug() << "rr" << intervalx << "pol" << intervaly;
-//     umin = 0;
-//     umax = 3;
-//     vmin = 0;
-//     vmax = 3.141/4;
-    
-    
-    switch (coordinateSystem())
-    {
-        case Cylindrical:
-        {
-//             Q_ASSERT()
-        
-            break;
-        }
-        case Spherical:
-        {
-        
-            break;
-        }
-    }
+    qreal umin = intervalx.first;
+    qreal umax = intervalx.second;
+    qreal vmin = intervaly.first;
+    qreal vmax = intervaly.second;
+    int usteps = MAXALONG;
+    int vsteps = MAXAROUND;
     
     
     faces.clear();
     
-    
-///
-
     QVector3D surface[MAXALONG][MAXAROUND];
 
-    int  i, j;
-    float u, v;
-
-    for ( i=0; i<usteps; i++ )
-        for ( j=0; j<vsteps; j++ )
+    for ( int i=0; i<usteps; i++ )
+        for ( int j=0; j<vsteps; j++ )
         {
-            u = (umin+((umax-umin)/(float)(usteps-1))*(float)(i));
-            v = (vmin+((vmax-vmin)/(float)(vsteps-1))*(float)(j));
+            float u = (umin+((umax-umin)/(float)(usteps-1))*(float)(i));
+            float v = (vmin+((vmax-vmin)/(float)(vsteps-1))*(float)(j));
 
 
             //BEGIN 
@@ -168,8 +124,8 @@ bool AbstractSurface::buildParametricSurface()
             surface[i][j] = fromParametricArgs(u,v);
         }
 
-    for (i = 0; i < usteps -1; i++ )    
-        for ( j=0; j<vsteps-1; j++ )    
+    for (int i = 0; i < usteps -1; i++ )
+        for ( int j=0; j<vsteps-1; j++ )
         {
             doQuad(1, 1, surface[i][j], surface[i+1][j], surface[i][j+1], surface[i+1][j+1]);
         }
@@ -258,6 +214,11 @@ void AbstractSurface::createFace( QVector3D *buffer )
 //     qDebug() << face.p1 << face.p2 << face.p3;
     
     faces.append(face);
+}
+
+QVector3D AbstractSurface::fromParametricArgs(double, double)
+{
+    return QVector3D();
 }
 
     

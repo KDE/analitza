@@ -23,10 +23,10 @@
 #define ABSTRACTFUNCTIONGRAPHFACTORY_H
 
 #include "analitzaplotexport.h"
-
 #include "utils/mathutils.h"
 
-#include "analitza/expressiontype.h"
+#include <QPair>
+#include <QMap>
 
 #define REGISTER_FUNCTIONGRAPH(name) \
         static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
@@ -41,8 +41,10 @@
         
 class AbstractFunctionGraph;
 
-namespace Analitza{
+namespace Analitza {
     class Variables;
+    class Expression;
+    class ExpressionType;
 }
 
 class FunctionGraphFactory

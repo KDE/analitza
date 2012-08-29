@@ -21,12 +21,12 @@
 #define ABSTRACTSURFACE_H
 
 #include "abstractfunctiongraph.h"
+#include "utils/triangle3d.h"
 
+class Box3D;
 
 #define CONSTRUCTORS(name) \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) : AbstractSurface(functionExpression, variables) { }
-
-
 
 class AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
 {
@@ -39,13 +39,13 @@ public:
     QVector<Triangle3D> faces;
 
 protected:
-    AbstractSurface() {}
-    AbstractSurface(const AbstractSurface& other) {}
-
-    virtual QVector3D fromParametricArgs(double u, double v) { return QVector3D(); }
+    virtual QVector3D fromParametricArgs(double u, double v);
     bool buildParametricSurface();
 
 private:
+    AbstractSurface();
+    AbstractSurface(const AbstractSurface& other);
+    
     void doQuad(int n, int m, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3);
     void doStrip(int n, const QVector3D &p0,  const QVector3D &p1, const QVector3D &p2, const QVector3D &p3);
     void createFace( QVector3D *buffer );

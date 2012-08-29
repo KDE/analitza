@@ -60,14 +60,24 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void setModel(PlotsProxyModel* f);
         PlotsProxyModel* model() const { return m_model; }
         
-        int width() const { return m_size.width(); }
-        int height() const { return m_size.height(); }
-        
         /** Sets the graph's viewport to @p v. */
         void setViewport(const QRectF& vp, bool repaint=true);
         
         /** Moves the viewport @p delta */
         void moveViewport(const QPoint& delta);
+        
+        //ticks & axis
+        void setXAxisLabel(const QString &label);
+        void setYAxisLabel(const QString &label);
+        // tick symbols
+        void updateGridColor(const QColor &color) { m_gridColor = color;  forceRepaint(); }
+        void updateTickScale(QString m_tickScaleSymbol, qreal m_tickScaleSymbolValue, int m_tickScaleNumerator, int m_tickScaleDenominator);
+        void setUseTickSymbols(bool flag) { m_tickScaleUseSymbols = flag; forceRepaint(); }
+        void showHTicks(bool flag) { m_showHTicks = flag; forceRepaint(); }
+        void showVTicks(bool flag) { m_showVTicks = flag; forceRepaint(); }
+        void showHAxes(bool flag) { m_showHAxes = flag; forceRepaint(); }
+        void showVAxes(bool flag) { m_showVAxes = flag; forceRepaint(); }
+        void useCoorSys(int i) { m_useCoordSys = i; forceRepaint(); }
         
     protected:
         QRectF lastViewport() const { return viewport; }
@@ -90,7 +100,8 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void drawCartesianAxes(QPainter *f);
         PlotItem *fromProxy(int proxy_row) const; // get the real item from proxy
         PlotItem *fromSource(int realmodel_row) const; // get the item filtered by the proxy
-
+        int width() const { return m_size.width(); }
+        int height() const { return m_size.height(); }
         
         double rang_x, rang_y;
         bool m_squares;
@@ -105,22 +116,21 @@ class ANALITZAPLOT_EXPORT Plotter2D
         static const QColor m_axe2Color;
         static const QColor m_derivativeColor;
         
-protected: /// TODO improve this ... it should be private
-        //GSOC scale ticks & axis
-    QString m_tickScaleSymbol;
-    qreal m_tickScaleSymbolValue;
-    bool m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
-    int m_tickScaleNumerator;
-    int m_tickScaleDenominator;
-    bool m_showHTicks;
-    bool m_showVTicks;
-    bool m_showHAxes;
-    bool m_showVAxes;
-    QString m_axisXLabel;
-    QString m_axisYLabel;
-    int m_useCoordSys; // polar 2 cart 1 none 0 y case 3 es automatic (es decir el plot acutal elije su coordenada)
-    
-    QColor m_gridColor;
+        QString m_tickScaleSymbol;
+        qreal m_tickScaleSymbolValue;
+        bool m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
+        int m_tickScaleNumerator;
+        int m_tickScaleDenominator;
+        bool m_showHTicks;
+        bool m_showVTicks;
+        bool m_showHAxes;
+        bool m_showVAxes;
+        QString m_axisXLabel;
+        QString m_axisYLabel;
+        int m_useCoordSys; 
+        // polar 2 cart 1 none 0 y case 3 es automatic (es decir el plot acutal elije su coordenada)
+        
+        QColor m_gridColor;
 };
 
 #endif // FUNCTIONSPAINTER_H

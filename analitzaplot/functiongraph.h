@@ -72,12 +72,14 @@ public:
     
 protected:
     FunctionGraph() {}
-    FunctionGraph(const FunctionGraph &other) {}
 
     
     AbstractFunctionGraph *backend() const { return m_functionGraph; }
 
 private:
+    FunctionGraph(const FunctionGraph &other);
+    
+    //TODO: Percy! Translate!!
     //prueba si es posible graficar la expresion input, En caso que sea posible retorna true, el id para crearlo del factory y la expresion de salida
     //output que sirve para que se pueda crear en el factory
     //en caso que no sea posible retorna false con un id y expresion de salida vacio, 

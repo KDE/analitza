@@ -22,7 +22,9 @@
 #define SPACECURVE_H
 
 #include "functiongraph.h"
+#include <QVector3D>
 
+class Box3D;
 class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {
     //3D
@@ -45,9 +47,8 @@ public:
     const QVector<QVector3D> & points() const;
     void update(const Box3D& viewport);
 
-protected:
-    SpaceCurve() {}
-    SpaceCurve(const SpaceCurve &other) {}
+private:
+    SpaceCurve();
 };
 
 #endif // SPACECURVE_H

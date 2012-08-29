@@ -16,19 +16,17 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
-
 #include "private/abstractsurface.h"
 // #include "private/surfacefactory.h"
 #include "private/functiongraphfactory.h"
 
-
-#include "analitza/value.h"
+#include <analitza/value.h>
 #include <analitza/vector.h>
 
-//TODO macros para las prop e abajo
-
+static QVector3D sphericalToCartesian(double radial, double azimuth, double polar)
+{
+    return QVector3D(radial*cos(azimuth)*sin(polar), radial*sin(azimuth)*sin(polar), radial*cos(polar));
+}
 
 class Fap : public AbstractSurface/*, static class? better macros FooClass*/
 {
@@ -95,22 +93,19 @@ bool Fap::setInterval(const QString& argname, double min, double max)
     return AbstractFunctionGraph::setInterval(argname, min, max);
 }
 
-
 Fap::Fap(const Analitza::Expression& e): AbstractSurface(e)
 {
     setInterval("a", 0, M_PI);
     setInterval("p", 0, M_PI);
 }
 
-Fap::Fap(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e)
-{
-
-}
+Fap::Fap(const Analitza::Expression& e, Analitza::Variables* v)
+    : AbstractSurface(e)
+{}
 
 
 QVector3D Fap::fromParametricArgs(double a, double p)
 {
-    
     arg("a")->setValue(a);
     arg("p")->setValue(p);    
 

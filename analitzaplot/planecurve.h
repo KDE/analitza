@@ -57,9 +57,8 @@ public:
     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
     QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse postion 
 
-protected:
-    PlaneCurve() {}
-    PlaneCurve(const PlaneCurve &other) {}
+private:
+    PlaneCurve();
 };
 
 #endif // ANALITZAPLOT_FUNCTION_H

@@ -29,6 +29,7 @@
 #include <qmath.h>
 #include <QDebug>
 #include <QBitArray>
+#include <QLineF>
 #include <analitza/localize.h>
 
 #include "analitza/value.h"

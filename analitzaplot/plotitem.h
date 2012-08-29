@@ -70,11 +70,12 @@ public:
 
 protected:
     PlotItem() {}
-    PlotItem(const PlotItem &other) {}
 
     void emitDataChanged();
 
 private:
+    PlotItem(const PlotItem &other);
+    
     void setModel(PlotsModel *m);
     
     //gui

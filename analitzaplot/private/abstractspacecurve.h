@@ -25,10 +25,8 @@
 #define CONSTRUCTORS(name) \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractSpaceCurve(functionExpression, variables) { }
 
-namespace Analitza
-{
-    class Variables;
-}
+class Box3D;
+namespace Analitza { class Variables; }
 
 class AbstractSpaceCurve : public AbstractFunctionGraph 
 {
@@ -46,10 +44,10 @@ public:
     virtual void update(const Box3D& viewport) = 0;
 
 protected:
-    AbstractSpaceCurve() {}
-    AbstractSpaceCurve(const AbstractSpaceCurve& other) {}
-    
     bool addPoint(const QVector3D& p);
+
+private:
+    AbstractSpaceCurve();
 };
 
 

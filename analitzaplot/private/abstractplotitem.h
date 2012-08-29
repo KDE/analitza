@@ -56,7 +56,6 @@ public:
     
 protected:
     AbstractMappingGraph() {}
-    AbstractMappingGraph(const AbstractMappingGraph& other) {}
 };
 
 #endif // ABSTRACTMAPPINGGRAPH_H

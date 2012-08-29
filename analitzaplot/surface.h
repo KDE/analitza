@@ -20,6 +20,8 @@
 #define SURFACE_H
 
 #include "functiongraph.h"
+#include "private/utils/triangle3d.h"
+#include "private/utils/box3d.h"
 
 class AbstractSurface;
 
@@ -38,9 +40,8 @@ public:
     void update(const Box3D &viewport);
     const QVector<Triangle3D> & faces() const;
     
-protected:
-    Surface() {}
-    Surface(const Surface &other) {}
+private:
+    Surface();
 };
 
 

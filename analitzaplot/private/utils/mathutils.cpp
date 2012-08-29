@@ -17,10 +17,19 @@
  *************************************************************************************/
 
 #include "mathutils.h"
+#include <cmath>
 
+bool traverse(double p1, double p2, double next)
+{
+    static const double delta=3;
+    double diff=p2-p1, diff2=next-p2;
+    
+    bool ret = (diff>0 && diff2<-delta) || (diff<0 && diff2>delta);
+    
+    return ret;
+}
 
-
-
-
-
-
+bool isSimilar(double a, double b, double diff)
+{
+    return std::fabs(a-b) < diff;
+}

@@ -20,6 +20,7 @@
 #include "functiongraph.h"
 
 #include <cmath>
+#include <QVector3D>
 
 #include "analitza/analyzer.h"
 #include "analitza/value.h"
