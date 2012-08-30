@@ -33,35 +33,21 @@
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
     : AbstractMappingGraph()
-    , m_e(e)
     , m_varsmod(v)
     , m_autoUpdate(true)
 {
-    analyzer = new Analitza::Analyzer(v);
+    analyzer = v ? new Analitza::Analyzer(v) : new Analitza::Analyzer;
 
     if (e.isEquation())
     {
-        analyzer->setExpression(e.equationToFunction());
-        analyzer->setExpression(analyzer->dependenciesToLambda());
-        
-    }
-    else
-        analyzer->setExpression(e);
-    
-    analyzer->simplify();
-    analyzer->flushErrors();
-    
-    foreach (const Analitza::Ci *var, analyzer->expression().parameters())
-    {
-        m_argumentValues[var->name()] = new Analitza::Cn;
-        
-        //WARNING FIX magic numbers
-        EndPoint min(-5.0);
-        EndPoint max(5.0);
-        
-        m_argumentIntervals[var->name()] = RealInterval(min, max);
+        m_e = e.equationToFunction();
     }
 
+    analyzer->setExpression(m_e);
+    analyzer->setExpression(analyzer->dependenciesToLambda());
+    
+    analyzer->simplify();
+    analyzer->flushErrors(); //WARNING: ???WTF
     analyzer->setStack(m_argumentValues.values().toVector());
 }
 
