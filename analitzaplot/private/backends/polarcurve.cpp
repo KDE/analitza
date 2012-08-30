@@ -33,7 +33,7 @@ static QPointF polarToCartesian(double radial, double polar)
 class FunctionPolar : public AbstractPlaneCurve
 {
 public:
-    CONSTRUCTORS(FunctionPolar)
+    FunctionPolar(const Analitza::Expression& e, Analitza::Variables* v = 0);
     TYPE_NAME("Polar Curve r=F(p: Polar)")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -47,7 +47,14 @@ public:
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
+    
+    Analitza::Cn *p;
 };
+
+FunctionPolar::FunctionPolar(const Analitza::Expression& e, Analitza::Variables* v): AbstractPlaneCurve(e, v)
+{
+    p = arg("p");
+}
 
 void FunctionPolar::update(const QRectF& viewport)
 {
@@ -57,15 +64,31 @@ void FunctionPolar::update(const QRectF& viewport)
     
     
     //TODO CACHE en intervalvalues!!!
-    QPair<double, double> c_limits = interval("p");
+//     QPair<double, double> c_limits = interval("p");
     
 //     if ()
 //     
 //     static QPair<double, double> o_limits = c_limits;
     
     
-    double ulimit=c_limits.second;
-    double dlimit=c_limits.first;
+//     double ulimit=c_limits.second;
+//     double dlimit=c_limits.first;
+
+    double dlimit=0;
+    double ulimit=0;
+
+    if (isAutoUpdate())
+    {
+        dlimit=viewport.left();
+        ulimit=viewport.right();
+    }
+    else // obey intervals
+    {
+        QPair< double, double> limits = interval("p");
+        dlimit = limits.first;
+        ulimit = limits.second;
+    }
+    
     
     points.clear();
     //TODO port
@@ -77,7 +100,7 @@ void FunctionPolar::update(const QRectF& viewport)
     
     double final=ulimit-inv_res;
     for(double th=dlimit; th<final; th+=inv_res) {
-        arg("p")->setValue(th);
+        p->setValue(th);
         double r = analyzer->calculateLambda().toReal().value();
         
         addPoint(polarToCartesian(r,th));
@@ -94,61 +117,61 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
 {
     QPointF dp=p;
     QString pos;
-    if(p==QPointF(0., 0.))
-        return QPair<QPointF, QString>(dp, i18n("center"));
-    double th=atan(p.y()/ p.x()), r=1., d, d2;
-    if(p.x()<0.)    th += pi;
-    else if(th<0.)  th += 2.*pi;
-    
-    
-        //TODO CACHE en intervalvalues!!!
-    static QPair<double, double> c_limits = interval("p");
-    
-//     if ()
+//     if(p==QPointF(0., 0.))
+//         return QPair<QPointF, QString>(dp, i18n("center"));
+//     double th=atan(p.y()/ p.x()), r=1., d, d2;
+//     if(p.x()<0.)    th += pi;
+//     else if(th<0.)  th += 2.*pi;
 //     
-//     static QPair<double, double> o_limits = c_limits;
-    
-    
-    double ulimit=c_limits.second;
-    double dlimit=c_limits.first;
-    
-    th=qMax(th, dlimit);
-    th=qMin(th, ulimit);
-    
-//     analyzer.setStack(m_runStack);
-    QPointF dist;
-    arg("p")->setValue(th);
-    do {
-        arg("p")->setValue(th);
-        r = analyzer->calculateLambda().toReal().value();
-        
-        dp = polarToCartesian(r,th);
-        dist = (dp-p);
-        d = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
-        
-        arg("p")->setValue(th+2.*pi);
-        r = analyzer->calculateLambda().toReal().value();
-
-        dp = polarToCartesian(r,th);
-        dist = (dp-p);
-        d2 = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
-        
-        th += 2.*pi;
-    } while(d>d2);
-    th -= 2.*pi;
-    
-    arg("p")->setValue(th);
-    Analitza::Expression res=analyzer->calculateLambda();
-    
-    if(!res.isReal())
-       appendError(i18n("We can only draw Real results."));
-    r = res.toReal().value();
-    
-    
-        
-    dp = polarToCartesian(r,th);
-    
-    pos = QString("r=%1 th=%2").arg(r,3,'f',2).arg(th,3,'f',2);
+//     
+//         //TODO CACHE en intervalvalues!!!
+//     static QPair<double, double> c_limits = interval("p");
+//     
+// //     if ()
+// //     
+// //     static QPair<double, double> o_limits = c_limits;
+//     
+//     
+//     double ulimit=c_limits.second;
+//     double dlimit=c_limits.first;
+//     
+//     th=qMax(th, dlimit);
+//     th=qMin(th, ulimit);
+//     
+// //     analyzer.setStack(m_runStack);
+//     QPointF dist;
+//     arg("p")->setValue(th);
+//     do {
+//         arg("p")->setValue(th);
+//         r = analyzer->calculateLambda().toReal().value();
+//         
+//         dp = polarToCartesian(r,th);
+//         dist = (dp-p);
+//         d = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
+//         
+//         arg("p")->setValue(th+2.*pi);
+//         r = analyzer->calculateLambda().toReal().value();
+// 
+//         dp = polarToCartesian(r,th);
+//         dist = (dp-p);
+//         d2 = sqrt(dist.x()*dist.x() + dist.y()*dist.y());
+//         
+//         th += 2.*pi;
+//     } while(d>d2);
+//     th -= 2.*pi;
+//     
+//     arg("p")->setValue(th);
+//     Analitza::Expression res=analyzer->calculateLambda();
+//     
+//     if(!res.isReal())
+//        appendError(i18n("We can only draw Real results."));
+//     r = res.toReal().value();
+//     
+//     
+//         
+//     dp = polarToCartesian(r,th);
+//     
+//     pos = QString("r=%1 th=%2").arg(r,3,'f',2).arg(th,3,'f',2);
     return QPair<QPointF, QString>(dp, pos);
 }
 

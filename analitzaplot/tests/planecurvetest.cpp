@@ -139,8 +139,10 @@ void FunctionTest::testParamIntervals()
 
     //Interval as expression
     QVERIFY(f3.setInterval(param, interval_expression.first, interval_expression.second));
-
     QCOMPARE(f3.interval(param, true).second.toString(), QString("16"));
+    
+    delete m_vars->take("a");
+    delete m_vars->take("b");
 }
 
 #include "planecurvetest.moc"

@@ -68,7 +68,7 @@ namespace
 class FunctionParametric : public AbstractPlaneCurve
 {
 public:
-    CONSTRUCTORS(FunctionParametric)
+    FunctionParametric(const Expression& e, Variables* v = 0);
     TYPE_NAME("Parametric Curve 2D")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)))
     COORDDINATE_SYSTEM(Cartesian)
@@ -82,7 +82,7 @@ public:
     QLineF tangent(const QPointF &mousepos) ;
     
     //
-    
+    Analitza::Cn *t;
 
 private:
     Cn findTValueForPoint(const QPointF& p);
@@ -90,6 +90,11 @@ private:
 };
 
 // 
+FunctionParametric::FunctionParametric(const Expression& e, Variables* v): AbstractPlaneCurve(e, v)
+{
+    t = arg("t");
+}
+
 
 void FunctionParametric::update(const QRectF& viewport)
 {
@@ -100,10 +105,25 @@ void FunctionParametric::update(const QRectF& viewport)
     
     
     //TODO CACHE en intervalvalues!!!
-    QPair<double, double> c_limits = interval("t");
+//     QPair<double, double> c_limits = interval("t");
+//     
+//     double ulimit=c_limits.second;
+//     double dlimit=c_limits.first;
+        double dlimit=0;
+    double ulimit=0;
+
+    if (isAutoUpdate())
+    {
+        dlimit=viewport.left();
+        ulimit=viewport.right();
+    }
+    else // obey intervals
+    {
+        QPair< double, double> limits = interval("t");
+        dlimit = limits.first;
+        ulimit = limits.second;
+    }
     
-    double ulimit=c_limits.second;
-    double dlimit=c_limits.first;
     
     
     points.clear();

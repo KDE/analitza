@@ -162,40 +162,36 @@ bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builder
 QString FunctionGraphFactory::trait(const Analitza::Expression& expr, Dimension dim) const
 {
     Analitza::Analyzer a;
-    a.setExpression(expr);
     if (expr.isEquation())
-    {
-        a.setExpression(a.expression().equationToFunction());
-        a.setExpression(a.dependenciesToLambda());
-    }
+        a.setExpression(expr.equationToFunction());
     else
-        a.setExpression(a.dependenciesToLambda());
+        a.setExpression(expr);
+    a.setExpression(a.dependenciesToLambda());
 
     QStringList args = a.expression().bvarList();
 
     if (expr.isEquation())
         a.setExpression(expr);
 
-    QString key;
     qDebug() << spaceDimension(a.type(), args);
+    
     bool found = false;
     
     for (int i = 0; i < argumentsFunctions.values().size(); ++i)
+        a.setExpression(expr);    
+    
+    QString key;
+    for (int i = 0; i < argumentsFunctions.values().size() && key.isEmpty(); ++i)
     {
-//         qDebug() << a.type().canReduceTo(expressionTypeFunctions.values()[i]()) << argumentsFunctions.values()[i]() << args << spaceDimensions.values()[i] << dim;
-        
-        if (args == argumentsFunctions.values()[i]() && dim == spaceDimensions.values()[i] &&
-            a.type().canReduceTo(expressionTypeFunctions.values()[i]()))
+        if (args == argumentsFunctions.values()[i]()
+            && dim == spaceDimensions.values()[i]
+            && a.type().canReduceTo(expressionTypeFunctions.values()[i]()))
         {
             key = argumentsFunctions.key(argumentsFunctions.values()[i]);
-
-            found = true;
-            
-            break;
         }
     }
 
-    if (found)
+    if (!key.isEmpty())
         return QString::number(spaceDimensions[key])+"|"+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
 
     return QString();    

@@ -77,13 +77,20 @@ void FunctionImplicit::update(const QRectF& vp)
     points.clear();
     jumps.clear();
 
-    QPair<double, double> ix = interval("x");
-    QPair<double, double> iy = interval("y");    
-    double minx = ix.first;
-    double maxx = ix.second;
-    double miny = iy.first;
-    double maxy = iy.second;
-
+    //TODO
+//     QPair<double, double> ix = interval("x");
+//     QPair<double, double> iy = interval("y");    
+//     double minx = ix.first;
+//     double maxx = ix.second;
+//     double miny = iy.first;
+//     double maxy = iy.second;
+//     
+    
+    double minx = 0;
+    double maxx = 0;
+    double miny = 0;
+    double maxy = 0;
+    
     if (isAutoUpdate())
     {
         minx = vp.left();
@@ -93,7 +100,7 @@ void FunctionImplicit::update(const QRectF& vp)
     }
 
     setWorld(minx, maxx, miny, maxy);
-    buildGeometry();
+//     buildGeometry();
 
     for (int i = 0;  i < _faces_.size(); ++i)
     {

@@ -31,7 +31,8 @@
 #include "private/functiongraphfactory.h"
 
 FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dimension spacedim, const QString &n, const QColor &col, Analitza::Variables *vars)
-    : PlotItem(n, col), m_functionGraph(0)
+    : PlotItem(n, col)
+    , m_functionGraph(0)
 {
     setName(n);
     setColor(col);
@@ -39,8 +40,9 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dim
     
     Q_ASSERT(canDraw(functionExpression, spacedim, m_errors, id));
 
-    m_functionGraph = static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,functionExpression, vars));
+    m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, vars);
     m_functionGraph->setInternalId(id);
+    Q_ASSERT(m_functionGraph);
 }
 
 FunctionGraph::~FunctionGraph()
@@ -112,7 +114,7 @@ bool FunctionGraph::isCorrect() const
 {
     Q_ASSERT(m_functionGraph);
 
-    return m_errors.isEmpty() && m_functionGraph->isCorrect() && m_functionGraph;
+    return m_errors.isEmpty() && m_functionGraph && m_functionGraph->isCorrect();
 }
 
 bool FunctionGraph::isAutoUpdate() const
