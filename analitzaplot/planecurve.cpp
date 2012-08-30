@@ -34,37 +34,20 @@
 
 
 PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables )
-    : FunctionGraph(functionExpression,Dim2D, name, col, variables)
-{
-}
+    : FunctionGraph(functionExpression, Dim2D, name, col, variables)
+{}
 
 PlaneCurve::~PlaneCurve()
-{
-}
-
-// QMap< QString, QPair< QStringList, Analitza::ExpressionType > > PlaneCurve::registeredCurves()
-// {
-//     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > ret;
-// 
-//     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > total;
-//     total = FunctionGraphFactory::self()->registeredFunctionGraphs();
-//     
-//     for (int i = 0; i < total.size(); ++i)
-//         if (FunctionGraphFactory::self()->spaceDimension(total.values()[i].second, total.values()[i].first) == 2)
-//             ret[total.keys()[i]] = qMakePair(total.values()[i].first, total.values()[i].second);
-//         
-//     return ret;
-// }
+{}
 
 bool PlaneCurve::canDraw(const Analitza::Expression& functionExpression)
 {
-return FunctionGraph::canDraw(functionExpression, Dim2D);
+    return FunctionGraph::canDraw(functionExpression, Dim2D);
 }
-
 
 bool PlaneCurve::canDraw(const Analitza::Expression& functionExpression, QStringList& errors)
 {
-return FunctionGraph::canDraw(functionExpression, Dim2D, errors);
+    return FunctionGraph::canDraw(functionExpression, Dim2D, errors);
 }
 
 bool PlaneCurve::setExpression(const Analitza::Expression& functionExpression)
