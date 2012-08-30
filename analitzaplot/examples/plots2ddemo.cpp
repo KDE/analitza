@@ -87,9 +87,10 @@ int main(int argc, char *argv[])
 
     Analitza::Variables *v = new Analitza::Variables;
     
-    PlaneCurve *curve = new PlaneCurve(Analitza::Expression("x->x*x"), "y->", Qt::magenta, v);
+    model->addPlot(new PlaneCurve(Analitza::Expression("x->x*x"), "f(x)", Qt::magenta, v));
+    model->addPlot(new PlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "khipu", Qt::yellow, v));
+    model->addPlot(new PlaneCurve(Analitza::Expression("p->4.7"), "polar circle", Qt::lightGray, v));
     
-    model->addPlot(curve);
 
     //TODO
 //     model->addPlaneCurve();
