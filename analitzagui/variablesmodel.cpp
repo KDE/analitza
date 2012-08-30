@@ -21,6 +21,7 @@
 #include <analitza/expression.h>
 #include <analitza/value.h>
 #include <analitza/localize.h>
+#include <analitza/analitzautils.h>
 #include <QDebug>
 
 using Analitza::Variables;
@@ -70,10 +71,7 @@ bool VariablesModel::setData(const QModelIndex& index, const QVariant& value, in
 	
 	if(index.column()==1) { //Changing values
 		QString name=data(index.sibling(index.row(), 0)).toString();
-		if(value.canConvert<double>())
-			m_vars->modify(name, value.value<double>());
-		else
-			m_vars->modify(name, Expression(value.toString(), Expression::isMathML(value.toString())));
+		m_vars->modify(name, AnalitzaUtils::variantToExpression(value));
 		emit dataChanged(index, index);
 		return true;
 	} else if(index.column()==0) {
