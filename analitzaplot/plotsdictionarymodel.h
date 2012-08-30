@@ -43,10 +43,8 @@ public:
     PlotsDictionariesModel(QObject* parent = 0);
     ~PlotsDictionariesModel();
     
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     virtual int columnCount(const QModelIndex& parent) const;
-    
 };
 
 #endif

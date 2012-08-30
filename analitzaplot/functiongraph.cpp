@@ -67,9 +67,7 @@ Analitza::Variables* FunctionGraph::variables() const
     Q_ASSERT(m_functionGraph);
     
     return m_functionGraph->variables();
-
 }
-
 
 QString FunctionGraph::iconName() const
 {
@@ -130,7 +128,6 @@ void FunctionGraph::setAutoUpdate(bool b)
 
     m_functionGraph->setAutoUpdate(b);
 }
-
 
 QPair<Analitza::Expression, Analitza::Expression> FunctionGraph::interval(const QString &argname, bool evaluate) const
 {
@@ -237,18 +234,17 @@ bool FunctionGraph::canDraw(const Analitza::Expression& testexp, Dimension space
         a->setExpression(a->expression().equationToFunction());
         a->setExpression(a->dependenciesToLambda());
     }
+    else if (testexp.isLambda())
+        a->setExpression(a->dependenciesToLambda());
     else
-        if (testexp.isLambda())
-            a->setExpression(a->dependenciesToLambda());
-        else
-        {
-            //pues no es ni ecuacion ni lambda
-            errs << i18n("The expression is not correct");
+    {
+        //pues no es ni ecuacion ni lambda
+        errs << i18n("The expression is not correct");
 
-            delete a;
-            
-            return false;
-        }
+        delete a;
+        
+        return false;
+    }
         
     Q_ASSERT(errs.isEmpty());
     

@@ -39,21 +39,22 @@ friend class PlotItem;
 Q_OBJECT
 
 public:
+    enum Roles {
+        DimensionRole = Qt::UserRole+1,
+        PlotRole
+    };
+    
     PlotsModel(QObject * parent = 0);
     virtual ~PlotsModel();
 
     virtual Qt::ItemFlags flags(const QModelIndex & index) const;
-    virtual Qt::DropActions supportedDropActions() const;
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
     virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole); // only title and check=visible
     virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex& parent) const;
-    virtual bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
+    virtual bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
 
     void addPlot(PlotItem *it);
-    PlotItem * plot(int curveIndex) const;
-    void removePlot(int curveIndex);
 
 private:
     QList<PlotItem*> m_items;

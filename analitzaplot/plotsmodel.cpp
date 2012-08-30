@@ -34,9 +34,14 @@
 #include <KIcon>
 // #include <kcategorizedsortfilterproxymodel.h>
 
-PlotsModel::PlotsModel(QObject* parent): QAbstractListModel(parent)
+Q_DECLARE_METATYPE(PlotItem*);
+
+PlotsModel::PlotsModel(QObject* parent)
+    : QAbstractListModel(parent)
     , m_itemCanCallModelRemoveItem(true)
 {
+    setHeaderData(0, Qt::Horizontal, i18nc("@title:column", "Name"), Qt::DisplayRole);
+    setHeaderData(1, Qt::Horizontal, i18nc("@title:column", "Plot"), Qt::DisplayRole);
 }
 
 PlotsModel::~PlotsModel()
@@ -48,32 +53,9 @@ PlotsModel::~PlotsModel()
 Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
 {
     if(index.isValid())
-    {
-//         if (index.column() == 0 && index.data(Qt::DecorationRole).canConvert(QVariant::Color))
-//             return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-//         else
-            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
-    }
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
     else
         return 0;
-}
-
-Qt::DropActions PlotsModel::supportedDropActions() const
-{
-    return Qt::IgnoreAction;
-}
-
-QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
-        switch(section) 
-        {
-            case 0: return i18nc("@title:column", "Name");
-            case 1: return i18nc("@title:column", "Plot");
-        }
-    }
-    
-    return QVariant();
 }
 
 QVariant PlotsModel::data(const QModelIndex & index, int role) const
@@ -81,9 +63,7 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
     if(!index.isValid() || index.row()>=m_items.count())
         return QVariant();
 
-    int var=index.row();
-
-    PlotItem *tmpcurve = m_items.at(var);
+    PlotItem *tmpcurve = m_items.at(index.row());
     
     switch(role)
     {
@@ -103,13 +83,20 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
             } 
             else 
                 return QIcon::fromTheme(tmpcurve->iconName());
-        case Qt::ToolTipRole: return tmpcurve->name();
-        case Qt::StatusTipRole: return tmpcurve->typeName();
+        case Qt::ToolTipRole:
+            return tmpcurve->name();
+        case Qt::StatusTipRole:
+            return tmpcurve->typeName();
+        case Qt::CheckStateRole:
+            if(index.column()==0) 
+                return tmpcurve->isVisible() ? Qt::Checked : Qt::Unchecked;
+            break;
+        case DimensionRole:
+            return int(tmpcurve->spaceDimension());
+        case PlotRole:
+            return qVariantFromValue<PlotItem*>(tmpcurve);
     }
 
-    if (role == Qt::CheckStateRole)
-        if(index.column()==0) 
-            return tmpcurve->isVisible()?Qt::Checked:Qt::Unchecked;
     
     return QVariant();
 }
@@ -168,16 +155,16 @@ int PlotsModel::rowCount(const QModelIndex & parent) const
 
 int PlotsModel::columnCount(const QModelIndex& parent) const
 {
-//     if(parent.isValid())
-//         return 0;
-//     else
-        return 2;
+    Q_UNUSED(parent);
+    return 2;
 }
 
 
 bool PlotsModel::removeRows(int row, int count, const QModelIndex& parent)
 {
     Q_ASSERT(row<m_items.size());
+    if(parent.isValid())
+        return false;
 
     beginRemoveRows(QModelIndex(), row, row+count-1);
 
@@ -190,7 +177,6 @@ bool PlotsModel::removeRows(int row, int count, const QModelIndex& parent)
         if (!tmpcurve->m_inDestructorSoDontDeleteMe)
         {
             delete tmpcurve;
-            tmpcurve = 0;
         }
 
         m_itemCanCallModelRemoveItem = true;
@@ -213,16 +199,4 @@ void PlotsModel::addPlot(PlotItem* it)
     m_items.append(it);
 
     endInsertRows();
-}
-
-PlotItem* PlotsModel::plot(int curveIndex) const
-{
-    Q_ASSERT(rowCount()>0? curveIndex<m_items.count():curveIndex<=m_items.count());
-
-    return m_items[curveIndex];
-}
-
-void PlotsModel::removePlot(int row)
-{
-    removeRow(row);
 }

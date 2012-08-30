@@ -47,7 +47,7 @@ class ANALITZAPLOT_EXPORT PlotsProxyModel : public QSortFilterProxyModel
         virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const;
 
     private:
-        Dimension m_dimension; // 2 => 2D, 3 => 3D, -1 => ALL
+        Dimension m_dimension;
 };
 
 #endif 

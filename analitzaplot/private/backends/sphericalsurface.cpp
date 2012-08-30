@@ -100,9 +100,8 @@ Fap::Fap(const Analitza::Expression& e): AbstractSurface(e)
 }
 
 Fap::Fap(const Analitza::Expression& e, Analitza::Variables* v)
-    : AbstractSurface(e)
+    : AbstractSurface(e, v)
 {}
-
 
 QVector3D Fap::fromParametricArgs(double a, double p)
 {
@@ -116,6 +115,7 @@ QVector3D Fap::fromParametricArgs(double a, double p)
 
 void Fap::update(const Box3D& viewport)
 {
+    Q_UNUSED(viewport);
     buildParametricSurface();
 }
 

@@ -44,12 +44,8 @@ public:
     QStringList errors() const;
     bool isCorrect() const;
 
-    //NOTE KAlgebra use case
-    // if true then the graph will be updated always and follow the viewport limits instead of intervals
-    // by default is false, so the intervals can decide the limits for update 
-    // true or false the update always clip the point acording to the viewport
-    //WARNING some function compute complex algorithms for generate its geometry, that is why you may use
-    //intervals for those
+    ///repaint the function when the viewport changes
+    ///it will be automatically set to false in case an interval is specified
     bool isAutoUpdate() const;
     void setAutoUpdate(bool b);
     

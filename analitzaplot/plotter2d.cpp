@@ -37,6 +37,8 @@
 // bool isinf(double x) { return !finite(x) && x==x; }
 #endif
 
+Q_DECLARE_METATYPE(PlotItem*);
+
 using namespace std;
 
 // #define DEBUG_GRAPH
@@ -725,19 +727,12 @@ PlotItem* Plotter2D::fromProxy(int proxy_row) const
 {
     QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
 
-//     qDebug() << "de" << m_model->rowCount();
-//     qDebug() << "2"<< qobject_cast<PlotsModel *>(m_model->sourceModel())->item(pi.row())->spaceDimension();
-
     if (!pi.isValid())
         return 0;
 
-    if (qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row())->spaceDimension() != 2)
-        return 0; // evitamos que los proxies de los usuario causen un bug
-
-    if (pi.isValid())
-        return qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row());
-
-    return 0;
+    PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
+    Q_ASSERT(plot->spaceDimension() == 2);
+    return plot;
 }
 
 void Plotter2D::drawFunctions(QPaintDevice *qpd)
@@ -750,24 +745,8 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     p.setPen(pfunc);
 
     int current=currentFunction();
-    CoordinateSystem t=Cartesian;
-//     if(current>=0)
-    //los cast producto de los itemroles son demaciado largos ... nada elegantes
-//         t=(CoordinateSystem)m_model->data(m_model->index(current), FunctionGraphModel::CoordinateSystemRole).toInt(); // editFunction(current)->axeType();
-    //comparado con esto que es mucho mejor
-
-    //TODO use selectionmodel ... hasselection
-    if (!m_model || current == -1) t = Cartesian;
-    else
-    {
-        if (fromProxy(current))
-        {
-            t=fromProxy(current)->coordinateSystem();
-//             coordsysfromplot = true;
-        }
-        else
-            t = Cartesian;
-    }
+    PlotItem* plot = fromProxy(current);
+    CoordinateSystem t = plot ? plot->coordinateSystem() : Cartesian;
 
 //     if (coordsysfromplot)
         if (m_useCoordSys == 0) 
@@ -787,26 +766,19 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     
     drawAxes(&p, t);
 
-    if (!m_model && m_dirty) return; // guard // si tenemos el model y ademas las funciones estan actualizadas pasamos este if y pintamos
-
-//     PlaneCurveModel::const_iterator it=m_model->constBegin(), itEnd=m_model->constEnd();
-//     for (; it!=itEnd; ++it, ++k ) {
-
-    //funtiongraph
-    PlaneCurve *curve = 0;
+    if (!m_model || !m_dirty)
+        return;
 
     for (int k = 0; k < m_model->rowCount(); ++k )
     {
-        curve = dynamic_cast<PlaneCurve *>(fromProxy(k));
-
-        if (!curve) continue;
+        PlaneCurve* curve = dynamic_cast<PlaneCurve *>(fromProxy(k));
 
         //NOTE GSOC POINTS=0
         //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,
         //por ejemplo en el caso de parametric se hace un clip para ver si la curva esta dentro o no del viewport
         //entonces ademas de verificar que es sible si debe vericiar que existan puntos antes de pintar una funcion
 
-        if (!curve->isVisible() || curve->points().isEmpty())
+        if (!curve || !curve->isVisible() || curve->points().isEmpty())
             continue;
 
         pfunc.setColor(curve->color());
@@ -890,27 +862,17 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end)
 {
     if (!m_model || parent.isValid())
-        return; // guard
+        return;
 
-//     Q_ASSERT(startIdx.isValid() && endIdx.isValid());
-//     int start=startIdx.row(), end=endIdx.row();
-
-    for(int i=start; i<=end; i++)
-    {
+    for(int i=start; i<=end; i++) {
         PlaneCurve* curve = dynamic_cast<PlaneCurve *>(fromProxy(i));
 
-//         qDebug() << "emitnewexp" << start << i << fromProxy(i)->isCorrect() << fromProxy(i)->errors();
-
-        if (!curve || !curve->isVisible()) continue;
+        if (!curve || !curve->isVisible())
+            continue;
 
         QRectF viewport_fixed = viewport;
         viewport_fixed.setTopLeft(viewport.bottomLeft());
         viewport_fixed.setHeight(fabs(viewport.height()));
-        //NOTE GSOC
-//         qDebug() << "ORI" << viewport << viewport.center() <<  "CH" << viewport_fixed<< viewport_fixed.center();
-        //it works con este parche se le pasa a las curvas la informacion adecuada basada en centro y size
-        // y se conserva la semantica de qrectf la esquina superior izquierda es el origen
-
         curve->update(viewport_fixed);
     }
 

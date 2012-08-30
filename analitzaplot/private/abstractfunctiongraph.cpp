@@ -32,14 +32,12 @@
 // For lists of ten or more items, increase this minimum size as appropriate. 
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractMappingGraph(), m_e(e), m_autoUpdate(false), m_varsmod(v)
+    : AbstractMappingGraph()
+    , m_e(e)
+    , m_varsmod(v)
+    , m_autoUpdate(true)
 {
-//     qDebug() << "vars" << v;
-//     qDebug() << v->count();
-    if (v)
-         analyzer = new Analitza::Analyzer(v);
-    else
-     analyzer = new Analitza::Analyzer;
+    analyzer = new Analitza::Analyzer(v);
 
     if (e.isEquation())
     {
@@ -144,7 +142,7 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::
         return false;
     
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
-    
+    setAutoUpdate(false);
     return true;
 }
 
@@ -159,9 +157,6 @@ QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) co
     ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
     
     delete intervalsAnalizer;
-//     
-    
-    
 //     QPair<double, double> ret;
 //     ret.first = m_argumentIntervals[argname].lowEndPoint().value().toReal().value();
 //     ret.second = m_argumentIntervals[argname].highEndPoint().value().toReal().value();
@@ -178,5 +173,6 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, double min, doub
 
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
 
+    setAutoUpdate(false);
     return true;
 }

@@ -42,7 +42,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         virtual void modelChanged() = 0;
         
         /** Sets whether we will see a grid or only the axes. */
-        void setSquares(bool newSquare) { !newSquare?m_useCoordSys=0:m_useCoordSys=m_useCoordSys; forceRepaint(); }
+        void setSquares(bool newSquare) { !newSquare ? m_useCoordSys=0:m_useCoordSys=m_useCoordSys; forceRepaint(); }
         
         /** Returns whether we have chosen to see the grid. */
         bool squares() const {return m_useCoordSys!=0;}

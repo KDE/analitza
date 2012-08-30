@@ -19,7 +19,6 @@
 
 
 #include "plotitem.h"
-
 #include "plotsmodel.h"
 
 PlotItem::PlotItem(const QString &n, const QColor& col)
@@ -34,7 +33,7 @@ PlotItem::~PlotItem()
     if (m_model && m_model->m_itemCanCallModelRemoveItem)
     {
         m_inDestructorSoDontDeleteMe = true;
-        m_model->removePlot(m_model->m_items.indexOf(this));
+        m_model->removeRow(m_model->m_items.indexOf(this));
         m_inDestructorSoDontDeleteMe = false;
     }
 }

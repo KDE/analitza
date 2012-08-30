@@ -24,7 +24,7 @@
 
 PlotsProxyModel::PlotsProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
-    , m_dimension(All)
+    , m_dimension(DimAll)
 {
      setDynamicSortFilter(true);
 }
@@ -43,15 +43,11 @@ void PlotsProxyModel::setFilterSpaceDimension(Dimension dimension)
 bool PlotsProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     Q_ASSERT(sourceModel());
-    
-    if (m_dimension == All) return true;
-
-    PlotItem *item = qobject_cast<PlotsModel *>(sourceModel())->plot(sourceRow);
-    
-    if (item->spaceDimension() != m_dimension)
+    if(sourceParent.isValid())
         return false;
     
-    return true;
+    QModelIndex idx = sourceModel()->index(sourceRow, 0, sourceParent);
+    return m_dimension & idx.data(PlotsModel::DimensionRole).toInt();
 }
 
 bool PlotsProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const

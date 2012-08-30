@@ -81,12 +81,9 @@ int main(int argc, char *argv[])
     proxy->setFilterSpaceDimension(Dim2D);
     proxy->setSourceModel(model);
     
-    QItemSelectionModel *selection = new QItemSelectionModel(proxy);
-
     PlotsView2D *view2d = new PlotsView2D(tabs);
     view2d->setSquares(false);
     view2d->setModel(proxy);
-    view2d->setSelectionModel(selection);
 
     //TODO
 //     model->addPlaneCurve(Analitza::Expression("y->y*y"), "y->", Qt::magenta);
@@ -104,14 +101,6 @@ int main(int argc, char *argv[])
 //     model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
 //     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfssss", Qt::yellow);
 //     
-//     if you want to obey viewport changes always, then set to true AutoUpdate flag
-//     WARNING some functions have to compute complex algorithms in order to generate its geometry, that is why you may use intervals instead
-//     AutoUpdate ignores intervals
-    
-    PlaneCurve *curve = 0;
-    for(int i=0; i<model->rowCount(); ++i)
-        static_cast<FunctionGraph*>(model->plot(i))->setAutoUpdate(true);
-    
 //     END test calls
 
     QTreeView *viewsource = new QTreeView(tabs);
@@ -125,7 +114,6 @@ int main(int argc, char *argv[])
     viewproxy->setMouseTracking(true);
     viewproxy->setEditTriggers(QAbstractItemView::AllEditTriggers);
     viewproxy->setModel(proxy);
-    viewproxy->setSelectionModel(selection);
     
     tabs->addWidget(viewsource);
     tabs->addWidget(viewproxy);

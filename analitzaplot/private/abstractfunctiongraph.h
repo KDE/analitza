@@ -87,9 +87,6 @@ public:
     virtual QStringList parameters() const = 0;
 
 protected:
-    AbstractFunctionGraph() {}
-    AbstractFunctionGraph(const AbstractFunctionGraph& other);
-    
     void appendError(const QString &error) { m_errors.append(error); }
     void flushErrors() { m_errors.clear(); }
     
@@ -104,12 +101,12 @@ protected:
     Analitza::Cn* arg(const QString &argname) { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
     
 private:
-QString m_internalId;    
+    QString m_internalId;    
     
     Analitza::Expression m_e;
     Analitza::Variables *m_varsmod;
 
-bool m_autoUpdate;
+    bool m_autoUpdate;
 
 //BEGIN private types
 class EndPoint

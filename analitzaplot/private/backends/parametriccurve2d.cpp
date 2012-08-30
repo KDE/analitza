@@ -130,7 +130,6 @@ void FunctionParametric::update(const QRectF& viewport)
     Expression res;
     
     int i = 0;
-    bool jlock = false;
     
     for(double t=dlimit; t<ulimit; t+=inv_res, ++i) {
         arg("t")->setValue(t);

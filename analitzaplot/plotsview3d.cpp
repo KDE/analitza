@@ -30,6 +30,8 @@
 #include "analitza/vector.h"
 #include <QDebug>
 
+Q_DECLARE_METATYPE(PlotItem*);
+
 PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
     : QGLViewer(parent), m_model(m),m_selection(0)
 {
@@ -46,17 +48,16 @@ PlotsView3D::~PlotsView3D()
 {
     PlotsProxyModel* model = m_model;
 
-    if (model)
-        if (model->rowCount( ) > 0)
-        {
-            for (int i = 0; i < model->rowCount(); ++i)
-                if (fromProxy(i))
-                {
-                    glDeleteLists(m_displayLists[fromProxy(i)], 1);
-            
-                    addFuncs(QModelIndex(), 0, model->rowCount()-1);
-                }
-        }
+    if (model && model->rowCount() > 0)
+    {
+        for (int i = 0; i < model->rowCount(); ++i)
+            if (fromProxy(i))
+            {
+                glDeleteLists(m_displayLists[fromProxy(i)], 1);
+        
+                addFuncs(QModelIndex(), 0, model->rowCount()-1);
+            }
+    }
 }
 
 void PlotsView3D::setModel(PlotsProxyModel* f)
@@ -84,7 +85,7 @@ void PlotsView3D::setModel(PlotsProxyModel* f)
     //NOTE Estas signal son del PROXY ... para evitar que este widget reciba signals que no le interesan 
 //     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-    connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+    connect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
     
     //visible off on
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(testvisible(QModelIndex,QModelIndex)));
@@ -131,16 +132,16 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i
 //     if (item)
 //     qDebug() << item->expression().toString() << item->spaceDimension();
 
-    if (!item) return ;// no agregar nada que no cumpla las politicas/filtros del proxy
+    if (!item) return;// no agregar nada que no cumpla las politicas/filtros del proxy
 
 //NOTE si el item no es visible salir ... no generar listas de acceso 
-    if (!item->isVisible()) return ;
+    if (!item->isVisible()) return;
 
-    if (item->spaceDimension() != 3) return ;
+    if (item->spaceDimension() != 3) return;
     
     Surface* surf = static_cast<Surface*>(item);
     
-    if (!surf) return ;
+    if (!surf) return;
 
 //     qDebug() << surf->faces().isEmpty();
     
@@ -192,29 +193,16 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i
 
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
-    //NOTE 
-    //IMPORTANT SIEMPRE HACER UN MAKECURRENT ANTES DE OPERACIONES OPENGL : EL CLIENTE PUEDE TERNER MAS DE UN GLWIDGET A LA VEZ
-    makeCurrent();
-    
-    
-//     Q_ASSERT(!parent.isValid());
-//     Q_ASSERT(start == end); // siempre se agrega un solo item al model
-
-
-    
     PlotItem *item = fromProxy(start);
-//         qDebug() << start << end<< item->spaceDimension();
-    
-//     if (item)
-//     qDebug() << item->expression().toString() << item->spaceDimension();
 
-    if (!item) return ;// no agregar nada que no cumpla las politicas/filtros del proxy
-
-    if (item->spaceDimension() != 3) return ;
+    if (!item || item->spaceDimension() != 3)
+        return;
     
     Surface* surf = static_cast<Surface*>(item);
     
-    if (!surf) return ;
+    //NOTE 
+    //IMPORTANT SIEMPRE HACER UN MAKECURRENT ANTES DE OPERACIONES OPENGL : EL CLIENTE PUEDE TERNER MAS DE UN GLWIDGET A LA VEZ
+    makeCurrent();
     
     surf->update(Box3D());
         
@@ -265,18 +253,14 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 {
     Q_ASSERT(!parent.isValid());
-//     Q_ASSERT(start == end); // siempre se agrega un solo item al model
-    
-    PlotItem *item = fromProxy(start);
-    
-    
+    for(int i=start; i<=end; i++) {
+        PlotItem *item = fromProxy(i);
 
-    //pese a que el item no es valido igual ejecuto el updategl pues seguro alguien emitio la signal removerows y el widget necetia ser actualizado
-    if (!item) {return ;}// no eliminar  nada que no cumpla las politicas/filtros del proxy
-
-    glDeleteLists(m_displayLists[item], 1);
-
-    updateGL();
+        if (item) {
+            glDeleteLists(m_displayLists[item], 1);
+            updateGL();
+        }
+    }
 }
 
 //NOTE
@@ -328,7 +312,7 @@ int PlotsView3D::currentFunction() const
 
 void PlotsView3D::draw()
 {
-    if (!m_model) return ; // si no hay modelo retornar ... //NOTE guard
+    if (!m_model) return; // si no hay modelo retornar ... //NOTE guard
     
     //NOTE si esto pasa entonces quiere decir que el proxy empezado a filtrar otros items
     // y si es asi borro todo lo que esta agregado al la memoria de la tarjeta
@@ -410,26 +394,23 @@ PlotItem* PlotsView3D::fromProxy(int proxy_row) const
 {
     QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
 
-//     qDebug() << "de" << m_model->rowCount();
-
     if (!pi.isValid())
         return 0;
     
-    if (qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row())->spaceDimension() != 3)
+    PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
+    if (plot->spaceDimension() != 3)
         return 0; // evitamos que los proxies de los usuario causen un bug
 
-    if (pi.isValid())
-        return qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(pi.row());
-    
-    return 0;
+    return plot;
 }
 
+//TODO: from source should go
 PlotItem* PlotsView3D::fromSource(int realmodel_row) const
 {
     QModelIndex si = m_model->mapFromSource(m_model->sourceModel()->index(realmodel_row,0));
 
     if (si.isValid())
-        return qobject_cast<PlotsModel *>(m_model->sourceModel())->plot(realmodel_row);
+        return si.data(PlotsModel::PlotRole).value<PlotItem*>();
     
     return 0;
 }

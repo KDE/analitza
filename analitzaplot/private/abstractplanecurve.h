@@ -49,9 +49,6 @@ public:
     virtual QLineF tangent(const QPointF &mousepos) = 0;
 
 protected:
-    AbstractPlaneCurve() {}
-    AbstractPlaneCurve(const AbstractPlaneCurve& other) {}
-    
     bool addPoint(const QPointF& p);
 };
 

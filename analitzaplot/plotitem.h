@@ -46,8 +46,8 @@ public:
     explicit PlotItem(const QString &name, const QColor& col);
     virtual ~PlotItem();
 
-       void setSpace(DictionaryItem *dict) { m_space = dict; }
-         DictionaryItem * space() const { return m_space; }
+    void setSpace(DictionaryItem *dict) { m_space = dict; }
+    DictionaryItem * space() const { return m_space; }
          
     virtual const Analitza::Expression & expression() const = 0;
     virtual Analitza::Variables * variables() const = 0;

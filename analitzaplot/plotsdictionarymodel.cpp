@@ -22,58 +22,42 @@
 #include <KLocale>
 #include <QDomDocument>
 #include "analitzaplot/dictionaryitem.h"
+
+Q_DECLARE_METATYPE(PlotItem*);
+
 PlotsDictionariesModel::PlotsDictionariesModel(QObject* parent)
     : PlotsModel(parent)
 {
+    setHeaderData(2, Qt::Horizontal, i18nc("@title:column", "Collection"), Qt::DisplayRole);
 }
 
 PlotsDictionariesModel::~PlotsDictionariesModel()
-{
-}
-
-QVariant PlotsDictionariesModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if(role==Qt::DisplayRole && orientation==Qt::Horizontal) 
-    {
-        switch(section) 
-        {
-            case 2: return i18nc("@title:column", "Collection");
-        }
-    }
-        
-    return PlotsModel::headerData(section, orientation, role);
-}
+{}
 
 QVariant PlotsDictionariesModel::data(const QModelIndex& index, int role) const
 {
     if(!index.isValid() || index.row()>=rowCount())
         return QVariant();
 
-    int var=index.row();
-
-    PlotItem *tmpcurve = plot(var);
-    
     switch(role)
     {
         case Qt::DisplayRole:
         case Qt::EditRole:
             switch(index.column()) 
             {
-                case 2:
-                {
-                    if (tmpcurve->space())
-                    {
-                        return tmpcurve->space()->title();
-                    }
-                }
+                case 2: {
+                    PlotItem* tmpcurve = index.data(PlotRole).value<PlotItem*>();
+                    DictionaryItem* space = tmpcurve->space();
+                    if (space)
+                        return space->title();
                     break;
+                }  
             }
+            break;
         case Qt::DecorationRole:
-        {
             if(index.column()==2)
                 return QVariant();
-        }
-        break;
+            break;
         case Qt::CheckStateRole:
             return QVariant();
     }
@@ -81,10 +65,7 @@ QVariant PlotsDictionariesModel::data(const QModelIndex& index, int role) const
     return PlotsModel::data(index, role);
 }
 
-int PlotsDictionariesModel::columnCount(const QModelIndex& parent) const
+int PlotsDictionariesModel::columnCount(const QModelIndex& ) const
 {
     return 3;
 }
-
-
-
