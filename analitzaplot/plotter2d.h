@@ -23,7 +23,7 @@
 
 #include "planecurve.h"
 
-class PlotsProxyModel;
+class QAbstractItemModel;
 class QPainter;
 class QPaintDevice;
 
@@ -32,7 +32,7 @@ class QModelIndex;
 class ANALITZAPLOT_EXPORT Plotter2D
 {
     public:
-        Plotter2D(const QSizeF& size, PlotsProxyModel* model = 0);
+        Plotter2D(const QSizeF& size, QAbstractItemModel* model = 0);
         virtual ~Plotter2D();
         
         virtual void drawFunctions(QPaintDevice *qpd);
@@ -57,8 +57,8 @@ class ANALITZAPLOT_EXPORT Plotter2D
         //los index son de PROXY , esto para evitar que el widget escuche signal inecesarias
         void updateFunctions( const QModelIndex & parent, int start, int end );
         
-        void setModel(PlotsProxyModel* f);
-        PlotsProxyModel* model() const { return m_model; }
+        void setModel(QAbstractItemModel* f);
+        QAbstractItemModel* model() const { return m_model; }
         
         /** Sets the graph's viewport to @p v. */
         void setViewport(const QRectF& vp, bool repaint=true);
@@ -98,8 +98,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void drawAxes(QPainter *f, CoordinateSystem a);
         void drawPolarAxes(QPainter *f);
         void drawCartesianAxes(QPainter *f);
-        PlotItem *fromProxy(int proxy_row) const; // get the real item from proxy
-        PlotItem *fromSource(int realmodel_row) const; // get the item filtered by the proxy
+        PlotItem *itemAt(int proxy_row) const; // get the real item from proxy
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
         
@@ -110,7 +109,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QRectF viewport;
         QRectF userViewport;
         QSizeF m_size;
-        PlotsProxyModel* m_model;
+        QAbstractItemModel* m_model;
         
         static const QColor m_axeColor;
         static const QColor m_axe2Color;

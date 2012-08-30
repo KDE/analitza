@@ -42,10 +42,14 @@
 #include <QClipboard>
 #include <KColorUtils>
 
-PlotsView2D::PlotsView2D(QWidget *parent,PlotsProxyModel* fm)
-:QWidget(parent), Plotter2D(size(), fm),
-    valid(false), mode(None),
-    m_framed(false), m_readonly(false), m_selection(0)
+PlotsView2D::PlotsView2D(QWidget *parent, QAbstractItemModel* fm)
+    : QWidget(parent)
+    , Plotter2D(size(), fm)
+    , valid(false)
+    , mode(None)
+    , m_framed(false)
+    , m_readonly(false)
+    , m_selection(0)
 {
     this->setFocusPolicy(Qt::ClickFocus);
     this->setCursor(Qt::CrossCursor);
