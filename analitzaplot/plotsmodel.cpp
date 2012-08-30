@@ -40,8 +40,6 @@ PlotsModel::PlotsModel(QObject* parent)
     : QAbstractListModel(parent)
     , m_itemCanCallModelRemoveItem(true)
 {
-    setHeaderData(0, Qt::Horizontal, i18nc("@title:column", "Name"), Qt::DisplayRole);
-    setHeaderData(1, Qt::Horizontal, i18nc("@title:column", "Plot"), Qt::DisplayRole);
 }
 
 PlotsModel::~PlotsModel()
@@ -58,6 +56,18 @@ Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
         return 0;
 }
 
+QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
+        switch(section) 
+        {
+            case 0: return i18nc("@title:column", "Name");
+            case 1: return i18nc("@title:column", "Plot");
+        }
+    }
+    
+    return QVariant();
+}
 QVariant PlotsModel::data(const QModelIndex & index, int role) const
 {
     if(!index.isValid() || index.row()>=m_items.count())
@@ -193,7 +203,7 @@ void PlotsModel::addPlot(PlotItem* it)
 {
     Q_ASSERT(it);
 
-    beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
+    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
 
     it->setModel(this);
     m_items.append(it);

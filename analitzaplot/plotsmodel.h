@@ -48,6 +48,7 @@ public:
     virtual ~PlotsModel();
 
     virtual Qt::ItemFlags flags(const QModelIndex & index) const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole); // only title and check=visible
     virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;

@@ -66,6 +66,7 @@ QVariant DictionariesModel::data( const QModelIndex &index, int role) const
 
 bool DictionariesModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
+    //TODO edit also description (column/section #2)
     if (index.isValid() && role == Qt::EditRole) 
     {
         m_items[index.row()]->setTitle(value.toString());

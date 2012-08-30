@@ -77,16 +77,22 @@ int main(int argc, char *argv[])
     
 //     checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
 
-    PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
-    proxy->setFilterSpaceDimension(Dim2D);
-    proxy->setSourceModel(model);
+//     PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
+//     proxy->setFilterSpaceDimension(Dim2D);
+//     proxy->setSourceModel(model);
     
     PlotsView2D *view2d = new PlotsView2D(tabs);
     view2d->setSquares(false);
-    view2d->setModel(proxy);
+    view2d->setModel(model);
+
+    Analitza::Variables *v = new Analitza::Variables;
+    
+    PlaneCurve *curve = new PlaneCurve(Analitza::Expression("x->x*x"), "y->", Qt::magenta, v);
+    
+    model->addPlot(curve);
 
     //TODO
-//     model->addPlaneCurve(Analitza::Expression("y->y*y"), "y->", Qt::magenta);
+//     model->addPlaneCurve();
 //     model->addPlaneCurve(Analitza::Expression("x->x*x/12"), "para", Qt::cyan);
 //     model->addPlaneCurve(Analitza::Expression("p->p+2"), "polar simple", Qt::green);
 //     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
@@ -104,19 +110,9 @@ int main(int argc, char *argv[])
 //     END test calls
 
     QTreeView *viewsource = new QTreeView(tabs);
-    viewsource->setRootIsDecorated(false);
-    viewsource->setMouseTracking(true);
-    viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
     viewsource->setModel(model);
     
-    QTreeView *viewproxy = new QTreeView(tabs);
-    viewproxy->setRootIsDecorated(false);
-    viewproxy->setMouseTracking(true);
-    viewproxy->setEditTriggers(QAbstractItemView::AllEditTriggers);
-    viewproxy->setModel(proxy);
-    
     tabs->addWidget(viewsource);
-    tabs->addWidget(viewproxy);
     tabs->addWidget(view2d);
 
     mainWindow->setCentralWidget(central);
