@@ -46,6 +46,7 @@ public:
 private:
     PlotsDictionariesModel *m_model;
     QStringList m_errors;
+    QList<DictionaryItem*> m_collections; // since dictionary is opt for plotitem it need to be deleted
 };
 
 

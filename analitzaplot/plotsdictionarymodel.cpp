@@ -21,7 +21,7 @@
 #include <analitza/expression.h>
 #include <KLocale>
 #include <QDomDocument>
-
+#include "analitzaplot/dictionaryitem.h"
 PlotsDictionariesModel::PlotsDictionariesModel(QObject* parent)
     : PlotsModel(parent)
 {
@@ -40,7 +40,7 @@ QVariant PlotsDictionariesModel::headerData(int section, Qt::Orientation orienta
             case 2: return i18nc("@title:column", "Collection");
         }
     }
-    
+        
     return PlotsModel::headerData(section, orientation, role);
 }
 
@@ -69,8 +69,13 @@ QVariant PlotsDictionariesModel::data(const QModelIndex& index, int role) const
                     break;
             }
         case Qt::DecorationRole:
+        {
             if(index.column()==2)
                 return QVariant();
+        }
+        break;
+        case Qt::CheckStateRole:
+            return QVariant();
     }
 
     return PlotsModel::data(index, role);

@@ -763,7 +763,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
         if (fromProxy(current))
         {
             t=fromProxy(current)->coordinateSystem();
-            coordsysfromplot = true;
+//             coordsysfromplot = true;
         }
         else
             t = Cartesian;

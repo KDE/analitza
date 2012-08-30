@@ -20,7 +20,7 @@
 #include "dictionariesmodel.h"
 
 DictionaryItem::DictionaryItem(Dimension dimension)
-    : m_dimension(dimension), m_inDestructorSoDontDeleteMe(false), m_callingCtrFromMode(true)
+    : m_dimension(dimension), m_inDestructorSoDontDeleteMe(false), m_callingCtrFromMode(true), m_model(0)
 {
     m_dateTime = KDateTime::currentLocalDateTime(); 
     
