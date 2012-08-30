@@ -50,30 +50,25 @@ Dimension FunctionGraphFactory::spaceDimension(const Analitza::ExpressionType& e
     
     Dimension dim;
 
-//     if (ftype.type() == Analitza::ExpressionType::Many)
-//     {
-//         //buscar solo las funciones de variable/parametro real
-//         //evito los casos "(<num,-1> -> <num,-1> -> <num,-1>...)" y solo acepto casos
-//         //"(num -> num -> num...)" 
-//         foreach (const Analitza::ExpressionType &exptype, ftype.alternatives())
-//             if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
-//             {
-//                 ftype = exptype;
-//                 break;
-//             }
-//     }
+    if (ftype.type() == Analitza::ExpressionType::Many)
+    {
+        //the fields of functions are only scalars, so we need match only exps with vars as scalar (real param)
+        //avoid cases "(<num,-1> -> <num,-1> -> <num,-1>...)" and accept only cases like "(num -> num -> num...)" 
+        foreach (const Analitza::ExpressionType &exptype, ftype.alternatives())
+            if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
+            {
+                ftype = exptype;
+                break;
+            }
+    }
 
     if (ftype.type() == Analitza::ExpressionType::Lambda)
     {
         switch (ftype.returnValue().type())
         {
-
-            
             // vector valued function
             case Analitza::ExpressionType::Vector:
             {
-                
-
                 switch (ftype.parameters().last().anyValue())
                 {
                     case 2: dim = Dim2D; break; // param curve
@@ -145,9 +140,6 @@ bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builder
 
 //     Q_ASSERT(expressionTypeFunction().type() == Analitza::ExpressionType::Lambda); DEPRECATED implicit is not a lambda
     
-    
-    
-    
     QString id = QString::number((int)dim)+"|"+
                  QString::number((int)coordinateSystemFunction())+"|"+
                  argumentsFunction().join(",");
@@ -184,12 +176,9 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, Dimension 
     if (expr.isEquation())
         a.setExpression(expr);
 
-    
-    
     QString key;
-    
+    qDebug() << spaceDimension(a.type(), args);
     bool found = false;
-    
     
     for (int i = 0; i < argumentsFunctions.values().size(); ++i)
     {
@@ -205,7 +194,6 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, Dimension 
             break;
         }
     }
-    
 
     if (found)
         return QString::number(spaceDimensions[key])+"|"+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
@@ -233,13 +221,3 @@ QMap< QString, QPair< QStringList, Analitza::ExpressionType > > FunctionGraphFac
 
     return ret;
 }
-
-
-
-
-
-
-
-
-
-

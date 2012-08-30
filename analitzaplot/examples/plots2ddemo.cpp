@@ -68,18 +68,11 @@ int main(int argc, char *argv[])
 
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
 
-//     layout->addWidget(checkvisible);
     layout->addWidget(tabs);
 
     //BEGIN test calls
     
     PlotsModel *model = new PlotsModel(tabs);
-    
-//     checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
-
-//     PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
-//     proxy->setFilterSpaceDimension(Dim2D);
-//     proxy->setSourceModel(model);
     
     PlotsView2D *view2d = new PlotsView2D(tabs);
     view2d->setSquares(false);
@@ -90,7 +83,9 @@ int main(int argc, char *argv[])
     model->addPlot(new PlaneCurve(Analitza::Expression("x->x*x"), "f(x)", Qt::magenta, v));
     model->addPlot(new PlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "khipu", Qt::yellow, v));
     model->addPlot(new PlaneCurve(Analitza::Expression("p->4.7"), "polar circle", Qt::lightGray, v));
-    
+    model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "param2d1", Qt::blue, v));
+    model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t+t, t}"), "param2d2", Qt::black, v));
+
 
     //TODO
 //     model->addPlaneCurve();
@@ -112,6 +107,8 @@ int main(int argc, char *argv[])
 
     QTreeView *viewsource = new QTreeView(tabs);
     viewsource->setModel(model);
+    
+//     view2d->setSelectionModel(viewsource->selectionModel());
     
     tabs->addWidget(viewsource);
     tabs->addWidget(view2d);
