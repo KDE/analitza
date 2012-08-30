@@ -706,7 +706,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     
     drawAxes(&p, t);
 
-    if (!m_model || !m_dirty)
+    if (!m_model || m_dirty)
         return;
 
     for (int k = 0; k < m_model->rowCount(); ++k )

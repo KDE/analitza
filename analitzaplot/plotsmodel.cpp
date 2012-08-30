@@ -68,6 +68,7 @@ QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int ro
     
     return QVariant();
 }
+
 QVariant PlotsModel::data(const QModelIndex & index, int role) const
 {
     if(!index.isValid() || index.row()>=m_items.count())

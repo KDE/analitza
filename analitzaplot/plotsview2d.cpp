@@ -383,7 +383,6 @@ int PlotsView2D::currentFunction() const
 void PlotsView2D::modelChanged()
 {
     //TODO disconnect prev model
-    //NOTE Estas signal son del PROXY ... para evitar que este widget reciba signals que no le interesan 
     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
