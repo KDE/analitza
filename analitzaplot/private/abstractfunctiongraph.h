@@ -98,7 +98,7 @@ protected:
     
     Analitza::Analyzer *analyzer;
     
-    Analitza::Cn* arg(const QString &argname) { return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]); }
+    Analitza::Cn* arg(const QString &argname);
     
 private:
     QString m_internalId;    

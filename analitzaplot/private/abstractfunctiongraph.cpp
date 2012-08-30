@@ -39,15 +39,19 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
     analyzer = v ? new Analitza::Analyzer(v) : new Analitza::Analyzer;
 
     if (e.isEquation())
-    {
         m_e = e.equationToFunction();
-    }
+    else
+        m_e = e;
 
     analyzer->setExpression(m_e);
     analyzer->setExpression(analyzer->dependenciesToLambda());
     
     analyzer->simplify();
     analyzer->flushErrors(); //WARNING: ???WTF
+
+    foreach(const QString& var, e.bvarList()) {
+        m_argumentValues.insert(var, new Analitza::Cn);
+    }
     analyzer->setStack(m_argumentValues.values().toVector());
 }
 
@@ -161,4 +165,9 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, double min, doub
 
     setAutoUpdate(false);
     return true;
+}
+
+Analitza::Cn* AbstractFunctionGraph::arg(const QString& argname)
+{
+	return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]);
 }
