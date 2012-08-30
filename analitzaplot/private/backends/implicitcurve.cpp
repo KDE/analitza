@@ -100,7 +100,7 @@ void FunctionImplicit::update(const QRectF& vp)
     }
 
     setWorld(minx, maxx, miny, maxy);
-//     buildGeometry();
+    buildGeometry();
 
     for (int i = 0;  i < _faces_.size(); ++i)
     {

@@ -50,7 +50,7 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
     analyzer->simplify();
     analyzer->flushErrors(); //WARNING: ???WTF
 
-    foreach(const QString& var, e.bvarList()) {
+    foreach(const QString& var, analyzer->expression().bvarList()) {
         m_argumentValues.insert(var, new Analitza::Cn);
     }
     analyzer->setStack(m_argumentValues.values().toVector());
