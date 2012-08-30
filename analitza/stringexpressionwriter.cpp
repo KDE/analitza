@@ -98,7 +98,7 @@ QString StringExpressionWriter::accept(const Cn* var)
 		return QString::number(var->value(), 'g', 12);
 }
 
-int StringExpressionWriter::weight(const Operator* op, int size)
+int StringExpressionWriter::weight(const Operator* op, int size, int pos)
 {
 	switch(op->operatorType()) {
 		case Operator::lt:
@@ -115,13 +115,13 @@ int StringExpressionWriter::weight(const Operator* op, int size)
 		case Operator::times:
 			return 4;
 		case Operator::divide:
-			return 5;
+			return 5 + (pos>0 ? 0 : 1);
 		case Operator::_and:
 		case Operator::_or:
 		case Operator::_xor:
 			return 6;
 		case Operator::power:
-			return 7;
+			return 7 + (pos>0 ? 0 : 1);
 		default:
 			return 1000;
 	}
@@ -146,6 +146,7 @@ QString StringExpressionWriter::accept ( const Analitza::Apply* a )
 	else if(a->domain())
 		bounds += '@'+a->domain()->visit(this);
 	
+	int i = 0;
 	foreach(Object* o, a->m_params) {
 		Object::ObjectType type=o->type();
 		switch(type) {
@@ -161,7 +162,7 @@ QString StringExpressionWriter::accept ( const Analitza::Apply* a )
 				if(s_operators.contains(op.operatorType()) && !c->isUnary()) {
 					Operator child_op = c->firstOperator();
 					
-					if(child_op.operatorType() && weight(&op, c->countValues())>weight(&child_op, c->countValues()))
+					if(child_op.operatorType() && weight(&op, c->countValues(), -1)>weight(&child_op, c->countValues(), i))
 						s=QString("(%1)").arg(s);
 				}
 				ret << s;
@@ -170,6 +171,7 @@ QString StringExpressionWriter::accept ( const Analitza::Apply* a )
 				ret << o->visit(this);
 				break;
 		}
+		++i;
 	}
 	
 	bool func=op.operatorType()==Operator::function;

@@ -235,6 +235,7 @@ void TypeCheckTest::testUncorrection_data()
 	QTest::newRow("diff types") << "list { 2,2 }+vector { 2 }";
 	QTest::newRow("wrong call") << "(x->x+x)(list{3})";
 	QTest::newRow("wrong call2") << "fplus(list{3})";
+	QTest::newRow("wrong call3") << "(x(x^2))^2";
 	QTest::newRow("wrong bounds") << "sum(x : x=1..vector{3,3})";
 	QTest::newRow("bounds2") << "sum(x:x@2)";
 	QTest::newRow("number call") << "number(3)";

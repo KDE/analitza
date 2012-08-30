@@ -105,6 +105,7 @@ QString HtmlExpressionWriter::accept ( const Analitza::Apply* a )
 	else if(a->domain())
 		bounds += oper('@')+a->domain()->visit(this);
 	
+	int i = 0;
 	foreach(Object* o, a->m_params) {
 		Object::ObjectType type=o->type();
 		switch(type) {
@@ -121,7 +122,7 @@ QString HtmlExpressionWriter::accept ( const Analitza::Apply* a )
 					Operator child_op = c->firstOperator();
 					
 					if(child_op.operatorType() && 
-							StringExpressionWriter::weight(&op, c->countValues())>StringExpressionWriter::weight(&child_op, c->countValues()))
+							StringExpressionWriter::weight(&op, c->countValues(), -1)>StringExpressionWriter::weight(&child_op, c->countValues(), i))
 						s=oper('(')+s+oper(')');
 				}
 				ret << s;
@@ -130,6 +131,7 @@ QString HtmlExpressionWriter::accept ( const Analitza::Apply* a )
 				ret << o->visit(this);
 				break;
 		}
+		++i;
 	}
 	
 	bool func=op.operatorType()==Operator::function;

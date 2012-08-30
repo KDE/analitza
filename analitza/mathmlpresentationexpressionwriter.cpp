@@ -25,6 +25,7 @@
 #include "list.h"
 #include "variable.h"
 #include "apply.h"
+#include <analitza/analitzautils.h>
 
 using namespace Analitza;
 
@@ -93,7 +94,13 @@ QString quotient(const Apply* c, MathMLPresentationExpressionWriter* w)
 {	return divide(c, w); }
 
 QString root(const Apply* c, MathMLPresentationExpressionWriter* w)
-{	return "<mroot>"+convertElements<Apply::const_iterator>(c->firstValue(), c->constEnd(), w).join(QString())+"</mroot>"; }
+{
+	Cn two(2);
+	if(AnalitzaUtils::equalTree(c->values()[1], &two))
+		return "<msqrt>"+(*c->firstValue())->visit(w)+"</msqrt>";
+	else
+		return "<mroot>"+convertElements<Apply::const_iterator>(c->firstValue(), c->constEnd(), w).join(QString())+"</mroot>";
+}
 
 QString diff(const Apply* c, MathMLPresentationExpressionWriter* w)
 {

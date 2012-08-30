@@ -219,13 +219,14 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 						QMap<QString, ExpressionType> assumptions=first.assumptions();
 						bool valid=ExpressionType::assumptionsMerge(assumptions, second.assumptions());
 						
-// 						qDebug() << "fifuuuuuuu" << first << (*(it-1))->toString() << 
-// 													second << (*it)->toString() << assumptions << valid;
+// 						qDebug() << "fifuuuuuuu" << first << (it-1)->toString() << 
+// 													second << it->toString() << assumptions << valid;
 						
+						valid &= !first.isError() && !second.isError();
 						valid &= first .canReduceTo(opt.parameters()[0].starsToType(starToParam));
 						valid &= second.canReduceTo(opt.parameters()[1].starsToType(starToParam));
 						
-// 						qDebug() << "POPOPO" << (*(it-1))->toString() << (*(it))->toString() << valid << first << second << starToParam;
+// 						qDebug() << "POPOPO" << (it-1)->toString() << it->toString() << valid << first << second << starToParam;
 						if(valid) {
 							ExpressionType toadd=opt.parameters().last();
 							toadd.addAssumptions(assumptions);
@@ -467,14 +468,9 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 				
 				exps += current;
 			}
-// 			qDebug() << "---------" << exps << returned;
 			
-			if(returned.type()==ExpressionType::Any || returned.isError()) {
-				ExpressionType ret;
-				if(returned.isError())
-					ret=ExpressionType(ExpressionType::Error);
-				else
-					ret=ExpressionType(ExpressionType::Any, m_stars++);
+			if(returned.type()==ExpressionType::Any) {
+				ExpressionType ret=ExpressionType(ExpressionType::Any, m_stars++);
 // 				qDebug() << "fffffffffffffff" << m_stars;
 				ret.addAssumptions(assumptions);
 				
@@ -525,6 +521,8 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 					current=ExpressionType(ExpressionType::Error);
 				} else
 					current=ret2;
+			} else if(returned.isError()) {
+				current=ExpressionType(ExpressionType::Error);
 			} else {
 				ExpressionType ret(ExpressionType::Many), signature(returned);
 				

@@ -531,10 +531,7 @@ bool Expression::isCorrect() const
 
 QStringList Expression::bvarList() const
 {
-// 	Q_ASSERT(d->m_tree);
-    if (!d->m_tree)
-        return QStringList();
-    
+	Q_ASSERT(d->m_tree);
 	const Object *o = d->m_tree;
 	
 	if(o->isContainer() && static_cast<const Container*>(o)->containerType()==Container::math) {
@@ -615,13 +612,13 @@ Expression Expression::equationToFunction() const
 			if(c->m_params.first()->isApply()) {
 				Apply *c1 = (Apply*) c->m_params.first();
 				if(c1->firstOperator().operatorType()==Operator::eq) {
-					Container* nc = new Container(Container::math);
+					Container* c = new Container(Container::math);
 					Apply* a = new Apply;
 					a->appendBranch(new Operator(Operator::minus));
 					a->appendBranch(c1->at(0)->copy());
 					a->appendBranch(c1->at(1)->copy());
-					nc->appendBranch(a);
-					return Expression(nc);
+					c->appendBranch(a);
+					return Expression(c);
 				}
 			}
 		}

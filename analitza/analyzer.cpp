@@ -1745,7 +1745,7 @@ Expression Analyzer::derivative(const QString& var)
 
 Expression Analyzer::dependenciesToLambda() const
 {
-	if(m_hasdeps) {
+	if(m_hasdeps && m_exp.tree()) {
 		QStringList deps=dependencies(m_exp.tree(), m_vars->keys());
 		Container* cc=new Container(Container::lambda);
 		foreach(const QString& dep, deps) {

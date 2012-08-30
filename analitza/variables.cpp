@@ -60,9 +60,16 @@ void Variables::modify(const QString & name, const Expression & e)
 
 Cn* Variables::modify(const QString & name, const double & d)
 {
-	Cn* val=new Cn(d);
-	modify(name, val);
-	return val;
+	iterator it = find(name);
+	if(it==end() || (*it)->type()!=Object::value) {
+		Cn* val=new Cn(d);
+		insert(name, val);
+		return val;
+	} else {
+		Cn* val = static_cast<Cn*>(*it);
+		val->setValue(d);
+		return val;
+	}
 }
 
 void Variables::modify(const QString& name, const Object* o)
