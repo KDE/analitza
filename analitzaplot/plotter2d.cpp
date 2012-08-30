@@ -175,15 +175,11 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
     int i = 1;
 
     QPointF p;
-    // tick labels color = black
     QPen tickpen;
-    //NOTE GSOC 2012 accessibility code :)
     tickpen.setColor(QPalette().text().color());
     tickpen.setStyle(Qt::SolidLine);
 
-//     QFont serifFont("Times", 10, QFont::Bold);
-    QFont serifFont = painter->font();
-    w->setFont(serifFont);
+    w->setFont(painter->font());
 
     if (m_showHTicks)
     {
@@ -192,29 +188,22 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
             p = toWidget(QPointF(x, 0.));
 
             w->setPen(ceixos);
-
             w->setPen(tickpen);
 
-            if (!isSymbol || !symbolFormat)
-            {
+            if (!isSymbol || !symbolFormat) {
                 w->drawText(p.x() - fm.width(QString::number(x, 'f', decimalPrecision))/2, p.y()+20, QString::number(x, 'f', decimalPrecision));
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = x <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
 
-                continue;
-            }
+                w->drawText(p.x(), p.y()+20, QString::number(sign*val*numerator)+symbol);
 
-            int iCorrected = i*correctScale;
-
-            QString sign("");
-            if (x <= 0.) sign = QString("-");
-
-            int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-            w->drawText(p.x(), p.y()+20, sign+QString::number(val*numerator)+symbol);
-
-            if ((denominator != 1) && (iCorrected % denominator != 0))
-            {
-                w->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
-                w->drawText(p.x()-10+fm.width(symbol+sign), p.y()+20+fm.height(), denStr);
+                if (denominator != 1 && (iCorrected % denominator != 0))
+                {
+                    w->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
+                    w->drawText(p.x()-10+fm.width(symbol), p.y()+20+fm.height(), denStr);
+                }
             }
         }
 
@@ -225,30 +214,22 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
             p = toWidget(QPointF(x, 0.));
 
             w->setPen(ceixos);
-
-
             w->setPen(tickpen);
 
-            if (!isSymbol || !symbolFormat)
-            {
+            if (!isSymbol || !symbolFormat) {
                 w->drawText(p.x() - fm.width(QString::number(x, 'f', decimalPrecision))/2, p.y()+20, QString::number(x, 'f', decimalPrecision));
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = x <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
 
-                continue;
-            }
+                w->drawText(p.x(), p.y()+20, QString::number(sign*val*numerator)+symbol);
 
-            int iCorrected = i*correctScale;
-
-            QString sign("");
-            if (x <= 0.) sign = QString("-");
-
-            int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-            w->drawText(p.x(), p.y()+20, sign+QString::number(val*numerator)+symbol);
-
-            if ((denominator != 1) && (iCorrected % denominator != 0))
-            {
-                w->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
-                w->drawText(p.x()-10+fm.width(symbol+sign), p.y()+20+fm.height(), denStr);
+                if ((denominator != 1) && (iCorrected % denominator != 0))
+                {
+                    w->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
+                    w->drawText(p.x()-10+fm.width(symbol), p.y()+20+fm.height(), denStr);
+                }
             }
         }
 
@@ -264,34 +245,27 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
         for(double y = -inc; y > yini; y -= inc, i+=1)
         {
             p = toWidget(QPointF(0., y));
-
             w->setPen(ceixos);
-
             w->setPen(tickpen);
 
-            if (!isSymbol || !symbolFormat)
-            {
+            if (!isSymbol || !symbolFormat) {
                 w->drawText(-20+p.x() - fm.width(QString::number(y, 'f', decimalPrecision))/2, p.y()+20, QString::number(y, 'f', decimalPrecision));
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = y <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
 
-                continue;
-            }
+                QString text = QString::number(sign*val*numerator)+symbol;
+                qreal correctxpos = fm.width(text)+6;
 
-            int iCorrected = i*correctScale;
+                w->drawText(-correctxpos + p.x(), p.y()+5, text);
 
-            QString sign("");
-            if (y <= 0.) sign = QString("-");
-
-            int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-            qreal correctxpos = fm.width(sign+QString::number(val*numerator)+symbol)+6;
-
-            w->drawText(-correctxpos + p.x(), p.y()+5, sign+QString::number(val*numerator)+symbol);
-
-            if ((denominator != 1) && (iCorrected % denominator != 0))
-            {
-                w->drawLine(-correctxpos + p.x()-5, p.y()+5,
-                            -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
-                w->drawText(-correctxpos + p.x()-10+fm.width(symbol+sign), p.y()+5+fm.height(), denStr);
+                if ((denominator != 1) && (iCorrected % denominator != 0))
+                {
+                    w->drawLine(-correctxpos + p.x()-5, p.y()+5,
+                                -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
+                    w->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
+                }
             }
 
         }
@@ -301,37 +275,29 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
         for(double y = inc; y < yend; y += inc, i+=1)
         {
             p = toWidget(QPointF(0., y));
-
             w->setPen(ceixos);
-
-
             w->setPen(tickpen);
 
             if (!isSymbol || !symbolFormat)
             {
                 w->drawText(-20+p.x() - fm.width(QString::number(y, 'f', decimalPrecision))/2, p.y()+20, QString::number(y, 'f', decimalPrecision));
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = y <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
 
-                continue;
+                QString text = QString::number(sign*val*numerator)+symbol;
+                qreal correctxpos = fm.width(text)+6;
+
+                w->drawText(-correctxpos + p.x(), p.y()+5, text);
+
+                if ((denominator != 1) && (iCorrected % denominator != 0))
+                {
+                    w->drawLine(-correctxpos + p.x()-5, p.y()+5,
+                                -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
+                    w->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
+                }
             }
-
-            int iCorrected = i*correctScale;
-
-            QString sign("");
-            if (y <= 0.) sign = QString("-");
-
-            int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-            qreal correctxpos = fm.width(sign+QString::number(val*numerator)+symbol)+6;
-
-            w->drawText(-correctxpos + p.x(), p.y()+5, sign+QString::number(val*numerator)+symbol);
-
-            if ((denominator != 1) && (iCorrected % denominator != 0))
-            {
-                w->drawLine(-correctxpos + p.x()-5, p.y()+5,
-                            -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
-                w->drawText(-correctxpos + p.x()-10+fm.width(symbol+sign), p.y()+5+fm.height(), denStr);
-            }
-
         }
     }
 
@@ -423,23 +389,21 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
     QString symbol =m_tickScaleSymbol;
     qreal symbolValue = m_tickScaleSymbolValue;
-    bool symbolFormat = m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
     int numerator = m_tickScaleNumerator;
     int denominator =m_tickScaleDenominator;
 
     // prcesss
-    qreal coef = (qreal)(numerator);
-    coef /= (qreal)(denominator);
+    qreal coef = qreal(numerator);
+    coef /= qreal(denominator);
     bool isSymbol = !symbol.isEmpty();
-    symbolFormat = isSymbol? symbolFormat : false; // force false if isSymbol is false too
-    qreal tickValue = isSymbol? coef*symbolValue : coef;
+    bool symbolFormat = isSymbol && m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
 
     QString numStr = QString::number(numerator);
     QString denStr = QString::number(denominator);
 
     //END params of algotihm
 
-    qreal inc = tickValue;
+    qreal inc = isSymbol? coef*symbolValue : coef;
 
     int decimalPrecision = denominator == 1 && !isSymbol? 0 : denominator == 2? 1 : 2;
 
@@ -473,7 +437,6 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     tickpen.setColor(QPalette().text().color());
     tickpen.setStyle(Qt::SolidLine);
 
-//     QFont serifFont("Times", 10, QFont::Bold);
     QFont serifFont = painter->font();
     finestra->setFont(serifFont);
 
@@ -482,8 +445,6 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     int i = 1;
 
     QFontMetrics fm(finestra->font());
-
-    //qDebug() << "LA ESCALA ESSSS -> " << inc << " val sim " << symbolValue << " coef " << coef << " final " << coef*symbolValue;
 
     for(double x = -inc; x > xini; x -= inc, i+=1)
     {
@@ -500,26 +461,20 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
         {
             finestra->setPen(tickpen);
 
-            if (!isSymbol || !symbolFormat)
-            {
+            if (!isSymbol || !symbolFormat) {
                 finestra->drawText(p.x() - fm.width(QString::number(x, 'f', decimalPrecision))/2, p.y()+20, QString::number(x, 'f', decimalPrecision));
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = x <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
 
-                continue;
-            }
+                finestra->drawText(p.x(), p.y()+20, QString::number(sign*val*numerator)+symbol);
 
-            int iCorrected = i*correctScale;
-
-            QString sign("");
-            if (x <= 0.) sign = QString("-");
-
-            int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-            finestra->drawText(p.x(), p.y()+20, sign+QString::number(val*numerator)+symbol);
-
-            if ((denominator != 1) && (iCorrected % denominator != 0))
-            {
-                finestra->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
-                finestra->drawText(p.x()-10+fm.width(symbol+sign), p.y()+20+fm.height(), denStr);
+                if ((denominator != 1) && (iCorrected % denominator != 0))
+                {
+                    finestra->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
+                    finestra->drawText(p.x()-10+fm.width(symbol), p.y()+20+fm.height(), denStr);
+                }
             }
         }
     }
@@ -544,23 +499,18 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
             if (!isSymbol || !symbolFormat)
             {
                 finestra->drawText(p.x() - fm.width(QString::number(x, 'f', decimalPrecision))/2, p.y()+20, QString::number(x, 'f', decimalPrecision));
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = x <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
 
-                continue;
-            }
+                finestra->drawText(p.x(), p.y()+20, QString::number(sign*val*numerator)+symbol);
 
-            int iCorrected = i*correctScale;
-
-            QString sign("");
-            if (x <= 0.) sign = QString("-");
-
-            int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-            finestra->drawText(p.x(), p.y()+20, sign+QString::number(val*numerator)+symbol);
-
-            if ((denominator != 1) && (iCorrected % denominator != 0))
-            {
-                finestra->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
-                finestra->drawText(p.x()-10+fm.width(symbol+sign), p.y()+20+fm.height(), denStr);
+                if ((denominator != 1) && (iCorrected % denominator != 0))
+                {
+                    finestra->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
+                    finestra->drawText(p.x()-10+fm.width(symbol), p.y()+20+fm.height(), denStr);
+                }
             }
         }
     }
@@ -586,29 +536,24 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
         {
             finestra->setPen(tickpen);
 
-            if (!isSymbol || !symbolFormat)
-            {
+            if (!isSymbol || !symbolFormat) {
                 finestra->drawText(-20+p.x() - fm.width(QString::number(y, 'f', decimalPrecision))/2, p.y()+20, QString::number(y, 'f', decimalPrecision));
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = y <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
 
-                continue;
-            }
+                QString text = QString::number(sign*val*numerator)+symbol;
+                qreal correctxpos = fm.width(text)+6;
 
-            int iCorrected = i*correctScale;
+                finestra->drawText(-correctxpos + p.x(), p.y()+5, text);
 
-            QString sign("");
-            if (y <= 0.) sign = QString("-");
-
-            int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-            qreal correctxpos = fm.width(sign+QString::number(val*numerator)+symbol)+6;
-
-            finestra->drawText(-correctxpos + p.x(), p.y()+5, sign+QString::number(val*numerator)+symbol);
-
-            if ((denominator != 1) && (iCorrected % denominator != 0))
-            {
-                finestra->drawLine(-correctxpos + p.x()-5, p.y()+5,
-                                   -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
-                finestra->drawText(-correctxpos + p.x()-10+fm.width(symbol+sign), p.y()+5+fm.height(), denStr);
+                if ((denominator != 1) && (iCorrected % denominator != 0))
+                {
+                    finestra->drawLine(-correctxpos + p.x()-5, p.y()+5,
+                                    -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
+                    finestra->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
+                }
             }
         }
     }
@@ -633,26 +578,21 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
             if (!isSymbol || !symbolFormat)
             {
                 finestra->drawText(-20+p.x() - fm.width(QString::number(y, 'f', decimalPrecision))/2, p.y()+20, QString::number(y, 'f', decimalPrecision));
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = y <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
 
-                continue;
-            }
+                QString text = QString::number(sign*val*numerator)+symbol;
+                qreal correctxpos = fm.width(text)+6;
+                finestra->drawText(-correctxpos + p.x(), p.y()+5, text);
 
-            int iCorrected = i*correctScale;
-
-            QString sign("");
-            if (y <= 0.) sign = QString("-");
-
-            int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-            qreal correctxpos = fm.width(sign+QString::number(val*numerator)+symbol)+6;
-
-            finestra->drawText(-correctxpos + p.x(), p.y()+5, sign+QString::number(val*numerator)+symbol);
-
-            if ((denominator != 1) && (iCorrected % denominator != 0))
-            {
-                finestra->drawLine(-correctxpos + p.x()-5, p.y()+5,
-                                   -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
-                finestra->drawText(-correctxpos + p.x()-10+fm.width(symbol+sign), p.y()+5+fm.height(), denStr);
+                if ((denominator != 1) && (iCorrected % denominator != 0))
+                {
+                    finestra->drawLine(-correctxpos + p.x()-5, p.y()+5,
+                                    -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
+                    finestra->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
+                }
             }
         }
     }
