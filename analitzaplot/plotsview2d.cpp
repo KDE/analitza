@@ -390,13 +390,10 @@ void PlotsView2D::modelChanged()
 
 void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)
 {
-    Q_ASSERT(selection);
-//     Q_ASSERT(selection->model() == model());
-
-    //El item selection es del proxy
-    Q_ASSERT(qobject_cast< const PlotsProxyModel* >(selection->model()));
-
+    //TODO  disconnect old selection
     
+    Q_ASSERT(selection->model() == model());
+
     m_selection = selection;
     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }

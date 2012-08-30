@@ -173,7 +173,7 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, Dimension 
     if (expr.isEquation())
         a.setExpression(expr);
 
-    qDebug() << spaceDimension(a.type(), args);
+//     qDebug() << spaceDimension(a.type(), args);
     
     bool found = false;
     

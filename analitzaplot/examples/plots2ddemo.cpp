@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
     QTreeView *viewsource = new QTreeView(tabs);
     viewsource->setModel(model);
     
-//     view2d->setSelectionModel(viewsource->selectionModel());
+    view2d->setSelectionModel(viewsource->selectionModel());
     
     tabs->addWidget(viewsource);
     tabs->addWidget(view2d);
