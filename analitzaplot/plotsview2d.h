@@ -104,6 +104,18 @@ public slots:
     
     void snapshotToClipboard();
     
+    //exposed from plotter2d as slots...
+    void setXAxisLabel(const QString &label) { Plotter2D::setXAxisLabel(label); }
+    void setYAxisLabel(const QString &label) { Plotter2D::setYAxisLabel(label); }
+    void updateGridColor(const QColor &color) { Plotter2D::updateGridColor(color); }
+    void updateTickScale(QString s, qreal v, int n, int d) { Plotter2D::updateTickScale(s,v,n,d); }
+    void setUseTickSymbols(bool flag) { Plotter2D::setUseTickSymbols(flag); }
+    void showHTicks(bool flag) { Plotter2D::showHTicks(flag); }
+    void showVTicks(bool flag) { Plotter2D::showVTicks(flag); }
+    void showHAxes(bool flag) { Plotter2D::showHAxes(flag); }
+    void showVAxes(bool flag) { Plotter2D::showVAxes(flag); }
+    void useCoorSys(int i) { Plotter2D::useCoorSys(i); }
+    
 private slots:
     void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
     void updateFuncs(const QModelIndex& start, const QModelIndex& end); //update al setdata 
