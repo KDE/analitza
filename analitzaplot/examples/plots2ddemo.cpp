@@ -17,13 +17,10 @@
  *************************************************************************************/
 
 #include <QMainWindow>
-#include <QStringListModel>
-#include <QAction>
 #include <qtreeview.h>
 #include <qsplitter.h>
 #include <QStatusBar>
-#include <qboxlayout.h>
-#include <QCheckBox>
+#include <QVBoxLayout>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
@@ -31,13 +28,7 @@
 
 #include "analitzaplot/planecurve.h"
 #include "analitzaplot/plotsview2d.h"
-#include <analitzaplot/plotsmodel.h>
-#include <surface.h>
-#include <plotsproxymodel.h>
-#include <dictionariesmodel.h>
-#include <plotsdictionarymodel.h>
-#include <analitza/variables.h>
-#include <KSelectionProxyModel>
+#include "analitzaplot/plotsmodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -61,10 +52,10 @@ int main(int argc, char *argv[])
     QWidget *central = new QWidget(mainWindow);
     QVBoxLayout *layout = new QVBoxLayout(central);
     
-    QCheckBox *checkvisible = new QCheckBox(central);
-    checkvisible->setText("Allow to the model can change the visibility of items");
-    checkvisible->setCheckState(Qt::Checked);
-    checkvisible->setTristate(false);
+//     QCheckBox *checkvisible = new QCheckBox(central);
+//     checkvisible->setText("Allow to the model can change the visibility of items");
+//     checkvisible->setCheckState(Qt::Checked);
+//     checkvisible->setTristate(false);
 
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
 
@@ -78,15 +69,12 @@ int main(int argc, char *argv[])
     view2d->setSquares(false);
     view2d->setModel(model);
 
-    Analitza::Variables *v = new Analitza::Variables;
-    
-    model->addPlot(new PlaneCurve(Analitza::Expression("x->x*x"), "f(x)", Qt::magenta, v));
-    model->addPlot(new PlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "khipu", Qt::yellow, v));
-    model->addPlot(new PlaneCurve(Analitza::Expression("p->4.7"), "polar circle", Qt::lightGray, v));
-    model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "param2d1", Qt::blue, v));
-    model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t+t, t}"), "param2d2", Qt::black, v));
-    model->addPlot(new PlaneCurve(Analitza::Expression("x**2+y**4-1=x*y"), "implicit2", Qt::cyan, v));
-
+    model->addPlot(new PlaneCurve(Analitza::Expression("x->x*x"), "f(x)", Qt::magenta));
+    model->addPlot(new PlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "khipu", Qt::yellow));
+    model->addPlot(new PlaneCurve(Analitza::Expression("p->4.7"), "polar circle", Qt::lightGray));
+    model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "param2d1", Qt::blue));
+    model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t+t, t}"), "param2d2", Qt::black));
+    model->addPlot(new PlaneCurve(Analitza::Expression("x**2+y**4-1=x*y"), "implicit2", Qt::cyan));
 
     //TODO
 //     model->addPlaneCurve();
@@ -113,6 +101,11 @@ int main(int argc, char *argv[])
     
     tabs->addWidget(viewsource);
     tabs->addWidget(view2d);
+
+    PlotsModel *model2 = new PlotsModel(tabs);
+    view2d->setModel(model2);
+    
+    view2d->setModel(model);
 
     mainWindow->setCentralWidget(central);
 

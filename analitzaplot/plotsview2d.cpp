@@ -49,6 +49,7 @@ PlotsView2D::PlotsView2D(QWidget *parent, QAbstractItemModel* fm)
     , m_framed(false)
     , m_readonly(false)
     , m_selection(0)
+    , m_currentModel(0)
 {
     this->setFocusPolicy(Qt::ClickFocus);
     this->setCursor(Qt::CrossCursor);
@@ -381,18 +382,37 @@ int PlotsView2D::currentFunction() const
 
 void PlotsView2D::modelChanged()
 {
-    //TODO disconnect prev model
+    if (m_currentModel == model())
+        return ;
+    
+    if (m_currentModel)
+    {
+        disconnect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+        disconnect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+        disconnect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+        
+        //WARNING should we disconnect selection too? if so then must be documented
+//         if (m_selection)
+//             disconnect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(forceRepaint()));
+// 
+//         m_selection = 0;
+    }
+
     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+    
+    m_currentModel = model();
 }
 
 void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)
 {
-    //TODO  disconnect old selection
-
     Q_ASSERT(selection->model() == model());
 
+    if (m_selection)
+        disconnect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(forceRepaint()));
+
     m_selection = selection;
-    connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
+
+    connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(forceRepaint()));
 }

@@ -159,6 +159,7 @@ private:
     bool m_readonly;
     QString m_posText;
     QItemSelectionModel* m_selection;
+    QAbstractItemModel *m_currentModel; // use this pointer to disconnect signals when change the model
 };
 
 #endif
