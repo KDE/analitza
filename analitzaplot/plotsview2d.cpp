@@ -35,7 +35,6 @@
 #include <analitza/analyzer.h>
 #include "plotter2d.h"
 #include "plotsmodel.h"
-#include "plotsproxymodel.h"
 #include <cmath>
 #include <QtGui/qitemselectionmodel.h>
 #include <qapplication.h>

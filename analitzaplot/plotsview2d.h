@@ -64,8 +64,6 @@ public:
     /** Destructor. */
     ~PlotsView2D();
     
-//     setmodel
-    
     QSize sizeHint() const { return QSize(100, 100); }
     
     /** Saves the graphs to a file located at @p path. */
@@ -74,7 +72,6 @@ public:
     /** Returns the viewing port */
     QRectF definedViewport() const;
     
-    // selectionmodel from the the PROXY
     void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:

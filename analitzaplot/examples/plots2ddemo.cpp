@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
     model->addPlot(new PlaneCurve(Analitza::Expression("p->4.7"), "polar circle", Qt::lightGray, v));
     model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "param2d1", Qt::blue, v));
     model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t+t, t}"), "param2d2", Qt::black, v));
+    model->addPlot(new PlaneCurve(Analitza::Expression("x**2+y**4-1=x*y"), "implicit2", Qt::cyan, v));
 
 
     //TODO
