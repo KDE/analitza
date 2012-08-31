@@ -25,10 +25,6 @@
 
 #include "analitza/localize.h"
 
-static QPointF polarToCartesian(double radial, double polar)
-{
-    return QPointF(radial*cos(polar), radial*sin(polar)); 
-}
 
 class FunctionPolar : public AbstractPlaneCurve
 {

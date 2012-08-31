@@ -17,9 +17,11 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #ifndef MATHUTILS_H
 #define MATHUTILS_H
+
+#include <QLineF>
+#include <QVector3D>
 
 enum Dimension {
     Dim1D = 1,
@@ -43,8 +45,16 @@ enum CartesianAxis {
 
 enum PolarAxis { R = 1, p };
 
+QPointF polarToCartesian(double radial, double polar);
+
+QVector3D cylindricalToCartesian(double radial, double polar, double height);
+
+QVector3D sphericalToCartesian(double radial, double azimuth, double polar);
+
 bool isSimilar(double a, double b, double diff = .0000001);
 
 bool traverse(double p1, double p2, double next);
+
+QLineF slopeToLine(const double &der);
 
 #endif

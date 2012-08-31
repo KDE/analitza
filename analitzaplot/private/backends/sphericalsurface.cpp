@@ -23,11 +23,6 @@
 #include <analitza/value.h>
 #include <analitza/vector.h>
 
-static QVector3D sphericalToCartesian(double radial, double azimuth, double polar)
-{
-    return QVector3D(radial*cos(azimuth)*sin(polar), radial*sin(azimuth)*sin(polar), radial*cos(polar));
-}
-
 class Fap : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:

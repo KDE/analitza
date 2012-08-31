@@ -1,4 +1,5 @@
 /*************************************************************************************
+ *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   * 
  *  This program is free software; you can redistribute it and/or                    *
@@ -17,7 +18,23 @@
  *************************************************************************************/
 
 #include "mathutils.h"
+
 #include <cmath>
+
+QPointF polarToCartesian(double radial, double polar)
+{
+    return QPointF(radial*cos(polar), radial*sin(polar)); 
+}
+
+QVector3D cylindricalToCartesian(double radial, double polar, double height)
+{
+    return QVector3D(radial*cos(polar), radial*sin(polar), height);
+}
+
+QVector3D sphericalToCartesian(double radial, double azimuth, double polar)
+{
+    return QVector3D(radial*cos(azimuth)*sin(polar), radial*sin(azimuth)*sin(polar), radial*cos(polar));
+}
 
 bool traverse(double p1, double p2, double next)
 {
@@ -33,3 +50,17 @@ bool isSimilar(double a, double b, double diff)
 {
     return std::fabs(a-b) < diff;
 }
+
+QLineF slopeToLine(const double &der)
+{
+    double arcder = atan(der);
+    const double len=6.*der;
+    QPointF from, to;
+    from.setX(len*cos(arcder));
+    from.setY(len*sin(arcder));
+
+    to.setX(-len*cos(arcder));
+    to.setY(-len*sin(arcder));
+    return QLineF(from, to);
+}
+

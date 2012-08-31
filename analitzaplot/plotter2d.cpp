@@ -22,7 +22,6 @@
 #include "planecurve.h"
 
 #include "plotsmodel.h"
-#include "plotsproxymodel.h"
 
 #include <QPalette>
 #include <QPen>
@@ -42,19 +41,6 @@ Q_DECLARE_METATYPE(PlotItem*);
 using namespace std;
 
 // #define DEBUG_GRAPH
-
-static QLineF slopeToLine(const double &der)
-{
-    double arcder = atan(der);
-    const double len=6.*der;
-    QPointF from, to;
-    from.setX(len*cos(arcder));
-    from.setY(len*sin(arcder));
-
-    to.setX(-len*cos(arcder));
-    to.setY(-len*sin(arcder));
-    return QLineF(from, to);
-}
 
 QColor const Plotter2D::m_axeColor(100,100,255);
 QColor const Plotter2D::m_axe2Color(235,235,235);
@@ -232,10 +218,6 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
                 }
             }
         }
-
-        //    //END Draw ticks X
-
-        //    //BEGIN Draw ticks Y
     }
 
     if (m_showVTicks)
@@ -515,9 +497,9 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
         }
     }
 
-//    //END Draw ticks X
+   //END Draw ticks X
 
-//    //BEGIN Draw ticks Y
+   //BEGIN Draw ticks Y
 
     i = 1;
 
@@ -597,7 +579,7 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
         }
     }
 
-//    //END Draw ticks Y
+   //END Draw ticks Y
 
     // restore values
     finestra->setFont(natfont);
@@ -607,8 +589,6 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
     QPointF Xright(this->width(), center.y());
     QPointF Ytop(center.x(), 0.);
-
-
 
     if (m_showHAxes)
     {
@@ -663,9 +643,9 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     finestra->setPen(ceixos);
 }
 
-PlotItem* Plotter2D::itemAt(int proxy_row) const
+PlotItem* Plotter2D::itemAt(int row) const
 {
-    QModelIndex pi = m_model->index(proxy_row, 0);
+    QModelIndex pi = m_model->index(row, 0);
 
     if (!pi.isValid())
         return 0;

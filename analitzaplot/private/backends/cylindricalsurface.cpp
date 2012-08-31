@@ -25,10 +25,6 @@
 
 //TODO macros para las prop e abajo
 
-static QVector3D cylindricalToCartesian(double radial, double polar, double height)
-{
-    return QVector3D(radial*cos(polar), radial*sin(polar), height);
-}
 
 class Frp : public AbstractSurface/*, static class? better macros FooClass*/
 {
@@ -101,7 +97,6 @@ Frp::Frp(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface
 {
 
 }
-
 
 QVector3D Frp::fromParametricArgs(double r, double p)
 {

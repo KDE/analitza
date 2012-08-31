@@ -21,7 +21,7 @@
 #ifndef FUNCTIONSPAINTER_H
 #define FUNCTIONSPAINTER_H
 
-#include "planecurve.h"
+#include "plotitem.h"
 
 class QAbstractItemModel;
 class QPainter;
@@ -54,9 +54,8 @@ class ANALITZAPLOT_EXPORT Plotter2D
         bool keepAspectRatio() const { return m_keepRatio; }
         
         /** Force the functions from @p start to @p end to be recalculated. */
-        //los index son de PROXY , esto para evitar que el widget escuche signal inecesarias
-        void updateFunctions( const QModelIndex & parent, int start, int end );
-        
+        void updateFunctions(const QModelIndex & parent, int start, int end);
+
         void setModel(QAbstractItemModel* f);
         QAbstractItemModel* model() const { return m_model; }
         
@@ -98,7 +97,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void drawAxes(QPainter *f, CoordinateSystem a);
         void drawPolarAxes(QPainter *f);
         void drawCartesianAxes(QPainter *f);
-        PlotItem *itemAt(int proxy_row) const; // get the real item from proxy
+        PlotItem *itemAt(int row) const;
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
         
