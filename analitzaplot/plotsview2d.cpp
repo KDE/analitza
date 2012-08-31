@@ -391,7 +391,7 @@ void PlotsView2D::modelChanged()
 void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)
 {
     //TODO  disconnect old selection
-    
+
     Q_ASSERT(selection->model() == model());
 
     m_selection = selection;
