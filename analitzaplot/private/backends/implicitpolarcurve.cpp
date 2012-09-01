@@ -1,5 +1,4 @@
 /*************************************************************************************
- *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
@@ -73,15 +72,6 @@ void ImplicitPolar::update(const QRectF& vp)
     points.clear();
     jumps.clear();
 
-    //TODO
-//     QPair<double, double> ix = interval("x");
-//     QPair<double, double> iy = interval("y");    
-//     double minx = ix.first;
-//     double maxx = ix.second;
-//     double miny = iy.first;
-//     double maxy = iy.second;
-//     
-    
     double minx = 0;
     double maxx = 0;
     double miny = 0;
@@ -104,79 +94,10 @@ void ImplicitPolar::update(const QRectF& vp)
         jumps.append(points.size());
     }
 
+    //TODO
 //     if (points.size() <= 2) // y aunque/PESE a que el viewport se corta con el dominio
 //     {
 //         appendError(i18nc("This function can't be represented as a curve. To draw implicit curve, the function has to satisfy the implicit function theorem.", "Implicit function undefined in the plane"));
-//     }
-    
-    
-    
-    
-    ///
-    
-    
-// //     Q_ASSERT(analyzer.expression().isCorrect());
-// //     if(int(resolution())==points.capacity())
-// //         return;
-//     
-//     
-//     //TODO CACHE en intervalvalues!!!
-// //     QPair<double, double> c_limits = interval("p");
-//     
-// //     if ()
-// //     
-// //     static QPair<double, double> o_limits = c_limits;
-//     
-//     
-// //     double ulimit=c_limits.second;
-// //     double dlimit=c_limits.first;
-// 
-//     double dlimit = 0;
-//     double ulimit = 0;
-//     double inv_res = 0;
-// 
-//     if (isAutoUpdate())
-//     {
-//         double pi_factor = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), 
-//                                 qMax(qAbs(viewport.bottom()), qAbs(viewport.top())));
-//         dlimit = -M_PI*pi_factor;
-//         ulimit =  M_PI*pi_factor;
-// 
-//         inv_res = qMin(viewport.size().width(), viewport.size().height())/(M_PI*M_PI*pi_factor);
-//     }
-//     else // obey intervals
-//     {
-//         QPair< double, double> limits = interval("p");
-//         dlimit = limits.first;
-//         ulimit = limits.second;
-//         
-//     }
-// 
-//     points.clear();
-//     jumps.clear();
-//     //TODO port
-// //     points.reserve(resolution());
-//     
-// //     analyzer.setStack(m_runStack);
-// //     double inv_res= double((ulimit-dlimit)/resolution()); TODO
-// 
-//     double final=ulimit-inv_res;
-//     for(double th=dlimit; th<final; th+=inv_res) {
-//         p->setValue(th);
-//         double r = analyzer->calculateLambda().toReal().value();
-//         
-//         QPointF point = polarToCartesian(r,th);
-//         
-//         if (viewport.contains(point))
-//         {
-//             points.append(point);
-// //             addPoint(point);
-//             
-// //             continue;
-//         }
-//         else
-//             jumps.append(1);
-//         
 //     }
 }
 
@@ -184,6 +105,7 @@ void ImplicitPolar::update(const QRectF& vp)
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
 #endif
+
 static const double pi=M_PI;
 //Own
 QPair<QPointF, QString> ImplicitPolar::image(const QPointF &p)
