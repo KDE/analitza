@@ -26,6 +26,12 @@ QPointF polarToCartesian(double radial, double polar)
     return QPointF(radial*cos(polar), radial*sin(polar)); 
 }
 
+void cartesianToPolar(double x, double y, double &radial, double &polar)
+{
+    radial = sqrt(x*x+y*y);
+    polar = atan2(y,x);
+}
+
 QVector3D cylindricalToCartesian(double radial, double polar, double height)
 {
     return QVector3D(radial*cos(polar), radial*sin(polar), height);

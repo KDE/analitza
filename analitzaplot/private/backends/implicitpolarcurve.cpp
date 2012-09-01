@@ -19,6 +19,7 @@
 
 #include "private/abstractplanecurve.h"
 #include "private/functiongraphfactory.h"
+#include <private/utils/marchingsquares.h>
 
 #include <QRectF>
 #include "analitza/value.h"
@@ -26,70 +27,157 @@
 #include "analitza/localize.h"
 
 
-class FunctionPolar : public AbstractPlaneCurve
+class ImplicitPolar : public AbstractPlaneCurve, MarchingSquares
 {
 public:
-    FunctionPolar(const Analitza::Expression& e, Analitza::Variables* v = 0);
-    TYPE_NAME("Polar Curve r=F(p: Polar)")
-    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+    ImplicitPolar(const Analitza::Expression& e, Analitza::Variables* v = 0);
+    TYPE_NAME("Polar implicit Curve 0=F(r: Radial, p: Polar)")
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Bool))
     COORDDINATE_SYSTEM(Polar)
-    PARAMETERS("t") //t:theta
+    PARAMETERS("r,t") //r:radial - t:theta
     ICON_NAME("newpolar")
-    EXAMPLES("p->3*sin(p/0.142),p->p+3")    
-    
+    EXAMPLES("r+p=0")
+
     void update(const QRectF& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
     
+    virtual double evalScalarField(double x, double y);
+    
+    Analitza::Cn *r;
     Analitza::Cn *p;
 };
 
-FunctionPolar::FunctionPolar(const Analitza::Expression& e, Analitza::Variables* v): AbstractPlaneCurve(e, v)
+ImplicitPolar::ImplicitPolar(const Analitza::Expression& e, Analitza::Variables* v): AbstractPlaneCurve(e, v)
 {
+    r = arg("r");
     p = arg("t");
 }
 
-void FunctionPolar::update(const QRectF& viewport)
+double ImplicitPolar::evalScalarField(double x, double y)
+{
+    double radial = 0;
+    double polar = 0;
+
+    cartesianToPolar(x,y, radial, polar);
+
+    p->setValue(polar);
+    r->setValue(radial);
+    
+    return analyzer->calculateLambda().toReal().value();
+}
+
+void ImplicitPolar::update(const QRectF& vp)
 {
     points.clear();
     jumps.clear();
-    
-    double dlimit = 0;
-    double ulimit = 0;
-    double inv_res = 0;
 
+    //TODO
+//     QPair<double, double> ix = interval("x");
+//     QPair<double, double> iy = interval("y");    
+//     double minx = ix.first;
+//     double maxx = ix.second;
+//     double miny = iy.first;
+//     double maxy = iy.second;
+//     
+    
+    double minx = 0;
+    double maxx = 0;
+    double miny = 0;
+    double maxy = 0;
+    
     if (isAutoUpdate())
     {
-        double pi_factor = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), 
-                                qMax(qAbs(viewport.bottom()), qAbs(viewport.top())));
-
-        pi_factor = qMax(pi_factor, 16.); // 16 steps at minimun
-
-        dlimit = -M_PI*pi_factor;
-        ulimit =  M_PI*pi_factor;
-
-        inv_res = qMin(viewport.size().width(), viewport.size().height())/(M_PI*M_PI*pi_factor);
-
-        points.reserve(10*static_cast<int>(pi_factor));
+        minx = vp.left();
+        maxx = vp.right();
+        miny = vp.top();
+        maxy = vp.bottom();
     }
-    else //TODO obey intervals
+
+    setWorld(minx, maxx, miny, maxy);
+    buildGeometry();
+
+    for (int i = 0;  i < _faces_.size(); ++i)
     {
-        QPair< double, double> limits = interval("p");
-        dlimit = limits.first;
-        ulimit = limits.second;
-        
+        points << _faces_[i].first <<  _faces_[i].second;
+        jumps.append(points.size());
     }
 
-    double final=ulimit-inv_res;
-    for(double th=dlimit; th<final; th+=inv_res) {
-        p->setValue(th);
-        double r = analyzer->calculateLambda().toReal().value();
-        
-        addPoint(polarToCartesian(r,th));
-    }
+//     if (points.size() <= 2) // y aunque/PESE a que el viewport se corta con el dominio
+//     {
+//         appendError(i18nc("This function can't be represented as a curve. To draw implicit curve, the function has to satisfy the implicit function theorem.", "Implicit function undefined in the plane"));
+//     }
+    
+    
+    
+    
+    ///
+    
+    
+// //     Q_ASSERT(analyzer.expression().isCorrect());
+// //     if(int(resolution())==points.capacity())
+// //         return;
+//     
+//     
+//     //TODO CACHE en intervalvalues!!!
+// //     QPair<double, double> c_limits = interval("p");
+//     
+// //     if ()
+// //     
+// //     static QPair<double, double> o_limits = c_limits;
+//     
+//     
+// //     double ulimit=c_limits.second;
+// //     double dlimit=c_limits.first;
+// 
+//     double dlimit = 0;
+//     double ulimit = 0;
+//     double inv_res = 0;
+// 
+//     if (isAutoUpdate())
+//     {
+//         double pi_factor = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), 
+//                                 qMax(qAbs(viewport.bottom()), qAbs(viewport.top())));
+//         dlimit = -M_PI*pi_factor;
+//         ulimit =  M_PI*pi_factor;
+// 
+//         inv_res = qMin(viewport.size().width(), viewport.size().height())/(M_PI*M_PI*pi_factor);
+//     }
+//     else // obey intervals
+//     {
+//         QPair< double, double> limits = interval("p");
+//         dlimit = limits.first;
+//         ulimit = limits.second;
+//         
+//     }
+// 
+//     points.clear();
+//     jumps.clear();
+//     //TODO port
+// //     points.reserve(resolution());
+//     
+// //     analyzer.setStack(m_runStack);
+// //     double inv_res= double((ulimit-dlimit)/resolution()); TODO
+// 
+//     double final=ulimit-inv_res;
+//     for(double th=dlimit; th<final; th+=inv_res) {
+//         p->setValue(th);
+//         double r = analyzer->calculateLambda().toReal().value();
+//         
+//         QPointF point = polarToCartesian(r,th);
+//         
+//         if (viewport.contains(point))
+//         {
+//             points.append(point);
+// //             addPoint(point);
+//             
+// //             continue;
+//         }
+//         else
+//             jumps.append(1);
+//         
+//     }
 }
 
 
@@ -98,7 +186,7 @@ void FunctionPolar::update(const QRectF& viewport)
 #endif
 static const double pi=M_PI;
 //Own
-QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
+QPair<QPointF, QString> ImplicitPolar::image(const QPointF &p)
 {
     QPointF dp=p;
     QString pos;
@@ -160,7 +248,7 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     return QPair<QPointF, QString>(dp, pos);
 }
 
-QLineF FunctionPolar::tangent(const QPointF &mousepos) 
+QLineF ImplicitPolar::tangent(const QPointF &mousepos) 
 {
 //     //TODO review calc and this method
 // 
@@ -270,7 +358,7 @@ return QLineF();
 
 
 
-REGISTER_PLANECURVE(FunctionPolar)
+REGISTER_PLANECURVE(ImplicitPolar)
 
 
 

@@ -51,6 +51,7 @@ private/backends/parametriccurve2d.cpp
 private/backends/parametriccurve3d.cpp
 private/backends/parametricsurface.cpp
 private/backends/polarcurve.cpp
+private/backends/implicitpolarcurve.cpp
 private/backends/sphericalsurface.cpp
 private/backends/implicitsurface.cpp
 

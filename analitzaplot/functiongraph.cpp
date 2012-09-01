@@ -37,7 +37,7 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dim
     setName(n);
     setColor(col);
     QString id;
-    
+
     Q_ASSERT(canDraw(functionExpression, spacedim, m_errors, id));
 
     m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, vars);

@@ -89,13 +89,16 @@ void FunctionY::update(const QRectF& viewport)
 QPair<QPointF, QString> FunctionY::image(const QPointF &p)
 {
     QPointF dp=p;
+    QString pos;
 
-    QPair<double, double> intervalx = interval("x");
+    if (!isAutoUpdate())
+    {
+        QPair<double, double> intervalx = interval("x");
+    
+        if (intervalx.first >=dp.x() || dp.x() >= intervalx.second)
+            return QPair<QPointF, QString>(QPointF(), QString());
+    }
 
-    
-    if (intervalx.first >=dp.x() || dp.x() >= intervalx.second)
-        return QPair<QPointF, QString>(QPointF(), QString());
-    
     arg("x")->setValue(dp.x());
     Analitza::Expression r=analyzer->calculateLambda();
 
@@ -103,7 +106,7 @@ QPair<QPointF, QString> FunctionY::image(const QPointF &p)
         appendError(i18n("We can only draw Real results."));
     
     dp.setY(r.toReal().value());
-    QString pos = QString("x=%1 y=%2").arg(dp.x(),3,'f',2).arg(dp.y(),3,'f',2);
+    pos = QString("x=%1 y=%2").arg(dp.x(),3,'f',2).arg(dp.y(),3,'f',2);
     return QPair<QPointF, QString>(dp, pos);
 }
 

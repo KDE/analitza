@@ -47,6 +47,8 @@ enum PolarAxis { R = 1, p };
 
 QPointF polarToCartesian(double radial, double polar);
 
+void cartesianToPolar(double x, double y, double &radial, double &polar);
+
 QVector3D cylindricalToCartesian(double radial, double polar, double height);
 
 QVector3D sphericalToCartesian(double radial, double azimuth, double polar);

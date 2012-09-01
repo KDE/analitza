@@ -27,6 +27,7 @@
 #include <kcmdlineargs.h>
 
 #include "analitzaplot/planecurve.h"
+#include "analitzaplot/surface.h"
 #include "analitzaplot/plotsview2d.h"
 #include "analitzaplot/plotsmodel.h"
 
@@ -69,12 +70,16 @@ int main(int argc, char *argv[])
     view2d->setSquares(false);
     view2d->setModel(model);
 
-    model->addPlot(new PlaneCurve(Analitza::Expression("x->x*x"), "f(x)", Qt::magenta));
-    model->addPlot(new PlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "khipu", Qt::yellow));
-    model->addPlot(new PlaneCurve(Analitza::Expression("p->4.7"), "polar circle", Qt::lightGray));
-    model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "param2d1", Qt::blue));
-    model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t+t, t}"), "param2d2", Qt::black));
-    model->addPlot(new PlaneCurve(Analitza::Expression("x**2+y**4-1=x*y"), "implicit2", Qt::cyan));
+    model->addPlot(new PlaneCurve(Analitza::Expression("t->4*sin(2*t)"), "polar curv", Qt::lightGray));
+    model->addPlot(new PlaneCurve(Analitza::Expression("t**2=cos(r)*(3*pi/4)**2"), "implicit polar curv", Qt::yellow));
+
+//     model->addPlot(new PlaneCurve(Analitza::Expression("x->x*x"), "f(x)", Qt::magenta));
+//     model->addPlot(new PlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "khipu", Qt::yellow));
+//     model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "param2d1", Qt::blue));
+//     model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t+t, t}"), "param2d2", Qt::black));
+//     model->addPlot(new PlaneCurve(Analitza::Expression("x**2+y**4-1=x*y"), "implicit2", Qt::cyan));
+//     model->addPlot(new Surface(Analitza::Expression("(x,y)->x*x-y*y"), "fsdfs", Qt::yellow));
+
 
     //TODO
 //     model->addPlaneCurve();
