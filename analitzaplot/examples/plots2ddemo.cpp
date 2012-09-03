@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     PlotsModel *model = new PlotsModel(tabs);
     
     PlotsView2D *view2d = new PlotsView2D(tabs);
-    view2d->setSquares(false);
+//     view2d->setSquares(false);
     view2d->setModel(model);
 
     model->addPlot(new PlaneCurve(Analitza::Expression("t->4*sin(2*t)"), "polar curv", Qt::cyan));

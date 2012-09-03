@@ -56,7 +56,6 @@ void FunctionTest::testIncorrect_data()
 
     //QTest::newRow("empty function") << ""; // se elimina este test porque no se podran crear graficos sin una expresion correcta o con una vacia
     QTest::newRow("undefined var") << "x:=w";
-    QTest::newRow("parametric-novector") << "t->3";
     QTest::newRow("parametric-wrongvector") << "t->vector{3}";
     QTest::newRow("wrong-dimension") << "vector{2,3}";
     QTest::newRow("wrong-dimension-y") << "y->vector{2,3}";
@@ -82,7 +81,7 @@ void FunctionTest::testJumps_data()
     QTest::addColumn<QString>("input");
     QTest::addColumn<int>("jumps");
 
-    QTest::newRow("tanx") << "x->tan x" << 4;
+    QTest::newRow("tanx") << "x->tan x" << 6;
     QTest::newRow("divx") << "x->1/x" << 1;
 }
 
