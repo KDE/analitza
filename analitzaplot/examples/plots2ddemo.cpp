@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     model->addPlot(new PlaneCurve(Analitza::Expression("x->x*x"), "f(x)", Qt::magenta));
     model->addPlot(new PlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "khipu", Qt::green));
     model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "param2d1", Qt::blue));
-//     model->addPlot(new Surface(Analitza::Expression("(x,y)->x*x-y*y"), "3D", Qt::red));
+    model->addPlot(new Surface(Analitza::Expression("(x,y)->x*x-y*y"), "3D", Qt::red));
 
     //END test calls
 

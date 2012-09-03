@@ -651,7 +651,14 @@ PlotItem* Plotter2D::itemAt(int row) const
         return 0;
 
     PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
-    Q_ASSERT(plot->spaceDimension() == 2);
+
+    //NOTE why this assert? a model contains plots (can have 2d or 3d plot) is responsibility of this class to not allow/get a 3d item
+    //this assert forces to have a model for each type of plot, something that is not very suitable ... is better to have one big 
+    //model than many models
+    //     Q_ASSERT(plot->spaceDimension() == 2);
+    if (plot->spaceDimension() != 2) // <= 2?
+        return 0;
+
     return plot;
 }
 
