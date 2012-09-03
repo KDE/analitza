@@ -132,7 +132,7 @@ private:
     virtual void modelChanged();
     
     //painting
-    QPixmap buffer;
+    QPixmap buffer; //NOTE should we use qimage instead? with QImage::Format_ARGB32_Premultiplied?
     bool valid;
     QLabel *micepos;
     QPointF mark;
