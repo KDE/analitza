@@ -19,6 +19,8 @@
 #include "marchingsquares.h"
 #include <QLineF>
 #include <QDebug>
+#include <qpolygon.h>
+#include <QVector2D>
 
 
 
@@ -453,4 +455,6 @@ void MarchingSquares::buildGeometry()
     }
 
 }
+
+
 

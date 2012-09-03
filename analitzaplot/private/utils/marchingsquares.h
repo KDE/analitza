@@ -28,6 +28,7 @@
 #include <QPair>
 #include <QVector>
 #include <qmath.h>
+#include <QLineF>
 
 struct sLimitesEspacio2D {
     double minX;
@@ -52,6 +53,8 @@ struct sArista2D {
 };
 
 
+//TODO very bad implementation ... we need to use interval arithmetic plus root finding 
+//to know if a 0 belongs to f(square)
 
 //TODO esta clase se debe parametrizar para que pueda ser usada por implictcurves:
 //MarchingSquares ... en general debe recibir como parametro el tree (octree,kdtree...)

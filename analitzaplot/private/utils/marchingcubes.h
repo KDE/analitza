@@ -46,6 +46,10 @@ struct sArista{
     unsigned int vertices[2];
 };
 
+//TODO very bad implementation ... we need to use interval arithmetic plus root finding 
+//to know if a 0 belongs to f(square)
+
+
 //TODO esta clase se debe parametrizar para que pueda ser usada por implictcurves:
 //MarchingSquares ... en general debe recibir como parametro el tree (octree,kdtree...)
 //y las subclases deben implementar evalScalarfield ...pues esta clase sirve para eso:

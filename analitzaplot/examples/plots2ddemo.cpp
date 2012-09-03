@@ -53,11 +53,6 @@ int main(int argc, char *argv[])
     QWidget *central = new QWidget(mainWindow);
     QVBoxLayout *layout = new QVBoxLayout(central);
     
-//     QCheckBox *checkvisible = new QCheckBox(central);
-//     checkvisible->setText("Allow to the model can change the visibility of items");
-//     checkvisible->setCheckState(Qt::Checked);
-//     checkvisible->setTristate(false);
-
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
 
     layout->addWidget(tabs);
@@ -70,34 +65,14 @@ int main(int argc, char *argv[])
     view2d->setSquares(false);
     view2d->setModel(model);
 
-    model->addPlot(new PlaneCurve(Analitza::Expression("t->4*sin(2*t)"), "polar curv", Qt::lightGray));
+    model->addPlot(new PlaneCurve(Analitza::Expression("t->4*sin(2*t)"), "polar curv", Qt::cyan));
     model->addPlot(new PlaneCurve(Analitza::Expression("t**2=cos(r)*(3*pi/4)**2"), "implicit polar curv", Qt::yellow));
+    model->addPlot(new PlaneCurve(Analitza::Expression("x->x*x"), "f(x)", Qt::magenta));
+    model->addPlot(new PlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "khipu", Qt::green));
+    model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "param2d1", Qt::blue));
+//     model->addPlot(new Surface(Analitza::Expression("(x,y)->x*x-y*y"), "3D", Qt::red));
 
-//     model->addPlot(new PlaneCurve(Analitza::Expression("x->x*x"), "f(x)", Qt::magenta));
-//     model->addPlot(new PlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "khipu", Qt::yellow));
-//     model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "param2d1", Qt::blue));
-//     model->addPlot(new PlaneCurve(Analitza::Expression("t->vector{t+t, t}"), "param2d2", Qt::black));
-//     model->addPlot(new PlaneCurve(Analitza::Expression("x**2+y**4-1=x*y"), "implicit2", Qt::cyan));
-//     model->addPlot(new Surface(Analitza::Expression("(x,y)->x*x-y*y"), "fsdfs", Qt::yellow));
-
-
-    //TODO
-//     model->addPlaneCurve();
-//     model->addPlaneCurve(Analitza::Expression("x->x*x/12"), "para", Qt::cyan);
-//     model->addPlaneCurve(Analitza::Expression("p->p+2"), "polar simple", Qt::green);
-//     model->addPlaneCurve(Analitza::Expression("t->vector{t*t+1, t+2}"), "vec", Qt::yellow);
-//     model->addPlaneCurve(Analitza::Expression("5*(x**2+y**2)**3=15*(x*y*72)**2"), "impl", Qt::red);
-//     model->addSurface(Analitza::Expression("x=y-z"), "fsdfs", Qt::yellow);
-//     model->addPlaneCurve(Analitza::Expression("x->2+x*x"), "otra simple", Qt::blue);
-//     model->addPlaneCurve(Analitza::Expression("(x**2+y**2)**3=4*(x**2)*(y**2)"), "otra simple", Qt::lightGray);
-//     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfs", Qt::yellow);
-//     model->addPlaneCurve(Analitza::Expression("(y-x**2)**2=x*y**3"), "otra simple", Qt::lightGray);
-//     model->addPlaneCurve(Analitza::Expression("sin(x)*sin(y)=1/2"), "otra simple", Qt::yellow);
-//     model->addPlaneCurve(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), "ESTO NO ES SIMPLE", Qt::black);
-//     model->addPlaneCurve(Analitza::Expression("(x^4)-5*x^3+25*y^2=0"), "simple", Qt::darkBlue);
-//     model->addSurface(Analitza::Expression("(x,y)->x*x+y*y"), "fsdfssss", Qt::yellow);
-//     
-//     END test calls
+    //END test calls
 
     QTreeView *viewsource = new QTreeView(tabs);
     viewsource->setModel(model);
