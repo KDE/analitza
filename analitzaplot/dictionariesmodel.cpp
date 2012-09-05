@@ -119,20 +119,14 @@ bool DictionariesModel::removeRows(int row, int count, const QModelIndex& parent
 
 DictionaryItem* DictionariesModel::addSpace(Dimension dim, const QString & title, const QString &description, const QPixmap &thumbnail)
 {
-//     Q_ASSERT(dim == Dim2D || dim == Dim3D);
-
-    DictionaryItem * ret = 0;
-    
-    beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
-
-    ret = new DictionaryItem(dim);
+    DictionaryItem* ret = new DictionaryItem(dim);
     ret->setTitle(title);
     ret->setDescription(description);
     ret->setThumbnail(thumbnail);
-    ret->setModel(this);
-    
-    m_items.append(ret);
 
+    beginInsertRows (QModelIndex(), m_items.count(), m_items.count());
+    ret->setModel(this);
+    m_items.append(ret);
     endInsertRows();
 
     return ret;
