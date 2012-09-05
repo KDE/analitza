@@ -22,19 +22,16 @@
 
 #include <QStringList>
 #include <QColor>
+#include "analitza/expression.h"
 
 #include "private/utils/mathutils.h"
 
 #include "analitzaplotexport.h"
 
-#include "dictionaryitem.h"
 
-namespace Analitza
-{
-class Variables;
-};
-#include "analitza/expression.h"
+namespace Analitza { class Variables; };
 class PlotsModel;
+class DictionaryItem;
 
 class ANALITZAPLOT_EXPORT PlotItem 
 {
