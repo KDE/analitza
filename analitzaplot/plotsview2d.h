@@ -111,7 +111,6 @@ public slots:
     void showVTicks(bool flag) { Plotter2D::showVTicks(flag); }
     void showHAxes(bool flag) { Plotter2D::showHAxes(flag); }
     void showVAxes(bool flag) { Plotter2D::showVAxes(flag); }
-    void useCoorSys(int i) { Plotter2D::useCoorSys(i); }
     
 private slots:
     void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm

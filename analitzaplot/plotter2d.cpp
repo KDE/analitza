@@ -58,7 +58,6 @@ Plotter2D::Plotter2D(const QSizeF& size, QAbstractItemModel* model)
     , m_showVAxes(true)
     , m_axisXLabel("x")
     , m_axisYLabel("y")
-    , m_useCoordSys(1) //default cartesian coords style grid
     , m_gridColor(QColor(128,128,128))
 {}
 
@@ -674,20 +673,6 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     int current=currentFunction();
     PlotItem* plot = itemAt(current);
     CoordinateSystem t = plot ? plot->coordinateSystem() : Cartesian;
-
-// //     if (coordsysfromplot)
-//         if (m_useCoordSys == 0) 
-//             m_squares = false;
-//         else
-//         {
-//             m_squares = true;
-// 
-//             if (m_useCoordSys == 2) 
-//                 t = Polar;
-// 
-//             if (m_useCoordSys == 1) 
-//                 t = Cartesian;
-//         }
 
     p.setRenderHint(QPainter::Antialiasing, true);
     

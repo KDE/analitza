@@ -42,10 +42,10 @@ class ANALITZAPLOT_EXPORT Plotter2D
         virtual void modelChanged() = 0;
         
         /** Sets whether we will see a grid or only the axes. */
-        void setSquares(bool newSquare) { !newSquare ? m_useCoordSys=0:m_useCoordSys=m_useCoordSys; forceRepaint(); }
+        void setSquares(bool newSquare) { m_squares=newSquare; forceRepaint(); }
         
         /** Returns whether we have chosen to see the grid. */
-        bool squares() const {return m_useCoordSys!=0;}
+        bool squares() const {return m_squares; }
         
         /** Sets whether it has to keep the aspect ratio (1:1 grid). */
         void setKeepAspectRatio(bool ar);
@@ -76,7 +76,6 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void showVTicks(bool flag) { m_showVTicks = flag; forceRepaint(); }
         void showHAxes(bool flag) { m_showHAxes = flag; forceRepaint(); }
         void showVAxes(bool flag) { m_showVAxes = flag; forceRepaint(); }
-        void useCoorSys(int i) { m_useCoordSys = i; forceRepaint(); }
         
     protected:
         QRectF lastViewport() const { return viewport; }
@@ -125,8 +124,6 @@ class ANALITZAPLOT_EXPORT Plotter2D
         bool m_showVAxes;
         QString m_axisXLabel;
         QString m_axisYLabel;
-        int m_useCoordSys; 
-        // polar 2 cart 1 none 0 y case 3 es automatic (es decir el plot acutal elije su coordenada)
         
         QColor m_gridColor;
 };
