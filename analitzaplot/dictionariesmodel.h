@@ -58,11 +58,6 @@ public:
     DictionaryItem * spacebyid(const QString &id) const;
 
     QModelIndex spaceIndex(DictionaryItem *it) const { return index(m_items.indexOf(it)); }
-//     removeitem or removerow????
-//     por conveniencia removeitem ... pero debe usar el removerow
-//     es additem ... no es addspace nia ddplot
-    //DEPRECATED
-//     void removeItem(int row);
     
 private:
     SpaceItemList m_items;
