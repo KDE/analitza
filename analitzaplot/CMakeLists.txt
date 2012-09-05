@@ -25,7 +25,7 @@ include_directories (
   ..
 )
 
-set ( keomath_SRCS
+set ( analitzaplot_SRCS
 private/utils/mathutils.cpp
 private/utils/plane3d.cpp
 private/utils/ray3d.cpp
@@ -74,7 +74,7 @@ plotsview2d.cpp
 
 )
 
-kde4_add_library( analitzaplot SHARED ${keomath_SRCS} )
+kde4_add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
 target_link_libraries ( analitzaplot
   #OpenGL
   ${OPENGL_gl_LIBRARY}

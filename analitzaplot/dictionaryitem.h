@@ -16,20 +16,20 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef KEOMATH_SPACE_H__k
-#define KEOMATH_SPACE_H__k
+#ifndef DICTIONARYITEM_H
+#define DICTIONARYITEM_H
 
 #include <QtGui/QPixmap>
 #include <QUuid>
 #include <KDE/KDateTime>
 #include <analitzaplot/private/utils/mathutils.h>
+#include "analitzaplotexport.h"
 
 
 static const int PreviewWidth = 200;
 static const int PreviewHeight = 200;
 
 class DictionariesModel;
-#include "analitzaplotexport.h"
 
 class ANALITZAPLOT_EXPORT DictionaryItem
 {

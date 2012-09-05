@@ -17,6 +17,7 @@
  *************************************************************************************/
 
 #include "dictionariesmodel.h"
+#include "dictionaryitem.h"
 #include <KLocalizedString>
 
 DictionariesModel::DictionariesModel(QObject *parent)

@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef KEOMATH_VIEW3D_H
-#define KEOMATH_VIEW3D_H
+#ifndef PLOTSVIEW3D_H
+#define PLOTSVIEW3D_H
 
 #include "QGLViewer/qglviewer.h"
 #include <QMouseEvent>

@@ -16,23 +16,16 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-#ifndef KEOMATH_SPACESMODEL_H__k
-#define KEOMATH_SPACESMODEL_H__k
+#ifndef DICTIONARIESMODEL_H
+#define DICTIONARIESMODEL_H
 
 #include <QtCore/QAbstractListModel>
 #include <KIcon>
 
-#include "dictionaryitem.h"
-
-namespace Analitza
-{
-class Expression;
-}
-
 #include "analitzaplotexport.h"
 #include "private/utils/mathutils.h"
 
+namespace Analitza { class Expression; }
 class DictionaryItem;
 
 class ANALITZAPLOT_EXPORT DictionariesModel : public QAbstractListModel 
