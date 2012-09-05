@@ -21,6 +21,7 @@
 #include "planecurve.h"
 #include "spacecurve.h"
 #include "surface.h"
+#include "dictionaryitem.h"
 #include <analitza/expression.h>
 #include <analitza/container.h>
 #include <KStandardDirs>

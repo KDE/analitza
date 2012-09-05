@@ -22,6 +22,7 @@
 #define FUNCTIONSPAINTER_H
 
 #include "plotitem.h"
+#include <QRectF>
 
 class QAbstractItemModel;
 class QPainter;

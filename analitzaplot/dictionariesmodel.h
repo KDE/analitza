@@ -31,6 +31,9 @@ class Expression;
 }
 
 #include "analitzaplotexport.h"
+#include "private/utils/mathutils.h"
+
+class DictionaryItem;
 
 class ANALITZAPLOT_EXPORT DictionariesModel : public QAbstractListModel 
 {
