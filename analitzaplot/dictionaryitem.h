@@ -79,6 +79,4 @@ private:
     QUuid m_id;
 };
 
-typedef QList<DictionaryItem *> SpaceItemList;
-
 #endif

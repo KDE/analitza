@@ -60,7 +60,7 @@ public:
     QModelIndex spaceIndex(DictionaryItem *it) const { return index(m_items.indexOf(it)); }
     
 private:
-    SpaceItemList m_items;
+    QList<DictionaryItem *> m_items;
     bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem
 };
 
