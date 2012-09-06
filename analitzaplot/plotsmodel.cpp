@@ -112,41 +112,41 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
 
 bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-    if (!index.isValid()) return false;
+    if (!index.isValid())
+        return false;
 
     switch(role)
     {
         case Qt::EditRole:
             switch(index.column()) 
             {
-                case 0:
-                {
-                    if (m_items[index.row()]->name() == value.toString()) return false;
-                    
-                    m_items[index.row()]->setName(value.toString());
-                    emit dataChanged(index, index);
+                case 0: {
+                    //FIXME: actually I think the name should be stored in the model instead of plotItem
+                    //if there was another plot with that name, it shouldn't be accepted
+                    QString newName = value.toString();
+                    if(newName.isEmpty())
+                        return false;
+                    m_items[index.row()]->setName(newName);
                     return true;
                 }
-                case 1: //exp
-                {
-                    if (m_items[index.row()]->expression().toString() == value.toString()) return false;
+                case 1: {
+                    Analitza::Expression valexp = AnalitzaUtils::variantToExpression(value);
+                    PlotItem* it = m_items[index.row()];
 
-                    if (FunctionGraph::canDraw(Analitza::Expression(value.toString()), m_items[index.row()]->spaceDimension()))
-                    {
-                        //TODO GSOC todo por el momento debemos hacer un typcast a functiongraph pues es el unico hijo de plotitem
-                        FunctionGraph *fg = static_cast<FunctionGraph*>(m_items[index.row()]);
-                        fg->setExpression(Analitza::Expression(value.toString()), m_items[index.row()]->spaceDimension());
+                    if (FunctionGraph::canDraw(valexp, it->spaceDimension())) {
+                        if (m_items[index.row()]->expression() != valexp) {
+                            //TODO GSOC todo por el momento debemos hacer un typcast a functiongraph pues es el unico hijo de plotitem
+                            FunctionGraph *fg = static_cast<FunctionGraph*>(it);
+                            fg->setExpression(valexp, it->spaceDimension());
+                        }
                         return true;
                     }
                     return false;
                 }
             }
         case Qt::CheckStateRole:
-        {
             m_items[index.row()]->setVisible(value.toBool());
-            emit dataChanged(index, index);
             return true;
-        }
 
     }
      
