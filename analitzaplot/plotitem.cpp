@@ -36,8 +36,7 @@ PlotItem::~PlotItem()
 
 void PlotItem::emitDataChanged()
 {
-    if (m_model)
-    {
+    if (m_model) {
         m_model->emitChanged(this);
     }
 }
@@ -61,4 +60,16 @@ void PlotItem::setName(const QString& newName)
 {
     m_name = newName;
     emitDataChanged();
+}
+
+void PlotItem::setVisible(bool v)
+{
+	m_graphVisible = v;
+	emitDataChanged();
+}
+
+void PlotItem::setPlotStyle(PlotItem::PlotStyle ps)
+{
+	m_plotStyle = ps;
+	emitDataChanged();
 }

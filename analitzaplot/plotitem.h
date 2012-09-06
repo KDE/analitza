@@ -58,9 +58,9 @@ public:
     virtual Dimension spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
     virtual CoordinateSystem coordinateSystem() const = 0;
     PlotStyle plotStyle() { return m_plotStyle; }
-    void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }
+    void setPlotStyle(PlotStyle ps);
     bool isVisible() const { return m_graphVisible; }
-    void setVisible(bool f) { m_graphVisible = f; }
+    void setVisible(bool v);
     
     void setModel(PlotsModel *m);
 
