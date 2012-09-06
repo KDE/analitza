@@ -30,7 +30,8 @@
 
 #include "private/functiongraphfactory.h"
 
-FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dimension spacedim, const QString &n, const QColor &col, Analitza::Variables *vars)
+FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dimension spacedim,
+                             const QString &n, const QColor &col, Analitza::Variables *vars)
     : PlotItem(n, col)
     , m_functionGraph(0)
 {
@@ -216,46 +217,28 @@ bool FunctionGraph::setExpression(const Analitza::Expression& functionExpression
 bool FunctionGraph::canDraw(const Analitza::Expression& testexp, Dimension spacedim, QStringList& errs, QString& id)
 {
     errs.clear();
-    id = QString();
+    id.clear();
     
-    if(!testexp.isCorrect() || testexp.toString().isEmpty())
-    {
+    if(!testexp.isCorrect() || testexp.toString().isEmpty()) {
         errs << i18n("The expression is not correct");
-        
         return false;
     }
     
-    Analitza::Analyzer *a = new Analitza::Analyzer;
-    
-    QString expectedid;
-
-    a->setExpression(testexp);
+    QScopedPointer<Analitza::Analyzer> a(new Analitza::Analyzer);
     
     if (testexp.isEquation())
-    {
-        a->setExpression(a->expression().equationToFunction());
-        a->setExpression(a->dependenciesToLambda());
-    }
+        a->setExpression(testexp.equationToFunction());
     else if (testexp.isLambda())
-        a->setExpression(a->dependenciesToLambda());
-    else
-    {
+        a->setExpression(testexp);
+    else {
         //pues no es ni ecuacion ni lambda
         errs << i18n("The expression is not correct");
-
-        delete a;
-        
         return false;
     }
+    a->setExpression(a->dependenciesToLambda());
         
-    Q_ASSERT(errs.isEmpty());
-    
     QStringList bvars = a->expression().bvarList();
-    
-    if (testexp.isEquation())
-        a->setExpression(testexp);
-    
-    expectedid = FunctionGraphFactory::self()->trait(a->expression(), spacedim);
+    QString expectedid = FunctionGraphFactory::self()->trait(a->expression(), a->type(), spacedim);
     
     if(!FunctionGraphFactory::self()->contains(expectedid))
         errs << i18n("Function type not recognized");
@@ -268,18 +251,13 @@ bool FunctionGraph::canDraw(const Analitza::Expression& testexp, Dimension space
 
         if(!actual.canReduceTo(expected)) 
         {
-            delete a;
-            
             errs << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-            
             return false;
         }
     }
     
-    delete a;
-    
-    if (errs.empty())
+    if (errs.isEmpty())
         id = expectedid;
     
-    return errs.empty();
+    return errs.isEmpty();
 }

@@ -31,7 +31,10 @@ public:
     ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v);
 
     TYPE_NAME("Implicit Surface")
-    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Bool)) // is a equation
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
+        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
+        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
+        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y,z")
     ICON_NAME("draw-square-inverted-corners")

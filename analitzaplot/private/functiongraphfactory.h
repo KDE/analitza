@@ -28,16 +28,16 @@
 #include <QPair>
 #include <QMap>
 
-#define REGISTER_FUNCTIONGRAPH(name) \
+#define REGISTER_FUNCTIONGRAPH_DIM(dim, name) \
         static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
-        namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(vcreate##name, \
+        namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(dim, vcreate##name, \
         name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Parameters, \
         name ::IconName, name ::Examples); }
 
         
-#define REGISTER_PLANECURVE REGISTER_FUNCTIONGRAPH
-#define REGISTER_SPACECURVE REGISTER_FUNCTIONGRAPH
-#define REGISTER_SURFACE REGISTER_FUNCTIONGRAPH
+#define REGISTER_PLANECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim2D, __VA_ARGS__)
+#define REGISTER_SPACECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, __VA_ARGS__)
+#define REGISTER_SURFACE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, __VA_ARGS__)
         
 class AbstractFunctionGraph;
 
@@ -71,12 +71,12 @@ public:
     
     static FunctionGraphFactory* self();
 
-    bool registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars,
+    bool registerFunctionGraph(Dimension dim, BuilderFunctionWithVars builderFunctionWithVars,
                   TypeNameFunction typeNameFunction,
                          ExpressionTypeFunction expressionTypeFunction, 
                          CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
                          IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);
-    QString trait(const Analitza::Expression &expr, Dimension dim) const;
+    QString trait(const Analitza::Expression& expr, const Analitza::ExpressionType& t, Dimension dim) const;
     bool contains(const QString &id) const;
     
     AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;

@@ -53,7 +53,10 @@ class ANALITZAPLOT_EXPORT FunctionImplicit : public AbstractPlaneCurve, public M
 public:
     CONSTRUCTORS(FunctionImplicit)
     TYPE_NAME("Implicit Curve")
-    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Bool))
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
+        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
+        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
+        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS("x,y")
     ICON_NAME("newimplicit")

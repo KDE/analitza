@@ -40,75 +40,6 @@ Dimension FunctionGraphFactory::spaceDimension(const QString& id) const
     return spaceDimensions[id];
 }
 
-Dimension FunctionGraphFactory::spaceDimension(const Analitza::ExpressionType& etype, const QStringList &bvars) const
-{
-    Q_ASSERT(!bvars.isEmpty());
-    
-//     qDebug() << "el tipo " << etype.type() << bvars;
-    
-    Analitza::ExpressionType ftype = etype;
-    
-    Dimension dim;
-
-    if (ftype.type() == Analitza::ExpressionType::Many)
-    {
-        //the fields of functions are only scalars, so we need match only exps with vars as scalar (real param)
-        //avoid cases "(<num,-1> -> <num,-1> -> <num,-1>...)" and accept only cases like "(num -> num -> num...)" 
-        foreach (const Analitza::ExpressionType &exptype, ftype.alternatives())
-            if (exptype.parameters().first().type() == Analitza::ExpressionType::Value)
-            {
-                ftype = exptype;
-                break;
-            }
-    }
-
-    if (ftype.type() == Analitza::ExpressionType::Lambda)
-    {
-        switch (ftype.returnValue().type())
-        {
-            // vector valued function
-            case Analitza::ExpressionType::Vector:
-            {
-                switch (ftype.parameters().last().anyValue())
-                {
-                    case 2: dim = Dim2D; break; // param curve
-                    case 3: dim = Dim3D; break; // param surf
-                }
-
-                break;
-            }
-            
-            // real valued function
-            case Analitza::ExpressionType::Value:
-            {
-                switch (ftype.parameters().size())
-                {
-                    case 2: dim = Dim2D; break; // f(x)
-                    case 3: dim = Dim3D; break; // f(x,y)
-                }
-
-                break;
-            }
-        }
-    }
-    else // implicit
-    {
-            if (ftype.type() == Analitza::ExpressionType::Bool)
-            {
-                
-                // implicit function
-                    switch (bvars.size())
-                    {
-                        case 2: dim = Dim2D; break; // implicit curve
-                        case 3: dim = Dim3D; break; // implicit surf
-                    }
-            }
-
-    }
-
-    return dim;
-}
-
 CoordinateSystem FunctionGraphFactory::coordinateSystem(const QString& id) const
 {
     return coordinateSystemFunctions[id]();
@@ -131,19 +62,18 @@ FunctionGraphFactory* FunctionGraphFactory::self()
     return m_self;
 }
 
-bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builderFunctionWithVars, TypeNameFunction typeNameFunction,
+bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, BuilderFunctionWithVars builderFunctionWithVars, TypeNameFunction typeNameFunction,
         ExpressionTypeFunction expressionTypeFunction, 
         CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
         IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
 {
-    Dimension dim = spaceDimension(expressionTypeFunction(), argumentsFunction() );
-
 //     Q_ASSERT(expressionTypeFunction().type() == Analitza::ExpressionType::Lambda); DEPRECATED implicit is not a lambda
     
     QString id = QString::number((int)dim)+"|"+
                  QString::number((int)coordinateSystemFunction())+"|"+
                  argumentsFunction().join(",");
                  
+                
     Q_ASSERT(!contains(id)); // verificar que no se registren los mismos tipos
 
     typeNameFunctions[id] = typeNameFunction;
@@ -159,33 +89,16 @@ bool FunctionGraphFactory::registerFunctionGraph(BuilderFunctionWithVars builder
     return true;
 }
 
-QString FunctionGraphFactory::trait(const Analitza::Expression& expr, Dimension dim) const
+QString FunctionGraphFactory::trait(const Analitza::Expression& expr, const Analitza::ExpressionType& t, Dimension dim) const
 {
-    Analitza::Analyzer a;
-    if (expr.isEquation())
-        a.setExpression(expr.equationToFunction());
-    else
-        a.setExpression(expr);
-    a.setExpression(a.dependenciesToLambda());
+    Q_ASSERT(!expr.isEquation());
+    QStringList args = expr.bvarList();
 
-    QStringList args = a.expression().bvarList();
-
-    if (expr.isEquation())
-        a.setExpression(expr);
-
-//     qDebug() << spaceDimension(a.type(), args);
-    
-    bool found = false;
-    
-    for (int i = 0; i < argumentsFunctions.values().size(); ++i)
-        a.setExpression(expr);    
-    
     QString key;
-    for (int i = 0; i < argumentsFunctions.values().size() && key.isEmpty(); ++i)
-    {
+    for (int i = 0; i < argumentsFunctions.values().size() && key.isEmpty(); ++i)     {
         if (args == argumentsFunctions.values()[i]()
             && dim == spaceDimensions.values()[i]
-            && a.type().canReduceTo(expressionTypeFunctions.values()[i]()))
+            && t.canReduceTo(expressionTypeFunctions.values()[i]()))
         {
             key = argumentsFunctions.key(argumentsFunctions.values()[i]);
         }
