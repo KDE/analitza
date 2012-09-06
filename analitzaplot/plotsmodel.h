@@ -17,27 +17,18 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef FUNCTIONGRAPHMODEL_H__2d__
-#define FUNCTIONGRAPHMODEL_H__2d__
+#ifndef PLOTSMODEL_H
+#define PLOTSMODEL_H
 
 #include <QAbstractListModel>
-#include <QColor>
 
 #include "analitzaplot/analitzaplotexport.h"
-
-class SpaceItem;
-class Surface;
-class SpaceCurve;
-class PlaneCurve;
 
 class PlotItem;
 
 class ANALITZAPLOT_EXPORT PlotsModel : public QAbstractListModel
 {
-friend class PlotItem;    
-
 Q_OBJECT
-
 public:
     enum Roles {
         DimensionRole = Qt::UserRole+1,
@@ -56,10 +47,10 @@ public:
     virtual bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
 
     void addPlot(PlotItem *it);
+    void emitChanged(PlotItem* it);
 
 private:
     QList<PlotItem*> m_items;
-    bool m_itemCanCallModelRemoveItem; // just a lock para evitar que el item llame recursivamente a removeItem
 };
 
 #endif // FUNCTIONGRAPHMODEL_H

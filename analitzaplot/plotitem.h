@@ -22,27 +22,25 @@
 
 #include <QStringList>
 #include <QColor>
-#include "analitza/expression.h"
 
 #include "private/utils/mathutils.h"
 
 #include "analitzaplotexport.h"
 
 
-namespace Analitza { class Variables; };
+namespace Analitza { class Variables; class Expression; }
 class PlotsModel;
 class DictionaryItem;
 
 class ANALITZAPLOT_EXPORT PlotItem 
 {
-friend class PlotsModel;
-
 public:
     enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };    
     
-    explicit PlotItem(const QString &name, const QColor& col);
+    PlotItem(const QString &name, const QColor& col);
     virtual ~PlotItem();
-
+    
+    
     void setSpace(DictionaryItem *dict) { m_space = dict; }
     DictionaryItem * space() const { return m_space; }
          
@@ -51,7 +49,7 @@ public:
 
     virtual const QString typeName() const = 0;
     QString name() const { return m_name; }
-    void setName(const QString &newName) { m_name = newName; }
+    void setName(const QString &newName);
     virtual QString iconName() const = 0;
     QColor color() const { return m_color; }
     void setColor(const QColor& newColor);
@@ -63,17 +61,15 @@ public:
     void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool f) { m_graphVisible = f; }
-
+    
+    void setModel(PlotsModel *m);
 
 protected:
-    PlotItem() {}
-
     void emitDataChanged();
 
 private:
+    PlotItem();
     PlotItem(const PlotItem &other);
-    
-    void setModel(PlotsModel *m);
     
     //gui
     QString m_name;
@@ -87,7 +83,6 @@ private:
     
     //model expose item as write pointr ... so this will fix some situations (delete external, etc)
     PlotsModel *m_model;
-    bool m_inDestructorSoDontDeleteMe; // lock para evitar que el removeitem del model llame al destructor de este item y se generen llamadas recursivas
 };
 
 #endif // ANALITZAPLOT_PLOTITEM_H

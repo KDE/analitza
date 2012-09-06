@@ -38,9 +38,7 @@ Q_DECLARE_METATYPE(PlotItem*);
 
 PlotsModel::PlotsModel(QObject* parent)
     : QAbstractListModel(parent)
-    , m_itemCanCallModelRemoveItem(true)
-{
-}
+{}
 
 PlotsModel::~PlotsModel()
 {
@@ -138,7 +136,6 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                         //TODO GSOC todo por el momento debemos hacer un typcast a functiongraph pues es el unico hijo de plotitem
                         FunctionGraph *fg = static_cast<FunctionGraph*>(m_items[index.row()]);
                         fg->setExpression(Analitza::Expression(value.toString()), m_items[index.row()]->spaceDimension());
-                        emit dataChanged(index, index);
                         return true;
                     }
                     return false;
@@ -174,27 +171,13 @@ int PlotsModel::columnCount(const QModelIndex& parent) const
 bool PlotsModel::removeRows(int row, int count, const QModelIndex& parent)
 {
     Q_ASSERT(row<m_items.size());
-    if(parent.isValid())
+    if(!parent.isValid())
         return false;
-
+    
     beginRemoveRows(QModelIndex(), row, row+count-1);
-
-    for (int i = 0; i < count; ++i) 
-    {
-        PlotItem *tmpcurve = m_items[row];
-
-        m_itemCanCallModelRemoveItem = false;
-
-        if (!tmpcurve->m_inDestructorSoDontDeleteMe)
-        {
-            delete tmpcurve;
-        }
-
-        m_itemCanCallModelRemoveItem = true;
-
-        m_items.removeAt(row);
+    for (int i = 0; i < count; ++i) {
+        delete m_items.takeAt(row);
     }
-
     endRemoveRows();
     
     return true;
@@ -210,4 +193,11 @@ void PlotsModel::addPlot(PlotItem* it)
     m_items.append(it);
 
     endInsertRows();
+}
+
+void PlotsModel::emitChanged(PlotItem* it)
+{
+    int row = m_items.indexOf(it);
+    QModelIndex idx = index(row);
+    emit dataChanged(idx, idx);
 }

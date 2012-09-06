@@ -30,6 +30,7 @@
 #include "analitzaplot/surface.h"
 #include "analitzaplot/plotsview2d.h"
 #include "analitzaplot/plotsmodel.h"
+#include <analitza/expression.h>
 
 int main(int argc, char *argv[])
 {

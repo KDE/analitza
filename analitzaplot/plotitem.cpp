@@ -23,32 +23,22 @@
 
 PlotItem::PlotItem(const QString &n, const QColor& col)
     : m_name(n)
-    ,m_color(col),m_space(0),
-    m_graphVisible(true), m_model(0), m_inDestructorSoDontDeleteMe(false)
+    , m_color(col)
+    , m_space(0)
+    , m_graphVisible(true)
+    , m_model(0)
 {
 }
 
 PlotItem::~PlotItem()
-{
-    if (m_model && m_model->m_itemCanCallModelRemoveItem)
-    {
-        m_inDestructorSoDontDeleteMe = true;
-        m_model->removeRow(m_model->m_items.indexOf(this));
-        m_inDestructorSoDontDeleteMe = false;
-    }
-}
+{}
 
-// VisualItemsModel* VisualItem::model() const
-// {
-//     return m_model;
-// }
 
 void PlotItem::emitDataChanged()
 {
     if (m_model)
     {
-        int row = m_model->m_items.indexOf(this);
-        m_model->dataChanged(m_model->index(row), m_model->index(row));
+        m_model->emitChanged(this);
     }
 }
 
@@ -64,11 +54,11 @@ void PlotItem::setModel(PlotsModel* m)
 void PlotItem::setColor(const QColor& newColor)
 { 
     m_color = newColor; 
-   emitDataChanged(); 
+    emitDataChanged(); 
 }
 
-
-
-
-
-
+void PlotItem::setName(const QString& newName)
+{
+    m_name = newName;
+    emitDataChanged();
+}

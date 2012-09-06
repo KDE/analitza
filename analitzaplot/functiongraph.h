@@ -22,6 +22,7 @@
 #define FUNCTIONGRAPH2_H
 
 #include "plotitem.h"
+#include <QPair>
 
 class AbstractFunctionGraph;
 
@@ -67,8 +68,7 @@ public:
     bool setExpression(const Analitza::Expression &functionExpression, Dimension spacedim);
     
 protected:
-    FunctionGraph() {}
-
+    FunctionGraph();
     
     AbstractFunctionGraph *backend() const { return m_functionGraph; }
 

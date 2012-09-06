@@ -28,6 +28,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <cmath>
+#include <QDebug>
 #include <KLocalizedString>
 #include <KColorUtils>
 
