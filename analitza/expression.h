@@ -99,6 +99,8 @@ class ANALITZA_EXPORT Expression
 		 */
 		bool operator==(const Expression& e) const;
 		
+		bool operator!=(const Expression& e) const;
+		
 		/**
 		 *	Copy assignment. Copies the @p e expression here.
 		 */

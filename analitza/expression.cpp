@@ -517,6 +517,11 @@ bool Expression::operator==(const Expression & e) const
 	return e.d->m_tree && d->m_tree && AnalitzaUtils::equalTree(e.d->m_tree, d->m_tree);
 }
 
+bool Expression::operator!=(const Expression& e) const
+{
+	return !(e==*this);
+}
+
 void Expression::clear()
 {
 	delete d->m_tree;
