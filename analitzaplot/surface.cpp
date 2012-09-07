@@ -26,7 +26,7 @@
 #include "private/abstractsurface.h"
 
 Surface::Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables)
-    : FunctionGraph(functionExpression, Dim3D,name, col, variables)
+    : FunctionGraph(functionExpression, Dim3D, name, col, variables)
 {
 }
 
@@ -41,7 +41,7 @@ bool Surface::canDraw(const Analitza::Expression &functionExpression)
 
 bool Surface::canDraw(const Analitza::Expression &functionExpression, QStringList &errors)
 {
-        return FunctionGraph::canDraw(functionExpression, Dim3D, errors);
+    return FunctionGraph::canDraw(functionExpression, Dim3D, errors);
 }
 
 bool Surface::setExpression(const Analitza::Expression& functionExpression)
@@ -49,8 +49,7 @@ bool Surface::setExpression(const Analitza::Expression& functionExpression)
     return FunctionGraph::setExpression(functionExpression, Dim3D);
 }
 
-
-const QVector< Triangle3D >& Surface::faces() const
+const QVector<Triangle3D> & Surface::faces() const
 {
     Q_ASSERT(backend());
 
@@ -62,6 +61,4 @@ void Surface::update(const Box3D& viewport)
     Q_ASSERT(backend());
     
     static_cast<AbstractSurface*>(backend())->update(viewport);
-    
-
 }
