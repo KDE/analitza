@@ -205,6 +205,9 @@ class ANALITZA_EXPORT Expression
 		/** @returns whether it's an equation */
 		bool isEquation() const;
 		
+		/** @returns whether it's an equation */
+		bool isDeclaration() const;
+		
 		/** @returns the expression that evaluates the current equation to equal 0 */
 		Expression equationToFunction() const;
 		

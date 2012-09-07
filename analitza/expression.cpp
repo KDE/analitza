@@ -595,6 +595,20 @@ bool Expression::isLambda() const
 	return false;
 }
 
+bool Expression::isDeclaration() const
+{
+	if(d->m_tree && d->m_tree->type()==Object::container) {
+		Container* c = (Container*) d->m_tree;
+		if(c->containerType()==Container::math) {
+			if(c->m_params.first()->isContainer()) {
+				Container *c1 = (Container*) c->m_params.first();
+				return c1->containerType() == Container::declare;
+			}
+		}
+	}
+	return false;
+}
+
 bool Expression::isEquation() const
 {
 	if(d->m_tree && d->m_tree->type()==Object::container) {
