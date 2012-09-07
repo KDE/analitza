@@ -66,7 +66,7 @@ void FunctionTest::testIncorrect_data()
 
 //     QTest::newRow("implicit.notindomain") << "(x,y)->3-sin(x)*sin(y)";
 
-    QTest::newRow("not a function") << "t";
+//     QTest::newRow("not a function") << "t";
 }
 
 void FunctionTest::testIncorrect()
