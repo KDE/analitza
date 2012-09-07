@@ -1754,16 +1754,14 @@ Expression Analyzer::dependenciesToLambda() const
 			cc->appendBranch(bvar);
 		}
 		
-		Object* root=m_exp.tree()->copy();
+		const Object* root=m_exp.tree();
 		if(root->isContainer()) {
-			Container* c=static_cast<Container*>(root);
+			const Container* c=static_cast<const Container*>(root);
 			if(c->containerType()==Container::math) {
 				root=c->m_params.first();
-				c->m_params.first()=0;
-				delete c;
 			}
 		}
-		cc->appendBranch(root);
+		cc->appendBranch(root->copy());
 		
 		Container* math=new Container(Container::math);
 		math->appendBranch(cc);
