@@ -224,40 +224,25 @@ bool FunctionGraph::canDraw(const Analitza::Expression& testexp, Dimension space
         return false;
     }
     
+    Analitza::Expression exp(testexp);
     QScopedPointer<Analitza::Analyzer> a(new Analitza::Analyzer);
+    if (exp.isEquation())
+        exp = exp.equationToFunction();
     
-    if (testexp.isEquation())
-        a->setExpression(testexp.equationToFunction());
-    else if (testexp.isLambda())
-        a->setExpression(testexp);
-    else {
-        //pues no es ni ecuacion ni lambda
-        errs << i18n("The expression is not correct");
-        return false;
-    }
+    a->setExpression(exp);
     a->setExpression(a->dependenciesToLambda());
         
-    QStringList bvars = a->expression().bvarList();
-    QString expectedid = FunctionGraphFactory::self()->trait(a->expression(), a->type(), spacedim);
-    
-    if(!FunctionGraphFactory::self()->contains(expectedid))
-        errs << i18n("Function type not recognized");
-    else if(!a->isCorrect())
+    if(a->isCorrect()) {
+        QString expectedid = FunctionGraphFactory::self()->trait(a->expression(), a->type(), spacedim);
+        if(FunctionGraphFactory::self()->contains(expectedid)) {
+            id = expectedid;
+        } else
+            errs << i18n("Function type not recognized");
+    } else {
         errs << a->errors();
-    else 
-    {
-        Analitza::ExpressionType expected=FunctionGraphFactory::self()->expressionType(expectedid);
-        Analitza::ExpressionType actual=a->type();
-
-        if(!actual.canReduceTo(expected)) 
-        {
-            errs << i18n("Function type not correct for functions depending on %1", bvars.join(i18n(", ")));
-            return false;
-        }
     }
     
-    if (errs.isEmpty())
-        id = expectedid;
+    Q_ASSERT(!errs.isEmpty() || !id.isEmpty());
     
-    return errs.isEmpty();
+    return !id.isEmpty();
 }
