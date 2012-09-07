@@ -56,9 +56,9 @@ bool SpaceCurve::canDraw(const Analitza::Expression& functionExpression, QString
 return FunctionGraph::canDraw(functionExpression, Dim3D, errors);
 }
 
-bool SpaceCurve::setExpression(const Analitza::Expression& functionExpression)
+void SpaceCurve::setExpression(const Analitza::Expression& functionExpression)
 {
-return FunctionGraph::setExpression(functionExpression, Dim3D);
+    FunctionGraph::setExpression(functionExpression, Dim3D);
 }
 
 

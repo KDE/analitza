@@ -49,7 +49,7 @@ public:
     static bool canDraw(const Analitza::Expression &functionExpression);
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
 
-    bool setExpression(const Analitza::Expression& functionExpression);
+    void setExpression(const Analitza::Expression& functionExpression);
 
     QVector<int> jumps() const;
     const QVector<QPointF> & points() const;

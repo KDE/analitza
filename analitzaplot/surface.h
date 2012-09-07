@@ -34,7 +34,7 @@ public:
     static bool canDraw(const Analitza::Expression &functionExpression);
     static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
 
-    bool setExpression(const Analitza::Expression& functionExpression);
+    void setExpression(const Analitza::Expression& functionExpression);
 
     //Own
     void update(const Box3D &viewport);

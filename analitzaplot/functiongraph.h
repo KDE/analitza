@@ -64,8 +64,8 @@ public:
 
     static bool canDraw(const Analitza::Expression& functionExpression, Dimension spacedim);
     //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
-    static bool canDraw(const Analitza::Expression& functionExpression, Dimension spacedim, QStringList& errs);
-    bool setExpression(const Analitza::Expression &functionExpression, Dimension spacedim);
+    static bool canDraw(const Analitza::Expression& testexp, Dimension spacedim, QStringList& errs);
+    void setExpression(const Analitza::Expression& functionExpression, Dimension spacedim);
     
 protected:
     FunctionGraph();
@@ -81,7 +81,7 @@ private:
     //en caso que no sea posible retorna false con un id y expresion de salida vacio, 
     //en ambos casos se resetea la lista de strings
     
-    static bool canDraw(const Analitza::Expression &testexp, Dimension spacedim, QStringList &errs, QString &id);
+    static QString canDrawInternal(const Analitza::Expression &testexp, Dimension spacedim, QStringList &errs);
     
     AbstractFunctionGraph *m_functionGraph;
 

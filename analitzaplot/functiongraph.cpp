@@ -37,9 +37,9 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dim
 {
     setName(n);
     setColor(col);
-    QString id;
+    QString id = canDrawInternal(functionExpression, spacedim, m_errors);
 
-    Q_ASSERT(canDraw(functionExpression, spacedim, m_errors, id));
+    Q_ASSERT(!id.isEmpty());
 
     m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, vars);
     m_functionGraph->setInternalId(id);
@@ -180,48 +180,45 @@ QStringList FunctionGraph::parameters() const
 bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, Dimension spacedim)
 {
     QStringList nonusederr;
-    QString nonusedid;    
-    return canDraw(functionExpression, spacedim, nonusederr, nonusedid);
+    return !canDrawInternal(functionExpression, spacedim, nonusederr).isEmpty();
 }
 
 bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, Dimension spacedim, QStringList &errs)
 {
-    QString nonusedid;    
-    return canDraw(functionExpression, spacedim, errs, nonusedid);
+    return !canDrawInternal(functionExpression, spacedim, errs).isEmpty();
 }
 
-bool FunctionGraph::setExpression(const Analitza::Expression& functionExpression, Dimension spacedim)
+void FunctionGraph::setExpression(const Analitza::Expression& functionExpression, Dimension spacedim)
 {
-    QString id;
-    Analitza::Expression expr;
+    m_errors.clear();
+    QString id = canDrawInternal(functionExpression, spacedim, m_errors);
     
-    if (!canDraw(functionExpression, spacedim, m_errors, id)) return false;
+    Q_ASSERT(!id.isEmpty());
 
-    QMap<QString, AbstractFunctionGraph::RealInterval > argumentIntervals = m_functionGraph->m_argumentIntervals;
+    Analitza::Variables *vars = 0;
+    QMap<QString, AbstractFunctionGraph::RealInterval > argumentIntervals;
+    if(m_functionGraph) {
+        argumentIntervals = m_functionGraph->m_argumentIntervals;
+        vars = m_functionGraph->variables();
+        delete m_functionGraph;
+    }
 
-    //NOTE antes de borrar el analyzer de backend se debe almacenar que variables obtuvo cuando fue construido
-    //caso contrario se generara un nuevo backend con variables independientes
-    Analitza::Variables *vars = m_functionGraph->variables();
-    delete m_functionGraph;
-
-    m_functionGraph = static_cast<AbstractFunctionGraph*>(FunctionGraphFactory::self()->build(id,functionExpression, vars));
+    m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, 0);
     m_functionGraph->setInternalId(id);
-    
-    m_functionGraph->m_argumentIntervals = argumentIntervals;
-    
+    if(vars) {
+        m_functionGraph->m_argumentIntervals = argumentIntervals;
+        m_functionGraph->setAutoUpdate(argumentIntervals.isEmpty());
+    }
     emitDataChanged();
-    
-    return true;
 }
 
-bool FunctionGraph::canDraw(const Analitza::Expression& testexp, Dimension spacedim, QStringList& errs, QString& id)
+QString FunctionGraph::canDrawInternal(const Analitza::Expression& testexp, Dimension spacedim, QStringList& errs)
 {
     errs.clear();
-    id.clear();
     
     if(!testexp.isCorrect() || testexp.toString().isEmpty()) {
         errs << i18n("The expression is not correct");
-        return false;
+        return QString();
     }
     
     Analitza::Expression exp(testexp);
@@ -231,7 +228,8 @@ bool FunctionGraph::canDraw(const Analitza::Expression& testexp, Dimension space
     
     a->setExpression(exp);
     a->setExpression(a->dependenciesToLambda());
-        
+    
+    QString id;
     if(a->isCorrect()) {
         QString expectedid = FunctionGraphFactory::self()->trait(a->expression(), a->type(), spacedim);
         if(FunctionGraphFactory::self()->contains(expectedid)) {
@@ -244,5 +242,5 @@ bool FunctionGraph::canDraw(const Analitza::Expression& testexp, Dimension space
     
     Q_ASSERT(!errs.isEmpty() || !id.isEmpty());
     
-    return !id.isEmpty();
+    return id;
 }
