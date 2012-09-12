@@ -20,9 +20,9 @@
 #define SURFACE_H
 
 #include "functiongraph.h"
-#include "private/utils/triangle3d.h"
-#include "private/utils/box3d.h"
 
+class Triangle3D;
+class Box3D;
 class AbstractSurface;
 
 class ANALITZAPLOT_EXPORT Surface : public FunctionGraph 

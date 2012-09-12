@@ -24,7 +24,7 @@
 
 #include "analitzaplotexport.h"
 
-#include "private/utils/mathutils.h"
+#include "plottingenums.h"
 
 //si no se establece ningun filter2d entonces no hay filtro y muetra todos los items sin importar que dimension
 //estoy es util para un vista (itemview) que quiera mostrar todo el modelo por ejemplo 

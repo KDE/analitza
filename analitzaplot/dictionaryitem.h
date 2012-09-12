@@ -22,8 +22,8 @@
 #include <QtGui/QPixmap>
 #include <QUuid>
 #include <KDE/KDateTime>
-#include <analitzaplot/private/utils/mathutils.h>
 #include "analitzaplotexport.h"
+#include "plottingenums.h"
 
 
 static const int PreviewWidth = 200;

@@ -1,8 +1,5 @@
 project(analitzaplot)
 
-
-
-
 find_package ( OpenGL REQUIRED )
 
 if(NOT OPENGL_GLU_FOUND)
@@ -26,52 +23,51 @@ include_directories (
 )
 
 set ( analitzaplot_SRCS
-private/utils/mathutils.cpp
-private/utils/plane3d.cpp
-private/utils/ray3d.cpp
-private/utils/box3d.cpp
-private/utils/triangle3d.cpp
-private/utils/quadtree.cpp
-private/utils/marchingsquares.cpp
-private/utils/octree.cpp
-private/utils/marchingcubes.cpp
+    private/utils/mathutils.cpp
+    private/utils/plane3d.cpp
+    private/utils/ray3d.cpp
+    private/utils/box3d.cpp
+    private/utils/triangle3d.cpp
+    private/utils/quadtree.cpp
+    private/utils/marchingsquares.cpp
+    private/utils/octree.cpp
+    private/utils/marchingcubes.cpp
 
-private/abstractplotitem.cpp
-private/abstractfunctiongraph.cpp
-private/abstractplanecurve.cpp
-private/abstractspacecurve.cpp
-private/abstractsurface.cpp
-private/functiongraphfactory.cpp
+    private/abstractplotitem.cpp
+    private/abstractfunctiongraph.cpp
+    private/abstractplanecurve.cpp
+    private/abstractspacecurve.cpp
+    private/abstractsurface.cpp
+    private/functiongraphfactory.cpp
 
-private/backends/cartesiansurface.cpp
-private/backends/implicitcurve.cpp
-private/backends/cartesiancurve.cpp
-private/backends/cylindricalsurface.cpp
-private/backends/parametriccurve2d.cpp
-private/backends/parametriccurve3d.cpp
-private/backends/parametricsurface.cpp
-private/backends/polarcurve.cpp
-private/backends/implicitpolarcurve.cpp
-private/backends/sphericalsurface.cpp
-private/backends/implicitsurface.cpp
+    private/backends/cartesiansurface.cpp
+    private/backends/implicitcurve.cpp
+    private/backends/cartesiancurve.cpp
+    private/backends/cylindricalsurface.cpp
+    private/backends/parametriccurve2d.cpp
+    private/backends/parametriccurve3d.cpp
+    private/backends/parametricsurface.cpp
+    private/backends/polarcurve.cpp
+    private/backends/implicitpolarcurve.cpp
+    private/backends/sphericalsurface.cpp
+    private/backends/implicitsurface.cpp
 
-#public API
-dictionaryitem.cpp
-dictionariesmodel.cpp
-plotitem.cpp
-functiongraph.cpp
-planecurve.cpp
-spacecurve.cpp
-surface.cpp
-plotsmodel.cpp
-plotsproxymodel.cpp
-plotsdictionarymodel.cpp
-plotsdictionariesmanager.cpp
-plotter2d.cpp
-plotsview3d.cpp
-plotter3d.cpp
-plotsview2d.cpp
-
+    #public API
+    dictionaryitem.cpp
+    dictionariesmodel.cpp
+    plotitem.cpp
+    functiongraph.cpp
+    planecurve.cpp
+    spacecurve.cpp
+    surface.cpp
+    plotsmodel.cpp
+    plotsproxymodel.cpp
+    plotsdictionarymodel.cpp
+    plotsdictionariesmanager.cpp
+    plotter2d.cpp
+    plotsview3d.cpp
+    plotter3d.cpp
+    plotsview2d.cpp
 )
 
 kde4_add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
@@ -96,51 +92,27 @@ set_target_properties(analitzaplot PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOV
 install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
+    #public api
+    dictionaryitem.h
+    dictionariesmodel.h
+    analitzaplotexport.h
+    plotitem.h
+    functiongraph.h
+    planecurve.h
+    spacecurve.h
+    surface.h
+    plotsmodel.h
+    plotsproxymodel.h
+    plotsdictionarymodel.h
+    plotsdictionariesmanager.h
+    plotter2d.h
+    plotsview2d.h
+    plotter3d.h
+    plotsview3d.h
+    plottingenums.h
 
-#public api
-dictionaryitem.h
-dictionariesmodel.h
-analitzaplotexport.h
-plotitem.h
-functiongraph.h
-planecurve.h
-spacecurve.h
-surface.h
-plotsmodel.h
-plotsproxymodel.h
-plotsdictionarymodel.h
-plotsdictionariesmanager.h
-plotter2d.h
-plotsview2d.h
-plotter3d.h
-plotsview3d.h
-
-DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
-
-install(FILES
-
-#private api/files only for compile by using the headers
-private/utils/mathutils.h
-private/utils/ray3d.h
-private/utils/plane3d.h
-private/utils/box3d.h
-private/utils/triangle3d.h
-
-DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private/utils COMPONENT Devel)
-
-#api privada no es necesairo instalar todos los items
-install(FILES
-
-#private api/files only for compile by using the headers
-
-# private/abstractplotitem.h
-# private/abstractfunctiongraph.h
-# private/abstractplanecurve.h
-# private/abstractspacecurve.h
-# private/abstractsurface.h
-# private/functiongraphfactory.h
-
-DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/private COMPONENT Devel)
+    DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
+)
 
 add_subdirectory(data)
 add_subdirectory(tests)

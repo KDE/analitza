@@ -23,6 +23,9 @@
 #include "functiongraph.h"
 
 #include <QMap>
+#include <QPoint>
+#include <QRectF>
+#include <QLineF>
 #include <QColor>
 
 namespace Analitza
@@ -30,7 +33,6 @@ namespace Analitza
 class Variables;
 class Expression;
 }
-#include <analitza/expressiontype.h>
 class AbstractPlaneCurve;
 class AbstractSurface;
 

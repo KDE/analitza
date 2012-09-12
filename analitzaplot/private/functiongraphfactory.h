@@ -23,7 +23,7 @@
 #define ABSTRACTFUNCTIONGRAPHFACTORY_H
 
 #include "analitzaplotexport.h"
-#include "utils/mathutils.h"
+#include <plottingenums.h>
 
 #include <QPair>
 #include <QMap>

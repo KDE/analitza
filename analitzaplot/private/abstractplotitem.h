@@ -21,27 +21,14 @@
 #ifndef ABSTRACTMAPPINGGRAPH_H
 #define ABSTRACTMAPPINGGRAPH_H
 
-
-#include "analitza/analyzer.h"
-#include "analitza/value.h"
-// #include "function.h"
-
-namespace Analitza
-{
-class Variables;
-class Analyzer;
-class Object;
-class Cn;
-class Expression;
-}
-
-#include "utils/mathutils.h"
+#include <plottingenums.h>
 
 //NOTE
 //para construir estos backends/abstract solo re necesitaa que su ctor tenga exp y varmod ... 
 //en la funcion y en el metodo factory id es donde se requiere que tenga mas detalle ademas de exp y varsmod
 // por ejemolo coordsys en el caso de surf
 
+class QString;
 class AbstractMappingGraph //strategy pattern
 {
 public:
@@ -49,7 +36,6 @@ public:
 
     virtual const QString typeName() const = 0;
     virtual QString iconName() const = 0;
-    virtual QStringList examples() const = 0;
 
     virtual Dimension spaceDimension() const = 0;
     virtual CoordinateSystem coordinateSystem() const = 0;

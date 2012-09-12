@@ -23,7 +23,7 @@
 #include <KIcon>
 
 #include "analitzaplotexport.h"
-#include "private/utils/mathutils.h"
+#include "plottingenums.h"
 
 namespace Analitza { class Expression; }
 class DictionaryItem;

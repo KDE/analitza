@@ -24,10 +24,10 @@
 #include "analitza/analyzer.h"
 #include "analitza/value.h"
 #include "analitza/variable.h"
+#include "abstractplanecurve.h"
+#include "utils/mathutils.h"
 
 using std::atan2;
-
-#include "abstractplanecurve.h"
 
 AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)

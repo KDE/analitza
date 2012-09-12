@@ -23,10 +23,8 @@
 #include <QStringList>
 #include <QColor>
 
-#include "private/utils/mathutils.h"
-
 #include "analitzaplotexport.h"
-
+#include "plottingenums.h"
 
 namespace Analitza { class Variables; class Expression; }
 class PlotsModel;
@@ -53,7 +51,6 @@ public:
     virtual QString iconName() const = 0;
     QColor color() const { return m_color; }
     void setColor(const QColor& newColor);
-    virtual QStringList examples() const = 0;
 
     virtual Dimension spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
     virtual CoordinateSystem coordinateSystem() const = 0;

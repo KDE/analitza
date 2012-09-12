@@ -19,6 +19,7 @@
 #include "private/abstractsurface.h"
 // #include "private/surfacefactory.h"
 #include "private/functiongraphfactory.h"
+#include <private/utils/mathutils.h>
 
 #include <analitza/value.h>
 #include <analitza/vector.h>

@@ -22,6 +22,7 @@
 #include "planecurve.h"
 
 #include "plotsmodel.h"
+#include "private/utils/mathutils.h"
 
 #include <QPalette>
 #include <QPen>

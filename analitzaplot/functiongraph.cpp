@@ -79,13 +79,6 @@ QString FunctionGraph::iconName() const
     return m_functionGraph->iconName();
 }
 
-QStringList FunctionGraph::examples() const
-{
-    Q_ASSERT(m_functionGraph);
-    
-    return m_functionGraph->examples();
-}
-
 Dimension FunctionGraph::spaceDimension() const
 {
     Q_ASSERT(m_functionGraph);

@@ -174,3 +174,8 @@ bool AbstractFunctionGraph::hasIntervals() const
 {
     return !m_argumentIntervals.isEmpty();
 }
+
+bool AbstractFunctionGraph::isCorrect() const
+{
+    return m_errors.isEmpty() && analyzer->isCorrect();
+}

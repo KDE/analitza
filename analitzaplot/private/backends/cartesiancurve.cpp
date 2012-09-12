@@ -20,6 +20,7 @@
 
 #include "private/abstractplanecurve.h"
 #include "private/functiongraphfactory.h"
+#include <private/utils/mathutils.h>
 
 #include <QRectF>
 #include <QLineF>

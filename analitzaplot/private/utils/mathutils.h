@@ -23,28 +23,6 @@
 #include <QLineF>
 #include <QVector3D>
 
-enum Dimension {
-    Dim1D = 1,
-    Dim2D = 2,
-    Dim3D = 4,
-    DimAll = Dim1D | Dim2D | Dim3D
-};
-
-enum CoordinateSystem {
-    Cartesian = 1,
-    Polar,
-    Cylindrical,
-    Spherical
-};
-
-enum CartesianAxis {
-    XAxis = 1,
-    YAxis,
-    ZAxis
-};
-
-enum PolarAxis { R = 1, p };
-
 QPointF polarToCartesian(double radial, double polar);
 
 void cartesianToPolar(double x, double y, double &radial, double &polar);

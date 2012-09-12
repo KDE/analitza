@@ -22,7 +22,15 @@
 #define _ABSTRACTFUNCTIONGRAPH_H
 
 #include "abstractplotitem.h"
+#include <analitza/expression.h>
+#include <analitza/analyzer.h>
+#include <analitza/value.h>
+#include <QPair>
 
+namespace Analitza {
+    class Variables;
+    class Analyzer;
+}
 
 #define TYPE_NAME(name) \
 const QString typeName() const { return TypeName(); } \
@@ -44,7 +52,6 @@ QString iconName() const { return IconName(); } \
 static QString IconName() { return QString(name); } 
 
 #define EXAMPLES(exs) \
-QStringList examples() const { return Examples(); } \
 static QStringList Examples() { return (exs); }
 
 
@@ -63,7 +70,7 @@ public:
     const Analitza::Expression &expression() const;
 
     QStringList errors() const { return m_errors; }
-    bool isCorrect() const { return m_errors.isEmpty() && analyzer->isCorrect(); }
+    bool isCorrect() const;
     
     //TODO CACHE para interval ... eg: currentcalculatedvals 
     //FunctionGraph

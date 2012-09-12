@@ -39,7 +39,6 @@ public:
     const QString typeName() const;
     const Analitza::Expression &expression() const;
     QString iconName() const;
-    QStringList examples() const;
     Dimension spaceDimension() const;
     CoordinateSystem coordinateSystem() const;
     QStringList errors() const;

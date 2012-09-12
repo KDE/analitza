@@ -23,6 +23,7 @@
 
 #include "plotitem.h"
 #include <QRectF>
+#include <QLineF>
 
 class QAbstractItemModel;
 class QPainter;
