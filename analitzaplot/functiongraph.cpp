@@ -178,9 +178,9 @@ void FunctionGraph::setExpression(const Analitza::Expression& functionExpression
         delete m_functionGraph;
     }
 
-    m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, 0);
+    m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, vars);
     m_functionGraph->setInternalId(id);
-    if(vars) {
+    if(!argumentIntervals.isEmpty()) {
         m_functionGraph->m_argumentIntervals = argumentIntervals;
     }
     emitDataChanged();
