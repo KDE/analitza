@@ -135,21 +135,14 @@ public:
     //case evaluate = true
     Analitza::Expression value(Analitza::Analyzer *analyzer) const
     { 
-            Q_ASSERT(analyzer);
-
-            analyzer->setExpression(m_expressionValue);
+        analyzer->setExpression(m_expressionValue);
         
-            //TODO checks
-            if (!m_isInfinite)
-    //             if (m_analyzer->isCorrect())
-                return analyzer->calculate();
+        if (!m_isInfinite)
+            return analyzer->calculate();
 
-//             return std::numeric_limits<double>::infinity();
-              return Analitza::Expression(Analitza::Cn("inf")); //TODO
-        
+        return Analitza::Expression(Analitza::Cn("inf"));
     }
 
-    //case evaluate = false
     Analitza::Expression value() const
     { 
         return m_expressionValue;
