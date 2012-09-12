@@ -27,18 +27,12 @@
 #include "abstractplanecurve.h"
 #include "utils/mathutils.h"
 
-using std::atan2;
-
 AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)
-{
-
-}
+{}
 
 AbstractPlaneCurve::~AbstractPlaneCurve()
-{
-
-}
+{}
 
 bool AbstractPlaneCurve::addPoint(const QPointF& p)
 {
@@ -59,4 +53,3 @@ bool AbstractPlaneCurve::addPoint(const QPointF& p)
         
     return append;
 }
-

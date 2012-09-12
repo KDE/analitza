@@ -17,8 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef ANALITZAPLOT_FUNCTIONGRAPH_H
-#define ANALITZAPLOT_FUNCTIONGRAPH_H
+#ifndef ANALITZAPLOT_ABSTRACTPLANECURVE_H
+#define ANALITZAPLOT_ABSTRACTPLANECURVE_H
 
 #include "abstractfunctiongraph.h"
 #include <QLineF>
@@ -26,10 +26,7 @@
 #define CONSTRUCTORS(name) \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractPlaneCurve(functionExpression, variables) { }
 
-namespace Analitza
-{
-    class Variables;
-}
+namespace Analitza { class Variables; }
 
 class AbstractPlaneCurve : public AbstractFunctionGraph 
 {
@@ -37,13 +34,9 @@ public:
     AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v = 0);
     virtual ~AbstractPlaneCurve();
 
-    //Curve ... los expongo como publicos tanto para planecurve como para los backend (
-    //para los backends por un tema de performance y flexibilidad) 
-    // al final en planecurve todo estara expuesto consistentemente 
     QVector<QPointF> points;
     QVector<int> jumps;
     
-    //Own
     virtual void update(const QRectF& viewport) = 0;
     virtual QPair<QPointF, QString> image(const QPointF &mousepos) = 0;
     virtual QLineF tangent(const QPointF &mousepos) = 0;
@@ -52,4 +45,4 @@ protected:
     bool addPoint(const QPointF& p);
 };
 
-#endif // ANALITZAPLOT_FUNCTIONGRAPH_H
+#endif // ANALITZAPLOT_ABSTRACTPLANECURVE_H

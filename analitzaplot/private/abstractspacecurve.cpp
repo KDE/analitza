@@ -26,23 +26,17 @@
 #include "analitza/value.h"
 #include "analitza/variable.h"
 
-using std::atan2;
-
-
 #include "abstractspacecurve.h"
 #include "utils/mathutils.h"
 
+using std::atan2;
 
 AbstractSpaceCurve::AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)
-{
-
-}
+{}
 
 AbstractSpaceCurve::~AbstractSpaceCurve()
-{
-
-}
+{}
 
 bool AbstractSpaceCurve::addPoint(const QVector3D& p)
 {

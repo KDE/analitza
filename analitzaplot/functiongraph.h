@@ -50,16 +50,18 @@ public:
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
     bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
 
-    //2 convenience methods to work with doubles instead of Expression->Cn->value ... see above
     QPair<double, double> interval(const QString &argname) const;
     bool setInterval(const QString &argname, double min, double max);
+    
+    void setExpression(const Analitza::Expression& functionExpression, Dimension spacedim);
 
     QStringList parameters() const;
 
-    static bool canDraw(const Analitza::Expression& functionExpression, Dimension spacedim);
-    //with stringlist is used in model for add a item ... de otra manera se crearia una instancia solo para verrificar que sea valido
-    static bool canDraw(const Analitza::Expression& testexp, Dimension spacedim, QStringList& errs);
-    void setExpression(const Analitza::Expression& functionExpression, Dimension spacedim);
+    /** given an expression @p exp and a dimension @p spacedim, return the errors we would have if
+        we tried to plot this function.
+        @returns either the errors or empty if it can be done
+    */
+    static QStringList canDraw(const Analitza::Expression& exp, Dimension spacedim);
     
 protected:
     FunctionGraph();
@@ -69,16 +71,9 @@ protected:
 private:
     FunctionGraph(const FunctionGraph &other);
     
-    //TODO: Percy! Translate!!
-    //prueba si es posible graficar la expresion input, En caso que sea posible retorna true, el id para crearlo del factory y la expresion de salida
-    //output que sirve para que se pueda crear en el factory
-    //en caso que no sea posible retorna false con un id y expresion de salida vacio, 
-    //en ambos casos se resetea la lista de strings
-    
     static QString canDrawInternal(const Analitza::Expression &testexp, Dimension spacedim, QStringList &errs);
     
     AbstractFunctionGraph *m_functionGraph;
-
     QStringList m_errors;
 };
 

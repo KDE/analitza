@@ -40,21 +40,15 @@ PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QSt
 PlaneCurve::~PlaneCurve()
 {}
 
-bool PlaneCurve::canDraw(const Analitza::Expression& functionExpression)
+QStringList PlaneCurve::canDraw(const Analitza::Expression& functionExpression)
 {
     return FunctionGraph::canDraw(functionExpression, Dim2D);
-}
-
-bool PlaneCurve::canDraw(const Analitza::Expression& functionExpression, QStringList& errors)
-{
-    return FunctionGraph::canDraw(functionExpression, Dim2D, errors);
 }
 
 void PlaneCurve::setExpression(const Analitza::Expression& functionExpression)
 {
     FunctionGraph::setExpression(functionExpression, Dim2D);
 }
-
 
 const QVector<QPointF> & PlaneCurve::points() const
 {
@@ -71,8 +65,6 @@ const QVector<QPointF> & PlaneCurve::points() const
 QVector< int > PlaneCurve::jumps() const
 {
     Q_ASSERT(backend());
-    
-//     Q_ASSERT(backend()->jumps().size()>1);
     return static_cast<AbstractPlaneCurve*>(backend())->jumps;
 }
 
@@ -92,14 +84,11 @@ void PlaneCurve::update(const QRectF& viewport)
 QPair< QPointF, QString > PlaneCurve::image(const QPointF &mousepos)
 {
     Q_ASSERT(backend());
-    
     return static_cast<AbstractPlaneCurve*>(backend())->image(mousepos);
 }
 
 QLineF PlaneCurve::tangent(const QPointF &mousepos)
 {
     Q_ASSERT(backend());
-    
     return static_cast<AbstractPlaneCurve*>(backend())->tangent(mousepos);
 }
-

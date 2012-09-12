@@ -27,23 +27,16 @@
 class Box3D;
 class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {
-    //3D
-//torsion,   
-    //curvature, length of arc, curvature
-    
 public:
-    SpaceCurve(const Analitza::Expression &functionExpression, const QString &name= QString(), const QColor& col = QColor(), Analitza::Variables *variables = 0);
+    SpaceCurve(const Analitza::Expression &functionExpression, const QString &name= QString(),
+               const QColor& col = QColor(), Analitza::Variables *variables = 0);
     virtual ~SpaceCurve();
 
-    static bool canDraw(const Analitza::Expression &functionExpression);
-    static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
+    static QStringList canDraw(const Analitza::Expression &functionExpression);
 
     void setExpression(const Analitza::Expression& functionExpression);
 
-    //Curve
     QVector<int> jumps() const;
-
-    //Own 
     const QVector<QVector3D> & points() const;
     void update(const Box3D& viewport);
 

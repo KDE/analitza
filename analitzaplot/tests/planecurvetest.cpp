@@ -73,7 +73,7 @@ void FunctionTest::testIncorrect()
 {
     QFETCH(QString, input);
 
-    QVERIFY(!PlaneCurve::canDraw(Analitza::Expression(input)));
+    QVERIFY(!PlaneCurve::canDraw(Analitza::Expression(input)).isEmpty());
 }
 
 void FunctionTest::testJumps_data()

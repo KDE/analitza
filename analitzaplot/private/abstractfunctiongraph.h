@@ -72,9 +72,6 @@ public:
     QStringList errors() const { return m_errors; }
     bool isCorrect() const;
     
-    //TODO CACHE para interval ... eg: currentcalculatedvals 
-    //FunctionGraph
-    //no lleva const porque se calcularan valores con m_argumentIntervals
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
     virtual bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
     

@@ -156,15 +156,11 @@ QStringList FunctionGraph::parameters() const
     return m_functionGraph->parameters();
 }
 
-bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, Dimension spacedim)
+QStringList FunctionGraph::canDraw(const Analitza::Expression &functionExpression, Dimension spacedim)
 {
-    QStringList nonusederr;
-    return !canDrawInternal(functionExpression, spacedim, nonusederr).isEmpty();
-}
-
-bool FunctionGraph::canDraw(const Analitza::Expression &functionExpression, Dimension spacedim, QStringList &errs)
-{
-    return !canDrawInternal(functionExpression, spacedim, errs).isEmpty();
+    QStringList ret;
+    canDrawInternal(functionExpression, spacedim, ret);
+    return ret;
 }
 
 void FunctionGraph::setExpression(const Analitza::Expression& functionExpression, Dimension spacedim)

@@ -133,7 +133,7 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                     Analitza::Expression valexp = AnalitzaUtils::variantToExpression(value);
                     PlotItem* it = m_items[index.row()];
 
-                    if (FunctionGraph::canDraw(valexp, it->spaceDimension())) {
+                    if (FunctionGraph::canDraw(valexp, it->spaceDimension()).isEmpty()) {
                         if (m_items[index.row()]->expression() != valexp) {
                             //TODO GSOC todo por el momento debemos hacer un typcast a functiongraph pues es el unico hijo de plotitem
                             FunctionGraph *fg = static_cast<FunctionGraph*>(it);

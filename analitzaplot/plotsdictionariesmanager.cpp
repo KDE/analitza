@@ -64,7 +64,7 @@ PlotsDictionariesManager::PlotsDictionariesManager(QObject* parent)
                 continue;
             //TODO :)
             
-            if (PlaneCurve::canDraw(expression))
+            if (PlaneCurve::canDraw(expression).isEmpty())
             {
                 PlaneCurve *plot = new PlaneCurve(expression);
                 plot->setSpace(m_collections.last());
@@ -103,7 +103,7 @@ PlotsDictionariesManager::PlotsDictionariesManager(QObject* parent)
                 continue;
             //TODO :)
             
-            if (PlaneCurve::canDraw(expression))
+            if (PlaneCurve::canDraw(expression).isEmpty())
             {
                 PlaneCurve *plot = new PlaneCurve(expression);
                 plot->setSpace(m_collections.last());
@@ -142,7 +142,7 @@ PlotsDictionariesManager::PlotsDictionariesManager(QObject* parent)
                 continue;
             //TODO :)
             
-            if (PlaneCurve::canDraw(expression))
+            if (PlaneCurve::canDraw(expression).isEmpty())
             {
                 PlaneCurve *plot = new PlaneCurve(expression);
                 plot->setSpace(m_collections.last());
