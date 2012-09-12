@@ -78,16 +78,15 @@ QVector< int > PlaneCurve::jumps() const
 
 void PlaneCurve::update(const QRectF& viewport)
 {
-    Q_ASSERT(backend());
+    AbstractPlaneCurve* b = static_cast<AbstractPlaneCurve*>(backend());
+    Q_ASSERT(b);
     
-    static_cast<AbstractPlaneCurve*>(backend())->update(viewport);
+    //If we already have an interval and it's already calculated
+    //we don't need to do it again
+    if(b->hasIntervals() && !b->points.isEmpty())
+        return;
     
-    
-    //NOTE GSOC POINTS=0
-    //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,
-    //por ejemplo en el caso de parametric se hace un clip para ver si la curva esta dentro o no del viewport
-    Q_ASSERT(backend()->isCorrect() /*|| static_cast<AbstractPlaneCurve*>(backend())->points.size()>=2*/);
-
+    b->update(viewport);
 }
 
 QPair< QPointF, QString > PlaneCurve::image(const QPointF &mousepos)

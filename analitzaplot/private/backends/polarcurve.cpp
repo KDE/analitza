@@ -61,7 +61,7 @@ void FunctionPolar::update(const QRectF& viewport)
     double ulimit = 0;
     double inv_res = 0;
 
-    if (isAutoUpdate())
+    if (!hasIntervals())
     {
         double pi_factor = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), 
                                 qMax(qAbs(viewport.bottom()), qAbs(viewport.top())));

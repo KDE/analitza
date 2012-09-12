@@ -62,7 +62,7 @@ void FunctionY::update(const QRectF& viewport)
 
     double l_lim=0, r_lim=0;
     
-    if (isAutoUpdate())
+    if (!hasIntervals())
     {
         l_lim=viewport.left();
         r_lim=viewport.right();
@@ -91,7 +91,7 @@ QPair<QPointF, QString> FunctionY::image(const QPointF &p)
     QPointF dp=p;
     QString pos;
 
-    if (!isAutoUpdate())
+    if (hasIntervals())
     {
         QPair<double, double> intervalx = interval("x");
     
@@ -255,7 +255,7 @@ void FunctionX::update(const QRectF& viewport)
 {
     double l_lim=0, r_lim=0;
     
-    if (isAutoUpdate())
+    if (!hasIntervals())
     {
         l_lim=viewport.top();
         r_lim=viewport.bottom();

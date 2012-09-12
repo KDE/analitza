@@ -79,7 +79,7 @@ void ImplicitPolar::update(const QRectF& vp)
     double miny = 0;
     double maxy = 0;
     
-    if (isAutoUpdate())
+    if(!hasIntervals())
     {
         minx = vp.left();
         maxx = vp.right();

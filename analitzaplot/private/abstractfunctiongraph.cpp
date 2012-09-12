@@ -34,7 +34,6 @@
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
     : AbstractMappingGraph()
     , m_varsmod(v)
-    , m_autoUpdate(true)
     , m_e(e)
 {
     analyzer = v ? new Analitza::Analyzer(v) : new Analitza::Analyzer;
@@ -133,7 +132,6 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::
         return false;
     
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
-    setAutoUpdate(false);
     return true;
 }
 
@@ -164,11 +162,15 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, double min, doub
 
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
 
-    setAutoUpdate(false);
     return true;
 }
 
 Analitza::Cn* AbstractFunctionGraph::arg(const QString& argname)
 {
 	return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]);
+}
+
+bool AbstractFunctionGraph::hasIntervals() const
+{
+    return !m_argumentIntervals.isEmpty();
 }

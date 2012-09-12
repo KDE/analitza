@@ -118,20 +118,6 @@ bool FunctionGraph::isCorrect() const
     return m_errors.isEmpty() && m_functionGraph && m_functionGraph->isCorrect();
 }
 
-bool FunctionGraph::isAutoUpdate() const
-{
-    Q_ASSERT(m_functionGraph);
-
-    return m_functionGraph->isAutoUpdate();
-}
-
-void FunctionGraph::setAutoUpdate(bool b)
-{
-    Q_ASSERT(m_functionGraph);
-
-    m_functionGraph->setAutoUpdate(b);
-}
-
 QPair<Analitza::Expression, Analitza::Expression> FunctionGraph::interval(const QString &argname, bool evaluate) const
 {
     Q_ASSERT(m_functionGraph);
@@ -207,7 +193,6 @@ void FunctionGraph::setExpression(const Analitza::Expression& functionExpression
     m_functionGraph->setInternalId(id);
     if(vars) {
         m_functionGraph->m_argumentIntervals = argumentIntervals;
-        m_functionGraph->setAutoUpdate(argumentIntervals.isEmpty());
     }
     emitDataChanged();
 }
@@ -222,10 +207,10 @@ QString FunctionGraph::canDrawInternal(const Analitza::Expression& testexp, Dime
     }
     
     Analitza::Expression exp(testexp);
-    QScopedPointer<Analitza::Analyzer> a(new Analitza::Analyzer);
     if (exp.isEquation())
         exp = exp.equationToFunction();
     
+    QScopedPointer<Analitza::Analyzer> a(new Analitza::Analyzer);
     a->setExpression(exp);
     a->setExpression(a->dependenciesToLambda());
     

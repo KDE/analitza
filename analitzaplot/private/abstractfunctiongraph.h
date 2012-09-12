@@ -65,15 +65,6 @@ public:
 
     QStringList errors() const { return m_errors; }
     bool isCorrect() const { return m_errors.isEmpty() && analyzer->isCorrect(); }
-
-    //NOTE KAlgebra use case
-    // if true then the graph will be updated always and follow the viewport limits instead of intervals
-    // by default is false, so the intervals can decide the limits for update 
-    // true or false the update always clip the point acording to the viewport
-    //WARNING some function compute complex algorithms for generate its geometry, that is why you may use
-    //intervals for those
-    bool isAutoUpdate() const { return m_autoUpdate; }
-    void setAutoUpdate(bool b) { m_autoUpdate = b; }
     
     //TODO CACHE para interval ... eg: currentcalculatedvals 
     //FunctionGraph
@@ -83,6 +74,7 @@ public:
     
     QPair<double, double> interval(const QString &argname) const;
     virtual bool setInterval(const QString &argname, double min, double max);
+    bool hasIntervals() const;
     
     virtual QStringList parameters() const = 0;
 
@@ -105,8 +97,6 @@ private:
     
     Analitza::Expression m_e;
     Analitza::Variables *m_varsmod;
-
-    bool m_autoUpdate;
 
 //BEGIN private types
 class EndPoint

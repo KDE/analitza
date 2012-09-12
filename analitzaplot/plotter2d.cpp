@@ -841,10 +841,8 @@ void Plotter2D::updateScale(bool repaint)
             {
                 PlaneCurve* curve = dynamic_cast<PlaneCurve *>(itemAt(i));
 
-                if (!curve) continue;
-
-                //NOTE si no es visble o si no debe actualizarce segun el viewport (solo segun los intervalos)
-                if (!curve->isVisible() || !curve->isAutoUpdate()) continue;
+                if(!curve)
+                    continue;
 
                 QRectF viewport_fixed = viewport;
                 viewport_fixed.setTopLeft(viewport.bottomLeft());

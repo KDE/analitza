@@ -45,11 +45,6 @@ public:
     QStringList errors() const;
     bool isCorrect() const;
 
-    ///repaint the function when the viewport changes
-    ///it will be automatically set to false in case an interval is specified
-    bool isAutoUpdate() const;
-    void setAutoUpdate(bool b);
-    
     //if evaluate true then result of expressiones will be strings of the value
     //if evaluate is false then the expressions will not evaluate
  

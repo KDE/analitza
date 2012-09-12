@@ -98,7 +98,7 @@ FunctionParametric::FunctionParametric(const Expression& e, Variables* v): Abstr
 
 void FunctionParametric::update(const QRectF& viewport)
 {
-  Q_UNUSED(viewport);
+    Q_UNUSED(viewport);
     Q_ASSERT(analyzer->expression().isCorrect());
     //if(int(resolution())==points.capacity())
     //  return;
@@ -109,10 +109,10 @@ void FunctionParametric::update(const QRectF& viewport)
 //     
 //     double ulimit=c_limits.second;
 //     double dlimit=c_limits.first;
-        double dlimit=0;
+    double dlimit=0;
     double ulimit=0;
 
-    if (isAutoUpdate())
+    if (!hasIntervals())
     {
         dlimit=viewport.left();
         ulimit=viewport.right();
