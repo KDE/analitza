@@ -54,9 +54,9 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("x,y")
+    PARAMETERS(QStringList("x") << "y")
     ICON_NAME("newfunction3d")
-    EXAMPLES("x*x+y,x+y*sin(x),x*y")
+    EXAMPLES(QStringList("x*x+y") << "x+y*sin(x)" << "x*y")
 
     //Own
 
@@ -90,9 +90,9 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("x,z")
+    PARAMETERS(QStringList("x") << "z")
     ICON_NAME("newfunction3d")
-    EXAMPLES("x+z")
+    EXAMPLES(QStringList("x+z"))
 
     QVector3D fromParametricArgs(double u, double v);
     void update(const Box3D& viewport);

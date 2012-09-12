@@ -39,9 +39,9 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("r,p")
+    PARAMETERS(QStringList("r") << "p")
     ICON_NAME("newcylindrical")
-    EXAMPLES("")
+    EXAMPLES(QStringList())
 
     //Own
     virtual bool setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max);

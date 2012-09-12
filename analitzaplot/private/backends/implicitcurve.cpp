@@ -58,9 +58,9 @@ public:
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("x,y")
+    PARAMETERS(QStringList("x") << "y")
     ICON_NAME("newimplicit")
-    EXAMPLES("x^3-y^2+2,y^2*(y^2-10)-x^2*(x^2-9)")
+    EXAMPLES(QStringList("x^3-y^2+2") << "y^2*(y^2-10)-x^2*(x^2-9)")
 
     void update(const QRectF& viewport);
 

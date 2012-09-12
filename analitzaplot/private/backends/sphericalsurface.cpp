@@ -35,9 +35,9 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("t,p") // t azimuth p polar
+    PARAMETERS(QStringList("t")<< "p") // t azimuth p polar
     ICON_NAME("newspherical")
-    EXAMPLES("")
+    EXAMPLES(QStringList())
 
     //Own
     virtual bool setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max);

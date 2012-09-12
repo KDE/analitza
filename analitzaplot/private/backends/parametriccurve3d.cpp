@@ -78,19 +78,14 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Vector,
                                             Analitza::ExpressionType(Analitza::ExpressionType::Value), 3)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("t")
+    PARAMETERS(QStringList("t"))
     ICON_NAME("newparametric3d")
-    EXAMPLES("t->vector {t,t**2,t}")    
+    EXAMPLES(QStringList("t->vector {t,t**2,t}"))
     
     void update(const Box3D& viewport);
-    
-    
-    //
-    
 
 private:
     Cn findTValueForPoint(const QPointF& p);
-
 };
 
 // 

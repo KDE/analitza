@@ -27,10 +27,7 @@
 #include "analitza/value.h"
 #include <analitza/vector.h>
 
-//TODO macros para las prop e abajo
-
-
-class ParamSurf : public AbstractSurface/*, static class? better macros FooClass*/
+class ParamSurf : public AbstractSurface
 {
 public:
     CONSTRUCTORS(ParamSurf)
@@ -41,9 +38,9 @@ public:
                 Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(
                 Analitza::ExpressionType::Value), 3)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("u,v")
+    PARAMETERS(QStringList("u") << "v")
     ICON_NAME("draw-donut")
-    EXAMPLES("")
+    EXAMPLES(QStringList())
 
     //Own
 

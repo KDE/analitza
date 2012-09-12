@@ -37,9 +37,9 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("x")
+    PARAMETERS(QStringList("x"))
     ICON_NAME("newfunction")
-    EXAMPLES("x,x*x,x+4")    
+    EXAMPLES(QStringList("x") << "x*x" << "x+4")
 
     void update(const QRectF& viewport);
     
@@ -220,18 +220,15 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("y")
+    PARAMETERS(QStringList("y"))
     ICON_NAME("newfunction")
-    EXAMPLES("y,y*y,y+4")  
+    EXAMPLES(QStringList("y") << "y*y" << "y+4")
     
     void update(const QRectF& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos);
     
-    //
-    
-
 private:
     void optimizeJump();
     void calculateValues(double, double);

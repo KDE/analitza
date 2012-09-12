@@ -35,18 +35,17 @@ static Analitza::ExpressionType ExpressionType() { return Analitza::ExpressionTy
 CoordinateSystem coordinateSystem() const { return CoordSystem(); } \
 static CoordinateSystem CoordSystem() { return name; }
 
-//TODO validaciones strim etc 
 #define PARAMETERS(name) \
 QStringList parameters() const { return Parameters(); } \
-static QStringList Parameters() { return QString(name).split(","); }
+static QStringList Parameters() { return (name); }
 
 #define ICON_NAME(name) \
 QString iconName() const { return IconName(); } \
 static QString IconName() { return QString(name); } 
 
-#define EXAMPLES(name) \
+#define EXAMPLES(exs) \
 QStringList examples() const { return Examples(); } \
-static QStringList Examples() { return QString(name).split(","); }
+static QStringList Examples() { return (exs); }
 
 
 class AbstractFunctionGraph : public AbstractMappingGraph

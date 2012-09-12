@@ -72,9 +72,9 @@ public:
     TYPE_NAME("Parametric Curve 2D")
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("t")
+    PARAMETERS(QStringList("t"))
     ICON_NAME("newparametric")
-    EXAMPLES("t->vector {t,t**2}")    
+    EXAMPLES(QStringList("t->vector {t,t**2}"))
     
     void update(const QRectF& viewport);
     

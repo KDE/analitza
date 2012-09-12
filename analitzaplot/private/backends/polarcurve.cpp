@@ -35,9 +35,9 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Polar)
-    PARAMETERS("t") //t:theta
+    PARAMETERS(QStringList("t")) //t:theta
     ICON_NAME("newpolar")
-    EXAMPLES("p->3*sin(p/0.142),p->p+3")    
+    EXAMPLES(QStringList("p->3*sin(p/0.142)") << "p->p+3")    
     
     void update(const QRectF& viewport);
     

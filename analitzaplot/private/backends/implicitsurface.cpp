@@ -36,13 +36,12 @@ public:
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS("x,y,z")
+    PARAMETERS(QStringList("x") << "y" << "z")
     ICON_NAME("draw-square-inverted-corners")
-    EXAMPLES("")
+    EXAMPLES(QStringList())
 
     //Own
-    virtual ~ImplicitSurf() {
-    }
+    virtual ~ImplicitSurf() {}
     void update(const Box3D& viewport);
     
     double evalScalarField(double x, double y, double z);
