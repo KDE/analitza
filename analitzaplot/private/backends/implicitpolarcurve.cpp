@@ -51,10 +51,11 @@ public:
     Analitza::Cn *p;
 };
 
-ImplicitPolar::ImplicitPolar(const Analitza::Expression& e, Analitza::Variables* v): AbstractPlaneCurve(e, v)
+ImplicitPolar::ImplicitPolar(const Analitza::Expression& e, Analitza::Variables* v)
+    : AbstractPlaneCurve(e, v)
 {
     r = arg("r");
-    p = arg("t");
+    p = arg("p");
 }
 
 double ImplicitPolar::evalScalarField(double x, double y)
