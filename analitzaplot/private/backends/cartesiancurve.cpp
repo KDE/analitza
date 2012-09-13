@@ -358,7 +358,5 @@ void FunctionX::calculateValues(double l_lim, double r_lim)
 //  qDebug() << "juuuumps" << jumps << resolution();
 }
 
-
-
 REGISTER_PLANECURVE(FunctionY)
 REGISTER_PLANECURVE(FunctionX)

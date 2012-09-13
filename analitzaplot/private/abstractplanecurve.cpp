@@ -28,7 +28,7 @@
 #include "utils/mathutils.h"
 
 AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractFunctionGraph(e, v)
+    : AbstractFunctionGraph(e, v)
 {}
 
 AbstractPlaneCurve::~AbstractPlaneCurve()
