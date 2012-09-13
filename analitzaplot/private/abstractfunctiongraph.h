@@ -223,7 +223,7 @@ private:
 //END private types
     QStringList m_errors;
 
-    QMap<QString, Analitza::Object*> m_argumentValues;
+    QMap<QString, Analitza::Cn*> m_argumentValues;
     QMap<QString, RealInterval > m_argumentIntervals;
 };
 
