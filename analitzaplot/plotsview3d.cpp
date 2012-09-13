@@ -48,44 +48,31 @@ PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
 
 PlotsView3D::~PlotsView3D()
 {
-    PlotsProxyModel* model = m_model;
-
-    if (model && model->rowCount() > 0)
-    {
-        for (int i = 0; i < model->rowCount(); ++i)
-            if (fromProxy(i))
-            {
-                glDeleteLists(m_displayLists[fromProxy(i)], 1);
-        
-                addFuncs(QModelIndex(), 0, model->rowCount()-1);
-            }
+    if (m_model && m_model->rowCount() > 0) {
+        for (int i = 0; i < m_model->rowCount(); ++i) {
+            glDeleteLists(m_displayLists[itemAt(i)], 1);
+            addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
+        }
     }
 }
 
-void PlotsView3D::setModel(PlotsProxyModel* f)
+void PlotsView3D::setModel(QAbstractItemModel* f)
 {
-    //esto proxy debe ser del plotsmodel ... no de otro modelo
-    Q_ASSERT(qobject_cast< PlotsModel* >(f->sourceModel()));
-//     Q_ASSERT(f->filterSpaceDimension() == 3); // este widget renderiza solo plots que esten en un spacio 3D
-    
-
     m_model=f;
-    PlotsProxyModel* model = m_model;
 
-    if (model->rowCount( ) > 0)
+    if (m_model->rowCount( ) > 0)
     {
-        for (int i = 0; i < model->rowCount(); ++i)
-            if (fromProxy(i))
-            {
-                glDeleteLists(m_displayLists[fromProxy(i)], 1);
+        for (int i = 0; i < m_model->rowCount(); ++i)
+            if (itemAt(i)) {
+                glDeleteLists(m_displayLists[itemAt(i)], 1);
         
-                addFuncs(QModelIndex(), 0, model->rowCount()-1);
+                addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
             }
     }
     
     //TODO disconnect prev model
     //NOTE Estas signal son del PROXY ... para evitar que este widget reciba signals que no le interesan 
-//     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
     connect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
     
@@ -120,32 +107,14 @@ void PlotsView3D::resizeScene(int v)
 
 void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(int modelindex) // modelindex del proxy
 {
-    //NOTE 
-    //IMPORTANT SIEMPRE HACER UN MAKECURRENT ANTES DE OPERACIONES OPENGL : EL CLIENTE PUEDE TERNER MAS DE UN GLWIDGET A LA VEZ
-    makeCurrent();
+    makeCurrent(); //NOTE: Remember to call makeCurrent before any OpenGL operation. We might have multiple clients in the same window
     
-    
-//     Q_ASSERT(!parent.isValid());
-//     Q_ASSERT(start == end); // siempre se agrega un solo item al model
+    PlotItem *item = itemAt(modelindex);
 
-    PlotItem *item = fromProxy(modelindex);
-//         qDebug() << start << end<< item->spaceDimension();
-    
-//     if (item)
-//     qDebug() << item->expression().toString() << item->spaceDimension();
+    if (!item || !item->isVisible() || item->spaceDimension() != Dim3D)
+        return;
 
-    if (!item) return;// no agregar nada que no cumpla las politicas/filtros del proxy
-
-//NOTE si el item no es visible salir ... no generar listas de acceso 
-    if (!item->isVisible()) return;
-
-    if (item->spaceDimension() != 3) return;
-    
     Surface* surf = static_cast<Surface*>(item);
-    
-    if (!surf) return;
-
-//     qDebug() << surf->faces().isEmpty();
     
     if (surf->faces().isEmpty()) // si no esta vacio no es necesario generar nada 
         surf->update(Box3D());
@@ -195,7 +164,7 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i
 
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
-    PlotItem *item = fromProxy(start);
+    PlotItem *item = itemAt(start);
 
     if (!item || item->spaceDimension() != 3)
         return;
@@ -236,8 +205,10 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
         QVector3D n;
         
         //TODO no magic numbers
-        if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
-        else n = QVector3D(0.5, 0.1, 0.2).normalized();
+        if (!face.faceNormal().isNull())
+            n = face.faceNormal().normalized();
+        else
+            n = QVector3D(0.5, 0.1, 0.2).normalized();
         
         glNormal3d(n.x(), n.y(), n.z());
         glVertex3d(face.p().x(), face.p().y(), face.p().z());
@@ -256,7 +227,7 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 {
     Q_ASSERT(!parent.isValid());
     for(int i=start; i<=end; i++) {
-        PlotItem *item = fromProxy(i);
+        PlotItem *item = itemAt(i);
 
         if (item) {
             glDeleteLists(m_displayLists[item], 1);
@@ -272,7 +243,7 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 //TODO cache para exp e interval ... pues del resto es solo cuestion de update
 void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
 {
-    PlotItem *item = fromProxy(s.row());
+    PlotItem *item = itemAt(s.row());
         
     if (!item) return;
 
@@ -343,11 +314,11 @@ void PlotsView3D::draw()
 
     for (int i = 0; i < m_model->rowCount(); ++i)
     {
-        PlotItem *item = fromProxy(i);
+        PlotItem *item = itemAt(i);
 
         if (!item) continue;
 
-        if (item->spaceDimension() != 3) continue;
+        if (item->spaceDimension() != Dim3D) continue;
         
         Surface* surf = static_cast<Surface*>(item);
         
@@ -392,29 +363,19 @@ void PlotsView3D::init()
 
 }
 
-PlotItem* PlotsView3D::fromProxy(int proxy_row) const
+PlotItem* PlotsView3D::itemAt(int row) const
 {
-    QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
+    if(!m_model)
+        return 0;
+    QModelIndex pi = m_model->index(row, 0);
 
     if (!pi.isValid())
         return 0;
-    
+
     PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
-    if (plot->spaceDimension() != 3)
-        return 0; // evitamos que los proxies de los usuario causen un bug
+
+    if (plot->spaceDimension() != Dim3D)
+        return 0;
 
     return plot;
 }
-
-//TODO: from source should go
-PlotItem* PlotsView3D::fromSource(int realmodel_row) const
-{
-    QModelIndex si = m_model->mapFromSource(m_model->sourceModel()->index(realmodel_row,0));
-
-    if (si.isValid())
-        return si.data(PlotsModel::PlotRole).value<PlotItem*>();
-    
-    return 0;
-}
-
-

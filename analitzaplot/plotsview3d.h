@@ -39,7 +39,7 @@ public:
     PlotsView3D(QWidget *parent = 0, PlotsProxyModel *m = 0);
     virtual ~PlotsView3D();
 
-    void setModel(PlotsProxyModel* f);
+    void setModel(QAbstractItemModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:
@@ -64,11 +64,9 @@ private:
     void draw();
     void init();
     
-    PlotItem *fromProxy(int proxy_row) const; // get the real item from proxy
-    //TODO borrar fromsource next item 2d version too
-    PlotItem *fromSource(int realmodel_row) const; // get the item filtered by the proxy
+    PlotItem *itemAt(int row) const;
     
-    PlotsProxyModel *m_model;
+    QAbstractItemModel *m_model;
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>
