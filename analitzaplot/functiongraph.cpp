@@ -35,10 +35,13 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dim
     : PlotItem(n, col)
     , m_functionGraph(0)
 {
+    Q_ASSERT(functionExpression.isCorrect());
     setName(n);
     setColor(col);
     QString id = canDrawInternal(functionExpression, spacedim, m_errors);
 
+    if(id.isEmpty())
+        qDebug() << "error!!" << m_errors;
     Q_ASSERT(!id.isEmpty());
 
     m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, vars);
