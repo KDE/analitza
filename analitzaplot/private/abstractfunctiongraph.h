@@ -69,7 +69,7 @@ public:
 
     const Analitza::Expression &expression() const;
 
-    QStringList errors() const { return m_errors; }
+    QStringList errors() const { return m_errors+analyzer->errors(); }
     bool isCorrect() const;
     
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
