@@ -199,19 +199,19 @@ QString FunctionGraph::canDrawInternal(const Analitza::Expression& testexp, Dime
     if (exp.isEquation())
         exp = exp.equationToFunction();
     
-    QScopedPointer<Analitza::Analyzer> a(new Analitza::Analyzer);
-    a->setExpression(exp);
-    a->setExpression(a->dependenciesToLambda());
+    Analitza::Analyzer a;
+    a.setExpression(exp);
+    a.setExpression(a.dependenciesToLambda());
     
     QString id;
-    if(a->isCorrect()) {
-        QString expectedid = FunctionGraphFactory::self()->trait(a->expression(), a->type(), spacedim);
+    if(a.isCorrect()) {
+        QString expectedid = FunctionGraphFactory::self()->trait(a.expression(), a.type(), spacedim);
         if(FunctionGraphFactory::self()->contains(expectedid)) {
             id = expectedid;
         } else
             errs << i18n("Function type not recognized");
     } else {
-        errs << a->errors();
+        errs << a.errors();
     }
     
     Q_ASSERT(!errs.isEmpty() || !id.isEmpty());
