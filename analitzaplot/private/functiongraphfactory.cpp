@@ -97,7 +97,8 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, const Anal
     qSort(args);
 
     QString key;
-    for (int i = 0; i < argumentsFunctions.values().size() && key.isEmpty(); ++i)     {
+    for (int i = 0; i < argumentsFunctions.values().size() && key.isEmpty(); ++i) {
+//         qDebug() << "---" << args << dim << t.toString() << " || " << argumentsFunctions.values()[i] << spaceDimensions.values()[i] << expressionTypeFunctions.values()[i]().toString();
         if (args == argumentsFunctions.values()[i]
             && dim == spaceDimensions.values()[i]
             && t.canReduceTo(expressionTypeFunctions.values()[i]()))
