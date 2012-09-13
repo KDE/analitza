@@ -31,8 +31,8 @@
 #define REGISTER_FUNCTIONGRAPH_DIM(dim, name) \
         static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(dim, vcreate##name, \
-        name ::TypeName, name ::ExpressionType, name ::CoordSystem, name ::Parameters(), \
-        name ::IconName, name ::Examples); }
+        name ::TypeName(), name ::ExpressionType, name ::CoordSystem(), name ::Parameters(), \
+        name ::IconName(), name ::Examples); }
 
         
 #define REGISTER_PLANECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim2D, __VA_ARGS__)
@@ -52,10 +52,7 @@ class FunctionGraphFactory
 public:
     typedef AbstractFunctionGraph* (*BuilderFunctionWithVars)(const Analitza::Expression&, Analitza::Variables* );
     
-    typedef QString (*TypeNameFunction)();
     typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
-    typedef CoordinateSystem (*CoordinateSystemFunction)();
-    typedef QString (*IconNameFunction)();
     typedef QStringList (*ExamplesFunction)();
 
     QString typeName(const QString& id) const;
@@ -71,10 +68,9 @@ public:
     static FunctionGraphFactory* self();
 
     bool registerFunctionGraph(Dimension dim, BuilderFunctionWithVars builderFunctionWithVars,
-                  TypeNameFunction typeNameFunction,
-                         ExpressionTypeFunction expressionTypeFunction, 
-                         CoordinateSystemFunction coordinateSystemFunction, const QStringList& argumentsFunction,
-                         IconNameFunction iconNameFunction, ExamplesFunction examplesFunction);
+                  const QString& typeNameFunction, ExpressionTypeFunction expressionTypeFunction, 
+                         CoordinateSystem coordinateSystemFunction, const QStringList& argumentsFunction,
+                         const QString& iconNameFunction, ExamplesFunction examplesFunction);
     QString trait(const Analitza::Expression& expr, const Analitza::ExpressionType& t, Dimension dim) const;
     bool contains(const QString &id) const;
     
@@ -83,12 +79,12 @@ public:
     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredFunctionGraphs() const;
 
 private:
-    QMap<QString, TypeNameFunction> typeNameFunctions;
+    QMap<QString, QString> typeNameFunctions;
     QMap<QString, ExpressionTypeFunction> expressionTypeFunctions;
     QMap<QString, Dimension> spaceDimensions; //internal use (without a "getter")
-    QMap<QString, CoordinateSystemFunction> coordinateSystemFunctions;
+    QMap<QString, CoordinateSystem> coordinateSystemFunctions;
     QMap<QString, QStringList> argumentsFunctions; //internal use (without a "getter")
-    QMap<QString, IconNameFunction> iconNameFunctions;
+    QMap<QString, QString> iconNameFunctions;
     QMap<QString, ExamplesFunction> examplesFunctions;
 
     static FunctionGraphFactory* m_self;

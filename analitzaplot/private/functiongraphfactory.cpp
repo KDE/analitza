@@ -27,7 +27,7 @@ FunctionGraphFactory* FunctionGraphFactory::m_self=0;
 
 QString FunctionGraphFactory::typeName(const QString& id) const
 {
-    return typeNameFunctions[id]();
+    return typeNameFunctions[id];
 }
 
 Analitza::ExpressionType FunctionGraphFactory::expressionType(const QString& id) const
@@ -42,12 +42,12 @@ Dimension FunctionGraphFactory::spaceDimension(const QString& id) const
 
 CoordinateSystem FunctionGraphFactory::coordinateSystem(const QString& id) const
 {
-    return coordinateSystemFunctions[id]();
+    return coordinateSystemFunctions[id];
 }
 
 QString FunctionGraphFactory::iconName(const QString& id) const
 {
-    return iconNameFunctions[id]();
+    return iconNameFunctions[id];
 }
 
 QStringList FunctionGraphFactory::examples(const QString& id) const
@@ -62,16 +62,16 @@ FunctionGraphFactory* FunctionGraphFactory::self()
     return m_self;
 }
 
-bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, BuilderFunctionWithVars builderFunctionWithVars, TypeNameFunction typeNameFunction,
+bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, BuilderFunctionWithVars builderFunctionWithVars, const QString& typeNameFunction,
         ExpressionTypeFunction expressionTypeFunction, 
-        CoordinateSystemFunction coordinateSystemFunction, const QStringList& _arguments,
-        IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
+        CoordinateSystem coordinateSystemFunction, const QStringList& _arguments,
+        const QString& iconNameFunction, ExamplesFunction examplesFunction)
 {
     QStringList arguments(_arguments);
     qSort(arguments);
     
     QString id = QString::number((int)dim)+"|"+
-                 QString::number((int)coordinateSystemFunction())+"|"+
+                 QString::number((int)coordinateSystemFunction)+"|"+
                  arguments.join(",");
                  
                 
@@ -108,7 +108,7 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, const Anal
     }
 
     if (!key.isEmpty())
-        return QString::number(spaceDimensions[key])+"|"+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key].join(",");
+        return QString::number(spaceDimensions[key])+"|"+QString::number((int)coordinateSystemFunctions[key])+"|"+argumentsFunctions[key].join(",");
 
     return QString();    
 }
@@ -128,7 +128,7 @@ QMap< QString, QPair< QStringList, Analitza::ExpressionType > > FunctionGraphFac
     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > ret;
     
     for (int i = 0; i < typeNameFunctions.values().size(); ++i)
-        ret[typeNameFunctions.values()[i]()] = qMakePair( argumentsFunctions.values()[i],
+        ret[typeNameFunctions.values()[i]] = qMakePair( argumentsFunctions.values()[i],
             expressionTypeFunctions.values()[i]()); 
 
     return ret;
