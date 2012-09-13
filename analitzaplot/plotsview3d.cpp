@@ -163,7 +163,7 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
     PlotItem *item = itemAt(start);
 
-    if (!item || item->spaceDimension() != 3)
+    if (!item || item->spaceDimension() != Dim3D)
         return;
     
     Surface* surf = static_cast<Surface*>(item);

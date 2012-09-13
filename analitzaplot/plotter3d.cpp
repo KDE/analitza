@@ -59,7 +59,7 @@ PlotItem* Plotter3D::itemAt(int row) const
 
     PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
 
-    if (plot->spaceDimension() != 3) // <= 3?
+    if (plot->spaceDimension() != Dim3D)
         return 0;
 
     return plot;
