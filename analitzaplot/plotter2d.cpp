@@ -646,6 +646,8 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
 PlotItem* Plotter2D::itemAt(int row) const
 {
+    if(!m_model)
+        return 0;
     QModelIndex pi = m_model->index(row, 0);
 
     if (!pi.isValid())
