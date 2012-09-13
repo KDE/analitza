@@ -101,9 +101,7 @@ QStringList FunctionGraph::errors() const
     Q_ASSERT(m_functionGraph);
     
     QStringList err(m_errors);
-    if(m_functionGraph) {
-        err += m_functionGraph->errors();
-    }
+    err += m_functionGraph->errors();
     return err;
 }
 
