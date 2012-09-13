@@ -88,17 +88,12 @@ void Plotter3D::drawPlots()
         {
             PlotItem* plot = itemAt(i);
             
-            if (!plot) continue;
-
-            if (!plot->isVisible()) continue;
+            if (!plot || !plot->isVisible())
+                continue;
 
             Surface* surf = static_cast<Surface*>(plot);
-
-            if (!surf) return;
-
-        //     qDebug() << surf->faces().isEmpty();
             
-            if (surf->faces().isEmpty()) // si no esta vacio no es necesario generar nada 
+            if (surf->faces().isEmpty())
                 surf->update(Box3D());
 
             GLuint dlid = glGenLists(1);
