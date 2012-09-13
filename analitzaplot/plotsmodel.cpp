@@ -124,10 +124,9 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                     //FIXME: actually I think the name should be stored in the model instead of plotItem
                     //if there was another plot with that name, it shouldn't be accepted
                     QString newName = value.toString();
-                    if(newName.isEmpty())
-                        return false;
-                    m_items[index.row()]->setName(newName);
-                    return true;
+                    if(!newName.isEmpty())
+                        m_items[index.row()]->setName(newName);
+                    return !newName.isEmpty();
                 }
                 case 1: {
                     Analitza::Expression valexp = AnalitzaUtils::variantToExpression(value);

@@ -60,14 +60,11 @@ void PlotsView3D::setModel(QAbstractItemModel* f)
 {
     m_model=f;
 
-    if (m_model->rowCount( ) > 0)
-    {
-        for (int i = 0; i < m_model->rowCount(); ++i)
-            if (itemAt(i)) {
-                glDeleteLists(m_displayLists[itemAt(i)], 1);
-        
-                addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
-            }
+    for (int i = 0; i < m_model->rowCount(); ++i) {
+        if (itemAt(i)) {
+            glDeleteLists(m_displayLists[itemAt(i)], 1);
+            addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
+        }
     }
     
     //TODO disconnect prev model
