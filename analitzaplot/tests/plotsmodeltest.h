@@ -21,31 +21,22 @@
 
 #include <QObject>
 
-/**
-	@author Percy Camilo
-*/
-
 class PlotsModel;
 
 namespace Analitza { class Variables; }
 
-class PlaneCurvesModelTest : public QObject
+class PlotsModelTest : public QObject
 {
 Q_OBJECT
 	public:
-		PlaneCurvesModelTest(QObject *parent = 0);
-		~PlaneCurvesModelTest();
+		PlotsModelTest(QObject *parent = 0);
+		~PlotsModelTest();
 
 	private slots:
-		void initTestCase();
-
-        //Como todas las curvas son correctas por construccion solo basta probar que se ageregen al modelo
 		void testAppend();
 		void testAppend_data();
 
-		void cleanupTestCase();
 	private:
-		Analitza::Variables* m_vars;
         PlotsModel *m_model;
 };
 
