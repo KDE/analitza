@@ -102,16 +102,10 @@ void PlotsView3D::resizeScene(int v)
     updateGL();
 }
 
-void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(int modelindex) // modelindex del proxy
+void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(Surface* surf)
 {
+    Q_ASSERT(surf);
     makeCurrent(); //NOTE: Remember to call makeCurrent before any OpenGL operation. We might have multiple clients in the same window
-    
-    PlotItem *item = itemAt(modelindex);
-
-    if (!item || !item->isVisible() || item->spaceDimension() != Dim3D)
-        return;
-
-    Surface* surf = static_cast<Surface*>(item);
     
     if (surf->faces().isEmpty()) // si no esta vacio no es necesario generar nada 
         surf->update(Box3D());
@@ -168,8 +162,6 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
     
     Surface* surf = static_cast<Surface*>(item);
     
-    //NOTE 
-    //IMPORTANT SIEMPRE HACER UN MAKECURRENT ANTES DE OPERACIONES OPENGL : EL CLIENTE PUEDE TERNER MAS DE UN GLWIDGET A LA VEZ
     makeCurrent();
     
     surf->update(Box3D());
@@ -250,11 +242,10 @@ void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
     glDeleteLists(m_displayLists[surf], 1);
 
     //si es visible lo quenero de nuevo .. pues seuro cambio el setinterval
-    if (surf->isVisible())
-    {
+    if (surf->isVisible()) {
 //         addFuncs(QModelIndex(), s.row(), s.row());
 //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data 
-        addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(s.row());
+        addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(surf);
 
     }
     //caso contrario .. no hago nada 
@@ -270,10 +261,8 @@ void PlotsView3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 
 int PlotsView3D::currentFunction() const
 {
-    if (!m_model) return -1; // guard
-    
     int ret=-1;
-    if(m_selection) {
+    if(m_selection && m_model) {
         ret=m_selection->currentIndex().row();
     }
     
@@ -282,7 +271,8 @@ int PlotsView3D::currentFunction() const
 
 void PlotsView3D::draw()
 {
-    if (!m_model) return; // si no hay modelo retornar ... //NOTE guard
+    if(!m_model)
+        return;
     
     //NOTE si esto pasa entonces quiere decir que el proxy empezado a filtrar otros items
     // y si es asi borro todo lo que esta agregado al la memoria de la tarjeta
@@ -302,8 +292,10 @@ void PlotsView3D::draw()
     if (m_displayLists.isEmpty())
     {
         //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
-        for (int i = 0; i < m_model->rowCount(); ++i)
-            addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i);
+        for (int i = 0; i < m_model->rowCount(); ++i) {
+            Surface* s = dynamic_cast<Surface*>(itemAt(i));
+            addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(s);
+        }
     }
     
     
