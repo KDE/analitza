@@ -43,6 +43,7 @@ public:
     virtual ~PlaneCurve();
 
     static QStringList canDraw(const Analitza::Expression &functionExpression);
+	static QStringList examples();
 
     void setExpression(const Analitza::Expression& functionExpression);
 
@@ -51,9 +52,6 @@ public:
     void update(const QRectF& viewport);
     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
     QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse postion 
-
-private:
-    PlaneCurve();
 };
 
 #endif // ANALITZAPLOT_FUNCTION_H

@@ -62,6 +62,8 @@ public:
         @returns either the errors or empty if it can be done
     */
     static QStringList canDraw(const Analitza::Expression& exp, Dimension spacedim);
+
+    static QStringList examples(Dimension dim);
     
 protected:
     FunctionGraph();

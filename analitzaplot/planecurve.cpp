@@ -45,6 +45,11 @@ QStringList PlaneCurve::canDraw(const Analitza::Expression& functionExpression)
     return FunctionGraph::canDraw(functionExpression, Dim2D);
 }
 
+QStringList PlaneCurve::examples()
+{
+    return FunctionGraph::examples(Dim2D);
+}
+
 void PlaneCurve::setExpression(const Analitza::Expression& functionExpression)
 {
     FunctionGraph::setExpression(functionExpression, Dim2D);

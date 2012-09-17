@@ -220,3 +220,8 @@ QString FunctionGraph::canDrawInternal(const Analitza::Expression& testexp, Dime
     
     return id;
 }
+
+QStringList FunctionGraph::examples(Dimension dim)
+{
+	return FunctionGraphFactory::self()->examples(dim);
+}
