@@ -282,7 +282,11 @@ void PlotsView3D::draw()
         //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
         for (int i = 0; i < m_model->rowCount(); ++i) {
             Surface* s = dynamic_cast<Surface*>(itemAt(i));
-            addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(s);
+            
+            if (!s) continue;
+            
+            if (s->isVisible())
+                addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(s);
         }
     }
 

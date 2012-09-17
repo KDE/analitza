@@ -66,20 +66,11 @@ int main(int argc, char *argv[])
     mainWindow->setMinimumSize(640, 480);
     mainWindow->statusBar()->show();
 
-//     QItemEditorFactory *factory = new QItemEditorFactory;
-//     QItemEditorCreatorBase *colorListCreator = new QStandardItemEditorCreator<KColorCombo>();
-//     factory->registerEditor(QVariant::Color, colorListCreator);
-//     QItemEditorFactory::setDefaultFactory(factory);
-
     QWidget *central = new QWidget(mainWindow);
     QVBoxLayout *layout = new QVBoxLayout(central);
     
-//     QCheckBox *checkvisible = new QCheckBox(central);
-//     checkvisible->setText("Editable view");
-//     checkvisible->setCheckState(Qt::Checked);
-//     checkvisible->setTristate(false);
-
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
+
 
 //     layout->addWidget(checkvisible);
     layout->addWidget(tabs);
@@ -87,18 +78,16 @@ int main(int argc, char *argv[])
     //BEGIN test calls
     
     PlotsModel *model = new PlotsModel(tabs);
-    
-//     checkvisible->connect(checkvisible, SIGNAL(toggled(bool)), model, SLOT(setCheckable(bool)));
 
-    PlotsProxyModel *proxy = new PlotsProxyModel(tabs);
-    proxy->setFilterSpaceDimension(Dim3D);
-    proxy->setSourceModel(model);
-    
-    QItemSelectionModel *selection = new QItemSelectionModel(proxy);
+    QTreeView *viewsource = new QTreeView(tabs);
+    viewsource->setRootIsDecorated(false);
+    viewsource->setMouseTracking(true);
+    viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
+    viewsource->setModel(model);
     
     PlotsView3D *view3d = new PlotsView3D(tabs);
-    view3d->setModel(proxy);
-    view3d->setSelectionModel(selection);
+    view3d->setModel(model);
+    view3d->setSelectionModel(viewsource->selectionModel());
 
     model->addPlot(new Surface(Analitza::Expression("(r,p)->2"), "Hola", Qt::magenta));
     model->addPlot(new Surface(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), "aaa", Qt::lightGray));
@@ -110,28 +99,10 @@ int main(int argc, char *argv[])
 //     model->addSurface(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), "aaa", Qt::lightGray);
 //     model->addPlaneCurve(Analitza::Expression("t->vector{t,t*t}"), "asdasd, ", Qt::blue);
 
-    if (model->rowCount()>0)
-    {
-        selection->setCurrentIndex(model->index(model->rowCount()-1), QItemSelectionModel::Select);
-    }
 
     //END test calls
-    
-    QTreeView *viewsource = new QTreeView(tabs);
-    viewsource->setRootIsDecorated(false);
-    viewsource->setMouseTracking(true);
-    viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
-    viewsource->setModel(model);
 
-    QTreeView *viewproxy = new QTreeView(tabs);
-    viewproxy->setRootIsDecorated(false);
-    viewproxy->setMouseTracking(true);
-    viewproxy->setEditTriggers(QAbstractItemView::AllEditTriggers);
-    viewproxy->setModel(proxy);
-    viewproxy->setSelectionModel(selection);
-    
     tabs->addWidget(viewsource);
-    tabs->addWidget(viewproxy);
     tabs->addWidget(view3d);
 
     mainWindow->setCentralWidget(central);
