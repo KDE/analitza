@@ -104,7 +104,7 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(S
     Q_ASSERT(surf);
     makeCurrent(); //NOTE: Remember to call makeCurrent before any OpenGL operation. We might have multiple clients in the same window
     
-    if (surf->faces().isEmpty()) // si no esta vacio no es necesario generar nada 
+    if (surf->faces().isEmpty())
         surf->update(Box3D());
 
     GLuint dlid = glGenLists(1);
@@ -269,9 +269,7 @@ void PlotsView3D::draw()
     {
         foreach (PlotItem *item, m_displayLists.keys())
         {
-            glDeleteLists(m_displayLists[item], 1);
-            
-            m_displayLists.remove(item);
+            glDeleteLists(m_displayLists.take(item), 1);
         }
     }
     
