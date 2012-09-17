@@ -17,35 +17,20 @@
  *************************************************************************************/
 
 #include <QMainWindow>
-#include <QStringListModel>
 #include <qtreeview.h>
 #include <qsplitter.h>
 #include <QVBoxLayout>
-#include <QCheckBox>
-#include <QPushButton>
 #include <QStatusBar>
-#include <QItemEditorFactory>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
-#include <kcolorcombo.h>
 
 #include "analitzaplot/surface.h"
 #include "analitzaplot/spacecurve.h"
 #include "analitzaplot/plotsmodel.h"
 #include "analitzaplot/plotsview3d.h"
-#include <analitzaplot/plotsdictionarymodel.h>
-#include <planecurve.h>
-#include <plotsproxymodel.h>
-#include <analitza/variables.h>
-#include <analitza/apply.h>
-#include <analitza/variable.h>
-#include <analitza/container.h>
-#include <analitza/polynomial.h>
 #include <analitza/expression.h>
-
-
 
 int main(int argc, char *argv[])
 {
@@ -88,14 +73,10 @@ int main(int argc, char *argv[])
 
     model->addPlot(new Surface(Analitza::Expression("(r,p)->2"), "Hola", Qt::magenta));
     model->addPlot(new Surface(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), "aaa", Qt::lightGray));
-
-//     model->addSurface(Analitza::Expression("(r,p)->2"), "Hola", Qt::magenta);
-//     model->addSurface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan);
-//     model->addPlaneCurve(Analitza::Expression("x+3-y=7"), "asdasd, ", Qt::red);
-//     model->addSurface(Analitza::Expression("x*x+y*y-z*z= 1/2"), "Hola", Qt::yellow);
-//     model->addSurface(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), "aaa", Qt::lightGray);
-//     model->addPlaneCurve(Analitza::Expression("t->vector{t,t*t}"), "asdasd, ", Qt::blue);
-
+//     model->addPlot(new Surface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan));
+    model->addPlot(new Surface(Analitza::Expression("x+3-y=7"), "asdasd, ", Qt::red));
+    model->addPlot(new Surface(Analitza::Expression("x*x+y*y-z*z= 1/2"), "Hola", Qt::yellow));
+//     model->addPlot(new Surface(Analitza::Expression("t->vector{t,t*t}"), "asdasd, ", Qt::blue));
 
     //END test calls
 
