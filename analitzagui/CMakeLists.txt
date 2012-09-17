@@ -23,8 +23,6 @@ set(analitzagui_SRCS
 	algebrahighlighter.cpp
 	variablesmodel.cpp
 	expressionedit.cpp
-
-	functionsview.cpp
 )
 
 kde4_add_library(analitzagui SHARED ${analitzagui_SRCS})
@@ -39,7 +37,6 @@ install(FILES
 	analitzaguiexport.h
 	operatorsmodel.h
 	variablesmodel.h
-	functionsview.h
 	expressionedit.h
 
-        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel)
+    DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel)
