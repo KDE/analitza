@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2012 by Aleix Pol Gonzalez <aleixpol@kde.org>                      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -31,36 +31,24 @@
 using namespace std;
 using Analitza::Expression;
 
-QTEST_KDEMAIN_CORE( PlaneCurvesModelTest )
+QTEST_KDEMAIN_CORE( PlotsModelTest )
 
-PlaneCurvesModelTest::PlaneCurvesModelTest(QObject *parent)
+PlotsModelTest::PlotsModelTest(QObject *parent)
     : QObject(parent)
 {
-    m_vars=new Analitza::Variables;
-
     m_model = new PlotsModel(this);
 }
 
-PlaneCurvesModelTest::~PlaneCurvesModelTest()
-{
-    delete m_vars;
-}
+PlotsModelTest::~PlotsModelTest()
+{}
 
-void PlaneCurvesModelTest::initTestCase()
-{
-}
-
-void PlaneCurvesModelTest::cleanupTestCase()
-{
-}
-
-void PlaneCurvesModelTest::testAppend_data()
+void PlotsModelTest::testAppend_data()
 {
     QTest::addColumn<QString>("input");
 
     QTest::newRow("x->flat") << "x->1";
     QTest::newRow("x->x") << "x->x";
-    QTest::newRow("x->and") << "x->piecewise { and(gt(x,-1), lt(x,1)) ? 1, ?0 }";
+    QTest::newRow("x->and") << "x->piecewise { and(x>-1, x<1) ? 1, ?0 }";
     QTest::newRow("x->abs") << "x->abs(x)";
     QTest::newRow("x->addition") << "x->2+x";
     QTest::newRow("x->minus") << "x->x-2";
@@ -75,24 +63,25 @@ void PlaneCurvesModelTest::testAppend_data()
     QTest::newRow("x->diffx") << "x->(diff(x^2:x))(x)";
     QTest::newRow("y->flat") << "y->1";
     QTest::newRow("y->trigonometric") << "y->sin y";
-    QTest::newRow("polar->scalar") << "p->2";
-    QTest::newRow("polar->function") << "p->sin p";
-    QTest::newRow("polar->hard") << "p->ceiling(p/(2*pi))";
-    QTest::newRow("polar->strange") << "p->p/p";
+    QTest::newRow("polar->scalar") << "q->2";
+    QTest::newRow("polar->function") << "q->sin q";
+    QTest::newRow("polar->hard") << "q->ceiling(q/(2*pi))";
+    QTest::newRow("polar->strange") << "q->q/q";
 
     QTest::newRow("parametric") << "t->vector{t,t**2}";
     QTest::newRow("parametric1") << "t->vector{16*sin(t)^3, abs(t)^0.3*root(t,2)}";
     QTest::newRow("implicit") << "x+y=9";
-
 }
 
-void PlaneCurvesModelTest::testAppend()
+void PlotsModelTest::testAppend()
 {
-//     QFETCH(QString, input);
-    
-//     PlaneCurve *item = 0;
-//     QVERIFY(item = m_model->addPlaneCurve(Expression(input), "Hola", Qt::yellow));
-//     QVERIFY(item->isCorrect());
-}
+    QFETCH(QString, input);
 
-#include "plotsmodeltest.moc"
+    PlaneCurve* item = new PlaneCurve(Expression(input), "Hola", Qt::yellow);;
+    m_model->addPlot(item);
+    QVERIFY(item->isCorrect());
+    
+    item->update(QRectF(-5,5,10,10));
+    if(!item->isCorrect())
+        qDebug() << "error" << item->errors();
+}

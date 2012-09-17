@@ -1,4 +1,3 @@
-
 /*************************************************************************************
  *  Copyright (C) 2007-2011 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
@@ -69,12 +68,9 @@ public:
 
     const Analitza::Expression &expression() const;
 
-    QStringList errors() const { return m_errors; }
+    QStringList errors() const { return m_errors+analyzer->errors(); }
     bool isCorrect() const;
     
-    //TODO CACHE para interval ... eg: currentcalculatedvals 
-    //FunctionGraph
-    //no lleva const porque se calcularan valores con m_argumentIntervals
     QPair<Analitza::Expression, Analitza::Expression> interval(const QString &argname, bool evaluate) const;
     virtual bool setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max);
     
@@ -88,10 +84,6 @@ protected:
     void appendError(const QString &error) { m_errors.append(error); }
     void flushErrors() { m_errors.clear(); }
     
-    //WARNING see if errorCount is necesary ...
-    int errorCount() const { return m_errors.count(); } // if some method throws many erros perhaps the user (child-class) want to stop something
-    
-    //una vez creado podemos guardar su id para consultas posteriores
     void setInternalId(const QString &iid) { m_internalId = iid; }
     
     Analitza::Analyzer *analyzer;
@@ -138,21 +130,14 @@ public:
     //case evaluate = true
     Analitza::Expression value(Analitza::Analyzer *analyzer) const
     { 
-            Q_ASSERT(analyzer);
-
-            analyzer->setExpression(m_expressionValue);
+        analyzer->setExpression(m_expressionValue);
         
-            //TODO checks
-            if (!m_isInfinite)
-    //             if (m_analyzer->isCorrect())
-                return analyzer->calculate();
+        if (!m_isInfinite)
+            return analyzer->calculate();
 
-//             return std::numeric_limits<double>::infinity();
-              return Analitza::Expression(Analitza::Cn("inf")); //TODO
-        
+        return Analitza::Expression(Analitza::Cn("inf"));
     }
 
-    //case evaluate = false
     Analitza::Expression value() const
     { 
         return m_expressionValue;
@@ -233,7 +218,7 @@ private:
 //END private types
     QStringList m_errors;
 
-    QMap<QString, Analitza::Object*> m_argumentValues;
+    QMap<QString, Analitza::Cn*> m_argumentValues;
     QMap<QString, RealInterval > m_argumentIntervals;
 };
 

@@ -17,8 +17,8 @@
  *************************************************************************************/
 
 
-#ifndef _ANALITZAPLOT_FUNCTIONGRAPH_H
-#define _ANALITZAPLOT_FUNCTIONGRAPH_H
+#ifndef ABSTRACTSPACECURVE_H
+#define ABSTRACTSPACECURVE_H
 
 #include "abstractfunctiongraph.h"
 
@@ -51,4 +51,4 @@ private:
 };
 
 
-#endif // ANALITZAPLOT_FUNCTIONGRAPH_H
+#endif // ABSTRACTSPACECURVE_H

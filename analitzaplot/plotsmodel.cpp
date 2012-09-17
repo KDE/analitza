@@ -124,16 +124,15 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                     //FIXME: actually I think the name should be stored in the model instead of plotItem
                     //if there was another plot with that name, it shouldn't be accepted
                     QString newName = value.toString();
-                    if(newName.isEmpty())
-                        return false;
-                    m_items[index.row()]->setName(newName);
-                    return true;
+                    if(!newName.isEmpty())
+                        m_items[index.row()]->setName(newName);
+                    return !newName.isEmpty();
                 }
                 case 1: {
                     Analitza::Expression valexp = AnalitzaUtils::variantToExpression(value);
                     PlotItem* it = m_items[index.row()];
 
-                    if (FunctionGraph::canDraw(valexp, it->spaceDimension())) {
+                    if (FunctionGraph::canDraw(valexp, it->spaceDimension()).isEmpty()) {
                         if (m_items[index.row()]->expression() != valexp) {
                             //TODO GSOC todo por el momento debemos hacer un typcast a functiongraph pues es el unico hijo de plotitem
                             FunctionGraph *fg = static_cast<FunctionGraph*>(it);

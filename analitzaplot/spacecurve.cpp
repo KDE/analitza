@@ -29,31 +29,16 @@
 
 #include "private/abstractspacecurve.h"
 
-
-
-///
-
-///
-
-
-
 SpaceCurve::SpaceCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables)
     : FunctionGraph(functionExpression,Dim3D, name, col, variables)
-{
-}
+{}
 
 SpaceCurve::~SpaceCurve()
-{
-}
+{}
 
-bool SpaceCurve::canDraw(const Analitza::Expression& functionExpression)
+QStringList SpaceCurve::canDraw(const Analitza::Expression& functionExpression)
 {
-return FunctionGraph::canDraw(functionExpression, Dim3D);
-}
-
-bool SpaceCurve::canDraw(const Analitza::Expression& functionExpression, QStringList& errors)
-{
-return FunctionGraph::canDraw(functionExpression, Dim3D, errors);
+    return FunctionGraph::canDraw(functionExpression, Dim3D);
 }
 
 void SpaceCurve::setExpression(const Analitza::Expression& functionExpression)
@@ -61,27 +46,20 @@ void SpaceCurve::setExpression(const Analitza::Expression& functionExpression)
     FunctionGraph::setExpression(functionExpression, Dim3D);
 }
 
-
 const QVector<QVector3D> & SpaceCurve::points() const
 {
     Q_ASSERT(backend());
-
-//     Q_ASSERT(backend()->points().size()>1);
     return static_cast<AbstractSpaceCurve*>(backend())->points;
 }
 
 QVector< int > SpaceCurve::jumps() const
 {
     Q_ASSERT(backend());
-    
-//     Q_ASSERT(backend()->jumps().size()>1);
     return static_cast<AbstractSpaceCurve*>(backend())->jumps;
 }
 
 void SpaceCurve::update(const Box3D& viewport)
 {
-    
     Q_ASSERT(backend());
-    
     static_cast<AbstractSpaceCurve*>(backend())->update(viewport);
 }

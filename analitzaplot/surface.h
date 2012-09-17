@@ -25,14 +25,13 @@ class Triangle3D;
 class Box3D;
 class AbstractSurface;
 
-class ANALITZAPLOT_EXPORT Surface : public FunctionGraph 
+class ANALITZAPLOT_EXPORT Surface : public FunctionGraph
 {
 public:
     Surface(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(), Analitza::Variables *variables = 0);
     virtual ~Surface();
 
-    static bool canDraw(const Analitza::Expression &functionExpression);
-    static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
+    static QStringList canDraw(const Analitza::Expression &functionExpression);
 
     void setExpression(const Analitza::Expression& functionExpression);
 

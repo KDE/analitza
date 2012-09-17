@@ -70,7 +70,10 @@ class FunctionParametric : public AbstractPlaneCurve
 public:
     FunctionParametric(const Expression& e, Variables* v = 0);
     TYPE_NAME("Parametric Curve 2D")
-    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)))
+    EXPRESSION_TYPE(
+        Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
+            .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
+            .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)))
     COORDDINATE_SYSTEM(Cartesian)
     PARAMETERS(QStringList("t"))
     ICON_NAME("newparametric")
@@ -81,7 +84,6 @@ public:
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
     
-    //
     Analitza::Cn *t;
 
 private:
@@ -89,12 +91,10 @@ private:
 
 };
 
-// 
 FunctionParametric::FunctionParametric(const Expression& e, Variables* v): AbstractPlaneCurve(e, v)
 {
     t = arg("t");
 }
-
 
 void FunctionParametric::update(const QRectF& viewport)
 {

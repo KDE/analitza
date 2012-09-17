@@ -27,7 +27,7 @@ FunctionGraphFactory* FunctionGraphFactory::m_self=0;
 
 QString FunctionGraphFactory::typeName(const QString& id) const
 {
-    return typeNameFunctions[id]();
+    return typeNameFunctions[id];
 }
 
 Analitza::ExpressionType FunctionGraphFactory::expressionType(const QString& id) const
@@ -42,12 +42,12 @@ Dimension FunctionGraphFactory::spaceDimension(const QString& id) const
 
 CoordinateSystem FunctionGraphFactory::coordinateSystem(const QString& id) const
 {
-    return coordinateSystemFunctions[id]();
+    return coordinateSystemFunctions[id];
 }
 
 QString FunctionGraphFactory::iconName(const QString& id) const
 {
-    return iconNameFunctions[id]();
+    return iconNameFunctions[id];
 }
 
 QStringList FunctionGraphFactory::examples(const QString& id) const
@@ -62,16 +62,17 @@ FunctionGraphFactory* FunctionGraphFactory::self()
     return m_self;
 }
 
-bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, BuilderFunctionWithVars builderFunctionWithVars, TypeNameFunction typeNameFunction,
+bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, BuilderFunctionWithVars builderFunctionWithVars, const QString& typeNameFunction,
         ExpressionTypeFunction expressionTypeFunction, 
-        CoordinateSystemFunction coordinateSystemFunction, ArgumentsFunction argumentsFunction,
-        IconNameFunction iconNameFunction, ExamplesFunction examplesFunction)
+        CoordinateSystem coordinateSystemFunction, const QStringList& _arguments,
+        const QString& iconNameFunction, ExamplesFunction examplesFunction)
 {
-//     Q_ASSERT(expressionTypeFunction().type() == Analitza::ExpressionType::Lambda); DEPRECATED implicit is not a lambda
+    QStringList arguments(_arguments);
+    qSort(arguments);
     
     QString id = QString::number((int)dim)+"|"+
-                 QString::number((int)coordinateSystemFunction())+"|"+
-                 argumentsFunction().join(",");
+                 QString::number((int)coordinateSystemFunction)+"|"+
+                 arguments.join(",");
                  
                 
     Q_ASSERT(!contains(id)); // verificar que no se registren los mismos tipos
@@ -80,7 +81,7 @@ bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, BuilderFunctionW
     expressionTypeFunctions[id] = expressionTypeFunction;
     spaceDimensions[id] = dim;
     coordinateSystemFunctions[id] = coordinateSystemFunction;
-    argumentsFunctions[id] = argumentsFunction;
+    argumentsFunctions[id] = arguments;
     iconNameFunctions[id] = iconNameFunction;
     examplesFunctions[id] = examplesFunction;
 
@@ -93,10 +94,12 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, const Anal
 {
     Q_ASSERT(!expr.isEquation());
     QStringList args = expr.bvarList();
+    qSort(args);
 
     QString key;
-    for (int i = 0; i < argumentsFunctions.values().size() && key.isEmpty(); ++i)     {
-        if (args == argumentsFunctions.values()[i]()
+    for (int i = 0; i < argumentsFunctions.values().size() && key.isEmpty(); ++i) {
+//         qDebug() << "---" << args << dim << t.toString() << " || " << argumentsFunctions.values()[i] << spaceDimensions.values()[i] << expressionTypeFunctions.values()[i]().toString();
+        if (args == argumentsFunctions.values()[i]
             && dim == spaceDimensions.values()[i]
             && t.canReduceTo(expressionTypeFunctions.values()[i]()))
         {
@@ -105,7 +108,7 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, const Anal
     }
 
     if (!key.isEmpty())
-        return QString::number(spaceDimensions[key])+"|"+QString::number((int)coordinateSystemFunctions[key]())+"|"+argumentsFunctions[key]().join(",");
+        return QString::number(spaceDimensions[key])+"|"+QString::number((int)coordinateSystemFunctions[key])+"|"+argumentsFunctions[key].join(",");
 
     return QString();    
 }
@@ -125,7 +128,7 @@ QMap< QString, QPair< QStringList, Analitza::ExpressionType > > FunctionGraphFac
     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > ret;
     
     for (int i = 0; i < typeNameFunctions.values().size(); ++i)
-        ret[typeNameFunctions.values()[i]()] = qMakePair( argumentsFunctions.values()[i](),
+        ret[typeNameFunctions.values()[i]] = qMakePair( argumentsFunctions.values()[i],
             expressionTypeFunctions.values()[i]()); 
 
     return ret;

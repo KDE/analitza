@@ -26,11 +26,11 @@
 #include <QModelIndex>
 #include "analitzaplotexport.h"
 
+class Surface;
 class PlotItem;
 class PlotsProxyModel;
 class QItemSelectionModel;
 
-// class Solver3D;
 class ANALITZAPLOT_EXPORT PlotsView3D : public QGLViewer
 {
     Q_OBJECT
@@ -39,7 +39,7 @@ public:
     PlotsView3D(QWidget *parent = 0, PlotsProxyModel *m = 0);
     virtual ~PlotsView3D();
 
-    void setModel(PlotsProxyModel* f);
+    void setModel(QAbstractItemModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:
@@ -52,7 +52,7 @@ private slots:
     //como addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw se llema desde el draw no debe tener updategl
     //sino existe bloqueo (una recursividad: pues draw llama a update y este a draw)
     //TODO oviamente mejorar los nombres y resusar
-    void addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(int modelindex);     // modelindex del proxy
+    void addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(Surface* surf);     // modelindex del proxy
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);
@@ -64,11 +64,9 @@ private:
     void draw();
     void init();
     
-    PlotItem *fromProxy(int proxy_row) const; // get the real item from proxy
-    //TODO borrar fromsource next item 2d version too
-    PlotItem *fromSource(int realmodel_row) const; // get the item filtered by the proxy
+    PlotItem *itemAt(int row) const;
     
-    PlotsProxyModel *m_model;
+    QAbstractItemModel *m_model;
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>

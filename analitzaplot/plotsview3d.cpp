@@ -39,71 +39,52 @@ PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
 {
     setGridIsDrawn(true);
     setAxisIsDrawn(true);
-//     
+
     setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
-    setSceneRadius(6); // TODO no magic number 5 es el size de las coords (alrededor )
+    setSceneRadius(6); //TODO no magic number, 5 is the size of the ¿coords?
     
     camera()->setPosition(qglviewer::Vec(0,0,15));
 }
 
 PlotsView3D::~PlotsView3D()
 {
-    PlotsProxyModel* model = m_model;
-
-    if (model && model->rowCount() > 0)
-    {
-        for (int i = 0; i < model->rowCount(); ++i)
-            if (fromProxy(i))
-            {
-                glDeleteLists(m_displayLists[fromProxy(i)], 1);
-        
-                addFuncs(QModelIndex(), 0, model->rowCount()-1);
-            }
+    if (m_model && m_model->rowCount() > 0) {
+        for (int i = 0; i < m_model->rowCount(); ++i) {
+            glDeleteLists(m_displayLists[itemAt(i)], 1);
+            addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
+        }
     }
 }
 
-void PlotsView3D::setModel(PlotsProxyModel* f)
+void PlotsView3D::setModel(QAbstractItemModel* f)
 {
-    //esto proxy debe ser del plotsmodel ... no de otro modelo
-    Q_ASSERT(qobject_cast< PlotsModel* >(f->sourceModel()));
-//     Q_ASSERT(f->filterSpaceDimension() == 3); // este widget renderiza solo plots que esten en un spacio 3D
-    
-
-    m_model=f;
-    PlotsProxyModel* model = m_model;
-
-    if (model->rowCount( ) > 0)
-    {
-        for (int i = 0; i < model->rowCount(); ++i)
-            if (fromProxy(i))
-            {
-                glDeleteLists(m_displayLists[fromProxy(i)], 1);
-        
-                addFuncs(QModelIndex(), 0, model->rowCount()-1);
-            }
+    if(m_model) {
+        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+        disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+        disconnect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
     }
     
-    //TODO disconnect prev model
-    //NOTE Estas signal son del PROXY ... para evitar que este widget reciba signals que no le interesan 
-//     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+    m_model=f;
+
+    for (int i = 0; i < m_model->rowCount(); ++i) {
+        if (itemAt(i)) {
+            glDeleteLists(m_displayLists[itemAt(i)], 1);
+            addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
+        }
+    }
+     
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
     connect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
-    
-    //visible off on
-    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(testvisible(QModelIndex,QModelIndex)));
+    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
 
-    
     updateGL();
 }
 
 void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
 {
     Q_ASSERT(selection);
-//     Q_ASSERT(selection->model() == m_model);
-    
-    //El item selection es del proxy
-    Q_ASSERT(qobject_cast< const PlotsProxyModel* >(selection->model()));
-    
     
     m_selection = selection;
 //     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
@@ -118,34 +99,10 @@ void PlotsView3D::resizeScene(int v)
     updateGL();
 }
 
-void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(int modelindex) // modelindex del proxy
+void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(Surface* surf)
 {
-    //NOTE 
-    //IMPORTANT SIEMPRE HACER UN MAKECURRENT ANTES DE OPERACIONES OPENGL : EL CLIENTE PUEDE TERNER MAS DE UN GLWIDGET A LA VEZ
-    makeCurrent();
-    
-    
-//     Q_ASSERT(!parent.isValid());
-//     Q_ASSERT(start == end); // siempre se agrega un solo item al model
-
-    PlotItem *item = fromProxy(modelindex);
-//         qDebug() << start << end<< item->spaceDimension();
-    
-//     if (item)
-//     qDebug() << item->expression().toString() << item->spaceDimension();
-
-    if (!item) return;// no agregar nada que no cumpla las politicas/filtros del proxy
-
-//NOTE si el item no es visible salir ... no generar listas de acceso 
-    if (!item->isVisible()) return;
-
-    if (item->spaceDimension() != 3) return;
-    
-    Surface* surf = static_cast<Surface*>(item);
-    
-    if (!surf) return;
-
-//     qDebug() << surf->faces().isEmpty();
+    Q_ASSERT(surf);
+    makeCurrent(); //NOTE: Remember to call makeCurrent before any OpenGL operation. We might have multiple clients in the same window
     
     if (surf->faces().isEmpty()) // si no esta vacio no es necesario generar nada 
         surf->update(Box3D());
@@ -161,8 +118,7 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i
     //BEGIN display list
     glNewList(dlid, GL_COMPILE);
 
-    // set specular and shiniess using glMaterial (gold-yellow)
-    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
 
     // set ambient and diffuse color using glColorMaterial (gold-yellow)
@@ -170,8 +126,6 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i
 //     glColor3fv(diffuseColor);
     glColor3ub(surf->color().red(), surf->color().green(), surf->color().blue());
 
-//     qDebug() << "FACES -> " << surf->faces().size();
-    
     foreach (const Triangle3D &face, surf->faces())
     {
         glBegin(GL_TRIANGLES);
@@ -195,15 +149,13 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i
 
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
-    PlotItem *item = fromProxy(start);
+    PlotItem *item = itemAt(start);
 
-    if (!item || item->spaceDimension() != 3)
+    if (!item || item->spaceDimension() != Dim3D)
         return;
     
     Surface* surf = static_cast<Surface*>(item);
     
-    //NOTE 
-    //IMPORTANT SIEMPRE HACER UN MAKECURRENT ANTES DE OPERACIONES OPENGL : EL CLIENTE PUEDE TERNER MAS DE UN GLWIDGET A LA VEZ
     makeCurrent();
     
     surf->update(Box3D());
@@ -228,16 +180,16 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 //     glColor3fv(diffuseColor);
     glColor3ub(surf->color().red(), surf->color().green(), surf->color().blue());
 
-//     qDebug() << "FACES -> " << surf->faces().size();
-    
     foreach (const Triangle3D &face, surf->faces())
     {
         glBegin(GL_TRIANGLES);
         QVector3D n;
         
         //TODO no magic numbers
-        if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
-        else n = QVector3D(0.5, 0.1, 0.2).normalized();
+        if (!face.faceNormal().isNull())
+            n = face.faceNormal().normalized();
+        else
+            n = QVector3D(0.5, 0.1, 0.2).normalized();
         
         glNormal3d(n.x(), n.y(), n.z());
         glVertex3d(face.p().x(), face.p().y(), face.p().z());
@@ -256,7 +208,7 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 {
     Q_ASSERT(!parent.isValid());
     for(int i=start; i<=end; i++) {
-        PlotItem *item = fromProxy(i);
+        PlotItem *item = itemAt(i);
 
         if (item) {
             glDeleteLists(m_displayLists[item], 1);
@@ -272,25 +224,20 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 //TODO cache para exp e interval ... pues del resto es solo cuestion de update
 void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
 {
-    PlotItem *item = fromProxy(s.row());
+    PlotItem *item = itemAt(s.row());
         
     if (!item) return;
 
     Surface* surf = static_cast<Surface*>(item);
 
-    //primero borro el displaylist
     glDeleteLists(m_displayLists[surf], 1);
 
-    //si es visible lo quenero de nuevo .. pues seuro cambio el setinterval
-    if (surf->isVisible())
-    {
+    if (surf->isVisible()) {
 //         addFuncs(QModelIndex(), s.row(), s.row());
 //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data 
-        addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(s.row());
+        addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(surf);
 
     }
-    //caso contrario .. no hago nada 
-    
     updateGL();
 }
 
@@ -302,10 +249,8 @@ void PlotsView3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 
 int PlotsView3D::currentFunction() const
 {
-    if (!m_model) return -1; // guard
-    
     int ret=-1;
-    if(m_selection) {
+    if(m_selection && m_model) {
         ret=m_selection->currentIndex().row();
     }
     
@@ -314,7 +259,8 @@ int PlotsView3D::currentFunction() const
 
 void PlotsView3D::draw()
 {
-    if (!m_model) return; // si no hay modelo retornar ... //NOTE guard
+    if(!m_model)
+        return;
     
     //NOTE si esto pasa entonces quiere decir que el proxy empezado a filtrar otros items
     // y si es asi borro todo lo que esta agregado al la memoria de la tarjeta
@@ -334,41 +280,23 @@ void PlotsView3D::draw()
     if (m_displayLists.isEmpty())
     {
         //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
-        for (int i = 0; i < m_model->rowCount(); ++i)
-            addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(i);
+        for (int i = 0; i < m_model->rowCount(); ++i) {
+            Surface* s = dynamic_cast<Surface*>(itemAt(i));
+            addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(s);
+        }
     }
-    
-    
-    ///
 
     for (int i = 0; i < m_model->rowCount(); ++i)
     {
-        PlotItem *item = fromProxy(i);
-
-        if (!item) continue;
-
-        if (item->spaceDimension() != 3) continue;
-        
+        PlotItem *item = itemAt(i);
         Surface* surf = static_cast<Surface*>(item);
         
-        //TODO GSOC
-        // por el momento solo se dibujan superficies
-        if (!surf) continue;
-
-        if (!surf->isVisible()) continue;
-
+        if (!item || item->spaceDimension() != Dim3D)
+            continue;
+        //TODO: make it possible to plot things that aren't surfaces
+        
         glCallList(m_displayLists[item]);
     }
-    
-    //TODO 
-    //WARNING eliminar next iter
-    //no dibujar para cada display list ... puede que ya halla sido borrado .. en vez dibujar para cada item en el proxy
-    /// algo similar al updatefunctions
-//     foreach (PlotItem *item, m_displayLists.keys())
-//     {
-//         glCallList(m_displayLists[item]);
-// //         qDebug() << itemid;
-//     }
 }
 
 void PlotsView3D::init()
@@ -392,29 +320,19 @@ void PlotsView3D::init()
 
 }
 
-PlotItem* PlotsView3D::fromProxy(int proxy_row) const
+PlotItem* PlotsView3D::itemAt(int row) const
 {
-    QModelIndex pi = m_model->mapToSource(m_model->index(proxy_row, 0));
+    if(!m_model)
+        return 0;
+    QModelIndex pi = m_model->index(row, 0);
 
     if (!pi.isValid())
         return 0;
-    
+
     PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
-    if (plot->spaceDimension() != 3)
-        return 0; // evitamos que los proxies de los usuario causen un bug
+
+    if (plot->spaceDimension() != Dim3D)
+        return 0;
 
     return plot;
 }
-
-//TODO: from source should go
-PlotItem* PlotsView3D::fromSource(int realmodel_row) const
-{
-    QModelIndex si = m_model->mapFromSource(m_model->sourceModel()->index(realmodel_row,0));
-
-    if (si.isValid())
-        return si.data(PlotsModel::PlotRole).value<PlotItem*>();
-    
-    return 0;
-}
-
-

@@ -36,9 +36,9 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Polar)
-    PARAMETERS(QStringList("t")) //t:theta
+    PARAMETERS(QStringList("q")) //q:theta
     ICON_NAME("newpolar")
-    EXAMPLES(QStringList("p->3*sin(p/0.142)") << "p->p+3")    
+    EXAMPLES(QStringList("q->3*sin(q/0.142)") << "q->q+3")    
     
     void update(const QRectF& viewport);
     
@@ -50,7 +50,7 @@ public:
 
 FunctionPolar::FunctionPolar(const Analitza::Expression& e, Analitza::Variables* v): AbstractPlaneCurve(e, v)
 {
-    p = arg("t");
+    p = arg("q");
 }
 
 void FunctionPolar::update(const QRectF& viewport)

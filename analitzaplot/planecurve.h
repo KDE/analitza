@@ -42,14 +42,7 @@ public:
     PlaneCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(), Analitza::Variables *variables = 0);
     virtual ~PlaneCurve();
 
-    //registeredCurves devuelve un map de key igual al nombre del tipo/backendr egistrado
-    //el value de cada entrada del map es un par, par.primero es la lista de variables
-    // y par.segundo es el tipo de expression
-    //registeredCurves evita que se tenga que instalar el FunctionFactory en private, es decir evita que el usuario sepa algo
-    //de las partes internes de analitzaplot
-//     static QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredCurves();
-    static bool canDraw(const Analitza::Expression &functionExpression);
-    static bool canDraw(const Analitza::Expression &functionExpression, QStringList &errors);
+    static QStringList canDraw(const Analitza::Expression &functionExpression);
 
     void setExpression(const Analitza::Expression& functionExpression);
 

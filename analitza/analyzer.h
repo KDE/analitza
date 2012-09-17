@@ -141,6 +141,8 @@ class ANALITZA_EXPORT Analyzer
 		
 		void setStack(const QVector<Object*>& stack) { m_runStack = stack; }
 		
+		QVector<Object*> runStack() const { return m_runStack; }
+		
 		BuiltinMethods* builtinMethods();
 		
 		/** Makes it possible to easily enter a bunch of code to execute it */

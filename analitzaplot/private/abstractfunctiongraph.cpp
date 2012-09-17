@@ -33,33 +33,31 @@
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
     : AbstractMappingGraph()
-    , m_varsmod(v)
     , m_e(e)
+    , m_varsmod(v)
 {
     analyzer = v ? new Analitza::Analyzer(v) : new Analitza::Analyzer;
 
-    if (e.isEquation())
-    {
-        analyzer->setExpression(e.equationToFunction());
-        analyzer->setExpression(analyzer->dependenciesToLambda());
-    }
-    else
-        analyzer->setExpression(e);
-
+    if (m_e.isEquation())
+        m_e = m_e.equationToFunction();
+    
+    analyzer->setExpression(m_e);
+    analyzer->setExpression(analyzer->dependenciesToLambda());
     analyzer->simplify();
     analyzer->flushErrors(); //WARNING: ???WTF
 
+    QStack<Analitza::Object*> stack;
     foreach(const QString& var, analyzer->expression().bvarList()) {
-        m_argumentValues.insert(var, new Analitza::Cn);
+        Analitza::Cn* val = new Analitza::Cn;
+        stack.push(val);
+        m_argumentValues.insert(var, val);
     }
-    analyzer->setStack(m_argumentValues.values().toVector());
+    analyzer->setStack(stack);
 }
 
 AbstractFunctionGraph::~AbstractFunctionGraph()
 {
-    qDeleteAll(m_argumentValues.begin(), m_argumentValues.end());
-    m_argumentValues.clear();
-
+    qDeleteAll(m_argumentValues);
     delete analyzer;
 }
 
@@ -70,7 +68,7 @@ Dimension AbstractFunctionGraph::spaceDimension() const
 
 Analitza::Variables *AbstractFunctionGraph::variables() const 
 { 
-    return m_varsmod; // no devualvo del analizar porque este siempre tendra un vars atachado //// analyzer->variables(); 
+    return m_varsmod;
 }
 
 void AbstractFunctionGraph::setVariables(Analitza::Variables* variables)
@@ -78,12 +76,14 @@ void AbstractFunctionGraph::setVariables(Analitza::Variables* variables)
     Q_ASSERT(variables);
     
     Analitza::Expression exp = analyzer->expression();
-    
+    QVector<Analitza::Object*> prevStack = analyzer->runStack();
     delete analyzer;
     
     analyzer = new Analitza::Analyzer(variables);
     analyzer->setExpression(exp);
-    analyzer->setStack(m_argumentValues.values().toVector());
+    analyzer->setStack(prevStack);
+    
+    m_varsmod = variables;
 }
 
 const Analitza::Expression& AbstractFunctionGraph::expression() const
@@ -97,19 +97,12 @@ QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interva
     
     QPair<Analitza::Expression, Analitza::Expression> ret;
     
-    if (evaluate)
-    {
-        //NOTE heap ?
-        Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
+    if (evaluate) {
+        Analitza::Analyzer intervalsAnalizer(analyzer->variables());
 
-        ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer);
-        ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer);
-        
-        delete intervalsAnalizer;
-    }
-    else
-    {
-
+        ret.first = m_argumentIntervals[argname].lowEndPoint().value(&intervalsAnalizer);
+        ret.second = m_argumentIntervals[argname].highEndPoint().value(&intervalsAnalizer);
+    } else {
         ret.first = m_argumentIntervals[argname].lowEndPoint().value();
         ret.second = m_argumentIntervals[argname].highEndPoint().value();
     }
@@ -121,13 +114,11 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::
 {
     Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
-    Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
+    Analitza::Analyzer intervalsAnalizer(analyzer->variables());
 
-    double min_val = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer).toReal().value();
-    double max_val = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
+    double min_val = m_argumentIntervals[argname].lowEndPoint().value(&intervalsAnalizer).toReal().value();
+    double max_val = m_argumentIntervals[argname].highEndPoint().value(&intervalsAnalizer).toReal().value();
         
-    delete intervalsAnalizer;
-
     if (max_val < min_val)
         return false;
     
@@ -167,7 +158,7 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, double min, doub
 
 Analitza::Cn* AbstractFunctionGraph::arg(const QString& argname)
 {
-	return dynamic_cast<Analitza::Cn*>(m_argumentValues[argname]);
+	return m_argumentValues[argname];
 }
 
 bool AbstractFunctionGraph::hasIntervals() const
