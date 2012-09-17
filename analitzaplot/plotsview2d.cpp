@@ -270,10 +270,10 @@ void PlotsView2D::keyPressEvent(QKeyEvent * e)
     }
 }
 
-void PlotsView2D::resizeEvent(QResizeEvent *)
+void PlotsView2D::resizeEvent(QResizeEvent * ev)
 {
-    buffer=QPixmap(size());
-    setPaintedSize(size());
+    buffer=QPixmap(ev->size());
+    setPaintedSize(ev->size());
 }
 
 bool PlotsView2D::toImage(const QString &path, Format f)
@@ -339,7 +339,7 @@ void PlotsView2D::removeFuncs(const QModelIndex &, int, int)
 
 void PlotsView2D::updateFuncs(const QModelIndex & parent, int start, int end)
 {
-    updateFunctions(parent,start, end);
+    updateFunctions(parent, start, end);
 }
 
 void PlotsView2D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
@@ -350,7 +350,7 @@ void PlotsView2D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 void PlotsView2D::setReadOnly(bool ro)
 {
     m_readonly=ro;
-    this->setCursor(ro ? Qt::ArrowCursor : Qt::CrossCursor);
+    setCursor(ro ? Qt::ArrowCursor : Qt::CrossCursor);
     setMouseTracking(!ro);
 }
 
@@ -370,7 +370,8 @@ void PlotsView2D::viewportChanged()
 
 int PlotsView2D::currentFunction() const
 {
-    if (!model()) return -1; // guard
+    if (!model())
+        return -1;
     
     int ret=-1;
     if(m_selection) {
@@ -397,12 +398,12 @@ void PlotsView2D::modelChanged()
 // 
 //         m_selection = 0;
     }
+    
+    m_currentModel = model();
 
     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
-    
-    m_currentModel = model();
 }
 
 void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)

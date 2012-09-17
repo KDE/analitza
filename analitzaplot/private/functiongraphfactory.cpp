@@ -54,6 +54,16 @@ QStringList FunctionGraphFactory::examples(const QString& id) const
     return examplesFunctions[id]();
 }
 
+QStringList FunctionGraphFactory::examples(Dimension dim) const
+{
+	QStringList ret;
+	QStringList ids = spaceDimensions.keys(dim);
+	foreach(const QString& id, ids) {
+		ret += examplesFunctions[id]();
+	}
+	return ret;
+}
+
 FunctionGraphFactory* FunctionGraphFactory::self()
 {
     if(!m_self)

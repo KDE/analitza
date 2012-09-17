@@ -21,10 +21,15 @@
 #ifndef FUNCTIONSPAINTER_H
 #define FUNCTIONSPAINTER_H
 
-#include "plotitem.h"
 #include <QRectF>
 #include <QLineF>
+#include <QString>
+#include <QColor>
 
+#include "analitzaplotexport.h"
+#include <analitzaplot/plottingenums.h>
+
+class PlotItem;
 class QAbstractItemModel;
 class QPainter;
 class QPaintDevice;
@@ -112,7 +117,6 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QAbstractItemModel* m_model;
         
         static const QColor m_axeColor;
-        static const QColor m_axe2Color;
         static const QColor m_derivativeColor;
         
         QString m_tickScaleSymbol;

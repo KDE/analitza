@@ -31,8 +31,6 @@
 #include <QPixmap>
 #include <QModelIndex>
 
-#include "planecurve.h"
-
 #include "analitzaplotexport.h"
 #include "plotter2d.h"
 
@@ -131,11 +129,10 @@ private:
     virtual void modelChanged();
     
     //painting
-    QPixmap buffer; //NOTE should we use qimage instead? with QImage::Format_ARGB32_Premultiplied?
+    QPixmap buffer;
     bool valid;
-    QLabel *micepos;
     QPointF mark;
-    QPoint cursorPos; // a diferencia de mark esta variable no sale de un calculo es solo el pos del cursor ... el mark es por ahora muchas veces invalido y genera puntos nulls
+    QPoint cursorPos;
     
     //events
     void paintEvent( QPaintEvent * );
@@ -145,6 +142,7 @@ private:
     void keyPressEvent(QKeyEvent * e );
     void wheelEvent(QWheelEvent *e);
     void resizeEvent(QResizeEvent *);
+
     GraphMode mode;
     QPoint press; QPoint last;
     

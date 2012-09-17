@@ -47,7 +47,11 @@ public:
     virtual bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
 
     void addPlot(PlotItem *it);
+    void updatePlot(int row, PlotItem* it);
     void emitChanged(PlotItem* it);
+
+    QModelIndex indexForName(const QString& name);
+    void clear();
 
 private:
     QList<PlotItem*> m_items;

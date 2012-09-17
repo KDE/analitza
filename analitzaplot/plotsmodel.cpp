@@ -42,7 +42,12 @@ PlotsModel::PlotsModel(QObject* parent)
 
 PlotsModel::~PlotsModel()
 {
-    qDeleteAll(m_items);
+    clear();
+}
+
+void PlotsModel::clear()
+{
+	qDeleteAll(m_items);
     m_items.clear();
 }
 
@@ -146,6 +151,9 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
         case Qt::CheckStateRole:
             m_items[index.row()]->setVisible(value.toBool());
             return true;
+        case Qt::DecorationRole:
+			m_items[index.row()]->setColor(value.value<QColor>());
+            return true;
 
     }
      
@@ -194,9 +202,30 @@ void PlotsModel::addPlot(PlotItem* it)
     endInsertRows();
 }
 
+void PlotsModel::updatePlot(int row, PlotItem* it)
+{
+	it->setModel(this);
+	delete m_items[row];
+	m_items[row]=it;
+	
+	QModelIndex idx = index(row);
+	emit dataChanged(idx, idx);
+}
+
 void PlotsModel::emitChanged(PlotItem* it)
 {
     int row = m_items.indexOf(it);
     QModelIndex idx = index(row);
     emit dataChanged(idx, idx);
+}
+
+QModelIndex PlotsModel::indexForName(const QString& name)
+{
+	const int rows = rowCount();
+	for(int i=0; i<rows; i++) {
+		QModelIndex idx = index(i);
+		if(idx.data().toString()==name)
+			return idx;
+	}
+	return QModelIndex();
 }
