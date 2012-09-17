@@ -44,7 +44,6 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
     analyzer->setExpression(m_e);
     analyzer->setExpression(analyzer->dependenciesToLambda());
     analyzer->simplify();
-    analyzer->flushErrors(); //WARNING: ???WTF
 
     QStack<Analitza::Object*> stack;
     foreach(const QString& var, analyzer->expression().bvarList()) {

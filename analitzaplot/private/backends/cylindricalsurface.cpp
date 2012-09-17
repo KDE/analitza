@@ -39,7 +39,7 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
-    COORDDINATE_SYSTEM(Cartesian)
+    COORDDINATE_SYSTEM(Cylindrical)
     PARAMETERS(QStringList("r") << "p")
     ICON_NAME("newcylindrical")
     EXAMPLES(QStringList())

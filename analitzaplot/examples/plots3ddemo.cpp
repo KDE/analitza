@@ -80,9 +80,6 @@ int main(int argc, char *argv[])
     PlotsModel *model = new PlotsModel(tabs);
 
     QTreeView *viewsource = new QTreeView(tabs);
-    viewsource->setRootIsDecorated(false);
-    viewsource->setMouseTracking(true);
-    viewsource->setEditTriggers(QAbstractItemView::AllEditTriggers);
     viewsource->setModel(model);
     
     PlotsView3D *view3d = new PlotsView3D(tabs);

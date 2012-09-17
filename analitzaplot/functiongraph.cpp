@@ -45,6 +45,7 @@ FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dim
     Q_ASSERT(!id.isEmpty());
 
     m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, vars);
+
     m_functionGraph->setInternalId(id);
     Q_ASSERT(m_functionGraph);
 }

@@ -103,14 +103,12 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, const Anal
             && dim == spaceDimensions.values()[i]
             && t.canReduceTo(expressionTypeFunctions.values()[i]()))
         {
-            key = argumentsFunctions.key(argumentsFunctions.values()[i]);
+
+            key = typeNameFunctions.key(typeNameFunctions.values()[i]);
         }
     }
-
-    if (!key.isEmpty())
-        return QString::number(spaceDimensions[key])+"|"+QString::number((int)coordinateSystemFunctions[key])+"|"+argumentsFunctions[key].join(",");
-
-    return QString();    
+    
+    return key;
 }
 
 bool FunctionGraphFactory::contains(const QString& id) const

@@ -335,6 +335,8 @@ PlotItem* PlotsView3D::itemAt(int row) const
 
     PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
 
+//     qDebug() << plot->expression().toString() << plot->spaceDimension();
+    
     if (plot->spaceDimension() != Dim3D)
         return 0;
 

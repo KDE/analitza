@@ -60,7 +60,7 @@ public:
     //swap args 
     Dimension spaceDimension(const QString& id) const;
     // falla cuando hay multiples cassos ...mult expressio
-    Dimension spaceDimension(const Analitza::ExpressionType& ftype, const QStringList &bvars) const;
+//     Dimension spaceDimension(const Analitza::ExpressionType& ftype, const QStringList &bvars) const;
     CoordinateSystem coordinateSystem(const QString& id) const;
     QString iconName(const QString& id) const;
     QStringList examples(const QString& id) const;
