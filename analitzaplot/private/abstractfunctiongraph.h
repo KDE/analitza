@@ -1,4 +1,3 @@
-
 /*************************************************************************************
  *  Copyright (C) 2007-2011 by Aleix Pol <aleixpol@kde.org>                          *
  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
