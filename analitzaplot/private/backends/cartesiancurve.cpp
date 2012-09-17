@@ -47,8 +47,8 @@ public:
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos) ;
     
-    //
-    
+    //TODO configurable?
+    qreal resolution() const { return 5000; }
 
 private:
     void optimizeJump();
@@ -179,10 +179,9 @@ void FunctionY::calculateValues(double l_lim, double r_lim)
 {
     jumps.clear();
     points.clear();
-//     points.reserve(resolution());
+    points.reserve(resolution());
     
-//     double step= double((-l_lim+r_lim)/resolution());
-    double step = double((-l_lim+r_lim)/500);
+    double step = double((-l_lim+r_lim)/resolution());
     
     bool jumping=true;
     for(double x=l_lim; x<r_lim-step; x+=step) {
@@ -209,9 +208,8 @@ void FunctionY::calculateValues(double l_lim, double r_lim)
 //  qDebug() << "juuuumps" << m_jumps << resolution();
 }
 
-///
-
 ///Functions where the y is bounding. like y->sin(y). FunctionY mirrored
+//TODO: implement in terms of FunctionY! deduplicate code
 class FunctionX : public AbstractPlaneCurve
 {
 public:
@@ -230,6 +228,7 @@ public:
     QPair<QPointF, QString> image(const QPointF &mousepos);
     QLineF tangent(const QPointF &mousepos);
     
+	qreal resolution() const { return 5000; }
 private:
     void optimizeJump();
     void calculateValues(double, double);
@@ -328,10 +327,8 @@ void FunctionX::calculateValues(double l_lim, double r_lim)
 {
     jumps.clear();
     points.clear();
-//     points.reserve(resolution()); //TODO port
-    
-//     double step= double((-l_lim+r_lim)/resolution()); //TODO port
-    double step = 0.1;
+    points.reserve(resolution());
+    double step = double((-l_lim+r_lim)/resolution());
     
     bool jumping=true;
     for(double x=l_lim; x<r_lim-step; x+=step) {
