@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
     model->addPlot(new Surface(Analitza::Expression("(r,p)->2"), "Hola", Qt::magenta));
     model->addPlot(new Surface(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), "aaa", Qt::lightGray));
-    
+
 //     model->addSurface(Analitza::Expression("(r,p)->2"), "Hola", Qt::magenta);
 //     model->addSurface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan);
 //     model->addPlaneCurve(Analitza::Expression("x+3-y=7"), "asdasd, ", Qt::red);

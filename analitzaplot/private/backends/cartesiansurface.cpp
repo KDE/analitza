@@ -77,7 +77,6 @@ void Fxy::update(const Box3D& viewport)
     buildParametricSurface();
 }
 
-
 REGISTER_SURFACE(Fxy)
 
 class Fxz : public AbstractSurface/*, static class? better macros FooClass*/
