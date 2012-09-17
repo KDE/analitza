@@ -84,10 +84,6 @@ protected:
     void appendError(const QString &error) { m_errors.append(error); }
     void flushErrors() { m_errors.clear(); }
     
-    //WARNING see if errorCount is necesary ...
-    int errorCount() const { return m_errors.count(); } // if some method throws many erros perhaps the user (child-class) want to stop something
-    
-    //una vez creado podemos guardar su id para consultas posteriores
     void setInternalId(const QString &iid) { m_internalId = iid; }
     
     Analitza::Analyzer *analyzer;
