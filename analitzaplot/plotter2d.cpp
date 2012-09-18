@@ -171,9 +171,9 @@ GridInfo Plotter2D::drawTicks(QPainter* painter) const
 
     ret.inc *= correctScale;
     ret.xini=floor((viewport.left())/ret.inc)*ret.inc;
-    ret.yini=(floor(viewport.bottom())/ret.inc)*ret.inc;
+    ret.yini=floor((viewport.bottom())/ret.inc)*ret.inc;
     ret.xend=ceil((viewport.right())/ret.inc)*ret.inc;
-    ret.yend=(ceil(viewport.top())/ret.inc)*ret.inc;
+    ret.yend=ceil((viewport.top())/ret.inc)*ret.inc;
 
     int i = 1;
 
