@@ -253,7 +253,8 @@ void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
 	const QPen gridPen(m_gridColor);
 	painter->setPen(gridPen);
     if (m_squares) {
-		qreal until = qMax(-viewport.height(), viewport.width());
+		qreal until = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), qMax(qAbs(viewport.top()), qAbs(viewport.bottom())));
+		until *= std::sqrt(2);
         for (qreal i = grid.inc; i < until; i +=grid.inc )
         {
             QPointF p(toWidget(QPointF(i,i)));
