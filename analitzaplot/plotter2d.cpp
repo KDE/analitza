@@ -55,13 +55,10 @@ struct GridInfo
 Plotter2D::Plotter2D(const QSizeF& size, QAbstractItemModel* model)
     : m_squares(true), m_keepRatio(true), m_dirty(true), m_size(size), m_model(model)
     , m_tickScaleSymbolValue(1)
-    , m_tickScaleUseSymbols(true)
     , m_tickScaleNumerator(1)
     , m_tickScaleDenominator(1)
-    , m_showHTicks(true)
-    , m_showVTicks(true)
-    , m_showHAxes(true)
-    , m_showVAxes(true)
+    , m_ticksShown(Qt::Vertical|Qt::Horizontal)
+    , m_axesShown(Qt::Vertical|Qt::Horizontal)
     , m_axisXLabel("x")
     , m_axisYLabel("y")
     , m_gridColor(QColor(230,230,230))
@@ -105,7 +102,7 @@ void Plotter2D::drawMainAxes(QPainter* painter) const
     QRectF rectX(Xright+dpx, Xright-dpx);
     QRectF rectY(Ytop+dpy, Ytop-dpy);
 
-    if (m_showHAxes) {
+    if (m_axesShown&Qt::Horizontal) {
         painter->drawLine(QPointF(0., center.y()), Xright);
         
         painter->setRenderHint(QPainter::Antialiasing, true);
@@ -113,7 +110,7 @@ void Plotter2D::drawMainAxes(QPainter* painter) const
         painter->setRenderHint(QPainter::Antialiasing, false);
     }
 
-    if (m_showVAxes) {
+    if (m_axesShown&Qt::Vertical) {
         painter->drawLine(Ytop, QPointF(center.x(), this->height()));
         
         painter->setRenderHint(QPainter::Antialiasing, true);
@@ -148,22 +145,21 @@ GridInfo Plotter2D::drawTicks(QPainter* painter) const
 	const QPen tickPen(QPalette().text().color());
 
     const QString symbol =m_tickScaleSymbol;
-	const bool isSymbol = !symbol.isEmpty();
-    const bool symbolFormat = isSymbol && m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
+	const bool symbolFormat = !symbol.isEmpty();
     const int numerator = m_tickScaleNumerator;
     const int denominator =m_tickScaleDenominator;
 
 	GridInfo ret;
     // prcesss
     qreal coef = qreal(numerator) / qreal(denominator);
-    ret.inc = isSymbol? coef*m_tickScaleSymbolValue : coef;
+    ret.inc = symbolFormat? coef*m_tickScaleSymbolValue : coef;
 
     QString numStr = QString::number(numerator);
     QString denStr = QString::number(denominator);
 
     //END params of algotihm
 
-    int decimalPrecision = denominator == 1 && !isSymbol? 0 : denominator == 2? 1 : 2;
+    int decimalPrecision = denominator == 1 && !symbolFormat? 0 : denominator == 2? 1 : 2;
 
     //QString tickLabel = symbol;
     //QString tickCoef("");
@@ -184,7 +180,7 @@ GridInfo Plotter2D::drawTicks(QPainter* painter) const
     QPointF p;
 
 	QFontMetrics fm(painter->font());
-    if (m_showHTicks)
+    if (m_ticksShown & Qt::Horizontal)
     {
         for(double x =ret.xini; x <ret.xend; x +=ret.inc, i+=1)
         {
@@ -194,7 +190,7 @@ GridInfo Plotter2D::drawTicks(QPainter* painter) const
 
             painter->setPen(tickPen);
 
-            if (!isSymbol || !symbolFormat) {
+            if (!symbolFormat || !symbolFormat) {
                 QString s = QString::number(x, 'f', decimalPrecision);
                 painter->drawText(p.x() + fm.width(s)/2, p.y()+20, s);
             } else {
@@ -213,7 +209,7 @@ GridInfo Plotter2D::drawTicks(QPainter* painter) const
         }
     }
 
-    if (m_showVTicks)
+    if (m_ticksShown & Qt::Vertical)
     {
         i = 1;
 
@@ -224,7 +220,7 @@ GridInfo Plotter2D::drawTicks(QPainter* painter) const
             p = toWidget(QPointF(0., y));
             painter->setPen(tickPen);
 
-            if (!isSymbol || !symbolFormat) {
+            if (!symbolFormat || !symbolFormat) {
                 QString s = QString::number(y, 'f', decimalPrecision);
                 painter->drawText(-20+p.x() - fm.width(s)/2, p.y()+20, s);
             } else {
@@ -596,15 +592,15 @@ void Plotter2D::setYAxisLabel(const QString &label)
 
 }
 
-void Plotter2D::updateTickScale(QString tickScaleSymbol, qreal tickScaleSymbolValue,
+void Plotter2D::updateTickScale(const QString& tickScaleSymbol, qreal tickScaleSymbolValue,
         /*bool tickScaleUseSymbols,*/ int tickScaleNumerator,
         int tickScaleDenominator)
 {
     m_tickScaleSymbol = tickScaleSymbol;
-    m_tickScaleSymbolValue = tickScaleSymbolValue;
+    m_tickScaleSymbolValue = m_tickScaleSymbolValue;
     //m_tickScaleUseSymbols = tickScaleUseSymbols;
-    m_tickScaleNumerator = tickScaleNumerator;
-    m_tickScaleDenominator = tickScaleDenominator;
+    m_tickScaleNumerator = m_tickScaleNumerator;
+    m_tickScaleDenominator = m_tickScaleDenominator;
 
     forceRepaint();
 }

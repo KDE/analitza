@@ -78,12 +78,9 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void setYAxisLabel(const QString &label);
         // tick symbols
         void updateGridColor(const QColor &color) { m_gridColor = color;  forceRepaint(); }
-        void updateTickScale(QString m_tickScaleSymbol, qreal m_tickScaleSymbolValue, int m_tickScaleNumerator, int m_tickScaleDenominator);
-        void setUseTickSymbols(bool flag) { m_tickScaleUseSymbols = flag; forceRepaint(); }
-        void showHTicks(bool flag) { m_showHTicks = flag; forceRepaint(); }
-        void showVTicks(bool flag) { m_showVTicks = flag; forceRepaint(); }
-        void showHAxes(bool flag) { m_showHAxes = flag; forceRepaint(); }
-        void showVAxes(bool flag) { m_showVAxes = flag; forceRepaint(); }
+        void updateTickScale(const QString& m_tickScaleSymbol, qreal m_tickScaleSymbolValue, int m_tickScaleNumerator, int m_tickScaleDenominator);
+        void setTicksShown(QFlags<Qt::Orientation> o) { m_ticksShown = o; forceRepaint(); }
+        void setAxesShown(QFlags<Qt::Orientation> o) { m_axesShown = o; forceRepaint(); }
         
     protected:
         QRectF lastViewport() const { return viewport; }
@@ -124,13 +121,10 @@ class ANALITZAPLOT_EXPORT Plotter2D
         
         QString m_tickScaleSymbol;
         qreal m_tickScaleSymbolValue;
-        bool m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
         int m_tickScaleNumerator;
         int m_tickScaleDenominator;
-        bool m_showHTicks;
-        bool m_showVTicks;
-        bool m_showHAxes;
-        bool m_showVAxes;
+        QFlags<Qt::Orientation> m_ticksShown;
+        QFlags<Qt::Orientation> m_axesShown;
         QString m_axisXLabel;
         QString m_axisYLabel;
         
