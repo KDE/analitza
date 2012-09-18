@@ -134,15 +134,9 @@ void Plotter2D::drawPolarAxes(QPainter *painter)
     double yend=(ceil(viewport.top())/inc)*inc;
 
     int correctScale = 1;// usado cuando el zoom es muy alto y se ve un vp muy grande
-
-    if (viewport.width()>25)
-    {
-        int vpwi = ((int)viewport.width());
-        int decs = 0; // cifras decimales
-        while ((vpwi = vpwi/10) > 0) ++decs;
-
-        correctScale = pow(10, decs)/2;
-    }
+	double decs = std::floor(std::log10(viewport.width()));
+	if(decs>1)
+		correctScale = pow(10, decs)/2;
 
     inc *= correctScale;
     xini = floor(xini/inc)*inc;
@@ -371,16 +365,10 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     double xend=ceil((viewport.right())/inc)*inc;
     double yend=(ceil(viewport.top())/inc)*inc;
 
-    int correctScale = 1;// usado cuando el zoom es muy alto y se ve un vp muy grande
-
-    if (viewport.width()>25)
-    {
-        int vpwi = ((int)viewport.width());
-        int decs = 0; // cifras decimales
-        while ((vpwi = vpwi/10) > 0) ++decs;
-
-        correctScale = pow(10, decs)/2;
-    }
+    int correctScale = 1;
+	double decs = std::floor(std::log10(viewport.width()));
+	if(decs>1)
+		correctScale = pow(10, decs)/2;
 
     inc *= correctScale;
     xini = floor(xini/inc)*inc;
