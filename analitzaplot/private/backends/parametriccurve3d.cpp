@@ -92,24 +92,16 @@ private:
 
 void ParametricCurve3D::update(const Box3D& viewport)
 {
-  Q_UNUSED(viewport);
+    Q_UNUSED(viewport);
     Q_ASSERT(analyzer->expression().isCorrect());
     //if(int(resolution())==points.capacity())
     //  return;
     
-    
-            //TODO CACHE en intervalvalues!!!
-    QPair<double, double> c_limits = interval("t");
-    
-//     if ()
-//     
-//     static QPair<double, double> o_limits = c_limits;
-    
-    
-    double ulimit=c_limits.second;
-    double dlimit=c_limits.first;
-    
-    
+    //TODO fix magic numbers
+//     double ulimit=c_limits.second;
+//     double dlimit=c_limits.first;
+    double dlimit=-3.1415*5;
+    double ulimit=3.1415*5;
     
     points.clear();
     jumps.clear();
@@ -133,10 +125,7 @@ void ParametricCurve3D::update(const Box3D& viewport)
     arg("t")->setValue(dlimit);
     Expression res;
     
-    int i = 0;
-    bool jlock = false;
-    
-    for(double t=dlimit; t<ulimit; t+=inv_res, ++i) {
+    for(double t=dlimit; t<ulimit; t+=inv_res) {
         arg("t")->setValue(t);
         res=analyzer->calculateLambda();
         
@@ -146,19 +135,9 @@ void ParametricCurve3D::update(const Box3D& viewport)
         
         curp = QVector3D(x.value(), y.value(), z.value());
         
-        if (/*vp.contains(curp)*/1)
-        {
-//             addPoint(curp);
-            jlock = false;
-        }
-        else if (!jlock)
-        {
-            jumps.append(i);
-            jlock = true;
-        }
-        
-        //      objectWalker(vo);
-        Q_ASSERT(res.isVector());
+        points.append(curp);
+
+//         Q_ASSERT(res.isVector());
     }
 }
 

@@ -56,8 +56,6 @@ int main(int argc, char *argv[])
     
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
 
-
-//     layout->addWidget(checkvisible);
     layout->addWidget(tabs);
     
     //BEGIN test calls
@@ -71,12 +69,12 @@ int main(int argc, char *argv[])
     view3d->setModel(model);
     view3d->setSelectionModel(viewsource->selectionModel());
 
-    model->addPlot(new Surface(Analitza::Expression("(r,p)->2"), "Hola", Qt::magenta));
-    model->addPlot(new Surface(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), "aaa", Qt::lightGray));
-//     model->addPlot(new Surface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "Hola", Qt::cyan));
-    model->addPlot(new Surface(Analitza::Expression("x+3-y=7"), "asdasd, ", Qt::red));
-    model->addPlot(new Surface(Analitza::Expression("x*x+y*y-z*z= 1/2"), "Hola", Qt::yellow));
-//     model->addPlot(new Surface(Analitza::Expression("t->vector{t,t*t}"), "asdasd, ", Qt::blue));
+    model->addPlot(new Surface(Analitza::Expression("(r,p)->2"), "cyl", Qt::magenta));
+    model->addPlot(new Surface(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), "z-map", Qt::lightGray));
+    model->addPlot(new Surface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "implicit 0", Qt::cyan));
+    model->addPlot(new Surface(Analitza::Expression("x+3-y=7"), "implicit 1, ", Qt::red));
+    model->addPlot(new Surface(Analitza::Expression("x*x+y*y-z*z= 1/2"), "implicit 2", Qt::darkBlue));
+    model->addPlot(new SpaceCurve(Analitza::Expression("t->vector{cos(t), sin(t), t}"), "curve, ", Qt::green));
 
     //END test calls
 

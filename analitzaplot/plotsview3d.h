@@ -52,7 +52,7 @@ private slots:
     //como addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw se llema desde el draw no debe tener updategl
     //sino existe bloqueo (una recursividad: pues draw llama a update y este a draw)
     //TODO oviamente mejorar los nombres y resusar
-    void addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(Surface* surf);     // modelindex del proxy
+    void addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(PlotItem* item);     // modelindex del proxy
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);

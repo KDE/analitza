@@ -22,6 +22,7 @@
 #include "surface.h"
 #include "private/utils/box3d.h"
 #include "private/utils/triangle3d.h"
+#include "spacecurve.h"
 #include <QVector3D>
 #include <QVector2D>
 #include <qitemselectionmodel.h>
@@ -99,21 +100,29 @@ void PlotsView3D::resizeScene(int v)
     updateGL();
 }
 
-void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(Surface* surf)
+void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(PlotItem* item)
 {
-    Q_ASSERT(surf);
+    Q_ASSERT(item);
     makeCurrent(); //NOTE: Remember to call makeCurrent before any OpenGL operation. We might have multiple clients in the same window
     
-    if (surf->faces().isEmpty())
-        surf->update(Box3D());
+    if (Surface* surf = static_cast<Surface*>(item))
+    {
+        if (surf->faces().isEmpty())
+            surf->update(Box3D());
+    }
+    else
+        if (SpaceCurve* c = static_cast<SpaceCurve*>(item))
+        {
+            if (c->points().isEmpty())
+                c->update(Box3D());
+        }
 
     GLuint dlid = glGenLists(1);
-    m_displayLists[surf] = dlid;
+    m_displayLists[item] = dlid;
 
     float shininess = 15.0f;
     float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
     float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
-    Q_UNUSED(diffuseColor); //TODO: Percy?
 
     //BEGIN display list
     glNewList(dlid, GL_COMPILE);
@@ -123,23 +132,48 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(S
 
     // set ambient and diffuse color using glColorMaterial (gold-yellow)
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-//     glColor3fv(diffuseColor);
-    glColor3ub(surf->color().red(), surf->color().green(), surf->color().blue());
+    glColor3fv(diffuseColor);
+    glColor3ub(item->color().red(), item->color().green(), item->color().blue());
 
-    foreach (const Triangle3D &face, surf->faces())
+    if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
     {
-        glBegin(GL_TRIANGLES);
-        QVector3D n;
-        
-        //TODO no magic numbers
-        if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
-        else n = QVector3D(0.5, 0.1, 0.2).normalized();
-        
-        glNormal3d(n.x(), n.y(), n.z());
-        glVertex3d(face.p().x(), face.p().y(), face.p().z());
-        glVertex3d(face.q().x(), face.q().y(), face.q().z());
-        glVertex3d(face.r().x(), face.r().y(), face.r().z());
+        glEnable(GL_LINE_SMOOTH);
+
+        glLineWidth(2.5);
+
+        glBegin(GL_LINES);
+        {
+            const QVector<QVector3D> points = curve->points();
+
+            //TODO copy approach from plotter 2d and use jumps optimization
+            for (int i = 0; i < points.size() -1 ; ++i)
+            {
+                glVertex3d(points[i].x(), points[i].y(), points[i].z());
+                glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
+            }
+        }
         glEnd();
+        glDisable(GL_LINE_SMOOTH);
+    }
+    else
+    {
+        Surface* surf = static_cast<Surface*>(item);
+
+        foreach (const Triangle3D &face, surf->faces())
+        {
+            glBegin(GL_TRIANGLES);
+            QVector3D n;
+            
+            //TODO no magic numbers
+            if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
+            else n = QVector3D(0.5, 0.1, 0.2).normalized();
+            
+            glNormal3d(n.x(), n.y(), n.z());
+            glVertex3d(face.p().x(), face.p().y(), face.p().z());
+            glVertex3d(face.q().x(), face.q().y(), face.q().z());
+            glVertex3d(face.r().x(), face.r().y(), face.r().z());
+            glEnd();
+        }
     }
 
     glEndList();
@@ -154,19 +188,21 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
     if (!item || item->spaceDimension() != Dim3D)
         return;
     
-    Surface* surf = static_cast<Surface*>(item);
-    
     makeCurrent();
     
-    surf->update(Box3D());
+    if (Surface* surf = static_cast<Surface*>(item))
+        surf->update(Box3D());
+    else
+        if (SpaceCurve* c = static_cast<SpaceCurve*>(item))
+            c->update(Box3D());
         
     GLuint dlid = glGenLists(1);
-    m_displayLists[surf] = dlid;
+    m_displayLists[item] = dlid;
 
     float shininess = 15.0f;
     float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
     float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
-    Q_UNUSED(diffuseColor); //TODO: Percy?
+    Q_UNUSED(diffuseColor); //TODO: Percy? ... give more time :)
 
     //BEGIN display list
     glNewList(dlid, GL_COMPILE);
@@ -178,26 +214,51 @@ void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
     // set ambient and diffuse color using glColorMaterial (gold-yellow)
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 //     glColor3fv(diffuseColor);
-    glColor3ub(surf->color().red(), surf->color().green(), surf->color().blue());
+    glColor3ub(item->color().red(), item->color().green(), item->color().blue());
 
-    foreach (const Triangle3D &face, surf->faces())
+    if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
     {
-        glBegin(GL_TRIANGLES);
-        QVector3D n;
-        
-        //TODO no magic numbers
-        if (!face.faceNormal().isNull())
-            n = face.faceNormal().normalized();
-        else
-            n = QVector3D(0.5, 0.1, 0.2).normalized();
-        
-        glNormal3d(n.x(), n.y(), n.z());
-        glVertex3d(face.p().x(), face.p().y(), face.p().z());
-        glVertex3d(face.q().x(), face.q().y(), face.q().z());
-        glVertex3d(face.r().x(), face.r().y(), face.r().z());
-        glEnd();
-    }
+        glEnable(GL_LINE_SMOOTH);
 
+        glLineWidth(2.5);
+
+        glBegin(GL_LINES);
+        {
+            const QVector<QVector3D> points = curve->points();
+
+            //TODO copy approach from plotter 2d and use jumps optimization
+            for (int i = 0; i < points.size() -1 ; ++i)
+            {
+                glVertex3d(points[i].x(), points[i].y(), points[i].z());
+                glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
+            }
+        }
+        glEnd();
+        glDisable(GL_LINE_SMOOTH);
+    }
+    else // en caso q el elemento 3d sea superfici ... dibujarla generando la malla
+    {
+        Surface* surf = static_cast<Surface*>(item);
+        
+        foreach (const Triangle3D &face, surf->faces())
+        {
+            glBegin(GL_TRIANGLES);
+            QVector3D n;
+            
+            //TODO no magic numbers
+            if (!face.faceNormal().isNull())
+                n = face.faceNormal().normalized();
+            else
+                n = QVector3D(0.5, 0.1, 0.2).normalized();
+            
+            glNormal3d(n.x(), n.y(), n.z());
+            glVertex3d(face.p().x(), face.p().y(), face.p().z());
+            glVertex3d(face.q().x(), face.q().y(), face.q().z());
+            glVertex3d(face.r().x(), face.r().y(), face.r().z());
+            glEnd();
+        }
+    }
+    
     glEndList();
     //END display list
     
@@ -228,16 +289,14 @@ void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
         
     if (!item) return;
 
-    Surface* surf = static_cast<Surface*>(item);
+    glDeleteLists(m_displayLists[item], 1);
 
-    glDeleteLists(m_displayLists[surf], 1);
-
-    if (surf->isVisible()) {
+    if (item->isVisible()) {
 //         addFuncs(QModelIndex(), s.row(), s.row());
 //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data 
-        addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(surf);
-
+        addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(item);
     }
+    
     updateGL();
 }
 
@@ -279,12 +338,12 @@ void PlotsView3D::draw()
     {
         //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
         for (int i = 0; i < m_model->rowCount(); ++i) {
-            Surface* s = dynamic_cast<Surface*>(itemAt(i));
+            PlotItem* item = dynamic_cast<Surface*>(itemAt(i));
+
+            if (!item) continue;
             
-            if (!s) continue;
-            
-            if (s->isVisible())
-                addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(s);
+            if (item->isVisible())
+                addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(item);
         }
     }
 
@@ -303,23 +362,17 @@ void PlotsView3D::draw()
 
 void PlotsView3D::init()
 {
-    glPushMatrix();
-//     glTranslatef(6,5,5);
-    glRotatef(90.,0.,1.,0.);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
-//     glEnable(GL_DEPTH_TEST);
     
     glShadeModel(GL_SMOOTH);
-//     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_MULTISAMPLE);
     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
 }
 
 PlotItem* PlotsView3D::itemAt(int row) const

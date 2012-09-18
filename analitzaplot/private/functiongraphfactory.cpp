@@ -112,7 +112,6 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, const Anal
             && dim == spaceDimensions.values()[i]
             && t.canReduceTo(expressionTypeFunctions.values()[i]()))
         {
-
             key = typeNameFunctions.key(typeNameFunctions.values()[i]);
         }
     }
