@@ -188,6 +188,8 @@ GridInfo Plotter2D::drawTicks(QPainter* painter) const
     {
         for(double x =ret.xini; x <ret.xend; x +=ret.inc, i+=1)
         {
+			if(x==0)
+				continue;
             p = toWidget(QPointF(x, 0.));
 
             painter->setPen(tickPen);
@@ -217,6 +219,8 @@ GridInfo Plotter2D::drawTicks(QPainter* painter) const
 
         for(double y = ret.yini; y < ret.yend; y +=ret.inc, i+=1)
         {
+			if(y==0)
+				continue;
             p = toWidget(QPointF(0., y));
             painter->setPen(tickPen);
 
