@@ -57,9 +57,8 @@ public:
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
-    PlotsView2D(QWidget *parent = 0, QAbstractItemModel* fm = 0); // this ctor es para que pueda ser usado en el designer
+    PlotsView2D(QWidget* parent = 0);
     
-    /** Destructor. */
     ~PlotsView2D();
     
     QSize sizeHint() const { return QSize(100, 100); }

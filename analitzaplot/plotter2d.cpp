@@ -52,8 +52,8 @@ struct GridInfo
 	qreal inc, xini, yini, xend, yend;
 };
 
-Plotter2D::Plotter2D(const QSizeF& size, QAbstractItemModel* model)
-    : m_squares(true), m_keepRatio(true), m_dirty(true), m_size(size), m_model(model)
+Plotter2D::Plotter2D(const QSizeF& size)
+    : m_squares(true), m_keepRatio(true), m_dirty(true), m_size(size), m_model(0)
     , m_tickScaleSymbolValue(1)
     , m_tickScaleNumerator(1)
     , m_tickScaleDenominator(1)
@@ -568,6 +568,8 @@ void Plotter2D::setKeepAspectRatio(bool ar)
 
 void Plotter2D::setModel(QAbstractItemModel* f)
 {
+	if(m_model == f)
+		return;
     m_model=f;
     modelChanged();
     forceRepaint();

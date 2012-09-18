@@ -41,9 +41,9 @@
 #include <QClipboard>
 #include <KColorUtils>
 
-PlotsView2D::PlotsView2D(QWidget *parent, QAbstractItemModel* fm)
+PlotsView2D::PlotsView2D(QWidget *parent)
     : QWidget(parent)
-    , Plotter2D(size(), fm)
+    , Plotter2D(size())
     , valid(false)
     , mode(None)
     , m_framed(false)
@@ -61,14 +61,6 @@ PlotsView2D::PlotsView2D(QWidget *parent, QAbstractItemModel* fm)
     resetViewport();
     
     this->setAutoFillBackground(false);
-    
-    //NOTE remove next iter
-//     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-//         this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-//     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-//         this, SLOT(addFuncs(QModelIndex,int,int)));
-//     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
-//         this, SLOT(removeFuncs(QModelIndex,int,int)));
 }
 
 PlotsView2D::~PlotsView2D() {}
