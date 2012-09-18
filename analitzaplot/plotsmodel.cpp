@@ -233,5 +233,5 @@ QModelIndex PlotsModel::indexForName(const QString& name)
 QString PlotsModel::freeId() const
 {
 	//TODO: figure out a better way
-	return QString::number(qrand()*rowCount());
+	return "f"+QString::number(qrand()*rowCount());
 }
