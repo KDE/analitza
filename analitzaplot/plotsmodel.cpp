@@ -229,3 +229,9 @@ QModelIndex PlotsModel::indexForName(const QString& name)
 	}
 	return QModelIndex();
 }
+
+QString PlotsModel::freeId() const
+{
+	//TODO: figure out a better way
+	return QString::number(qrand()*rowCount());
+}

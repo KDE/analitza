@@ -50,6 +50,9 @@ public:
     void updatePlot(int row, PlotItem* it);
     void emitChanged(PlotItem* it);
 
+    /** @returns an identifier that's not present in the model */
+    QString freeId() const;
+
     QModelIndex indexForName(const QString& name);
     void clear();
 
