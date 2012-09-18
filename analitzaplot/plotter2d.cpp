@@ -65,294 +65,99 @@ Plotter2D::Plotter2D(const QSizeF& size, QAbstractItemModel* model)
 Plotter2D::~Plotter2D()
 {}
 
-void Plotter2D::drawAxes(QPainter *p, CoordinateSystem a)
+void Plotter2D::drawAxes(QPainter *painter, CoordinateSystem a)
 {
     switch(a) {
     case Polar:
-        drawPolarAxes(p);
+        drawPolarGrid(painter);
         break;
     default:
-        drawCartesianAxes(p);
+        drawCartesianGrid(painter);
     }
-
-    //write coords
-    QString rightBound=QString::number(viewport.right());
-    int width=p->fontMetrics().width(rightBound);
-
-    p->drawText(QPointF(3.+this->width()/2., 13.                 ), QString::number(viewport.top()));
-    p->drawText(QPointF(3.+this->width()/2., this->height()-5.   ), QString::number(viewport.bottom()));
-    p->drawText(QPointF(8.                 , this->height()/2.-5.), QString::number(viewport.left()));
-    p->drawText(QPointF(this->width()-width, this->height()/2.-5.), rightBound);
-    //EO write coords
+    drawMainAxes(painter);
 }
 
-void Plotter2D::drawPolarAxes(QPainter *painter)
+void Plotter2D::drawMainAxes(QPainter* painter)
 {
-    QPainter *w = painter;
-    painter->setRenderHint(QPainter::Antialiasing, true);
+	painter->setRenderHint(QPainter::Antialiasing, false);
 
-    qreal until = qMax(viewport.height(), viewport.width());
-
-    QPen ceixos;
-    ceixos.setColor(m_gridColor); // m_axeColor
-    w->setPen(ceixos);
+	const QFontMetrics fm(painter->font());
+    const QPen axesPen(m_axeColor, 1, Qt::SolidLine);
+    const QFont natfont = painter->font();
     const QPointF center = toWidget(QPointF(0.,0.));
-
-    ceixos.setColor(m_gridColor);
-    ceixos.setStyle(Qt::SolidLine);
-    w->setPen(ceixos);
-
-    QString symbol =m_tickScaleSymbol;
-    qreal symbolValue = m_tickScaleSymbolValue;
-    bool symbolFormat = m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
-    int numerator = m_tickScaleNumerator;
-    int denominator =m_tickScaleDenominator;
-
-    // prcesss
-    qreal coef = (qreal)(numerator);
-    coef /= (qreal)(denominator);
-    bool isSymbol = !symbol.isEmpty();
-    symbolFormat = isSymbol? symbolFormat : false; // force false if isSymbol is false too
-    qreal tickValue = isSymbol? coef*symbolValue : coef;
-
-    QString numStr = QString::number(numerator);
-    QString denStr = QString::number(denominator);
-
-    //END params of algotihm
-
-    qreal inc = tickValue;
-
-    int decimalPrecision = denominator == 1 && !isSymbol? 0 : denominator == 2? 1 : 2;
-
-    //QString tickLabel = symbol;
-    //QString tickCoef("");
-
-    double xini=floor((viewport.left())/inc)*inc;
-    double yini=(floor(viewport.bottom())/inc)*inc;
-
-    double xend=ceil((viewport.right())/inc)*inc;
-    double yend=(ceil(viewport.top())/inc)*inc;
-
-    int correctScale = 1;// usado cuando el zoom es muy alto y se ve un vp muy grande
-	double decs = std::floor(std::log10(viewport.width()));
-	if(decs>1)
-		correctScale = pow(10, decs)/2;
-
-    inc *= correctScale;
-    xini = floor(xini/inc)*inc;
-    yini = floor(yini/inc)*inc;
-
-    QFontMetrics fm(w->font());
-
-    if (m_squares)
-        for (qreal i = inc; i < until; i +=inc )
-        {
-            QPointF p(toWidget(QPointF(i,i)));
-            QPointF p2(toWidget(QPointF(-i,-i)));
-            QRectF er(p.x(),p.y(), p2.x()-p.x(),p2.y()-p.y());
-            w->drawEllipse(er);
-        }
-
-    int i = 1;
-
-    QPointF p;
-    QPen tickpen;
-    tickpen.setColor(QPalette().text().color());
-    tickpen.setStyle(Qt::SolidLine);
-
-    w->setFont(painter->font());
-
-    if (m_showHTicks)
-    {
-        for(double x = -inc; x > xini; x -= inc, i+=1)
-        {
-            p = toWidget(QPointF(x, 0.));
-
-            w->setPen(ceixos);
-            w->setPen(tickpen);
-
-            if (!isSymbol || !symbolFormat) {
-                w->drawText(p.x() - fm.width(QString::number(x, 'f', decimalPrecision))/2, p.y()+20, QString::number(x, 'f', decimalPrecision));
-            } else {
-                int iCorrected = i*correctScale;
-                int sign = x <= 0. ? -1 : 1;
-                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-                w->drawText(p.x(), p.y()+20, QString::number(sign*val*numerator)+symbol);
-
-                if (denominator != 1 && (iCorrected % denominator != 0))
-                {
-                    w->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
-                    w->drawText(p.x()-10+fm.width(symbol), p.y()+20+fm.height(), denStr);
-                }
-            }
-        }
-
-        i = 1;
-
-        for(double x = inc; x < xend; x += inc, i+=1)
-        {
-            p = toWidget(QPointF(x, 0.));
-
-            w->setPen(ceixos);
-            w->setPen(tickpen);
-
-            if (!isSymbol || !symbolFormat) {
-                w->drawText(p.x() - fm.width(QString::number(x, 'f', decimalPrecision))/2, p.y()+20, QString::number(x, 'f', decimalPrecision));
-            } else {
-                int iCorrected = i*correctScale;
-                int sign = x <= 0. ? -1 : 1;
-                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-                w->drawText(p.x(), p.y()+20, QString::number(sign*val*numerator)+symbol);
-
-                if ((denominator != 1) && (iCorrected % denominator != 0))
-                {
-                    w->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
-                    w->drawText(p.x()-10+fm.width(symbol), p.y()+20+fm.height(), denStr);
-                }
-            }
-        }
-    }
-
-    if (m_showVTicks)
-    {
-        i = 1;
-
-        for(double y = -inc; y > yini; y -= inc, i+=1)
-        {
-            p = toWidget(QPointF(0., y));
-            w->setPen(ceixos);
-            w->setPen(tickpen);
-
-            if (!isSymbol || !symbolFormat) {
-                w->drawText(-20+p.x() - fm.width(QString::number(y, 'f', decimalPrecision))/2, p.y()+20, QString::number(y, 'f', decimalPrecision));
-            } else {
-                int iCorrected = i*correctScale;
-                int sign = y <= 0. ? -1 : 1;
-                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-                QString text = QString::number(sign*val*numerator)+symbol;
-                qreal correctxpos = fm.width(text)+6;
-
-                w->drawText(-correctxpos + p.x(), p.y()+5, text);
-
-                if ((denominator != 1) && (iCorrected % denominator != 0))
-                {
-                    w->drawLine(-correctxpos + p.x()-5, p.y()+5,
-                                -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
-                    w->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
-                }
-            }
-
-        }
-
-        i = 1;
-
-        for(double y = inc; y < yend; y += inc, i+=1)
-        {
-            p = toWidget(QPointF(0., y));
-            w->setPen(ceixos);
-            w->setPen(tickpen);
-
-            if (!isSymbol || !symbolFormat)
-            {
-                w->drawText(-20+p.x() - fm.width(QString::number(y, 'f', decimalPrecision))/2, p.y()+20, QString::number(y, 'f', decimalPrecision));
-            } else {
-                int iCorrected = i*correctScale;
-                int sign = y <= 0. ? -1 : 1;
-                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-                QString text = QString::number(sign*val*numerator)+symbol;
-                qreal correctxpos = fm.width(text)+6;
-
-                w->drawText(-correctxpos + p.x(), p.y()+5, text);
-
-                if ((denominator != 1) && (iCorrected % denominator != 0))
-                {
-                    w->drawLine(-correctxpos + p.x()-5, p.y()+5,
-                                -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
-                    w->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
-                }
-            }
-        }
-    }
-
-    QPointF Xright(this->width(), center.y());
-    QPointF Ytop(center.x(), 0.);
-    w->setPen(ceixos);
-    
-    QFont labelsfont = w->font();
-    labelsfont.setBold(true);
-    
-    if (m_showHAxes) {
-        w->drawLine(QPointF(0., center.y()), Xright);
-        w->drawText(Xright.x() - fm.width(m_axisXLabel) - 5, center.y() - 20, m_axisXLabel);
-    }
-
-    if (m_showVAxes) {
-        w->drawLine(Ytop, QPointF(center.x(), height()));
-        w->drawText(center.x() + 5, Ytop.y() + fm.height() + 15, m_axisYLabel);
-    }
-
-    ceixos.setColor(Qt::darkGreen);
-    w->setPen(ceixos);
-    w->setBrush(m_axeColor);
-
-    const double width=15., height=4.;
-    QPointF dpx(width, height);
-    QPointF dpy(height, width);
-    QRectF rectX(Xright+dpx, Xright-dpx);
-    QRectF rectY(Ytop+dpy, Ytop-dpy);
+	
+    painter->setFont(natfont);
+    painter->setPen(axesPen);
+	painter->setBrush(axesPen.color());
 
     int startAngleX = 150*16;
     int startAngleY = 240*16;
     int spanAngle = 60*16;
-    if (m_showHAxes)
-        w->drawPie(rectX, startAngleX, spanAngle);
-    if (m_showVAxes)
-        w->drawPie(rectY, startAngleY, spanAngle);
+    QPointF Xright(this->width(), center.y());
+    QPointF Ytop(center.x(), 0.);
+    const double arrowWidth=15., arrowHeight=4.;
+    QPointF dpx(arrowWidth, arrowHeight);
+    QPointF dpy(arrowHeight, arrowWidth);
+    QRectF rectX(Xright+dpx, Xright-dpx);
+    QRectF rectY(Ytop+dpy, Ytop-dpy);
+
+    if (m_showHAxes) {
+        painter->drawLine(QPointF(0., center.y()), Xright);
+        
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        painter->drawPie(rectX, startAngleX, spanAngle);
+        painter->setRenderHint(QPainter::Antialiasing, false);
+    }
+
+    if (m_showVAxes) {
+        painter->drawLine(Ytop, QPointF(center.x(), this->height()));
+        
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        painter->drawPie(rectY, startAngleY, spanAngle);
+        painter->setRenderHint(QPainter::Antialiasing, false);
+    }
+
+    // axis labels
+
+    QFont labelsfont = painter->font();
+    labelsfont.setBold(true);
+
+    painter->drawText(Xright.x() - fm.width(m_axisXLabel) - 5, center.y() - 20, m_axisXLabel);
+    painter->drawText(center.x() + 5, Ytop.y() + fm.height() + 15, m_axisYLabel);
+
+    //write coords
+    QString rightBound=QString::number(viewport.right());
+    int width=painter->fontMetrics().width(rightBound);
+
+    painter->drawText(QPointF(3.+this->width()/2., 13.                 ), QString::number(viewport.top()));
+    painter->drawText(QPointF(3.+this->width()/2., this->height()-5.   ), QString::number(viewport.bottom()));
+    painter->drawText(QPointF(8.                 , this->height()/2.-5.), QString::number(viewport.left()));
+    painter->drawText(QPointF(this->width()-width, this->height()/2.-5.), rightBound);
+    //EO write coords
 }
 
-void Plotter2D::drawCartesianAxes(QPainter *painter)
+void Plotter2D::drawPolarGrid(QPainter *painter)
 {
-    painter->setRenderHint(QPainter::Antialiasing, false);
+    painter->setRenderHint(QPainter::Antialiasing, true);
 
-    const QPen axesPen(m_axeColor, 1, Qt::SolidLine);
-    const QPen gridPen(m_gridColor, 1, Qt::SolidLine);
-    QFont natfont = painter->font();
-    const QPointF center = toWidget(QPointF(0.,0.));
-    QPointF p;
+    const QPen gridColor(m_gridColor);
+	const QPen tickpen(QPalette().text().color());
+    painter->setPen(gridColor);
 
-    //BEGIN params of algotihm
-
-    // pi/6
-
-//    QString symbol = QString((QChar(0x03C0)));
-//    qreal symbolValue = M_PI;
-//    int numerator = 1;
-//    int denominator = 6;
-
-
-    // sqrt(2)
-
-    QString symbol =m_tickScaleSymbol;
-    qreal symbolValue = m_tickScaleSymbolValue;
-    int numerator = m_tickScaleNumerator;
-    int denominator =m_tickScaleDenominator;
+    const QString symbol =m_tickScaleSymbol;
+	const bool isSymbol = !symbol.isEmpty();
+    const bool symbolFormat = isSymbol && m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
+    const int numerator = m_tickScaleNumerator;
+    const int denominator =m_tickScaleDenominator;
 
     // prcesss
-    qreal coef = qreal(numerator);
-    coef /= qreal(denominator);
-    bool isSymbol = !symbol.isEmpty();
-    bool symbolFormat = isSymbol && m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
+    qreal coef = qreal(numerator) / qreal(denominator);
+    qreal inc = isSymbol? coef*m_tickScaleSymbolValue : coef;
 
     QString numStr = QString::number(numerator);
     QString denStr = QString::number(denominator);
 
     //END params of algotihm
-
-    qreal inc = isSymbol? coef*symbolValue : coef;
 
     int decimalPrecision = denominator == 1 && !isSymbol? 0 : denominator == 2? 1 : 2;
 
@@ -366,7 +171,138 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     double yend=(ceil(viewport.top())/inc)*inc;
 
     int correctScale = 1;
-	double decs = std::floor(std::log10(viewport.width()));
+	double decs = std::floor(std::log10(qMax(-viewport.height(), viewport.width())));
+	if(decs>1)
+		correctScale = pow(10, decs)/2;
+
+    inc *= correctScale;
+    xini = floor(xini/inc)*inc;
+    yini = floor(yini/inc)*inc;
+
+    int i = 1;
+
+    QPointF p;
+
+    painter->setFont(painter->font());
+
+	QFontMetrics fm(painter->font());
+    if (m_showHTicks)
+    {
+        for(double x = xini; x < xend; x += inc, i+=1)
+        {
+            p = toWidget(QPointF(x, 0.));
+
+            painter->setPen(tickpen);
+
+            if (!isSymbol || !symbolFormat) {
+				QString s = QString::number(x, 'f', decimalPrecision);
+				painter->drawText(p.x() - fm.width(s)/2, p.y()+20, s);
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = x <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
+
+                painter->drawText(p.x(), p.y()+20, QString::number(sign*val*numerator)+symbol);
+
+                if (denominator != 1 && (iCorrected % denominator != 0))
+                {
+                    painter->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
+                    painter->drawText(p.x()-10+fm.width(symbol), p.y()+20+fm.height(), denStr);
+                }
+            }
+        }
+    }
+
+    if (m_showVTicks)
+    {
+        i = 1;
+
+        for(double y = yini; y < yend; y += inc, i+=1)
+        {
+            p = toWidget(QPointF(0., y));
+            painter->setPen(tickpen);
+
+            if (!isSymbol || !symbolFormat) {
+                QString s = QString::number(y, 'f', decimalPrecision);
+				painter->drawText(-20+p.x() - fm.width(s)/2, p.y()+20, s);
+            } else {
+                int iCorrected = i*correctScale;
+                int sign = y <= 0. ? -1 : 1;
+                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
+
+                QString text = QString::number(sign*val*numerator)+symbol;
+                qreal correctxpos = fm.width(text)+6;
+                painter->drawText(-correctxpos + p.x(), p.y()+5, text);
+
+                if ((denominator != 1) && (iCorrected % denominator != 0))
+                {
+                    painter->drawLine(-correctxpos + p.x()-5, p.y()+5,
+                                -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
+                    painter->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
+                }
+            }
+
+        }
+    }
+    
+    painter->setPen(gridColor);
+    if (m_squares) {
+		qreal until = qMax(-viewport.height(), viewport.width());
+        for (qreal i = inc; i < until; i +=inc )
+        {
+            QPointF p(toWidget(QPointF(i,i)));
+            QPointF p2(toWidget(QPointF(-i,-i)));
+            QRectF er(p.x(),p.y(), p2.x()-p.x(),p2.y()-p.y());
+            painter->drawEllipse(er);
+        }
+	}
+}
+
+void Plotter2D::drawCartesianGrid(QPainter *painter)
+{
+    QPointF p;
+
+	const QPen gridPen(m_gridColor, 1, Qt::SolidLine);
+    //BEGIN params of algotihm
+
+    // pi/6
+
+//    QString symbol = QString((QChar(0x03C0)));
+//    qreal symbolValue = M_PI;
+//    int numerator = 1;
+//    int denominator = 6;
+
+
+    // sqrt(2)
+
+    const QString symbol =m_tickScaleSymbol;
+	const bool isSymbol = !symbol.isEmpty();
+    const bool symbolFormat = isSymbol && m_tickScaleUseSymbols; // cuando son numeros o cuando el usuario no kiere mostrar los simboles
+    const int numerator = m_tickScaleNumerator;
+    const int denominator =m_tickScaleDenominator;
+
+    // prcesss
+    qreal coef = qreal(numerator) / qreal(denominator);
+    qreal inc = isSymbol? coef*m_tickScaleSymbolValue : coef;
+
+    QString numStr = QString::number(numerator);
+    QString denStr = QString::number(denominator);
+
+    //END params of algotihm
+
+    int decimalPrecision = denominator == 1 && !isSymbol? 0 : denominator == 2? 1 : 2;
+
+    //QString tickLabel = symbol;
+    //QString tickCoef("");
+
+    double xini=floor((viewport.left())/inc)*inc;
+    double yini=(floor(viewport.bottom())/inc)*inc;
+
+    double xend=ceil((viewport.right())/inc)*inc;
+    double yend=(ceil(viewport.top())/inc)*inc;
+
+    int correctScale = 1;
+	double decs = std::floor(std::log10(qMax(-viewport.height(), viewport.width())));
 	if(decs>1)
 		correctScale = pow(10, decs)/2;
 
@@ -384,43 +320,9 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
     QFontMetrics fm(painter->font());
 
-    for(double x = -inc; x > xini; x -= inc, i+=1)
-    {
-        p = toWidget(QPointF(x, 0.));
-
-        painter->setPen(gridPen);
-
-        if(m_squares)
-            painter->drawLine(QPointF(p.x(), this->height()), QPointF(p.x(), 0.));
-        else
-            painter->drawLine(p, p+QPointF(0.,-3.));
-
-        if (m_showHTicks)
-        {
-            painter->setPen(tickPen);
-
-            if (!isSymbol || !symbolFormat) {
-                QString s = QString::number(x, 'f', decimalPrecision);
-                painter->drawText(p.x() + fm.width(s)/2, p.y()+20, s);
-            } else {
-                int iCorrected = i*correctScale;
-                int sign = x <= 0. ? -1 : 1;
-                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-                painter->drawText(p.x(), p.y()+20, QString::number(sign*val*numerator)+symbol);
-
-                if ((denominator != 1) && (iCorrected % denominator != 0))
-                {
-                    painter->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
-                    painter->drawText(p.x()-10+fm.width(symbol), p.y()+20+fm.height(), denStr);
-                }
-            }
-        }
-    }
-
     i = 1;
 
-    for(double x = inc; x < xend; x += inc, i+=1)
+    for(double x = xini; x < xend; x += inc, i+=1)
     {
         p = toWidget(QPointF(x, 0.));
 
@@ -460,7 +362,7 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
 
     i = 1;
 
-    for(double y = -inc; y > yini; y -= inc, i+=1)
+    for(double y = yini; y < yend; y += inc, i+=1)
     {
         p = toWidget(QPointF(0., y));
 
@@ -476,46 +378,7 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
             painter->setPen(tickPen);
 
             if (!isSymbol || !symbolFormat) {
-                QString s=QString::number(y, 'f', decimalPrecision);
-                painter->drawText(-20+p.x() - fm.width(s)/2, p.y()+20, s);
-            } else {
-                int iCorrected = i*correctScale;
-                int sign = y <= 0. ? -1 : 1;
-                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-                QString text = QString::number(sign*val*numerator)+symbol;
-                qreal correctxpos = fm.width(text)+6;
-                painter->drawText(-correctxpos + p.x(), p.y()+5, text);
-
-                if ((denominator != 1) && (iCorrected % denominator != 0))
-                {
-                    painter->drawLine(-correctxpos + p.x()-5, p.y()+5,
-                                    -correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
-                    painter->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
-                }
-            }
-        }
-    }
-
-    i = 1;
-
-    for(double y = inc; y < yend; y += inc, i+=1)
-    {
-        p = toWidget(QPointF(0., y));
-
-        painter->setPen(gridPen);
-
-        if(m_squares)
-            painter->drawLine(QPointF(0., p.y()), QPointF(width(), p.y()));
-        else
-            painter->drawLine(p, p+QPointF(3.,0.));
-
-        if (m_showVTicks)
-        {
-            painter->setPen(tickPen);
-
-            if (!isSymbol || !symbolFormat) {
-                QString s=QString::number(y, 'f', decimalPrecision);
+                QString s = QString::number(y, 'f', decimalPrecision);
                 painter->drawText(-20+p.x() - fm.width(s)/2, p.y()+20, s);
             } else {
                 int iCorrected = i*correctScale;
@@ -537,47 +400,6 @@ void Plotter2D::drawCartesianAxes(QPainter *painter)
     }
 
    //END Draw ticks Y
-
-    // restore values
-    painter->setFont(natfont);
-    painter->setPen(axesPen);
-
-    int startAngleX = 150*16;
-    int startAngleY = 240*16;
-    int spanAngle = 60*16;
-    QPointF Xright(this->width(), center.y());
-    QPointF Ytop(center.x(), 0.);
-    const double width=15., height=4.;
-    QPointF dpx(width, height);
-    QPointF dpy(height, width);
-    QRectF rectX(Xright+dpx, Xright-dpx);
-    QRectF rectY(Ytop+dpy, Ytop-dpy);
-    painter->setPen(axesPen);
-    painter->setBrush(axesPen.color());
-
-    if (m_showHAxes) {
-        painter->drawLine(QPointF(0., center.y()), Xright);
-        
-        painter->setRenderHint(QPainter::Antialiasing, true);
-        painter->drawPie(rectX, startAngleX, spanAngle);
-        painter->setRenderHint(QPainter::Antialiasing, false);
-    }
-
-    if (m_showVAxes) {
-        painter->drawLine(Ytop, QPointF(center.x(), this->height()));
-        
-        painter->setRenderHint(QPainter::Antialiasing, true);
-        painter->drawPie(rectY, startAngleY, spanAngle);
-        painter->setRenderHint(QPainter::Antialiasing, false);
-    }
-
-    // axis labels
-
-    QFont labelsfont = painter->font();
-    labelsfont.setBold(true);
-
-    painter->drawText(Xright.x() - fm.width(m_axisXLabel) - 5, center.y() - 20, m_axisXLabel);
-    painter->drawText(center.x() + 5, Ytop.y() + fm.height() + 15, m_axisYLabel);
 }
 
 PlotItem* Plotter2D::itemAt(int row) const

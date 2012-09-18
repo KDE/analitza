@@ -101,8 +101,9 @@ class ANALITZAPLOT_EXPORT Plotter2D
 
     private:
         void drawAxes(QPainter *f, CoordinateSystem a);
-        void drawPolarAxes(QPainter *f);
-        void drawCartesianAxes(QPainter *f);
+        void drawPolarGrid(QPainter *f);
+        void drawCartesianGrid(QPainter *f);
+		void drawMainAxes(QPainter* painter);
         PlotItem *itemAt(int row) const;
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
