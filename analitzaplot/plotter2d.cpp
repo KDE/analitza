@@ -70,7 +70,7 @@ Plotter2D::Plotter2D(const QSizeF& size, QAbstractItemModel* model)
 Plotter2D::~Plotter2D()
 {}
 
-void Plotter2D::drawAxes(QPainter *painter, CoordinateSystem a)
+void Plotter2D::drawAxes(QPainter* painter, CoordinateSystem a) const
 {
 	GridInfo grid = drawTicks(painter);
     switch(a) {
@@ -83,7 +83,7 @@ void Plotter2D::drawAxes(QPainter *painter, CoordinateSystem a)
     drawMainAxes(painter);
 }
 
-void Plotter2D::drawMainAxes(QPainter* painter)
+void Plotter2D::drawMainAxes(QPainter* painter) const
 {
 	painter->setRenderHint(QPainter::Antialiasing, false);
 
@@ -140,7 +140,7 @@ void Plotter2D::drawMainAxes(QPainter* painter)
     //EO write coords
 }
 
-GridInfo Plotter2D::drawTicks(QPainter *painter)
+GridInfo Plotter2D::drawTicks(QPainter* painter) const
 {
     painter->setRenderHint(QPainter::Antialiasing, true);
 
@@ -232,7 +232,7 @@ GridInfo Plotter2D::drawTicks(QPainter *painter)
                 qreal correctxpos = fm.width(text)+6;
                 painter->drawText(-correctxpos + p.x(), p.y()+5, text);
 
-                if ((denominator != 1) && (iCorrected % denominator != 0))
+                if (denominator != 1 && (iCorrected % denominator != 0))
                 {
                     painter->drawLine(-correctxpos + p.x()-5, p.y()+5,-correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
                     painter->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
@@ -244,7 +244,7 @@ GridInfo Plotter2D::drawTicks(QPainter *painter)
     return ret;
 }
 
-void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid)
+void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
 {
 	const QPen gridPen(m_gridColor);
 	painter->setPen(gridPen);
@@ -260,7 +260,7 @@ void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid)
 	}
 }
 
-void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid)
+void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
 {
     QPointF p;
 	const QPen gridPen(m_gridColor);

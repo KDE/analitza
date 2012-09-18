@@ -101,11 +101,11 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void scaleViewport(qreal s, const QPoint& center);
 
     private:
-        void drawAxes(QPainter *f, CoordinateSystem a);
-        void drawPolarGrid(QPainter* painter, const GridInfo& inc);
-        void drawCartesianGrid(QPainter *f, const GridInfo& inc);
-		void drawMainAxes(QPainter* painter);
-		GridInfo drawTicks(QPainter* painter);
+        void drawAxes(QPainter* painter, CoordinateSystem a) const;
+        void drawPolarGrid(QPainter* painter, const GridInfo& inc) const;
+        void drawCartesianGrid(QPainter *f, const GridInfo& inc) const;
+		void drawMainAxes(QPainter* painter) const;
+		GridInfo drawTicks(QPainter* painter) const;
         PlotItem *itemAt(int row) const;
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
