@@ -29,6 +29,7 @@
 #include "analitzaplotexport.h"
 #include <analitzaplot/plottingenums.h>
 
+struct GridInfo;
 class PlotItem;
 class QAbstractItemModel;
 class QPainter;
@@ -101,9 +102,10 @@ class ANALITZAPLOT_EXPORT Plotter2D
 
     private:
         void drawAxes(QPainter *f, CoordinateSystem a);
-        void drawPolarGrid(QPainter *f);
-        void drawCartesianGrid(QPainter *f);
+        void drawPolarGrid(QPainter* painter, const GridInfo& inc);
+        void drawCartesianGrid(QPainter *f, const GridInfo& inc);
 		void drawMainAxes(QPainter* painter);
+		GridInfo drawTicks(QPainter* painter);
         PlotItem *itemAt(int row) const;
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
