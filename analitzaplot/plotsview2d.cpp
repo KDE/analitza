@@ -320,7 +320,6 @@ void PlotsView2D::snapshotToClipboard()
 void PlotsView2D::addFuncs(const QModelIndex & parent, int start, int end)
 {
 //     Q_ASSERT(!parent.isValid());
-    
     updateFunctions(parent, start, end);
 }
 
