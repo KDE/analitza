@@ -54,7 +54,7 @@ public:
     QString freeId() const;
 
     QModelIndex indexForName(const QString& name);
-    void clear();
+    Q_SCRIPTABLE void clear();
 
 private:
     QList<PlotItem*> m_items;
