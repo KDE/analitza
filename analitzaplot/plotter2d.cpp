@@ -599,10 +599,10 @@ void Plotter2D::updateTickScale(const QString& tickScaleSymbol, qreal tickScaleS
         int tickScaleDenominator)
 {
     m_tickScaleSymbol = tickScaleSymbol;
-    m_tickScaleSymbolValue = m_tickScaleSymbolValue;
+    m_tickScaleSymbolValue = tickScaleSymbolValue;
     //m_tickScaleUseSymbols = tickScaleUseSymbols;
-    m_tickScaleNumerator = m_tickScaleNumerator;
-    m_tickScaleDenominator = m_tickScaleDenominator;
+    m_tickScaleNumerator = tickScaleNumerator;
+    m_tickScaleDenominator = tickScaleDenominator;
 
     forceRepaint();
 }
