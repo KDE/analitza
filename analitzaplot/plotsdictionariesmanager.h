@@ -38,12 +38,14 @@ public:
     //luego lee el plostmodel para llenar los childs
     PlotsDictionariesManager(QObject* parent = 0);
     ~PlotsDictionariesManager();
-    
+
     QStringList availableDictionaries() const;
 
     PlotsDictionariesModel *model() const;
 
 private:
+    void createDictionary(const QString& title, const QString& file);
+
     PlotsDictionariesModel *m_model;
     QStringList m_errors;
     QList<DictionaryItem*> m_collections; // since dictionary is opt for plotitem it need to be deleted
