@@ -39,7 +39,9 @@ PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent)
 }
 
 PlotsDictionaryModel::~PlotsDictionaryModel()
-{}
+{
+    qDeleteAll(m_collections);
+}
 
 QVariant PlotsDictionaryModel::data(const QModelIndex& index, int role) const
 {
