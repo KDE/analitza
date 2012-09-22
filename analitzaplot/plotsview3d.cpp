@@ -42,9 +42,9 @@ PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
     setAxisIsDrawn(true);
 
     setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
-    setSceneRadius(6); //TODO no magic number, 5 is the size of the ¿coords?
+    setSceneRadius(5); //TODO no magic number, 5 is the size of the ¿coords?
     
-    camera()->setPosition(qglviewer::Vec(0,0,15));
+    resetView();
 }
 
 PlotsView3D::~PlotsView3D()
@@ -89,6 +89,16 @@ void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
     
     m_selection = selection;
 //     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
+}
+
+void PlotsView3D::resetView()
+{
+    setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
+    
+    camera()->setUpVector(qglviewer::Vec(-1,-1,1), false);
+    camera()->setPosition(qglviewer::Vec(7,7,7));
+    camera()->lookAt(qglviewer::Vec(0,0,0));
+    camera()->setRevolveAroundPoint(qglviewer::Vec(0,0,0));
 }
 
 void PlotsView3D::resizeScene(int v)

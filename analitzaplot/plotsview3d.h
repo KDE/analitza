@@ -44,6 +44,7 @@ public:
 
 public slots:
     void resizeScene(int v);
+    void resetView();
     
 private slots:
     void addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(PlotItem* item);     // modelindex del proxy
