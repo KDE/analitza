@@ -63,7 +63,6 @@ set ( analitzaplot_SRCS
     plotsmodel.cpp
     plotsproxymodel.cpp
     plotsdictionarymodel.cpp
-    plotsdictionariesmanager.cpp
     plotter2d.cpp
     plotsview3d.cpp
     plotter3d.cpp
@@ -104,7 +103,6 @@ install(FILES
     plotsmodel.h
     plotsproxymodel.h
     plotsdictionarymodel.h
-    plotsdictionariesmanager.h
     plotter2d.h
     plotsview2d.h
     plotter3d.h

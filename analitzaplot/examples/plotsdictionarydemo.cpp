@@ -23,7 +23,7 @@
 #include <kapplication.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
-#include <plotsdictionariesmanager.h>
+#include <plotsdictionarymodel.h>
 
 int main(int argc, char *argv[])
 {
@@ -44,8 +44,8 @@ int main(int argc, char *argv[])
     central.resize(800,600);
     QHBoxLayout *layout = new QHBoxLayout(&central);
     QTreeView* tree = new QTreeView(&central);
-    PlotsDictionariesManager m;
-    tree->setModel(m.model());
+    PlotsDictionaryModel m;
+    tree->setModel(&m);
     layout->addWidget(tree);
     
     central.show();

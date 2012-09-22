@@ -31,20 +31,20 @@
 //si se agrega nuevos archvivos se debe cargar mediante un filewatch ... en general QAbstractItemModel es mas flexible que qstandaritemmodel
 //too complex rescandiction on signals like export as dic ...
 //cunado lo use el dicmanager borrar los models luego de cargar la data
-class ANALITZAPLOT_EXPORT PlotsDictionariesModel : public PlotsModel
+class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public PlotsModel
 {
-// Q_OBJECT    
-// 
-// // friend PlotsDictionaryModel * getDictionary(QObject *); // for private slots
-// 
+Q_OBJECT    
 public:
-    //primero lee el dicmodel y crea los parents
-    //luego lee el plostmodel para llenar los childs
-    PlotsDictionariesModel(QObject* parent = 0);
-    ~PlotsDictionariesModel();
+    PlotsDictionaryModel(QObject* parent = 0);
+    ~PlotsDictionaryModel();
     
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     virtual int columnCount(const QModelIndex& parent) const;
+
+private:
+    void createDictionary(const QString& title, const QString& file);
+    
+    QList<DictionaryItem*> m_collections;
 };
 
 #endif

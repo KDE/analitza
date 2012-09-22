@@ -20,21 +20,28 @@
 #include "dictionariesmodel.h"
 #include <analitza/expression.h>
 #include <KLocale>
+#include <KStandardDirs>
+#include <analitzaplot/planecurve.h>
 #include <QDomDocument>
+#include <QFile>
 #include "analitzaplot/dictionaryitem.h"
 
 Q_DECLARE_METATYPE(PlotItem*);
 
-PlotsDictionariesModel::PlotsDictionariesModel(QObject* parent)
+PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent)
     : PlotsModel(parent)
 {
     setHeaderData(2, Qt::Horizontal, i18nc("@title:column", "Collection"), Qt::DisplayRole);
+    
+    createDictionary("Dictionary1", "libanalitza/data/plots/es/basic_curves.plots");
+    createDictionary("Conics", "libanalitza/data/plots/es/conics.plots");
+    createDictionary("Polar", "libanalitza/data/plots/es/polar.plots");
 }
 
-PlotsDictionariesModel::~PlotsDictionariesModel()
+PlotsDictionaryModel::~PlotsDictionaryModel()
 {}
 
-QVariant PlotsDictionariesModel::data(const QModelIndex& index, int role) const
+QVariant PlotsDictionaryModel::data(const QModelIndex& index, int role) const
 {
     if(!index.isValid() || index.row()>=rowCount())
         return QVariant();
@@ -65,7 +72,42 @@ QVariant PlotsDictionariesModel::data(const QModelIndex& index, int role) const
     return PlotsModel::data(index, role);
 }
 
-int PlotsDictionariesModel::columnCount(const QModelIndex& ) const
+int PlotsDictionaryModel::columnCount(const QModelIndex& ) const
 {
     return 3;
+}
+
+void PlotsDictionaryModel::createDictionary(const QString& title, const QString& file)
+{
+    DictionaryItem* di = new DictionaryItem(DimAll);
+    di->setTitle(title);
+    m_collections.append(di);
+    QString localurl = KStandardDirs::locate("data", file);
+
+    QFile device(localurl);
+
+    if (device.open(QFile::ReadOnly | QFile::Text)) {
+        QTextStream stream(&device);
+        
+        while(!stream.atEnd()) {
+            QString line = stream.readLine();
+            
+            if (line.isEmpty())
+                continue;
+            
+            Analitza::Expression expression(line);
+            
+            if (!expression.isCorrect()) {
+                qDebug() << "wrong expression: " << line ;
+                continue;
+            }
+            
+            if (PlaneCurve::canDraw(expression).isEmpty())
+            {
+                PlaneCurve *plot = new PlaneCurve(expression);
+                plot->setSpace(m_collections.last());
+                addPlot(plot);
+            }
+        }
+    }
 }
