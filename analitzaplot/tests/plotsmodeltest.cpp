@@ -85,3 +85,14 @@ void PlotsModelTest::testAppend()
     if(!item->isCorrect())
         qDebug() << "error" << item->errors();
 }
+
+void PlotsModelTest::testExamples2D()
+{
+    QStringList examples = FunctionGraph::examples(Dim2D);
+    foreach(const QString& example, examples) {
+        PlaneCurve curve(Analitza::Expression(example), "ex", Qt::red, 0);
+        QVERIFY(curve.isCorrect());
+        curve.update(QRectF(-5,5,10,10));
+        QVERIFY(curve.isCorrect());
+    }
+}

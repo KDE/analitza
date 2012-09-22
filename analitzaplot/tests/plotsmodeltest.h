@@ -35,6 +35,8 @@ Q_OBJECT
 	private slots:
 		void testAppend();
 		void testAppend_data();
+        
+        void testExamples2D();
 
 	private:
         PlotsModel *m_model;
