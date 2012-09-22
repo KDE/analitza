@@ -20,12 +20,15 @@
 #ifndef PLOTTINGENUMS_H
 #define PLOTTINGENUMS_H
 
+#include <QFlags>
+
 enum Dimension {
     Dim1D = 1,
     Dim2D = 2,
     Dim3D = 4,
     DimAll = Dim1D | Dim2D | Dim3D
 };
+Q_DECLARE_FLAGS(Dimensions, Dimension)
 
 enum CoordinateSystem {
     Cartesian = 1,
