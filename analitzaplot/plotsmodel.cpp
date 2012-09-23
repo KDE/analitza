@@ -69,7 +69,7 @@ QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int ro
         }
     }
     
-    return QVariant();
+    return QAbstractListModel::headerData(section, orientation, role);
 }
 
 QVariant PlotsModel::data(const QModelIndex & index, int role) const
