@@ -43,6 +43,4 @@ enum CartesianAxis {
     ZAxis
 };
 
-enum PolarAxis { R = 1, p };
-
 #endif
