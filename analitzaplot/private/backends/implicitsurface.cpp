@@ -20,7 +20,8 @@
 // #include "private/surfacefactory.h"
 #include "private/functiongraphfactory.h"
 
-#include "analitza/value.h"
+#include <analitza/localize.h>
+#include <analitza/value.h>
 #include <analitza/vector.h>
 
 #include "private/utils/marchingcubes.h"
@@ -30,7 +31,7 @@ class ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static cla
 public:
     ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v);
 
-    TYPE_NAME("Implicit Surface")
+    TYPE_NAME(i18n("Implicit Surface"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))

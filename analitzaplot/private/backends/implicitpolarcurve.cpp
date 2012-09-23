@@ -30,7 +30,7 @@ class ImplicitPolar : public AbstractPlaneCurve, MarchingSquares
 {
 public:
     ImplicitPolar(const Analitza::Expression& e, Analitza::Variables* v = 0);
-    TYPE_NAME("Polar implicit Curve 0=F(r: Radial, p: Polar)")
+    TYPE_NAME(i18n("Polar implicit Curve 0=F(r: Radial, p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))

@@ -33,7 +33,7 @@ namespace Analitza {
 
 #define TYPE_NAME(name) \
 const QString typeName() const { return TypeName(); } \
-static QString TypeName() { return QString(name); } 
+static QString TypeName() { return name; } 
 
 #define EXPRESSION_TYPE(name) \
 static Analitza::ExpressionType ExpressionType() { return Analitza::ExpressionType(name); }

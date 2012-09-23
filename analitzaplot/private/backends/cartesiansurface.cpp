@@ -22,8 +22,9 @@
 #include "private/functiongraphfactory.h"
 
 
-#include "analitza/value.h"
+#include <analitza/value.h>
 #include <analitza/vector.h>
+#include <analitza/localize.h>
 #include <QVector3D>
 
 //TODO macros para las prop e abajo
@@ -48,7 +49,7 @@ class  Fxy : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxy)
-    TYPE_NAME("Surface z=F(x,y)")
+    TYPE_NAME(i18n("Surface z=F(x,y)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -83,7 +84,7 @@ class Fxz : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxz)
-    TYPE_NAME("Surface y=F(x,z)")
+    TYPE_NAME(i18n("Surface y=F(x,z)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
