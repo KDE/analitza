@@ -16,39 +16,30 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #include "private/abstractplanecurve.h"
 #include "private/functiongraphfactory.h"
 
-
 #include <QRect>
-
-#include "analitza/value.h"
-
-
 #include <qmath.h>
 #include <QDebug>
 #include <QBitArray>
 #include <QLineF>
+
 #include <analitza/localize.h>
-
-#include "analitza/value.h"
-#include "analitza/expressiontype.h"
-#include "analitza/variable.h"
-#include "analitza/variables.h"
-
+#include <analitza/value.h>
+#include <analitza/expressiontype.h>
+#include <analitza/variable.h>
+#include <analitza/variables.h>
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
 #endif
-static const double pi=M_PI;
 
+static const double pi=M_PI;
 
 #include "private/utils/marchingsquares.h"
 
-
-
-class ANALITZAPLOT_EXPORT FunctionImplicit : public AbstractPlaneCurve, public MarchingSquares
+class FunctionImplicit : public AbstractPlaneCurve, public MarchingSquares
 {
 public:
     CONSTRUCTORS(FunctionImplicit)
@@ -69,7 +60,6 @@ public:
 
     //
     virtual double evalScalarField(double x, double y);
-
 
 private:
     double getFValue(double xValue, double yValue);
