@@ -16,11 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
 #ifndef ANALITZAPLOT_FUNCTION_H_DICT
 #define ANALITZAPLOT_FUNCTION_H_DICT
-
 
 #include "plotsmodel.h"
 #include "plotsproxymodel.h"
@@ -43,7 +40,7 @@ public:
 
 private:
     void createDictionary(const QString& title, const QString& file);
-	QMap<PlotItem*, QString> m_plotTitles;
+    QMap<PlotItem*, QString> m_plotTitles;
 };
 
 #endif
