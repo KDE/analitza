@@ -91,24 +91,24 @@ void PlotsDictionaryModel::createDictionary(const QString& title, const QString&
     if (device.open(QFile::ReadOnly | QFile::Text)) {
         QTextStream stream(&device);
         
+        QString line;
         while(!stream.atEnd()) {
-            QString line = stream.readLine();
+            line += stream.readLine();
             
-            if (line.isEmpty())
-                continue;
-            
-            Analitza::Expression expression(line);
-            
-            if (!expression.isCorrect()) {
-                qDebug() << "wrong expression: " << line ;
-                continue;
-            }
-            
-            if (PlaneCurve::canDraw(expression).isEmpty())
-            {
-                PlaneCurve *plot = new PlaneCurve(expression);
-                plot->setSpace(m_collections.last());
-                addPlot(plot);
+            if (Analitza::Expression::isCompleteExpression(line)) {
+                Analitza::Expression expression(line);
+                
+                QStringList errors = PlaneCurve::canDraw(expression);
+                
+                if (errors.isEmpty()) {
+                    PlaneCurve *plot = new PlaneCurve(expression);
+                    plot->setSpace(m_collections.last());
+                    addPlot(plot);
+                    line.clear();
+                } else {
+                    qDebug() << "Couldn't add " << line << " because of errors: " << errors.join(", ");
+                    break;
+                }
             }
         }
     }

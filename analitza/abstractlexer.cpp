@@ -114,7 +114,8 @@ int AbstractLexer::lex()
 bool AbstractLexer::isCompleteExpression(bool justempty)
 {
 	bool anycodetoken=false;
-	for(int current=lex(); current>0 && !(justempty && anycodetoken); current=lex()) { anycodetoken |= current!=ExpressionTable::tComment; }
-	
+	for(int current=lex(); current>0 && !(justempty && anycodetoken); current=lex()) {
+		anycodetoken |= current!=ExpressionTable::tComment;
+	}
 	return anycodetoken && isCompletelyRead();
 }
