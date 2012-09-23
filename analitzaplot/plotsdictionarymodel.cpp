@@ -22,7 +22,6 @@
 #include <KLocalizedString>
 #include <analitzaplot/planecurve.h>
 #include <QFile>
-#include "analitzaplot/dictionaryitem.h"
 
 Q_DECLARE_METATYPE(PlotItem*);
 
