@@ -44,16 +44,16 @@ public:
          
     virtual const Analitza::Expression & expression() const = 0;
     virtual Analitza::Variables * variables() const = 0;
-
     virtual const QString typeName() const = 0;
+    virtual QString iconName() const = 0;
+    virtual Dimension spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
+    virtual CoordinateSystem coordinateSystem() const = 0;
+    
     QString name() const { return m_name; }
     void setName(const QString &newName);
-    virtual QString iconName() const = 0;
     QColor color() const { return m_color; }
     void setColor(const QColor& newColor);
 
-    virtual Dimension spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
-    virtual CoordinateSystem coordinateSystem() const = 0;
     PlotStyle plotStyle() { return m_plotStyle; }
     void setPlotStyle(PlotStyle ps);
     bool isVisible() const { return m_graphVisible; }
@@ -65,20 +65,15 @@ protected:
     void emitDataChanged();
 
 private:
-    PlotItem();
-    PlotItem(const PlotItem &other);
-    
-    //gui
     QString m_name;
     QColor m_color;
+    PlotStyle m_plotStyle;
+    bool m_graphVisible;
+
     
     DictionaryItem *m_space; //optz
     
-    //graphDescription    
-    PlotStyle m_plotStyle;
-    bool m_graphVisible;
-    
-    //model expose item as write pointr ... so this will fix some situations (delete external, etc)
+    //model expose item as write pointr
     PlotsModel *m_model;
 };
 

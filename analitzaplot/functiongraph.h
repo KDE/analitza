@@ -66,8 +66,6 @@ public:
     static QStringList examples(Dimension dim);
     
 protected:
-    FunctionGraph();
-    
     AbstractFunctionGraph *backend() const { return m_functionGraph; }
 
 private:

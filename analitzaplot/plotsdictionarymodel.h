@@ -16,21 +16,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef ANALITZAPLOT_FUNCTION_H_DICT
-#define ANALITZAPLOT_FUNCTION_H_DICT
+#ifndef ANALITZAPLOT_PLOTSDICTIONARYMODEL_H
+#define ANALITZAPLOT_PLOTSDICTIONARYMODEL_H
 
 #include "plotsmodel.h"
-#include "plotsproxymodel.h"
-#include "plotitem.h"
-#include <QStandardItemModel>
 
-
-//si se agrega nuevos archvivos se debe cargar mediante un filewatch ... en general QAbstractItemModel es mas flexible que qstandaritemmodel
-//too complex rescandiction on signals like export as dic ...
-//cunado lo use el dicmanager borrar los models luego de cargar la data
 class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public PlotsModel
 {
-Q_OBJECT    
+Q_OBJECT
 public:
     PlotsDictionaryModel(QObject* parent = 0);
     ~PlotsDictionaryModel();

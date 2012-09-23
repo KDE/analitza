@@ -24,8 +24,8 @@
 PlotItem::PlotItem(const QString &n, const QColor& col)
     : m_name(n)
     , m_color(col)
-    , m_space(0)
     , m_graphVisible(true)
+    , m_space(0)
     , m_model(0)
 {
 }
@@ -40,7 +40,6 @@ void PlotItem::emitDataChanged()
         m_model->emitChanged(this);
     }
 }
-
 
 void PlotItem::setModel(PlotsModel* m)
 {
