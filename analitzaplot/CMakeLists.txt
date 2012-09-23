@@ -51,8 +51,6 @@ set ( analitzaplot_SRCS
     private/backends/implicitsurface.cpp
 
     #public API
-    dictionaryitem.cpp
-    dictionariesmodel.cpp
     plotitem.cpp
     functiongraph.cpp
     planecurve.cpp
@@ -90,8 +88,6 @@ install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_AR
 
 install(FILES
     #public api
-    dictionaryitem.h
-    dictionariesmodel.h
     analitzaplotexport.h
     plotitem.h
     functiongraph.h

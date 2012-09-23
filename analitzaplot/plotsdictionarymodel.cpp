@@ -17,12 +17,10 @@
  *************************************************************************************/
 
 #include "plotsdictionarymodel.h"
-#include "dictionariesmodel.h"
 #include <analitza/expression.h>
-#include <KLocale>
 #include <KStandardDirs>
+#include <KLocalizedString>
 #include <analitzaplot/planecurve.h>
-#include <QDomDocument>
 #include <QFile>
 #include "analitzaplot/dictionaryitem.h"
 
