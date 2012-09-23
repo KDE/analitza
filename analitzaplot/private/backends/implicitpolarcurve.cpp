@@ -22,9 +22,14 @@
 #include <private/utils/mathutils.h>
 
 #include <QRectF>
-#include "analitza/value.h"
+#include <analitza/value.h>
+#include <analitza/localize.h>
 
-#include "analitza/localize.h"
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
+
+static const double pi=M_PI;
 
 class ImplicitPolar : public AbstractPlaneCurve, MarchingSquares
 {
@@ -105,13 +110,6 @@ void ImplicitPolar::update(const QRectF& vp)
 //     }
 }
 
-
-#ifndef M_PI
-#define M_PI           3.14159265358979323846
-#endif
-
-static const double pi=M_PI;
-//Own
 QPair<QPointF, QString> ImplicitPolar::image(const QPointF &p)
 {
     QPointF dp=p;
