@@ -33,7 +33,7 @@ QString i18np(const char* singular, const char* plural, int x1)
 #if KDE_IS_VERSION(4,5,90)
 #include <kglobal.h>
 
-static const KCatalogLoader loader("libkdepim");
+static const KCatalogLoader loader("analitza");
 #endif
 
 #endif
