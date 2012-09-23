@@ -37,7 +37,7 @@ public:
     
     PlotItem(const QString &name, const QColor& col);
     virtual ~PlotItem();
-    
+
     virtual const Analitza::Expression & expression() const = 0;
     virtual Analitza::Variables * variables() const = 0;
     virtual const QString typeName() const = 0;
@@ -65,11 +65,7 @@ private:
     QColor m_color;
     PlotStyle m_plotStyle;
     bool m_graphVisible;
-
     
-    DictionaryItem *m_space; //optz
-    
-    //model expose item as write pointr
     PlotsModel *m_model;
 };
 

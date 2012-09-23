@@ -17,7 +17,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #include "plotitem.h"
 #include "plotsmodel.h"
 
@@ -25,14 +24,11 @@ PlotItem::PlotItem(const QString &n, const QColor& col)
     : m_name(n)
     , m_color(col)
     , m_graphVisible(true)
-    , m_space(0)
     , m_model(0)
-{
-}
+{}
 
 PlotItem::~PlotItem()
 {}
-
 
 void PlotItem::emitDataChanged()
 {
