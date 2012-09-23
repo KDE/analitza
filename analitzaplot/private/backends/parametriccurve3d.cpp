@@ -16,57 +16,16 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #include "private/abstractspacecurve.h"
 #include "private/functiongraphfactory.h"
 #include <private/utils/box3d.h>
 
-#include "analitza/value.h"
-#include <analitza/vector.h>
-
-
 #include <QRectF>
-#include "analitza/value.h"
-#include "analitza/vector.h"
-
-
-#include <QDebug>
+#include <analitza/value.h>
+#include <analitza/vector.h>
 #include <analitza/localize.h>
 
-using Analitza::Expression;
-using Analitza::ExpressionType;
-using Analitza::Variables;
-using Analitza::Object;
-using Analitza::Cn;
-
-#ifndef M_PI
-#define M_PI           3.14159265358979323846
-#endif
-static const double pi=M_PI;
-
-
-namespace
-{
-    /// The @p p1 and @p p2 parameters are the last 2 values found
-    /// @p next is the next value found
-    /// @returns whether we've found the gap
-
-    bool traverse(double p1, double p2, double next)
-    {
-        static const double delta=3;
-        double diff=p2-p1, diff2=next-p2;
-        bool ret=false;
-
-        if(diff>0 && diff2<-delta)
-            ret=true;
-        else if(diff<0 && diff2>delta)
-            ret=true;
-
-        return ret;
-    }
-}
-
-
+using namespace Analitza;
 
 class ParametricCurve3D : public AbstractSpaceCurve
 {
@@ -85,41 +44,27 @@ public:
     void update(const Box3D& viewport);
 
 private:
+    int resolution() { return 5000; }
     Cn findTValueForPoint(const QPointF& p);
 };
 
-// 
-
 void ParametricCurve3D::update(const Box3D& viewport)
 {
-    Q_UNUSED(viewport);
-    Q_ASSERT(analyzer->expression().isCorrect());
-    //if(int(resolution())==points.capacity())
-    //  return;
-    
-    //TODO fix magic numbers
-//     double ulimit=c_limits.second;
-//     double dlimit=c_limits.first;
-    double dlimit=-3.1415*5;
-    double ulimit=3.1415*5;
+    QPair< double, double > theInterval;
+    if(hasIntervals())
+         theInterval = interval("t");
+    else
+        theInterval = qMakePair(-3.1415*5, 3.1415*5);
+    double dlimit=theInterval.first;
+    double ulimit=theInterval.second;
     
     points.clear();
     jumps.clear();
-    //points.reserve(resolution());
+    points.reserve(resolution());
 
+    double inv_res = double((ulimit-dlimit)/resolution());
     
-//  double inv_res= double((ulimit-dlimit)/resolution());
-    double inv_res= 0.01; 
-//  double final=ulimit-inv_res;
-    
-        //by percy
     Box3D vp(viewport);
-    
-//     vp.setTop(viewport.top() - 2);
-//     vp.setBottom(viewport.bottom() + 2);
-//     vp.setLeft(viewport.left() + 2);
-//     vp.setRight(viewport.right() - 2);
-    
     QVector3D curp;
     
     arg("t")->setValue(dlimit);
@@ -136,13 +81,7 @@ void ParametricCurve3D::update(const Box3D& viewport)
         curp = QVector3D(x.value(), y.value(), z.value());
         
         points.append(curp);
-
-//         Q_ASSERT(res.isVector());
     }
 }
 
-
 REGISTER_SPACECURVE(ParametricCurve3D)
-
-
-
