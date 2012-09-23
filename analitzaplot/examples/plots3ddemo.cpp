@@ -21,6 +21,7 @@
 #include <qsplitter.h>
 #include <QVBoxLayout>
 #include <QStatusBar>
+#include <QLabel>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
@@ -55,11 +56,15 @@ int main(int argc, char *argv[])
     QVBoxLayout *layout = new QVBoxLayout(central);
     
     QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
+    tabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+    QLabel *info = new QLabel("Rotate: right click + move \n Scale: left click + move ", central);
+    
+    layout->addWidget(info);
     layout->addWidget(tabs);
     
     //BEGIN test calls
-    
+
     PlotsModel *model = new PlotsModel(tabs);
 
     QTreeView *viewsource = new QTreeView(tabs);
@@ -75,7 +80,8 @@ int main(int argc, char *argv[])
     model->addPlot(new Surface(Analitza::Expression("x+3-y=7"), "implicit 1, ", Qt::red));
     model->addPlot(new Surface(Analitza::Expression("x*x+y*y-z*z= 1/2"), "implicit 2", Qt::darkBlue));
     model->addPlot(new SpaceCurve(Analitza::Expression("t->vector{cos(t), sin(t), t}"), "curve, ", Qt::green));
-
+    model->addPlot(new Surface(Analitza::Expression("(x,y)->x*x"), "z-map", Qt::yellow));
+    
     //END test calls
 
     tabs->addWidget(viewsource);
