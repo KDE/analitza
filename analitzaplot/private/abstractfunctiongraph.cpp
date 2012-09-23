@@ -169,3 +169,10 @@ bool AbstractFunctionGraph::isCorrect() const
 {
     return m_errors.isEmpty() && analyzer->isCorrect();
 }
+
+QStringList AbstractFunctionGraph::errors() const
+{
+    QStringList ret = m_errors+analyzer->errors();
+    ret.removeDuplicates();
+    return ret;
+}
