@@ -22,10 +22,13 @@
 #include <private/utils/mathutils.h>
 
 #include <QRectF>
-#include "analitza/value.h"
+#include <analitza/value.h>
+#include <analitza/localize.h>
 
-#include "analitza/localize.h"
-
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
+static const double pi=M_PI;
 
 class FunctionPolar : public AbstractPlaneCurve
 {
@@ -33,8 +36,8 @@ public:
     FunctionPolar(const Analitza::Expression& e, Analitza::Variables* v = 0);
     TYPE_NAME(i18n("Polar Curve r=F(p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Polar)
     PARAMETERS(QStringList("q")) //q:theta
     ICON_NAME("newpolar")
@@ -62,8 +65,7 @@ void FunctionPolar::update(const QRectF& viewport)
     double ulimit = 0;
     double inv_res = 0;
 
-    if (!hasIntervals())
-    {
+    if (!hasIntervals()) {
         double pi_factor = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), 
                                 qMax(qAbs(viewport.bottom()), qAbs(viewport.top())));
 
@@ -75,14 +77,14 @@ void FunctionPolar::update(const QRectF& viewport)
         inv_res = qMin(viewport.size().width(), viewport.size().height())/(M_PI*M_PI*pi_factor);
 
         points.reserve(10*static_cast<int>(pi_factor));
-    }
-    else //TODO obey intervals
-    {
+    } else {
         QPair< double, double> limits = interval("p");
         dlimit = limits.first;
         ulimit = limits.second;
+        inv_res = (ulimit-dlimit)/(M_PI*M_PI*16);
         
     }
+    Q_ASSERT(inv_res!=0);
 
     double final=ulimit-inv_res;
     for(double th=dlimit; th<final; th+=inv_res) {
@@ -94,10 +96,6 @@ void FunctionPolar::update(const QRectF& viewport)
 }
 
 
-#ifndef M_PI
-#define M_PI           3.14159265358979323846
-#endif
-static const double pi=M_PI;
 //Own
 QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
 {
@@ -264,14 +262,8 @@ QLineF FunctionPolar::tangent(const QPointF &mousepos)
 //     double m = comp2.value()/comp1.value();
 // 
 //     return FunctionUtils::slopeToLine(m);
-
-return QLineF();
-    
+    return QLineF();
 }
 
-
-
 REGISTER_PLANECURVE(FunctionPolar)
-
-
 
