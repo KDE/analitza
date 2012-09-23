@@ -34,7 +34,7 @@ PlotsFactory* PlotsFactory::self()
 	return factoryInstance;
 }
 
-PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimension dim)
+PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimension dim) const
 {
 	QStringList errs;
 	
@@ -73,7 +73,7 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
 	return b;
 }
 
-QStringList PlotsFactory::examples(Dimensions s)
+QStringList PlotsFactory::examples(Dimensions s) const
 {
 	QStringList examples;
 	if(s & Dim1D) examples += FunctionGraphFactory::self()->examples(Dim1D);
@@ -89,10 +89,15 @@ bool PlotBuilder::canDraw() const
 	return m_errors.isEmpty() && !m_id.isEmpty();
 }
 
-PlotItem* PlotBuilder::create(const QColor& color, const QString& name, Analitza::Variables* v) const
+FunctionGraph* PlotBuilder::create(const QColor& color, const QString& name, Analitza::Variables* v) const
 {
-	PlotItem* it = FunctionGraphFactory::self()->buildItem(m_id, m_expression, v);
+	FunctionGraph* it = FunctionGraphFactory::self()->buildItem(m_id, m_expression, v);
 	it->setColor(color);
 	it->setName(name);
 	return it;
+}
+
+Analitza::Expression PlotBuilder::expression() const
+{
+    return m_expression;
 }

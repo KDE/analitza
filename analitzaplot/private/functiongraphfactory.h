@@ -54,12 +54,12 @@ class FunctionGraphFactory
 {
 public:
     typedef AbstractFunctionGraph* (*BuilderFunctionWithVars)(const Analitza::Expression&, Analitza::Variables* );
-    typedef PlotItem* (*PlotItemConstuctor)(AbstractFunctionGraph*);
+    typedef FunctionGraph* (*PlotItemConstuctor)(AbstractFunctionGraph*);
     typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
     typedef QStringList (*ExamplesFunction)();
     
     template <class T>
-    static PlotItem* createPlotItem(AbstractFunctionGraph* g)
+    static FunctionGraph* createPlotItem(AbstractFunctionGraph* g)
     { return new T(g); }
 
     QString typeName(const QString& id) const;
@@ -83,7 +83,7 @@ public:
     bool contains(const QString &id) const;
     
     AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
-    PlotItem* buildItem(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
+    FunctionGraph* buildItem(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
 
     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredFunctionGraphs() const;
 

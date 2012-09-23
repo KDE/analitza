@@ -133,7 +133,7 @@ AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Anal
     return ret;
 }
 
-PlotItem* FunctionGraphFactory::buildItem(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
+FunctionGraph* FunctionGraphFactory::buildItem(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
 {
     return plotConstructor[id](build(id, exp, v));
 }

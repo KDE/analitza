@@ -24,6 +24,7 @@
 #include <analitza/expression.h>
 #include <QColor>
 
+class FunctionGraph;
 class PlotsModel;
 namespace Analitza {
     class Expression;
@@ -38,7 +39,8 @@ class ANALITZAPLOT_EXPORT PlotBuilder
     public:
         QStringList errors() const { return m_errors; }
         bool canDraw() const;
-        PlotItem* create(const QColor& color, const QString& name, Analitza::Variables* v = 0) const;
+        FunctionGraph* create(const QColor& color, const QString& name, Analitza::Variables* v = 0) const;
+        Analitza::Expression expression() const;
 
     protected:
         PlotBuilder() {}
@@ -54,8 +56,8 @@ class ANALITZAPLOT_EXPORT PlotsFactory
         PlotsFactory();
         
         static PlotsFactory* self();
-        PlotBuilder requestPlot(const Analitza::Expression& expresssion, Dimension dim);
-        QStringList examples(Dimensions s);
+        PlotBuilder requestPlot(const Analitza::Expression& expresssion, Dimension dim) const;
+        QStringList examples(Dimensions s) const;
 };
 
 #endif // PLOTSFACTORY_H

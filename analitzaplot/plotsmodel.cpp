@@ -31,6 +31,7 @@
 #include <QFont>
 #include <QIcon>
 #include <KIcon>
+#include <analitzaplot/functiongraph.h>
 // #include <kcategorizedsortfilterproxymodel.h>
 
 Q_DECLARE_METATYPE(PlotItem*);
