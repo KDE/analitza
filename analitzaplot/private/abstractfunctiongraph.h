@@ -48,7 +48,7 @@ static QStringList Parameters() { return (name); }
 
 #define ICON_NAME(name) \
 QString iconName() const { return IconName(); } \
-static QString IconName() { return QString(name); } 
+static QString IconName() { return (name); } 
 
 #define EXAMPLES(exs) \
 static QStringList Examples() { return (exs); }
