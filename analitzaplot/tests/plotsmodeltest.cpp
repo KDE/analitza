@@ -77,13 +77,19 @@ void PlotsModelTest::testAppend()
 {
     QFETCH(QString, input);
 
-    PlaneCurve* item = new PlaneCurve(Expression(input), "Hola", Qt::yellow);;
+    Expression exp(input);
+    QVERIFY(PlaneCurve::canDraw(exp).isEmpty());
+    
+    PlaneCurve* item = new PlaneCurve(exp, "Hola", Qt::yellow);;
     m_model->addPlot(item);
+    if(!item->isCorrect())
+        qDebug() << "errors:" << item->errors();
     QVERIFY(item->isCorrect());
     
     item->update(QRectF(-5,5,10,10));
     if(!item->isCorrect())
         qDebug() << "error" << item->errors();
+    QVERIFY(item->points().count()>=2);
 }
 
 void PlotsModelTest::testExamples2D()
@@ -94,5 +100,8 @@ void PlotsModelTest::testExamples2D()
         QVERIFY(curve.isCorrect());
         curve.update(QRectF(-5,5,10,10));
         QVERIFY(curve.isCorrect());
+        if(curve.points().count()<2)
+            qDebug() << "pointless plot: " << example;
+        QVERIFY(curve.points().count()>=2);
     }
 }
