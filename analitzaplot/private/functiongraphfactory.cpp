@@ -18,6 +18,7 @@
  *************************************************************************************/
 
 #include "functiongraphfactory.h"
+#include "abstractfunctiongraph.h"
 
 #include <QStringList>
 #include <analitza/analyzer.h>
@@ -71,7 +72,8 @@ FunctionGraphFactory* FunctionGraphFactory::self()
     return m_self;
 }
 
-bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, BuilderFunctionWithVars builderFunctionWithVars, const QString& typeNameFunction,
+bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, PlotItemConstuctor constructor,
+                                                 BuilderFunctionWithVars builderFunctionWithVars, const QString& typeNameFunction,
         ExpressionTypeFunction expressionTypeFunction, 
         CoordinateSystem coordinateSystemFunction, const QStringList& _arguments,
         const QString& iconNameFunction, ExamplesFunction examplesFunction)
@@ -93,8 +95,8 @@ bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, BuilderFunctionW
     argumentsFunctions[id] = arguments;
     iconNameFunctions[id] = iconNameFunction;
     examplesFunctions[id] = examplesFunction;
-
     builderFunctionsWithVars[id] = builderFunctionWithVars;
+    plotConstructor[id] = constructor;
 
     return true;
 }
@@ -126,7 +128,14 @@ bool FunctionGraphFactory::contains(const QString& id) const
 
 AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
 {
-    return builderFunctionsWithVars[id](exp, v);
+    AbstractFunctionGraph* ret = builderFunctionsWithVars[id](exp, v);
+    ret->setInternalId(id);
+    return ret;
+}
+
+PlotItem* FunctionGraphFactory::buildItem(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
+{
+    return plotConstructor[id](build(id, exp, v));
 }
 
 QMap< QString, QPair< QStringList, Analitza::ExpressionType > > FunctionGraphFactory::registeredFunctionGraphs() const

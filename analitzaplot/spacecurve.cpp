@@ -29,22 +29,12 @@
 
 #include "private/abstractspacecurve.h"
 
-SpaceCurve::SpaceCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables)
-    : FunctionGraph(functionExpression,Dim3D, name, col, variables)
+SpaceCurve::SpaceCurve(AbstractFunctionGraph* g)
+    : FunctionGraph(g)
 {}
 
 SpaceCurve::~SpaceCurve()
 {}
-
-QStringList SpaceCurve::canDraw(const Analitza::Expression& functionExpression)
-{
-    return FunctionGraph::canDraw(functionExpression, Dim3D);
-}
-
-void SpaceCurve::setExpression(const Analitza::Expression& functionExpression)
-{
-    FunctionGraph::setExpression(functionExpression, Dim3D);
-}
 
 const QVector<QVector3D> & SpaceCurve::points() const
 {

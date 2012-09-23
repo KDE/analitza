@@ -31,6 +31,7 @@
 #include "analitzaplot/spacecurve.h"
 #include "analitzaplot/plotsmodel.h"
 #include "analitzaplot/plotsview3d.h"
+#include <plotsfactory.h>
 #include <analitza/expression.h>
 
 int main(int argc, char *argv[])
@@ -74,13 +75,14 @@ int main(int argc, char *argv[])
     view3d->setModel(model);
     view3d->setSelectionModel(viewsource->selectionModel());
 
-    model->addPlot(new Surface(Analitza::Expression("(r,p)->2"), "cyl", Qt::magenta));
-    model->addPlot(new Surface(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), "z-map", Qt::lightGray));
-    model->addPlot(new Surface(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), "implicit 0", Qt::cyan));
-    model->addPlot(new Surface(Analitza::Expression("x+3-y=7"), "implicit 1, ", Qt::red));
-    model->addPlot(new Surface(Analitza::Expression("x*x+y*y-z*z= 1/2"), "implicit 2", Qt::darkBlue));
-    model->addPlot(new SpaceCurve(Analitza::Expression("t->vector{cos(t), sin(t), t}"), "curve, ", Qt::green));
-    model->addPlot(new Surface(Analitza::Expression("(x,y)->x*x"), "z-map", Qt::yellow));
+    PlotsFactory* s = PlotsFactory::self();
+    model->addPlot(s->requestPlot(Analitza::Expression("(r,p)->2"), Dim3D).create(Qt::magenta, "cyl"));
+    model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), Dim3D).create(Qt::lightGray, "z-map"));
+    model->addPlot(s->requestPlot(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), Dim3D).create(Qt::cyan, "implicit 0"));
+    model->addPlot(s->requestPlot(Analitza::Expression("x+3-y=7"), Dim3D).create(Qt::red, "implicit 1, "));
+    model->addPlot(s->requestPlot(Analitza::Expression("x*x+y*y-z*z= 1/2"), Dim3D).create(Qt::darkBlue, "implicit 2"));
+    model->addPlot(s->requestPlot(Analitza::Expression("t->vector{cos(t), sin(t), t}"), Dim3D).create(Qt::green, "curve"));
+    model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x"), Dim3D).create(Qt::yellow, "z-map"));
     
     //END test calls
 

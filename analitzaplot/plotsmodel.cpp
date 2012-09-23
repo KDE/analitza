@@ -19,9 +19,8 @@
 
 #include "plotsmodel.h"
 
-#include <surface.h>
-#include <planecurve.h>
-#include <spacecurve.h>
+#include "plotsfactory.h"
+#include "plotitem.h"
 
 #include "analitza/analyzer.h"
 #include "analitza/variables.h"
@@ -137,11 +136,11 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                     Analitza::Expression valexp = AnalitzaUtils::variantToExpression(value);
                     PlotItem* it = m_items[index.row()];
 
-                    if (FunctionGraph::canDraw(valexp, it->spaceDimension()).isEmpty()) {
+                    PlotBuilder plot = PlotsFactory::self()->requestPlot(valexp, it->spaceDimension());
+                    if (plot.canDraw()) {
                         if (m_items[index.row()]->expression() != valexp) {
-                            //TODO GSOC todo por el momento debemos hacer un typcast a functiongraph pues es el unico hijo de plotitem
-                            FunctionGraph *fg = static_cast<FunctionGraph*>(it);
-                            fg->setExpression(valexp, it->spaceDimension());
+                            delete m_items[index.row()];
+                            m_items[index.row()] = plot.create(it->color(), it->name());
                         }
                         return true;
                     }

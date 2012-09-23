@@ -112,12 +112,13 @@ public:
 
     void setModel(QAbstractItemModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
+    PlotItem *itemAt(int row) const;
 
 public slots:
     void resetView();
     
 private slots:
-    void addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(PlotItem* item);     // modelindex del proxy
+    void addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(PlotItem* item);
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);
@@ -131,8 +132,6 @@ private:
     void resizeGL(int width, int height);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-    
-    PlotItem *itemAt(int row) const;
     
     QAbstractItemModel *m_model;
     QItemSelectionModel* m_selection;

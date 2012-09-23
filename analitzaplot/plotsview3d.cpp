@@ -51,6 +51,8 @@ static GLfloat staticcolor[20]= {
     1.0,0.2,0.0,1.0
 }; // greencol, goldcol,...
 
+#warning should respect PlotItem::plotStyle (or move the style to the whole view, which I think it would make sense)
+
 PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
     : QGLWidget(parent), m_model(m),m_selection(0)
 {

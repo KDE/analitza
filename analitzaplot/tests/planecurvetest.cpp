@@ -19,6 +19,7 @@
 
 #include "planecurvetest.h"
 #include "analitzaplot/planecurve.h"
+#include <plotsfactory.h>
 #include "analitza/expression.h"
 #include "analitza/variables.h"
 #include <qtest_kde.h>
@@ -73,7 +74,7 @@ void FunctionTest::testIncorrect()
 {
     QFETCH(QString, input);
 
-    QVERIFY(!PlaneCurve::canDraw(Analitza::Expression(input)).isEmpty());
+    QVERIFY(!PlotsFactory::self()->requestPlot(Expression(input), Dim2D).canDraw());
 }
 
 void FunctionTest::testJumps_data()
@@ -90,14 +91,15 @@ void FunctionTest::testJumps()
     QFETCH(QString, input);
     QFETCH(int, jumps);
 
-    PlaneCurve f3(Expression(input, false), "hola", Qt::red, m_vars);
-    QVERIFY(f3.isCorrect());
-    f3.update(QRect(-10, 10, 20, -20));
-    QVERIFY(f3.isCorrect());
+    PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D).create(Qt::red, "hola");
+    PlaneCurve* f3 = dynamic_cast<PlaneCurve*>(plot);
+    QVERIFY(f3->isCorrect());
+    f3->update(QRect(-10, 10, 20, -20));
+    QVERIFY(f3->isCorrect());
 
-    f3.image(QPointF(1,1));
+    f3->image(QPointF(1,1));
 
-    QCOMPARE(f3.jumps().count(), jumps);
+    QCOMPARE(f3->jumps().count(), jumps);
 }
 
 typedef QPair<double, double> IntervalValue;
@@ -130,15 +132,16 @@ void FunctionTest::testParamIntervals()
     m_vars->modify("a", -4.0);
     m_vars->modify("b", -9.5);
 
-    PlaneCurve f3(Expression(input, false), "hola", Qt::red, m_vars);
-    QVERIFY(f3.isCorrect());
+    PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D).create(Qt::red, "hola", m_vars);
+    PlaneCurve* f3 = dynamic_cast<PlaneCurve*>(plot);
+    QVERIFY(f3->isCorrect());
 
-    QVERIFY(f3.setInterval(param, interval_value.first, interval_value.second));
-    QCOMPARE(f3.interval(param).first, -7.0);
+    QVERIFY(f3->setInterval(param, interval_value.first, interval_value.second));
+    QCOMPARE(f3->interval(param).first, -7.0);
 
     //Interval as expression
-    QVERIFY(f3.setInterval(param, interval_expression.first, interval_expression.second));
-    QCOMPARE(f3.interval(param, true).second.toString(), QString("16"));
+    QVERIFY(f3->setInterval(param, interval_expression.first, interval_expression.second));
+    QCOMPARE(f3->interval(param, true).second.toString(), QString("16"));
     
     delete m_vars->take("a");
     delete m_vars->take("b");

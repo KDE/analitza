@@ -67,10 +67,7 @@ PlotItem* Plotter3D::itemAt(int row) const
 
 void Plotter3D::drawPlots()
 {
-    //we'll impement current selection effects for 3d view latter
-//     int current=currentPlot();
-
-    if (!m_model /*|| !plot*/)
+    if (!m_model)
         return;
 
     //if we have more registered items in our m_displayLists then the model has changed, so we reset
@@ -138,21 +135,13 @@ void Plotter3D::drawPlots()
             //END display list
         }
     
-    ///
-
     for (int i = 0; i < m_model->rowCount(); ++i)
     {
         PlotItem* plot = itemAt(i);
+        Surface* surf = dynamic_cast<Surface*>(plot);
         
-        if (!plot) continue;
-        
-        Surface* surf = static_cast<Surface*>(plot);
-        
-        //TODO GSOC
-        // por el momento solo se dibujan superficies
-        if (!surf) continue;
-
-        if (!surf->isVisible()) continue;
+        if (!surf && !surf->isVisible())
+            continue;
 
         glCallList(m_displayLists[plot]);
     }
@@ -184,5 +173,9 @@ void Plotter3D::setModel(QAbstractItemModel* f)
 {
     m_model=f;
     modelChanged();
-//     forceRepaint();
+}
+
+PlotItem* Plotter3D::currentPlotItem() const
+{
+    return itemAt(currentPlot());
 }

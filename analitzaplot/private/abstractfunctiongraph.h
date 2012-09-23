@@ -56,7 +56,7 @@ static QStringList Examples() { return (exs); }
 
 class AbstractFunctionGraph : public AbstractMappingGraph
 {
-friend class FunctionGraph; // para que pueda cambiar el internalid
+friend class FunctionGraphFactory;
 public:
     AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v = 0);
     virtual ~AbstractFunctionGraph();

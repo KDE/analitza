@@ -280,9 +280,4 @@ return QLineF();
     
 }
 
-
-
 REGISTER_PLANECURVE(ImplicitPolar)
-
-
-

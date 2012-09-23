@@ -28,19 +28,22 @@
 #include <QPair>
 #include <QMap>
 
-#define REGISTER_FUNCTIONGRAPH_DIM(dim, name) \
-        static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
-        namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(dim, vcreate##name, \
+#include "planecurve.h"
+#include "spacecurve.h"
+#include "surface.h"
+
+#define REGISTER_FUNCTIONGRAPH_DIM(dim, constructor, name) \
+static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
+        namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(dim, constructor, vcreate##name, \
         name ::TypeName(), name ::ExpressionType, name ::CoordSystem(), name ::Parameters(), \
         name ::IconName(), name ::Examples); }
 
-        
-#define REGISTER_PLANECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim2D, __VA_ARGS__)
-#define REGISTER_SPACECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, __VA_ARGS__)
-#define REGISTER_SURFACE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, __VA_ARGS__)
+#define REGISTER_PLANECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim2D, FunctionGraphFactory::createPlotItem<PlaneCurve>, __VA_ARGS__)
+#define REGISTER_SPACECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, FunctionGraphFactory::createPlotItem<SpaceCurve>, __VA_ARGS__)
+#define REGISTER_SURFACE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, FunctionGraphFactory::createPlotItem<Surface>, __VA_ARGS__)
         
 class AbstractFunctionGraph;
-
+class PlotItem;
 namespace Analitza {
     class Variables;
     class Expression;
@@ -51,9 +54,13 @@ class FunctionGraphFactory
 {
 public:
     typedef AbstractFunctionGraph* (*BuilderFunctionWithVars)(const Analitza::Expression&, Analitza::Variables* );
-    
+    typedef PlotItem* (*PlotItemConstuctor)(AbstractFunctionGraph*);
     typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
     typedef QStringList (*ExamplesFunction)();
+    
+    template <class T>
+    static PlotItem* createPlotItem(AbstractFunctionGraph* g)
+    { return new T(g); }
 
     QString typeName(const QString& id) const;
     Analitza::ExpressionType expressionType(const QString& id) const;
@@ -68,7 +75,7 @@ public:
     
     static FunctionGraphFactory* self();
 
-    bool registerFunctionGraph(Dimension dim, BuilderFunctionWithVars builderFunctionWithVars,
+    bool registerFunctionGraph(Dimension dim, PlotItemConstuctor constructor, BuilderFunctionWithVars builderFunctionWithVars,
                   const QString& typeNameFunction, ExpressionTypeFunction expressionTypeFunction, 
                          CoordinateSystem coordinateSystemFunction, const QStringList& argumentsFunction,
                          const QString& iconNameFunction, ExamplesFunction examplesFunction);
@@ -76,6 +83,7 @@ public:
     bool contains(const QString &id) const;
     
     AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
+    PlotItem* buildItem(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
 
     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredFunctionGraphs() const;
 
@@ -87,6 +95,7 @@ private:
     QMap<QString, QStringList> argumentsFunctions; //internal use (without a "getter")
     QMap<QString, QString> iconNameFunctions;
     QMap<QString, ExamplesFunction> examplesFunctions;
+    QMap<QString, PlotItemConstuctor> plotConstructor;
 
     static FunctionGraphFactory* m_self;
     FunctionGraphFactory() {

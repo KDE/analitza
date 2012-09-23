@@ -33,27 +33,12 @@
 #include "private/functiongraphfactory.h"
 
 
-PlaneCurve::PlaneCurve(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables )
-    : FunctionGraph(functionExpression, Dim2D, name, col, variables)
+PlaneCurve::PlaneCurve(AbstractFunctionGraph* g )
+    : FunctionGraph(g)
 {}
 
 PlaneCurve::~PlaneCurve()
 {}
-
-QStringList PlaneCurve::canDraw(const Analitza::Expression& functionExpression)
-{
-    return FunctionGraph::canDraw(functionExpression, Dim2D);
-}
-
-QStringList PlaneCurve::examples()
-{
-    return FunctionGraph::examples(Dim2D);
-}
-
-void PlaneCurve::setExpression(const Analitza::Expression& functionExpression)
-{
-    FunctionGraph::setExpression(functionExpression, Dim2D);
-}
 
 const QVector<QPointF> & PlaneCurve::points() const
 {

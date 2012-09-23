@@ -28,19 +28,14 @@ class Box3D;
 class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {
 public:
-    SpaceCurve(const Analitza::Expression &functionExpression, const QString &name= QString(),
-               const QColor& col = QColor(), Analitza::Variables *variables = 0);
+    SpaceCurve(AbstractFunctionGraph* g);
     virtual ~SpaceCurve();
-
-    static QStringList canDraw(const Analitza::Expression &functionExpression);
-
-    void setExpression(const Analitza::Expression& functionExpression);
 
     QVector<int> jumps() const;
     const QVector<QVector3D> & points() const;
     void update(const Box3D& viewport);
 
-private:
+protected:
     SpaceCurve();
 };
 

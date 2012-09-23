@@ -28,9 +28,7 @@ class AbstractFunctionGraph;
 
 class ANALITZAPLOT_EXPORT FunctionGraph : public PlotItem
 {
-    
 public:
-    FunctionGraph(const Analitza::Expression &functionExpression, Dimension spacedim, const QString &nam, const QColor& col, Analitza::Variables *vars = 0);
     virtual ~FunctionGraph();
 
     Analitza::Variables *variables() const;
@@ -53,25 +51,14 @@ public:
     QPair<double, double> interval(const QString &argname) const;
     bool setInterval(const QString &argname, double min, double max);
     
-    void setExpression(const Analitza::Expression& functionExpression, Dimension spacedim);
-
     QStringList parameters() const;
-
-    /** given an expression @p exp and a dimension @p spacedim, return the errors we would have if
-        we tried to plot this function.
-        @returns either the errors or empty if it can be done
-    */
-    static QStringList canDraw(const Analitza::Expression& exp, Dimension spacedim);
-
-    static QStringList examples(Dimension dim);
     
 protected:
+	FunctionGraph(AbstractFunctionGraph* g);
     AbstractFunctionGraph *backend() const { return m_functionGraph; }
 
 private:
     FunctionGraph(const FunctionGraph &other);
-    
-    static QString canDrawInternal(const Analitza::Expression &testexp, Dimension spacedim, QStringList &errs);
     
     AbstractFunctionGraph *m_functionGraph;
     QStringList m_errors;

@@ -62,7 +62,7 @@ AbstractFunctionGraph::~AbstractFunctionGraph()
 
 Dimension AbstractFunctionGraph::spaceDimension() const
 {
-    return FunctionGraphFactory::self()->spaceDimension(m_internalId); // se usa el internal id que es una valor correcto pues se asigo cuando en el ctr de item
+    return FunctionGraphFactory::self()->spaceDimension(m_internalId);
 }
 
 Analitza::Variables *AbstractFunctionGraph::variables() const 

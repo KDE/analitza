@@ -30,23 +30,10 @@
 
 #include "private/functiongraphfactory.h"
 
-FunctionGraph::FunctionGraph(const Analitza::Expression &functionExpression, Dimension spacedim,
-                             const QString &n, const QColor &col, Analitza::Variables *vars)
-    : PlotItem(n, col)
-    , m_functionGraph(0)
+FunctionGraph::FunctionGraph(AbstractFunctionGraph *g)
+    : PlotItem("123123213123", Qt::black)
+    , m_functionGraph(g)
 {
-    Q_ASSERT(functionExpression.isCorrect());
-    setName(n);
-    setColor(col);
-    QString id = canDrawInternal(functionExpression, spacedim, m_errors);
-
-    if(id.isEmpty())
-        qDebug() << "error!!" << m_errors;
-    Q_ASSERT(!id.isEmpty());
-
-    m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, vars);
-
-    m_functionGraph->setInternalId(id);
     Q_ASSERT(m_functionGraph);
 }
 
@@ -156,72 +143,4 @@ QStringList FunctionGraph::parameters() const
     Q_ASSERT(m_functionGraph);
     
     return m_functionGraph->parameters();
-}
-
-QStringList FunctionGraph::canDraw(const Analitza::Expression &functionExpression, Dimension spacedim)
-{
-    QStringList ret;
-    canDrawInternal(functionExpression, spacedim, ret);
-    return ret;
-}
-
-void FunctionGraph::setExpression(const Analitza::Expression& functionExpression, Dimension spacedim)
-{
-    m_errors.clear();
-    QString id = canDrawInternal(functionExpression, spacedim, m_errors);
-    
-    Q_ASSERT(!id.isEmpty());
-
-    Analitza::Variables *vars = 0;
-    QMap<QString, AbstractFunctionGraph::RealInterval > argumentIntervals;
-    if(m_functionGraph) {
-        argumentIntervals = m_functionGraph->m_argumentIntervals;
-        vars = m_functionGraph->variables();
-        delete m_functionGraph;
-    }
-
-    m_functionGraph = FunctionGraphFactory::self()->build(id, functionExpression, vars);
-    m_functionGraph->setInternalId(id);
-    if(!argumentIntervals.isEmpty()) {
-        m_functionGraph->m_argumentIntervals = argumentIntervals;
-    }
-    emitDataChanged();
-}
-
-QString FunctionGraph::canDrawInternal(const Analitza::Expression& testexp, Dimension spacedim, QStringList& errs)
-{
-    errs.clear();
-    
-    if(!testexp.isCorrect() || testexp.toString().isEmpty()) {
-        errs << i18n("The expression is not correct");
-        return QString();
-    }
-    
-    Analitza::Expression exp(testexp);
-    if (exp.isEquation())
-        exp = exp.equationToFunction();
-    
-    Analitza::Analyzer a;
-    a.setExpression(exp);
-    a.setExpression(a.dependenciesToLambda());
-    
-    QString id;
-    if(a.isCorrect()) {
-        QString expectedid = FunctionGraphFactory::self()->trait(a.expression(), a.type(), spacedim);
-        if(FunctionGraphFactory::self()->contains(expectedid)) {
-            id = expectedid;
-        } else
-            errs << i18n("Function type not recognized");
-    } else {
-        errs << a.errors();
-    }
-    
-    Q_ASSERT(!errs.isEmpty() || !id.isEmpty());
-    
-    return id;
-}
-
-QStringList FunctionGraph::examples(Dimension dim)
-{
-	return FunctionGraphFactory::self()->examples(dim);
 }

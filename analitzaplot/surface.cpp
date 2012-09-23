@@ -21,28 +21,14 @@
 #include "analitza/localize.h"
 #include "analitza/variable.h"
 
-
 #include "private/functiongraphfactory.h"
 #include "private/abstractsurface.h"
 
-Surface::Surface(const Analitza::Expression &functionExpression, const QString &name, const QColor &col, Analitza::Variables *variables)
-    : FunctionGraph(functionExpression, Dim3D, name, col, variables)
-{
-}
+Surface::Surface(AbstractFunctionGraph* g): FunctionGraph(g)
+{}
 
 Surface::~Surface()
-{
-}
-
-QStringList Surface::canDraw(const Analitza::Expression &functionExpression) 
-{
-    return FunctionGraph::canDraw(functionExpression, Dim3D);
-}
-
-void Surface::setExpression(const Analitza::Expression& functionExpression)
-{
-    FunctionGraph::setExpression(functionExpression, Dim3D);
-}
+{}
 
 const QVector<Triangle3D> & Surface::faces() const
 {

@@ -51,6 +51,7 @@ set ( analitzaplot_SRCS
     private/backends/implicitsurface.cpp
 
     #public API
+    plotsfactory.cpp
     plotitem.cpp
     functiongraph.cpp
     planecurve.cpp
@@ -102,6 +103,7 @@ install(FILES
     plotter3d.h
     plotsview3d.h
     plottingenums.h
+    plotsfactory.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
 )

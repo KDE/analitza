@@ -20,6 +20,7 @@
 
 #include "analitzaplot/planecurve.h"
 #include "analitzaplot/plotsmodel.h"
+#include <plotsfactory.h>
 
 #include "analitza/expression.h"
 #include "analitza/variables.h"
@@ -78,9 +79,10 @@ void PlotsModelTest::testAppend()
     QFETCH(QString, input);
 
     Expression exp(input);
-    QVERIFY(PlaneCurve::canDraw(exp).isEmpty());
+    PlotBuilder plot = PlotsFactory::self()->requestPlot(exp, Dim2D);
+    QVERIFY(plot.canDraw());
     
-    PlaneCurve* item = new PlaneCurve(exp, "Hola", Qt::yellow);;
+    PlaneCurve* item = dynamic_cast<PlaneCurve*>(plot.create(Qt::red, "hola"));
     m_model->addPlot(item);
     if(!item->isCorrect())
         qDebug() << "errors:" << item->errors();
@@ -94,14 +96,17 @@ void PlotsModelTest::testAppend()
 
 void PlotsModelTest::testExamples2D()
 {
-    QStringList examples = FunctionGraph::examples(Dim2D);
+    QStringList examples = PlotsFactory::self()->examples(Dim2D);
     foreach(const QString& example, examples) {
-        PlaneCurve curve(Analitza::Expression(example), "ex", Qt::red, 0);
-        QVERIFY(curve.isCorrect());
-        curve.update(QRectF(-5,5,10,10));
-        QVERIFY(curve.isCorrect());
-        if(curve.points().count()<2)
+        PlotBuilder plot = PlotsFactory::self()->requestPlot(Analitza::Expression(example), Dim2D);
+        QVERIFY(plot.canDraw());
+        
+        PlaneCurve* curve = dynamic_cast<PlaneCurve*>(plot.create(Qt::black, "lalala"));
+        QVERIFY(curve);
+        curve->update(QRectF(-5,5,10,10));
+        QVERIFY(curve->isCorrect());
+        if(curve->points().count()<2)
             qDebug() << "pointless plot: " << example;
-        QVERIFY(curve.points().count()>=2);
+        QVERIFY(curve->points().count()>=2);
     }
 }

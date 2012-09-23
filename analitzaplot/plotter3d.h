@@ -40,6 +40,8 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         /** Force the functions from @p start to @p end to be recalculated. */
         void updatePlots(const QModelIndex & parent, int start, int end);
+        
+        PlotItem* currentPlotItem() const;
 
         void setModel(QAbstractItemModel* f);
         QAbstractItemModel* model() const { return m_model; }

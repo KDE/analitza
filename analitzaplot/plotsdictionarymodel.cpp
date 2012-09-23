@@ -21,6 +21,7 @@
 #include <KStandardDirs>
 #include <KLocalizedString>
 #include <analitzaplot/planecurve.h>
+#include "plotsfactory.h"
 #include <QFile>
 
 Q_DECLARE_METATYPE(PlotItem*);
@@ -82,14 +83,15 @@ void PlotsDictionaryModel::createDictionary(const QString& title, const QString&
             if (Analitza::Expression::isCompleteExpression(line)) {
                 Analitza::Expression expression(line);
                 
-                QStringList errors = PlaneCurve::canDraw(expression);
+                PlotBuilder plot = PlotsFactory::self()->requestPlot(expression, Dim2D);
                 
-                if (errors.isEmpty()) {
-                    PlaneCurve *plot = new PlaneCurve(expression);
-                    m_plotTitles.insert(plot, title);
-                    addPlot(plot);
+                if (plot.canDraw()) {
+                    PlotItem *item = plot.create(Qt::black, title+QString::number(rowCount()));
+                    m_plotTitles.insert(item, title);
+                    addPlot(item);
                     line.clear();
                 } else {
+                    QStringList errors = plot.errors();
                     qDebug() << "Couldn't add " << line << " because of errors: " << errors.join(", ") << "@" << file;
                     break;
                 }

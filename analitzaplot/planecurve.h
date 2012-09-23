@@ -39,19 +39,14 @@ class AbstractSurface;
 class ANALITZAPLOT_EXPORT PlaneCurve : public FunctionGraph 
 {
 public:
-    PlaneCurve(const Analitza::Expression &functionExpression, const QString &name = QString(), const QColor& col = QColor(), Analitza::Variables *variables = 0);
+    PlaneCurve(AbstractFunctionGraph* g);
     virtual ~PlaneCurve();
-
-    static QStringList canDraw(const Analitza::Expression &functionExpression);
-	static QStringList examples();
-
-    void setExpression(const Analitza::Expression& functionExpression);
 
     QVector<int> jumps() const;
     const QVector<QPointF> & points() const;
     void update(const QRectF& viewport);
     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
-    QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse postion 
+    QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse 
 };
 
 #endif // ANALITZAPLOT_FUNCTION_H
