@@ -17,7 +17,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #include "private/abstractplanecurve.h"
 #include "private/functiongraphfactory.h"
 #include <private/utils/mathutils.h>
@@ -28,11 +27,40 @@
 #include "analitza/variable.h"
 #include "analitza/localize.h"
 
+class FunctionCartesian : public AbstractPlaneCurve
+{
+    public:
+        FunctionCartesian(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
+            : AbstractPlaneCurve(functionExpression, variables) { }
+
+        void update(const QRectF& viewport);
+        QPair<QPointF, QString> image(const QPointF &mousepos);
+        QLineF tangent(const QPointF &mousepos) ;
+        qreal resolution() const { return 5000; }
+        Analitza::Cn* arg() { return AbstractPlaneCurve::arg(parameters().first()); }
+
+    protected:
+        void initDerivative() {
+            if(!analyzer->isCorrect())
+                return;
+            
+            m_deriv = analyzer->derivative(parameters().first());
+            if(!analyzer->isCorrect()) {
+                m_deriv.clear();
+                analyzer->flushErrors();
+            }
+        }
+        void optimizeJump();
+        void calculateValues(double, double);
+        Analitza::Expression m_deriv;
+};
+
 ///Functions where the x is bounding. like x->sin(x)
-class FunctionY : public AbstractPlaneCurve
+class FunctionY : public FunctionCartesian
 {
 public:
-    CONSTRUCTORS(FunctionY)
+    FunctionY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
+        : FunctionCartesian(functionExpression, variables) { initDerivative(); }
     TYPE_NAME(i18n("Plane Curve F(y)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -41,41 +69,44 @@ public:
     PARAMETERS(QStringList("x"))
     ICON_NAME("newfunction")
     EXAMPLES(QStringList("x") << "x*x" << "x+4")
+};
 
+///Functions where the y is bounding. like y->sin(y). FunctionY mirrored
+class FunctionX : public FunctionCartesian
+{
+public:
+    FunctionX(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
+        : FunctionCartesian(functionExpression, variables) { initDerivative(); }
+    TYPE_NAME(i18n("Plane Curve F(x)"))
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+    COORDDINATE_SYSTEM(Cartesian)
+    PARAMETERS(QStringList("y"))
+    ICON_NAME("newfunction")
+    EXAMPLES(QStringList("y") << "y*y" << "y+4")
+    
     void update(const QRectF& viewport);
     
     QPair<QPointF, QString> image(const QPointF &mousepos);
-    QLineF tangent(const QPointF &mousepos) ;
+    QLineF tangent(const QPointF &mousepos);
     
-    //TODO configurable?
     qreal resolution() const { return 5000; }
-
-private:
-    void optimizeJump();
-    void calculateValues(double, double);
-    
 };
 
-void FunctionY::update(const QRectF& viewport)
+void FunctionCartesian::update(const QRectF& viewport)
 {
-//     double l_lim=viewport.left()-.1, r_lim=viewport.right()+.1;
-
-
     double l_lim=0, r_lim=0;
     
-    if (!hasIntervals())
-    {
+    if (!hasIntervals()) {
         l_lim=viewport.left();
         r_lim=viewport.right();
-    }
-    else // obey intervals
-    {
-        QPair< double, double> limits = interval("x");
+    } else {
+        QPair< double, double> limits = interval(parameters().first());
         l_lim = limits.first;
         r_lim = limits.second;
     }
 
-    
     if(!points.isEmpty()
             && isSimilar(points.first().x(), l_lim)
             && isSimilar(points.last().x(), r_lim)) {
@@ -86,21 +117,20 @@ void FunctionY::update(const QRectF& viewport)
 //  qDebug() << "end." << jumps;
 }
 
-//Own
-QPair<QPointF, QString> FunctionY::image(const QPointF &p)
+QPair<QPointF, QString> FunctionCartesian::image(const QPointF &p)
 {
     QPointF dp=p;
     QString pos;
 
     if (hasIntervals())
     {
-        QPair<double, double> intervalx = interval("x");
+        QPair<double, double> intervalx = interval(parameters().first());
     
         if (intervalx.first >=dp.x() || dp.x() >= intervalx.second)
             return QPair<QPointF, QString>(QPointF(), QString());
     }
 
-    arg("x")->setValue(dp.x());
+    arg()->setValue(dp.x());
     Analitza::Expression r=analyzer->calculateLambda();
 
     if(!r.isReal())
@@ -111,39 +141,34 @@ QPair<QPointF, QString> FunctionY::image(const QPointF &p)
     return QPair<QPointF, QString>(dp, pos);
 }
 
-QLineF FunctionY::tangent(const QPointF &mousepos) 
+QLineF FunctionCartesian::tangent(const QPointF &mousepos) 
 {
-    //TODO port
-//     Analitza::Analyzer a(analyzer.variables());
-//     double ret;
-//     
-//     if(m_deriv) {
-//         arg("x")->setValue(p.x());
-//         a.setExpression(*m_deriv);
-//         
-//         a.setStack(m_runStack);
-//         if(a.isCorrect())
-//             ret = a.calculateLambda().toReal().value();
-//         
-//         if(!a.isCorrect()) {
-//             qDebug() << "Derivative error: " <<  a.errors();
-//             return QLineF();
-//         }
-//     } else {
-//         QVector<Analitza::Object*> vars;
-//         vars.append(new Cn(p.x()));
-//         a.setExpression(analyzer.expression());
-//         ret=a.derivative(vars);
-//         qDeleteAll(vars);
-//     }
-//     
-//     return FunctionUtils::slopeToLine(ret);
-
+    Analitza::Analyzer a(analyzer->variables());
+    double ret = 0;
+    if(m_deriv.isCorrect()) {
+        arg()->setValue(mousepos.x());
+        a.setExpression(m_deriv);
+        
+        a.setStack(analyzer->runStack());
+        if(a.isCorrect())
+            ret = a.calculateLambda().toReal().value();
+        
+        if(!a.isCorrect()) {
+            qDebug() << "Derivative error: " <<  a.errors();
+            return QLineF();
+        }
+        return slopeToLine(ret);
+    } else {
+        QVector<Analitza::Object*> vars;
+        vars.append(new Analitza::Cn(mousepos.x()));
+        a.setExpression(analyzer->expression());
+        ret=a.derivative(vars);
+        qDeleteAll(vars);
+    }
     return QLineF();
 }
 
-
-void FunctionY::optimizeJump()
+void FunctionCartesian::optimizeJump()
 {
     QPointF before = points.at(points.count()-2), after=points.last();
     qreal x1=before.x(), x2=after.x();
@@ -155,7 +180,7 @@ void FunctionY::optimizeJump()
         qreal dist = x2-x1;
         qreal x=x1+dist/2;
         
-        arg("x")->setValue(x);
+        arg()->setValue(x);
         qreal y = analyzer->calculateLambda().toReal().value();
         
         if(fabs(y1-y)<fabs(y2-y)) {
@@ -175,17 +200,16 @@ void FunctionY::optimizeJump()
     points.last()=after;
 }
 
-void FunctionY::calculateValues(double l_lim, double r_lim)
+void FunctionCartesian::calculateValues(double l_lim, double r_lim)
 {
     jumps.clear();
     points.clear();
     points.reserve(resolution());
     
     double step = double((-l_lim+r_lim)/resolution());
-    
     bool jumping=true;
     for(double x=l_lim; x<r_lim-step; x+=step) {
-        arg("x")->setValue(x);
+        arg()->setValue(x);
         Analitza::Cn y = analyzer->calculateLambda().toReal();
         QPointF p(x, y.value());
         bool ch=addPoint(p);
@@ -208,36 +232,10 @@ void FunctionY::calculateValues(double l_lim, double r_lim)
 //  qDebug() << "juuuumps" << m_jumps << resolution();
 }
 
-///Functions where the y is bounding. like y->sin(y). FunctionY mirrored
-//TODO: implement in terms of FunctionY! deduplicate code
-class FunctionX : public AbstractPlaneCurve
-{
-public:
-    CONSTRUCTORS(FunctionX)
-    TYPE_NAME(i18n("Plane Curve F(x)"))
-    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)))
-    COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("y"))
-    ICON_NAME("newfunction")
-    EXAMPLES(QStringList("y") << "y*y" << "y+4")
-    
-    void update(const QRectF& viewport);
-    
-    QPair<QPointF, QString> image(const QPointF &mousepos);
-    QLineF tangent(const QPointF &mousepos);
-    
-	qreal resolution() const { return 5000; }
-private:
-    void optimizeJump();
-    void calculateValues(double, double);
-};
-
 QPair<QPointF, QString> FunctionX::image(const QPointF& p)
 {
     QPointF dp=p;
-    arg("y")->setValue(dp.y());
+    arg()->setValue(dp.y());
     Analitza::Expression r=analyzer->calculateLambda();
     
     if(!r.isReal())
@@ -250,109 +248,19 @@ QPair<QPointF, QString> FunctionX::image(const QPointF& p)
 
 void FunctionX::update(const QRectF& viewport)
 {
-    double l_lim=0, r_lim=0;
-    
-    if (!hasIntervals())
-    {
-        l_lim=viewport.top();
-        r_lim=viewport.bottom();
-    }
-    else // obey intervals
-    {
-        QPair< double, double> limits = interval("y");
-        l_lim = limits.first;
-        r_lim = limits.second;
-    }    
-    
-//     qDebug() << l_lim << r_lim << isAutoUpdate();
-    
+    double l_lim=viewport.top()-.1, r_lim=viewport.bottom()+.1;
     calculateValues(l_lim, r_lim);
     for(int i=0; i<points.size(); i++) {
         QPointF p=points[i];
         points[i]=QPointF(p.y(), p.x());
     }
-
-// //BUG he movido algo debo verificar que el cidogo de arriva genera puntos ... por mientras algo mas simple que se ve igual :p
-// //TODO
-//     for (double eps = -10.0; eps <= 10.0; eps += 0.1)
-//     {
-//         arg("y")->setValue(eps);
-//         double fy = analyzer->calculateLambda().toReal().value();
-//         points.append(QPointF(fy, eps));
-//     }
 }
 
 QLineF FunctionX::tangent(const QPointF &p) 
 {
-//     QPointF p1(p.y(), p.x());
-//     QLineF ret=FunctionY::derivative(p1);
-//     return FunctionUtils::mirrorXY(ret);
-
-return QLineF();
-}
-
-void FunctionX::optimizeJump()
-{
-    QPointF before = points.at(points.count()-2), after=points.last();
-    qreal x1=before.x(), x2=after.x();
-    qreal y1=before.y(), y2=after.y();
-    int iterations=5;
-    
-//  qDebug() << "+++++++++" << before << after;
-    for(; iterations>0; --iterations) {
-        qreal dist = x2-x1;
-        qreal x=x1+dist/2;
-        
-        arg("y")->setValue(x);
-        qreal y = analyzer->calculateLambda().toReal().value();
-        
-        if(fabs(y1-y)<fabs(y2-y)) {
-            before.setX(x);
-            before.setY(y);
-            x1=x;
-            y1=y;
-        } else {
-            after.setX(x);
-            after.setY(y);
-            x2=x;
-            y2=y;
-        }
-    }
-//  qDebug() << "---------" << before << after;
-    points[points.count()-2]=before;
-    points.last()=after;
-}
-
-void FunctionX::calculateValues(double l_lim, double r_lim)
-{
-    jumps.clear();
-    points.clear();
-    points.reserve(resolution());
-    double step = double((-l_lim+r_lim)/resolution());
-    
-    bool jumping=true;
-    for(double x=l_lim; x<r_lim-step; x+=step) {
-        arg("y")->setValue(x);
-        Analitza::Cn y = analyzer->calculateLambda().toReal();
-        QPointF p(x, y.value());
-        bool ch=addPoint(p);
-        
-        bool jj=jumping;
-        jumping=false;
-        if(ch && !jj) {
-//          if(!jumps.isEmpty()) qDebug() << "popopo" << jumps.last() << points.count();
-            double prevY=points[points.count()-2].y();
-            if(y.format()!=Analitza::Cn::Real && prevY!=y.value()) {
-                jumps.append(points.count()-1);
-                jumping=true;
-            } else if(points.count()>3 && traverse(points[points.count()-3].y(), prevY, y.value())) {
-                optimizeJump();
-                jumps.append(points.count()-1);
-                jumping=true;
-            }
-        }
-    }
-//  qDebug() << "juuuumps" << jumps << resolution();
+    QPointF p1(p.y(), p.x());
+    QLineF ret=FunctionCartesian::tangent(p1);
+    return mirrorXY(ret);
 }
 
 REGISTER_PLANECURVE(FunctionY)

@@ -37,4 +37,6 @@ bool traverse(double p1, double p2, double next);
 
 QLineF slopeToLine(const double &der);
 
+QLineF mirrorXY(const QLineF& l);
+
 #endif

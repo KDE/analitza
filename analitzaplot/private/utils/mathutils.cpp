@@ -70,3 +70,7 @@ QLineF slopeToLine(const double &der)
     return QLineF(from, to);
 }
 
+QLineF mirrorXY(const QLineF& l)
+{
+    return QLineF(l.y1(), l.x1(), l.y2(), l.x2());
+}
