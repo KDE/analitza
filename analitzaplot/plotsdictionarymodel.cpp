@@ -39,9 +39,7 @@ PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent)
 }
 
 PlotsDictionaryModel::~PlotsDictionaryModel()
-{
-    qDeleteAll(m_collections);
-}
+{}
 
 QVariant PlotsDictionaryModel::data(const QModelIndex& index, int role) const
 {
@@ -52,16 +50,8 @@ QVariant PlotsDictionaryModel::data(const QModelIndex& index, int role) const
     {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            switch(index.column()) 
-            {
-                case 2: {
-                    PlotItem* tmpcurve = index.data(PlotRole).value<PlotItem*>();
-                    DictionaryItem* space = tmpcurve->space();
-                    if (space)
-                        return space->title();
-                    break;
-                }  
-            }
+            if(index.column()==2)
+                return m_plotTitles.value(data(index, PlotRole).value<PlotItem*>());
             break;
         case Qt::DecorationRole:
             if(index.column()==2)
@@ -81,9 +71,6 @@ int PlotsDictionaryModel::columnCount(const QModelIndex& ) const
 
 void PlotsDictionaryModel::createDictionary(const QString& title, const QString& file)
 {
-    DictionaryItem* di = new DictionaryItem(DimAll);
-    di->setTitle(title);
-    m_collections.append(di);
     QString localurl = KStandardDirs::locate("data", file);
 
     QFile device(localurl);
@@ -102,11 +89,11 @@ void PlotsDictionaryModel::createDictionary(const QString& title, const QString&
                 
                 if (errors.isEmpty()) {
                     PlaneCurve *plot = new PlaneCurve(expression);
-                    plot->setSpace(m_collections.last());
+                    m_plotTitles.insert(plot, title);
                     addPlot(plot);
                     line.clear();
                 } else {
-                    qDebug() << "Couldn't add " << line << " because of errors: " << errors.join(", ");
+                    qDebug() << "Couldn't add " << line << " because of errors: " << errors.join(", ") << "@" << file;
                     break;
                 }
             }

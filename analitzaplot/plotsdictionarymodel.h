@@ -43,8 +43,7 @@ public:
 
 private:
     void createDictionary(const QString& title, const QString& file);
-    
-    QList<DictionaryItem*> m_collections;
+	QMap<PlotItem*, QString> m_plotTitles;
 };
 
 #endif
