@@ -21,7 +21,6 @@
 // #include "private/surfacefactory.h"
 #include "private/functiongraphfactory.h"
 
-
 #include <analitza/value.h>
 #include <analitza/vector.h>
 #include <analitza/localize.h>

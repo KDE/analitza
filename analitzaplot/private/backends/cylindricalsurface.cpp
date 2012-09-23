@@ -27,7 +27,6 @@
 
 //TODO macros para las prop e abajo
 
-
 class Frp : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
@@ -87,7 +86,6 @@ bool Frp::setInterval(const QString& argname, double min, double max)
     return AbstractFunctionGraph::setInterval(argname, min, max);
 }
 
-
 Frp::Frp(const Analitza::Expression& e): AbstractSurface(e)
 {
     setInterval("r", 0,5);
@@ -95,9 +93,7 @@ Frp::Frp(const Analitza::Expression& e): AbstractSurface(e)
 }
 
 Frp::Frp(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e)
-{
-
-}
+{}
 
 QVector3D Frp::fromParametricArgs(double r, double p)
 {
@@ -114,6 +110,5 @@ void Frp::update(const Box3D& viewport)
 {
     buildParametricSurface();
 }
-
 
 REGISTER_SURFACE(Frp)
