@@ -16,11 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
 #ifndef FUNCTIONGRAPH2_H_mc
 #define FUNCTIONGRAPH2_H_mc
-
 
 #include "quadtree.h"
 
@@ -37,9 +34,6 @@ struct sLimitesEspacio2D {
     double maxY;
 };
 
-
-
-
 struct sMarching_Square {
     QPointF centro;
     double medio_lado;
@@ -52,7 +46,6 @@ struct sArista2D {
     unsigned int vertices[2];
 };
 
-
 //TODO very bad implementation ... we need to use interval arithmetic plus root finding 
 //to know if a 0 belongs to f(square)
 
@@ -62,58 +55,10 @@ struct sArista2D {
 //para convertir un campo K escalar en poligonos.
 class MarchingSquares
 {
-
 public:
     virtual double evalScalarField(double x, double y) = 0;
 
-    void setWorld(double minx, double maxx, double miny, double maxy)
-    {
-        sLimitesEspacio2D _esp;
-
-        double a = 4;
-
-        _esp.minX = minx;
-        _esp.maxX = maxx;
-        _esp.minY = miny;
-        _esp.maxY = maxy;
-
-//         qDebug() << _esp.minX << _esp.maxX << _esp.minY << _esp.maxY;
-        
-        largo_mundo = 1;
-
-//         qDebug() << largo_mundo;
-    //a mas pequenio el size se detectan las singularidades
-    min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
-    
-    if (min_grid>0.05 && min_grid < 1)
-        min_grid = 0.05; // 0.05 es el minimo valor para la presicion
-            
-        mundo = _esp;
-
-///
-/*
-    sLimitesEspacio2D _esp;
-
-    double w = maxx-minx;
-    double h = maxy-miny;
-    
-    double presc = 0.1;
-    
-    _esp.minX = minx-presc*w;
-    _esp.maxX = maxx+presc*w;
-    _esp.minY = miny-presc*h;
-    _esp.maxY = maxy+presc*h;
-
-    //a mas pequenio el size se detectan las singularidades
-    min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
-    
-    if (min_grid>0.05 && min_grid < 1)
-        min_grid = 0.05; // 0.05 es el minimo valor para la presicion
-    
-    largo_mundo = 1;
-    mundo = _esp;*/
-    }
-
+    void setWorld(double minx, double maxx, double miny, double maxy);
 
 public:
 private:
@@ -125,7 +70,7 @@ private:
     double min_grid;
     sLimitesEspacio2D mundo;
     //Evaluar un cubo
-    sMarching_Square evaluar_cubo(Square cubo);
+    sMarching_Square evaluar_cubo(const Square& cubo);
 
     //Busqueda recursiva (breadth search)
     QList<Square> breadth_rec(int cubos_lado);
@@ -139,7 +84,7 @@ public:
     MarchingSquares(/*double min_grid, double arista_mundo, sLimitesEspacio2D limites*/);
 
     //Destructor
-    ~MarchingSquares();
+    virtual ~MarchingSquares();
 
     //Ejecutar
     QList<sMarching_Square> ejecutar();
@@ -153,7 +98,6 @@ public:
     void _addTri(const QPointF &a, const QPointF &b);
 
 private:
-
 
     //Calcular los cortes
     QList<sArista2D> calcular_cortes(sMarching_Square cubo);
@@ -175,7 +119,6 @@ private:
     // los casos 5 y 10 son donde se presnetan singularidades: cortes, cusps, etc
     void tipo05(QList<sArista2D> aristas, sMarching_Square cubo);
     
-    
 private:
     double fixed_x;
     double fixed_y;
@@ -184,4 +127,4 @@ private:
     double fx(double x) { return evalScalarField(x, fixed_y); }
 };
 
-#endif 
+#endif

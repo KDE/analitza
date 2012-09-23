@@ -22,13 +22,11 @@
 #include <qpolygon.h>
 #include <QVector2D>
 
-
-
-sMarching_Square MarchingSquares::evaluar_cubo(Square cubo) {
+sMarching_Square MarchingSquares::evaluar_cubo(const Square& cubo)
+{
     sMarching_Square res;
     QPointF punto;
     unsigned short int val;
-
 
     //Datos generales
     res.centro = cubo.center();
@@ -165,7 +163,6 @@ QList<sMarching_Square> MarchingSquares::ejecutar() {
     }
 //     printf("Encontrados: %d\n",encontrados.count());
 
-
     //Ubicar los cubos (depth search octree)
     foreach(iterador, encontrados) {
         arbol = new Quadtree(iterador);
@@ -176,7 +173,6 @@ QList<sMarching_Square> MarchingSquares::ejecutar() {
     //Devolver los cubos
     return cubos;
 }
-
 
 void MarchingSquares::_addTri(const QPointF& a, const QPointF& b)
 {
@@ -213,9 +209,6 @@ uintmax_t maxiters = 100;*/
 QList<sArista2D> MarchingSquares::calcular_cortes(sMarching_Square cubo) {
     QList<sArista2D> aristas;
     sArista2D temp;
-
-    
-
 //  -----
 //  |1|3|
 //  -----
@@ -352,7 +345,6 @@ void MarchingSquares::agregar_triangulos(QList<QPointF> &lista_triangulos) {
 //Tipos:
 void MarchingSquares::identificar_tipo(sMarching_Square cubo) {
 
-
     QList<sArista2D> aristas;
     QList<unsigned int> vertices;
     unsigned int it;
@@ -364,8 +356,6 @@ void MarchingSquares::identificar_tipo(sMarching_Square cubo) {
 
 //     if (type == 1)
 //         qDebug( ) << aristas.size();
-
-
 
     switch (type)
     {
@@ -431,7 +421,6 @@ void MarchingSquares::tipo05(QList<sArista2D> aristas,sMarching_Square cubo)
     else if (cubo.tipo == 10)
         triangulos << aristas[1].corte << aristas[3].corte;
 
-
     agregar_triangulos(triangulos);
 }
 void MarchingSquares::buildGeometry()
@@ -441,10 +430,8 @@ void MarchingSquares::buildGeometry()
     QList<sMarching_Square> cubos;
     sMarching_Square cubo;
 
-
     cubos = ejecutar();
 //     printf("Cubos: %d\n",cubos.count());
-
 
     foreach(cubo,cubos) {
         //Puede que ahora sea innecesario cambiar el tipo...
@@ -455,6 +442,50 @@ void MarchingSquares::buildGeometry()
     }
 
 }
+void MarchingSquares::setWorld(double minx, double maxx, double miny, double maxy)
+{
+        sLimitesEspacio2D _esp;
 
+        double a = 4;
 
+        _esp.minX = minx;
+        _esp.maxX = maxx;
+        _esp.minY = miny;
+        _esp.maxY = maxy;
 
+//         qDebug() << _esp.minX << _esp.maxX << _esp.minY << _esp.maxY;
+        
+        largo_mundo = 1;
+
+//         qDebug() << largo_mundo;
+    //a mas pequenio el size se detectan las singularidades
+    min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
+    
+    if (min_grid>0.05 && min_grid < 1)
+        min_grid = 0.05; // 0.05 es el minimo valor para la presicion
+            
+        mundo = _esp;
+
+///
+/*
+    sLimitesEspacio2D _esp;
+
+    double w = maxx-minx;
+    double h = maxy-miny;
+    
+    double presc = 0.1;
+    
+    _esp.minX = minx-presc*w;
+    _esp.maxX = maxx+presc*w;
+    _esp.minY = miny-presc*h;
+    _esp.maxY = maxy+presc*h;
+
+    //a mas pequenio el size se detectan las singularidades
+    min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
+    
+    if (min_grid>0.05 && min_grid < 1)
+        min_grid = 0.05; // 0.05 es el minimo valor para la presicion
+    
+    largo_mundo = 1;
+    mundo = _esp;*/
+}
