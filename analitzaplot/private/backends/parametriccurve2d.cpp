@@ -17,53 +17,20 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
 #include "private/abstractplanecurve.h"
 #include "private/functiongraphfactory.h"
 
 #include <QRectF>
-#include "analitza/value.h"
-#include "analitza/vector.h"
-
-
-#include <QDebug>
+#include <analitza/value.h>
+#include <analitza/vector.h>
 #include <analitza/localize.h>
 
-using Analitza::Expression;
-using Analitza::ExpressionType;
-using Analitza::Variables;
-using Analitza::Object;
-using Analitza::Cn;
+using namespace Analitza;
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
 #endif
 static const double pi=M_PI;
-
-
-namespace
-{
-    /// The @p p1 and @p p2 parameters are the last 2 values found
-    /// @p next is the next value found
-    /// @returns whether we've found the gap
-
-    bool traverse(double p1, double p2, double next)
-    {
-        static const double delta=3;
-        double diff=p2-p1, diff2=next-p2;
-        bool ret=false;
-
-        if(diff>0 && diff2<-delta)
-            ret=true;
-        else if(diff<0 && diff2>delta)
-            ret=true;
-
-        return ret;
-    }
-}
-
-
 
 class FunctionParametric : public AbstractPlaneCurve
 {
@@ -88,7 +55,7 @@ public:
 
 private:
     Cn findTValueForPoint(const QPointF& p);
-
+    int resolution() { return 5000; }
 };
 
 FunctionParametric::FunctionParametric(const Expression& e, Variables* v): AbstractPlaneCurve(e, v)
@@ -98,45 +65,19 @@ FunctionParametric::FunctionParametric(const Expression& e, Variables* v): Abstr
 
 void FunctionParametric::update(const QRectF& viewport)
 {
-    Q_UNUSED(viewport);
-    Q_ASSERT(analyzer->expression().isCorrect());
-    //if(int(resolution())==points.capacity())
-    //  return;
-    
-    
-    //TODO CACHE en intervalvalues!!!
-//     QPair<double, double> c_limits = interval("t");
-//     
-//     double ulimit=c_limits.second;
-//     double dlimit=c_limits.first;
-    double dlimit=0;
-    double ulimit=0;
-
-    if (!hasIntervals())
-    {
-        dlimit=viewport.left();
-        ulimit=viewport.right();
-    }
-    else // obey intervals
-    {
-        QPair< double, double> limits = interval("t");
-        dlimit = limits.first;
-        ulimit = limits.second;
-    }
-    
-    
+    QPair< double, double > theInterval;
+    if(hasIntervals())
+         theInterval = interval("t");
+    else
+        theInterval = qMakePair(-3.1415*5, 3.1415*5);
+    double dlimit=theInterval.first;
+    double ulimit=theInterval.second;
     
     points.clear();
     jumps.clear();
-    //points.reserve(resolution());
+    points.reserve(resolution());
     
-//  double inv_res= double((ulimit-dlimit)/resolution());
-    double inv_res= 0.01; 
-//  double final=ulimit-inv_res;
-    
-//     qDebug() << viewport;
-    
-        //by percy
+    double inv_res= double((ulimit-dlimit)/resolution());
     QRectF vp(viewport);
     
     vp.setTop(viewport.top() - 2);
@@ -144,47 +85,21 @@ void FunctionParametric::update(const QRectF& viewport)
     vp.setLeft(viewport.left() + 2);
     vp.setRight(viewport.right() - 2);
     
-    QPointF curp;
-    
-//     arg("t")->setValue(dlimit);
-    Expression res;
-    
     int i = 0;
     
     for(double t=dlimit; t<ulimit; t+=inv_res, ++i) {
         arg("t")->setValue(t);
-        res=analyzer->calculateLambda();
+        Expression res=analyzer->calculateLambda();
         
         Cn x=res.elementAt(0).toReal();
         Cn y=res.elementAt(1).toReal();
         
-        curp = QPointF(x.value(), y.value());
-        
-        //NOTE GSOC POINTS=0
-        //este fragmento hace que cuando la curva no este en el viewport 
-        //no genera puntos y esto hace que falle en el assert del update al verificar que existan mas de 2 puntos
-        // la solucion es comentar el assert y el en plotter2d verificar que existan puntos antes de dibujar
-        //KALGEBRA funciona bien en modo release pero los aserts no se cumplen correctamente
-        //TODO mejora el clipping ... la idea es buena pero no causa buenos resultados
-//         if (vp.contains(curp))
-//         {
-            addPoint(curp);
-//             jlock = false;
-//         }
-//         else if (!jlock)
-//         {
-//             jumps.append(i);
-//             jlock = true;
-//         }
-        
-        //      objectWalker(vo);
+        QPointF curp = QPointF(x.value(), y.value());
+        addPoint(curp);
         Q_ASSERT(res.isVector());
     }
 }
 
-
-
-//Own
 QPair<QPointF, QString> FunctionParametric::image(const QPointF &point)
 {
     
@@ -219,9 +134,7 @@ QLineF FunctionParametric::tangent(const QPointF &mousepos)
 //     }
 //     else
 //         return QLineF();
-
-return QLineF();
-    
+    return QLineF();
 }
 
 Cn FunctionParametric::findTValueForPoint(const QPointF& p)
@@ -297,11 +210,7 @@ Cn FunctionParametric::findTValueForPoint(const QPointF& p)
 // //    }
 //     return Cn(t);
 
-return Cn(0.0);
+    return Cn(0.0);
 }
 
-
 REGISTER_PLANECURVE(FunctionParametric)
-
-
-
