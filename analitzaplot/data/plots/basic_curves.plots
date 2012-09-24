@@ -1,0 +1,2 @@
+sinus := x->sin x
+something := x*x+y*y=7.9
