@@ -94,7 +94,7 @@ void Plotter3D::initGL()
     glEnable(GL_DEPTH_TEST);
 //     glClearColor(LocalScene.groundcol[0], LocalScene.groundcol[1],LocalScene.groundcol[2], LocalScene.groundcol[3]);
     glClearColor(0,0,0,0);
-    
+
 //     //pasar a draw para efecto de transparente a current surface plot
 //     /// For drawing Lines :
 //     if(LocalScene.smoothline == 1) {
@@ -108,9 +108,9 @@ void Plotter3D::initGL()
 //         glDisable(GL_BLEND);
 //     }
 
-    if (m_sceneObjects.contains(Axes)) 
+    if (m_sceneObjects.contains(Axes))
         glDeleteLists(m_sceneObjects.value(Axes).first, 1);
-    
+
     m_sceneObjects[Axes] = qMakePair(glGenLists(1), true);
     glNewList(m_sceneObjects.value(Axes).first, GL_COMPILE );
     glLineWidth(1);
@@ -211,9 +211,9 @@ void Plotter3D::initGL()
     glLineWidth(0.9);
     glEndList();
 
-    if (m_sceneObjects.contains(RefPlaneXY)) 
+    if (m_sceneObjects.contains(RefPlaneXY))
         glDeleteLists(m_sceneObjects.value(RefPlaneXY).first, 1);
-    
+
     m_sceneObjects[RefPlaneXY] = qMakePair(glGenLists(1), true);
 
     glNewList(m_sceneObjects.value(RefPlaneXY).first, GL_COMPILE );
@@ -295,7 +295,7 @@ void Plotter3D::setViewport(const QRect& vp)
 {
     static int CornerH, CornerW;
     static int heightresult, widthresult;
-    
+
     int newwidth = vp.size().width();
     int newheight = vp.size().height();
 
@@ -329,15 +329,96 @@ void Plotter3D::setViewport(const QRect& vp)
 
     heightresult = tmp/2;
     widthresult = 250+starth;
-    
+
     m_viewport = QRect(vp.topLeft(), QSize(tmp, tmp));
 }
 
 void Plotter3D::drawPlots()
 {
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Object Drawing :
     glCallList(m_sceneObjects.value(Axes).first);
     glCallList(m_sceneObjects.value(RefPlaneXY).first);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
     
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1.0, 1.0); //NOTE we can parametrized this args as members
+
+    glPushMatrix();
+    static const double ss = 40; // space size : with scale factor 0 - 80 -> esto hace que cada eje este visible en [0,+/-10]
+    glScalef(ss, ss, ss);
+
+    if(!m_model)
+    {
+        glPopMatrix();
+        glDisable(GL_POLYGON_OFFSET_FILL);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+    
+        return ;
+    }
+    
+    //NOTE si esto pasa entonces quiere decir que el proxy empezado a filtrar otros items
+    // y si es asi borro todo lo que esta agregado al la memoria de la tarjeta
+    //esto se hace pues m_itemGeometries es una copia del estado actual de model
+    if (m_model->rowCount() != m_itemGeometries.count())
+    {
+        foreach (PlotItem *item, m_itemGeometries.keys())
+        {
+            glDeleteLists(m_itemGeometries.take(item), 1);
+        }
+    }
+
+    /// luego paso a verificar el map de display list no este vacio ... si lo esta lo reconstruyo
+
+    if (m_itemGeometries.isEmpty())
+    {
+        //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
+        for (int i = 0; i < m_model->rowCount(); ++i) {
+            PlotItem* item = dynamic_cast<Surface*>(itemAt(i));
+
+            if (item && item->isVisible())
+                addFuncsInternalA(item);
+        }
+    }
+
+    for (int i = 0; i < m_model->rowCount(); ++i)
+    {
+        PlotItem *item = itemAt(i);
+
+        if (!item || item->spaceDimension() != Dim3D || !item->isVisible())
+            continue;
+
+        //TODO el color ya no se configura en la dlista, en la dlist solo va la geometria
+        GLfloat  fcolor[4] = {float(item->color().redF()), float(item->color().greenF()), float(item->color().blueF()), 1.0f};
+
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
+        glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
+
+        glCallList(m_itemGeometries[item]);
+    }
+
+    glPopMatrix();
+// 
+// //     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
+// //     glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);
+// 
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
+
+//     if(scene->line == 1) {
+//         glColor4f (scene->gridcol[0], scene->gridcol[1], scene->gridcol[2], scene->gridcol[3]);
+//         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//         (scene->typedrawing == 1) ?
+//         glDrawElements(GL_TRIANGLES, scene->PolyNumber, GL_UNSIGNED_INT, scene->PolyIndices_localPt)
+//         :
+//         glDrawElements(GL_QUADS, scene->PolyNumber, GL_UNSIGNED_INT, scene->PolyIndices_localPt);
+//         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//     }
 }
 
 void Plotter3D::updatePlots(const QModelIndex & parent, int start, int end)
@@ -355,7 +436,7 @@ void Plotter3D::setModel(QAbstractItemModel* f)
 void Plotter3D::scale(GLdouble factor)
 {
     m_scale = factor;
-        
+
     glScalef(m_scale, m_scale, m_scale);
 
     renderGL();
@@ -371,7 +452,7 @@ void Plotter3D::rotate(int xshift, int yshift)
     m_scale = 1.0;
 
     GLdouble matrix[16] = {0}; // model view matrix from current OpenGL state
-    
+
     glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
 
     GLdouble det; // determinant
@@ -379,21 +460,21 @@ void Plotter3D::rotate(int xshift, int yshift)
     GLdouble tmp[16] = {0}; // Allow out == in
 
     // Inverse = adjoint / det. (See linear algebra texts.)
-    // pre-compute 2x2 dets for last two rows when computing 
-    // cofactors of first two rows. 
-    
+    // pre-compute 2x2 dets for last two rows when computing
+    // cofactors of first two rows.
+
     //column 1
     GLdouble m11 = matrix[0*4 + 0];
     GLdouble m21 = matrix[0*4 + 1];
     GLdouble m31 = matrix[0*4 + 2];
     GLdouble m41 = matrix[0*4 + 3];
-    
+
     //column 2
     GLdouble m12 = matrix[1*4 + 0];
     GLdouble m22 = matrix[1*4 + 1];
     GLdouble m32 = matrix[1*4 + 2];
     GLdouble m42 = matrix[1*4 + 3];
-    
+
     //column 3
     GLdouble m13 = matrix[2*4 + 0];
     GLdouble m23 = matrix[2*4 + 1];
@@ -405,7 +486,7 @@ void Plotter3D::rotate(int xshift, int yshift)
     GLdouble m24 = matrix[3*4 + 1];
     GLdouble m34 = matrix[3*4 + 2];
     GLdouble m44 = matrix[3*4 + 3];
-    
+
     d12 = m31*m42-m41*m32;
     d13 = m31*m43-m41*m33;
     d23 = m32*m43-m42*m33;
@@ -418,13 +499,13 @@ void Plotter3D::rotate(int xshift, int yshift)
     tmp[2] =  (m21 * d24 + m22 * d41 + m24 * d12);
     tmp[3] = -(m21 * d23 - m22 * d13 + m23 * d12);
 
-    // Compute determinant as early as possible using these cofactors. 
+    // Compute determinant as early as possible using these cofactors.
     det = m11 * tmp[0] + m12 * tmp[1] + m13 * tmp[2] + m14 * tmp[3];
 
     // Run singularity test: if det != 0 is not a singular matrix, then all calculations are safe
     if (!isSimilar(det, 0.0)) {
         GLdouble invDet = 1.0 / det;
-        // Compute rest of inverse. 
+        // Compute rest of inverse.
         tmp[0] *= invDet;
         tmp[1] *= invDet;
         tmp[2] *= invDet;
@@ -435,8 +516,8 @@ void Plotter3D::rotate(int xshift, int yshift)
         tmp[6] = -(m11 * d24 + m12 * d41 + m14 * d12) * invDet;
         tmp[7] =  (m11 * d23 - m12 * d13 + m13 * d12) * invDet;
 
-        // Pre-compute 2x2 dets for first two rows when computing 
-        // cofactors of last two rows. 
+        // Pre-compute 2x2 dets for first two rows when computing
+        // cofactors of last two rows.
         d12 = m11*m22-m21*m12;
         d13 = m11*m23-m21*m13;
         d23 = m12*m23-m22*m13;
@@ -456,7 +537,7 @@ void Plotter3D::rotate(int xshift, int yshift)
         double invMatrix[16] = {0}; // inverse of matrix
 
         memcpy(invMatrix, tmp, 16*sizeof(GLdouble));
-        
+
         double ax,ay,az;
         ax = viewRoty;
         ay = viewRotx;
@@ -469,9 +550,88 @@ void Plotter3D::rotate(int xshift, int yshift)
         m_rotz = invMatrix[2]*ax + invMatrix[6]*ay;
 
         glRotatef(angle, m_rotx, m_roty, m_rotz);
-        
+
         renderGL();
     }
+}
+
+void Plotter3D::addFuncsInternalA(PlotItem* item)
+{
+    Q_ASSERT(item);
+
+    if (Surface* surf = dynamic_cast<Surface*>(item))
+    {
+        if (surf->faces().isEmpty())
+            surf->update(Box3D());
+    }
+    else if (SpaceCurve* c = dynamic_cast<SpaceCurve*>(item))
+    {
+        if (c->points().isEmpty())
+            c->update(Box3D());
+    }
+
+    GLuint dlid = glGenLists(1);
+    //WARNING if same item has dlist then delete it
+    m_itemGeometries[item] = dlid;
+
+    float shininess = 15.0f;
+    float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
+    float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
+
+    //BEGIN display list
+    glNewList(dlid, GL_COMPILE);
+
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
+
+    // set ambient and diffuse color using glColorMaterial (gold-yellow)
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glColor3fv(diffuseColor);
+    glColor3ub(item->color().red(), item->color().green(), item->color().blue());
+
+    if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
+    {
+        glEnable(GL_LINE_SMOOTH);
+
+        glLineWidth(2.5);
+
+        glBegin(GL_LINES);
+        {
+            const QVector<QVector3D> points = curve->points();
+
+            //TODO copy approach from plotter 2d and use jumps optimization
+            for (int i = 0; i < points.size() -1 ; ++i)
+            {
+                glVertex3d(points[i].x(), points[i].y(), points[i].z());
+                glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
+            }
+        }
+        glEnd();
+        glDisable(GL_LINE_SMOOTH);
+    }
+    else
+    {
+        Surface* surf = static_cast<Surface*>(item);
+
+        foreach (const Triangle3D &face, surf->faces())
+        {
+            glBegin(GL_TRIANGLES);
+            QVector3D n;
+
+            //TODO no magic numbers
+            if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
+            else n = QVector3D(0.5, 0.1, 0.2).normalized();
+
+            glNormal3d(n.x(), n.y(), n.z());
+            glVertex3d(face.p().x(), face.p().y(), face.p().z());
+            glVertex3d(face.q().x(), face.q().y(), face.q().z());
+            glVertex3d(face.r().x(), face.r().y(), face.r().z());
+            glEnd();
+        }
+    }
+
+    glEndList();
+    //END display list
 }
 
 PlotItem* Plotter3D::itemAt(int row) const

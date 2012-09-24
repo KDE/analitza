@@ -177,31 +177,31 @@ PlotsView3D::~PlotsView3D()
     }
 }
 
-void PlotsView3D::setModel(QAbstractItemModel* f)
-{
-    if(m_model) {
-        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-        disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-        disconnect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
-        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
-    }
-
-    m_model=f;
-
-    for (int i = 0; i < m_model->rowCount(); ++i) {
-        if (itemAt(i)) {
-            glDeleteLists(m_displayLists[itemAt(i)], 1);
-            addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
-        }
-    }
-
-    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-    connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-    connect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
-    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
-
-    updateGL();
-}
+// void PlotsView3D::setModel(QAbstractItemModel* f)
+// {
+//     if(m_model) {
+//         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+//         disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+//         disconnect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+//         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
+//     }
+// 
+//     m_model=f;
+// 
+//     for (int i = 0; i < m_model->rowCount(); ++i) {
+//         if (itemAt(i)) {
+//             glDeleteLists(m_displayLists[itemAt(i)], 1);
+//             addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
+//         }
+//     }
+// 
+//     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+//     connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+//     connect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+//     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
+// 
+//     updateGL();
+// }
 
 void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
 {
@@ -236,81 +236,82 @@ void PlotsView3D::resetView()
 //se llama cuando se oculta o se visualiza el plot por medio de la propiedad plot::visible
 void PlotsView3D::addFuncsInternal(PlotItem* item)
 {
-    Q_ASSERT(item);
-    makeCurrent(); //NOTE: Remember to call makeCurrent before any OpenGL operation. We might have multiple clients in the same window
-
-    if (Surface* surf = dynamic_cast<Surface*>(item))
-    {
-        if (surf->faces().isEmpty())
-            surf->update(Box3D());
-    }
-    else if (SpaceCurve* c = dynamic_cast<SpaceCurve*>(item))
-    {
-        if (c->points().isEmpty())
-            c->update(Box3D());
-    }
-
-    GLuint dlid = glGenLists(1);
-    m_displayLists[item] = dlid;
-
-    float shininess = 15.0f;
-    float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
-    float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
-
-    //BEGIN display list
-    glNewList(dlid, GL_COMPILE);
-
-    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
-
-    // set ambient and diffuse color using glColorMaterial (gold-yellow)
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glColor3fv(diffuseColor);
-    glColor3ub(item->color().red(), item->color().green(), item->color().blue());
-
-    if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
-    {
-        glEnable(GL_LINE_SMOOTH);
-
-        glLineWidth(2.5);
-
-        glBegin(GL_LINES);
-        {
-            const QVector<QVector3D> points = curve->points();
-
-            //TODO copy approach from plotter 2d and use jumps optimization
-            for (int i = 0; i < points.size() -1 ; ++i)
-            {
-                glVertex3d(points[i].x(), points[i].y(), points[i].z());
-                glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
-            }
-        }
-        glEnd();
-        glDisable(GL_LINE_SMOOTH);
-    }
-    else
-    {
-        Surface* surf = static_cast<Surface*>(item);
-
-        foreach (const Triangle3D &face, surf->faces())
-        {
-            glBegin(GL_TRIANGLES);
-            QVector3D n;
-
-            //TODO no magic numbers
-            if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
-            else n = QVector3D(0.5, 0.1, 0.2).normalized();
-
-            glNormal3d(n.x(), n.y(), n.z());
-            glVertex3d(face.p().x(), face.p().y(), face.p().z());
-            glVertex3d(face.q().x(), face.q().y(), face.q().z());
-            glVertex3d(face.r().x(), face.r().y(), face.r().z());
-            glEnd();
-        }
-    }
-
-    glEndList();
-    //END display list
+    addFuncsInternalA(item);
+//     Q_ASSERT(item);
+//     makeCurrent(); //NOTE: Remember to call makeCurrent before any OpenGL operation. We might have multiple clients in the same window
+// 
+//     if (Surface* surf = dynamic_cast<Surface*>(item))
+//     {
+//         if (surf->faces().isEmpty())
+//             surf->update(Box3D());
+//     }
+//     else if (SpaceCurve* c = dynamic_cast<SpaceCurve*>(item))
+//     {
+//         if (c->points().isEmpty())
+//             c->update(Box3D());
+//     }
+// 
+//     GLuint dlid = glGenLists(1);
+//     m_displayLists[item] = dlid;
+// 
+//     float shininess = 15.0f;
+//     float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
+//     float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
+// 
+//     //BEGIN display list
+//     glNewList(dlid, GL_COMPILE);
+// 
+//     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+//     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
+// 
+//     // set ambient and diffuse color using glColorMaterial (gold-yellow)
+//     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+//     glColor3fv(diffuseColor);
+//     glColor3ub(item->color().red(), item->color().green(), item->color().blue());
+// 
+//     if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
+//     {
+//         glEnable(GL_LINE_SMOOTH);
+// 
+//         glLineWidth(2.5);
+// 
+//         glBegin(GL_LINES);
+//         {
+//             const QVector<QVector3D> points = curve->points();
+// 
+//             //TODO copy approach from plotter 2d and use jumps optimization
+//             for (int i = 0; i < points.size() -1 ; ++i)
+//             {
+//                 glVertex3d(points[i].x(), points[i].y(), points[i].z());
+//                 glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
+//             }
+//         }
+//         glEnd();
+//         glDisable(GL_LINE_SMOOTH);
+//     }
+//     else
+//     {
+//         Surface* surf = static_cast<Surface*>(item);
+// 
+//         foreach (const Triangle3D &face, surf->faces())
+//         {
+//             glBegin(GL_TRIANGLES);
+//             QVector3D n;
+// 
+//             //TODO no magic numbers
+//             if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
+//             else n = QVector3D(0.5, 0.1, 0.2).normalized();
+// 
+//             glNormal3d(n.x(), n.y(), n.z());
+//             glVertex3d(face.p().x(), face.p().y(), face.p().z());
+//             glVertex3d(face.q().x(), face.q().y(), face.q().z());
+//             glVertex3d(face.r().x(), face.r().y(), face.r().z());
+//             glEnd();
+//         }
+//     }
+// 
+//     glEndList();
+//     //END display list
 }
 
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
@@ -384,91 +385,7 @@ int PlotsView3D::currentFunction() const
 
 void PlotsView3D::paintGL()
 {
-    
-    Scene *scene = &LocalScene;
-
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     drawPlots();
-
-
-// Object Drawing :
-// If No condition :
-            glEnable(GL_LIGHTING);
-            glEnable(GL_LIGHT0);
-
-            glEnable(GL_POLYGON_OFFSET_FILL);
-            glPolygonOffset(scene->polyfactor, scene->polyunits);
-
-            glPushMatrix();
-            static const double ss = 40; // space size : with scale factor 0 - 80 -> esto hace que cada eje este visible en [0,+/-10]
-            glScalef(ss, ss, ss);
-
-            if(!m_model)
-                return;
-
-            //NOTE si esto pasa entonces quiere decir que el proxy empezado a filtrar otros items
-            // y si es asi borro todo lo que esta agregado al la memoria de la tarjeta
-            //esto se hace pues m_displayLists es una copia del estado actual de model
-            if (m_model->rowCount() != m_displayLists.count())
-            {
-                foreach (PlotItem *item, m_displayLists.keys())
-                {
-                    glDeleteLists(m_displayLists.take(item), 1);
-                }
-            }
-
-            /// luego paso a verificar el map de display list no este vacio ... si lo esta lo reconstruyo
-
-            if (m_displayLists.isEmpty())
-            {
-                //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
-                for (int i = 0; i < m_model->rowCount(); ++i) {
-                    PlotItem* item = dynamic_cast<Surface*>(itemAt(i));
-
-                    if (item && item->isVisible())
-                        addFuncsInternal(item);
-                }
-            }
-
-            for (int i = 0; i < m_model->rowCount(); ++i)
-            {
-                PlotItem *item = itemAt(i);
-
-                if (!item || item->spaceDimension() != Dim3D || !item->isVisible())
-                    continue;
-                
-                //TODO el color ya no se configura en la dlista, en la dlist solo va la geometria
-                GLfloat  fcolor[4] = {float(item->color().redF()), float(item->color().greenF()), float(item->color().blueF()), 1.0f};
-        
-                glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
-                glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
-                
-                glCallList(m_displayLists[item]);
-            }
-
-            glPopMatrix();
-            //restauro conf de luces
-
-            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
-            glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);            
-            
-            glDisable(GL_POLYGON_OFFSET_FILL);
-            glDisable(GL_LIGHTING);
-            glDisable(GL_LIGHT0);
-
-        if(scene->line == 1) {
-            glColor4f (scene->gridcol[0], scene->gridcol[1], scene->gridcol[2], scene->gridcol[3]);
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            (scene->typedrawing == 1) ?
-            glDrawElements(GL_TRIANGLES, scene->PolyNumber, GL_UNSIGNED_INT, scene->PolyIndices_localPt)
-            :
-            glDrawElements(GL_QUADS, scene->PolyNumber, GL_UNSIGNED_INT, scene->PolyIndices_localPt);
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        }
-// End If No condition
-
-
 }
 
 void PlotsView3D::initializeGL()
@@ -491,28 +408,26 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
 
 void PlotsView3D::modelChanged()
 {
-//     if (model()) {
-//         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-//         disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-//         disconnect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
-//         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
-//     }
-// 
-// //     m_model=f;
-// 
-//     for (int i = 0; i < m_model->rowCount(); ++i) {
-//         if (itemAt(i)) {
-//             glDeleteLists(m_displayLists[itemAt(i)], 1);
-//             addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
-//         }
-//     }
-// 
-//     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-//     connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-//     connect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
-//     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
-// 
-//     updateGL();
+    if (model()) {
+        disconnect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+        disconnect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+        disconnect(model(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+        disconnect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
+    }
+
+    for (int i = 0; i < model()->rowCount(); ++i) {
+        if (itemAt(i)) {
+            glDeleteLists(m_displayLists[itemAt(i)], 1);
+            addFuncs(QModelIndex(), 0, model()->rowCount()-1);
+        }
+    }
+
+    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+    connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+    connect(model(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
+
+    updateGL();
 }
 
 void PlotsView3D::renderGL()

@@ -111,7 +111,7 @@ public:
     PlotsView3D(QWidget *parent = 0, PlotsProxyModel *m = 0);
     virtual ~PlotsView3D();
 
-    void setModel(QAbstractItemModel* f);
+//     void setModel(QAbstractItemModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
     PlotItem *itemAt(int row) const;
 
