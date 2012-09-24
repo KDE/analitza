@@ -62,9 +62,3 @@ void PlotItem::setVisible(bool v)
 	m_graphVisible = v;
 	emitDataChanged();
 }
-
-void PlotItem::setPlotStyle(PlotItem::PlotStyle ps)
-{
-	m_plotStyle = ps;
-	emitDataChanged();
-}

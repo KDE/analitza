@@ -33,8 +33,6 @@ class DictionaryItem;
 class ANALITZAPLOT_EXPORT PlotItem 
 {
 public:
-    enum PlotStyle { Solid = 0, Wired = 1, Dots = 3 };    
-    
     PlotItem(const QString &name, const QColor& col);
     virtual ~PlotItem();
 
@@ -50,8 +48,6 @@ public:
     QColor color() const { return m_color; }
     void setColor(const QColor& newColor);
 
-    PlotStyle plotStyle() { return m_plotStyle; }
-    void setPlotStyle(PlotStyle ps);
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool v);
     
@@ -63,7 +59,6 @@ protected:
 private:
     QString m_name;
     QColor m_color;
-    PlotStyle m_plotStyle;
     bool m_graphVisible;
     
     PlotsModel *m_model;

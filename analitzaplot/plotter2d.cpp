@@ -312,7 +312,6 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
     QPainter p;
     p.begin(qpd);
-//  finestra.initFrom(this);
     p.setPen(pfunc);
 
     int current=currentFunction();
@@ -339,7 +338,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
         pfunc.setColor(curve->color());
         pfunc.setWidth((k==current)+1);
-        pfunc.setStyle(Qt::SolidLine);
+//         pfunc.setStyle(Qt::SolidLine);
         p.setPen(pfunc);
 
         const QVector<QPointF> &vect=curve->points();
@@ -377,7 +376,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
                 }
 
 //              qDebug() << "xxxxx" << act2 << ultim << isnan(act2.y()) << isnan(ultim.y());
-                
+
                 p.drawLine(ultim, act2);
 
 #ifdef DEBUG_GRAPH
