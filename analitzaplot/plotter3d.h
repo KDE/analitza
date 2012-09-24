@@ -20,6 +20,9 @@
 #define FUNCTIONSPAINTER3D_H
 
 #include "plotitem.h"
+
+#include <GL/gl.h>
+
 #include <QModelIndex>
 
 class QAbstractItemModel;
@@ -28,30 +31,51 @@ class QPaintDevice;
 
 class QModelIndex;
 
+/**
+ * @class Plotter3D
+ * @author Percy Camilo T. Aucahuasi
+ * @short This class manage the OpenGL scene where the plots will be rendered.
+ * 
+ * Plotter3D provides an agnostic way to manage a 3d scene for draw math plots, 
+ * Contains just OpenGL calls, so is uncoupled with QWidget nor QtQuick. This 
+ * class needs the PlotsModel (to create the geometry of 3D plots) and also 
+ * exposes some methods to change the scene (like hide/show the axis or 
+ * reference planes for example)
+ * 
+ * @internal current implementation is using display lists as geometries store.
+ * 
+ */
+
 class ANALITZAPLOT_EXPORT Plotter3D
 {
     public:
-        Plotter3D(const QSizeF& size, QAbstractItemModel* model = 0);
+        Plotter3D(QAbstractItemModel* model = 0);
         virtual ~Plotter3D();
-        
+
+        virtual void initGL();
+        virtual void setViewport(const QRect &vp);
         virtual void drawPlots();
         virtual int currentPlot() const = 0;
         virtual void modelChanged() = 0;
 
-        /** Force the functions from @p start to @p end to be recalculated. */
+        /** Force the plots from @p start to @p end to be recalculated. */
         void updatePlots(const QModelIndex & parent, int start, int end);
-        
-        PlotItem* currentPlotItem() const;
 
         void setModel(QAbstractItemModel* f);
         QAbstractItemModel* model() const { return m_model; }
-        
+
     private:
+        enum SceneObjectType {Axes, RefPlaneXY};
+        
         PlotItem *itemAt(int row) const;
 
         QAbstractItemModel* m_model;
         
-        QMap<PlotItem*, unsigned int> m_displayLists;
+        QMap<PlotItem*, GLuint> m_itemGeometries;
+
+        //scene properties
+        GLfloat m_depth;
+        QMap<SceneObjectType, QPair<GLuint, bool> > m_sceneObjects; // pair:=<displaylist, visible>
 };
 
 #endif // FUNCTIONSPAINTER3D_H

@@ -647,8 +647,8 @@ void PlotsView3D::initializeGL()
         glDisable(GL_BLEND);
     }
 
-    GLUquadricObj *sphereObj;
-    sphereObj = gluNewQuadric();
+//     GLUquadricObj *sphereObj;
+//     sphereObj = gluNewQuadric();
     LocalScene.axeliste = glGenLists(1);
     glNewList(LocalScene.axeliste, GL_COMPILE );
     glLineWidth(1);
