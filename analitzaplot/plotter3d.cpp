@@ -56,7 +56,14 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
 }
 
 Plotter3D::~Plotter3D()
-{}
+{
+//     if (m_model && m_model->rowCount() > 0) {
+//         for (int i = 0; i < m_model->rowCount(); ++i) {
+//             glDeleteLists(m_displayLists[itemAt(i)], 1);
+//             addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
+//         }
+//     }
+}
 
 void Plotter3D::initGL()
 {
@@ -421,9 +428,43 @@ void Plotter3D::drawPlots()
 //     }
 }
 
-void Plotter3D::updatePlots(const QModelIndex & parent, int start, int end)
+void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
 {
+    Q_ASSERT(!parent.isValid());
+    Q_UNUSED(parent);
+    
+    if (m_model->rowCount() == 0)
+    {
+        for(int i=s; i<=e; i++) {
+            PlotItem *item = itemAt(i);
+            
+            if (item && item->spaceDimension() == Dim3D && item->isVisible()) {
+                qDebug() << item->name();
+                addFuncsInternalA(item);
+            }
+        }
 
+        renderGL();
+        
+        return ;
+    }
+    
+    for(int i=s; i<=e; i++) {
+        PlotItem *item = itemAt(i);
+
+        if (!item)
+            return;
+
+        glDeleteLists(m_itemGeometries[item], 1);
+
+        if (item->isVisible()) {
+    //         addFuncs(QModelIndex(), s.row(), s.row());
+    //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data
+            addFuncsInternalA(item);
+        }
+    }
+
+    renderGL();
 }
 
 void Plotter3D::setModel(QAbstractItemModel* f)

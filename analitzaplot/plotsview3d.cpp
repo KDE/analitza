@@ -54,7 +54,7 @@ static GLfloat staticcolor[20]= {
 #warning should respect PlotItem::plotStyle (or move the style to the whole view, which I think it would make sense)
 
 PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
-    : QGLWidget(parent), m_model(m),m_selection(0)
+    : QGLWidget(parent), m_selection(0)
 {
     //TODO remove qglviewer
 //     setGridIsDrawn(true);
@@ -169,12 +169,7 @@ PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
 
 PlotsView3D::~PlotsView3D()
 {
-    if (m_model && m_model->rowCount() > 0) {
-        for (int i = 0; i < m_model->rowCount(); ++i) {
-            glDeleteLists(m_displayLists[itemAt(i)], 1);
-            addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
-        }
-    }
+
 }
 
 // void PlotsView3D::setModel(QAbstractItemModel* f)
@@ -316,30 +311,21 @@ void PlotsView3D::addFuncsInternal(PlotItem* item)
 
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
-    Q_ASSERT(!parent.isValid());
-    Q_UNUSED(parent);
-
-    for(int i=start; i<=end; i++) {
-        PlotItem *item = itemAt(i);
-        if (item && item->spaceDimension() & Dim3D && item->isVisible()) {
-            addFuncsInternal(item);
-        }
-    }
-
-    updateGL();
+updatePlots(parent, start, end);
 }
 
 void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 {
-    Q_ASSERT(!parent.isValid());
-    for(int i=start; i<=end; i++) {
-        PlotItem *item = itemAt(i);
-
-        if (item) {
-            glDeleteLists(m_displayLists[item], 1);
-            updateGL();
-        }
-    }
+//     Q_ASSERT(!parent.isValid());
+//     
+//     for(int i=start; i<=end; i++) {
+//         PlotItem *item = itemAt(i);
+// 
+//         if (item) {
+//             glDeleteLists(m_displayLists[item], 1);
+//             updateGL();
+//         }
+//     }
 }
 
 //NOTE
@@ -349,22 +335,7 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 //TODO cache para exp e interval ... pues del resto es solo cuestion de update
 void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
 {
-    for(int i=s.row(); i<=e.row(); i++) {
-        PlotItem *item = itemAt(i);
-
-        if (!item)
-            return;
-
-        glDeleteLists(m_displayLists[item], 1);
-
-        if (item->isVisible()) {
-    //         addFuncs(QModelIndex(), s.row(), s.row());
-    //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data
-            addFuncsInternal(item);
-        }
-    }
-
-    updateGL();
+updatePlots(QModelIndex(), s.row(), e.row());
 }
 
 void PlotsView3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
@@ -376,7 +347,7 @@ void PlotsView3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 int PlotsView3D::currentFunction() const
 {
     int ret=-1;
-    if(m_selection && m_model) {
+    if(m_selection && model()) {
         ret=m_selection->currentIndex().row();
     }
 
@@ -415,12 +386,12 @@ void PlotsView3D::modelChanged()
         disconnect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
     }
 
-    for (int i = 0; i < model()->rowCount(); ++i) {
-        if (itemAt(i)) {
-            glDeleteLists(m_displayLists[itemAt(i)], 1);
-            addFuncs(QModelIndex(), 0, model()->rowCount()-1);
-        }
-    }
+//     for (int i = 0; i < model()->rowCount(); ++i) {
+//         if (itemAt(i)) {
+//             glDeleteLists(m_displayLists[itemAt(i)], 1);
+//             addFuncs(QModelIndex(), 0, model()->rowCount()-1);
+//         }
+//     }
 
     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
@@ -455,21 +426,3 @@ void PlotsView3D::mouseMoveEvent(QMouseEvent *e)
     old_x = e->x();
 }
 
-PlotItem* PlotsView3D::itemAt(int row) const
-{
-    if(!m_model)
-        return 0;
-    QModelIndex pi = m_model->index(row, 0);
-
-    if (!pi.isValid())
-        return 0;
-
-    PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
-
-//     qDebug() << plot->expression().toString() << plot->spaceDimension();
-
-    if (plot->spaceDimension() != Dim3D)
-        return 0;
-
-    return plot;
-}

@@ -113,7 +113,6 @@ public:
 
 //     void setModel(QAbstractItemModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
-    PlotItem *itemAt(int row) const;
 
 public slots:
     void resetView();
@@ -139,7 +138,6 @@ private:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     
-    QAbstractItemModel *m_model;
     QItemSelectionModel* m_selection;
     
 //     <graphid, displaylistid>
