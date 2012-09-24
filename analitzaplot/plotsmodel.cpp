@@ -123,10 +123,11 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                 case 0: {
                     //FIXME: actually I think the name should be stored in the model instead of plotItem
                     //if there was another plot with that name, it shouldn't be accepted
-                    //WARNING emit dataChanged for the happy path case :)
                     QString newName = value.toString();
-                    if(!newName.isEmpty())
+                    if(!newName.isEmpty()) {
                         m_items[index.row()]->setName(newName);
+                        emit dataChanged(index, index);
+                    }
                     return !newName.isEmpty();
                 }
                 case 1: {
@@ -148,17 +149,11 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                 }
             }
         case Qt::CheckStateRole:
-        {
             m_items[index.row()]->setVisible(value.toBool());
-            emit dataChanged(index, index);
             return true;
-        }
         case Qt::DecorationRole:
-        {
             m_items[index.row()]->setColor(value.value<QColor>());
-            emit dataChanged(index, index);
             return true;
-        }
     }
 
     return false;
