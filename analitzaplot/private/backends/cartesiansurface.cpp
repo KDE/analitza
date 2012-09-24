@@ -48,7 +48,7 @@ class  Fxy : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxy)
-    TYPE_NAME(i18n("Surface z=F(x,y)"))
+    TYPE_NAME(I18N_NOOP("Surface z=F(x,y)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -83,7 +83,7 @@ class Fxz : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxz)
-    TYPE_NAME(i18n("Surface y=F(x,z)"))
+    TYPE_NAME(I18N_NOOP("Surface y=F(x,z)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(

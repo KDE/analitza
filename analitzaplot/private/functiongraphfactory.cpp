@@ -22,12 +22,13 @@
 
 #include <QStringList>
 #include <analitza/analyzer.h>
+#include <KLocalizedString>
 
 FunctionGraphFactory* FunctionGraphFactory::m_self=0;
 
 QString FunctionGraphFactory::typeName(const QString& id) const
 {
-    return typeNameFunctions[id];
+    return i18n(typeNameFunctions[id]);
 }
 
 Analitza::ExpressionType FunctionGraphFactory::expressionType(const QString& id) const
@@ -73,7 +74,7 @@ FunctionGraphFactory* FunctionGraphFactory::self()
 }
 
 bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, PlotItemConstuctor constructor,
-                                                 BuilderFunctionWithVars builderFunctionWithVars, const QString& typeNameFunction,
+                                                 BuilderFunctionWithVars builderFunctionWithVars, const char* typeNameFunction,
         ExpressionTypeFunction expressionTypeFunction, 
         CoordinateSystem coordinateSystemFunction, const QStringList& _arguments,
         const QString& iconNameFunction, ExamplesFunction examplesFunction)

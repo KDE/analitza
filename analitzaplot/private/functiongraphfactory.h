@@ -76,7 +76,7 @@ public:
     static FunctionGraphFactory* self();
 
     bool registerFunctionGraph(Dimension dim, PlotItemConstuctor constructor, BuilderFunctionWithVars builderFunctionWithVars,
-                  const QString& typeNameFunction, ExpressionTypeFunction expressionTypeFunction, 
+                  const char* typeNameFunction, ExpressionTypeFunction expressionTypeFunction, 
                          CoordinateSystem coordinateSystemFunction, const QStringList& argumentsFunction,
                          const QString& iconNameFunction, ExamplesFunction examplesFunction);
     QString trait(const Analitza::Expression& expr, const Analitza::ExpressionType& t, Dimension dim) const;
@@ -88,7 +88,7 @@ public:
     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredFunctionGraphs() const;
 
 private:
-    QMap<QString, QString> typeNameFunctions;
+    QMap<QString, const char *> typeNameFunctions;
     QMap<QString, ExpressionTypeFunction> expressionTypeFunctions;
     QMap<QString, Dimension> spaceDimensions; //internal use (without a "getter")
     QMap<QString, CoordinateSystem> coordinateSystemFunctions;

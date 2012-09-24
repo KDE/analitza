@@ -43,7 +43,7 @@ class FunctionImplicit : public AbstractPlaneCurve, public MarchingSquares
 {
 public:
     CONSTRUCTORS(FunctionImplicit)
-    TYPE_NAME(i18n("Implicit Curve"))
+    TYPE_NAME(I18N_NOOP("Implicit Curve"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
