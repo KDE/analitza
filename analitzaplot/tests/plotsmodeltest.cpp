@@ -88,7 +88,7 @@ void PlotsModelTest::testAppend()
         qDebug() << "errors:" << item->errors();
     QVERIFY(item->isCorrect());
     
-    item->update(QRectF(-5,5,10,10));
+    item->update(QRectF(-5,-5,10,10)); // the viewport is in world coordinates (not screen coordinates)
     if(!item->isCorrect())
         qDebug() << "error" << item->errors();
     QVERIFY(item->points().count()>=2);
@@ -103,7 +103,7 @@ void PlotsModelTest::testExamples2D()
         
         PlaneCurve* curve = dynamic_cast<PlaneCurve*>(plot.create(Qt::black, "lalala"));
         QVERIFY(curve);
-        curve->update(QRectF(-5,5,10,10));
+        curve->update(QRectF(-5,-5,10,10)); // the viewport is in world coordinates (not screen coordinates)
         QVERIFY(curve->isCorrect());
         if(curve->points().count()<2)
             qDebug() << "pointless plot: " << example;
