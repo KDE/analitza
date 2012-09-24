@@ -59,7 +59,7 @@ void PlotsDictionaryModel::createDictionary(const QString& title, const QString&
             QStandardItem* item = new QStandardItem;
             item->setText(expression.name());
             if(!comments.isEmpty())
-                item->setToolTip(i18nc("dictionary", comments.first())); //see Messages.sh
+                item->setToolTip(i18nc("dictionary", comments.first().toUtf8())); //see Messages.sh for more info
             item->setData(expression.toString(), ExpressionRole);
             item->setData(title, TitleRole);
             item->setData(localurl, FileRole);
