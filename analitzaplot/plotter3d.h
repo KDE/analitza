@@ -24,6 +24,7 @@
 #include <GL/gl.h>
 
 #include <QModelIndex>
+#include <QRect>
 
 class QAbstractItemModel;
 class QPainter;
@@ -63,6 +64,14 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         void setModel(QAbstractItemModel* f);
         QAbstractItemModel* model() const { return m_model; }
+        
+        // scene methods
+
+        /** Set the scale of all the scene by @p factor */
+        void scale(GLdouble factor);
+
+        /** Rotates by @p xshift and @p yshift in screen coordinates. */
+        void rotate(int xshift, int yshift); 
 
     private:
         enum SceneObjectType {Axes, RefPlaneXY};
@@ -74,8 +83,14 @@ class ANALITZAPLOT_EXPORT Plotter3D
         QMap<PlotItem*, GLuint> m_itemGeometries;
 
         //scene properties
-        GLfloat m_depth;
         QMap<SceneObjectType, QPair<GLuint, bool> > m_sceneObjects; // pair:=<displaylist, visible>
+        QRect m_viewport;
+        GLfloat m_depth;
+        GLdouble m_scale;
+        GLdouble m_rotStrength;
+        GLdouble m_rotx;
+        GLdouble m_roty;
+        GLdouble m_rotz;
 };
 
 #endif // FUNCTIONSPAINTER3D_H
