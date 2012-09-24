@@ -21,6 +21,7 @@
 #include "analitzaplot/planecurve.h"
 #include "analitzaplot/plotsmodel.h"
 #include <plotsfactory.h>
+#include <surface.h>
 
 #include "analitza/expression.h"
 #include "analitza/variables.h"
@@ -92,6 +93,22 @@ void PlotsModelTest::testAppend()
     if(!item->isCorrect())
         qDebug() << "error" << item->errors();
     QVERIFY(item->points().count()>=2);
+}
+
+
+void PlotsModelTest::testDelete()
+{
+    Expression exp("x*x+y*y+z*z=9");
+    PlotBuilder plot = PlotsFactory::self()->requestPlot(exp, Dim3D);
+
+    Surface* del_item = dynamic_cast<Surface*>(plot.create(Qt::red, "item to be deleted"));
+    m_model->addPlot(del_item);
+
+    int size = m_model->rowCount();
+
+    m_model->removeRow(0);
+
+    QCOMPARE(m_model->rowCount(), size - 1);
 }
 
 void PlotsModelTest::testExamples2D()

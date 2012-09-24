@@ -35,7 +35,7 @@ Q_OBJECT
 	private slots:
 		void testAppend();
 		void testAppend_data();
-        
+        void testDelete();
         void testExamples2D();
 
 	private:
