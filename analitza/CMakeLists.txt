@@ -3,6 +3,7 @@ project(analitza)
 add_subdirectory(tests)
 
 set(analitza_SRCS
+    expressionstream.cpp
 	polynomial.cpp
 	importqobjectmetatype.cpp
 	builtinmethods.cpp
@@ -65,5 +66,6 @@ install(FILES
 	expressiontype.h
 	builtinmethods.h
 	importqobjectmetatype.h
+	expressionstream.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/analitza/ COMPONENT Devel)
 	

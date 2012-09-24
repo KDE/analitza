@@ -35,6 +35,7 @@
 #include "polynomial.h"
 #include "transformation.h"
 #include "substituteexpression.h"
+#include "expressionstream.h"
 
 // #define SCRIPT_PROFILER
 
@@ -167,22 +168,14 @@ void Analyzer::setExpression(const Expression & e)
 void Analyzer::importScript(QTextStream* stream)
 {
 	QString line;
-	for(bool done=!stream->atEnd(); done; done=!stream->atEnd() || !line.isEmpty()) {
-		line += stream->readLine(); // line of text excluding '\n'
-		line += '\n'; //make sure the \n is passed so that comments work properly
+	ExpressionStream s(stream);
+	for(; !s.atEnd(); ) {
+		setExpression(s.next());
+		calculate();
+		line.clear();
 		
-		if(Expression::isCompleteExpression(line) || stream->atEnd()) {
-			if(stream->atEnd() && !Expression::isCompleteExpression(line, true))
-				break;
-			
-			setExpression(Expression(line, Expression::isMathML(line)));
-			
-			calculate();
-			line.clear();
-			
-			if(!isCorrect())
-				break;
-		}
+		if(!isCorrect())
+			break;
 	}
 }
 
