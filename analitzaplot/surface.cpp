@@ -19,7 +19,6 @@
 #include "surface.h"
 
 #include "analitza/localize.h"
-#include "analitza/variable.h"
 
 #include "private/functiongraphfactory.h"
 #include "private/abstractsurface.h"

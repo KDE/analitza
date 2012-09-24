@@ -19,13 +19,6 @@
 
 #include "functiongraph.h"
 
-#include <QUuid>
-
-#include "analitza/analyzer.h"
-#include "analitza/variable.h"
-#include <analitza/variables.h>
-#include <analitza/localize.h>
-
 #include "private/abstractfunctiongraph.h"
 
 #include "private/functiongraphfactory.h"

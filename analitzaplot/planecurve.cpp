@@ -20,13 +20,7 @@
 
 #include "planecurve.h"
 
-#include <QUuid>
-
 #include <KDE/KLocalizedString>
-
-#include "analitza/analyzer.h"
-#include "analitza/variable.h"
-#include <analitza/variables.h>
 
 #include "private/abstractplanecurve.h"
 

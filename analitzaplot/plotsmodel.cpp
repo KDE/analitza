@@ -22,17 +22,12 @@
 #include "plotsfactory.h"
 #include "plotitem.h"
 
-#include "analitza/analyzer.h"
-#include "analitza/variables.h"
-#include "analitza/localize.h"
+#include "analitza/analitzautils.h"
+#include <KLocalizedString>
 
 #include <QDebug>
-#include <QPixmap>
-#include <QFont>
-#include <QIcon>
 #include <KIcon>
 #include <analitzaplot/functiongraph.h>
-// #include <kcategorizedsortfilterproxymodel.h>
 
 Q_DECLARE_METATYPE(PlotItem*);
 
@@ -128,6 +123,7 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                 case 0: {
                     //FIXME: actually I think the name should be stored in the model instead of plotItem
                     //if there was another plot with that name, it shouldn't be accepted
+                    //WARNING emit dataChanged for the happy path case :)
                     QString newName = value.toString();
                     if(!newName.isEmpty())
                         m_items[index.row()]->setName(newName);
