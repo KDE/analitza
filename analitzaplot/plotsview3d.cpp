@@ -388,23 +388,12 @@ void PlotsView3D::paintGL()
     Scene *scene = &LocalScene;
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     drawPlots();
 
-    /// Blend Effect activation:
-    if(scene->transparency == 1)  {
-        glDepthMask(GL_FALSE);
-        //glEnable(GL_CULL_FACE);
-    }
-    /// Ratation (Animation):
-//     if(scene->anim == 1) 
-//         glRotatef(scene->RotStrength,scene->axe_x,scene->axe_y,scene->axe_z);
-//     /// Box Drawing:
-//     if(scene->box == 1) glCallList(scene->boxliste);
 
 // Object Drawing :
 // If No condition :
-    if(scene->condition != 1) {
-        if(scene->mesh == 1) {
             glEnable(GL_LIGHTING);
             glEnable(GL_LIGHT0);
 
@@ -467,7 +456,6 @@ void PlotsView3D::paintGL()
             glDisable(GL_POLYGON_OFFSET_FILL);
             glDisable(GL_LIGHTING);
             glDisable(GL_LIGHT0);
-        }
 
         if(scene->line == 1) {
             glColor4f (scene->gridcol[0], scene->gridcol[1], scene->gridcol[2], scene->gridcol[3]);
@@ -478,13 +466,8 @@ void PlotsView3D::paintGL()
             glDrawElements(GL_QUADS, scene->PolyNumber, GL_UNSIGNED_INT, scene->PolyIndices_localPt);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
-    }
 // End If No condition
 
-    if(scene->transparency == 1)  {
-        glDepthMask(GL_TRUE);
-//glDisable(GL_CULL_FACE);
-    }
 
 }
 
@@ -508,14 +491,14 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
 
 void PlotsView3D::modelChanged()
 {
-//     if(m_model) {
+//     if (model()) {
 //         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
 //         disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
 //         disconnect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
 //         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
 //     }
 // 
-//     m_model=f;
+// //     m_model=f;
 // 
 //     for (int i = 0; i < m_model->rowCount(); ++i) {
 //         if (itemAt(i)) {

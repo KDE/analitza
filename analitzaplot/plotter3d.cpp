@@ -1,5 +1,7 @@
 /*************************************************************************************
  *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2007 by Abderrahman Taha: Basic OpenGL calls like scene, lights    *
+ *                                          and mouse behaviour taken from K3DSurf   *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -45,8 +47,12 @@ using namespace std;
 
 Plotter3D::Plotter3D(QAbstractItemModel* model)
     : m_model(model)
+    , m_rotStrength(0)
+    , m_depth(-400)
+    , m_rotx(90.0)
+    , m_roty(90.0)
+    , m_rotz(1.0)
 {
-    
 }
 
 Plotter3D::~Plotter3D()
