@@ -58,11 +58,8 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
 Plotter3D::~Plotter3D()
 {
     //asser geoms == model rowcount
-    if (m_model && m_model->rowCount() > 0) {
-        for (int i = 0; i < m_model->rowCount(); ++i) {
-            glDeleteLists(m_itemGeometries.value(itemAt(i)), 1);
-        }
-    }
+    for (int i = 0; i < m_itemGeometries.size(); ++i)
+        glDeleteLists(m_itemGeometries.value(itemAt(i)), 1);
 
     glDeleteLists(m_sceneObjects.value(Axes).first, 1);
     glDeleteLists(m_sceneObjects.value(RefPlaneXY).first, 1);
@@ -458,6 +455,16 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
         }
     }
 
+    if (m_model->rowCount() != m_itemGeometries.size())
+    {
+        //if the user delete a item from the model
+//         if (m_model->rowCount() > m_itemGeometries.size())
+        {
+            for (int i = 0; i < m_itemGeometries.size(); ++i)
+                glDeleteLists(m_itemGeometries.take(itemAt(i)), 1);
+        }
+    }
+    
     renderGL();
 }
 
