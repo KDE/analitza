@@ -143,20 +143,28 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                             delete m_items[index.row()];
                             m_items[index.row()] = plot.create(it->color(), it->name());
                         }
+                        
+                        emit dataChanged(index, index);
+                        
                         return true;
                     }
                     return false;
                 }
             }
         case Qt::CheckStateRole:
+        {
             m_items[index.row()]->setVisible(value.toBool());
+            emit dataChanged(index, index);
             return true;
+        }
         case Qt::DecorationRole:
-			m_items[index.row()]->setColor(value.value<QColor>());
+        {
+            m_items[index.row()]->setColor(value.value<QColor>());
+            emit dataChanged(index, index);
             return true;
-
+        }
     }
-     
+
     return false;
 }
 
