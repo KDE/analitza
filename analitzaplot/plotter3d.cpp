@@ -71,42 +71,23 @@ Plotter3D::~Plotter3D()
 
 void Plotter3D::initGL()
 {
-//     qglClearColor(Qt::black);
-//
-//     glEnable(GL_LIGHTING);
-//     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
-//     glEnable(GL_NORMALIZE);
     glEnable(GL_POLYGON_SMOOTH);
 //
     glShadeModel(GL_SMOOTH);
-//     glEnable(GL_LIGHT0);
     glEnable(GL_MULTISAMPLE);
-//     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
-//     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-//     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-    /*
-        //Texture initialisation :
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-        glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1.width(), tex1.height(), 0,
-        GL_RGBA, GL_UNSIGNED_BYTE, tex1.bits() );
-     */
     /// For drawing Filled Polygones :
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glEnable(GL_NORMALIZE);
     glFrontFace (GL_CCW);
-//     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
-//     glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);
     glMaterialf (GL_FRONT, GL_SHININESS, 35.0);
     glMaterialf (GL_BACK, GL_SHININESS, 35.0);
 
     glEnable(GL_DEPTH_TEST);
-//     glClearColor(LocalScene.groundcol[0], LocalScene.groundcol[1],LocalScene.groundcol[2], LocalScene.groundcol[3]);
     glClearColor(0,0,0,0);
 
-//     //pasar a draw para efecto de transparente a current surface plot
+//TODO efecto de tranaparente al draw     //pasar a draw para efecto de transparente a current surface plot
 //     /// For drawing Lines :
 //     if(LocalScene.smoothline == 1) {
 //         glEnable (GL_LINE_SMOOTH);
@@ -189,7 +170,7 @@ void Plotter3D::initGL()
 
     glColor3f (1., 0., 0.);
     glRasterPos3i(410, 10, 10);
-    glCallLists(strlen("X"),GL_UNSIGNED_BYTE,"X");
+//     glCallLists(strlen("X"),GL_UNSIGNED_BYTE,"X");
 
     glColor3f (0.7, 0.7, 0.7);
     glTranslatef(410.0, 4.0, 4.0);
@@ -199,9 +180,7 @@ void Plotter3D::initGL()
     glColor3f (0., 1., 0.);
     glRasterPos3i(10, 410, 10);
     //printString("Y");
-    glCallLists(strlen("Y"),
-                GL_UNSIGNED_BYTE,
-                "Y");
+//     glCallLists(strlen("Y"), GL_UNSIGNED_BYTE, "Y");
 
     glColor3f (1., 1., 0.);
     glTranslatef(4.0, 410.0, 4.0);
@@ -211,9 +190,7 @@ void Plotter3D::initGL()
     glColor3f (0., 0., 1.);
     glRasterPos3i(10, 10, 410);
     //printString("Z");
-    glCallLists(strlen("Z"),
-                GL_UNSIGNED_BYTE,
-                "Z");
+//     glCallLists(strlen("Z"), GL_UNSIGNED_BYTE, "Z");
 
     glColor3f (0., 0.7, 0.7);
     glTranslatef(4.0, 4.0, 410.0);
@@ -347,6 +324,7 @@ void Plotter3D::setViewport(const QRect& vp)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef( 0.0, 0.0, -800.0 );
+    glRotatef(79,-13,-2,6);
 
     //glMultMatrixd(mm);
 
