@@ -53,25 +53,17 @@ int main(int argc, char *argv[])
     mainWindow->setMinimumSize(640, 480);
     mainWindow->statusBar()->show();
 
-    QWidget *central = new QWidget(mainWindow);
-    QVBoxLayout *layout = new QVBoxLayout(central);
-    
-    QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
-    tabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QSplitter *central = new QSplitter(Qt::Horizontal, mainWindow);
+    central->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    QLabel *info = new QLabel("Rotate: right click + move \n Scale: left click + move ", central);
-    
-    layout->addWidget(info);
-    layout->addWidget(tabs);
-    
     //BEGIN test calls
 
-    PlotsModel *model = new PlotsModel(tabs);
+    PlotsModel *model = new PlotsModel(central);
 
-    QTreeView *viewsource = new QTreeView(tabs);
+    QTreeView *viewsource = new QTreeView(central);
     viewsource->setModel(model);
     
-    PlotsView3D *view3d = new PlotsView3D(tabs);
+    PlotsView3D *view3d = new PlotsView3D(central);
     view3d->setModel(model);
     view3d->setSelectionModel(viewsource->selectionModel());
 
@@ -86,8 +78,8 @@ int main(int argc, char *argv[])
     
     //END test calls
 
-    tabs->addWidget(viewsource);
-    tabs->addWidget(view3d);
+    central->addWidget(viewsource);
+    central->addWidget(view3d);
 
     mainWindow->setCentralWidget(central);
     mainWindow->show();

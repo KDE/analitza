@@ -234,17 +234,17 @@ void PlotsView3D::resetView()
 // }
 
 //se llama cuando se oculta o se visualiza el plot por medio de la propiedad plot::visible
-void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(PlotItem* item)
+void PlotsView3D::addFuncsInternal(PlotItem* item)
 {
     Q_ASSERT(item);
     makeCurrent(); //NOTE: Remember to call makeCurrent before any OpenGL operation. We might have multiple clients in the same window
 
-    if (Surface* surf = static_cast<Surface*>(item))
+    if (Surface* surf = dynamic_cast<Surface*>(item))
     {
         if (surf->faces().isEmpty())
             surf->update(Box3D());
     }
-    else if (SpaceCurve* c = static_cast<SpaceCurve*>(item))
+    else if (SpaceCurve* c = dynamic_cast<SpaceCurve*>(item))
     {
         if (c->points().isEmpty())
             c->update(Box3D());
@@ -313,86 +313,17 @@ void PlotsView3D::addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(P
     //END display list
 }
 
-
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
-    PlotItem *item = itemAt(start);
+    Q_ASSERT(!parent.isValid());
+    Q_UNUSED(parent);
 
-    if (!item || item->spaceDimension() != Dim3D)
-        return;
-
-    makeCurrent();
-
-    if (Surface* surf = static_cast<Surface*>(item))
-        surf->update(Box3D());
-    else if (SpaceCurve* c = static_cast<SpaceCurve*>(item))
-        c->update(Box3D());
-
-    GLuint dlid = glGenLists(1);
-    m_displayLists[item] = dlid;
-
-    float shininess = 15.0f;
-    float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
-    float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
-    Q_UNUSED(diffuseColor); //TODO: Percy? ... give more time :)
-
-    //BEGIN display list
-    glNewList(dlid, GL_COMPILE);
-
-    // set specular and shiniess using glMaterial (gold-yellow)
-    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
-
-    // set ambient and diffuse color using glColorMaterial (gold-yellow)
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-//     glColor3fv(diffuseColor);
-    glColor3ub(item->color().red(), item->color().green(), item->color().blue());
-
-    if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
-    {
-        glEnable(GL_LINE_SMOOTH);
-
-        glLineWidth(2.5);
-
-        glBegin(GL_LINES);
-        {
-            const QVector<QVector3D> points = curve->points();
-
-            //TODO copy approach from plotter 2d and use jumps optimization
-            for (int i = 0; i < points.size() -1 ; ++i)
-            {
-                glVertex3d(points[i].x(), points[i].y(), points[i].z());
-                glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
-            }
-        }
-        glEnd();
-        glDisable(GL_LINE_SMOOTH);
-    }
-    else // en caso q el elemento 3d sea superfici ... dibujarla generando la malla
-    {
-        Surface* surf = static_cast<Surface*>(item);
-
-        foreach (const Triangle3D &face, surf->faces())
-        {
-            glBegin(GL_TRIANGLES);
-            QVector3D n;
-
-            //TODO no magic numbers
-            if (!face.faceNormal().isNull())
-                n = face.faceNormal().normalized();
-            else
-                n = QVector3D(0.5, 0.1, 0.2).normalized();
-
-            glNormal3d(n.x(), n.y(), n.z());
-            glVertex3d(face.p().x(), face.p().y(), face.p().z());
-            glVertex3d(face.q().x(), face.q().y(), face.q().z());
-            glVertex3d(face.r().x(), face.r().y(), face.r().z());
-            glEnd();
+    for(int i=start; i<=end; i++) {
+        PlotItem *item = itemAt(i);
+        if (item && item->spaceDimension() & Dim3D && item->isVisible()) {
+            addFuncsInternal(item);
         }
     }
-
-    glEndList();
-    //END display list
 
     updateGL();
 }
@@ -417,16 +348,19 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 //TODO cache para exp e interval ... pues del resto es solo cuestion de update
 void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
 {
-    PlotItem *item = itemAt(s.row());
+    for(int i=s.row(); i<=e.row(); i++) {
+        PlotItem *item = itemAt(i);
 
-    if (!item) return;
+        if (!item)
+            return;
 
-    glDeleteLists(m_displayLists[item], 1);
+        glDeleteLists(m_displayLists[item], 1);
 
-    if (item->isVisible()) {
-//         addFuncs(QModelIndex(), s.row(), s.row());
-//igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data
-        addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(item);
+        if (item->isVisible()) {
+    //         addFuncs(QModelIndex(), s.row(), s.row());
+    //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data
+            addFuncsInternal(item);
+        }
     }
 
     updateGL();
@@ -451,8 +385,6 @@ int PlotsView3D::currentFunction() const
 void PlotsView3D::paintGL()
 {
     Scene *scene = &LocalScene;
-
-    int i, j, startpl, polysize, actualpointindice;
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -480,21 +412,9 @@ void PlotsView3D::paintGL()
             glEnable(GL_POLYGON_OFFSET_FILL);
             glPolygonOffset(scene->polyfactor, scene->polyunits);
 
-
-
-
-
-
-
-            ///
-
             glPushMatrix();
             static const double ss = 40; // space size : with scale factor 0 - 80 -> esto hace que cada eje este visible en [0,+/-10]
             glScalef(ss, ss, ss);
-
-            
-
-
 
             if(!m_model)
                 return;
@@ -518,62 +438,33 @@ void PlotsView3D::paintGL()
                 for (int i = 0; i < m_model->rowCount(); ++i) {
                     PlotItem* item = dynamic_cast<Surface*>(itemAt(i));
 
-                    if (!item) continue;
-
-                    if (item->isVisible())
-                        addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(item);
+                    if (item && item->isVisible())
+                        addFuncsInternal(item);
                 }
             }
 
             for (int i = 0; i < m_model->rowCount(); ++i)
             {
                 PlotItem *item = itemAt(i);
-                Surface* surf = static_cast<Surface*>(item);
 
-                if (!item || item->spaceDimension() != Dim3D)
+                if (!item || item->spaceDimension() != Dim3D || !item->isVisible())
                     continue;
-                //TODO: make it possible to plot things that aren't surfaces
-
-                    
-                    if (!item->isVisible()) continue;
-                    
-                    ///
-                    //TODO el color ya no se configura en la dlista, en la dlist solo va la geometria
-                    GLfloat  fcolor[4] = {item->color().redF(), item->color().greenF(), item->color().blueF(), 1.0f};
-                    GLfloat  bcolor[4] = {item->color().redF(), item->color().greenF(), item->color().blueF(), 1.0f};
-            
-                    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
-                    glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, bcolor);
-                    
-                    ///
-                    
+                
+                //TODO el color ya no se configura en la dlista, en la dlist solo va la geometria
+                GLfloat  fcolor[4] = {float(item->color().redF()), float(item->color().greenF()), float(item->color().blueF()), 1.0f};
+        
+                glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
+                glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
+                
                 glCallList(m_displayLists[item]);
             }
 
             glPopMatrix();
             //restauro conf de luces
 
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
-    glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);            
+            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
+            glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);            
             
-            ///
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             glDisable(GL_POLYGON_OFFSET_FILL);
             glDisable(GL_LIGHTING);
             glDisable(GL_LIGHT0);
@@ -828,14 +719,9 @@ void PlotsView3D::initializeGL()
 
 void PlotsView3D::resizeGL(int newwidth, int newheight)
 {
-    static int CornerH, CornerW;
-    static int heightresult, widthresult;
-
     int tmp, starth, startw;
     //GLdouble mm[16];
     //glGetDoublev(GL_MODELVIEW_MATRIX,mm);
-    CornerH = (int)(newheight/2);
-    CornerW = (int)(newwidth/2);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -855,27 +741,15 @@ void PlotsView3D::resizeGL(int newwidth, int newheight)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef( 0.0, 0.0, -800.0 );
-
-    //glMultMatrixd(mm);
-
-    heightresult = tmp/2;
-    widthresult = 250+starth;
 }
 
 void PlotsView3D::mousePressEvent(QMouseEvent *e)
 {
-    if ( e->button() == Qt::LeftButton ) btgauche = 1;
-    else btgauche = 0;
-    if ( e->button() == Qt::RightButton ) btdroit = 1;
-    else btdroit = 0;
-    if ( e->button() == Qt::MidButton ) btmilieu = 1;
-    else btmilieu = 0;
+    buttons = e->buttons();
 
     old_y = LocalScene.oldRoty = e->y();
     old_x = LocalScene.oldRotx = e->x();
 }
-
-
 
 /* NB. OpenGL Matrices are COLUMN major. */
 #define MAT(m,r,c) (m)[(c)*4+(r)]
@@ -899,6 +773,14 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
 #define m44 MAT(m,3,3)
 //    static double m[16];
 
+void PlotsView3D::wheelEvent(QWheelEvent* ev)
+{
+    LocalScene.ScalCoeff = 1.f+ev->delta()/1000.f;
+    glScalef(LocalScene.ScalCoeff, LocalScene.ScalCoeff, LocalScene.ScalCoeff);
+    LocalScene.view_rotx = LocalScene.view_roty = 0.0;
+    updateGL();
+}
+
 void PlotsView3D::mouseMoveEvent(QMouseEvent *e)
 {
     static double m[16];
@@ -910,14 +792,14 @@ void PlotsView3D::mouseMoveEvent(QMouseEvent *e)
     LocalScene.oldRotx = e->x();
 
 // Scale function :
-    if(btdroit ==1)  {
+    if(buttons & Qt::RightButton)  {
         if(old_y - e->y() > 0 ) LocalScene.ScalCoeff = 1.02f;
         else if( LocalScene.ScalCoeff > 0.1f ) LocalScene.ScalCoeff = 0.98f;
         glScalef(LocalScene.ScalCoeff, LocalScene.ScalCoeff, LocalScene.ScalCoeff);
         LocalScene.view_rotx = LocalScene.view_roty = 0.0;
     }
 // Rotational function :
-    if(btgauche ==1) {
+    if(buttons & Qt::LeftButton) {
         LocalScene.view_roty = -(old_y - e->y());
         LocalScene.view_rotx = -(old_x - e->x());
         LocalScene.ScalCoeff = 1.0;
@@ -987,10 +869,8 @@ void PlotsView3D::mouseMoveEvent(QMouseEvent *e)
 
             memcpy(LocalScene.matrixInverse, tmp, 16*sizeof(GLdouble));
         }
-        double ax,ay,az;
-        ax = LocalScene.view_roty;
-        ay = LocalScene.view_rotx;
-        az = 0.0;
+        double ax = LocalScene.view_roty;
+        double ay = LocalScene.view_rotx;
         anglefinal += (angle = sqrt(ax*ax + ay*ay)/(double)(LocalScene.viewport[2]+1)*360.0);
         /* Use inverse matrix to determine local axis of rotation */
         LocalScene.axe_x = Axe_x = LocalScene.matrixInverse[0]*ax + LocalScene.matrixInverse[4]*ay;

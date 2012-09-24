@@ -118,7 +118,7 @@ public slots:
     void resetView();
     
 private slots:
-    void addFuncsInternalVersionWithOutUpdateGLEstaSellamadesdeElDraw(PlotItem* item);
+    void addFuncsInternal(PlotItem* item);
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);
@@ -126,6 +126,8 @@ private slots:
     void testvisible(const QModelIndex &, const QModelIndex &);
     
 private:
+    virtual void wheelEvent(QWheelEvent* ev);
+    
     int currentFunction() const;
     void paintGL();
     void initializeGL();
@@ -139,7 +141,7 @@ private:
 //     <graphid, displaylistid>
     QMap<PlotItem*, GLuint> m_displayLists;
 
-    int btgauche, btdroit, btmilieu;
+    Qt::MouseButtons buttons;
     double Axe_x, Axe_y, Axe_z, angle, val1, val2, val3, old_x, old_y, old_z;
     Scene  LocalScene;
 };
