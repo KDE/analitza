@@ -59,6 +59,9 @@ class ANALITZAPLOT_EXPORT Plotter3D
         virtual int currentPlot() const = 0;
         virtual void modelChanged() = 0;
 
+        /** Force OpenGL to render the scene. QGLWidget should call updateGL in this method. */
+        virtual void renderGL() = 0;
+
         /** Force the plots from @p start to @p end to be recalculated. */
         void updatePlots(const QModelIndex & parent, int start, int end);
 

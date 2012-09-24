@@ -345,7 +345,11 @@ void Plotter3D::setModel(QAbstractItemModel* f)
 
 void Plotter3D::scale(GLdouble factor)
 {
+    m_scale = factor;
+        
+    glScalef(m_scale, m_scale, m_scale);
 
+    renderGL();
 }
 
 void Plotter3D::rotate(int xshift, int yshift)
@@ -456,6 +460,8 @@ void Plotter3D::rotate(int xshift, int yshift)
         m_rotz = invMatrix[2]*ax + invMatrix[6]*ay;
 
         glRotatef(angle, m_rotx, m_roty, m_rotz);
+        
+        renderGL();
     }
 }
 
