@@ -41,7 +41,6 @@ public:
     PlotsView3D(QWidget *parent = 0, PlotsProxyModel *m = 0);
     virtual ~PlotsView3D();
 
-//     void setModel(QAbstractItemModel* f);
     void setSelectionModel(QItemSelectionModel* selection);
 
 public slots:
@@ -70,11 +69,8 @@ private:
     
     QItemSelectionModel* m_selection;
     
-//     <graphid, displaylistid>
-    QMap<PlotItem*, GLuint> m_displayLists;
-
     Qt::MouseButtons buttons;
-    double Axe_x, Axe_y, Axe_z, angle, val1, val2, val3, old_x, old_y, old_z;
+    double old_x, old_y;
 };
 
 #endif
