@@ -393,7 +393,6 @@ void Plotter3D::rotate(int xshift, int yshift)
     GLdouble m34 = matrix[3*4 + 2];
     GLdouble m44 = matrix[3*4 + 3];
     
-    
     d12 = m31*m42-m41*m32;
     d13 = m31*m43-m41*m33;
     d23 = m32*m43-m42*m33;
@@ -409,9 +408,7 @@ void Plotter3D::rotate(int xshift, int yshift)
     // Compute determinant as early as possible using these cofactors. 
     det = m11 * tmp[0] + m12 * tmp[1] + m13 * tmp[2] + m14 * tmp[3];
 
-    // Run singularity test.
-    
-    // if det != 0 is not a singular matrix, then is safe all calculations
+    // Run singularity test: if det != 0 is not a singular matrix, then all calculations are safe
     if (!isSimilar(det, 0.0)) {
         GLdouble invDet = 1.0 / det;
         // Compute rest of inverse. 
