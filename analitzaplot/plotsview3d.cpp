@@ -720,29 +720,6 @@ void PlotsView3D::initializeGL()
 void PlotsView3D::resizeGL(int newwidth, int newheight)
 {
     setViewport(QRect(0,0,newwidth,newheight));
-    
-//     int tmp, starth, startw;
-//     //GLdouble mm[16];
-//     //glGetDoublev(GL_MODELVIEW_MATRIX,mm);
-// 
-//     glMatrixMode(GL_PROJECTION);
-//     glLoadIdentity();
-// 
-//     if(newwidth > newheight) {
-//         tmp = newwidth;
-//         starth=(newwidth-newheight)/4;
-//         startw=0;
-//     }
-//     else {
-//         tmp = newheight;
-//         startw = (newheight-newwidth)/4;
-//         starth=0;
-//     }
-//     glViewport(0, 0, tmp, tmp);
-//     glFrustum(-250+startw, 250+startw, -250+starth, 250+starth, 350.0, 3000.0 );
-//     glMatrixMode(GL_MODELVIEW);
-//     glLoadIdentity();
-//     glTranslatef( 0.0, 0.0, -800.0 );
 }
 
 void PlotsView3D::mousePressEvent(QMouseEvent *e)
@@ -810,10 +787,7 @@ void PlotsView3D::renderGL()
 
 void PlotsView3D::wheelEvent(QWheelEvent* ev)
 {
-    LocalScene.ScalCoeff = 1.f+ev->delta()/1000.f;
-    glScalef(LocalScene.ScalCoeff, LocalScene.ScalCoeff, LocalScene.ScalCoeff);
-    LocalScene.view_rotx = LocalScene.view_roty = 0.0;
-    updateGL();
+    scale(1.f+ev->delta()/1000.f);
 }
 
 void PlotsView3D::mouseMoveEvent(QMouseEvent *e)
