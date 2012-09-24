@@ -379,7 +379,7 @@ void Plotter3D::drawPlots()
             PlotItem* item = dynamic_cast<Surface*>(itemAt(i));
 
             if (item && item->isVisible())
-                addFuncsInternalA(item);
+                addPlots(item);
         }
     }
 
@@ -431,7 +431,7 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
             
             if (item && item->spaceDimension() == Dim3D && item->isVisible()) {
                 qDebug() << item->name();
-                addFuncsInternalA(item);
+                addPlots(item);
             }
         }
 
@@ -451,7 +451,7 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
         if (item->isVisible()) {
     //         addFuncs(QModelIndex(), s.row(), s.row());
     //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data
-            addFuncsInternalA(item);
+            addPlots(item);
         }
     }
 
@@ -597,7 +597,7 @@ void Plotter3D::rotate(int xshift, int yshift)
     }
 }
 
-void Plotter3D::addFuncsInternalA(PlotItem* item)
+void Plotter3D::addPlots(PlotItem* item)
 {
     Q_ASSERT(item);
 

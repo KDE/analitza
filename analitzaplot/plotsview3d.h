@@ -47,25 +47,22 @@ public slots:
     void resetView();
     
 private slots:
-    void addFuncsInternal(PlotItem* item);
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);
-
-    void testvisible(const QModelIndex &, const QModelIndex &);
 
 private:
     virtual int currentPlot() const { return -1 ;}
     virtual void modelChanged();
     virtual void renderGL();
-    virtual void wheelEvent(QWheelEvent* ev);
     
-    int currentFunction() const;
-    void paintGL();
-    void initializeGL();
-    void resizeGL(int width, int height);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    virtual void wheelEvent(QWheelEvent* ev);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    
+    virtual void paintGL();
+    virtual void initializeGL();
+    virtual void resizeGL(int width, int height);
     
     QItemSelectionModel* m_selection;
     

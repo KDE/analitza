@@ -79,7 +79,9 @@ class ANALITZAPLOT_EXPORT Plotter3D
         /** Rotates by @p xshift and @p yshift in screen coordinates. */
         void rotate(int xshift, int yshift); 
 
-        void addFuncsInternalA(PlotItem* item);
+    protected:
+        void addPlots(PlotItem* item);
+    
     private:
         enum SceneObjectType {Axes, RefPlaneXY};
         

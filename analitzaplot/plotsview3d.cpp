@@ -62,15 +62,9 @@ void PlotsView3D::resetView()
 //     camera()->setRevolveAroundPoint(qglviewer::Vec(0,0,0));
 }
 
-void PlotsView3D::addFuncsInternal(PlotItem* item)
-{
-    addFuncsInternalA(item);
-
-}
-
 void PlotsView3D::addFuncs(const QModelIndex & parent, int start, int end)
 {
-updatePlots(parent, start, end);
+    updatePlots(parent, start, end);
 }
 
 void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
@@ -83,25 +77,9 @@ void PlotsView3D::removeFuncs(const QModelIndex & parent, int start, int end)
 //setinterval (que si es necesario configurarlo en el plotitem)
 //el enfoque es: si hay un cambio borro el displaylist y lo genero de nuevo (no lo genero si el item no es visible)
 //TODO cache para exp e interval ... pues del resto es solo cuestion de update
-void PlotsView3D::testvisible(const QModelIndex& s, const QModelIndex& e)
-{
-updatePlots(QModelIndex(), s.row(), e.row());
-}
-
 void PlotsView3D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
 {
-//     updateFunctions(start, end);
-//     updateGL();
-}
-
-int PlotsView3D::currentFunction() const
-{
-    int ret=-1;
-    if(m_selection && model()) {
-        ret=m_selection->currentIndex().row();
-    }
-
-    return ret;
+    updatePlots(QModelIndex(), start.row(), end.row());
 }
 
 void PlotsView3D::paintGL()
@@ -133,7 +111,6 @@ void PlotsView3D::modelChanged()
 //         disconnect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
 //         disconnect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
 //         disconnect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
-//         disconnect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
 //     }
 
 //     for (int i = 0; i < model()->rowCount(); ++i) {
@@ -146,7 +123,6 @@ void PlotsView3D::modelChanged()
     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
-    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
 
     updateGL();
 }
