@@ -78,7 +78,7 @@ void FunctionPolar::update(const QRectF& viewport)
 
         points.reserve(10*static_cast<int>(pi_factor));
     } else {
-        QPair< double, double> limits = interval("p");
+        QPair< double, double> limits = interval("q");
         dlimit = limits.first;
         ulimit = limits.second;
         inv_res = (ulimit-dlimit)/(M_PI*M_PI*16);
