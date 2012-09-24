@@ -123,6 +123,7 @@ class MeaningOfLife : public Analitza::FunctionDefinition
 {
 	virtual Expression operator()(const QList< Expression >& args)
 	{
+		Q_UNUSED(args)
 		return Expression(Cn(42.));
 	}
 };
