@@ -178,7 +178,7 @@ int PlotsModel::columnCount(const QModelIndex& parent) const
 bool PlotsModel::removeRows(int row, int count, const QModelIndex& parent)
 {
     Q_ASSERT(row<m_items.size());
-    if(!parent.isValid())
+    if(parent.isValid())
         return false;
     
     beginRemoveRows(QModelIndex(), row, row+count-1);
