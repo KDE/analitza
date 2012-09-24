@@ -339,6 +339,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
         pfunc.setColor(curve->color());
         pfunc.setWidth((k==current)+1);
+        pfunc.setStyle(Qt::SolidLine);
         p.setPen(pfunc);
 
         const QVector<QPointF> &vect=curve->points();
@@ -350,11 +351,11 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
         int nextjump;
         nextjump = jumps.isEmpty() ? -1 : jumps.first();
         if (!jumps.isEmpty()) jumps.remove(0);
-
+// #define DEBUG_GRAPH 1
 #ifdef DEBUG_GRAPH
         qDebug() << "---------" << jumps.count()+1;
 #endif
-        for(unsigned int j=0; j<pointsCount; j++)
+        for(unsigned int j=0; j<pointsCount; ++j)
         {
             QPointF act=toWidget(vect.at(j));
 
@@ -376,14 +377,15 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
                 }
 
 //              qDebug() << "xxxxx" << act2 << ultim << isnan(act2.y()) << isnan(ultim.y());
+                
                 p.drawLine(ultim, act2);
 
 #ifdef DEBUG_GRAPH
-                QPen p(Qt::red);
-                p.setWidth(3);
-                finestra.setPen(p);
-                finestra.drawPoint(ultim);
-                finestra.setPen(pfunc);
+                QPen dpen(Qt::red);
+                dpen.setWidth(3);
+                p.setPen(dpen);
+                p.drawPoint(ultim);
+                p.setPen(pfunc);
 #endif
             } else if(nextjump==int(j)) {
                 do {
@@ -400,11 +402,11 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
 #ifdef DEBUG_GRAPH
                 qDebug() << "jumpiiiiiing" << ultim << toWidget(vect.at(j));
-                QPen p(Qt::blue);
-                p.setWidth(2);
-                finestra.setPen(p);
-                finestra.drawLine(QLineF(QPointF(act.x(), height()/2-10), QPointF(act.x(), height()/2+10)));
-                finestra.setPen(pfunc);
+                QPen dpen(Qt::blue);
+                dpen.setWidth(2);
+                p.setPen(dpen);
+                p.drawLine(QLineF(QPointF(act.x(), height()/2-10), QPointF(act.x(), height()/2+10)));
+                p.setPen(pfunc);
 #endif
             }
 

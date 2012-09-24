@@ -39,7 +39,7 @@ class QModelIndex;
  * 
  * Plotter3D provides an agnostic way to manage a 3d scene for draw math plots, 
  * Contains just OpenGL calls, so is uncoupled with QWidget nor QtQuick. This 
- * class needs the PlotsModel (to create the geometry of 3D plots) and also 
+ * class needs the PlotsModel (to create the geometry for 3D plots) and also 
  * exposes some methods to change the scene (like hide/show the axis or 
  * reference planes for example)
  * 
@@ -50,6 +50,8 @@ class QModelIndex;
 class ANALITZAPLOT_EXPORT Plotter3D
 {
     public:
+        enum FocusEffect {};
+
         Plotter3D(QAbstractItemModel* model = 0);
         virtual ~Plotter3D();
 
@@ -68,8 +70,6 @@ class ANALITZAPLOT_EXPORT Plotter3D
         void setModel(QAbstractItemModel* f);
         QAbstractItemModel* model() const { return m_model; }
         
-        // scene methods
-
         /** Set the scale of all the scene by @p factor */
         void scale(GLdouble factor);
 
@@ -94,6 +94,9 @@ class ANALITZAPLOT_EXPORT Plotter3D
         GLdouble m_rotx;
         GLdouble m_roty;
         GLdouble m_rotz;
+
+        ///
+
 };
 
 #endif // FUNCTIONSPAINTER3D_H
