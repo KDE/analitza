@@ -30,7 +30,6 @@
 
 class Surface;
 class PlotItem;
-class PlotsProxyModel;
 class QItemSelectionModel;
 
 class ANALITZAPLOT_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
@@ -38,7 +37,7 @@ class ANALITZAPLOT_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
     Q_OBJECT
 
 public:
-    PlotsView3D(QWidget *parent = 0, PlotsProxyModel *m = 0);
+    PlotsView3D(QWidget* parent = 0);
     virtual ~PlotsView3D();
 
     void setSelectionModel(QItemSelectionModel* selection);

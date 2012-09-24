@@ -20,7 +20,6 @@
 
 #include "plotsview3d.h"
 #include "plotsmodel.h"
-#include "plotsproxymodel.h"
 #include "surface.h"
 #include "private/utils/box3d.h"
 #include "private/utils/triangle3d.h"
@@ -33,7 +32,7 @@
 
 Q_DECLARE_METATYPE(PlotItem*);
 
-PlotsView3D::PlotsView3D(QWidget *parent, PlotsProxyModel* m)
+PlotsView3D::PlotsView3D(QWidget *parent)
     : QGLWidget(parent), m_selection(0)
 {
 }

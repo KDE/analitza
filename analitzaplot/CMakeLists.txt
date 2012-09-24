@@ -58,7 +58,6 @@ set ( analitzaplot_SRCS
     spacecurve.cpp
     surface.cpp
     plotsmodel.cpp
-    plotsproxymodel.cpp
     plotsdictionarymodel.cpp
     plotter2d.cpp
     plotsview3d.cpp
@@ -96,7 +95,6 @@ install(FILES
     spacecurve.h
     surface.h
     plotsmodel.h
-    plotsproxymodel.h
     plotsdictionarymodel.h
     plotter2d.h
     plotsview2d.h
