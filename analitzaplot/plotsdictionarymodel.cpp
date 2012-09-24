@@ -19,6 +19,7 @@
 #include "plotsdictionarymodel.h"
 #include "plotsmodel.h"
 #include <analitza/expression.h>
+#include <analitza/expressionstream.h>
 #include <KStandardDirs>
 #include <KLocalizedString>
 #include <analitzaplot/functiongraph.h>
@@ -47,28 +48,22 @@ void PlotsDictionaryModel::createDictionary(const QString& title, const QString&
 
     if (device.open(QFile::ReadOnly | QFile::Text)) {
         QTextStream stream(&device);
+        Analitza::ExpressionStream s(&stream);
         
-        QString line;
-        while(!stream.atEnd()) {
-            line += stream.readLine();
-            
-            if (Analitza::Expression::isCompleteExpression(line)) {
-                Analitza::Expression expression(line);
-                Q_ASSERT(expression.isCorrect());
-                
-                Q_ASSERT(!expression.name().isEmpty());
-                QStringList comments = expression.comments();
+        while(!s.atEnd()) {
+            Analitza::Expression expression(s.next());
+            Q_ASSERT(expression.isCorrect());
+            Q_ASSERT(!expression.name().isEmpty());
+            QStringList comments = expression.comments();
 
-                QStandardItem* item = new QStandardItem;
-                item->setText(expression.name());
-                if(!comments.isEmpty())
-                    item->setToolTip(comments.first());
-                item->setData(line, ExpressionRole);
-                item->setData(title, TitleRole);
-                item->setData(localurl, FileRole);
-                appendRow(item);
-                line.clear();
-            }
+            QStandardItem* item = new QStandardItem;
+            item->setText(expression.name());
+            if(!comments.isEmpty())
+                item->setToolTip(comments.first());
+            item->setData(expression.toString(), ExpressionRole);
+            item->setData(title, TitleRole);
+            item->setData(localurl, FileRole);
+            appendRow(item);
         }
     } else
         qWarning() << "couldn't open" << localurl;
