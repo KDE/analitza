@@ -93,6 +93,8 @@ void PlotsModelTest::testAppend()
     if(!item->isCorrect())
         qDebug() << "error" << item->errors();
     QVERIFY(item->points().count()>=2);
+    
+    item->tangent(QPointF(1,1));
 }
 
 

@@ -45,7 +45,7 @@ class FunctionCartesian : public AbstractPlaneCurve
                 return;
             
             m_deriv = analyzer->derivative(parameters().first());
-            if(!analyzer->isCorrect()) {
+            if(!analyzer->isCorrect() || !m_deriv.isCorrect()) {
                 m_deriv.clear();
                 analyzer->flushErrors();
             }
@@ -147,25 +147,28 @@ QLineF FunctionCartesian::tangent(const QPointF &mousepos)
     double ret = 0;
     if(m_deriv.isCorrect()) {
         arg()->setValue(mousepos.x());
-        a.setExpression(m_deriv);
+        QVector<Analitza::Object*> runStack;
+        runStack += arg();
         
-        a.setStack(analyzer->runStack());
+        a.setExpression(m_deriv);
+        a.setStack(runStack);
         if(a.isCorrect())
             ret = a.calculateLambda().toReal().value();
         
         if(!a.isCorrect()) {
             qDebug() << "Derivative error: " <<  a.errors();
-            return QLineF();
+            ret = 0;
         }
-        return slopeToLine(ret);
-    } else {
+    }
+    
+    if(ret==0) {
         QVector<Analitza::Object*> vars;
         vars.append(new Analitza::Cn(mousepos.x()));
         a.setExpression(analyzer->expression());
         ret=a.derivative(vars);
         qDeleteAll(vars);
     }
-    return QLineF();
+    return slopeToLine(ret);
 }
 
 void FunctionCartesian::optimizeJump()
