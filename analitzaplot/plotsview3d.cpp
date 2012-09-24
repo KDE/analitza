@@ -384,9 +384,11 @@ int PlotsView3D::currentFunction() const
 
 void PlotsView3D::paintGL()
 {
+    
     Scene *scene = &LocalScene;
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    drawPlots();
 
     /// Blend Effect activation:
     if(scene->transparency == 1)  {
@@ -395,10 +397,6 @@ void PlotsView3D::paintGL()
     }
     /// Ratation (Animation):
     if(scene->anim == 1) glRotatef(scene->RotStrength,scene->axe_x,scene->axe_y,scene->axe_z);
-    /// Axe Drawing :
-    if(scene->axe == 1)  glCallList(scene->axeliste);
-    /// Plan drawing :
-    if(scene->plan == 1) glCallList(scene->planliste);
     /// Box Drawing:
     if(scene->box == 1) glCallList(scene->boxliste);
 
@@ -491,229 +489,231 @@ void PlotsView3D::paintGL()
 
 void PlotsView3D::initializeGL()
 {
-//     qglClearColor(Qt::black);
-//
-//     glEnable(GL_LIGHTING);
-//     glEnable(GL_LIGHT0);
-    glEnable(GL_DEPTH_TEST);
+    initGL();
+    
+// //     qglClearColor(Qt::black);
+// //
+// //     glEnable(GL_LIGHTING);
+// //     glEnable(GL_LIGHT0);
+//     glEnable(GL_DEPTH_TEST);
+// //     glEnable(GL_NORMALIZE);
+//     glEnable(GL_POLYGON_SMOOTH);
+// //
+//     glShadeModel(GL_SMOOTH);
+// //     glEnable(GL_LIGHT0);
+//     glEnable(GL_MULTISAMPLE);
+// //     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
+// //     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+// //     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+// 
+//     /*
+//         //Texture initialisation :
+//         glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+//         glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+//         glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1.width(), tex1.height(), 0,
+//         GL_RGBA, GL_UNSIGNED_BYTE, tex1.bits() );
+//      */
+//     /// For drawing Filled Polygones :
+//     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 //     glEnable(GL_NORMALIZE);
-    glEnable(GL_POLYGON_SMOOTH);
-//
-    glShadeModel(GL_SMOOTH);
-//     glEnable(GL_LIGHT0);
-    glEnable(GL_MULTISAMPLE);
-//     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
-//     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-//     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
-    /*
-        //Texture initialisation :
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-        glTexImage2D( GL_TEXTURE_2D, 0, 3, tex1.width(), tex1.height(), 0,
-        GL_RGBA, GL_UNSIGNED_BYTE, tex1.bits() );
-     */
-    /// For drawing Filled Polygones :
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-    glEnable(GL_NORMALIZE);
-    glFrontFace (GL_CCW);
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
-    glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);
-    glMaterialf (GL_FRONT, GL_SHININESS, 35.0);
-    glMaterialf (GL_BACK, GL_SHININESS, 35.0);
-
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(LocalScene.groundcol[0], LocalScene.groundcol[1],LocalScene.groundcol[2], LocalScene.groundcol[3]);
-
-    //pasar a draw para efecto de transparente a current surface plot
-    /// For drawing Lines :
-    if(LocalScene.smoothline == 1) {
-        glEnable (GL_LINE_SMOOTH);
-        glEnable (GL_BLEND);
-        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-    }
-    else {
-        glDisable(GL_LINE_SMOOTH);
-        glDisable(GL_BLEND);
-    }
-
-//     GLUquadricObj *sphereObj;
-//     sphereObj = gluNewQuadric();
-    LocalScene.axeliste = glGenLists(1);
-    glNewList(LocalScene.axeliste, GL_COMPILE );
-    glLineWidth(1);
-    glBegin( GL_LINES );
-    glColor3f (1., 0., 0.);
-    glVertex3f( 400.0, 0.0, 0.0);
-    glVertex3f(   0.0, 0.0, 0.0);
-    glColor3f (0., 1., 0.);
-    glVertex3f(0.0, 400.0, 0.0);
-    glVertex3f(0.0,   0.0, 0.0);
-    glColor3f (0., 0., 1.);
-    glVertex3f(0.0, 0.0, 400.0);
-    glVertex3f(0.0, 0.0,   0.0);
-    glEnd();
-
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f (0.0, 0.0, 1.0);
-    glVertex3f(0.0, 0.0, 400.0);
-    glVertex3f(10.0, 0.0, 380.0);
-    glVertex3f(0.0, 10.0, 380.0);
-    glColor3f (0.0, 0.0, 0.3);
-    glVertex3f(-10.0, 0.0, 380.0);
-    glColor3f (0.0, 0.0, 1.0);
-    glVertex3f(0.0, -10.0, 380.0);
-    glColor3f (0.0, 0.0, 0.3);
-    glVertex3f(10.0, 0.0, 380.0);
-    glEnd();
-
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f (0.0, 1., 0.);
-    glVertex3f(0.0, 400.0, 0.0);
-    glVertex3f(10.0, 380.0, 0.0);
-    glVertex3f(0.0, 380.0, 10.0);
-    glColor3f (0.0, 0.3, 0.0);
-    glVertex3f(-10.0, 380.0, 0.0);
-    glColor3f (0.0, 1.0, 0.0);
-    glVertex3f(.0, 380.0, -10.0);
-    glColor3f (0.0, 0.3, 0.0);
-    glVertex3f(10.0, 380.0, 0.0);
-    glEnd();
-
-/// Axe X :
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f (1.0, 0.0, 0.0);
-    glVertex3f(400.0, 0.0, 0.0);
-    glVertex3f(380.0, 10.0, 0.0);
-    glVertex3f(380.0, 0.0, 10.0);
-    glColor3f (0.3, 0.0, 0.0);
-    glVertex3f(380.0, -10.0, 0.0);
-    glColor3f (1.0, 0.0, 0.0);
-    glVertex3f(380.0, 0.0, -10.0);
-    glColor3f (0.3, 0.0, 0.0);
-    glVertex3f(380.0, 10.0, 0.0);
-    glEnd();
-
-    glColor3f (1.0, 0.0, 0.0);
-    glBegin(GL_LINE_LOOP);
-    glVertex3f(400.0, 0.0, 0.0);
-    glVertex3f(380.0, 10.0, 0.0);
-    glVertex3f(380.0, 0.0, 10.0);
-    glVertex3f(380.0, -10.0, 0.0);
-    glVertex3f(380.0, 0.0, -10.0);
-    glVertex3f(380.0, 10.0, 0.0);
-    glEnd();
-
-    glColor3f (1., 0., 0.);
-    glRasterPos3i(410, 10, 10);
-    glCallLists(strlen("X"),GL_UNSIGNED_BYTE,"X");
-
-    glColor3f (0.7, 0.7, 0.7);
-    glTranslatef(410.0, 4.0, 4.0);
-    //gluSphere(sphereObj, .0, 16, 16);
-    glTranslatef(-410.0, -4.0, -4.0);
-
-    glColor3f (0., 1., 0.);
-    glRasterPos3i(10, 410, 10);
-    //printString("Y");
-    glCallLists(strlen("Y"),
-                GL_UNSIGNED_BYTE,
-                "Y");
-
-    glColor3f (1., 1., 0.);
-    glTranslatef(4.0, 410.0, 4.0);
-    //gluSphere(sphereObj, 8.0, 32, 32);
-    glTranslatef(-4.0, -410.0, -4.0);
-
-    glColor3f (0., 0., 1.);
-    glRasterPos3i(10, 10, 410);
-    //printString("Z");
-    glCallLists(strlen("Z"),
-                GL_UNSIGNED_BYTE,
-                "Z");
-
-    glColor3f (0., 0.7, 0.7);
-    glTranslatef(4.0, 4.0, 410.0);
-    //gluSphere(sphereObj, 10.0, 16, 16);
-    glTranslatef(-4.0, -4.0, -410.0);
-    glLineWidth(0.9);
-    glEndList();
-
-    LocalScene.planliste = glGenLists(1);
-    glNewList(LocalScene.planliste, GL_COMPILE );
-    glLineWidth(1);
-    glColor3f (0.8, 0., 0.7);
-    glBegin( GL_LINES );
-    glVertex3f(-150.0, 600.0, LocalScene.zminim);
-    glVertex3f(-150.0,-600.0, LocalScene.zminim);
-    glVertex3f(0.0, 600.0, LocalScene.zminim);
-    glVertex3f(0.0,-600.0, LocalScene.zminim);
-
-    glVertex3f(150.0, 600.0, LocalScene.zminim);
-    glVertex3f(150.0,-600.0, LocalScene.zminim);
-    glVertex3f(600.0, -150.0, LocalScene.zminim);
-    glVertex3f(-600.0,-150.0, LocalScene.zminim);
-
-    glVertex3f(600.0, 0.0, LocalScene.zminim);
-    glVertex3f(-600.0, 0.0, LocalScene.zminim);
-    glVertex3f(600.0, 150.0, LocalScene.zminim);
-    glVertex3f(-600.0, 150.0, LocalScene.zminim);
-
-    glVertex3f(-75.0, 600.0, LocalScene.zminim);
-    glVertex3f(-75.0,-600.0, LocalScene.zminim);
-    glVertex3f(-225.0, 600.0, LocalScene.zminim);
-    glVertex3f(-225.0,-600.0, LocalScene.zminim);
-    glVertex3f(-300.0, 600.0, LocalScene.zminim);
-    glVertex3f(-300.0,-600.0, LocalScene.zminim);
-    glVertex3f(-375.0, 600.0, LocalScene.zminim);
-    glVertex3f(-375.0,-600.0, LocalScene.zminim);
-    glVertex3f(-450.0, 600.0, LocalScene.zminim);
-    glVertex3f(-450.0,-600.0, LocalScene.zminim);
-    glVertex3f(-525.0, 600.0, LocalScene.zminim);
-    glVertex3f(-525.0,-600.0, LocalScene.zminim);
-
-    glVertex3f(75.0, 600.0, LocalScene.zminim);
-    glVertex3f(75.0,-600.0, LocalScene.zminim);
-    glVertex3f(225.0, 600.0, LocalScene.zminim);
-    glVertex3f(225.0,-600.0, LocalScene.zminim);
-    glVertex3f(300.0, 600.0, LocalScene.zminim);
-    glVertex3f(300.0,-600.0, LocalScene.zminim);
-    glVertex3f(375.0, 600.0, LocalScene.zminim);
-    glVertex3f(375.0,-600.0, LocalScene.zminim);
-    glVertex3f(450.0, 600.0, LocalScene.zminim);
-    glVertex3f(450.0,-600.0, LocalScene.zminim);
-    glVertex3f(525.0, 600.0, LocalScene.zminim);
-    glVertex3f(525.0,-600.0, LocalScene.zminim);
-
-    glVertex3f(600.0,-75.0, LocalScene.zminim);
-    glVertex3f(-600.0,-75.0, LocalScene.zminim);
-    glVertex3f(600.0,-225.0, LocalScene.zminim);
-    glVertex3f(-600.0,-225.0, LocalScene.zminim);
-    glVertex3f(600.0,-300.0, LocalScene.zminim);
-    glVertex3f(-600.0,-300.0, LocalScene.zminim);
-    glVertex3f(600.0,-375.0, LocalScene.zminim);
-    glVertex3f(-600.0,-375.0, LocalScene.zminim);
-    glVertex3f(600.0,-450.0, LocalScene.zminim);
-    glVertex3f(-600.0,-450.0, LocalScene.zminim);
-    glVertex3f(600.0,-525.0, LocalScene.zminim);
-    glVertex3f(-600.0,-525.0, LocalScene.zminim);
-
-    glVertex3f(600.0,75.0, LocalScene.zminim);
-    glVertex3f(-600.0,75.0, LocalScene.zminim);
-    glVertex3f(600.0,225.0, LocalScene.zminim);
-    glVertex3f(-600.0,225.0, LocalScene.zminim);
-    glVertex3f(600.0,300.0, LocalScene.zminim);
-    glVertex3f(-600.0,300.0, LocalScene.zminim);
-    glVertex3f(600.0,375.0, LocalScene.zminim);
-    glVertex3f(-600.0,375.0, LocalScene.zminim);
-    glVertex3f(600.0,450.0, LocalScene.zminim);
-    glVertex3f(-600.0,450.0, LocalScene.zminim);
-    glVertex3f(600.0,525.0, LocalScene.zminim);
-    glVertex3f(-600.0,525.0, LocalScene.zminim);
-    glEnd();
-    glLineWidth(0.9);
-    glEndList();
+//     glFrontFace (GL_CCW);
+//     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
+//     glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);
+//     glMaterialf (GL_FRONT, GL_SHININESS, 35.0);
+//     glMaterialf (GL_BACK, GL_SHININESS, 35.0);
+// 
+//     glEnable(GL_DEPTH_TEST);
+//     glClearColor(LocalScene.groundcol[0], LocalScene.groundcol[1],LocalScene.groundcol[2], LocalScene.groundcol[3]);
+// 
+//     //pasar a draw para efecto de transparente a current surface plot
+//     /// For drawing Lines :
+//     if(LocalScene.smoothline == 1) {
+//         glEnable (GL_LINE_SMOOTH);
+//         glEnable (GL_BLEND);
+//         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//         glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+//     }
+//     else {
+//         glDisable(GL_LINE_SMOOTH);
+//         glDisable(GL_BLEND);
+//     }
+// 
+// //     GLUquadricObj *sphereObj;
+// //     sphereObj = gluNewQuadric();
+//     LocalScene.axeliste = glGenLists(1);
+//     glNewList(LocalScene.axeliste, GL_COMPILE );
+//     glLineWidth(1);
+//     glBegin( GL_LINES );
+//     glColor3f (1., 0., 0.);
+//     glVertex3f( 400.0, 0.0, 0.0);
+//     glVertex3f(   0.0, 0.0, 0.0);
+//     glColor3f (0., 1., 0.);
+//     glVertex3f(0.0, 400.0, 0.0);
+//     glVertex3f(0.0,   0.0, 0.0);
+//     glColor3f (0., 0., 1.);
+//     glVertex3f(0.0, 0.0, 400.0);
+//     glVertex3f(0.0, 0.0,   0.0);
+//     glEnd();
+// 
+//     glBegin(GL_TRIANGLE_FAN);
+//     glColor3f (0.0, 0.0, 1.0);
+//     glVertex3f(0.0, 0.0, 400.0);
+//     glVertex3f(10.0, 0.0, 380.0);
+//     glVertex3f(0.0, 10.0, 380.0);
+//     glColor3f (0.0, 0.0, 0.3);
+//     glVertex3f(-10.0, 0.0, 380.0);
+//     glColor3f (0.0, 0.0, 1.0);
+//     glVertex3f(0.0, -10.0, 380.0);
+//     glColor3f (0.0, 0.0, 0.3);
+//     glVertex3f(10.0, 0.0, 380.0);
+//     glEnd();
+// 
+//     glBegin(GL_TRIANGLE_FAN);
+//     glColor3f (0.0, 1., 0.);
+//     glVertex3f(0.0, 400.0, 0.0);
+//     glVertex3f(10.0, 380.0, 0.0);
+//     glVertex3f(0.0, 380.0, 10.0);
+//     glColor3f (0.0, 0.3, 0.0);
+//     glVertex3f(-10.0, 380.0, 0.0);
+//     glColor3f (0.0, 1.0, 0.0);
+//     glVertex3f(.0, 380.0, -10.0);
+//     glColor3f (0.0, 0.3, 0.0);
+//     glVertex3f(10.0, 380.0, 0.0);
+//     glEnd();
+// 
+// /// Axe X :
+//     glBegin(GL_TRIANGLE_FAN);
+//     glColor3f (1.0, 0.0, 0.0);
+//     glVertex3f(400.0, 0.0, 0.0);
+//     glVertex3f(380.0, 10.0, 0.0);
+//     glVertex3f(380.0, 0.0, 10.0);
+//     glColor3f (0.3, 0.0, 0.0);
+//     glVertex3f(380.0, -10.0, 0.0);
+//     glColor3f (1.0, 0.0, 0.0);
+//     glVertex3f(380.0, 0.0, -10.0);
+//     glColor3f (0.3, 0.0, 0.0);
+//     glVertex3f(380.0, 10.0, 0.0);
+//     glEnd();
+// 
+//     glColor3f (1.0, 0.0, 0.0);
+//     glBegin(GL_LINE_LOOP);
+//     glVertex3f(400.0, 0.0, 0.0);
+//     glVertex3f(380.0, 10.0, 0.0);
+//     glVertex3f(380.0, 0.0, 10.0);
+//     glVertex3f(380.0, -10.0, 0.0);
+//     glVertex3f(380.0, 0.0, -10.0);
+//     glVertex3f(380.0, 10.0, 0.0);
+//     glEnd();
+// 
+//     glColor3f (1., 0., 0.);
+//     glRasterPos3i(410, 10, 10);
+//     glCallLists(strlen("X"),GL_UNSIGNED_BYTE,"X");
+// 
+//     glColor3f (0.7, 0.7, 0.7);
+//     glTranslatef(410.0, 4.0, 4.0);
+//     //gluSphere(sphereObj, .0, 16, 16);
+//     glTranslatef(-410.0, -4.0, -4.0);
+// 
+//     glColor3f (0., 1., 0.);
+//     glRasterPos3i(10, 410, 10);
+//     //printString("Y");
+//     glCallLists(strlen("Y"),
+//                 GL_UNSIGNED_BYTE,
+//                 "Y");
+// 
+//     glColor3f (1., 1., 0.);
+//     glTranslatef(4.0, 410.0, 4.0);
+//     //gluSphere(sphereObj, 8.0, 32, 32);
+//     glTranslatef(-4.0, -410.0, -4.0);
+// 
+//     glColor3f (0., 0., 1.);
+//     glRasterPos3i(10, 10, 410);
+//     //printString("Z");
+//     glCallLists(strlen("Z"),
+//                 GL_UNSIGNED_BYTE,
+//                 "Z");
+// 
+//     glColor3f (0., 0.7, 0.7);
+//     glTranslatef(4.0, 4.0, 410.0);
+//     //gluSphere(sphereObj, 10.0, 16, 16);
+//     glTranslatef(-4.0, -4.0, -410.0);
+//     glLineWidth(0.9);
+//     glEndList();
+// 
+//     LocalScene.planliste = glGenLists(1);
+//     glNewList(LocalScene.planliste, GL_COMPILE );
+//     glLineWidth(1);
+//     glColor3f (0.8, 0., 0.7);
+//     glBegin( GL_LINES );
+//     glVertex3f(-150.0, 600.0, LocalScene.zminim);
+//     glVertex3f(-150.0,-600.0, LocalScene.zminim);
+//     glVertex3f(0.0, 600.0, LocalScene.zminim);
+//     glVertex3f(0.0,-600.0, LocalScene.zminim);
+// 
+//     glVertex3f(150.0, 600.0, LocalScene.zminim);
+//     glVertex3f(150.0,-600.0, LocalScene.zminim);
+//     glVertex3f(600.0, -150.0, LocalScene.zminim);
+//     glVertex3f(-600.0,-150.0, LocalScene.zminim);
+// 
+//     glVertex3f(600.0, 0.0, LocalScene.zminim);
+//     glVertex3f(-600.0, 0.0, LocalScene.zminim);
+//     glVertex3f(600.0, 150.0, LocalScene.zminim);
+//     glVertex3f(-600.0, 150.0, LocalScene.zminim);
+// 
+//     glVertex3f(-75.0, 600.0, LocalScene.zminim);
+//     glVertex3f(-75.0,-600.0, LocalScene.zminim);
+//     glVertex3f(-225.0, 600.0, LocalScene.zminim);
+//     glVertex3f(-225.0,-600.0, LocalScene.zminim);
+//     glVertex3f(-300.0, 600.0, LocalScene.zminim);
+//     glVertex3f(-300.0,-600.0, LocalScene.zminim);
+//     glVertex3f(-375.0, 600.0, LocalScene.zminim);
+//     glVertex3f(-375.0,-600.0, LocalScene.zminim);
+//     glVertex3f(-450.0, 600.0, LocalScene.zminim);
+//     glVertex3f(-450.0,-600.0, LocalScene.zminim);
+//     glVertex3f(-525.0, 600.0, LocalScene.zminim);
+//     glVertex3f(-525.0,-600.0, LocalScene.zminim);
+// 
+//     glVertex3f(75.0, 600.0, LocalScene.zminim);
+//     glVertex3f(75.0,-600.0, LocalScene.zminim);
+//     glVertex3f(225.0, 600.0, LocalScene.zminim);
+//     glVertex3f(225.0,-600.0, LocalScene.zminim);
+//     glVertex3f(300.0, 600.0, LocalScene.zminim);
+//     glVertex3f(300.0,-600.0, LocalScene.zminim);
+//     glVertex3f(375.0, 600.0, LocalScene.zminim);
+//     glVertex3f(375.0,-600.0, LocalScene.zminim);
+//     glVertex3f(450.0, 600.0, LocalScene.zminim);
+//     glVertex3f(450.0,-600.0, LocalScene.zminim);
+//     glVertex3f(525.0, 600.0, LocalScene.zminim);
+//     glVertex3f(525.0,-600.0, LocalScene.zminim);
+// 
+//     glVertex3f(600.0,-75.0, LocalScene.zminim);
+//     glVertex3f(-600.0,-75.0, LocalScene.zminim);
+//     glVertex3f(600.0,-225.0, LocalScene.zminim);
+//     glVertex3f(-600.0,-225.0, LocalScene.zminim);
+//     glVertex3f(600.0,-300.0, LocalScene.zminim);
+//     glVertex3f(-600.0,-300.0, LocalScene.zminim);
+//     glVertex3f(600.0,-375.0, LocalScene.zminim);
+//     glVertex3f(-600.0,-375.0, LocalScene.zminim);
+//     glVertex3f(600.0,-450.0, LocalScene.zminim);
+//     glVertex3f(-600.0,-450.0, LocalScene.zminim);
+//     glVertex3f(600.0,-525.0, LocalScene.zminim);
+//     glVertex3f(-600.0,-525.0, LocalScene.zminim);
+// 
+//     glVertex3f(600.0,75.0, LocalScene.zminim);
+//     glVertex3f(-600.0,75.0, LocalScene.zminim);
+//     glVertex3f(600.0,225.0, LocalScene.zminim);
+//     glVertex3f(-600.0,225.0, LocalScene.zminim);
+//     glVertex3f(600.0,300.0, LocalScene.zminim);
+//     glVertex3f(-600.0,300.0, LocalScene.zminim);
+//     glVertex3f(600.0,375.0, LocalScene.zminim);
+//     glVertex3f(-600.0,375.0, LocalScene.zminim);
+//     glVertex3f(600.0,450.0, LocalScene.zminim);
+//     glVertex3f(-600.0,450.0, LocalScene.zminim);
+//     glVertex3f(600.0,525.0, LocalScene.zminim);
+//     glVertex3f(-600.0,525.0, LocalScene.zminim);
+//     glEnd();
+//     glLineWidth(0.9);
+//     glEndList();
 
 }
 

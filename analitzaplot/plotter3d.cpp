@@ -82,12 +82,13 @@ void Plotter3D::initGL()
     glFrontFace (GL_CCW);
 //     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
 //     glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);
-//     glMaterialf (GL_FRONT, GL_SHININESS, 35.0);
-//     glMaterialf (GL_BACK, GL_SHININESS, 35.0);
-// 
-//     glEnable(GL_DEPTH_TEST);
+    glMaterialf (GL_FRONT, GL_SHININESS, 35.0);
+    glMaterialf (GL_BACK, GL_SHININESS, 35.0);
+
+    glEnable(GL_DEPTH_TEST);
 //     glClearColor(LocalScene.groundcol[0], LocalScene.groundcol[1],LocalScene.groundcol[2], LocalScene.groundcol[3]);
-// 
+    glClearColor(0,0,0,0);
+    
 //     //pasar a draw para efecto de transparente a current surface plot
 //     /// For drawing Lines :
 //     if(LocalScene.smoothline == 1) {
@@ -328,7 +329,9 @@ void Plotter3D::setViewport(const QRect& vp)
 
 void Plotter3D::drawPlots()
 {
-
+    glCallList(m_sceneObjects.value(Axes).first);
+    glCallList(m_sceneObjects.value(RefPlaneXY).first);
+    
 }
 
 void Plotter3D::updatePlots(const QModelIndex & parent, int start, int end)
