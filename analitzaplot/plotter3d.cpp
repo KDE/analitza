@@ -284,7 +284,42 @@ void Plotter3D::initGL()
 
 void Plotter3D::setViewport(const QRect& vp)
 {
+    static int CornerH, CornerW;
+    static int heightresult, widthresult;
+    
+    int newwidth = vp.size().width();
+    int newheight = vp.size().height();
 
+    int tmp, starth, startw;
+    //GLdouble mm[16];
+    //glGetDoublev(GL_MODELVIEW_MATRIX,mm);
+    CornerH = (int)(newheight/2);
+    CornerW = (int)(newwidth/2);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    if(newwidth > newheight) {
+        tmp = newwidth;
+        starth=(newwidth-newheight)/4;
+        startw=0;
+    }
+    else {
+        tmp = newheight;
+        startw = (newheight-newwidth)/4;
+        starth=0;
+    }
+
+    glViewport(vp.left(), vp.top(), tmp, tmp);
+    glFrustum(-250+startw, 250+startw, -250+starth, 250+starth, 350.0, 3000.0 );
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef( 0.0, 0.0, -800.0 );
+
+    //glMultMatrixd(mm);
+
+    heightresult = tmp/2;
+    widthresult = 250+starth;
 }
 
 void Plotter3D::drawPlots()
