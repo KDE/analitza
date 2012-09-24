@@ -26,6 +26,7 @@
 
 #include <QModelIndex>
 #include "analitzaplotexport.h"
+#include "plotter3d.h"
 
 class Surface;
 class PlotItem;
@@ -101,8 +102,8 @@ struct  Scene {
     double matrixInverse[16];
     double axe_x, axe_y, axe_z, ScalCoeff, view_rotx, view_roty, view_rotz;
 };
-              
-class ANALITZAPLOT_EXPORT PlotsView3D : public  QGLWidget
+
+class ANALITZAPLOT_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
 {
     Q_OBJECT
 
@@ -124,8 +125,11 @@ private slots:
     void removeFuncs(const QModelIndex &index,int,int);
 
     void testvisible(const QModelIndex &, const QModelIndex &);
-    
+
 private:
+    virtual int currentPlot() const { return -1 ;}
+    virtual void modelChanged();
+    virtual void renderGL();
     virtual void wheelEvent(QWheelEvent* ev);
     
     int currentFunction() const;

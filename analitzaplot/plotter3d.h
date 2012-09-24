@@ -50,7 +50,8 @@ class QModelIndex;
 class ANALITZAPLOT_EXPORT Plotter3D
 {
     public:
-        enum FocusEffect {};
+        //TODO transparency effect when select current item 
+//         enum FocusEffect {};
 
         Plotter3D(QAbstractItemModel* model = 0);
         virtual ~Plotter3D();
@@ -94,9 +95,6 @@ class ANALITZAPLOT_EXPORT Plotter3D
         GLdouble m_rotx;
         GLdouble m_roty;
         GLdouble m_rotz;
-
-        ///
-
 };
 
 #endif // FUNCTIONSPAINTER3D_H

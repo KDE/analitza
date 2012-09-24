@@ -31,7 +31,6 @@
 #include <QDebug>
 #include <KLocalizedString>
 #include <KColorUtils>
-#include <GL/gl.h>
 
 #if defined(HAVE_IEEEFP_H)
 #include <ieeefp.h>
@@ -340,6 +339,7 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int start, int end)
 void Plotter3D::setModel(QAbstractItemModel* f)
 {
     m_model=f;
+
     modelChanged();
 }
 

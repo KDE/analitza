@@ -719,28 +719,30 @@ void PlotsView3D::initializeGL()
 
 void PlotsView3D::resizeGL(int newwidth, int newheight)
 {
-    int tmp, starth, startw;
-    //GLdouble mm[16];
-    //glGetDoublev(GL_MODELVIEW_MATRIX,mm);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    if(newwidth > newheight) {
-        tmp = newwidth;
-        starth=(newwidth-newheight)/4;
-        startw=0;
-    }
-    else {
-        tmp = newheight;
-        startw = (newheight-newwidth)/4;
-        starth=0;
-    }
-    glViewport(0, 0, tmp, tmp);
-    glFrustum(-250+startw, 250+startw, -250+starth, 250+starth, 350.0, 3000.0 );
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef( 0.0, 0.0, -800.0 );
+    setViewport(QRect(0,0,newwidth,newheight));
+    
+//     int tmp, starth, startw;
+//     //GLdouble mm[16];
+//     //glGetDoublev(GL_MODELVIEW_MATRIX,mm);
+// 
+//     glMatrixMode(GL_PROJECTION);
+//     glLoadIdentity();
+// 
+//     if(newwidth > newheight) {
+//         tmp = newwidth;
+//         starth=(newwidth-newheight)/4;
+//         startw=0;
+//     }
+//     else {
+//         tmp = newheight;
+//         startw = (newheight-newwidth)/4;
+//         starth=0;
+//     }
+//     glViewport(0, 0, tmp, tmp);
+//     glFrustum(-250+startw, 250+startw, -250+starth, 250+starth, 350.0, 3000.0 );
+//     glMatrixMode(GL_MODELVIEW);
+//     glLoadIdentity();
+//     glTranslatef( 0.0, 0.0, -800.0 );
 }
 
 void PlotsView3D::mousePressEvent(QMouseEvent *e)
@@ -750,6 +752,39 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
     old_y = LocalScene.oldRoty = e->y();
     old_x = LocalScene.oldRotx = e->x();
 }
+
+void PlotsView3D::modelChanged()
+{
+//     if(m_model) {
+//         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+//         disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+//         disconnect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+//         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
+//     }
+// 
+//     m_model=f;
+// 
+//     for (int i = 0; i < m_model->rowCount(); ++i) {
+//         if (itemAt(i)) {
+//             glDeleteLists(m_displayLists[itemAt(i)], 1);
+//             addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
+//         }
+//     }
+// 
+//     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
+//     connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
+//     connect(m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+//     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(testvisible(QModelIndex,QModelIndex)));
+// 
+//     updateGL();
+}
+
+void PlotsView3D::renderGL()
+{
+    updateGL();
+}
+
+
 
 /* NB. OpenGL Matrices are COLUMN major. */
 #define MAT(m,r,c) (m)[(c)*4+(r)]
