@@ -205,11 +205,23 @@ class ANALITZA_EXPORT Expression
 		/** @returns whether it's an equation */
 		bool isEquation() const;
 		
-		/** @returns whether it's an equation */
+		/** @returns whether it's a declaration */
 		bool isDeclaration() const;
+		
+		/** @returns the name of the expression. If it's not a declaration
+		 * then an empty string it's returned.
+		 */
+		QString name() const;
+		
+		/** @returns the value of the declaration. If it's not a declaration
+		 * then an expression it's returned.
+		 */
+		Expression declarationValue() const;
 		
 		/** @returns the expression that evaluates the current equation to equal 0 */
 		Expression equationToFunction() const;
+		
+		QStringList comments() const;
 		
 		/**
 		 *	Converts a @p tag to an object type.
@@ -242,6 +254,7 @@ class ANALITZA_EXPORT Expression
 	private:
 		class ExpressionPrivate;
 		QSharedDataPointer<ExpressionPrivate> d;
+		QStringList m_comments;
 };
 
 }

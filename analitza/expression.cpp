@@ -134,6 +134,7 @@ bool Expression::setText(const QString & exp)
 	d->m_err.clear();
 	ExpLexer lex(exp);
 	ExpressionParser parser;
+	m_comments = parser.comments();
 	bool corr=parser.parse(&lex);
 	
 	if(corr)
@@ -582,14 +583,23 @@ bool Expression::isString() const
 			&& static_cast<const Cn*>(static_cast<const List*>(d->m_tree)->at(0))->isCharacter();
 }
 
+//if it's a math element, then return the (only) son
+Object* actualRoot(Object* o)
+{
+	if(o && o->isContainer()) {
+		Container* c = (Container*) o;
+		if(c->containerType()==Container::math) {
+			return c->m_params[0];
+		}
+	}
+	return o;
+}
+
 bool Expression::isLambda() const
 {
-	if(d->m_tree && d->m_tree->type()==Object::container) {
-		Container* c = (Container*) d->m_tree;
-		if(c->containerType()==Container::math) {
-			Container *c1 = (Container*) c->m_params.first();
-			return c1->type()==Object::container && c1->containerType()==Container::lambda;
-		}
+	Object* o = actualRoot(d->m_tree);
+	if(o && o->isContainer()) {
+		Container* c = (Container*) o;
 		return c->containerType()==Container::lambda;
 	}
 	return false;
@@ -597,49 +607,59 @@ bool Expression::isLambda() const
 
 bool Expression::isDeclaration() const
 {
-	if(d->m_tree && d->m_tree->type()==Object::container) {
-		Container* c = (Container*) d->m_tree;
-		if(c->containerType()==Container::math) {
-			if(c->m_params.first()->isContainer()) {
-				Container *c1 = (Container*) c->m_params.first();
-				return c1->containerType() == Container::declare;
-			}
-		}
+	Object* o = actualRoot(d->m_tree);
+	if(o && o->isContainer()) {
+		Container* c = (Container*) o;
+		return c->containerType() == Container::declare;
 	}
 	return false;
 }
 
+QString Expression::name() const
+{
+	Object* o = actualRoot(d->m_tree);
+	if(o && o->isContainer()) {
+		Container* c = (Container*) o;
+		if(c->containerType() == Container::declare)
+			return static_cast<const Ci*>(c->m_params[0])->name();
+	}
+	return QString();
+}
+
+Expression Expression::declarationValue() const
+{
+	Object* o = actualRoot(d->m_tree);
+	if(o && o->isContainer()) {
+		Container* c = (Container*) o;
+		if(c->containerType() == Container::declare)
+			return Expression(c->m_params[1]->copy());
+	}
+	return Expression();
+}
+
 bool Expression::isEquation() const
 {
-	if(d->m_tree && d->m_tree->type()==Object::container) {
-		Container* c = (Container*) d->m_tree;
-		if(c->containerType()==Container::math) {
-			if(c->m_params.first()->isApply()) {
-				Apply *c1 = (Apply*) c->m_params.first();
-				return c1->firstOperator().operatorType()==Operator::eq;
-			}
-		}
+	Object* o = actualRoot(d->m_tree);
+	if(o && o->isApply()) {
+		Apply *c1 = (Apply*) o;
+		return c1->firstOperator().operatorType()==Operator::eq;
 	}
 	return false;
 }
 
 Expression Expression::equationToFunction() const
 {
-	if(d->m_tree && d->m_tree->type()==Object::container) {
-		Container* c = (Container*) d->m_tree;
-		if(c->containerType()==Container::math) {
-			if(c->m_params.first()->isApply()) {
-				Apply *c1 = (Apply*) c->m_params.first();
-				if(c1->firstOperator().operatorType()==Operator::eq) {
-					Container* c = new Container(Container::math);
-					Apply* a = new Apply;
-					a->appendBranch(new Operator(Operator::minus));
-					a->appendBranch(c1->at(0)->copy());
-					a->appendBranch(c1->at(1)->copy());
-					c->appendBranch(a);
-					return Expression(c);
-				}
-			}
+	Object* o = actualRoot(d->m_tree);
+	if(o && o->isApply()) {
+		Apply *c1 = (Apply*) o;
+		if(c1->firstOperator().operatorType()==Operator::eq) {
+			Container* c = new Container(Container::math);
+			Apply* a = new Apply;
+			a->appendBranch(new Operator(Operator::minus));
+			a->appendBranch(c1->at(0)->copy());
+			a->appendBranch(c1->at(1)->copy());
+			c->appendBranch(a);
+			return Expression(c);
 		}
 	}
 	return *this;
@@ -648,14 +668,10 @@ Expression Expression::equationToFunction() const
 QList<Ci*> Expression::parameters() const
 {
 	QList<Ci*> ret;
-	if(d->m_tree && d->m_tree->type()==Object::container) {
-		Container* c = (Container*) d->m_tree;
-		if(c->containerType()==Container::math) {
-			Container *c1 = (Container*) c->m_params.first();
-			if(c1->type()==Object::container && c1->containerType()==Container::lambda)
-				return c1->bvarCi();
-		}
-		return c->bvarCi();
+	Object* o = actualRoot(d->m_tree);
+	if(o && o->isContainer()) {
+		Container* c1 = (Container*) o;
+		return c1->bvarCi();
 	}
 	return ret;
 }
@@ -664,12 +680,10 @@ Expression Expression::lambdaBody() const
 {
 	Q_ASSERT(isLambda());
 	Object *ret=0;
-	if(d->m_tree) {
-		Container* c = (Container*) d->m_tree;
-		if(c->containerType()==Container::math) {
-			Container *c1 = (Container*) c->m_params.first();
-			ret = c1->m_params.last();
-		} else
+	Object* ob = actualRoot(d->m_tree);
+	if(ob->isContainer()) {
+		Container* c = (Container*) ob;
+		Q_ASSERT(c->containerType()==Container::lambda);
 		ret = c->m_params.last();
 	}
 	
@@ -680,26 +694,14 @@ Expression Expression::lambdaBody() const
 
 bool Expression::isVector() const
 {
-	if(d->m_tree) {
-		if(d->m_tree->isContainer()) {
-			Container *c = (Container*) d->m_tree;
-			return c->containerType()==Container::math && c->m_params.first()->type()==Object::vector;
-		} else
-			return d->m_tree->type()==Container::vector;
-	}
-	return false;
+	Object* o = actualRoot(d->m_tree);
+	return o && o->type()==Container::vector;
 }
 
 bool Expression::isList() const
 {
-	if(d->m_tree) {
-		if(d->m_tree->isContainer()) {
-			Container *c = (Container*) d->m_tree;
-			return c->containerType()==Container::math && c->m_params.first()->type()==Object::list;
-		} else
-			return d->m_tree->type()==Container::list;
-	}
-	return false;
+	Object* o = actualRoot(d->m_tree);
+	return o && o->type()==Container::list;
 }
 
 QList<Expression> Expression::toExpressionList() const
@@ -709,13 +711,8 @@ QList<Expression> Expression::toExpressionList() const
 		return QList<Expression>();
 	
 	QList<Expression> ret;
-	const Object* o=d->m_tree;
-	if(d->m_tree->isContainer()) {
-		const Container *c = (const Container*) d->m_tree;
-		Q_ASSERT(c->containerType()==Container::math);
-		o=c->m_params.first();
-	}
-	
+	const Object* o=actualRoot(d->m_tree);
+
 	if(isvector) {
 		const Vector* v = (const Vector*) o;
 		for(Vector::const_iterator it=v->constBegin(), itEnd=v->constEnd(); it!=itEnd; ++it) {
@@ -738,14 +735,9 @@ QList<Expression> Expression::toExpressionList() const
 Expression Expression::elementAt(int position) const
 {
 	Q_ASSERT(isVector());
-	Vector *v=0;
-	if(d->m_tree) {
-		if(d->m_tree->isContainer()) {
-			Container *c = (Container*) d->m_tree;
-			v=static_cast<Vector*>(c->m_params.first());
-		} else
-			v=static_cast<Vector*>(d->m_tree);
-	}
+	Object* o = actualRoot(d->m_tree);
+	Q_ASSERT(o);
+	Vector *v=static_cast<Vector*>(o);
 	
 	return Expression(v->at(position)->copy());
 }
@@ -880,4 +872,9 @@ bool Expression::isCompleteExpression(const QString& exp, bool justempty)
 {
 	ExpLexer lex(exp);
 	return lex.isCompleteExpression(justempty);
+}
+
+QStringList Expression::comments() const
+{
+	return m_comments;
 }

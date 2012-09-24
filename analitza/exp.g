@@ -177,6 +177,7 @@ bool ExpressionParser::parse(AbstractLexer *lexer)
         yytoken = lexer->lex();
 		while(yytoken==tComment) {
 			//TODO: Add mathml comment
+			m_comments.append(lexer->current.val);
 			yytoken = lexer->lex();
 		}
 		
