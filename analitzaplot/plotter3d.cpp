@@ -57,12 +57,16 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
 
 Plotter3D::~Plotter3D()
 {
-//     if (m_model && m_model->rowCount() > 0) {
-//         for (int i = 0; i < m_model->rowCount(); ++i) {
-//             glDeleteLists(m_displayLists[itemAt(i)], 1);
-//             addFuncs(QModelIndex(), 0, m_model->rowCount()-1);
-//         }
-//     }
+    //asser geoms == model rowcount
+    if (m_model && m_model->rowCount() > 0) {
+        for (int i = 0; i < m_model->rowCount(); ++i) {
+            glDeleteLists(m_itemGeometries.value(itemAt(i)), 1);
+        }
+    }
+
+    glDeleteLists(m_sceneObjects.value(Axes).first, 1);
+    glDeleteLists(m_sceneObjects.value(RefPlaneXY).first, 1);
+    
 }
 
 void Plotter3D::initGL()
@@ -296,6 +300,18 @@ void Plotter3D::initGL()
     glEnd();
     glLineWidth(0.9);
     glEndList();
+    
+    GLfloat ambient[] = { .0, .0, .0, 1.0 };
+    GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+    GLfloat local_view[] = { 1.0 };
+    static GLfloat position[4] = {0.0, 0.0,1000.0, 1.0};
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+    glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
 }
 
 void Plotter3D::setViewport(const QRect& vp)

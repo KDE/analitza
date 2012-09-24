@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
     model->addPlot(s->requestPlot(Analitza::Expression("t->vector{cos(t), sin(t), t}"), Dim3D).create(Qt::green, "curve"));
     model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x"), Dim3D).create(Qt::yellow, "z-map"));
     
+//TODO    model->removeRow(4);
     //END test calls
 
     central->addWidget(viewsource);

@@ -33,76 +33,6 @@ class PlotItem;
 class PlotsProxyModel;
 class QItemSelectionModel;
 
-//TODO refactor this code: is from K3DSurf but we need more clean API (move some of this to plotter3d)
-//NOTE Aleix: all of this is work in progress, wait until tomorrow ;) (the best part: 
-// now we don't need libQGLViewer :)) ... you can see the result by running plots3ddemo (better rendering)
-
-struct  Scene {
-    GLfloat * ArrayNorVer_localPt;
-    GLuint  * PolyIndices_localPt;
-    GLuint  * NbPolygnNbVertexPt ;
-    GLuint  * PolyIndices_localPtMin;
-    int       NbPolygnNbVertexPtMin ;
-    GLfloat * ArrayNorVer_localPtCND;
-    GLuint   *PolyIndices_localVerifyCND;
-    GLuint   *PolyIndices_localNotVerifyCND;
-    GLuint   *PolyIndices_localBorderCND;
-
-    GLint    PolyNumber;
-    GLint    PolyNumberBorderCND;
-    GLint    PolyNumberVerifyCND;
-    GLint    PolyNumberNotVerifyCND;
-
-    GLint    border;
-    GLint    cndmesh;
-    GLint    drawcnd;
-    GLint    anim;
-    GLint    morph;
-    GLint    typedrawing;
-    GLint    mesh;
-    GLint    front;
-    GLint    back;
-    GLint    smoothline;
-    GLint    transparency;
-    GLint    smoothpoly;
-    GLint    box;
-    GLint    isobox;
-    GLint    interior;
-    GLint    exterior;
-    GLint    infos;
-    GLint    infosdetails[10];
-    GLint    line; ///Draw line on top of filled polygons
-    GLint    axe;
-    GLint    clip;
-    GLint    norm;
-    GLint    plan;
-    GLint    condition;
-    GLuint   axeliste;
-    GLuint   boxliste;
-    GLuint   planliste;
-    GLfloat  boxlimits[18];
-    GLuint   texture[100];
-    GLint    ColorOrTexture[10];
-    GLuint   moreliste[10];
-    GLuint  *morelistept[10];
-    GLfloat *morefloatpt[10];
-    GLfloat  morefloat[10];
-    GLfloat  frontcol[4];
-    GLfloat  backcol[4];
-    GLfloat  gridcol[4];
-    GLfloat  groundcol[4];
-    GLfloat  condcol[4];
-
-    GLfloat RotStrength, oldRotx, oldRoty;
-    GLfloat zminim, BoxLimits[3][6];
-    GLint viewport[4];
-    GLfloat polyfactor;
-    GLfloat polyunits;
-    double matrix[16];
-    double matrixInverse[16];
-    double axe_x, axe_y, axe_z, ScalCoeff, view_rotx, view_roty, view_rotz;
-};
-
 class ANALITZAPLOT_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
 {
     Q_OBJECT
@@ -145,7 +75,6 @@ private:
 
     Qt::MouseButtons buttons;
     double Axe_x, Axe_y, Axe_z, angle, val1, val2, val3, old_x, old_y, old_z;
-    Scene  LocalScene;
 };
 
 #endif
