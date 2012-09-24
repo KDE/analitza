@@ -100,9 +100,7 @@ void PlotsModelTest::testDelete()
 {
     Expression exp("x*x+y*y+z*z=9");
     PlotBuilder plot = PlotsFactory::self()->requestPlot(exp, Dim3D);
-
-    Surface* del_item = dynamic_cast<Surface*>(plot.create(Qt::red, "item to be deleted"));
-    m_model->addPlot(del_item);
+    m_model->addPlot(plot.create(Qt::red, "item to be deleted"));
 
     int size = m_model->rowCount();
 
