@@ -46,7 +46,10 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
 	}
 	
 	Analitza::Expression exp(testexp);
-	if (exp.isEquation())
+	if(exp.isDeclaration())
+		exp = exp.declarationValue();
+	
+	if(exp.isEquation())
 		exp = exp.equationToFunction();
 	
 	Analitza::Analyzer a;

@@ -17,55 +17,27 @@
  *************************************************************************************/
 
 #include "plotsdictionarymodel.h"
+#include "plotsmodel.h"
 #include <analitza/expression.h>
 #include <KStandardDirs>
 #include <KLocalizedString>
-#include <analitzaplot/planecurve.h>
-#include "plotsfactory.h"
+#include <analitzaplot/functiongraph.h>
+#include <analitzaplot/plotsfactory.h>
 #include <QFile>
 
-Q_DECLARE_METATYPE(PlotItem*);
-
 PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent)
-    : PlotsModel(parent)
+    : QStandardItemModel(parent)
+    , m_currentItem(-1)
 {
-    setHeaderData(2, Qt::Horizontal, i18nc("@title:column", "Collection"), Qt::DisplayRole);
+    setHorizontalHeaderLabels(QStringList() << i18nc("@title:column", "Name"));
     
-    createDictionary("Dictionary1", "libanalitza/data/plots/es/basic_curves.plots");
-    createDictionary("Conics", "libanalitza/data/plots/es/conics.plots");
-    createDictionary("Polar", "libanalitza/data/plots/es/polar.plots");
+    createDictionary("Dictionary1", "libanalitza/data/plots/basic_curves.plots");
+    createDictionary("Conics", "libanalitza/data/plots/conics.plots");
+    createDictionary("Polar", "libanalitza/data/plots/polar.plots");
 }
 
 PlotsDictionaryModel::~PlotsDictionaryModel()
 {}
-
-QVariant PlotsDictionaryModel::data(const QModelIndex& index, int role) const
-{
-    if(!index.isValid() || index.row()>=rowCount())
-        return QVariant();
-
-    switch(role)
-    {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            if(index.column()==2)
-                return m_plotTitles.value(data(index, PlotRole).value<PlotItem*>());
-            break;
-        case Qt::DecorationRole:
-            if(index.column()==2)
-                return QVariant();
-            break;
-        case Qt::CheckStateRole:
-            return QVariant();
-    }
-
-    return PlotsModel::data(index, role);
-}
-
-int PlotsDictionaryModel::columnCount(const QModelIndex& ) const
-{
-    return 3;
-}
 
 void PlotsDictionaryModel::createDictionary(const QString& title, const QString& file)
 {
@@ -82,20 +54,64 @@ void PlotsDictionaryModel::createDictionary(const QString& title, const QString&
             
             if (Analitza::Expression::isCompleteExpression(line)) {
                 Analitza::Expression expression(line);
+                Q_ASSERT(expression.isCorrect());
                 
-                PlotBuilder plot = PlotsFactory::self()->requestPlot(expression, Dim2D);
-                
-                if (plot.canDraw()) {
-                    PlotItem *item = plot.create(Qt::black, title+QString::number(rowCount()));
-                    m_plotTitles.insert(item, title);
-                    addPlot(item);
-                    line.clear();
-                } else {
-                    QStringList errors = plot.errors();
-                    qDebug() << "Couldn't add " << line << " because of errors: " << errors.join(", ") << "@" << file;
-                    break;
-                }
+                Q_ASSERT(!expression.name().isEmpty());
+                QStringList comments = expression.comments();
+
+                QStandardItem* item = new QStandardItem;
+                item->setText(expression.name());
+                if(!comments.isEmpty())
+                    item->setToolTip(comments.first());
+                item->setData(line, ExpressionRole);
+                item->setData(title, TitleRole);
+                item->setData(localurl, FileRole);
+                appendRow(item);
+                line.clear();
             }
         }
+    } else
+        qWarning() << "couldn't open" << localurl;
+}
+
+PlotsModel* PlotsDictionaryModel::plotModel()
+{
+    if(!m_plots) {
+        m_plots = new PlotsModel(this);
+        updatePlotsModel();
     }
+    return m_plots;
+}
+
+int PlotsDictionaryModel::currentRow() const
+{
+    return m_currentItem;
+}
+
+void PlotsDictionaryModel::setCurrentRow(int row)
+{
+    if(row == m_currentItem)
+        return;
+    m_currentItem = row;
+    if(m_plots)
+        updatePlotsModel();
+}
+
+void PlotsDictionaryModel::updatePlotsModel()
+{
+    Q_ASSERT(m_plots);
+    m_plots->clear();
+    if(m_currentItem<0)
+        return;
+    
+    QModelIndex idx = index(m_currentItem, 0);
+    Analitza::Expression exp(idx.data(ExpressionRole).toString());
+    PlotBuilder req = PlotsFactory::self()->requestPlot(exp, Dim2D);
+    Q_ASSERT(req.canDraw());
+    m_plots->addPlot(req.create(Qt::blue, idx.data(Qt::DisplayRole).toString()));
+}
+
+void PlotsDictionaryModel::setCurrentIndex(const QModelIndex& idx)
+{
+    setCurrentRow(idx.row());
 }

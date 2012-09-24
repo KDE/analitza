@@ -1,5 +1,4 @@
 /*************************************************************************************
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *  Copyright (C) 2012 by Aleix Pol Gonzalez <aleixpol@kde.org>                      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
@@ -17,39 +16,25 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef ANALITZAPLOT_PLOTSDICTIONARYMODEL_H
-#define ANALITZAPLOT_PLOTSDICTIONARYMODEL_H
+#ifndef ANALITZATEST_H
+#define ANALITZATEST_H
 
-#include <QStandardItemModel>
-#include <QPointer>
+#include <QObject>
 
-#include "analitzaplotexport.h"
+/**
+	@author Aleix Pol
+*/
+namespace Analitza { class Variables; }
 
-class PlotsModel;
-class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public QStandardItemModel
+class PlotsDictionaryModelTest : public QObject
 {
 Q_OBJECT
-public:
-    enum Roles { ExpressionRole = Qt::UserRole+1, TitleRole, FileRole };
-    PlotsDictionaryModel(QObject* parent = 0);
-    ~PlotsDictionaryModel();
-    
-    int currentRow() const;
-    void setCurrentRow(int row);
-    
-    PlotsModel* plotModel();
-    
-public slots:
-    ///convenience class for currentRow
-    void setCurrentIndex(const QModelIndex& idx);
-    
-private:
-    void updatePlotsModel();
-    void createDictionary(const QString& title, const QString& file);
-    
-    QPointer<PlotsModel> m_plots;
-    int m_currentItem;
+	public:
+		PlotsDictionaryModelTest(QObject *parent = 0);
+		~PlotsDictionaryModelTest();
+
+	private slots:
+		void testDictionaries();
 };
 
 #endif
-

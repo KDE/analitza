@@ -24,6 +24,7 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <plotsdictionarymodel.h>
+#include <plotsmodel.h>
 
 int main(int argc, char *argv[])
 {
@@ -47,6 +48,11 @@ int main(int argc, char *argv[])
     PlotsDictionaryModel m;
     tree->setModel(&m);
     layout->addWidget(tree);
+    
+    QTreeView* plots = new QTreeView(&central);
+    plots->setModel(m.plotModel());
+    layout->addWidget(plots);
+    QObject::connect(tree, SIGNAL(clicked(QModelIndex)), &m, SLOT(setCurrentIndex(QModelIndex)));
     
     central.show();
     return app.exec();

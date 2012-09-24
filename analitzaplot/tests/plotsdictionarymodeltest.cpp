@@ -1,6 +1,6 @@
 /*************************************************************************************
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
- *  Copyright (C) 2012 by Aleix Pol Gonzalez <aleixpol@kde.org>                      *
+ *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -17,39 +17,46 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef ANALITZAPLOT_PLOTSDICTIONARYMODEL_H
-#define ANALITZAPLOT_PLOTSDICTIONARYMODEL_H
+#include "plotsdictionarymodeltest.h"
+#include <qtest_kde.h>
+#include <analitzaplot/plotitem.h>
+#include <analitzaplot/plotsmodel.h>
+#include <analitzaplot/plotsdictionarymodel.h>
 
-#include <QStandardItemModel>
-#include <QPointer>
+QTEST_KDEMAIN_CORE( PlotsDictionaryModelTest )
 
-#include "analitzaplotexport.h"
+Q_DECLARE_METATYPE(PlotItem*);
 
-class PlotsModel;
-class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public QStandardItemModel
+PlotsDictionaryModelTest::PlotsDictionaryModelTest(QObject *parent)
+    : QObject(parent)
+{}
+
+PlotsDictionaryModelTest::~PlotsDictionaryModelTest()
+{}
+
+void PlotsDictionaryModelTest::testDictionaries()
 {
-Q_OBJECT
-public:
-    enum Roles { ExpressionRole = Qt::UserRole+1, TitleRole, FileRole };
-    PlotsDictionaryModel(QObject* parent = 0);
-    ~PlotsDictionaryModel();
-    
-    int currentRow() const;
-    void setCurrentRow(int row);
-    
-    PlotsModel* plotModel();
-    
-public slots:
-    ///convenience class for currentRow
-    void setCurrentIndex(const QModelIndex& idx);
-    
-private:
-    void updatePlotsModel();
-    void createDictionary(const QString& title, const QString& file);
-    
-    QPointer<PlotsModel> m_plots;
-    int m_currentItem;
-};
-
-#endif
+	PlotsDictionaryModel m;
+	
+	if(m.rowCount()==0)
+		QFAIL("please install before running the test");
+	PlotsModel* plot = m.plotModel();
+	
+	for(int i=0; i<m.rowCount(); i++) {
+		QModelIndex idx = m.index(i, 0);
+		QVariant v=idx.data(Qt::DisplayRole);
+		QVERIFY(v.isValid());
+		QVERIFY(v.type()==QVariant::String);
+		QVERIFY(v.toString()!="");
+		QVERIFY(idx.data(PlotsDictionaryModel::ExpressionRole).toString()!="");
+		
+		m.setCurrentRow(i);
+		QCOMPARE(plot->rowCount(), 1);
+		
+		QModelIndex plotIdx = plot->index(0,0);
+		PlotItem* item = plotIdx.data(PlotsModel::PlotRole).value<PlotItem*>();
+		QVERIFY(item);
+		QCOMPARE(idx.data(Qt::DisplayRole).toString(), item->name());
+	}
+}
 
