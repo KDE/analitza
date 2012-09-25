@@ -35,12 +35,11 @@ Q_DECLARE_METATYPE(PlotItem*);
 PlotsView3D::PlotsView3D(QWidget *parent)
     : QGLWidget(parent), m_selection(0)
 {
+	setFocusPolicy(Qt::ClickFocus);
 }
 
 PlotsView3D::~PlotsView3D()
-{
-
-}
+{}
 
 void PlotsView3D::setSelectionModel(QItemSelectionModel* selection)
 {
