@@ -430,7 +430,6 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
             PlotItem *item = itemAt(i);
             
             if (item && item->spaceDimension() == Dim3D && item->isVisible()) {
-                qDebug() << item->name();
                 addPlots(item);
             }
         }
