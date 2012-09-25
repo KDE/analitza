@@ -420,7 +420,9 @@ QVariant expressionToVariant(const Analitza::Expression& res)
 
 Analitza::Expression variantToExpression(const QVariant& v)
 {
-	if(v.canConvert(QVariant::Double))
+	if(v.type() == QVariant::String)
+		return Analitza::Expression(v.toString());
+	else if(v.canConvert(QVariant::Double))
 		return Analitza::Expression(Analitza::Cn(v.toReal()));
 	else if(v.canConvert(QVariant::List)) {
 		QVariantList list = v.toList();
@@ -431,8 +433,9 @@ Analitza::Expression variantToExpression(const QVariant& v)
 		}
 		
 		return Analitza::Expression::constructList(expressionList);
-	} else if(v.canConvert(QVariant::String))
-		return Analitza::Expression(v.toString());
+	} else if(v.canConvert<QObject*>()) {
+		return Analitza::Expression::constructCustomObject(v, 0);
+	}
 	
 	Q_ASSERT(false && "couldn't figure out the type");
 	return Analitza::Expression();
