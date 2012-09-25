@@ -37,12 +37,6 @@ PlaneCurve::~PlaneCurve()
 const QVector<QPointF> & PlaneCurve::points() const
 {
     Q_ASSERT(backend());
-    
-    //NOTE GSOC POINTS=0
-    //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,
-    //por ejemplo en el caso de parametric se hace un clip para ver si la curva esta dentro o no del viewport
-//     Q_ASSERT(static_cast<AbstractPlaneCurve*>(backend())->points.size()>1);
-
     return static_cast<AbstractPlaneCurve*>(backend())->points;
 }
 
