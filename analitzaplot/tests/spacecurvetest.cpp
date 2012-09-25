@@ -29,8 +29,6 @@ using Analitza::Expression;
 
 QTEST_KDEMAIN_CORE( SpaceCurveTest )
 
-static const int resolution=3000;
-
 SpaceCurveTest::SpaceCurveTest(QObject *parent)
     : QObject(parent)
 {

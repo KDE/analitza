@@ -29,8 +29,6 @@ using Analitza::Expression;
 
 QTEST_KDEMAIN_CORE( SurfaceTest )
 
-static const int resolution=3000;
-
 SurfaceTest::SurfaceTest(QObject *parent)
     : QObject(parent)
 {
