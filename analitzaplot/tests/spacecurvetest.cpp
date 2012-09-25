@@ -75,6 +75,8 @@ void SpaceCurveTest::testIncorrect_data()
     QTest::newRow("wrong-dimension") << "t->vector{cos(t),t,t,t,t+7}";
     QTest::newRow("wrong-parametric") << "t->vector{v*s,r}";
     QTest::newRow("wrong-variable") << "t->vector{t(t), 8, 4}";
+    QTest::newRow("wrong-inf-2ndcomp") << "t->vector{t, t/0, t}";
+    QTest::newRow("wrong-nan-3rdcomp") << "t->vector{t, 3*t*t, t/0 - t/0}";
 }
 
 void SpaceCurveTest::testIncorrect()
