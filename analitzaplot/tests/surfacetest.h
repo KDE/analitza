@@ -36,7 +36,7 @@ Q_OBJECT
 	private slots:
 		void initTestCase();
 
-        void testCorrect(); // correct curves
+        void testCorrect(); // correct surfaces
         void testCorrect_data();
 
 		void testIncorrect(); // cases that can not be drawn
