@@ -82,8 +82,6 @@ void Plotter2D::drawAxes(QPainter* painter, CoordinateSystem a) const
 
 void Plotter2D::drawMainAxes(QPainter* painter) const
 {
-	painter->setRenderHint(QPainter::Antialiasing, false);
-
 	const QFontMetrics fm(painter->font());
     const QPen axesPen(m_axeColor, 1, Qt::SolidLine);
     const QPointF center = toWidget(QPointF(0.,0.));
@@ -107,7 +105,6 @@ void Plotter2D::drawMainAxes(QPainter* painter) const
         
         painter->setRenderHint(QPainter::Antialiasing, true);
         painter->drawPie(rectX, startAngleX, spanAngle);
-        painter->setRenderHint(QPainter::Antialiasing, false);
     }
 
     if (m_axesShown&Qt::Vertical) {
@@ -115,11 +112,10 @@ void Plotter2D::drawMainAxes(QPainter* painter) const
         
         painter->setRenderHint(QPainter::Antialiasing, true);
         painter->drawPie(rectY, startAngleY, spanAngle);
-        painter->setRenderHint(QPainter::Antialiasing, false);
     }
 
+    painter->setRenderHint(QPainter::Antialiasing, true);
     // axis labels
-
     QFont labelsfont = painter->font();
     labelsfont.setBold(true);
 
@@ -246,6 +242,7 @@ GridInfo Plotter2D::drawTicks(QPainter* painter) const
 
 void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
 {
+	painter->setRenderHint(QPainter::Antialiasing, true);
 	const QPen gridPen(m_gridColor);
 	painter->setPen(gridPen);
     if (m_squares) {
@@ -263,6 +260,7 @@ void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
 
 void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
 {
+    f->setRenderHint(QPainter::Antialiasing, false);
     QPointF p;
 	const QPen gridPen(m_gridColor);
 	int i = 1;
