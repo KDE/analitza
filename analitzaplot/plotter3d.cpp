@@ -31,6 +31,7 @@
 #include <QApplication>
 #include <cmath>
 #include <QDebug>
+#include <GL/glu.h>
 #include <KLocalizedString>
 #include <KColorUtils>
 
@@ -290,36 +291,21 @@ void Plotter3D::initGL()
 
 void Plotter3D::setViewport(const QRect& vp)
 {
-    int newwidth = vp.size().width();
-    int newheight = vp.size().height();
+    float newwidth = vp.size().width();
+    float newheight = vp.size().height();
+    glViewport( 0, 0, newwidth, newheight);
 
-    int tmp, starth, startw;
-    //GLdouble mm[16];
-    //glGetDoublev(GL_MODELVIEW_MATRIX,mm);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    gluPerspective(60, newwidth/newheight, 0.1, 3000);
 
-    if(newwidth > newheight) {
-        tmp = newwidth;
-        starth=(newwidth-newheight)/4;
-        startw=0;
-    }
-    else {
-        tmp = newheight;
-        startw = (newheight-newwidth)/4;
-        starth=0;
-    }
-
-    glViewport(vp.left(), vp.top(), tmp, tmp);
-    glFrustum(-250+startw, 250+startw, -250+starth, 250+starth, 350.0, 3000.0 );
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef( 0.0, 0.0, -800.0 );
-    glRotatef(79,-13,-2,6);
+    glRotatef(45, -1, 0, 0);
+    glRotatef(135, 0, 0, -1);
 
-    //glMultMatrixd(mm);
-
-    m_viewport = QRect(vp.topLeft(), QSize(tmp, tmp));
+    m_viewport = vp;
 }
 
 void Plotter3D::drawPlots()
