@@ -55,6 +55,7 @@ void PlaneCurveTest::testCorrect_data()
     QTest::newRow("fx-diag-line") << "x->x";
     QTest::newRow("fy-diag-line") << "y->y";
     QTest::newRow("vector-diag-line") << "t->vector{t,t}";
+    QTest::newRow("simple-algebraic") << "x*x+y*y=3";
 }
 
 void PlaneCurveTest::testCorrect()
@@ -79,6 +80,8 @@ void PlaneCurveTest::testIncorrect_data()
     QTest::newRow("wrong-call") << "(x+1)(x+2)";
     QTest::newRow("wrong-inf") << "y->y/0";
     QTest::newRow("wrong-nan") << "x/0 + y/0 = 89";
+    QTest::newRow("collision") << "(x,y)->5=x*y";
+
 //     QTest::newRow("implicit.notindomain") << "(x,y)->3-sin(x)*sin(y)";
 
 //     QTest::newRow("not a function") << "t";
