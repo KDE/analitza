@@ -433,6 +433,8 @@ Analitza::Expression variantToExpression(const QVariant& v)
 		}
 		
 		return Analitza::Expression::constructList(expressionList);
+	} else if(v.canConvert<QObject*>()) {
+		return Analitza::Expression::constructCustomObject(v, 0);
 	}
 	
 	Q_ASSERT(false && "couldn't figure out the type");
