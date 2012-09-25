@@ -167,12 +167,10 @@ void Analyzer::setExpression(const Expression & e)
 
 void Analyzer::importScript(QTextStream* stream)
 {
-	QString line;
 	ExpressionStream s(stream);
 	for(; !s.atEnd(); ) {
 		setExpression(s.next());
 		calculate();
-		line.clear();
 		
 		if(!isCorrect())
 			break;
