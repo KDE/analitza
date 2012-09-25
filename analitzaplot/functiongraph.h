@@ -52,6 +52,9 @@ public:
     bool setInterval(const QString &argname, double min, double max);
     
     QStringList parameters() const;
+
+    QString display() const;
+    void setDisplay(const QString& m_display);
     
 protected:
 	FunctionGraph(AbstractFunctionGraph* g);
@@ -62,6 +65,7 @@ private:
     
     AbstractFunctionGraph *m_functionGraph;
     QStringList m_errors;
+    QString m_display;
 };
 
 

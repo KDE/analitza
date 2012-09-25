@@ -38,7 +38,7 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
 {
     analyzer = v ? new Analitza::Analyzer(v) : new Analitza::Analyzer;
 
-    Q_ASSERT(!m_e.isEquation())
+    Q_ASSERT(!m_e.isEquation());
     
     analyzer->setExpression(m_e);
     analyzer->simplify();

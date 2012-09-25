@@ -41,6 +41,7 @@ class ANALITZAPLOT_EXPORT PlotBuilder
         bool canDraw() const;
         FunctionGraph* create(const QColor& color, const QString& name, Analitza::Variables* v = 0) const;
         Analitza::Expression expression() const;
+        QString display() const;
 
     protected:
         PlotBuilder() {}
@@ -48,6 +49,7 @@ class ANALITZAPLOT_EXPORT PlotBuilder
         QString m_id;
         QStringList m_errors;
         Analitza::Expression m_expression;
+        QString m_display;
 };
 
 class ANALITZAPLOT_EXPORT PlotsFactory

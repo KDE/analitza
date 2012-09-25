@@ -37,6 +37,7 @@ public:
     virtual ~PlotItem();
 
     virtual const Analitza::Expression & expression() const = 0;
+    virtual QString display() const = 0;
     virtual Analitza::Variables * variables() const = 0;
     virtual QString typeName() const = 0;
     virtual QString iconName() const = 0;

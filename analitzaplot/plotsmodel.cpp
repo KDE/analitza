@@ -81,7 +81,7 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
             switch(index.column()) 
             {
                 case 0: return tmpcurve->name();
-                case 1: return tmpcurve->expression().toString();
+                case 1: return tmpcurve->display();
             }
         case Qt::DecorationRole:
             if(index.column()==0)

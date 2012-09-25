@@ -35,11 +35,20 @@ FunctionGraph::~FunctionGraph()
     delete m_functionGraph;
 }
 
-const QString FunctionGraph::typeName() const
+QString FunctionGraph::typeName() const
 {
     Q_ASSERT(m_functionGraph);
-    
     return m_functionGraph->typeName();
+}
+
+QString FunctionGraph::display() const
+{
+	return m_display;
+}
+
+void FunctionGraph::setDisplay(const QString& display)
+{
+	m_display = display;
 }
 
 const Analitza::Expression& FunctionGraph::expression() const

@@ -73,6 +73,7 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
 	b.m_errors = errs;
 	b.m_id = id;
 	b.m_expression = a.expression();
+	b.m_display = testexp.toString();
 	return b;
 }
 
@@ -97,10 +98,16 @@ FunctionGraph* PlotBuilder::create(const QColor& color, const QString& name, Ana
 	FunctionGraph* it = FunctionGraphFactory::self()->buildItem(m_id, m_expression, v);
 	it->setColor(color);
 	it->setName(name);
+	it->setDisplay(m_display);
 	return it;
 }
 
 Analitza::Expression PlotBuilder::expression() const
 {
     return m_expression;
+}
+
+QString PlotBuilder::display() const
+{
+	return m_display;
 }
