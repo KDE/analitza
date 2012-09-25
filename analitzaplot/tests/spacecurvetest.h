@@ -1,5 +1,4 @@
 /*************************************************************************************
- *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
  *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
@@ -23,31 +22,29 @@
 #include <QObject>
 
 /**
-	@author Aleix Pol
+	@author Percy Camilo T. Aucahuasi
 */
 namespace Analitza { class Variables; }
 
-class PlaneCurveTest : public QObject
+class SpaceCurveTest : public QObject
 {
 Q_OBJECT
 	public:
-		PlaneCurveTest(QObject *parent = 0);
-		~PlaneCurveTest();
+		SpaceCurveTest(QObject *parent = 0);
+		~SpaceCurveTest();
 
 	private slots:
 		void initTestCase();
 
         void testCorrect(); // correct curves
         void testCorrect_data();
-
+        
 		void testIncorrect(); // cases that can not be drawn
 		void testIncorrect_data();
 
-		void testJumps();
-		void testJumps_data();
-
-        void testParamIntervals();
-        void testParamIntervals_data();
+        //TODO
+//         void testParamIntervals();
+//         void testParamIntervals_data();
 
 		void cleanupTestCase();
 	private:

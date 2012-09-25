@@ -25,11 +25,11 @@
 #include <analitza/value.h>
 #include <analitza/vector.h>
 
-class Fap : public AbstractSurface/*, static class? better macros FooClass*/
+class SphericalSurface : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
-    explicit Fap(const Analitza::Expression& e);
-    Fap(const Analitza::Expression& e, Analitza::Variables* v);
+    explicit SphericalSurface(const Analitza::Expression& e);
+    SphericalSurface(const Analitza::Expression& e, Analitza::Variables* v);
     
     TYPE_NAME(I18N_NOOP("Spherical Surface Radial=F(t:Azimuth, p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
@@ -51,7 +51,7 @@ public:
     
 };
 
-bool Fap::setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max)
+bool SphericalSurface::setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max)
 {
     
     Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
@@ -66,7 +66,7 @@ bool Fap::setInterval(const QString& argname, const Analitza::Expression& min, c
     if (min_val<0 || max_val < 0) // el radio es distancia por tanto es positivo, el angulo va de 0 hasta +inf
         return false; 
     
-    if (argname == QString("a") && max_val >= 2*M_PI)
+    if (argname == QString("t") && max_val >= 2*M_PI)
         return false;
     
     if (argname == QString("p") && max_val > M_PI)
@@ -75,13 +75,13 @@ bool Fap::setInterval(const QString& argname, const Analitza::Expression& min, c
     return AbstractFunctionGraph::setInterval(argname, min, max);
 }
 
-bool Fap::setInterval(const QString& argname, double min, double max)
+bool SphericalSurface::setInterval(const QString& argname, double min, double max)
 {
     if (min<0 || max < 0) // el radio es distancia por tanto es positivo, el angulo va de 0 hasta +inf
         return false; 
     
     
-    if (argname == QString("a") && max >= 2*M_PI)
+    if (argname == QString("t") && max >= 2*M_PI)
         return false;
     
     if (argname == QString("p") && max > M_PI)
@@ -90,19 +90,19 @@ bool Fap::setInterval(const QString& argname, double min, double max)
     return AbstractFunctionGraph::setInterval(argname, min, max);
 }
 
-Fap::Fap(const Analitza::Expression& e): AbstractSurface(e)
+SphericalSurface::SphericalSurface(const Analitza::Expression& e): AbstractSurface(e)
 {
-    setInterval("a", 0, M_PI);
+    setInterval("t", 0, M_PI);
     setInterval("p", 0, M_PI);
 }
 
-Fap::Fap(const Analitza::Expression& e, Analitza::Variables* v)
+SphericalSurface::SphericalSurface(const Analitza::Expression& e, Analitza::Variables* v)
     : AbstractSurface(e, v)
 {}
 
-QVector3D Fap::fromParametricArgs(double a, double p)
+QVector3D SphericalSurface::fromParametricArgs(double a, double p)
 {
-    arg("a")->setValue(a);
+    arg("t")->setValue(a);
     arg("p")->setValue(p);    
 
     double r = analyzer->calculateLambda().toReal().value();
@@ -110,11 +110,11 @@ QVector3D Fap::fromParametricArgs(double a, double p)
     return sphericalToCartesian(r,a,p);
 }
 
-void Fap::update(const Box3D& viewport)
+void SphericalSurface::update(const Box3D& viewport)
 {
     Q_UNUSED(viewport);
     buildParametricSurface();
 }
 
 
-REGISTER_SURFACE(Fap)
+REGISTER_SURFACE(SphericalSurface)

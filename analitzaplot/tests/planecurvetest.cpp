@@ -23,35 +23,48 @@
 #include "analitza/expression.h"
 #include "analitza/variables.h"
 #include <qtest_kde.h>
-#include <QPen>
 #include <cmath>
 
 using namespace std;
 using Analitza::Expression;
 
-QTEST_KDEMAIN_CORE( FunctionTest )
+QTEST_KDEMAIN_CORE( PlaneCurveTest )
 
-static const int resolution=3000;
-
-FunctionTest::FunctionTest(QObject *parent)
+PlaneCurveTest::PlaneCurveTest(QObject *parent)
     : QObject(parent)
 {
     m_vars=new Analitza::Variables;
 }
 
-FunctionTest::~FunctionTest()
+PlaneCurveTest::~PlaneCurveTest()
 {
     delete m_vars;
 }
 
-void FunctionTest::initTestCase()
+void PlaneCurveTest::initTestCase()
 {
 }
 
-void FunctionTest::cleanupTestCase()
+void PlaneCurveTest::cleanupTestCase()
 {}
 
-void FunctionTest::testIncorrect_data()
+void PlaneCurveTest::testCorrect_data()
+{
+    QTest::addColumn<QString>("input");
+
+    QTest::newRow("fx-diag-line") << "x->x";
+    QTest::newRow("fy-diag-line") << "y->y";
+    QTest::newRow("vector-diag-line") << "t->vector{t,t}";
+}
+
+void PlaneCurveTest::testCorrect()
+{
+    QFETCH(QString, input);
+
+    QVERIFY(PlotsFactory::self()->requestPlot(Expression(input), Dim2D).canDraw());
+}
+
+void PlaneCurveTest::testIncorrect_data()
 {
     QTest::addColumn<QString>("input");
 
@@ -64,20 +77,21 @@ void FunctionTest::testIncorrect_data()
     QTest::newRow("wrong-parametric") << "t->v";
     QTest::newRow("wrong-variable") << "x->x(x)";
     QTest::newRow("wrong-call") << "(x+1)(x+2)";
-
+    QTest::newRow("wrong-inf") << "y->y/0";
+    QTest::newRow("wrong-nan") << "x/0 + y/0 = 89";
 //     QTest::newRow("implicit.notindomain") << "(x,y)->3-sin(x)*sin(y)";
 
 //     QTest::newRow("not a function") << "t";
 }
 
-void FunctionTest::testIncorrect()
+void PlaneCurveTest::testIncorrect()
 {
     QFETCH(QString, input);
 
     QVERIFY(!PlotsFactory::self()->requestPlot(Expression(input), Dim2D).canDraw());
 }
 
-void FunctionTest::testJumps_data()
+void PlaneCurveTest::testJumps_data()
 {
     QTest::addColumn<QString>("input");
     QTest::addColumn<int>("jumps");
@@ -86,7 +100,7 @@ void FunctionTest::testJumps_data()
     QTest::newRow("divx") << "x->1/x" << 1;
 }
 
-void FunctionTest::testJumps()
+void PlaneCurveTest::testJumps()
 {
     QFETCH(QString, input);
     QFETCH(int, jumps);
@@ -108,7 +122,7 @@ Q_DECLARE_METATYPE(IntervalValue)
 typedef QPair<Analitza::Expression, Analitza::Expression> IntervalExpression;
 Q_DECLARE_METATYPE(IntervalExpression)
 
-void FunctionTest::testParamIntervals_data()
+void PlaneCurveTest::testParamIntervals_data()
 {
     QTest::addColumn<QString>("input");
     QTest::addColumn<QString>("param");
@@ -122,7 +136,7 @@ void FunctionTest::testParamIntervals_data()
             qMakePair(-9.0+2, 15.0) << qMakePair(Analitza::Expression("-abs(a*b)"), Analitza::Expression("cos(0)*a*a"));
 }
 
-void FunctionTest::testParamIntervals()
+void PlaneCurveTest::testParamIntervals()
 {
     QFETCH(QString, input);
     QFETCH(QString, param);

@@ -3,6 +3,12 @@ set(testLibs ${QT_QTXML_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4
 kde4_add_unit_test(planecurvetest planecurvetest.cpp)
 target_link_libraries(planecurvetest ${testLibs})
 
+kde4_add_unit_test(spacecurvetest spacecurvetest.cpp)
+target_link_libraries(spacecurvetest ${testLibs})
+
+kde4_add_unit_test(surfacetest surfacetest.cpp)
+target_link_libraries(surfacetest ${testLibs})
+
 kde4_add_unit_test(plotsmodeltest plotsmodeltest.cpp)
 target_link_libraries(plotsmodeltest ${testLibs})
 
