@@ -24,6 +24,7 @@
 #include <QRectF>
 #include <QLineF>
 #include <QString>
+#include <QPair>
 #include <QColor>
 
 #include "analitzaplotexport.h"
@@ -90,7 +91,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QPointF toWidget(const QPointF &) const;
         QPointF fromWidget(const QPoint& p) const;
         QPointF toViewport(const QPoint& mv) const;
-        QPointF calcImage(const QPointF& ndp) const;
+        QPair<QPointF, QString> calcImage(const QPointF& ndp) const;
         QLineF slope(const QPointF& dp) const;
         
         QLineF toWidget(const QLineF &) const;

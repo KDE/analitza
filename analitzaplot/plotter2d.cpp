@@ -438,17 +438,17 @@ void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end)
     forceRepaint();
 }
 
-QPointF Plotter2D::calcImage(const QPointF& ndp) const
+QPair<QPointF, QString> Plotter2D::calcImage(const QPointF& ndp) const
 {
     if (!m_model || currentFunction() == -1)
-        return QPointF();
+        return QPair<QPointF, QString>();
 
     //DEPRECATED if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
     PlaneCurve* curve = dynamic_cast<PlaneCurve*>(itemAt(currentFunction()));
     if (curve && curve->isVisible())
-        return curve->image(ndp).first;
+        return curve->image(ndp);
 
-    return QPointF();
+    return QPair<QPointF, QString>();
 }
 
 void Plotter2D::updateScale(bool repaint)
@@ -505,8 +505,8 @@ QLineF Plotter2D::slope(const QPointF& dp) const
     {
         QLineF ret = plot->tangent(dp);
         if(ret.isNull() && currentFunction()>=0) {
-            QPointF a = calcImage(dp-QPointF(.1,.1));
-            QPointF b = calcImage(dp+QPointF(.1,.1));
+            QPointF a = calcImage(dp-QPointF(.1,.1)).first;
+            QPointF b = calcImage(dp+QPointF(.1,.1)).first;
 
             ret = slopeToLine((a.y()-b.y())/(a.x()-b.x()));
         }

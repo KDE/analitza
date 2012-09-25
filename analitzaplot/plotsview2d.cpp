@@ -220,7 +220,8 @@ void PlotsView2D::mouseReleaseEvent(QMouseEvent *e)
 void PlotsView2D::mouseMoveEvent(QMouseEvent *e)
 {
     cursorPos = e->pos();
-    mark=calcImage(fromWidget(e->pos()));
+    QPair<QPointF, QString> img=calcImage(fromWidget(e->pos()));
+    mark=img.first;
     
     if(!m_readonly && mode==Pan && ant != toViewport(e->pos())){
         moveViewport(e->pos() - press);
@@ -228,8 +229,13 @@ void PlotsView2D::mouseMoveEvent(QMouseEvent *e)
         press = e->pos();
     } else if(e->buttons()&Qt::LeftButton) {
         last = e->pos();
-    } else if(e->buttons()==0)
-        sendStatus(QString("x=%1 y=%2").arg(mark.x(),3,'g',5).arg(mark.y(),3,'g',5));
+    } else if(e->buttons()==0) {
+        if(img.second.isEmpty()) {
+            mark = fromWidget(e->pos());
+            sendStatus(i18n("x=%1 y=%2", mark.x(), mark.y()));
+        } else
+            sendStatus(img.second);
+    }
     
     this->repaint();
 }
