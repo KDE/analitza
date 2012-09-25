@@ -38,7 +38,7 @@ public:
 
     virtual const Analitza::Expression & expression() const = 0;
     virtual Analitza::Variables * variables() const = 0;
-    virtual const QString typeName() const = 0;
+    virtual QString typeName() const = 0;
     virtual QString iconName() const = 0;
     virtual Dimension spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
     virtual CoordinateSystem coordinateSystem() const = 0;

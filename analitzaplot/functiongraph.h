@@ -34,7 +34,7 @@ public:
     Analitza::Variables *variables() const;
     
     //MappingGraph
-    const QString typeName() const;
+    QString typeName() const;
     const Analitza::Expression &expression() const;
     QString iconName() const;
     Dimension spaceDimension() const;
