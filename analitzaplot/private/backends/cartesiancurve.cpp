@@ -245,8 +245,7 @@ QPair<QPointF, QString> FunctionX::image(const QPointF& p)
         appendError(i18n("We can only draw Real results."));
     
     dp.setX(r.toReal().value());
-    QString pos = QString("x=%1 y=%2").arg(dp.x(),3,'f',2).arg(dp.y(),3,'f',2);
-    return QPair<QPointF, QString>(dp, pos);
+    return QPair<QPointF, QString>(dp, i18n("x=%1 y=%2", dp.x(), dp.y()));
 }
 
 void FunctionX::update(const QRectF& viewport)
