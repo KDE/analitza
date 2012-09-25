@@ -47,8 +47,8 @@ using namespace std;
 
 Plotter3D::Plotter3D(QAbstractItemModel* model)
     : m_model(model)
-    , m_rotStrength(0)
     , m_depth(-400)
+    , m_rotStrength(0)
     , m_rotx(90.0)
     , m_roty(90.0)
     , m_rotz(1.0)
@@ -290,18 +290,12 @@ void Plotter3D::initGL()
 
 void Plotter3D::setViewport(const QRect& vp)
 {
-    static int CornerH, CornerW;
-    static int heightresult, widthresult;
-
     int newwidth = vp.size().width();
     int newheight = vp.size().height();
 
     int tmp, starth, startw;
     //GLdouble mm[16];
     //glGetDoublev(GL_MODELVIEW_MATRIX,mm);
-    CornerH = (int)(newheight/2);
-    CornerW = (int)(newwidth/2);
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
@@ -324,9 +318,6 @@ void Plotter3D::setViewport(const QRect& vp)
     glRotatef(79,-13,-2,6);
 
     //glMultMatrixd(mm);
-
-    heightresult = tmp/2;
-    widthresult = 250+starth;
 
     m_viewport = QRect(vp.topLeft(), QSize(tmp, tmp));
 }
@@ -485,9 +476,6 @@ void Plotter3D::scale(GLdouble factor)
 
 void Plotter3D::rotate(int xshift, int yshift)
 {
-    static double anglefinal = 0;
-    static double angle = 0;
-
     GLdouble viewRoty = static_cast<GLdouble>(-yshift);
     GLdouble viewRotx = static_cast<GLdouble>(-xshift);
     m_scale = 1.0;
@@ -579,11 +567,9 @@ void Plotter3D::rotate(int xshift, int yshift)
 
         memcpy(invMatrix, tmp, 16*sizeof(GLdouble));
 
-        double ax,ay,az;
-        ax = viewRoty;
-        ay = viewRotx;
-        az = 0.0;
-        anglefinal += (angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0);
+        GLdouble ax = viewRoty;
+        GLdouble ay = viewRotx;
+        double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
 
         // Use inverse matrix to determine local axis of rotation
         m_rotx = invMatrix[0]*ax + invMatrix[4]*ay;
