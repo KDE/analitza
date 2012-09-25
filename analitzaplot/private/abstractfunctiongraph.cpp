@@ -38,11 +38,9 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
 {
     analyzer = v ? new Analitza::Analyzer(v) : new Analitza::Analyzer;
 
-    if (m_e.isEquation())
-        m_e = m_e.equationToFunction();
+    Q_ASSERT(!m_e.isEquation())
     
     analyzer->setExpression(m_e);
-    analyzer->setExpression(analyzer->dependenciesToLambda());
     analyzer->simplify();
 
     QStack<Analitza::Object*> stack;
