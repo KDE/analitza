@@ -199,7 +199,7 @@ void Plotter3D::initGL()
     glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
 }
 
-void Plotter3D::setViewport(const QRect& vp)
+void Plotter3D::setViewport(const QRectF& vp)
 {
     float newwidth = vp.size().width();
     float newheight = vp.size().height();
