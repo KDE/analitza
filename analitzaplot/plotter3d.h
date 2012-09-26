@@ -59,7 +59,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         virtual ~Plotter3D();
 
         virtual void initGL();
-        virtual void setViewport(const QRect &vp);
+        virtual void setViewport(const QRectF& vp);
         virtual void drawPlots();
         virtual int currentPlot() const = 0;
         virtual void modelChanged() = 0;
@@ -93,7 +93,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         //scene properties
         QMap<SceneObjectType, QPair<GLuint, bool> > m_sceneObjects; // pair:=<displaylist, visible>
-        QRect m_viewport;
+        QRectF m_viewport;
         GLfloat m_depth;
         GLdouble m_scale;
         GLdouble m_rotStrength;
