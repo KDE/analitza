@@ -718,10 +718,10 @@ void Plotter3D::initAxes()
     GLUquadricObj *sphereObj;
     sphereObj = gluNewQuadric();
 
-//     glColor3ub(XAxisArrowColor[0]/2, XAxisArrowColor[1]/2, XAxisArrowColor[2]/2);
-//     glTranslatef(410.0, 0.0, 0.0);
-//     gluSphere(sphereObj, 8.0, 32, 32);
-//     glTranslatef(-410.0, 0.0, 0.0);
+    glColor3ub(XAxisArrowColor[0]/2, XAxisArrowColor[1]/2, XAxisArrowColor[2]/2);
+    glTranslatef(410.0, 0.0, 0.0);
+    gluSphere(sphereObj, 8.0, 32, 32);
+    glTranslatef(-410.0, 0.0, 0.0);
 // 
 //     glColor3ub(YAxisArrowColor[0]/2, YAxisArrowColor[1]/2, YAxisArrowColor[2]/2);
 //     glTranslatef(0.0, 400.0, 0.0);
