@@ -82,6 +82,7 @@ int main(int argc, char *argv[])
 
     central->addWidget(viewsource);
     central->addWidget(view3d);
+    central->setStretchFactor(1, 2);
 
     mainWindow->setCentralWidget(central);
     mainWindow->show();
