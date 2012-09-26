@@ -578,7 +578,7 @@ void Plotter3D::initRefPlanes()
 
     glNewList(m_sceneObjects.value(RefPlaneXY), GL_COMPILE );
     glLineWidth(1);
-    glColor3f (0.8, 0., 0.7);
+    glColor3ub(48, 48, 48);
     glBegin( GL_LINES );
     glVertex3f(-150.0, 600.0, m_depth);
     glVertex3f(-150.0,-600.0, m_depth);
