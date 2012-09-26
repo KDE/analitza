@@ -72,6 +72,7 @@ Plotter3D::~Plotter3D()
     glDeleteLists(m_sceneObjects.value(XArrowAxisHint), 1);
     glDeleteLists(m_sceneObjects.value(YArrowAxisHint), 1);
     glDeleteLists(m_sceneObjects.value(ZArrowAxisHint), 1);
+
 }
 
 void Plotter3D::initGL()
