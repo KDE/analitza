@@ -28,6 +28,7 @@
 #include <QModelIndex>
 #include <QRect>
 #include <QVector3D>
+#include <QMatrix4x4>
 
 class QAbstractItemModel;
 class QPainter;
@@ -112,11 +113,16 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         /**  Get information about the current rotarion approach: if return true then rotation is simple. */
         bool isUsingSimpleRotation() const { return m_simpleRotation; }
+        
+        /** sets the view to the initial perspective */
+        void resetView();
 
     protected:
         void addPlots(PlotItem* item);
         
     private:
+        void resetViewPrivate(const QVector3D& rot);
+        
         enum SceneObjectType {Axes, RefPlaneXY, XArrowAxisHint, YArrowAxisHint, ZArrowAxisHint};
         
         PlotItem *itemAt(int row) const;
@@ -134,13 +140,13 @@ class ANALITZAPLOT_EXPORT Plotter3D
         //scene properties
         QMap<SceneObjectType, GLuint > m_sceneObjects;
         QRectF m_viewport;
-        GLfloat m_depth;
+        const GLfloat m_depth;
         GLdouble m_scale;
-        GLdouble m_rotStrength;
+        QMatrix4x4 m_rot;
         QVector3D m_rotFixed;
         CartesianAxis m_currentAxisIndicator;
-        bool m_hidehints;
         bool m_simpleRotation;
+        QVector3D m_simpleRotationVector;
 };
 
 #endif // FUNCTIONSPAINTER3D_H

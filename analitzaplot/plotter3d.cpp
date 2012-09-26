@@ -52,14 +52,14 @@ const GLubyte Plotter3D::ZAxisArrowColor[] = {1, 1, 255 - 1};
 
 Plotter3D::Plotter3D(QAbstractItemModel* model)
     : m_model(model)
-    , m_depth(-400)
-    , m_rotStrength(0)
-    , m_currentAxisIndicator(InvalidAxis)
-    , m_hidehints(true)
-    , m_simpleRotation(false)
     , m_plotStyle(Solid)
     , m_plottingFocusPolicy(All)
+    , m_depth(-400)
+    , m_scale(60)
+    , m_currentAxisIndicator(InvalidAxis)
+    , m_simpleRotation(false)
 {
+    resetViewPrivate(QVector3D(-45, 0, -135));
 }
 
 Plotter3D::~Plotter3D()
@@ -109,21 +109,27 @@ void Plotter3D::initGL()
     glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
 }
 
+void Plotter3D::resetView()
+{
+    m_rot.setToIdentity();
+    resetViewPrivate(QVector3D(-45, 0, -135));
+    renderGL();
+}
+
+void Plotter3D::resetViewPrivate(const QVector3D& rot)
+{
+    m_rot.translate(0,0,-800);
+    m_rot.rotate(rot.x(), 1, 0, 0);
+    m_rot.rotate(rot.y(), 0, 1, 0);
+    m_rot.rotate(rot.z(), 0, 0, 1);
+    m_simpleRotationVector = rot;
+}
+
 void Plotter3D::setViewport(const QRectF& vp)
 {
     float newwidth = vp.size().width();
     float newheight = vp.size().height();
     glViewport( 0, 0, newwidth, newheight);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(60, newwidth/newheight, 0.1, 3000);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef( 0.0, 0.0, -800.0 );
-    glRotatef(-45, 1, 0, 0);
-    glRotatef(-135, 0, 0, 1);
 
     m_viewport = vp;
     
@@ -133,12 +139,20 @@ void Plotter3D::setViewport(const QRectF& vp)
 void Plotter3D::drawPlots()
 {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(m_scale, m_viewport.width()/m_viewport.height(), 0.1, 3000);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glMultMatrixd(m_rot.data());
 
     // Object Drawing :
     glCallList(m_sceneObjects.value(Axes));
     glCallList(m_sceneObjects.value(RefPlaneXY));
 
-    if (!m_simpleRotation && !m_hidehints)
+    if (!m_simpleRotation)
         switch (m_currentAxisIndicator)
         {
             case XAxis:
@@ -149,6 +163,8 @@ void Plotter3D::drawPlots()
                 break;
             case ZAxis:
                 glCallList(m_sceneObjects.value(ZArrowAxisHint));
+                break;
+            case InvalidAxis:
                 break;
         }
     
@@ -286,10 +302,7 @@ void Plotter3D::setPlottingFocusPolicy(PlottingFocusPolicy fp)
 
 void Plotter3D::scale(GLdouble factor)
 {
-    m_scale = factor;
-
-    glScalef(m_scale, m_scale, m_scale);
-
+    m_scale = qBound(1., factor*m_scale, 140.);
     renderGL();
 }
 
@@ -298,12 +311,14 @@ void Plotter3D::rotate(int dx, int dy)
     GLdouble ax = -dy;
     GLdouble ay = -dx;
     double angle = sqrt(ax*ax + ay*ay)/(m_viewport.width() + 1)*360.0;
-    QVector3D rot;
+    
     if (m_simpleRotation) {
-        rot.setX(dy);
-        rot.setY(dx);
+        m_rot.setToIdentity();
+        resetViewPrivate(m_simpleRotationVector + QVector3D(ax, 0, ay));
+        renderGL();
     } else if (!m_rotFixed.isNull()) {
-        rot = m_rotFixed;
+        m_rot.rotate(angle, m_rotFixed.normalized());
+        renderGL();
     } else {
         GLdouble matrix[16] = {0}; // model view matrix from current OpenGL state
 
@@ -314,16 +329,14 @@ void Plotter3D::rotate(int dx, int dy)
         matrix4 = matrix4.inverted(&couldInvert);
 
         if (couldInvert) {
-            rot.setX(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay);
-            rot.setY(matrix4.row(0).y()*ax + matrix4.row(1).y()*ay);
-            rot.setZ(matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
+            QVector3D rot(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay,
+                          matrix4.row(0).y()*ax + matrix4.row(1).y()*ay,
+                          matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
+            
+            m_rot.rotate(rot.length(), rot.normalized());
+            
+            renderGL();
         }
-    }
-    
-    if(!rot.isNull()) {
-        rot.normalize();
-        glRotatef(angle, rot.x(), rot.y(), rot.z());
-        renderGL();
     }
 }
 
@@ -355,14 +368,12 @@ void Plotter3D::showAxisArrowHint(CartesianAxis axis)
 
     m_currentAxisIndicator = axis;
     
-    m_hidehints = false;
-    
     renderGL();
 }
 
 void Plotter3D::hideAxisHint()
 {
-    m_hidehints = true;
+    m_currentAxisIndicator = InvalidAxis;
     
     renderGL();
 }
