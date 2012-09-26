@@ -740,10 +740,19 @@ void Plotter3D::initAxes()
 
     glEndList();
 
-    //     glColor3ub(ZAxisArrowColor[0]/2, ZAxisArrowColor[1]/2, ZAxisArrowColor[2]/2);
-//     glTranslatef(0.0, 0.0, -410.0);
-//     gluSphere(sphereObj, 8.0, 32, 32);
-//     glTranslatef(0.0, 0.0, -410.0);
+    // YArrowAxisHint
 
+    if (m_sceneObjects.contains(ZArrowAxisHint))
+        glDeleteLists(m_sceneObjects.value(ZArrowAxisHint), 1);
+
+    m_sceneObjects[ZArrowAxisHint] = glGenLists(1);
+    glNewList(m_sceneObjects.value(ZArrowAxisHint), GL_COMPILE );
+
+    glColor3ub(ZAxisArrowColor[0]/2, ZAxisArrowColor[1]/2, ZAxisArrowColor[2]/2);
+    glTranslatef(0.0, 0.0, 408.0);
+    gluSphere(sphereObj, 8.0, 32, 32);
+    glTranslatef(0.0, 0.0, -408.0);
+
+    glEndList();
 }
 
