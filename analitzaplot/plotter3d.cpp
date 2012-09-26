@@ -69,7 +69,9 @@ Plotter3D::~Plotter3D()
 
     glDeleteLists(m_sceneObjects.value(Axes), 1);
     glDeleteLists(m_sceneObjects.value(RefPlaneXY), 1);
-
+    glDeleteLists(m_sceneObjects.value(XArrowAxisHint), 1);
+    glDeleteLists(m_sceneObjects.value(YArrowAxisHint), 1);
+    glDeleteLists(m_sceneObjects.value(ZArrowAxisHint), 1);
 }
 
 void Plotter3D::initGL()
@@ -288,14 +290,14 @@ void Plotter3D::rotate(int dx, int dy)
 {
     if (m_simpleRotation)
     {
-        m_rot.setX(dy);
-        m_rot.setZ(dx);
-
-        glRotatef(m_rot.x(), 1, 0, 0);
-        glRotatef(m_rot.y(), 0, 1, 0);
-        glRotatef(m_rot.z(), 0, 0, 1);
-        
-        renderGL();
+//         m_rot.setX(dy);
+//         m_rot.setZ(dx);
+// 
+//         glRotatef(m_rot.x(), 1, 0, 0);
+//         glRotatef(m_rot.y(), 0, 1, 0);
+//         glRotatef(m_rot.z(), 0, 0, 1);
+//         
+//         renderGL();
         
         return ;
     }
