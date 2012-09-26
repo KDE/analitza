@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
     KCmdLineArgs::init(argc, argv, &aboutData);
     KCmdLineOptions options;
     options.add("all-disabled", ki18n("marks all the plots as not visible"));
+    options.add("simple-rotation", ki18n("uses simple rotation"));
     KCmdLineArgs::addCmdLineOptions(options);
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     KApplication app;
@@ -67,9 +68,6 @@ int main(int argc, char *argv[])
     
     PlotsView3D *view3d = new PlotsView3D(central);
     view3d->setSelectionModel(viewsource->selectionModel());
-
-    //NOTE KAlgebra rotation style
-//     view3d->toggleUseSimpleRotation(true);
     
     //BEGIN test calls
     PlotsFactory* s = PlotsFactory::self();
@@ -87,6 +85,7 @@ int main(int argc, char *argv[])
         for(int i=0; i<model->rowCount(); i++) {
             model->setData(model->index(i), false, Qt::CheckStateRole);
         }
+    view3d->setUseSimpleRotation(args->isSet("simple-rotation"));
 
     central->addWidget(viewsource);
     central->addWidget(view3d);
