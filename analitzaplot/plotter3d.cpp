@@ -92,99 +92,6 @@ void Plotter3D::initGL()
 
     initAxes();
 
-//TODO efecto de tranaparente al draw     //pasar a draw para efecto de transparente a current surface plot
-//     /// For drawing Lines :
-//     if(LocalScene.smoothline == 1) {
-//         glEnable (GL_LINE_SMOOTH);
-//         glEnable (GL_BLEND);
-//         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//         glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-//     }
-//     else {
-//         glDisable(GL_LINE_SMOOTH);
-//         glDisable(GL_BLEND);
-//     }
-
-    /*
-        if (m_sceneObjects.contains(RefPlaneXY))
-            glDeleteLists(m_sceneObjects.value(RefPlaneXY), 1);
-
-        m_sceneObjects[RefPlaneXY] = glGenLists(1);
-
-        glNewList(m_sceneObjects.value(RefPlaneXY), GL_COMPILE );
-        glLineWidth(1);
-        glColor3f (0.8, 0., 0.7);
-        glBegin( GL_LINES );
-        glVertex3f(-150.0, 600.0, m_depth);
-        glVertex3f(-150.0,-600.0, m_depth);
-        glVertex3f(0.0, 600.0, m_depth);
-        glVertex3f(0.0,-600.0, m_depth);
-
-        glVertex3f(150.0, 600.0, m_depth);
-        glVertex3f(150.0,-600.0, m_depth);
-        glVertex3f(600.0, -150.0, m_depth);
-        glVertex3f(-600.0,-150.0, m_depth);
-
-        glVertex3f(600.0, 0.0, m_depth);
-        glVertex3f(-600.0, 0.0, m_depth);
-        glVertex3f(600.0, 150.0, m_depth);
-        glVertex3f(-600.0, 150.0, m_depth);
-
-        glVertex3f(-75.0, 600.0, m_depth);
-        glVertex3f(-75.0,-600.0, m_depth);
-        glVertex3f(-225.0, 600.0, m_depth);
-        glVertex3f(-225.0,-600.0, m_depth);
-        glVertex3f(-300.0, 600.0, m_depth);
-        glVertex3f(-300.0,-600.0, m_depth);
-        glVertex3f(-375.0, 600.0, m_depth);
-        glVertex3f(-375.0,-600.0, m_depth);
-        glVertex3f(-450.0, 600.0, m_depth);
-        glVertex3f(-450.0,-600.0, m_depth);
-        glVertex3f(-525.0, 600.0, m_depth);
-        glVertex3f(-525.0,-600.0, m_depth);
-
-        glVertex3f(75.0, 600.0, m_depth);
-        glVertex3f(75.0,-600.0, m_depth);
-        glVertex3f(225.0, 600.0, m_depth);
-        glVertex3f(225.0,-600.0, m_depth);
-        glVertex3f(300.0, 600.0, m_depth);
-        glVertex3f(300.0,-600.0, m_depth);
-        glVertex3f(375.0, 600.0, m_depth);
-        glVertex3f(375.0,-600.0, m_depth);
-        glVertex3f(450.0, 600.0, m_depth);
-        glVertex3f(450.0,-600.0, m_depth);
-        glVertex3f(525.0, 600.0, m_depth);
-        glVertex3f(525.0,-600.0, m_depth);
-
-        glVertex3f(600.0,-75.0, m_depth);
-        glVertex3f(-600.0,-75.0, m_depth);
-        glVertex3f(600.0,-225.0, m_depth);
-        glVertex3f(-600.0,-225.0, m_depth);
-        glVertex3f(600.0,-300.0, m_depth);
-        glVertex3f(-600.0,-300.0, m_depth);
-        glVertex3f(600.0,-375.0, m_depth);
-        glVertex3f(-600.0,-375.0, m_depth);
-        glVertex3f(600.0,-450.0, m_depth);
-        glVertex3f(-600.0,-450.0, m_depth);
-        glVertex3f(600.0,-525.0, m_depth);
-        glVertex3f(-600.0,-525.0, m_depth);
-
-        glVertex3f(600.0,75.0, m_depth);
-        glVertex3f(-600.0,75.0, m_depth);
-        glVertex3f(600.0,225.0, m_depth);
-        glVertex3f(-600.0,225.0, m_depth);
-        glVertex3f(600.0,300.0, m_depth);
-        glVertex3f(-600.0,300.0, m_depth);
-        glVertex3f(600.0,375.0, m_depth);
-        glVertex3f(-600.0,375.0, m_depth);
-        glVertex3f(600.0,450.0, m_depth);
-        glVertex3f(-600.0,450.0, m_depth);
-        glVertex3f(600.0,525.0, m_depth);
-        glVertex3f(-600.0,525.0, m_depth);
-        glEnd();
-        glLineWidth(0.9);
-        glEndList();*/
-
     GLfloat ambient[] = { .0, .0, .0, 1.0 };
     GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
@@ -396,9 +303,9 @@ void Plotter3D::rotate(int dx, int dy)
 {
     if (m_simpleRotation)
     {
-//         m_rotx -= dy;
-//         m_rotz -= dx;
-        
+        m_rot.setX(dy);
+        m_rot.setY(dx);
+
         renderGL();
         
         return ;
@@ -410,6 +317,7 @@ void Plotter3D::rotate(int dx, int dy)
     m_scale = 1.0;
     GLdouble ax = -dy;
     GLdouble ay = -dx;
+
     if (!m_rotFixed.isNull())
     {
         double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
