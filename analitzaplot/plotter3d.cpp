@@ -216,23 +216,10 @@ void Plotter3D::drawPlots()
     }
 
     glPopMatrix();
-//
-// //     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
-// //     glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);
-//
+
     glDisable(GL_POLYGON_OFFSET_FILL);
     glDisable(GL_LIGHTING);
     glDisable(GL_LIGHT0);
-
-//     if(scene->line == 1) {
-//         glColor4f (scene->gridcol[0], scene->gridcol[1], scene->gridcol[2], scene->gridcol[3]);
-//         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//         (scene->typedrawing == 1) ?
-//         glDrawElements(GL_TRIANGLES, scene->PolyNumber, GL_UNSIGNED_INT, scene->PolyIndices_localPt)
-//         :
-//         glDrawElements(GL_QUADS, scene->PolyNumber, GL_UNSIGNED_INT, scene->PolyIndices_localPt);
-//         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//     }
 }
 
 void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
