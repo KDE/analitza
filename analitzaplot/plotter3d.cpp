@@ -58,6 +58,7 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
     , m_hidehints(true)
     , m_simpleRotation(false)
     , m_plotStyle(Solid)
+    , m_plottingFocusPolicy(All)
 {
 }
 
@@ -277,6 +278,9 @@ void Plotter3D::setPlottingFocusPolicy(PlottingFocusPolicy fp)
 {
     m_plottingFocusPolicy = fp;
     
+    for (int i = 0; i < m_itemGeometries.size(); ++i)
+        glDeleteLists(m_itemGeometries.value(itemAt(i)), 1);
+
     updatePlots(QModelIndex(), 0, m_model->rowCount()-1);
 }
 
@@ -403,13 +407,35 @@ void Plotter3D::addPlots(PlotItem* item)
 
         glLineWidth(2.5);
 
-        switch (m_plotStyle)
-        {
-            case Solid: 
-            case Wired: glBegin(GL_LINES); break;
-            case Dots: glBegin(GL_POINTS); break;
-        }
-            
+        if (m_plottingFocusPolicy == All)
+            switch (m_plotStyle)
+            {
+                case Solid: 
+                case Wired: glBegin(GL_LINES); break;
+                case Dots: glBegin(GL_POINTS); break;
+            }
+        else
+            if (m_plottingFocusPolicy == Current)
+            {
+                QModelIndex pi = m_model->index(currentPlot(), 0);
+
+                PlotItem* plot = 0;
+                if (!pi.isValid())
+                   plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
+
+                if (plot == curve)
+                {
+                    switch (m_plotStyle)
+                    {
+                        case Solid: 
+                        case Wired: glBegin(GL_LINES); break;
+                        case Dots: glBegin(GL_POINTS); break;
+                    }
+                }
+                else
+                    glBegin(GL_LINES);
+            }
+
         const QVector<QVector3D> points = curve->points();
 
         //TODO copy approach from plotter 2d and use jumps optimization
@@ -428,12 +454,34 @@ void Plotter3D::addPlots(PlotItem* item)
 
         foreach (const Triangle3D &face, surf->faces())
         {
-            switch (m_plotStyle)
-            {
-                case Solid: glBegin(GL_POLYGON); break;
-                case Wired: glBegin(GL_LINES); break;
-                case Dots: glBegin(GL_POINTS); break;
-            }
+            if (m_plottingFocusPolicy == All)
+                switch (m_plotStyle)
+                {
+                    case Solid: glBegin(GL_POLYGON); break;
+                    case Wired: glBegin(GL_LINES); break;
+                    case Dots: glBegin(GL_POINTS); break;
+                }
+            else
+                if (m_plottingFocusPolicy == Current)
+                {
+                    QModelIndex pi = m_model->index(currentPlot(), 0);
+
+                    PlotItem* plot = 0;
+                    if (!pi.isValid())
+                    plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
+
+                    if (plot == surf)
+                    {
+                        switch (m_plotStyle)
+                        {
+                            case Solid: glBegin(GL_POLYGON); break;
+                            case Wired: glBegin(GL_LINES); break;
+                            case Dots: glBegin(GL_POINTS); break;
+                        }
+                    }
+                    else
+                        glBegin(GL_POLYGON);
+                }
 
             QVector3D n;
 
