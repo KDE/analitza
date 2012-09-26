@@ -54,7 +54,6 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
     : m_model(model)
     , m_depth(-400)
     , m_rotStrength(0)
-    , m_rot(90, 90, 0)
     , m_currentAxisIndicator(InvalidAxis)
     , m_hidehints(true)
     , m_simpleRotation(false)
@@ -135,11 +134,7 @@ void Plotter3D::drawPlots()
     glCallList(m_sceneObjects.value(Axes));
 //     glCallList(m_sceneObjects.value(RefPlaneXY));
 
-    if (m_simpleRotation)
-    {
-
-    }
-    else
+    if (!m_simpleRotation)
     {
         if (!m_hidehints)
             switch (m_currentAxisIndicator)
@@ -289,37 +284,16 @@ void Plotter3D::scale(GLdouble factor)
 
 void Plotter3D::rotate(int dx, int dy)
 {
-    if (m_simpleRotation)
-    {
-//         m_rot.setX(dy);
-//         m_rot.setZ(dx);
-// 
-//         glRotatef(m_rot.x(), 1, 0, 0);
-//         glRotatef(m_rot.y(), 0, 1, 0);
-//         glRotatef(m_rot.z(), 0, 0, 1);
-//         
-//         renderGL();
-        
-        return ;
-    }
-
-    GLdouble viewRoty = static_cast<GLdouble>(-dy);
-    GLdouble viewRotx = static_cast<GLdouble>(-dx);
-
-    m_scale = 1.0;
     GLdouble ax = -dy;
     GLdouble ay = -dx;
-
-    if (!m_rotFixed.isNull())
-    {
-        double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
-
-        glRotatef(angle, m_rotFixed.x(), m_rotFixed.y(), m_rotFixed.z());
-
-        renderGL();
-    }
-    else
-    {
+    double angle = sqrt(ax*ax + ay*ay)/(m_viewport.width() + 1)*360.0;
+    QVector3D m_rot;
+    if (m_simpleRotation) {
+        m_rot.setX(dy);
+        m_rot.setY(dx);
+    } else if (!m_rotFixed.isNull()) {
+        m_rot = m_rotFixed;
+    } else {
         GLdouble matrix[16] = {0}; // model view matrix from current OpenGL state
 
         glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
@@ -333,13 +307,14 @@ void Plotter3D::rotate(int dx, int dy)
             m_rot.setX(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay);
             m_rot.setY(matrix4.row(0).y()*ax + matrix4.row(1).y()*ay);
             m_rot.setZ(matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
-
-            double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
-            glRotatef(angle, m_rot.x(), m_rot.y(), m_rot.z());
-
-            renderGL();
         }
     }
+    
+    if(!m_rot.isNull()) {
+        glRotatef(angle, m_rot.x(), m_rot.y(), m_rot.z());
+        renderGL();
+    }
+        
 }
 
 CartesianAxis Plotter3D::selectAxisArrow(int x, int y)
