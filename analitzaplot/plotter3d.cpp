@@ -386,14 +386,14 @@ void Plotter3D::scale(GLdouble factor)
 
 void Plotter3D::rotate(int xshift, int yshift)
 {
+    m_scale = 1.0;
     GLdouble viewRoty = static_cast<GLdouble>(-yshift);
     GLdouble viewRotx = static_cast<GLdouble>(-xshift);
-    m_scale = 1.0;
-
     if (!m_rotFixed.isNull())
     {
         GLdouble ax = viewRoty;
         GLdouble ay = viewRotx;
+
         double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
 
         glRotatef(angle, m_rotFixed.x(), m_rotFixed.y(), m_rotFixed.z());
