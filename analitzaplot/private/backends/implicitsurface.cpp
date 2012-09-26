@@ -60,13 +60,11 @@ double ImplicitSurf::evalScalarField(double x, double y, double z)
 
 
 ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e, v)
-{
-buildGeometry();
-}
-
+{}
 
 void ImplicitSurf::update(const Box3D& viewport)
 {
+    buildGeometry();
     faces.clear();
     faces << MarchingCubes::_faces_;
 }
