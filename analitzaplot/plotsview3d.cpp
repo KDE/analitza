@@ -30,8 +30,6 @@
 #include <QDebug>
 #include <GL/glu.h>
 
-Q_DECLARE_METATYPE(PlotItem*);
-
 PlotsView3D::PlotsView3D(QWidget *parent)
     : QGLWidget(parent), m_selection(0)
 {
@@ -92,7 +90,7 @@ void PlotsView3D::initializeGL()
 
 void PlotsView3D::resizeGL(int newwidth, int newheight)
 {
-    setViewport(QRect(0,0,newwidth,newheight));
+    setViewport(QRectF(0,0,newwidth,newheight));
 }
 
 void PlotsView3D::mousePressEvent(QMouseEvent *e)
@@ -101,48 +99,25 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
 
     old_y = e->y();
     old_x = e->x();
-    
     CartesianAxis axis = selectAxisArrow(e->x(), e->y());
-
     showAxisArrowHint(axis);
 
-    switch (axis)
+    if (isRotationFixed()) {
+        fixRotation(QVector3D());
+        hideAxisHint();
+    } else switch (selectAxisArrow(e->x(), e->y()))
     {
         case XAxis: 
-        {
-
-            if (isRotationFixed())
-            {
-                fixRotation(QVector3D());
-                hideAxisHint();
-            }
-            else
-                fixRotation(QVector3D(1,0,0));
-        }
-        break;
+            fixRotation(QVector3D(1,0,0));
+            break;
         case YAxis: 
-        {
-            if (isRotationFixed())
-            {
-                fixRotation(QVector3D());
-                hideAxisHint();
-            }
-            else
-                fixRotation(QVector3D(0,1,0));
-        }
-        break;
+            fixRotation(QVector3D(0,1,0));
+            break;
         case ZAxis: 
-        {
-            if (isRotationFixed())
-            {
-                fixRotation(QVector3D());
-                hideAxisHint();
-            }
-            else
-                fixRotation(QVector3D(0,0,1));
-        }
-        break;
+            fixRotation(QVector3D(0,0,1));
+            break;
     }
+
 }
 
 void PlotsView3D::modelChanged()

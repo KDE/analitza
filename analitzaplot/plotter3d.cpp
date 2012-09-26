@@ -54,9 +54,7 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
     : m_model(model)
     , m_depth(-400)
     , m_rotStrength(0)
-    , m_rotx(-45.0)
-    , m_roty(0.0)
-    , m_rotz(-135.0)
+    , m_rot(90, 90, 0)
     , m_currentAxisIndicator(InvalidAxis)
     , m_hidehints(true)
     , m_simpleRotation(false)
@@ -200,7 +198,7 @@ void Plotter3D::initGL()
     glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
 }
 
-void Plotter3D::setViewport(const QRect& vp)
+void Plotter3D::setViewport(const QRectF& vp)
 {
     float newwidth = vp.size().width();
     float newheight = vp.size().height();
@@ -229,9 +227,9 @@ void Plotter3D::drawPlots()
 
     if (m_simpleRotation)
     {
-        glRotatef(m_rotx, 1, 0, 0);
-        glRotatef(m_roty, 0, 1, 0);
-        glRotatef(m_rotz, 0, 0, 1);
+        glRotatef(m_rot.x(), 1, 0, 0);
+        glRotatef(m_rot.y(), 0, 1, 0);
+        glRotatef(m_rot.z(), 0, 0, 1);
     }
     else
     {
@@ -398,8 +396,8 @@ void Plotter3D::rotate(int dx, int dy)
 {
     if (m_simpleRotation)
     {
-        m_rotx -= dy;
-        m_rotz -= dx;
+//         m_rotx -= dy;
+//         m_rotz -= dx;
         
         renderGL();
         
@@ -408,12 +406,12 @@ void Plotter3D::rotate(int dx, int dy)
 
     GLdouble viewRoty = static_cast<GLdouble>(-dy);
     GLdouble viewRotx = static_cast<GLdouble>(-dx);
-    m_scale = 1.0;
 
+    m_scale = 1.0;
+    GLdouble ax = -dy;
+    GLdouble ay = -dx;
     if (!m_rotFixed.isNull())
     {
-        GLdouble ax = viewRoty;
-        GLdouble ay = viewRotx;
         double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
 
         glRotatef(angle, m_rotFixed.x(), m_rotFixed.y(), m_rotFixed.z());
@@ -422,104 +420,22 @@ void Plotter3D::rotate(int dx, int dy)
     }
     else
     {
-
         GLdouble matrix[16] = {0}; // model view matrix from current OpenGL state
 
         glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
 
-        GLdouble det; // determinant
-        GLdouble d12, d13, d23, d24, d34, d41;
-        GLdouble tmp[16] = {0}; // Allow out == in
+        QMatrix4x4 matrix4(matrix);
+        bool couldInvert;
+        matrix4 = matrix4.inverted(&couldInvert);
 
-        // Inverse = adjoint / det. (See linear algebra texts.)
-        // pre-compute 2x2 dets for last two rows when computing
-        // cofactors of first two rows.
+        if (couldInvert) {
+            QVector3D rotation(ax, ay, 0);
+            m_rot.setX(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay);
+            m_rot.setY(matrix4.row(0).y()*ax + matrix4.row(1).y()*ay);
+            m_rot.setZ(matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
 
-        //column 1
-        GLdouble m11 = matrix[0*4 + 0];
-        GLdouble m21 = matrix[0*4 + 1];
-        GLdouble m31 = matrix[0*4 + 2];
-        GLdouble m41 = matrix[0*4 + 3];
-
-        //column 2
-        GLdouble m12 = matrix[1*4 + 0];
-        GLdouble m22 = matrix[1*4 + 1];
-        GLdouble m32 = matrix[1*4 + 2];
-        GLdouble m42 = matrix[1*4 + 3];
-
-        //column 3
-        GLdouble m13 = matrix[2*4 + 0];
-        GLdouble m23 = matrix[2*4 + 1];
-        GLdouble m33 = matrix[2*4 + 2];
-        GLdouble m43 = matrix[2*4 + 3];
-
-        //column 4
-        GLdouble m14 = matrix[3*4 + 0];
-        GLdouble m24 = matrix[3*4 + 1];
-        GLdouble m34 = matrix[3*4 + 2];
-        GLdouble m44 = matrix[3*4 + 3];
-
-        d12 = m31*m42-m41*m32;
-        d13 = m31*m43-m41*m33;
-        d23 = m32*m43-m42*m33;
-        d24 = m32*m44-m42*m34;
-        d34 = m33*m44-m43*m34;
-        d41 = m34*m41-m44*m31;
-
-        tmp[0] =  (m22 * d34 - m23 * d24 + m24 * d23);
-        tmp[1] = -(m21 * d34 + m23 * d41 + m24 * d13);
-        tmp[2] =  (m21 * d24 + m22 * d41 + m24 * d12);
-        tmp[3] = -(m21 * d23 - m22 * d13 + m23 * d12);
-
-        // Compute determinant as early as possible using these cofactors.
-        det = m11 * tmp[0] + m12 * tmp[1] + m13 * tmp[2] + m14 * tmp[3];
-
-        // Run singularity test: if det != 0 is not a singular matrix, then all calculations are safe
-        if (!isSimilar(det, 0.0)) {
-            GLdouble invDet = 1.0 / det;
-            // Compute rest of inverse.
-            tmp[0] *= invDet;
-            tmp[1] *= invDet;
-            tmp[2] *= invDet;
-            tmp[3] *= invDet;
-
-            tmp[4] = -(m12 * d34 - m13 * d24 + m14 * d23) * invDet;
-            tmp[5] =  (m11 * d34 + m13 * d41 + m14 * d13) * invDet;
-            tmp[6] = -(m11 * d24 + m12 * d41 + m14 * d12) * invDet;
-            tmp[7] =  (m11 * d23 - m12 * d13 + m13 * d12) * invDet;
-
-            // Pre-compute 2x2 dets for first two rows when computing
-            // cofactors of last two rows.
-            d12 = m11*m22-m21*m12;
-            d13 = m11*m23-m21*m13;
-            d23 = m12*m23-m22*m13;
-            d24 = m12*m24-m22*m14;
-            d34 = m13*m24-m23*m14;
-            d41 = m14*m21-m24*m11;
-
-            tmp[8] =  (m42 * d34 - m43 * d24 + m44 * d23) * invDet;
-            tmp[9] = -(m41 * d34 + m43 * d41 + m44 * d13) * invDet;
-            tmp[10] =  (m41 * d24 + m42 * d41 + m44 * d12) * invDet;
-            tmp[11] = -(m41 * d23 - m42 * d13 + m43 * d12) * invDet;
-            tmp[12] = -(m32 * d34 - m33 * d24 + m34 * d23) * invDet;
-            tmp[13] =  (m31 * d34 + m33 * d41 + m34 * d13) * invDet;
-            tmp[14] = -(m31 * d24 + m32 * d41 + m34 * d12) * invDet;
-            tmp[15] =  (m31 * d23 - m32 * d13 + m33 * d12) * invDet;
-
-            double invMatrix[16] = {0}; // inverse of matrix
-
-            memcpy(invMatrix, tmp, 16*sizeof(GLdouble));
-
-            GLdouble ax = viewRoty;
-            GLdouble ay = viewRotx;
             double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
-
-            // Use inverse matrix to determine local axis of rotation
-            m_rotx = invMatrix[0]*ax + invMatrix[4]*ay;
-            m_roty = invMatrix[1]*ax + invMatrix[5]*ay;
-            m_rotz = invMatrix[2]*ax + invMatrix[6]*ay;
-
-            glRotatef(angle, m_rotx, m_roty, m_rotz);
+            glRotatef(angle, m_rot.x(), m_rot.y(), m_rot.z());
 
             renderGL();
         }
@@ -598,7 +514,7 @@ void Plotter3D::addPlots(PlotItem* item)
     // set ambient and diffuse color using glColorMaterial (gold-yellow)
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glColor3fv(diffuseColor);
-    glColor3ub(item->color().red(), item->color().green(), item->color().blue());
+    glColor3i(item->color().red(), item->color().green(), item->color().blue());
 
     if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
     {

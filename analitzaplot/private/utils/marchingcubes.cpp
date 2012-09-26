@@ -205,23 +205,14 @@ MarchingCubes::~MarchingCubes()
 {
 }
 
-QList<sMarching_Cube> MarchingCubes::ejecutar(){
+QList<sMarching_Cube> MarchingCubes::ejecutar()
+{
     QList<sMarching_Cube> cubos;
-    QList<Cube> encontrados;
-    Cube iterador;
-    Octree *arbol;
-
-    //Buscar la superficie (breadth search octree)
-    encontrados = breadth_rec(largo_mundo);
-    //Si no encuentra la superficie, retorna lista vacia
-    if(encontrados.isEmpty()){
-        return cubos;
-    }
-//     printf("Encontrados: %d\n",encontrados.count());
+    QList<Cube> found = breadth_rec(largo_mundo);
 
     //Ubicar los cubos (depth search octree)
-    foreach(iterador, encontrados){
-        arbol = new Octree(iterador);
+    foreach(const Cube& iterador, found){
+        Octree* arbol = new Octree(iterador);
         cubos.append(depth_rec(arbol, arbol->get_raiz()));
         delete arbol;
     }
@@ -376,7 +367,7 @@ void MarchingCubes::agregar_triangulos(QList<QVector3D> &lista_triangulos){
 }
 
 //Tipos:
-void MarchingCubes::identificar_tipo(sMarching_Cube cubo){
+void MarchingCubes::identificar_tipo(const sMarching_Cube& cubo){
     QList<sArista> aristas;
     QList<unsigned int> vertices;
     unsigned int it;
@@ -867,22 +858,17 @@ void MarchingCubes::tipo13(QList<sArista> aristas, QList<unsigned int> vertices)
 
 void MarchingCubes::buildGeometry()
 {
-        _faces_.clear();
-
-        
-    QList<sMarching_Cube> cubos;
-    sMarching_Cube cubo;
-    
-    cubos = ejecutar();
+    _faces_.clear();
+    QList<sMarching_Cube> cubos = ejecutar();
 //     printf("Cubos: %d\n",cubos.count());
 
-    foreach(cubo,cubos){
+    sMarching_Cube cubo;
+    foreach(cubo, cubos) {
         //Puede que ahora sea innecesario cambiar el tipo...
         if(cubo.tipo > 127){
             cubo.tipo = 255 - cubo.tipo;
         }
         identificar_tipo(cubo);
      }
-
 }
 

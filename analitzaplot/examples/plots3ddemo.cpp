@@ -47,6 +47,10 @@ int main(int argc, char *argv[])
                          "http://www.kde.org");
 
     KCmdLineArgs::init(argc, argv, &aboutData);
+    KCmdLineOptions options;
+    options.add("all-disabled", ki18n("marks all the plots as not visible"));
+    KCmdLineArgs::addCmdLineOptions(options);
+    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     KApplication app;
 
     QMainWindow *mainWindow = new QMainWindow();
@@ -56,20 +60,18 @@ int main(int argc, char *argv[])
     QSplitter *central = new QSplitter(Qt::Horizontal, mainWindow);
     central->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    //BEGIN test calls
-
     PlotsModel *model = new PlotsModel(central);
 
     QTreeView *viewsource = new QTreeView(central);
     viewsource->setModel(model);
     
     PlotsView3D *view3d = new PlotsView3D(central);
-    view3d->setModel(model);
     view3d->setSelectionModel(viewsource->selectionModel());
 
     //NOTE KAlgebra rotation style
 //     view3d->toggleUseSimpleRotation(true);
     
+    //BEGIN test calls
     PlotsFactory* s = PlotsFactory::self();
     model->addPlot(s->requestPlot(Analitza::Expression("(r,p)->2"), Dim3D).create(Qt::magenta, "cyl"));
     model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), Dim3D).create(Qt::lightGray, "z-map"));
@@ -79,15 +81,20 @@ int main(int argc, char *argv[])
     model->addPlot(s->requestPlot(Analitza::Expression("t->vector{cos(t), sin(t), t}"), Dim3D).create(Qt::green, "curve"));
     model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x"), Dim3D).create(Qt::yellow, "z-map"));
     model->addPlot(s->requestPlot(Analitza::Expression("(t,p)->1.9"), Dim3D).create(Qt::white, "sphere-sphcoords"));
-
-//     model->removeRow(1); model->removeRow(3);
     //END test calls
+    
+    if(args->isSet("all-disabled"))
+        for(int i=0; i<model->rowCount(); i++) {
+            model->setData(model->index(i), false, Qt::CheckStateRole);
+        }
 
     central->addWidget(viewsource);
     central->addWidget(view3d);
+    central->setStretchFactor(1, 2);
 
     mainWindow->setCentralWidget(central);
     mainWindow->show();
+    view3d->setModel(model);
 
     return app.exec();
 }

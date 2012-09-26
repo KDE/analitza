@@ -142,7 +142,7 @@ private:
     void agregar_triangulos(QList<QVector3D> &lista_triangulos);
 
     //Tipos:
-    void identificar_tipo(sMarching_Cube cubo);
+    void identificar_tipo(const sMarching_Cube& cubo);
     void tipo01(QList<sArista> aristas, QList<unsigned int> vertices);
     void tipo02(QList<sArista> aristas);
     void tipo04(QList<sArista> aristas, QList<unsigned int> vertices);

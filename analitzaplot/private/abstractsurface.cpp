@@ -21,9 +21,9 @@
 #include "utils/triangle3d.h"
 #include <QVector3D>
 
-#define MAXAROUND 64
-#define MAXSTRIP 64
-#define MAXALONG  64
+#define MAXAROUND 32
+#define MAXSTRIP 32
+#define MAXALONG  32
 
 AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)
