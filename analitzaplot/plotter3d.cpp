@@ -57,6 +57,7 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
     , m_currentAxisIndicator(InvalidAxis)
     , m_hidehints(true)
     , m_simpleRotation(false)
+    , m_plotStyle(Solid)
 {
 }
 
@@ -415,7 +416,13 @@ void Plotter3D::addPlots(PlotItem* item)
 
         foreach (const Triangle3D &face, surf->faces())
         {
-            glBegin(GL_TRIANGLES);
+            switch (m_plotStyle)
+            {
+                case Solid: glBegin(GL_POLYGON); break;
+                case Wired: glBegin(GL_LINES); break;
+                case Dots: glBegin(GL_POINTS); break;
+            }
+
             QVector3D n;
 
             //TODO no magic numbers

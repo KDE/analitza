@@ -77,7 +77,11 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         void setModel(QAbstractItemModel* f);
         QAbstractItemModel* model() const { return m_model; }
-        
+
+        void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }
+//         void setPlottingAttributes(PlotStyle st) { m_plotStyle = ps; }
+        void setPlottingFocusPolicy(PlottingFocusPolicy fp) { m_plottingFocusPolicy = fp;}
+
         /** Set the scale of all the scene by @p factor */
         void scale(GLdouble factor);
 
@@ -121,6 +125,9 @@ class ANALITZAPLOT_EXPORT Plotter3D
         QAbstractItemModel* m_model;
         
         QMap<PlotItem*, GLuint> m_itemGeometries;
+
+        PlotStyle m_plotStyle;
+        PlottingFocusPolicy m_plottingFocusPolicy;
 
         //scene properties
         QMap<SceneObjectType, GLuint > m_sceneObjects;
