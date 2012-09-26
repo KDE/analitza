@@ -522,7 +522,7 @@ CartesianAxis Plotter3D::selectAxisArrow(int x, int y)
     return InvalidAxis;
 }
 
-void Plotter3D::fixRotationAxis(const QVector3D& vec)
+void Plotter3D::fixRotation(const QVector3D& vec)
 {
     m_rotFixed = vec;
 }

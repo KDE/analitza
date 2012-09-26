@@ -81,13 +81,21 @@ class ANALITZAPLOT_EXPORT Plotter3D
         /** Set the scale of all the scene by @p factor */
         void scale(GLdouble factor);
 
-        /** Rotates by @p xshift and @p yshift in screen coordinates. */
-        void rotate(int xshift, int yshift);
+        /** Rotates by @p dx and @p dy in screen coordinates. */
+        void rotate(int dx, int dy);
 
         CartesianAxis selectAxisArrow(int x, int y);
-        void fixRotationAxis(const QVector3D &vec);
-        bool isRotFixed() const { return !m_rotFixed.isNull(); }
+        
+        /** Fix the rotation arround @p direction */
+        void fixRotation(const QVector3D &direction);
+        
+        /** Query if the rotation is fixed by a specific direction */
+        bool isRotationFixed() const { return !m_rotFixed.isNull(); }
+        
+        /** Show a little indicator (as a hint) next to the arrow of @p axis */
         void showAxisArrowHint(CartesianAxis axis);
+
+        /** Hide the current indicator of the axis */
         void hideAxisHint();
 
     protected:

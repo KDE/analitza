@@ -111,35 +111,35 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
         case XAxis: 
         {
 
-            if (isRotFixed())
+            if (isRotationFixed())
             {
-                fixRotationAxis(QVector3D());
+                fixRotation(QVector3D());
                 hideAxisHint();
             }
             else
-                fixRotationAxis(QVector3D(1,0,0));
+                fixRotation(QVector3D(1,0,0));
         }
         break;
         case YAxis: 
         {
-            if (isRotFixed())
+            if (isRotationFixed())
             {
-                fixRotationAxis(QVector3D());
+                fixRotation(QVector3D());
                 hideAxisHint();
             }
             else
-                fixRotationAxis(QVector3D(0,1,0));
+                fixRotation(QVector3D(0,1,0));
         }
         break;
         case ZAxis: 
         {
-            if (isRotFixed())
+            if (isRotationFixed())
             {
-                fixRotationAxis(QVector3D());
+                fixRotation(QVector3D());
                 hideAxisHint();
             }
             else
-                fixRotationAxis(QVector3D(0,0,1));
+                fixRotation(QVector3D(0,0,1));
         }
         break;
     }
