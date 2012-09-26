@@ -40,7 +40,8 @@ enum CoordinateSystem {
 enum CartesianAxis {
     XAxis = 1,
     YAxis,
-    ZAxis
+    ZAxis,
+    InvalidAxis // used for query/select between some axis 
 };
 
 #endif

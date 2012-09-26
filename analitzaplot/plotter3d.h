@@ -27,6 +27,7 @@
 
 #include <QModelIndex>
 #include <QRect>
+#include <QVector3D>
 
 class QAbstractItemModel;
 class QPainter;
@@ -52,6 +53,10 @@ class QModelIndex;
 class ANALITZAPLOT_EXPORT Plotter3D
 {
     public:
+        static const GLubyte XAxisArrowColor[];
+        static const GLubyte YAxisArrowColor[];
+        static const GLubyte ZAxisArrowColor[];
+
         //TODO transparency effect when select current item 
 //         enum FocusEffect {};
 
@@ -77,15 +82,21 @@ class ANALITZAPLOT_EXPORT Plotter3D
         void scale(GLdouble factor);
 
         /** Rotates by @p xshift and @p yshift in screen coordinates. */
-        void rotate(int xshift, int yshift); 
+        void rotate(int xshift, int yshift);
+
+        CartesianAxis selectAxisArrow(int x, int y);
+        void fixRotationAxis(const QVector3D &vec);
+        bool isRotFixed() const { return !m_rotFixed.isNull(); }
 
     protected:
         void addPlots(PlotItem* item);
-    
+        
     private:
         enum SceneObjectType {Axes, RefPlaneXY};
         
         PlotItem *itemAt(int row) const;
+
+        void initAxes();
 
         QAbstractItemModel* m_model;
         
@@ -100,6 +111,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         GLdouble m_rotx;
         GLdouble m_roty;
         GLdouble m_rotz;
+        QVector3D m_rotFixed;
 };
 
 #endif // FUNCTIONSPAINTER3D_H

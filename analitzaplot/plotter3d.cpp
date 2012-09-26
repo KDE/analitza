@@ -44,6 +44,10 @@ Q_DECLARE_METATYPE(PlotItem*);
 
 using namespace std;
 
+const GLubyte Plotter3D::XAxisArrowColor[] = {250 -1 , 1, 1};
+const GLubyte Plotter3D::YAxisArrowColor[] = {1, 255 - 1, 1};
+const GLubyte Plotter3D::ZAxisArrowColor[] = {1, 1, 255 - 1};
+
 // #define DEBUG_GRAPH
 
 Plotter3D::Plotter3D(QAbstractItemModel* model)
@@ -85,6 +89,8 @@ void Plotter3D::initGL()
     glEnable(GL_DEPTH_TEST);
     glClearColor(0,0,0,0);
 
+    initAxes();
+        
 //TODO efecto de tranaparente al draw     //pasar a draw para efecto de transparente a current surface plot
 //     /// For drawing Lines :
 //     if(LocalScene.smoothline == 1) {
@@ -98,105 +104,7 @@ void Plotter3D::initGL()
 //         glDisable(GL_BLEND);
 //     }
 
-    if (m_sceneObjects.contains(Axes))
-        glDeleteLists(m_sceneObjects.value(Axes).first, 1);
-
-    m_sceneObjects[Axes] = qMakePair(glGenLists(1), true);
-    glNewList(m_sceneObjects.value(Axes).first, GL_COMPILE );
-    glLineWidth(1);
-    glBegin( GL_LINES );
-    glColor3f (1., 0., 0.);
-    glVertex3f( 400.0, 0.0, 0.0);
-    glVertex3f(   0.0, 0.0, 0.0);
-    glColor3f (0., 1., 0.);
-    glVertex3f(0.0, 400.0, 0.0);
-    glVertex3f(0.0,   0.0, 0.0);
-    glColor3f (0., 0., 1.);
-    glVertex3f(0.0, 0.0, 400.0);
-    glVertex3f(0.0, 0.0,   0.0);
-    glEnd();
-
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f (0.0, 0.0, 1.0);
-    glVertex3f(0.0, 0.0, 400.0);
-    glVertex3f(10.0, 0.0, 380.0);
-    glVertex3f(0.0, 10.0, 380.0);
-    glColor3f (0.0, 0.0, 0.3);
-    glVertex3f(-10.0, 0.0, 380.0);
-    glColor3f (0.0, 0.0, 1.0);
-    glVertex3f(0.0, -10.0, 380.0);
-    glColor3f (0.0, 0.0, 0.3);
-    glVertex3f(10.0, 0.0, 380.0);
-    glEnd();
-
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f (0.0, 1., 0.);
-    glVertex3f(0.0, 400.0, 0.0);
-    glVertex3f(10.0, 380.0, 0.0);
-    glVertex3f(0.0, 380.0, 10.0);
-    glColor3f (0.0, 0.3, 0.0);
-    glVertex3f(-10.0, 380.0, 0.0);
-    glColor3f (0.0, 1.0, 0.0);
-    glVertex3f(.0, 380.0, -10.0);
-    glColor3f (0.0, 0.3, 0.0);
-    glVertex3f(10.0, 380.0, 0.0);
-    glEnd();
-
-/// Axe X :
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f (1.0, 0.0, 0.0);
-    glVertex3f(400.0, 0.0, 0.0);
-    glVertex3f(380.0, 10.0, 0.0);
-    glVertex3f(380.0, 0.0, 10.0);
-    glColor3f (0.3, 0.0, 0.0);
-    glVertex3f(380.0, -10.0, 0.0);
-    glColor3f (1.0, 0.0, 0.0);
-    glVertex3f(380.0, 0.0, -10.0);
-    glColor3f (0.3, 0.0, 0.0);
-    glVertex3f(380.0, 10.0, 0.0);
-    glEnd();
-
-    glColor3f (1.0, 0.0, 0.0);
-    glBegin(GL_LINE_LOOP);
-    glVertex3f(400.0, 0.0, 0.0);
-    glVertex3f(380.0, 10.0, 0.0);
-    glVertex3f(380.0, 0.0, 10.0);
-    glVertex3f(380.0, -10.0, 0.0);
-    glVertex3f(380.0, 0.0, -10.0);
-    glVertex3f(380.0, 10.0, 0.0);
-    glEnd();
-
-    glColor3f (1., 0., 0.);
-    glRasterPos3i(410, 10, 10);
-//     glCallLists(strlen("X"),GL_UNSIGNED_BYTE,"X");
-
-    glColor3f (0.7, 0.7, 0.7);
-    glTranslatef(410.0, 4.0, 4.0);
-    //gluSphere(sphereObj, .0, 16, 16);
-    glTranslatef(-410.0, -4.0, -4.0);
-
-    glColor3f (0., 1., 0.);
-    glRasterPos3i(10, 410, 10);
-    //printString("Y");
-//     glCallLists(strlen("Y"), GL_UNSIGNED_BYTE, "Y");
-
-    glColor3f (1., 1., 0.);
-    glTranslatef(4.0, 410.0, 4.0);
-    //gluSphere(sphereObj, 8.0, 32, 32);
-    glTranslatef(-4.0, -410.0, -4.0);
-
-    glColor3f (0., 0., 1.);
-    glRasterPos3i(10, 10, 410);
-    //printString("Z");
-//     glCallLists(strlen("Z"), GL_UNSIGNED_BYTE, "Z");
-
-    glColor3f (0., 0.7, 0.7);
-    glTranslatef(4.0, 4.0, 410.0);
-    //gluSphere(sphereObj, 10.0, 16, 16);
-    glTranslatef(-4.0, -4.0, -410.0);
-    glLineWidth(0.9);
-    glEndList();
-
+/*
     if (m_sceneObjects.contains(RefPlaneXY))
         glDeleteLists(m_sceneObjects.value(RefPlaneXY).first, 1);
 
@@ -274,8 +182,8 @@ void Plotter3D::initGL()
     glVertex3f(-600.0,525.0, m_depth);
     glEnd();
     glLineWidth(0.9);
-    glEndList();
-    
+    glEndList();*/
+
     GLfloat ambient[] = { .0, .0, .0, 1.0 };
     GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
@@ -314,7 +222,7 @@ void Plotter3D::drawPlots()
 
     // Object Drawing :
     glCallList(m_sceneObjects.value(Axes).first);
-    glCallList(m_sceneObjects.value(RefPlaneXY).first);
+//     glCallList(m_sceneObjects.value(RefPlaneXY).first);
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -465,107 +373,142 @@ void Plotter3D::rotate(int xshift, int yshift)
     GLdouble viewRoty = static_cast<GLdouble>(-yshift);
     GLdouble viewRotx = static_cast<GLdouble>(-xshift);
     m_scale = 1.0;
-
-    GLdouble matrix[16] = {0}; // model view matrix from current OpenGL state
-
-    glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
-
-    GLdouble det; // determinant
-    GLdouble d12, d13, d23, d24, d34, d41;
-    GLdouble tmp[16] = {0}; // Allow out == in
-
-    // Inverse = adjoint / det. (See linear algebra texts.)
-    // pre-compute 2x2 dets for last two rows when computing
-    // cofactors of first two rows.
-
-    //column 1
-    GLdouble m11 = matrix[0*4 + 0];
-    GLdouble m21 = matrix[0*4 + 1];
-    GLdouble m31 = matrix[0*4 + 2];
-    GLdouble m41 = matrix[0*4 + 3];
-
-    //column 2
-    GLdouble m12 = matrix[1*4 + 0];
-    GLdouble m22 = matrix[1*4 + 1];
-    GLdouble m32 = matrix[1*4 + 2];
-    GLdouble m42 = matrix[1*4 + 3];
-
-    //column 3
-    GLdouble m13 = matrix[2*4 + 0];
-    GLdouble m23 = matrix[2*4 + 1];
-    GLdouble m33 = matrix[2*4 + 2];
-    GLdouble m43 = matrix[2*4 + 3];
-
-    //column 4
-    GLdouble m14 = matrix[3*4 + 0];
-    GLdouble m24 = matrix[3*4 + 1];
-    GLdouble m34 = matrix[3*4 + 2];
-    GLdouble m44 = matrix[3*4 + 3];
-
-    d12 = m31*m42-m41*m32;
-    d13 = m31*m43-m41*m33;
-    d23 = m32*m43-m42*m33;
-    d24 = m32*m44-m42*m34;
-    d34 = m33*m44-m43*m34;
-    d41 = m34*m41-m44*m31;
-
-    tmp[0] =  (m22 * d34 - m23 * d24 + m24 * d23);
-    tmp[1] = -(m21 * d34 + m23 * d41 + m24 * d13);
-    tmp[2] =  (m21 * d24 + m22 * d41 + m24 * d12);
-    tmp[3] = -(m21 * d23 - m22 * d13 + m23 * d12);
-
-    // Compute determinant as early as possible using these cofactors.
-    det = m11 * tmp[0] + m12 * tmp[1] + m13 * tmp[2] + m14 * tmp[3];
-
-    // Run singularity test: if det != 0 is not a singular matrix, then all calculations are safe
-    if (!isSimilar(det, 0.0)) {
-        GLdouble invDet = 1.0 / det;
-        // Compute rest of inverse.
-        tmp[0] *= invDet;
-        tmp[1] *= invDet;
-        tmp[2] *= invDet;
-        tmp[3] *= invDet;
-
-        tmp[4] = -(m12 * d34 - m13 * d24 + m14 * d23) * invDet;
-        tmp[5] =  (m11 * d34 + m13 * d41 + m14 * d13) * invDet;
-        tmp[6] = -(m11 * d24 + m12 * d41 + m14 * d12) * invDet;
-        tmp[7] =  (m11 * d23 - m12 * d13 + m13 * d12) * invDet;
-
-        // Pre-compute 2x2 dets for first two rows when computing
-        // cofactors of last two rows.
-        d12 = m11*m22-m21*m12;
-        d13 = m11*m23-m21*m13;
-        d23 = m12*m23-m22*m13;
-        d24 = m12*m24-m22*m14;
-        d34 = m13*m24-m23*m14;
-        d41 = m14*m21-m24*m11;
-
-        tmp[8] =  (m42 * d34 - m43 * d24 + m44 * d23) * invDet;
-        tmp[9] = -(m41 * d34 + m43 * d41 + m44 * d13) * invDet;
-        tmp[10] =  (m41 * d24 + m42 * d41 + m44 * d12) * invDet;
-        tmp[11] = -(m41 * d23 - m42 * d13 + m43 * d12) * invDet;
-        tmp[12] = -(m32 * d34 - m33 * d24 + m34 * d23) * invDet;
-        tmp[13] =  (m31 * d34 + m33 * d41 + m34 * d13) * invDet;
-        tmp[14] = -(m31 * d24 + m32 * d41 + m34 * d12) * invDet;
-        tmp[15] =  (m31 * d23 - m32 * d13 + m33 * d12) * invDet;
-
-        double invMatrix[16] = {0}; // inverse of matrix
-
-        memcpy(invMatrix, tmp, 16*sizeof(GLdouble));
-
+    
+    if (!m_rotFixed.isNull())
+    {
         GLdouble ax = viewRoty;
         GLdouble ay = viewRotx;
         double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
 
-        // Use inverse matrix to determine local axis of rotation
-        m_rotx = invMatrix[0]*ax + invMatrix[4]*ay;
-        m_roty = invMatrix[1]*ax + invMatrix[5]*ay;
-        m_rotz = invMatrix[2]*ax + invMatrix[6]*ay;
-
-        glRotatef(angle, m_rotx, m_roty, m_rotz);
-
+        glRotatef(angle, m_rotFixed.x(), m_rotFixed.y(), m_rotFixed.z());
+        
         renderGL();
     }
+    else
+    {
+
+        GLdouble matrix[16] = {0}; // model view matrix from current OpenGL state
+
+        glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
+
+        GLdouble det; // determinant
+        GLdouble d12, d13, d23, d24, d34, d41;
+        GLdouble tmp[16] = {0}; // Allow out == in
+
+        // Inverse = adjoint / det. (See linear algebra texts.)
+        // pre-compute 2x2 dets for last two rows when computing
+        // cofactors of first two rows.
+
+        //column 1
+        GLdouble m11 = matrix[0*4 + 0];
+        GLdouble m21 = matrix[0*4 + 1];
+        GLdouble m31 = matrix[0*4 + 2];
+        GLdouble m41 = matrix[0*4 + 3];
+
+        //column 2
+        GLdouble m12 = matrix[1*4 + 0];
+        GLdouble m22 = matrix[1*4 + 1];
+        GLdouble m32 = matrix[1*4 + 2];
+        GLdouble m42 = matrix[1*4 + 3];
+
+        //column 3
+        GLdouble m13 = matrix[2*4 + 0];
+        GLdouble m23 = matrix[2*4 + 1];
+        GLdouble m33 = matrix[2*4 + 2];
+        GLdouble m43 = matrix[2*4 + 3];
+
+        //column 4
+        GLdouble m14 = matrix[3*4 + 0];
+        GLdouble m24 = matrix[3*4 + 1];
+        GLdouble m34 = matrix[3*4 + 2];
+        GLdouble m44 = matrix[3*4 + 3];
+
+        d12 = m31*m42-m41*m32;
+        d13 = m31*m43-m41*m33;
+        d23 = m32*m43-m42*m33;
+        d24 = m32*m44-m42*m34;
+        d34 = m33*m44-m43*m34;
+        d41 = m34*m41-m44*m31;
+
+        tmp[0] =  (m22 * d34 - m23 * d24 + m24 * d23);
+        tmp[1] = -(m21 * d34 + m23 * d41 + m24 * d13);
+        tmp[2] =  (m21 * d24 + m22 * d41 + m24 * d12);
+        tmp[3] = -(m21 * d23 - m22 * d13 + m23 * d12);
+
+        // Compute determinant as early as possible using these cofactors.
+        det = m11 * tmp[0] + m12 * tmp[1] + m13 * tmp[2] + m14 * tmp[3];
+
+        // Run singularity test: if det != 0 is not a singular matrix, then all calculations are safe
+        if (!isSimilar(det, 0.0)) {
+            GLdouble invDet = 1.0 / det;
+            // Compute rest of inverse.
+            tmp[0] *= invDet;
+            tmp[1] *= invDet;
+            tmp[2] *= invDet;
+            tmp[3] *= invDet;
+
+            tmp[4] = -(m12 * d34 - m13 * d24 + m14 * d23) * invDet;
+            tmp[5] =  (m11 * d34 + m13 * d41 + m14 * d13) * invDet;
+            tmp[6] = -(m11 * d24 + m12 * d41 + m14 * d12) * invDet;
+            tmp[7] =  (m11 * d23 - m12 * d13 + m13 * d12) * invDet;
+
+            // Pre-compute 2x2 dets for first two rows when computing
+            // cofactors of last two rows.
+            d12 = m11*m22-m21*m12;
+            d13 = m11*m23-m21*m13;
+            d23 = m12*m23-m22*m13;
+            d24 = m12*m24-m22*m14;
+            d34 = m13*m24-m23*m14;
+            d41 = m14*m21-m24*m11;
+
+            tmp[8] =  (m42 * d34 - m43 * d24 + m44 * d23) * invDet;
+            tmp[9] = -(m41 * d34 + m43 * d41 + m44 * d13) * invDet;
+            tmp[10] =  (m41 * d24 + m42 * d41 + m44 * d12) * invDet;
+            tmp[11] = -(m41 * d23 - m42 * d13 + m43 * d12) * invDet;
+            tmp[12] = -(m32 * d34 - m33 * d24 + m34 * d23) * invDet;
+            tmp[13] =  (m31 * d34 + m33 * d41 + m34 * d13) * invDet;
+            tmp[14] = -(m31 * d24 + m32 * d41 + m34 * d12) * invDet;
+            tmp[15] =  (m31 * d23 - m32 * d13 + m33 * d12) * invDet;
+
+            double invMatrix[16] = {0}; // inverse of matrix
+
+            memcpy(invMatrix, tmp, 16*sizeof(GLdouble));
+
+            GLdouble ax = viewRoty;
+            GLdouble ay = viewRotx;
+            double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
+
+            // Use inverse matrix to determine local axis of rotation
+            m_rotx = invMatrix[0]*ax + invMatrix[4]*ay;
+            m_roty = invMatrix[1]*ax + invMatrix[5]*ay;
+            m_rotz = invMatrix[2]*ax + invMatrix[6]*ay;
+
+            glRotatef(angle, m_rotx, m_roty, m_rotz);
+
+            renderGL();
+        }
+    }
+}
+
+CartesianAxis Plotter3D::selectAxisArrow(int x, int y)
+{
+    GLint viewport[4];
+    GLubyte pixel[3];
+
+    glGetIntegerv(GL_VIEWPORT,viewport);
+
+    glReadPixels(x, viewport[3]-y, 1, 1, GL_RGB,GL_UNSIGNED_BYTE,(void *)pixel);
+
+    if (memcmp(pixel, XAxisArrowColor, sizeof(pixel)) == 0) return XAxis;
+    if (memcmp(pixel, YAxisArrowColor, sizeof(pixel)) == 0) return YAxis;
+    if (memcmp(pixel, ZAxisArrowColor, sizeof(pixel)) == 0) return ZAxis;
+
+    return InvalidAxis;
+}
+
+void Plotter3D::fixRotationAxis(const QVector3D& vec)
+{
+    m_rotFixed = vec;
 }
 
 void Plotter3D::addPlots(PlotItem* item)
@@ -661,3 +604,73 @@ PlotItem* Plotter3D::itemAt(int row) const
 
     return plot;
 }
+
+void Plotter3D::initAxes()
+{
+    if (m_sceneObjects.contains(Axes))
+        glDeleteLists(m_sceneObjects.value(Axes).first, 1);
+
+    const GLubyte XAxisColor[] = {250, 0, 0};
+    const GLubyte YAxisColor[] = {0, 255, 0};
+    const GLubyte ZAxisColor[] = {0, 0, 255};
+ 
+    m_sceneObjects[Axes] = qMakePair(glGenLists(1), true);
+    glNewList(m_sceneObjects.value(Axes).first, GL_COMPILE );
+
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glLineWidth(1.5f);
+    
+    glBegin( GL_LINES );
+    glColor3ubv(XAxisColor);
+    glVertex3f( 400.0, 0.0, 0.0);
+    glVertex3f(   0.0, 0.0, 0.0);
+    glColor3ubv(YAxisColor);
+    glVertex3f(0.0, 400.0, 0.0);
+    glVertex3f(0.0,   0.0, 0.0);
+    glColor3ubv(ZAxisColor);
+    glVertex3f(0.0, 0.0, 400.0);
+    glVertex3f(0.0, 0.0,   0.0);
+    glEnd();
+    
+    glLineWidth(1.0f);
+
+    glDisable(GL_BLEND);
+    glDisable(GL_LINE_SMOOTH);
+
+    glBegin(GL_TRIANGLE_FAN);
+    glColor3ubv(XAxisArrowColor);
+    glVertex3f(400.0, 0.0, 0.0);
+    glVertex3f(380.0, 10.0, 0.0);
+    glVertex3f(380.0, 0.0, 10.0);
+    glVertex3f(380.0, -10.0, 0.0);
+    glVertex3f(380.0, 0.0, -10.0);
+    glVertex3f(380.0, 10.0, 0.0);
+    glEnd();
+
+    glBegin(GL_TRIANGLE_FAN);
+    glColor3ubv(YAxisArrowColor);
+    glVertex3f(0.0, 400.0, 0.0);
+    glVertex3f(10.0, 380.0, 0.0);
+    glVertex3f(0.0, 380.0, 10.0);
+    glVertex3f(-10.0, 380.0, 0.0);
+    glVertex3f(.0, 380.0, -10.0);
+    glVertex3f(10.0, 380.0, 0.0);
+    glEnd();
+
+    glBegin(GL_TRIANGLE_FAN);
+    glColor3ubv(ZAxisArrowColor);
+    glVertex3f(0.0, 0.0, 400.0);
+    glVertex3f(10.0, 0.0, 380.0);
+    glVertex3f(0.0, 10.0, 380.0);
+    glVertex3f(-10.0, 0.0, 380.0);
+    glVertex3f(0.0, -10.0, 380.0);
+    glVertex3f(10.0, 0.0, 380.0);
+    glEnd();
+
+    glEndList();
+}
+
