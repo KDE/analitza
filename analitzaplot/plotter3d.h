@@ -82,7 +82,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }
 //         void setPlottingAttributes(PlotStyle st) { m_plotStyle = ps; }
         PlottingFocusPolicy plottingFocusPolicy() const { return m_plottingFocusPolicy; }
-        void setPlottingFocusPolicy(PlottingFocusPolicy fp) { m_plottingFocusPolicy = fp;}
+        void setPlottingFocusPolicy(PlottingFocusPolicy fp);
 
         /** Set the scale of all the scene by @p factor */
         void scale(GLdouble factor);

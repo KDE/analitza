@@ -273,6 +273,13 @@ void Plotter3D::setModel(QAbstractItemModel* f)
     modelChanged();
 }
 
+void Plotter3D::setPlottingFocusPolicy(PlottingFocusPolicy fp)
+{
+    m_plottingFocusPolicy = fp;
+    
+    updatePlots(QModelIndex(), 0, m_model->rowCount()-1);
+}
+
 void Plotter3D::scale(GLdouble factor)
 {
     m_scale = factor;
