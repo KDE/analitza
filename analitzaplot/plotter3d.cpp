@@ -120,8 +120,8 @@ void Plotter3D::setViewport(const QRectF& vp)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef( 0.0, 0.0, -800.0 );
-    glRotatef(45, -1, 0, 0);
-    glRotatef(135, 0, 0, -1);
+    glRotatef(-45, 1, 0, 0);
+    glRotatef(-135, 0, 0, 1);
 
     m_viewport = vp;
     
@@ -136,22 +136,19 @@ void Plotter3D::drawPlots()
     glCallList(m_sceneObjects.value(Axes));
     glCallList(m_sceneObjects.value(RefPlaneXY));
 
-    if (!m_simpleRotation)
-    {
-        if (!m_hidehints)
-            switch (m_currentAxisIndicator)
-            {
-                case XAxis:
-                        glCallList(m_sceneObjects.value(XArrowAxisHint));
+    if (!m_simpleRotation && !m_hidehints)
+        switch (m_currentAxisIndicator)
+        {
+            case XAxis:
+                glCallList(m_sceneObjects.value(XArrowAxisHint));
                 break;
-                case YAxis:
-                        glCallList(m_sceneObjects.value(YArrowAxisHint));
+            case YAxis:
+                glCallList(m_sceneObjects.value(YArrowAxisHint));
                 break;
-                case ZAxis:
-                        glCallList(m_sceneObjects.value(ZArrowAxisHint));
+            case ZAxis:
+                glCallList(m_sceneObjects.value(ZArrowAxisHint));
                 break;
-            }
-    }
+        }
     
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -289,9 +286,7 @@ void Plotter3D::rotate(int dx, int dy)
     GLdouble ax = -dy;
     GLdouble ay = -dx;
     double angle = sqrt(ax*ax + ay*ay)/(m_viewport.width() + 1)*360.0;
-    
     QVector3D rot;
-    
     if (m_simpleRotation) {
         rot.setX(dy);
         rot.setY(dx);
@@ -307,7 +302,6 @@ void Plotter3D::rotate(int dx, int dy)
         matrix4 = matrix4.inverted(&couldInvert);
 
         if (couldInvert) {
-            QVector3D rotation(ax, ay, 0);
             rot.setX(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay);
             rot.setY(matrix4.row(0).y()*ax + matrix4.row(1).y()*ay);
             rot.setZ(matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
@@ -315,10 +309,10 @@ void Plotter3D::rotate(int dx, int dy)
     }
     
     if(!rot.isNull()) {
+        rot.normalize();
         glRotatef(angle, rot.x(), rot.y(), rot.z());
         renderGL();
     }
-        
 }
 
 CartesianAxis Plotter3D::selectAxisArrow(int x, int y)
