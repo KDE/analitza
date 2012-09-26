@@ -396,17 +396,22 @@ void Plotter3D::addPlots(PlotItem* item)
 
         glLineWidth(2.5);
 
-        glBegin(GL_LINES);
+        switch (m_plotStyle)
         {
-            const QVector<QVector3D> points = curve->points();
-
-            //TODO copy approach from plotter 2d and use jumps optimization
-            for (int i = 0; i < points.size() -1 ; ++i)
-            {
-                glVertex3d(points[i].x(), points[i].y(), points[i].z());
-                glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
-            }
+            case Solid: 
+            case Wired: glBegin(GL_LINES); break;
+            case Dots: glBegin(GL_POINTS); break;
         }
+            
+        const QVector<QVector3D> points = curve->points();
+
+        //TODO copy approach from plotter 2d and use jumps optimization
+        for (int i = 0; i < points.size() -1 ; ++i)
+        {
+            glVertex3d(points[i].x(), points[i].y(), points[i].z());
+            glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
+        }
+        
         glEnd();
         glDisable(GL_LINE_SMOOTH);
     }

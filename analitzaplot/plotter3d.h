@@ -78,8 +78,10 @@ class ANALITZAPLOT_EXPORT Plotter3D
         void setModel(QAbstractItemModel* f);
         QAbstractItemModel* model() const { return m_model; }
 
+        PlotStyle plotStyle() const { return m_plotStyle; }
         void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }
 //         void setPlottingAttributes(PlotStyle st) { m_plotStyle = ps; }
+        PlottingFocusPolicy plottingFocusPolicy() const { return m_plottingFocusPolicy; }
         void setPlottingFocusPolicy(PlottingFocusPolicy fp) { m_plottingFocusPolicy = fp;}
 
         /** Set the scale of all the scene by @p factor */
