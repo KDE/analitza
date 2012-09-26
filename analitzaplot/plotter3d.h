@@ -100,9 +100,9 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         /** Hide the current indicator of the axis */
         void hideAxisHint();
-        
-        /**  If the flag @p simplerot is true the rotation ignores any fixed or free direction. */
-        void toggleUseSimpleRotation(bool simplerot) { m_simpleRotation = simplerot; }
+
+        /**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
+        void setUseSimpleRotation(bool simplerot) { m_simpleRotation = simplerot; }
 
         /**  Get information about the current rotarion approach: if return true then rotation is simple. */
         bool isUsingSimpleRotation() const { return m_simpleRotation; }
