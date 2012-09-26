@@ -642,12 +642,12 @@ PlotItem* Plotter3D::itemAt(int row) const
 
 void Plotter3D::initAxes()
 {
-    if (m_sceneObjects.contains(Axes))
-        glDeleteLists(m_sceneObjects.value(Axes), 1);
-
     const GLubyte XAxisColor[] = {250, 0, 0};
     const GLubyte YAxisColor[] = {0, 255, 0};
-    const GLubyte ZAxisColor[] = {0, 0, 255};
+    const GLubyte ZAxisColor[] = {0, 0, 255};    
+    
+    if (m_sceneObjects.contains(Axes))
+        glDeleteLists(m_sceneObjects.value(Axes), 1);
 
     m_sceneObjects[Axes] = glGenLists(1);
     glNewList(m_sceneObjects.value(Axes), GL_COMPILE );
@@ -707,32 +707,43 @@ void Plotter3D::initAxes()
     glEnd();
 
     glEndList();
-
-    //hints
+    
+    GLUquadricObj *sphereObj;
+    sphereObj = gluNewQuadric();
+    
+    // XArrowAxisHint
     if (m_sceneObjects.contains(XArrowAxisHint))
         glDeleteLists(m_sceneObjects.value(XArrowAxisHint), 1);
 
     m_sceneObjects[XArrowAxisHint] = glGenLists(1);
     glNewList(m_sceneObjects.value(XArrowAxisHint), GL_COMPILE );
 
-    GLUquadricObj *sphereObj;
-    sphereObj = gluNewQuadric();
-
     glColor3ub(XAxisArrowColor[0]/2, XAxisArrowColor[1]/2, XAxisArrowColor[2]/2);
-    glTranslatef(410.0, 0.0, 0.0);
+    glTranslatef(408.0, 0.0, 0.0);
     gluSphere(sphereObj, 8.0, 32, 32);
-    glTranslatef(-410.0, 0.0, 0.0);
-// 
-//     glColor3ub(YAxisArrowColor[0]/2, YAxisArrowColor[1]/2, YAxisArrowColor[2]/2);
-//     glTranslatef(0.0, 400.0, 0.0);
-//     gluSphere(sphereObj, 8.0, 32, 32);
-//     glTranslatef(0.0, -410.0, 0.0);
+    glTranslatef(-408.0, 0.0, 0.0);
+    
+    glEndList();
+    
+    // YArrowAxisHint
 
-//     glColor3ub(ZAxisArrowColor[0]/2, ZAxisArrowColor[1]/2, ZAxisArrowColor[2]/2);
-//     glTranslatef(0.0, 0.0, -410.0);
-//     gluSphere(sphereObj, 8.0, 32, 32);
-//     glTranslatef(0.0, 0.0, -410.0);
+    if (m_sceneObjects.contains(YArrowAxisHint))
+        glDeleteLists(m_sceneObjects.value(YArrowAxisHint), 1);
+
+    m_sceneObjects[YArrowAxisHint] = glGenLists(1);
+    glNewList(m_sceneObjects.value(YArrowAxisHint), GL_COMPILE );
+
+    glColor3ub(YAxisArrowColor[0]/2, YAxisArrowColor[1]/2, YAxisArrowColor[2]/2);
+    glTranslatef(0.0, 408.0, 0.0);
+    gluSphere(sphereObj, 8.0, 32, 32);
+    glTranslatef(0.0, -408.0, 0.0);
 
     glEndList();
+
+    //     glColor3ub(ZAxisArrowColor[0]/2, ZAxisArrowColor[1]/2, ZAxisArrowColor[2]/2);
+//     glTranslatef(0.0, 0.0, -410.0);
+//     gluSphere(sphereObj, 8.0, 32, 32);
+//     glTranslatef(0.0, 0.0, -410.0);
+
 }
 
