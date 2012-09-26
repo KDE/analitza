@@ -136,22 +136,19 @@ void Plotter3D::drawPlots()
     glCallList(m_sceneObjects.value(Axes));
     glCallList(m_sceneObjects.value(RefPlaneXY));
 
-    if (!m_simpleRotation)
-    {
-        if (!m_hidehints)
-            switch (m_currentAxisIndicator)
-            {
-                case XAxis:
-                        glCallList(m_sceneObjects.value(XArrowAxisHint));
+    if (!m_simpleRotation && !m_hidehints)
+        switch (m_currentAxisIndicator)
+        {
+            case XAxis:
+                glCallList(m_sceneObjects.value(XArrowAxisHint));
                 break;
-                case YAxis:
-                        glCallList(m_sceneObjects.value(YArrowAxisHint));
+            case YAxis:
+                glCallList(m_sceneObjects.value(YArrowAxisHint));
                 break;
-                case ZAxis:
-                        glCallList(m_sceneObjects.value(ZArrowAxisHint));
+            case ZAxis:
+                glCallList(m_sceneObjects.value(ZArrowAxisHint));
                 break;
-            }
-    }
+        }
     
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
