@@ -134,9 +134,7 @@ void Plotter3D::drawPlots()
 
     if (m_simpleRotation)
     {
-        glRotatef(m_rot.x(), 1, 0, 0);
-        glRotatef(m_rot.y(), 0, 1, 0);
-        glRotatef(m_rot.z(), 0, 0, 1);
+
     }
     else
     {
@@ -291,8 +289,12 @@ void Plotter3D::rotate(int dx, int dy)
     if (m_simpleRotation)
     {
         m_rot.setX(dy);
-        m_rot.setY(dx);
+        m_rot.setZ(dx);
 
+        glRotatef(m_rot.x(), 1, 0, 0);
+        glRotatef(m_rot.y(), 0, 1, 0);
+        glRotatef(m_rot.z(), 0, 0, 1);
+        
         renderGL();
         
         return ;

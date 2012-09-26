@@ -46,6 +46,10 @@ int main(int argc, char *argv[])
                          "http://www.kde.org");
 
     KCmdLineArgs::init(argc, argv, &aboutData);
+    KCmdLineOptions options;
+    options.add("all-disabled", ki18n("marks all the plots as not visible"));
+    KCmdLineArgs::addCmdLineOptions(options);
+    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     KApplication app;
 
     QMainWindow *mainWindow = new QMainWindow();
@@ -76,6 +80,10 @@ int main(int argc, char *argv[])
     model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x-y*y"), Dim3D).create(Qt::red, "3D"));
 
     //END test calls
+
+    if(args->isSet("all-disabled"))
+        for(int i=0; i<model->rowCount(); ++i)
+            model->setData(model->index(i), false, Qt::CheckStateRole);
 
     QTreeView *viewsource = new QTreeView(tabs);
     viewsource->setModel(model);
