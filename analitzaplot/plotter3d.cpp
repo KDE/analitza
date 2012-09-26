@@ -120,8 +120,8 @@ void Plotter3D::setViewport(const QRectF& vp)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef( 0.0, 0.0, -800.0 );
-    glRotatef(45, -1, 0, 0);
-    glRotatef(135, 0, 0, -1);
+    glRotatef(-45, 1, 0, 0);
+    glRotatef(-135, 0, 0, 1);
 
     m_viewport = vp;
     
@@ -286,12 +286,12 @@ void Plotter3D::rotate(int dx, int dy)
     GLdouble ax = -dy;
     GLdouble ay = -dx;
     double angle = sqrt(ax*ax + ay*ay)/(m_viewport.width() + 1)*360.0;
-    QVector3D m_rot;
+    QVector3D rot;
     if (m_simpleRotation) {
-        m_rot.setX(dy);
-        m_rot.setY(dx);
+        rot.setX(dy);
+        rot.setY(dx);
     } else if (!m_rotFixed.isNull()) {
-        m_rot = m_rotFixed;
+        rot = m_rotFixed;
     } else {
         GLdouble matrix[16] = {0}; // model view matrix from current OpenGL state
 
@@ -302,18 +302,16 @@ void Plotter3D::rotate(int dx, int dy)
         matrix4 = matrix4.inverted(&couldInvert);
 
         if (couldInvert) {
-            QVector3D rotation(ax, ay, 0);
-            m_rot.setX(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay);
-            m_rot.setY(matrix4.row(0).y()*ax + matrix4.row(1).y()*ay);
-            m_rot.setZ(matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
+            rot.setX(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay);
+            rot.setY(matrix4.row(0).y()*ax + matrix4.row(1).y()*ay);
+            rot.setZ(matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
         }
     }
     
-    if(!m_rot.isNull()) {
-        glRotatef(angle, m_rot.x(), m_rot.y(), m_rot.z());
+    if(!rot.isNull()) {
+        glRotatef(angle, rot.x(), rot.y(), rot.z());
         renderGL();
     }
-        
 }
 
 CartesianAxis Plotter3D::selectAxisArrow(int x, int y)
