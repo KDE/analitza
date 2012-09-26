@@ -81,15 +81,18 @@ class ANALITZAPLOT_EXPORT Plotter3D
         /** Set the scale of all the scene by @p factor */
         void scale(GLdouble factor);
 
+        // Advanced rotation features
+
         /** Rotates by @p dx and @p dy in screen coordinates. */
         void rotate(int dx, int dy);
 
+        /** Query if there is a valid axis arrow for @p x and @p y screen coordinates. */
         CartesianAxis selectAxisArrow(int x, int y);
-        
+
         /** Fix the rotation arround @p direction */
         void fixRotation(const QVector3D &direction);
         
-        /** Query if the rotation is fixed by a specific direction */
+        /** Query if the rotation is fixed by a specific direction. */
         bool isRotationFixed() const { return !m_rotFixed.isNull(); }
         
         /** Show a little indicator (as a hint) next to the arrow of @p axis */
@@ -97,6 +100,9 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         /** Hide the current indicator of the axis */
         void hideAxisHint();
+        
+        /**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
+        void toggleUseSimpleRotation(bool simplerot) { m_simpleRotation = simplerot; }
 
     protected:
         void addPlots(PlotItem* item);
@@ -124,6 +130,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         QVector3D m_rotFixed;
         CartesianAxis m_currentAxisIndicator;
         bool m_hidehints;
+        bool m_simpleRotation;
 };
 
 #endif // FUNCTIONSPAINTER3D_H

@@ -54,11 +54,12 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
     : m_model(model)
     , m_depth(-400)
     , m_rotStrength(0)
-    , m_rotx(90.0)
-    , m_roty(90.0)
-    , m_rotz(1.0)
+    , m_rotx(-45.0)
+    , m_roty(0.0)
+    , m_rotz(-135.0)
     , m_currentAxisIndicator(InvalidAxis)
     , m_hidehints(true)
+    , m_simpleRotation(false)
 {
 }
 
@@ -226,19 +227,28 @@ void Plotter3D::drawPlots()
     glCallList(m_sceneObjects.value(Axes));
 //     glCallList(m_sceneObjects.value(RefPlaneXY));
 
-    if (!m_hidehints)
-        switch (m_currentAxisIndicator)
-        {
-            case XAxis:
-                    glCallList(m_sceneObjects.value(XArrowAxisHint));
-            break;
-            case YAxis:
-                    glCallList(m_sceneObjects.value(YArrowAxisHint));
-            break;
-            case ZAxis:
-                    glCallList(m_sceneObjects.value(ZArrowAxisHint));
-            break;
-        }
+    if (m_simpleRotation)
+    {
+        glRotatef(m_rotx, 1, 0, 0);
+        glRotatef(m_roty, 0, 1, 0);
+        glRotatef(m_rotz, 0, 0, 1);
+    }
+    else
+    {
+        if (!m_hidehints)
+            switch (m_currentAxisIndicator)
+            {
+                case XAxis:
+                        glCallList(m_sceneObjects.value(XArrowAxisHint));
+                break;
+                case YAxis:
+                        glCallList(m_sceneObjects.value(YArrowAxisHint));
+                break;
+                case ZAxis:
+                        glCallList(m_sceneObjects.value(ZArrowAxisHint));
+                break;
+            }
+    }
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -384,10 +394,20 @@ void Plotter3D::scale(GLdouble factor)
     renderGL();
 }
 
-void Plotter3D::rotate(int xshift, int yshift)
+void Plotter3D::rotate(int dx, int dy)
 {
-    GLdouble viewRoty = static_cast<GLdouble>(-yshift);
-    GLdouble viewRotx = static_cast<GLdouble>(-xshift);
+    if (m_simpleRotation)
+    {
+        m_rotx -= dy;
+        m_rotz -= dx;
+        
+        renderGL();
+        
+        return ;
+    }
+
+    GLdouble viewRoty = static_cast<GLdouble>(-dy);
+    GLdouble viewRotx = static_cast<GLdouble>(-dx);
     m_scale = 1.0;
 
     if (!m_rotFixed.isNull())

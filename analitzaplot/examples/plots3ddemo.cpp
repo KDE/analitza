@@ -67,6 +67,9 @@ int main(int argc, char *argv[])
     view3d->setModel(model);
     view3d->setSelectionModel(viewsource->selectionModel());
 
+    //NOTE KAlgebra rotation style
+//     view3d->toggleUseSimpleRotation(true);
+    
     PlotsFactory* s = PlotsFactory::self();
     model->addPlot(s->requestPlot(Analitza::Expression("(r,p)->2"), Dim3D).create(Qt::magenta, "cyl"));
     model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), Dim3D).create(Qt::lightGray, "z-map"));
