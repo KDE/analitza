@@ -118,9 +118,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         GLfloat m_depth;
         GLdouble m_scale;
         GLdouble m_rotStrength;
-        GLdouble m_rotx;
-        GLdouble m_roty;
-        GLdouble m_rotz;
+        QVector3D m_rot;
         QVector3D m_rotFixed;
         CartesianAxis m_currentAxisIndicator;
         bool m_hidehints;
