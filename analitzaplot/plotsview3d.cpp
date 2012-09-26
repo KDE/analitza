@@ -102,19 +102,19 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
     CartesianAxis axis = selectAxisArrow(e->x(), e->y());
     showAxisArrowHint(axis);
 
-    if (isRotFixed()) {
-        fixRotationAxis(QVector3D());
+    if (isRotationFixed()) {
+        fixRotation(QVector3D());
         hideAxisHint();
     } else switch (selectAxisArrow(e->x(), e->y()))
     {
         case XAxis: 
-            fixRotationAxis(QVector3D(1,0,0));
+            fixRotation(QVector3D(1,0,0));
             break;
         case YAxis: 
-            fixRotationAxis(QVector3D(0,1,0));
+            fixRotation(QVector3D(0,1,0));
             break;
         case ZAxis: 
-            fixRotationAxis(QVector3D(0,0,1));
+            fixRotation(QVector3D(0,0,1));
             break;
     }
 
