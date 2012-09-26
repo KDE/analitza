@@ -116,6 +116,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         PlotItem *itemAt(int row) const;
 
         void initAxes();
+        void initRefPlanes();
 
         QAbstractItemModel* m_model;
         

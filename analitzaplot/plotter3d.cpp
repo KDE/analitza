@@ -72,7 +72,6 @@ Plotter3D::~Plotter3D()
     glDeleteLists(m_sceneObjects.value(XArrowAxisHint), 1);
     glDeleteLists(m_sceneObjects.value(YArrowAxisHint), 1);
     glDeleteLists(m_sceneObjects.value(ZArrowAxisHint), 1);
-
 }
 
 void Plotter3D::initGL()
@@ -94,6 +93,7 @@ void Plotter3D::initGL()
     glClearColor(0,0,0,0);
 
     initAxes();
+    initRefPlanes();
 
     GLfloat ambient[] = { .0, .0, .0, 1.0 };
     GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
@@ -125,6 +125,8 @@ void Plotter3D::setViewport(const QRectF& vp)
     glRotatef(135, 0, 0, -1);
 
     m_viewport = vp;
+    
+    renderGL();
 }
 
 void Plotter3D::drawPlots()
@@ -133,7 +135,7 @@ void Plotter3D::drawPlots()
 
     // Object Drawing :
     glCallList(m_sceneObjects.value(Axes));
-//     glCallList(m_sceneObjects.value(RefPlaneXY));
+    glCallList(m_sceneObjects.value(RefPlaneXY));
 
     if (m_simpleRotation)
     {
@@ -155,7 +157,7 @@ void Plotter3D::drawPlots()
                 break;
             }
     }
-
+    
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
@@ -306,7 +308,6 @@ void Plotter3D::rotate(int dx, int dy)
     GLdouble viewRoty = static_cast<GLdouble>(-dy);
     GLdouble viewRotx = static_cast<GLdouble>(-dx);
 
-    m_scale = 1.0;
     GLdouble ax = -dy;
     GLdouble ay = -dx;
 
@@ -591,4 +592,87 @@ void Plotter3D::initAxes()
 
     glEndList();
 }
+
+void Plotter3D::initRefPlanes()
+{
+    if (m_sceneObjects.contains(RefPlaneXY))
+        glDeleteLists(m_sceneObjects.value(RefPlaneXY), 1);
+
+    m_sceneObjects[RefPlaneXY] = glGenLists(1);
+
+    glNewList(m_sceneObjects.value(RefPlaneXY), GL_COMPILE );
+    glLineWidth(1);
+    glColor3f (0.8, 0., 0.7);
+    glBegin( GL_LINES );
+    glVertex3f(-150.0, 600.0, m_depth);
+    glVertex3f(-150.0,-600.0, m_depth);
+    glVertex3f(0.0, 600.0, m_depth);
+    glVertex3f(0.0,-600.0, m_depth);
+
+    glVertex3f(150.0, 600.0, m_depth);
+    glVertex3f(150.0,-600.0, m_depth);
+    glVertex3f(600.0, -150.0, m_depth);
+    glVertex3f(-600.0,-150.0, m_depth);
+
+    glVertex3f(600.0, 0.0, m_depth);
+    glVertex3f(-600.0, 0.0, m_depth);
+    glVertex3f(600.0, 150.0, m_depth);
+    glVertex3f(-600.0, 150.0, m_depth);
+
+    glVertex3f(-75.0, 600.0, m_depth);
+    glVertex3f(-75.0,-600.0, m_depth);
+    glVertex3f(-225.0, 600.0, m_depth);
+    glVertex3f(-225.0,-600.0, m_depth);
+    glVertex3f(-300.0, 600.0, m_depth);
+    glVertex3f(-300.0,-600.0, m_depth);
+    glVertex3f(-375.0, 600.0, m_depth);
+    glVertex3f(-375.0,-600.0, m_depth);
+    glVertex3f(-450.0, 600.0, m_depth);
+    glVertex3f(-450.0,-600.0, m_depth);
+    glVertex3f(-525.0, 600.0, m_depth);
+    glVertex3f(-525.0,-600.0, m_depth);
+
+    glVertex3f(75.0, 600.0, m_depth);
+    glVertex3f(75.0,-600.0, m_depth);
+    glVertex3f(225.0, 600.0, m_depth);
+    glVertex3f(225.0,-600.0, m_depth);
+    glVertex3f(300.0, 600.0, m_depth);
+    glVertex3f(300.0,-600.0, m_depth);
+    glVertex3f(375.0, 600.0, m_depth);
+    glVertex3f(375.0,-600.0, m_depth);
+    glVertex3f(450.0, 600.0, m_depth);
+    glVertex3f(450.0,-600.0, m_depth);
+    glVertex3f(525.0, 600.0, m_depth);
+    glVertex3f(525.0,-600.0, m_depth);
+
+    glVertex3f(600.0,-75.0, m_depth);
+    glVertex3f(-600.0,-75.0, m_depth);
+    glVertex3f(600.0,-225.0, m_depth);
+    glVertex3f(-600.0,-225.0, m_depth);
+    glVertex3f(600.0,-300.0, m_depth);
+    glVertex3f(-600.0,-300.0, m_depth);
+    glVertex3f(600.0,-375.0, m_depth);
+    glVertex3f(-600.0,-375.0, m_depth);
+    glVertex3f(600.0,-450.0, m_depth);
+    glVertex3f(-600.0,-450.0, m_depth);
+    glVertex3f(600.0,-525.0, m_depth);
+    glVertex3f(-600.0,-525.0, m_depth);
+
+    glVertex3f(600.0,75.0, m_depth);
+    glVertex3f(-600.0,75.0, m_depth);
+    glVertex3f(600.0,225.0, m_depth);
+    glVertex3f(-600.0,225.0, m_depth);
+    glVertex3f(600.0,300.0, m_depth);
+    glVertex3f(-600.0,300.0, m_depth);
+    glVertex3f(600.0,375.0, m_depth);
+    glVertex3f(-600.0,375.0, m_depth);
+    glVertex3f(600.0,450.0, m_depth);
+    glVertex3f(-600.0,450.0, m_depth);
+    glVertex3f(600.0,525.0, m_depth);
+    glVertex3f(-600.0,525.0, m_depth);
+    glEnd();
+    glLineWidth(0.9);
+    glEndList();
+}
+
 
