@@ -718,29 +718,20 @@ void Plotter3D::initAxes()
     GLUquadricObj *sphereObj;
     sphereObj = gluNewQuadric();
 
-//     glColor3f (0.7, 0.7, 0.7);
-//     glTranslatef(410.0, 4.0, 4.0);
-//     gluSphere(sphereObj, .0, 16, 16);
-//     glTranslatef(-410.0, -4.0, -4.0);
-
-    glColor3ub(XAxisArrowColor[0]/2, XAxisArrowColor[1]/2, XAxisArrowColor[2]/2);
-    glTranslatef(410.0, 0.0, 0.0);
-    gluSphere(sphereObj, 8.0, 32, 32);
-    glTranslatef(-410.0, 0.0, 0.0);
-
-//     glColor3f (0., 0., 1.);
-//     glRasterPos3i(10, 10, 410);
-//     //printString("Z");
-//     glCallLists(strlen("Z"),
-//                 GL_UNSIGNED_BYTE,
-//                 "Z");
+//     glColor3ub(XAxisArrowColor[0]/2, XAxisArrowColor[1]/2, XAxisArrowColor[2]/2);
+//     glTranslatef(410.0, 0.0, 0.0);
+//     gluSphere(sphereObj, 8.0, 32, 32);
+//     glTranslatef(-410.0, 0.0, 0.0);
 // 
-//     glColor3f (0., 0.7, 0.7);
-//     glTranslatef(4.0, 4.0, 410.0);
-//     //gluSphere(sphereObj, 10.0, 16, 16);
-//     glTranslatef(-4.0, -4.0, -410.0);
-//     glLineWidth(0.9);
-//     glEndList();
+//     glColor3ub(YAxisArrowColor[0]/2, YAxisArrowColor[1]/2, YAxisArrowColor[2]/2);
+//     glTranslatef(0.0, 400.0, 0.0);
+//     gluSphere(sphereObj, 8.0, 32, 32);
+//     glTranslatef(0.0, -410.0, 0.0);
+
+//     glColor3ub(ZAxisArrowColor[0]/2, ZAxisArrowColor[1]/2, ZAxisArrowColor[2]/2);
+//     glTranslatef(0.0, 0.0, -410.0);
+//     gluSphere(sphereObj, 8.0, 32, 32);
+//     glTranslatef(0.0, 0.0, -410.0);
 
     glEndList();
 }
