@@ -57,6 +57,8 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
     , m_rotx(90.0)
     , m_roty(90.0)
     , m_rotz(1.0)
+    , m_currentAxisIndicator(InvalidAxis)
+    , m_hidehints(true)
 {
 }
 
@@ -66,9 +68,9 @@ Plotter3D::~Plotter3D()
     for (int i = 0; i < m_itemGeometries.size(); ++i)
         glDeleteLists(m_itemGeometries.value(itemAt(i)), 1);
 
-    glDeleteLists(m_sceneObjects.value(Axes).first, 1);
-    glDeleteLists(m_sceneObjects.value(RefPlaneXY).first, 1);
-    
+    glDeleteLists(m_sceneObjects.value(Axes), 1);
+    glDeleteLists(m_sceneObjects.value(RefPlaneXY), 1);
+
 }
 
 void Plotter3D::initGL()
@@ -90,7 +92,7 @@ void Plotter3D::initGL()
     glClearColor(0,0,0,0);
 
     initAxes();
-        
+
 //TODO efecto de tranaparente al draw     //pasar a draw para efecto de transparente a current surface plot
 //     /// For drawing Lines :
 //     if(LocalScene.smoothline == 1) {
@@ -104,85 +106,85 @@ void Plotter3D::initGL()
 //         glDisable(GL_BLEND);
 //     }
 
-/*
-    if (m_sceneObjects.contains(RefPlaneXY))
-        glDeleteLists(m_sceneObjects.value(RefPlaneXY).first, 1);
+    /*
+        if (m_sceneObjects.contains(RefPlaneXY))
+            glDeleteLists(m_sceneObjects.value(RefPlaneXY), 1);
 
-    m_sceneObjects[RefPlaneXY] = qMakePair(glGenLists(1), true);
+        m_sceneObjects[RefPlaneXY] = glGenLists(1);
 
-    glNewList(m_sceneObjects.value(RefPlaneXY).first, GL_COMPILE );
-    glLineWidth(1);
-    glColor3f (0.8, 0., 0.7);
-    glBegin( GL_LINES );
-    glVertex3f(-150.0, 600.0, m_depth);
-    glVertex3f(-150.0,-600.0, m_depth);
-    glVertex3f(0.0, 600.0, m_depth);
-    glVertex3f(0.0,-600.0, m_depth);
+        glNewList(m_sceneObjects.value(RefPlaneXY), GL_COMPILE );
+        glLineWidth(1);
+        glColor3f (0.8, 0., 0.7);
+        glBegin( GL_LINES );
+        glVertex3f(-150.0, 600.0, m_depth);
+        glVertex3f(-150.0,-600.0, m_depth);
+        glVertex3f(0.0, 600.0, m_depth);
+        glVertex3f(0.0,-600.0, m_depth);
 
-    glVertex3f(150.0, 600.0, m_depth);
-    glVertex3f(150.0,-600.0, m_depth);
-    glVertex3f(600.0, -150.0, m_depth);
-    glVertex3f(-600.0,-150.0, m_depth);
+        glVertex3f(150.0, 600.0, m_depth);
+        glVertex3f(150.0,-600.0, m_depth);
+        glVertex3f(600.0, -150.0, m_depth);
+        glVertex3f(-600.0,-150.0, m_depth);
 
-    glVertex3f(600.0, 0.0, m_depth);
-    glVertex3f(-600.0, 0.0, m_depth);
-    glVertex3f(600.0, 150.0, m_depth);
-    glVertex3f(-600.0, 150.0, m_depth);
+        glVertex3f(600.0, 0.0, m_depth);
+        glVertex3f(-600.0, 0.0, m_depth);
+        glVertex3f(600.0, 150.0, m_depth);
+        glVertex3f(-600.0, 150.0, m_depth);
 
-    glVertex3f(-75.0, 600.0, m_depth);
-    glVertex3f(-75.0,-600.0, m_depth);
-    glVertex3f(-225.0, 600.0, m_depth);
-    glVertex3f(-225.0,-600.0, m_depth);
-    glVertex3f(-300.0, 600.0, m_depth);
-    glVertex3f(-300.0,-600.0, m_depth);
-    glVertex3f(-375.0, 600.0, m_depth);
-    glVertex3f(-375.0,-600.0, m_depth);
-    glVertex3f(-450.0, 600.0, m_depth);
-    glVertex3f(-450.0,-600.0, m_depth);
-    glVertex3f(-525.0, 600.0, m_depth);
-    glVertex3f(-525.0,-600.0, m_depth);
+        glVertex3f(-75.0, 600.0, m_depth);
+        glVertex3f(-75.0,-600.0, m_depth);
+        glVertex3f(-225.0, 600.0, m_depth);
+        glVertex3f(-225.0,-600.0, m_depth);
+        glVertex3f(-300.0, 600.0, m_depth);
+        glVertex3f(-300.0,-600.0, m_depth);
+        glVertex3f(-375.0, 600.0, m_depth);
+        glVertex3f(-375.0,-600.0, m_depth);
+        glVertex3f(-450.0, 600.0, m_depth);
+        glVertex3f(-450.0,-600.0, m_depth);
+        glVertex3f(-525.0, 600.0, m_depth);
+        glVertex3f(-525.0,-600.0, m_depth);
 
-    glVertex3f(75.0, 600.0, m_depth);
-    glVertex3f(75.0,-600.0, m_depth);
-    glVertex3f(225.0, 600.0, m_depth);
-    glVertex3f(225.0,-600.0, m_depth);
-    glVertex3f(300.0, 600.0, m_depth);
-    glVertex3f(300.0,-600.0, m_depth);
-    glVertex3f(375.0, 600.0, m_depth);
-    glVertex3f(375.0,-600.0, m_depth);
-    glVertex3f(450.0, 600.0, m_depth);
-    glVertex3f(450.0,-600.0, m_depth);
-    glVertex3f(525.0, 600.0, m_depth);
-    glVertex3f(525.0,-600.0, m_depth);
+        glVertex3f(75.0, 600.0, m_depth);
+        glVertex3f(75.0,-600.0, m_depth);
+        glVertex3f(225.0, 600.0, m_depth);
+        glVertex3f(225.0,-600.0, m_depth);
+        glVertex3f(300.0, 600.0, m_depth);
+        glVertex3f(300.0,-600.0, m_depth);
+        glVertex3f(375.0, 600.0, m_depth);
+        glVertex3f(375.0,-600.0, m_depth);
+        glVertex3f(450.0, 600.0, m_depth);
+        glVertex3f(450.0,-600.0, m_depth);
+        glVertex3f(525.0, 600.0, m_depth);
+        glVertex3f(525.0,-600.0, m_depth);
 
-    glVertex3f(600.0,-75.0, m_depth);
-    glVertex3f(-600.0,-75.0, m_depth);
-    glVertex3f(600.0,-225.0, m_depth);
-    glVertex3f(-600.0,-225.0, m_depth);
-    glVertex3f(600.0,-300.0, m_depth);
-    glVertex3f(-600.0,-300.0, m_depth);
-    glVertex3f(600.0,-375.0, m_depth);
-    glVertex3f(-600.0,-375.0, m_depth);
-    glVertex3f(600.0,-450.0, m_depth);
-    glVertex3f(-600.0,-450.0, m_depth);
-    glVertex3f(600.0,-525.0, m_depth);
-    glVertex3f(-600.0,-525.0, m_depth);
+        glVertex3f(600.0,-75.0, m_depth);
+        glVertex3f(-600.0,-75.0, m_depth);
+        glVertex3f(600.0,-225.0, m_depth);
+        glVertex3f(-600.0,-225.0, m_depth);
+        glVertex3f(600.0,-300.0, m_depth);
+        glVertex3f(-600.0,-300.0, m_depth);
+        glVertex3f(600.0,-375.0, m_depth);
+        glVertex3f(-600.0,-375.0, m_depth);
+        glVertex3f(600.0,-450.0, m_depth);
+        glVertex3f(-600.0,-450.0, m_depth);
+        glVertex3f(600.0,-525.0, m_depth);
+        glVertex3f(-600.0,-525.0, m_depth);
 
-    glVertex3f(600.0,75.0, m_depth);
-    glVertex3f(-600.0,75.0, m_depth);
-    glVertex3f(600.0,225.0, m_depth);
-    glVertex3f(-600.0,225.0, m_depth);
-    glVertex3f(600.0,300.0, m_depth);
-    glVertex3f(-600.0,300.0, m_depth);
-    glVertex3f(600.0,375.0, m_depth);
-    glVertex3f(-600.0,375.0, m_depth);
-    glVertex3f(600.0,450.0, m_depth);
-    glVertex3f(-600.0,450.0, m_depth);
-    glVertex3f(600.0,525.0, m_depth);
-    glVertex3f(-600.0,525.0, m_depth);
-    glEnd();
-    glLineWidth(0.9);
-    glEndList();*/
+        glVertex3f(600.0,75.0, m_depth);
+        glVertex3f(-600.0,75.0, m_depth);
+        glVertex3f(600.0,225.0, m_depth);
+        glVertex3f(-600.0,225.0, m_depth);
+        glVertex3f(600.0,300.0, m_depth);
+        glVertex3f(-600.0,300.0, m_depth);
+        glVertex3f(600.0,375.0, m_depth);
+        glVertex3f(-600.0,375.0, m_depth);
+        glVertex3f(600.0,450.0, m_depth);
+        glVertex3f(-600.0,450.0, m_depth);
+        glVertex3f(600.0,525.0, m_depth);
+        glVertex3f(-600.0,525.0, m_depth);
+        glEnd();
+        glLineWidth(0.9);
+        glEndList();*/
 
     GLfloat ambient[] = { .0, .0, .0, 1.0 };
     GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
@@ -221,12 +223,26 @@ void Plotter3D::drawPlots()
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Object Drawing :
-    glCallList(m_sceneObjects.value(Axes).first);
-//     glCallList(m_sceneObjects.value(RefPlaneXY).first);
+    glCallList(m_sceneObjects.value(Axes));
+//     glCallList(m_sceneObjects.value(RefPlaneXY));
+
+    if (!m_hidehints)
+        switch (m_currentAxisIndicator)
+        {
+            case XAxis:
+                    glCallList(m_sceneObjects.value(XArrowAxisHint));
+            break;
+            case YAxis:
+                    glCallList(m_sceneObjects.value(YArrowAxisHint));
+            break;
+            case ZAxis:
+                    glCallList(m_sceneObjects.value(ZArrowAxisHint));
+            break;
+        }
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    
+
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1.0, 1.0); //NOTE we can parametrized this args as members
 
@@ -240,10 +256,10 @@ void Plotter3D::drawPlots()
         glDisable(GL_POLYGON_OFFSET_FILL);
         glDisable(GL_LIGHTING);
         glDisable(GL_LIGHT0);
-    
+
         return ;
     }
-    
+
     //NOTE si esto pasa entonces quiere decir que el proxy empezado a filtrar otros items
     // y si es asi borro todo lo que esta agregado al la memoria de la tarjeta
     //esto se hace pues m_itemGeometries es una copia del estado actual de model
@@ -285,10 +301,10 @@ void Plotter3D::drawPlots()
     }
 
     glPopMatrix();
-// 
+//
 // //     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, LocalScene.frontcol);
 // //     glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, LocalScene.backcol);
-// 
+//
     glDisable(GL_POLYGON_OFFSET_FILL);
     glDisable(GL_LIGHTING);
     glDisable(GL_LIGHT0);
@@ -308,22 +324,22 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
 {
     Q_ASSERT(!parent.isValid());
     Q_UNUSED(parent);
-    
+
     if (m_model->rowCount() == 0)
     {
         for(int i=s; i<=e; i++) {
             PlotItem *item = itemAt(i);
-            
+
             if (item && item->spaceDimension() == Dim3D && item->isVisible()) {
                 addPlots(item);
             }
         }
 
         renderGL();
-        
+
         return ;
     }
-    
+
     for(int i=s; i<=e; i++) {
         PlotItem *item = itemAt(i);
 
@@ -333,8 +349,8 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
         glDeleteLists(m_itemGeometries[item], 1);
 
         if (item->isVisible()) {
-    //         addFuncs(QModelIndex(), s.row(), s.row());
-    //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data
+            //         addFuncs(QModelIndex(), s.row(), s.row());
+            //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data
             addPlots(item);
         }
     }
@@ -348,7 +364,7 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
                 glDeleteLists(m_itemGeometries.take(itemAt(i)), 1);
         }
     }
-    
+
     renderGL();
 }
 
@@ -373,7 +389,7 @@ void Plotter3D::rotate(int xshift, int yshift)
     GLdouble viewRoty = static_cast<GLdouble>(-yshift);
     GLdouble viewRotx = static_cast<GLdouble>(-xshift);
     m_scale = 1.0;
-    
+
     if (!m_rotFixed.isNull())
     {
         GLdouble ax = viewRoty;
@@ -381,7 +397,7 @@ void Plotter3D::rotate(int xshift, int yshift)
         double angle = sqrt(ax*ax + ay*ay)/(double)(m_viewport.width() + 1)*360.0;
 
         glRotatef(angle, m_rotFixed.x(), m_rotFixed.y(), m_rotFixed.z());
-        
+
         renderGL();
     }
     else
@@ -511,6 +527,25 @@ void Plotter3D::fixRotationAxis(const QVector3D& vec)
     m_rotFixed = vec;
 }
 
+void Plotter3D::showAxisArrowHint(CartesianAxis axis)
+{
+    if (axis == InvalidAxis)
+        return ;
+
+    m_currentAxisIndicator = axis;
+    
+    m_hidehints = false;
+    
+    renderGL();
+}
+
+void Plotter3D::hideAxisHint()
+{
+    m_hidehints = true;
+    
+    renderGL();
+}
+
 void Plotter3D::addPlots(PlotItem* item)
 {
     Q_ASSERT(item);
@@ -608,14 +643,14 @@ PlotItem* Plotter3D::itemAt(int row) const
 void Plotter3D::initAxes()
 {
     if (m_sceneObjects.contains(Axes))
-        glDeleteLists(m_sceneObjects.value(Axes).first, 1);
+        glDeleteLists(m_sceneObjects.value(Axes), 1);
 
     const GLubyte XAxisColor[] = {250, 0, 0};
     const GLubyte YAxisColor[] = {0, 255, 0};
     const GLubyte ZAxisColor[] = {0, 0, 255};
- 
-    m_sceneObjects[Axes] = qMakePair(glGenLists(1), true);
-    glNewList(m_sceneObjects.value(Axes).first, GL_COMPILE );
+
+    m_sceneObjects[Axes] = glGenLists(1);
+    glNewList(m_sceneObjects.value(Axes), GL_COMPILE );
 
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
@@ -623,7 +658,7 @@ void Plotter3D::initAxes()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glLineWidth(1.5f);
-    
+
     glBegin( GL_LINES );
     glColor3ubv(XAxisColor);
     glVertex3f( 400.0, 0.0, 0.0);
@@ -635,7 +670,7 @@ void Plotter3D::initAxes()
     glVertex3f(0.0, 0.0, 400.0);
     glVertex3f(0.0, 0.0,   0.0);
     glEnd();
-    
+
     glLineWidth(1.0f);
 
     glDisable(GL_BLEND);
@@ -670,6 +705,42 @@ void Plotter3D::initAxes()
     glVertex3f(0.0, -10.0, 380.0);
     glVertex3f(10.0, 0.0, 380.0);
     glEnd();
+
+    glEndList();
+
+    //hints
+    if (m_sceneObjects.contains(XArrowAxisHint))
+        glDeleteLists(m_sceneObjects.value(XArrowAxisHint), 1);
+
+    m_sceneObjects[XArrowAxisHint] = glGenLists(1);
+    glNewList(m_sceneObjects.value(XArrowAxisHint), GL_COMPILE );
+
+    GLUquadricObj *sphereObj;
+    sphereObj = gluNewQuadric();
+
+//     glColor3f (0.7, 0.7, 0.7);
+//     glTranslatef(410.0, 4.0, 4.0);
+//     gluSphere(sphereObj, .0, 16, 16);
+//     glTranslatef(-410.0, -4.0, -4.0);
+
+    glColor3ub(XAxisArrowColor[0]/2, XAxisArrowColor[1]/2, XAxisArrowColor[2]/2);
+    glTranslatef(410.0, 0.0, 0.0);
+    gluSphere(sphereObj, 8.0, 32, 32);
+    glTranslatef(-410.0, 0.0, 0.0);
+
+//     glColor3f (0., 0., 1.);
+//     glRasterPos3i(10, 10, 410);
+//     //printString("Z");
+//     glCallLists(strlen("Z"),
+//                 GL_UNSIGNED_BYTE,
+//                 "Z");
+// 
+//     glColor3f (0., 0.7, 0.7);
+//     glTranslatef(4.0, 4.0, 410.0);
+//     //gluSphere(sphereObj, 10.0, 16, 16);
+//     glTranslatef(-4.0, -4.0, -410.0);
+//     glLineWidth(0.9);
+//     glEndList();
 
     glEndList();
 }

@@ -87,12 +87,14 @@ class ANALITZAPLOT_EXPORT Plotter3D
         CartesianAxis selectAxisArrow(int x, int y);
         void fixRotationAxis(const QVector3D &vec);
         bool isRotFixed() const { return !m_rotFixed.isNull(); }
+        void showAxisArrowHint(CartesianAxis axis);
+        void hideAxisHint();
 
     protected:
         void addPlots(PlotItem* item);
         
     private:
-        enum SceneObjectType {Axes, RefPlaneXY};
+        enum SceneObjectType {Axes, RefPlaneXY, XArrowAxisHint, YArrowAxisHint, ZArrowAxisHint};
         
         PlotItem *itemAt(int row) const;
 
@@ -103,7 +105,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         QMap<PlotItem*, GLuint> m_itemGeometries;
 
         //scene properties
-        QMap<SceneObjectType, QPair<GLuint, bool> > m_sceneObjects; // pair:=<displaylist, visible>
+        QMap<SceneObjectType, GLuint > m_sceneObjects;
         QRect m_viewport;
         GLfloat m_depth;
         GLdouble m_scale;
@@ -112,6 +114,8 @@ class ANALITZAPLOT_EXPORT Plotter3D
         GLdouble m_roty;
         GLdouble m_rotz;
         QVector3D m_rotFixed;
+        CartesianAxis m_currentAxisIndicator;
+        bool m_hidehints;
 };
 
 #endif // FUNCTIONSPAINTER3D_H

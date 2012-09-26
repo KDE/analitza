@@ -102,12 +102,20 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
     old_y = e->y();
     old_x = e->x();
     
-    switch (selectAxisArrow(e->x(), e->y()))
+    CartesianAxis axis = selectAxisArrow(e->x(), e->y());
+
+    showAxisArrowHint(axis);
+
+    switch (axis)
     {
         case XAxis: 
         {
+
             if (isRotFixed())
+            {
                 fixRotationAxis(QVector3D());
+                hideAxisHint();
+            }
             else
                 fixRotationAxis(QVector3D(1,0,0));
         }
@@ -115,7 +123,10 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
         case YAxis: 
         {
             if (isRotFixed())
+            {
                 fixRotationAxis(QVector3D());
+                hideAxisHint();
+            }
             else
                 fixRotationAxis(QVector3D(0,1,0));
         }
@@ -123,7 +134,10 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
         case ZAxis: 
         {
             if (isRotFixed())
+            {
                 fixRotationAxis(QVector3D());
+                hideAxisHint();
+            }
             else
                 fixRotationAxis(QVector3D(0,0,1));
         }
@@ -173,4 +187,3 @@ void PlotsView3D::mouseMoveEvent(QMouseEvent *e)
     old_y = e->y();
     old_x = e->x();
 }
-
