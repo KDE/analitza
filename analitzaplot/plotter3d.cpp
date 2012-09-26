@@ -309,6 +309,7 @@ void Plotter3D::rotate(int dx, int dy)
     }
     
     if(!rot.isNull()) {
+        rot.normalize();
         glRotatef(angle, rot.x(), rot.y(), rot.z());
         renderGL();
     }
