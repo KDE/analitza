@@ -578,7 +578,7 @@ void Plotter3D::addPlots(PlotItem* item)
     // set ambient and diffuse color using glColorMaterial (gold-yellow)
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glColor3fv(diffuseColor);
-    glColor3ub(item->color().red(), item->color().green(), item->color().blue());
+    glColor3i(item->color().red(), item->color().green(), item->color().blue());
 
     if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
     {
