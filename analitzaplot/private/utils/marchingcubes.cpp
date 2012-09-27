@@ -218,34 +218,20 @@ QList<sMarching_Cube> MarchingCubes::ejecutar()
     return cubos;
 }
 
-
 void MarchingCubes::_addTri(const QVector3D& a, const QVector3D& b, const QVector3D& c)
 {
-    QVector3D Normal, diff1, diff2;
-
-    diff1 = QVector3D(b.x() - a.x(),
-                      b.y() - a.y(),
-                      b.z() - a.z());
-    
-    diff2 = QVector3D(c.x() - b.x(),
-                      c.y() - b.y(),
-                      c.z() - b.z());
-    
-    Normal = QVector3D(diff1.y()*diff2.z() - diff2.y()*diff1.z(),
-                       diff1.z()*diff2.x() - diff1.x()*diff2.z(),
-                       diff1.x()*diff2.y() - diff1.y()*diff2.x());
+    QVector3D n = QVector3D::normal (b - a, c - b);
 
     _vertices << a.x() << a.y() << a.z() <<
                 b.x() << b.y() << b.z() <<
                 c.x() << c.y() << c.z();
                 
-    _normals << Normal.x() << Normal.y() << Normal.z(); 
+    _normals << n.x() << n.y() << n.z(); 
 
     _indexes.append(_indexes.size());
     _indexes.append(_indexes.size());
     _indexes.append(_indexes.size());
 }
-
 
 QList<sArista> MarchingCubes::calcular_cortes(sMarching_Cube cubo){
     QList<sArista> aristas;

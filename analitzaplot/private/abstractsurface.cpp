@@ -140,25 +140,13 @@ void AbstractSurface::doStrip(int n, const QVector3D &p0,  const QVector3D &p1, 
 
 void AbstractSurface::createFace(QVector3D *buffer)
 {
-    QVector3D Normal, diff1, diff2;
-
-    diff1 = QVector3D(buffer[1].x() - buffer[0].x(),
-                      buffer[1].y() - buffer[0].y(),
-                      buffer[1].z() - buffer[0].z());
-    
-    diff2 = QVector3D(buffer[2].x() - buffer[1].x(),
-                      buffer[2].y() - buffer[1].y(),
-                      buffer[2].z() - buffer[1].z());
-    
-    Normal = QVector3D(diff1.y()*diff2.z() - diff2.y()*diff1.z(),
-                       diff1.z()*diff2.x() - diff1.x()*diff2.z(),
-                       diff1.x()*diff2.y() - diff1.y()*diff2.x());
+    QVector3D n = QVector3D::normal (buffer[1] - buffer[0], buffer[2] - buffer[1]);
 
     vertices << buffer[0].x() << buffer[0].y() << buffer[0].z() <<
                 buffer[1].x() << buffer[1].y() << buffer[1].z() <<
                 buffer[2].x() << buffer[2].y() << buffer[2].z();
-                
-    normals << Normal.x() << Normal.y() << Normal.z(); 
+
+    normals << n.x() << n.y() << n.z(); 
 
     indexes.append(indexes.size());
     indexes.append(indexes.size());
