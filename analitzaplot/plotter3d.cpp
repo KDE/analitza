@@ -436,16 +436,11 @@ void Plotter3D::addPlots(PlotItem* item)
             c->update(QVector3D(), QVector3D());
     }
 
-//     GLuint dlid = glGenLists(1);
-//     //WARNING if same item has dlist then delete it
-//     m_itemGeometries[item] = dlid;
-
     float shininess = 15.0f;
     float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
     float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
 
     //BEGIN display list
-//     glNewList(dlid, GL_COMPILE);
 
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
@@ -524,57 +519,8 @@ void Plotter3D::addPlots(PlotItem* item)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*surf->indexes().size(), surf->indexes().data(), GL_STATIC_DRAW);
         //glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
         //qDebug() << "Index Array in VBO: " << bufferSize << " bytes";        
-        
-// 
-//         foreach (const Triangle3D &face, surf->faces())
-//         {
-//             if (m_plottingFocusPolicy == All)
-//                 switch (m_plotStyle)
-//                 {
-//                     case Solid: glBegin(GL_POLYGON); break;
-//                     case Wired: glBegin(GL_LINES); break;
-//                     case Dots: glBegin(GL_POINTS); break;
-//                 }
-//             else
-//                 if (m_plottingFocusPolicy == Current)
-//                 {
-//                     QModelIndex pi = m_model->index(currentPlot(), 0);
-// 
-//                     PlotItem* plot = 0;
-//                     if (!pi.isValid())
-//                     plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
-// 
-//                     if (plot == surf)
-//                     {
-//                         switch (m_plotStyle)
-//                         {
-//                             case Solid: glBegin(GL_POLYGON); break;
-//                             case Wired: glBegin(GL_LINES); break;
-//                             case Dots: glBegin(GL_POINTS); break;
-//                         }
-//                     }
-//                     else
-//                         glBegin(GL_POLYGON);
-//                 }
-// 
-//             QVector3D n;
-// 
-//             //TODO no magic numbers
-//             if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
-//             else n = QVector3D(0.5, 0.1, 0.2).normalized();
-// 
-//             glNormal3d(n.x(), n.y(), n.z());
-//             glVertex3d(face.p().x(), face.p().y(), face.p().z());
-//             glVertex3d(face.q().x(), face.q().y(), face.q().z());
-//             glVertex3d(face.r().x(), face.r().y(), face.r().z());
-//             glEnd();
 
-
-//         }
     }
-
-//     glEndList();
-    //END display list
 }
 
 PlotItem* Plotter3D::itemAt(int row) const
