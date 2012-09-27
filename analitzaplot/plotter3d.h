@@ -149,6 +149,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         CartesianAxis m_currentAxisIndicator;
         bool m_simpleRotation;
         QVector3D m_simpleRotationVector;
+    QVector3D m_lightpos;
 };
 
 #endif // FUNCTIONSPAINTER3D_H

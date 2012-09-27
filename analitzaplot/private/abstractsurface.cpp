@@ -157,6 +157,3 @@ QVector3D AbstractSurface::fromParametricArgs(double, double)
 {
     return QVector3D();
 }
-
-    
-    

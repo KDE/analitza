@@ -104,11 +104,12 @@ void Plotter3D::initGL()
     GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
     GLfloat local_view[] = { 1.0 };
-    static GLfloat position[4] = {0.0, 0.0,1000.0, 1.0};
+    static GLfloat position[4] = {0.0, 0.0, 1000.0, 0.0};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
+    
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
     glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
 }
@@ -142,12 +143,12 @@ void Plotter3D::setViewport(const QRectF& vp)
 
 void Plotter3D::drawPlots()
 {
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(m_scale, m_viewport.width()/m_viewport.height(), 0.1, 3000);
-    
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glMultMatrixd(m_rot.data());
@@ -249,6 +250,11 @@ void Plotter3D::drawPlots()
         glEnableClientState(GL_VERTEX_ARRAY);
 
         glDrawElements(GL_TRIANGLES, surf->indexes().size(), GL_UNSIGNED_INT, 0);
+
+        fcolor[0] = 0; fcolor[1] = 0; fcolor[2] = 0; fcolor[3] = 1;
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
+        glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
+        glDrawElements(GL_POINTS, surf->indexes().size(), GL_UNSIGNED_INT, 0);
 
         glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
         glDisableClientState(GL_NORMAL_ARRAY);  // disable normal arrays
