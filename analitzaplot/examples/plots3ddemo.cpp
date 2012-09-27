@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 //     model->addPlot(s->requestPlot(Analitza::Expression("x*x+y*y-z*z= 1/2"), Dim3D).create(Qt::darkBlue, "implicit 2"));
 //     model->addPlot(s->requestPlot(Analitza::Expression("t->vector{cos(t), sin(t), t}"), Dim3D).create(Qt::green, "curve"));
     model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x"), Dim3D).create(Qt::yellow, "z-map"));
-//     model->addPlot(s->requestPlot(Analitza::Expression("(t,p)->1.9"), Dim3D).create(Qt::white, "sphere-sphcoords"));
+    model->addPlot(s->requestPlot(Analitza::Expression("(t,p)->1.9"), Dim3D).create(Qt::white, "sphere-sphcoords"));
     //END test calls
 
     if(args->isSet("all-disabled"))

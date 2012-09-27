@@ -134,7 +134,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         QAbstractItemModel* m_model;
         
-        QMap<PlotItem*, GLuint> m_itemGeometries;
+        QMap<PlotItem*, QPair<GLuint, GLuint> > m_itemGeometries; // pair:=<indexdata_id, vertex-normals_id>
 
         PlotStyle m_plotStyle;
         PlottingFocusPolicy m_plottingFocusPolicy;
