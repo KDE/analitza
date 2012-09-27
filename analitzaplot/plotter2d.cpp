@@ -594,12 +594,10 @@ void Plotter2D::setYAxisLabel(const QString &label)
 }
 
 void Plotter2D::updateTickScale(const QString& tickScaleSymbol, qreal tickScaleSymbolValue,
-        /*bool tickScaleUseSymbols,*/ int tickScaleNumerator,
-        int tickScaleDenominator)
+        int tickScaleNumerator, int tickScaleDenominator)
 {
     m_tickScaleSymbol = tickScaleSymbol;
     m_tickScaleSymbolValue = tickScaleSymbolValue;
-    //m_tickScaleUseSymbols = tickScaleUseSymbols;
     m_tickScaleNumerator = tickScaleNumerator;
     m_tickScaleDenominator = tickScaleDenominator;
 

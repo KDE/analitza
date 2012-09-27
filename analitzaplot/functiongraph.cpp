@@ -143,6 +143,11 @@ bool FunctionGraph::setInterval(const QString &argname, double min, double max)
 QStringList FunctionGraph::parameters() const
 {
     Q_ASSERT(m_functionGraph);
-    
     return m_functionGraph->parameters();
+}
+
+void FunctionGraph::setResolution(int resolution)
+{
+    Q_ASSERT(m_functionGraph);
+    return m_functionGraph->setResolution(resolution);
 }

@@ -36,7 +36,6 @@ class FunctionCartesian : public AbstractPlaneCurve
         void update(const QRectF& viewport);
         QPair<QPointF, QString> image(const QPointF &mousepos);
         QLineF tangent(const QPointF &mousepos) ;
-        qreal resolution() const { return 5000; }
         Analitza::Cn* arg() { return AbstractPlaneCurve::arg(parameters().first()); }
 
     protected:
@@ -207,9 +206,9 @@ void FunctionCartesian::calculateValues(double l_lim, double r_lim)
 {
     jumps.clear();
     points.clear();
-    points.reserve(resolution());
+    points.reserve(m_resolution);
     
-    double step = double((-l_lim+r_lim)/resolution());
+    double step = double((-l_lim+r_lim)/m_resolution);
     bool jumping=true;
     for(double x=l_lim; x<r_lim-step; x+=step) {
         arg()->setValue(x);
