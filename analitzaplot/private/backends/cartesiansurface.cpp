@@ -75,6 +75,13 @@ QVector3D Fxy::fromParametricArgs(double u, double v)
 void Fxy::update(const Box3D& viewport)
 {
     buildParametricSurface();
+//     vertices.clear();
+//     normals.clear();
+//     indices.clear();
+// 
+//     vertices << 0 << 0 << 0 << 0 << 0 << 1 << 1 << 0 << 0; // 3 por cada index
+//     normals << 0 << 1 << 0; // 1 por primitiva = 1 por face (tri-face)-1por cada 3 indx
+//     indices << 0 << 1 << 2; // enumeracion empieza desde cero
 }
 
 REGISTER_SURFACE(Fxy)

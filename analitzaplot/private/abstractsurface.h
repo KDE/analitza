@@ -38,6 +38,11 @@ public:
     virtual void update(const Box3D &viewport) = 0;
     QVector<Triangle3D> faces;
 
+    //experimental
+    QVector<double> vertices;
+    QVector<double> normals;
+    QVector<unsigned int> indices;
+    
 protected:
     virtual QVector3D fromParametricArgs(double u, double v);
     bool buildParametricSurface();

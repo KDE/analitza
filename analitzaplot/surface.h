@@ -35,6 +35,11 @@ public:
     //Own
     void update(const Box3D &viewport);
     const QVector<Triangle3D> & faces() const;
+    
+    //
+    const QVector<double> vertices() const;
+    const QVector<double> normals() const;
+    const QVector<unsigned int> indices() const;
 };
 
 #endif // SURFACE_H

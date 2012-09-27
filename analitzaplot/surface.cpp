@@ -42,3 +42,24 @@ void Surface::update(const Box3D& viewport)
     
     static_cast<AbstractSurface*>(backend())->update(viewport);
 }
+
+const QVector< double > Surface::vertices() const
+{
+    Q_ASSERT(backend());
+
+    return static_cast<AbstractSurface*>(backend())->vertices;
+}
+
+const QVector< double > Surface::normals() const
+{
+    Q_ASSERT(backend());
+
+    return static_cast<AbstractSurface*>(backend())->normals;
+}
+
+const QVector< unsigned int > Surface::indices() const
+{
+    Q_ASSERT(backend());
+
+    return static_cast<AbstractSurface*>(backend())->indices;
+}

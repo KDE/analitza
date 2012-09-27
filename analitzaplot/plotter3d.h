@@ -23,12 +23,14 @@
 
 #include "plotitem.h"
 
-#include <GL/gl.h>
 
 #include <QModelIndex>
 #include <QRect>
 #include <QVector3D>
 #include <QMatrix4x4>
+
+#define GL_GLEXT_PROTOTYPES
+#include <GL/glu.h>
 
 class QAbstractItemModel;
 class QPainter;
@@ -72,7 +74,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         /** Force OpenGL to render the scene. QGLWidget should call updateGL in this method. */
         virtual void renderGL() = 0;
-
+        
         /** Force the plots from @p start to @p end to be recalculated. */
         void updatePlots(const QModelIndex & parent, int start, int end);
 

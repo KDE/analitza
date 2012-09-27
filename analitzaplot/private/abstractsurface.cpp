@@ -56,9 +56,12 @@ bool AbstractSurface::buildParametricSurface()
     int usteps = MAXALONG;
     int vsteps = MAXAROUND;
     
-    
     faces.clear();
     
+    vertices.clear();
+    normals.clear();
+    indices.clear();
+
     QVector3D surface[MAXALONG][MAXAROUND];
 
     for ( int i=0; i<usteps; i++ )
@@ -67,75 +70,12 @@ bool AbstractSurface::buildParametricSurface()
             float u = (umin+((umax-umin)/(float)(usteps-1))*(float)(i));
             float v = (vmin+((vmax-vmin)/(float)(vsteps-1))*(float)(j));
 
-
-            //BEGIN 
-
-
-    
-            //     qDebug() << QVector3D(u, v, analyzer->calculateLambda().toReal().value());
-
-//             QVector3D point;
-
-//             switch (analyzer->type().returnValue().type())
-//             {
-//                 case Analitza::ExpressionType::Vector:
-//                 {
-//                 
-//                     break;
-//                 }
-//                 
-//                 case Analitza::ExpressionType::Value:
-//                 {
-//                     point.setX(1);
-//                     point.setY(1);
-//                     point.setZ(analyzer->calculateLambda().toReal().value());
-//                     
-//                     switch (coordinateSystem())
-//                     {
-//                         case Cylindrical:
-//                         {
-//                             point.setX(u*cos(v));
-//                             point.setY(u*sin(v));
-//                             point.setZ(analyzer->calculateLambda().toReal().value());
-                                //out
-            ///
-//                                 double h=analyzer->calculateLambda().toReal().value();
-//                                 double x = 0;
-//                                 double y = 0;
-//                                 double z = 0;
-//                                 cylindricalToCartesian(u,v,h,x,y,z);
-//                                 point.setX(x);
-//                                 point.setY(y);
-//                                 point.setZ(z);
-                                
-                                ///
-                                
-//                             break;
-//                         }
-//                         case Spherical:
-//                         {
-//                             point.setX(point.x()*sin(u)*cos(v));
-//                             point.setY(point.y()*sin(u)*sin(v));
-//                             point.setZ(point.z()*cos(u));
-//                         
-//                             break;
-//                         }
-//                     }
-//                 
-//                     break;
-//                 }
-//             }
-//             
-            //END
-
             surface[i][j] = fromParametricArgs(u,v);
         }
 
     for (int i = 0; i < usteps -1; i++ )
         for ( int j=0; j<vsteps-1; j++ )
-        {
             doQuad(1, 1, surface[i][j], surface[i+1][j], surface[i][j+1], surface[i+1][j+1]);
-        }
         
     return !faces.isEmpty();
 }
@@ -216,11 +156,15 @@ void AbstractSurface::createFace( QVector3D *buffer )
                        diff1.z()*diff2.x() - diff1.x()*diff2.z(),
                        diff1.x()*diff2.y() - diff1.y()*diff2.x());
 
-    Triangle3D face(buffer[0], buffer[1], buffer[2]);
-    
-//     qDebug() << face.p1 << face.p2 << face.p3;
-    
-    faces.append(face);
+    vertices << buffer[0].x() << buffer[0].y() << buffer[0].z() <<
+                buffer[1].x() << buffer[1].y() << buffer[1].z() <<
+                buffer[2].x() << buffer[2].y() << buffer[2].z();
+                
+    normals << Normal.x() << Normal.y() << Normal.z(); 
+
+    indices.append(indices.size());
+    indices.append(indices.size());
+    indices.append(indices.size());
 }
 
 QVector3D AbstractSurface::fromParametricArgs(double, double)

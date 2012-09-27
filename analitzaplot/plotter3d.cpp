@@ -28,10 +28,8 @@
 #include "private/utils/triangle3d.h"
 #include "private/utils/mathutils.h"
 
-#include <QApplication>
 #include <cmath>
 #include <QDebug>
-#include <GL/glu.h>
 #include <KLocalizedString>
 #include <KColorUtils>
 
@@ -39,6 +37,7 @@
 #include <ieeefp.h>
 // bool isinf(double x) { return !finite(x) && x==x; }
 #endif
+
 
 Q_DECLARE_METATYPE(PlotItem*);
 
@@ -48,7 +47,53 @@ const GLubyte Plotter3D::XAxisArrowColor[] = {250 -1 , 1, 1};
 const GLubyte Plotter3D::YAxisArrowColor[] = {1, 255 - 1, 1};
 const GLubyte Plotter3D::ZAxisArrowColor[] = {1, 1, 255 - 1};
 
+GLuint vbovn = 0; // ID of VBO for vertex arrays (to store vertex and normal coords)
+GLuint vboi = 0; // ID of VBO for index array
+            
 // #define DEBUG_GRAPH
+
+///////////////////////////////////////////////////////////////////////////////
+// generate vertex buffer object and bind it with its data
+// You must give 2 hints about data usage; target and mode, so that OpenGL can
+// decide which data should be stored and its location.
+// VBO works with 2 different targets; GL_ARRAY_BUFFER for vertex arrays
+// and GL_ELEMENT_ARRAY_BUFFER for index array in glDrawElements().
+// The default target is GL_ARRAY_BUFFER.
+// By default, usage mode is set as GL_STATIC_DRAW.
+// Other usages are GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY,
+// GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY,
+// GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, GL_DYNAMIC_COPY.
+///////////////////////////////////////////////////////////////////////////////
+GLuint createVBO(const void* data, int dataSize, GLenum target, GLenum usage)
+{
+    GLuint id = 0;  // 0 is reserved, glGenBuffers() will return non-zero id if success
+
+    glGenBuffers(1, &id);                        // create a vbo
+    glBindBuffer(target, id);                    // activate vbo id to use
+    glBufferData(target, dataSize, data, usage); // upload data to video card
+
+    // check data size in VBO is same as input array, if not return 0 and delete VBO
+    int bufferSize = 0;
+    glGetBufferParameteriv(target, GL_BUFFER_SIZE, &bufferSize);
+    if(dataSize != bufferSize)
+    {
+        glDeleteBuffers(1, &id);
+        id = 0;
+        qDebug() << "[createVBO()] Data size is mismatch with input array";
+    }
+
+    return id;      // return VBO id
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// destroy a VBO
+// If VBO id is not valid or zero, then OpenGL ignores it silently.
+///////////////////////////////////////////////////////////////////////////////
+void deleteVBO(const GLuint vboId)
+{
+    glDeleteBuffers(1, &vboId);
+}
+
 
 Plotter3D::Plotter3D(QAbstractItemModel* model)
     : m_model(model)
@@ -73,6 +118,10 @@ Plotter3D::~Plotter3D()
     glDeleteLists(m_sceneObjects.value(XArrowAxisHint), 1);
     glDeleteLists(m_sceneObjects.value(YArrowAxisHint), 1);
     glDeleteLists(m_sceneObjects.value(ZArrowAxisHint), 1);
+    
+    deleteVBO(vbovn);
+    deleteVBO(vboi);
+    vbovn = vboi = 0;
 }
 
 void Plotter3D::initGL()
@@ -225,7 +274,38 @@ void Plotter3D::drawPlots()
         glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
         glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
 
-        glCallList(m_itemGeometries[item]);
+//         glCallList(m_itemGeometries[item]);
+        
+        Surface *surf = dynamic_cast<Surface*>(item);
+        
+        if (!surf) continue;
+
+        //NOTE
+        //los indices empeizan en cero solo se puede tener un solo array bufer cuando se usa vbo
+        //por eso en el array buffer se ponen los datos de lops vertices y de las normales
+        
+        glBindBuffer(GL_ARRAY_BUFFER, vbovn);
+        glVertexPointer(3, GL_DOUBLE, 0, 0);
+        glNormalPointer(GL_DOUBLE, sizeof(double)*3, 0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboi);
+
+        //BEGIN draw
+        // start to render polygons
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_VERTEX_ARRAY);
+
+        glDrawElements(GL_TRIANGLES, surf->indices().size(), GL_UNSIGNED_INT, 0);
+
+        glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
+        glDisableClientState(GL_NORMAL_ARRAY);  // disable normal arrays
+        //END draw
+        
+        // it is good idea to release VBOs with ID 0 after use.
+        // Once bound with 0, all pointers in gl*Pointer() behave as real
+        // pointer, so, normal vertex array operations are re-activated
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     glPopMatrix();
@@ -393,16 +473,16 @@ void Plotter3D::addPlots(PlotItem* item)
             c->update(Box3D());
     }
 
-    GLuint dlid = glGenLists(1);
-    //WARNING if same item has dlist then delete it
-    m_itemGeometries[item] = dlid;
+//     GLuint dlid = glGenLists(1);
+//     //WARNING if same item has dlist then delete it
+//     m_itemGeometries[item] = dlid;
 
     float shininess = 15.0f;
     float diffuseColor[3] = {0.929524f, 0.796542f, 0.178823f};
     float specularColor[4] = {1.00000f, 0.980392f, 0.549020f, 1.0f};
 
     //BEGIN display list
-    glNewList(dlid, GL_COMPILE);
+//     glNewList(dlid, GL_COMPILE);
 
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
@@ -412,103 +492,121 @@ void Plotter3D::addPlots(PlotItem* item)
     glColor3fv(diffuseColor);
     glColor3i(item->color().red(), item->color().green(), item->color().blue());
 
-    if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
+//     if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
+//     {
+//         glEnable(GL_LINE_SMOOTH);
+// 
+//         glLineWidth(2.5);
+// 
+//         if (m_plottingFocusPolicy == All)
+//             switch (m_plotStyle)
+//             {
+//                 case Solid: 
+//                 case Wired: glBegin(GL_LINES); break;
+//                 case Dots: glBegin(GL_POINTS); break;
+//             }
+//         else
+//             if (m_plottingFocusPolicy == Current)
+//             {
+//                 QModelIndex pi = m_model->index(currentPlot(), 0);
+// 
+//                 PlotItem* plot = 0;
+//                 if (!pi.isValid())
+//                    plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
+// 
+//                 if (plot == curve)
+//                 {
+//                     switch (m_plotStyle)
+//                     {
+//                         case Solid: 
+//                         case Wired: glBegin(GL_LINES); break;
+//                         case Dots: glBegin(GL_POINTS); break;
+//                     }
+//                 }
+//                 else
+//                     glBegin(GL_LINES);
+//             }
+// 
+//         const QVector<QVector3D> points = curve->points();
+// 
+//         //TODO copy approach from plotter 2d and use jumps optimization
+//         for (int i = 0; i < points.size() -1 ; ++i)
+//         {
+//             glVertex3d(points[i].x(), points[i].y(), points[i].z());
+//             glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
+//         }
+//         
+//         glEnd();
+//         glDisable(GL_LINE_SMOOTH);
+//     }
+//     else
     {
-        glEnable(GL_LINE_SMOOTH);
+        Surface* surf = dynamic_cast<Surface*>(item);
+// 
+//         foreach (const Triangle3D &face, surf->faces())
+//         {
+//             if (m_plottingFocusPolicy == All)
+//                 switch (m_plotStyle)
+//                 {
+//                     case Solid: glBegin(GL_POLYGON); break;
+//                     case Wired: glBegin(GL_LINES); break;
+//                     case Dots: glBegin(GL_POINTS); break;
+//                 }
+//             else
+//                 if (m_plottingFocusPolicy == Current)
+//                 {
+//                     QModelIndex pi = m_model->index(currentPlot(), 0);
+// 
+//                     PlotItem* plot = 0;
+//                     if (!pi.isValid())
+//                     plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
+// 
+//                     if (plot == surf)
+//                     {
+//                         switch (m_plotStyle)
+//                         {
+//                             case Solid: glBegin(GL_POLYGON); break;
+//                             case Wired: glBegin(GL_LINES); break;
+//                             case Dots: glBegin(GL_POINTS); break;
+//                         }
+//                     }
+//                     else
+//                         glBegin(GL_POLYGON);
+//                 }
+// 
+//             QVector3D n;
+// 
+//             //TODO no magic numbers
+//             if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
+//             else n = QVector3D(0.5, 0.1, 0.2).normalized();
+// 
+//             glNormal3d(n.x(), n.y(), n.z());
+//             glVertex3d(face.p().x(), face.p().y(), face.p().z());
+//             glVertex3d(face.q().x(), face.q().y(), face.q().z());
+//             glVertex3d(face.r().x(), face.r().y(), face.r().z());
+//             glEnd();
 
-        glLineWidth(2.5);
+            int bufferSize;
 
-        if (m_plottingFocusPolicy == All)
-            switch (m_plotStyle)
-            {
-                case Solid: 
-                case Wired: glBegin(GL_LINES); break;
-                case Dots: glBegin(GL_POINTS); break;
-            }
-        else
-            if (m_plottingFocusPolicy == Current)
-            {
-                QModelIndex pi = m_model->index(currentPlot(), 0);
+            //vertices & normals vbo just allows 1 buffferdata of type array_buffer
+            glGenBuffers(1, &vbovn);
+            glBindBuffer(GL_ARRAY_BUFFER, vbovn);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(double)*surf->vertices().size() + sizeof(double)*surf->normals().size(), 0, GL_STREAM_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(double)*surf->vertices().size(), surf->vertices().data());
+            glBufferSubData(GL_ARRAY_BUFFER, sizeof(double)*surf->vertices().size(), sizeof(double)*surf->normals().size(), surf->normals().data());
+            glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+            qDebug() << "Vertex Array in VBO: " << bufferSize << " bytes";
 
-                PlotItem* plot = 0;
-                if (!pi.isValid())
-                   plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
-
-                if (plot == curve)
-                {
-                    switch (m_plotStyle)
-                    {
-                        case Solid: 
-                        case Wired: glBegin(GL_LINES); break;
-                        case Dots: glBegin(GL_POINTS); break;
-                    }
-                }
-                else
-                    glBegin(GL_LINES);
-            }
-
-        const QVector<QVector3D> points = curve->points();
-
-        //TODO copy approach from plotter 2d and use jumps optimization
-        for (int i = 0; i < points.size() -1 ; ++i)
-        {
-            glVertex3d(points[i].x(), points[i].y(), points[i].z());
-            glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
-        }
-        
-        glEnd();
-        glDisable(GL_LINE_SMOOTH);
-    }
-    else
-    {
-        Surface* surf = static_cast<Surface*>(item);
-
-        foreach (const Triangle3D &face, surf->faces())
-        {
-            if (m_plottingFocusPolicy == All)
-                switch (m_plotStyle)
-                {
-                    case Solid: glBegin(GL_POLYGON); break;
-                    case Wired: glBegin(GL_LINES); break;
-                    case Dots: glBegin(GL_POINTS); break;
-                }
-            else
-                if (m_plottingFocusPolicy == Current)
-                {
-                    QModelIndex pi = m_model->index(currentPlot(), 0);
-
-                    PlotItem* plot = 0;
-                    if (!pi.isValid())
-                    plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
-
-                    if (plot == surf)
-                    {
-                        switch (m_plotStyle)
-                        {
-                            case Solid: glBegin(GL_POLYGON); break;
-                            case Wired: glBegin(GL_LINES); break;
-                            case Dots: glBegin(GL_POINTS); break;
-                        }
-                    }
-                    else
-                        glBegin(GL_POLYGON);
-                }
-
-            QVector3D n;
-
-            //TODO no magic numbers
-            if (!face.faceNormal().isNull()) n= face.faceNormal().normalized();
-            else n = QVector3D(0.5, 0.1, 0.2).normalized();
-
-            glNormal3d(n.x(), n.y(), n.z());
-            glVertex3d(face.p().x(), face.p().y(), face.p().z());
-            glVertex3d(face.q().x(), face.q().y(), face.q().z());
-            glVertex3d(face.r().x(), face.r().y(), face.r().z());
-            glEnd();
-        }
+            //indices
+            glGenBuffers(1, &vboi);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboi);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*surf->indices().size(), surf->indices().data(), GL_STATIC_DRAW);
+            glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+            qDebug() << "Index Array in VBO: " << bufferSize << " bytes";
+//         }
     }
 
-    glEndList();
+//     glEndList();
     //END display list
 }
 
