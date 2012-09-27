@@ -21,14 +21,11 @@
 #include "plotsview3d.h"
 #include "plotsmodel.h"
 #include "surface.h"
-#include "private/utils/box3d.h"
-#include "private/utils/triangle3d.h"
 #include "spacecurve.h"
 #include <QVector3D>
 #include <qitemselectionmodel.h>
 #include <QVector>
 #include <QDebug>
-#include <GL/glu.h>
 
 PlotsView3D::PlotsView3D(QWidget *parent)
     : QGLWidget(parent), m_selection(0)

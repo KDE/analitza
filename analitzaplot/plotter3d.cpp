@@ -24,8 +24,6 @@
 #include "spacecurve.h"
 
 #include "plotsmodel.h"
-#include "private/utils/box3d.h"
-#include "private/utils/triangle3d.h"
 #include "private/utils/mathutils.h"
 
 #include <cmath>

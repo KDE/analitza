@@ -18,7 +18,7 @@
 
 
 #include "abstractsurface.h"
-#include "utils/triangle3d.h"
+
 #include <QVector3D>
 
 #define MAXAROUND 32
