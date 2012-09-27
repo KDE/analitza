@@ -295,7 +295,7 @@ void Plotter3D::drawPlots()
         glEnableClientState(GL_NORMAL_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);
 
-        glDrawElements(GL_TRIANGLES, surf->indices().size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, surf->indexes().size(), GL_UNSIGNED_INT, 0);
 
         glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
         glDisableClientState(GL_NORMAL_ARRAY);  // disable normal arrays
@@ -464,13 +464,13 @@ void Plotter3D::addPlots(PlotItem* item)
 
     if (Surface* surf = dynamic_cast<Surface*>(item))
     {
-        if (surf->faces().isEmpty())
-            surf->update(Box3D());
+        if (surf->indexes().isEmpty())
+            surf->update(QVector3D(), QVector3D());
     }
     else if (SpaceCurve* c = dynamic_cast<SpaceCurve*>(item))
     {
         if (c->points().isEmpty())
-            c->update(Box3D());
+            c->update(QVector3D(), QVector3D());
     }
 
 //     GLuint dlid = glGenLists(1);
@@ -600,7 +600,7 @@ void Plotter3D::addPlots(PlotItem* item)
             //indices
             glGenBuffers(1, &vboi);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboi);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*surf->indices().size(), surf->indices().data(), GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*surf->indexes().size(), surf->indexes().data(), GL_STATIC_DRAW);
             glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
             qDebug() << "Index Array in VBO: " << bufferSize << " bytes";
 //         }

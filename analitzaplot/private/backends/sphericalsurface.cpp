@@ -46,7 +46,7 @@ public:
     virtual bool setInterval(const QString& argname, double min, double max);
     
     QVector3D fromParametricArgs(double u, double v);
-    void update(const Box3D& viewport);
+    void update(const QVector3D& oppositecorner1, const QVector3D& oppositecorner2);
     
     
 };
@@ -110,9 +110,9 @@ QVector3D SphericalSurface::fromParametricArgs(double a, double p)
     return sphericalToCartesian(r,a,p);
 }
 
-void SphericalSurface::update(const Box3D& viewport)
+void SphericalSurface::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
-    Q_UNUSED(viewport);
+//     Q_UNUSED(viewport);
     buildParametricSurface();
 }
 

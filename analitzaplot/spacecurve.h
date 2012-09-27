@@ -24,7 +24,6 @@
 #include "functiongraph.h"
 #include <QVector3D>
 
-class Box3D;
 class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {
 public:
@@ -33,7 +32,7 @@ public:
 
     QVector<int> jumps() const;
     const QVector<QVector3D> & points() const;
-    void update(const Box3D& viewport);
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
 
 protected:
     SpaceCurve();

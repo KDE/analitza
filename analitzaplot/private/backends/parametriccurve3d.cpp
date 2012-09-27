@@ -18,9 +18,7 @@
 
 #include "private/abstractspacecurve.h"
 #include "private/functiongraphfactory.h"
-#include <private/utils/box3d.h>
 
-#include <QRectF>
 #include <analitza/value.h>
 #include <analitza/vector.h>
 #include <analitza/localize.h>
@@ -41,14 +39,14 @@ public:
     ICON_NAME("newparametric3d")
     EXAMPLES(QStringList("t->vector {t,t**2,t}"))
     
-    void update(const Box3D& viewport);
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
 
 private:
     int resolution() { return 5000; }
     Cn findTValueForPoint(const QPointF& p);
 };
 
-void ParametricCurve3D::update(const Box3D& viewport)
+void ParametricCurve3D::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
     QPair< double, double > theInterval;
     if(hasIntervals())
@@ -64,7 +62,6 @@ void ParametricCurve3D::update(const Box3D& viewport)
 
     double inv_res = double((ulimit-dlimit)/resolution());
     
-    Box3D vp(viewport);
     QVector3D curp;
     
     arg("t")->setValue(dlimit);

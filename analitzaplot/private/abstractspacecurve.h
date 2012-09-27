@@ -16,7 +16,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #ifndef ABSTRACTSPACECURVE_H
 #define ABSTRACTSPACECURVE_H
 
@@ -25,7 +24,6 @@
 #define CONSTRUCTORS(name) \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractSpaceCurve(functionExpression, variables) { }
 
-class Box3D;
 namespace Analitza { class Variables; }
 
 class AbstractSpaceCurve : public AbstractFunctionGraph 
@@ -41,7 +39,7 @@ public:
     QVector<int> jumps;
 
     //Own
-    virtual void update(const Box3D& viewport) = 0;
+    virtual void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) = 0;
 
 protected:
     bool addPoint(const QVector3D& p);

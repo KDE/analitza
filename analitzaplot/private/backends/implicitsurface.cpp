@@ -44,7 +44,7 @@ public:
 
     //Own
     virtual ~ImplicitSurf() {}
-    void update(const Box3D& viewport);
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
     
     double evalScalarField(double x, double y, double z);
 };
@@ -62,11 +62,16 @@ double ImplicitSurf::evalScalarField(double x, double y, double z)
 ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e, v)
 {}
 
-void ImplicitSurf::update(const Box3D& viewport)
+void ImplicitSurf::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
-    buildGeometry();
-    faces.clear();
-    faces << MarchingCubes::_faces_;
+    vertices.clear();
+    normals.clear();
+    indexes.clear();
+
+    
+//     buildGeometry();
+    //TODO vbo
+//     faces << MarchingCubes::_faces_;
 }
 
 REGISTER_SURFACE(ImplicitSurf)

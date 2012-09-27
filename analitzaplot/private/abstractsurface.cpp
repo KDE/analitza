@@ -56,11 +56,9 @@ bool AbstractSurface::buildParametricSurface()
     int usteps = MAXALONG;
     int vsteps = MAXAROUND;
     
-    faces.clear();
-    
     vertices.clear();
     normals.clear();
-    indices.clear();
+    indexes.clear();
 
     QVector3D surface[MAXALONG][MAXAROUND];
 
@@ -77,7 +75,7 @@ bool AbstractSurface::buildParametricSurface()
         for ( int j=0; j<vsteps-1; j++ )
             doQuad(1, 1, surface[i][j], surface[i+1][j], surface[i][j+1], surface[i+1][j+1]);
         
-    return !faces.isEmpty();
+    return !indexes.isEmpty();
 }
 
 void AbstractSurface::doQuad(int n, int m, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3)
@@ -162,9 +160,9 @@ void AbstractSurface::createFace( QVector3D *buffer )
                 
     normals << Normal.x() << Normal.y() << Normal.z(); 
 
-    indices.append(indices.size());
-    indices.append(indices.size());
-    indices.append(indices.size());
+    indexes.append(indexes.size());
+    indexes.append(indexes.size());
+    indexes.append(indexes.size());
 }
 
 QVector3D AbstractSurface::fromParametricArgs(double, double)

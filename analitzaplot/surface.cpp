@@ -29,18 +29,11 @@ Surface::Surface(AbstractFunctionGraph* g): FunctionGraph(g)
 Surface::~Surface()
 {}
 
-const QVector<Triangle3D> & Surface::faces() const
-{
-    Q_ASSERT(backend());
-
-    return static_cast<AbstractSurface*>(backend())->faces;
-}
-
-void Surface::update(const Box3D& viewport)
+void Surface::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
     Q_ASSERT(backend());
     
-    static_cast<AbstractSurface*>(backend())->update(viewport);
+    static_cast<AbstractSurface*>(backend())->update(oppositecorner1, oppositecorner2);
 }
 
 const QVector< double > Surface::vertices() const
@@ -57,9 +50,9 @@ const QVector< double > Surface::normals() const
     return static_cast<AbstractSurface*>(backend())->normals;
 }
 
-const QVector< unsigned int > Surface::indices() const
+const QVector< unsigned int > Surface::indexes() const
 {
     Q_ASSERT(backend());
 
-    return static_cast<AbstractSurface*>(backend())->indices;
+    return static_cast<AbstractSurface*>(backend())->indexes;
 }

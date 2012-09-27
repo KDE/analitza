@@ -21,9 +21,7 @@
 
 #include "functiongraph.h"
 
-class Triangle3D;
-class Box3D;
-class AbstractSurface;
+#include <QVector3D>
 
 class ANALITZAPLOT_EXPORT Surface : public FunctionGraph
 {
@@ -33,13 +31,14 @@ public:
     virtual ~Surface();
 
     //Own
-    void update(const Box3D &viewport);
-    const QVector<Triangle3D> & faces() const;
-    
-    //
+
+    /** Update the surfaces's data @p oppositecorner1 and @p oppositecorner2 form an axis-aligned bounding box. */
+    void update(const QVector3D& oppositecorner1, const QVector3D& oppositecorner2);
+
+    // Surface data
     const QVector<double> vertices() const;
     const QVector<double> normals() const;
-    const QVector<unsigned int> indices() const;
+    const QVector<unsigned int> indexes() const;
 };
 
 #endif // SURFACE_H

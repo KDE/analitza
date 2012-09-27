@@ -21,7 +21,6 @@
 #define ABSTRACTSURFACE_H
 
 #include "abstractfunctiongraph.h"
-#include "utils/triangle3d.h"
 
 class Box3D;
 
@@ -35,13 +34,11 @@ public:
     virtual ~AbstractSurface();
 
     //Own
-    virtual void update(const Box3D &viewport) = 0;
-    QVector<Triangle3D> faces;
+    virtual void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) = 0;
 
-    //experimental
     QVector<double> vertices;
     QVector<double> normals;
-    QVector<unsigned int> indices;
+    QVector<unsigned int> indexes;
     
 protected:
     virtual QVector3D fromParametricArgs(double u, double v);
