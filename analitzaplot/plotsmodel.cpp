@@ -197,6 +197,9 @@ void PlotsModel::addPlot(PlotItem* it)
 
     it->setModel(this);
     m_items.append(it);
+    
+    if(FunctionGraph* g=dynamic_cast<FunctionGraph*>(it))
+        g->setResolution(m_resolution);
 
     endInsertRows();
 }
@@ -234,3 +237,14 @@ QString PlotsModel::freeId() const
 	//TODO: figure out a better way
 	return "f"+QString::number(qrand()*rowCount());
 }
+
+void PlotsModel::setResolution(int res)
+{
+    m_resolution = res;
+    for(int i=0; i<rowCount(); i++) {
+        FunctionGraph* g = dynamic_cast<FunctionGraph*>(m_items[i]);
+        if(g)
+            g->setResolution(res);
+    }
+}
+

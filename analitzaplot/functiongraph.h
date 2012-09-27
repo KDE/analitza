@@ -56,6 +56,8 @@ public:
     QString display() const;
     void setDisplay(const QString& m_display);
     
+    void setResolution(int resolution);
+    
 protected:
 	FunctionGraph(AbstractFunctionGraph* g);
     AbstractFunctionGraph *backend() const { return m_functionGraph; }

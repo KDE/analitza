@@ -33,6 +33,7 @@
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
     : AbstractMappingGraph()
+    , m_resolution(200)
     , m_e(e)
     , m_varsmod(v)
 {

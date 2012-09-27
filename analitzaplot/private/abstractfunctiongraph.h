@@ -80,15 +80,18 @@ public:
     
     virtual QStringList parameters() const = 0;
 
+    void setResolution(int res) { m_resolution = res; }
+    
 protected:
     void appendError(const QString &error) { m_errors.append(error); }
     void flushErrors() { m_errors.clear(); }
     
     void setInternalId(const QString &iid) { m_internalId = iid; }
     
-    Analitza::Analyzer *analyzer;
-    
     Analitza::Cn* arg(const QString &argname);
+    
+    Analitza::Analyzer *analyzer;
+    int m_resolution;
     
 private:
     QString m_internalId;    

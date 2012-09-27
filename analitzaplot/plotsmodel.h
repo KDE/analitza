@@ -56,8 +56,10 @@ public:
     QModelIndex indexForName(const QString& name);
     Q_SCRIPTABLE void clear();
 
+    void setResolution(int res);
 private:
     QList<PlotItem*> m_items;
+    int m_resolution;
 };
 
 #endif // FUNCTIONGRAPHMODEL_H
