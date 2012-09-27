@@ -45,7 +45,7 @@ const GLubyte Plotter3D::YAxisArrowColor[] = {1, 255 - 1, 1};
 const GLubyte Plotter3D::ZAxisArrowColor[] = {1, 1, 255 - 1};
 
 //#define DEBUG_GRAPH
-
+QVector<unsigned int> indexes;
 void deleteVBO(const GLuint vboId)
 {
     glDeleteBuffers(1, &vboId);
@@ -230,41 +230,71 @@ void Plotter3D::drawPlots()
         glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
         glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
 
-        Surface *surf = dynamic_cast<Surface*>(item);
-        
-        if (!surf) continue;
+        if (SpaceCurve *curv = dynamic_cast<SpaceCurve*>(item))
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries.value(curv).second);
+            glVertexPointer(3, GL_DOUBLE, 0, 0);
+            glNormalPointer(GL_DOUBLE, sizeof(double)*3, 0);
 
-        //NOTE
-        //los indices empeizan en cero solo se puede tener un solo array bufer cuando se usa vbo
-        //por eso en el array buffer se ponen los datos de lops vertices y de las normales
-        
-        glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries.value(surf).second);
-        glVertexPointer(3, GL_DOUBLE, 0, 0);
-        glNormalPointer(GL_DOUBLE, sizeof(double)*3, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries.value(curv).first);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries.value(surf).first);
+            //BEGIN draw
+            // start to render polygons
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glEnableClientState(GL_VERTEX_ARRAY);
 
-        //BEGIN draw
-        // start to render polygons
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);
+            glDrawElements(GL_LINES, indexes.size(), GL_UNSIGNED_INT, 0);
 
-        glDrawElements(GL_TRIANGLES, surf->indexes().size(), GL_UNSIGNED_INT, 0);
+            fcolor[0] = 0; fcolor[1] = 0; fcolor[2] = 0; fcolor[3] = 1;
+            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
+            glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
+            glDrawElements(GL_POINTS, indexes.size(), GL_UNSIGNED_INT, 0);
 
-        fcolor[0] = 0; fcolor[1] = 0; fcolor[2] = 0; fcolor[3] = 1;
-        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
-        glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
-        glDrawElements(GL_POINTS, surf->indexes().size(), GL_UNSIGNED_INT, 0);
+            glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
+            glDisableClientState(GL_NORMAL_ARRAY);  // disable normal arrays
+            //END draw
+            
+            // it is good idea to release VBOs with ID 0 after use.
+            // Once bound with 0, all pointers in gl*Pointer() behave as real
+            // pointer, so, normal vertex array operations are re-activated
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            
+        }
+        else if (Surface *surf = dynamic_cast<Surface*>(item)) 
+        {
+            //NOTE
+            //los indices empeizan en cero solo se puede tener un solo array bufer cuando se usa vbo
+            //por eso en el array buffer se ponen los datos de lops vertices y de las normales
+            
+            glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries.value(surf).second);
+            glVertexPointer(3, GL_DOUBLE, 0, 0);
+            glNormalPointer(GL_DOUBLE, sizeof(double)*3, 0);
 
-        glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
-        glDisableClientState(GL_NORMAL_ARRAY);  // disable normal arrays
-        //END draw
-        
-        // it is good idea to release VBOs with ID 0 after use.
-        // Once bound with 0, all pointers in gl*Pointer() behave as real
-        // pointer, so, normal vertex array operations are re-activated
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries.value(surf).first);
+
+            //BEGIN draw
+            // start to render polygons
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glEnableClientState(GL_VERTEX_ARRAY);
+
+            glDrawElements(GL_TRIANGLES, surf->indexes().size(), GL_UNSIGNED_INT, 0);
+
+            fcolor[0] = 0; fcolor[1] = 0; fcolor[2] = 0; fcolor[3] = 1;
+            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
+            glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
+            glDrawElements(GL_POINTS, surf->indexes().size(), GL_UNSIGNED_INT, 0);
+
+            glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
+            glDisableClientState(GL_NORMAL_ARRAY);  // disable normal arrays
+            //END draw
+            
+            // it is good idea to release VBOs with ID 0 after use.
+            // Once bound with 0, all pointers in gl*Pointer() behave as real
+            // pointer, so, normal vertex array operations are re-activated
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
     }
 
     glPopMatrix();
@@ -455,50 +485,85 @@ void Plotter3D::addPlots(PlotItem* item)
 
     if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
     {
-        glEnable(GL_LINE_SMOOTH);
+//         glEnable(GL_LINE_SMOOTH);
 
-        glLineWidth(2.5);
+//         glLineWidth(2.5);
 
-        if (m_plottingFocusPolicy == All)
-            switch (m_plotStyle)
-            {
-                case Solid: 
-                case Wired: glBegin(GL_LINES); break;
-                case Dots: glBegin(GL_POINTS); break;
-            }
-        else
-            if (m_plottingFocusPolicy == Current)
-            {
-                QModelIndex pi = m_model->index(currentPlot(), 0);
-
-                PlotItem* plot = 0;
-                if (!pi.isValid())
-                   plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
-
-                if (plot == curve)
-                {
-                    switch (m_plotStyle)
-                    {
-                        case Solid: 
-                        case Wired: glBegin(GL_LINES); break;
-                        case Dots: glBegin(GL_POINTS); break;
-                    }
-                }
-                else
-                    glBegin(GL_LINES);
-            }
-
+//         if (m_plottingFocusPolicy == All)
+//             switch (m_plotStyle)
+//             {
+//                 case Solid: 
+//                 case Wired: glBegin(GL_LINES); break;
+//                 case Dots: glBegin(GL_POINTS); break;
+//             }
+//         else
+//             if (m_plottingFocusPolicy == Current)
+//             {
+//                 QModelIndex pi = m_model->index(currentPlot(), 0);
+// 
+//                 PlotItem* plot = 0;
+//                 if (!pi.isValid())
+//                    plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
+// 
+//                 if (plot == curve)
+//                 {
+//                     switch (m_plotStyle)
+//                     {
+//                         case Solid: 
+//                         case Wired: glBegin(GL_LINES); break;
+//                         case Dots: glBegin(GL_POINTS); break;
+//                     }
+//                 }
+//                 else
+//                     glBegin(GL_LINES);
+//             }
+// 
         const QVector<QVector3D> points = curve->points();
-
-        //TODO copy approach from plotter 2d and use jumps optimization
-        for (int i = 0; i < points.size() -1 ; ++i)
-        {
-            glVertex3d(points[i].x(), points[i].y(), points[i].z());
-            glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
-        }
+// 
+//         //TODO copy approach from plotter 2d and use jumps optimization
+//         for (int i = 0; i < points.size() -1 ; ++i)
+//         {
+//             glVertex3d(points[i].x(), points[i].y(), points[i].z());
+//             glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
+//         }
+//         
+//         glEnd();
+//         glDisable(GL_LINE_SMOOTH);
         
-        glEnd();
-        glDisable(GL_LINE_SMOOTH);
+        QVector<double> vertices;
+        QVector<double> normals;
+        indexes.clear();
+
+        for (int i = 0; i < points.size(); ++i)
+        {
+            vertices << points[i].x() << points[i].y() << points[i].z();
+            
+            if (i%2 != 0)
+            {
+                QVector3D n = QVector3D::crossProduct(points[i], points[i-1]).normalized();
+
+                normals << n.x() << n.y() << n.z();
+                indexes.append(indexes.size());
+            }
+        }
+
+        //vertices & normals vbo just allows 1 buffferdata of type array_buffer
+        glGenBuffers(1, &m_itemGeometries[item].second);
+        glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries[item].second);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(double)*vertices.size() + sizeof(double)*normals.size(), 0, GL_STREAM_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(double)*vertices.size(), vertices.data());
+        glBufferSubData(GL_ARRAY_BUFFER, sizeof(double)*vertices.size(), sizeof(double)*normals.size(), normals.data());
+        //TODO ifdef debug_Graph
+        //glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+        //qDebug() << "Vertex Array in VBO: " << bufferSize << " bytes";
+
+        //indices
+        glGenBuffers(1, &m_itemGeometries[item].first);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries[item].first);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indexes.size(), indexes.data(), GL_STATIC_DRAW);
+        //glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+        //qDebug() << "Index Array in VBO: " << bufferSize << " bytes";    
+
     }
     else
     {

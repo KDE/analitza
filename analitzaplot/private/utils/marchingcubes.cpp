@@ -220,7 +220,7 @@ QList<sMarching_Cube> MarchingCubes::ejecutar()
 
 void MarchingCubes::_addTri(const QVector3D& a, const QVector3D& b, const QVector3D& c)
 {
-    QVector3D n = QVector3D::normal (b - a, c - b);
+    QVector3D n = QVector3D::crossProduct(b - a, c - b).normalized();
 
     _vertices << a.x() << a.y() << a.z() <<
                 b.x() << b.y() << b.z() <<
