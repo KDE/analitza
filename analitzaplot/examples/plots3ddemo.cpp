@@ -70,14 +70,13 @@ int main(int argc, char *argv[])
 
     //BEGIN test calls
     PlotsFactory* s = PlotsFactory::self();
-    model->addPlot(s->requestPlot(Analitza::Expression("(r,p)->2"), Dim3D).create(Qt::magenta, "cyl"));
-    model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->-e^(-x^2-y^2)"), Dim3D).create(Qt::lightGray, "z-map"));
-    model->addPlot(s->requestPlot(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), Dim3D).create(Qt::cyan, "implicit 0"));
-    model->addPlot(s->requestPlot(Analitza::Expression("x+3-y=7"), Dim3D).create(Qt::red, "implicit 1, "));
-    model->addPlot(s->requestPlot(Analitza::Expression("x*x+y*y-z*z= 1/2"), Dim3D).create(Qt::darkBlue, "implicit 2"));
     model->addPlot(s->requestPlot(Analitza::Expression("t->vector{cos(t), sin(t), t}"), Dim3D).create(Qt::green, "curve"));
-    model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x"), Dim3D).create(Qt::yellow, "z-map"));
-    model->addPlot(s->requestPlot(Analitza::Expression("(t,p)->1.9"), Dim3D).create(Qt::darkGreen, "sphere-sphcoords"));
+    model->addPlot(s->requestPlot(Analitza::Expression("(t,p)->2"), Dim3D).create(Qt::darkGreen, "sphere-sphcoords"));
+    model->addPlot(s->requestPlot(Analitza::Expression("(r,p)->p"), Dim3D).create(Qt::magenta, "cyl"));
+    model->addPlot(s->requestPlot(Analitza::Expression("piecewise{(x^2 + y^2 +z^2 < 35)?2 - (cos(x + (1+power(5,0.5))/2*y) + cos(x - (1+power(5,0.5))/2*y) + cos(y + (1+power(5,0.5))/2*z) + cos(y - (1+power(5,0.5))/2*z) + cos(z - (1+power(5,0.5))/2*x) + cos(z + (1+power(5,0.5))/2*x)),?1}=0"), Dim3D).create(QColor(40, 87, 159), "complex"));
+    model->addPlot(s->requestPlot(Analitza::Expression("(x^2 + y^2 - 1) * ( x^2 + z^2 - 1) = 1"), Dim3D).create(Qt::cyan, "implicit 0"));
+    model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->(x*x-y*y)/8"), Dim3D).create(Qt::yellow, "z-map"));
+    model->addPlot(s->requestPlot(Analitza::Expression("x*x+y*y-z*z= 1/2"), Dim3D).create(Qt::darkBlue, "implicit 2"));
     //END test calls
 
     if(args->isSet("all-disabled"))
