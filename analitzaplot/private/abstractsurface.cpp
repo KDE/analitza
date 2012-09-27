@@ -138,7 +138,7 @@ void AbstractSurface::doStrip(int n, const QVector3D &p0,  const QVector3D &p1, 
         }
 }
 
-void AbstractSurface::createFace( QVector3D *buffer )
+void AbstractSurface::createFace(QVector3D *buffer)
 {
     QVector3D Normal, diff1, diff2;
 

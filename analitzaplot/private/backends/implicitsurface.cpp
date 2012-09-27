@@ -67,11 +67,12 @@ void ImplicitSurf::update(const QVector3D & oppositecorner1, const QVector3D & o
     vertices.clear();
     normals.clear();
     indexes.clear();
-
     
-//     buildGeometry();
-    //TODO vbo
-//     faces << MarchingCubes::_faces_;
+    buildGeometry();
+
+    vertices << MarchingCubes::_vertices;
+    normals << MarchingCubes::_normals;
+    indexes << MarchingCubes::_indexes;
 }
 
 REGISTER_SURFACE(ImplicitSurf)

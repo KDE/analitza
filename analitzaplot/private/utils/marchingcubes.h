@@ -21,9 +21,8 @@
 #define FUNCTIONGRAPH2_H_mcub
 
 #include "octree.h"
-///
 
-#include "triangle3d.h"
+#include <QVector>
 
 struct sLimitesEspacio {
     int minX;
@@ -124,7 +123,9 @@ public:
 public:
     void buildGeometry();
 
-    QVector<Triangle3D> _faces_;
+    QVector<double> _vertices;
+    QVector<double> _normals;
+    QVector<unsigned int> _indexes;
 
     void _addTri(const QVector3D &a, const QVector3D &b, const QVector3D &c);
     

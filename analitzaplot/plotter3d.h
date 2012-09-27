@@ -133,7 +133,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         void initRefPlanes();
 
         QAbstractItemModel* m_model;
-        
+
         QMap<PlotItem*, QPair<GLuint, GLuint> > m_itemGeometries; // pair:=<indexdata_id, vertex-normals_id>
 
         PlotStyle m_plotStyle;

@@ -46,50 +46,12 @@ const GLubyte Plotter3D::XAxisArrowColor[] = {250 -1 , 1, 1};
 const GLubyte Plotter3D::YAxisArrowColor[] = {1, 255 - 1, 1};
 const GLubyte Plotter3D::ZAxisArrowColor[] = {1, 1, 255 - 1};
 
-// #define DEBUG_GRAPH
+//#define DEBUG_GRAPH
 
-///////////////////////////////////////////////////////////////////////////////
-// generate vertex buffer object and bind it with its data
-// You must give 2 hints about data usage; target and mode, so that OpenGL can
-// decide which data should be stored and its location.
-// VBO works with 2 different targets; GL_ARRAY_BUFFER for vertex arrays
-// and GL_ELEMENT_ARRAY_BUFFER for index array in glDrawElements().
-// The default target is GL_ARRAY_BUFFER.
-// By default, usage mode is set as GL_STATIC_DRAW.
-// Other usages are GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY,
-// GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY,
-// GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, GL_DYNAMIC_COPY.
-///////////////////////////////////////////////////////////////////////////////
-GLuint createVBO(const void* data, int dataSize, GLenum target, GLenum usage)
-{
-    GLuint id = 0;  // 0 is reserved, glGenBuffers() will return non-zero id if success
-
-    glGenBuffers(1, &id);                        // create a vbo
-    glBindBuffer(target, id);                    // activate vbo id to use
-    glBufferData(target, dataSize, data, usage); // upload data to video card
-
-    // check data size in VBO is same as input array, if not return 0 and delete VBO
-    int bufferSize = 0;
-    glGetBufferParameteriv(target, GL_BUFFER_SIZE, &bufferSize);
-    if(dataSize != bufferSize)
-    {
-        glDeleteBuffers(1, &id);
-        id = 0;
-        qDebug() << "[createVBO()] Data size is mismatch with input array";
-    }
-
-    return id;      // return VBO id
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// destroy a VBO
-// If VBO id is not valid or zero, then OpenGL ignores it silently.
-///////////////////////////////////////////////////////////////////////////////
 void deleteVBO(const GLuint vboId)
 {
     glDeleteBuffers(1, &vboId);
 }
-
 
 Plotter3D::Plotter3D(QAbstractItemModel* model)
     : m_model(model)

@@ -16,11 +16,9 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-///
 #include "marchingcubes.h"
 
-
+#include <QDebug>
 
 //
 //@percy spec/impl details
@@ -77,7 +75,6 @@
 //     |.      11|/6
 //     4---------6
 //         9
-
 
 sMarching_Cube MarchingCubes::evaluar_cubo(Cube cubo){
     sMarching_Cube res;
@@ -224,9 +221,29 @@ QList<sMarching_Cube> MarchingCubes::ejecutar()
 
 void MarchingCubes::_addTri(const QVector3D& a, const QVector3D& b, const QVector3D& c)
 {
-        Triangle3D _f(a,b,c);
-    _faces_.append(_f);
+    QVector3D Normal, diff1, diff2;
 
+    diff1 = QVector3D(b.x() - a.x(),
+                      b.y() - a.y(),
+                      b.z() - a.z());
+    
+    diff2 = QVector3D(c.x() - b.x(),
+                      c.y() - b.y(),
+                      c.z() - b.z());
+    
+    Normal = QVector3D(diff1.y()*diff2.z() - diff2.y()*diff1.z(),
+                       diff1.z()*diff2.x() - diff1.x()*diff2.z(),
+                       diff1.x()*diff2.y() - diff1.y()*diff2.x());
+
+    _vertices << a.x() << a.y() << a.z() <<
+                b.x() << b.y() << b.z() <<
+                c.x() << c.y() << c.z();
+                
+    _normals << Normal.x() << Normal.y() << Normal.z(); 
+
+    _indexes.append(_indexes.size());
+    _indexes.append(_indexes.size());
+    _indexes.append(_indexes.size());
 }
 
 
@@ -858,7 +875,10 @@ void MarchingCubes::tipo13(QList<sArista> aristas, QList<unsigned int> vertices)
 
 void MarchingCubes::buildGeometry()
 {
-    _faces_.clear();
+    _vertices.clear();
+    _normals.clear();
+    _indexes.clear();
+    
     QList<sMarching_Cube> cubos = ejecutar();
 //     printf("Cubos: %d\n",cubos.count());
 

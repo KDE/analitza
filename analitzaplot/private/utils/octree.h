@@ -42,7 +42,7 @@ y+
  ----- x+
 */
 
-#include "box3d.h"
+#include <QVector3D>
 
 struct Cube
 {
