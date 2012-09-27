@@ -83,12 +83,12 @@ void Plotter3D::initGL()
 {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_POLYGON_SMOOTH);
-//
+
     glShadeModel(GL_SMOOTH);
     glEnable(GL_MULTISAMPLE);
 
     /// For drawing Filled Polygones :
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
     glEnable(GL_NORMALIZE);
     glFrontFace (GL_CCW);
     glMaterialf (GL_FRONT, GL_SHININESS, 35.0);
@@ -224,14 +224,11 @@ void Plotter3D::drawPlots()
         if (!item || item->spaceDimension() != Dim3D || !item->isVisible())
             continue;
 
-        //TODO el color ya no se configura en la dlista, en la dlist solo va la geometria
         GLfloat  fcolor[4] = {float(item->color().redF()), float(item->color().greenF()), float(item->color().blueF()), 1.0f};
 
         glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
         glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
 
-//         glCallList(m_itemGeometries[item]);
-        
         Surface *surf = dynamic_cast<Surface*>(item);
         
         if (!surf) continue;

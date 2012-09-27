@@ -130,8 +130,6 @@ public:
     void _addTri(const QVector3D &a, const QVector3D &b, const QVector3D &c);
     
 private:
-
-
     //Calcular los cortes
     QList<sArista> calcular_cortes(sMarching_Cube cubo);
     bool signo_opuesto(double a, double b);
