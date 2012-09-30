@@ -28,10 +28,12 @@
 
 #include "analitzaplot/planecurve.h"
 #include "analitzaplot/surface.h"
-#include "analitzaplot/plotsview2d.h"
+#include "analitzagui//plotsview2d.h"
 #include "analitzaplot/plotsmodel.h"
 #include <plotsfactory.h>
 #include <analitza/expression.h>
+
+using namespace Analitza;
 
 int main(int argc, char *argv[])
 {

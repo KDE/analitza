@@ -23,6 +23,8 @@
 
 #include <QVector3D>
 
+namespace Analitza {
+
 class ANALITZAPLOT_EXPORT Surface : public FunctionGraph
 {
 public:
@@ -40,5 +42,7 @@ public:
     const QVector<double> normals() const;
     const QVector<unsigned int> indexes() const;
 };
+
+}
 
 #endif // SURFACE_H

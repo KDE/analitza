@@ -22,6 +22,8 @@
 
 #include <QFlags>
 
+namespace Analitza {
+
 enum Dimension {
     Dim1D = 1,
     Dim2D = 2,
@@ -48,21 +50,14 @@ enum PlotStyle {
     Dots = 1,
     Wired, 
     Solid
-    //TODO SolidAndWired used by surface to show polygons of the surface mesh
-    //SolidAndWired,
 };
-
-//TODO
-// enum PlottingAttributes {
-//     Transparent = 1,
-//     Decorated = 2, // in case of surfaces normlas ...
-//     WithInfo=4 // extra info like singular points, intersetciont with other plots etc
-// };
 
 enum PlottingFocusPolicy
 {
     Current,
     All
 };
+
+}
 
 #endif

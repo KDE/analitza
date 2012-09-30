@@ -27,6 +27,8 @@
 #include "analitza/variable.h"
 #include "analitza/localize.h"
 
+using namespace Analitza;
+
 class FunctionCartesian : public AbstractPlaneCurve
 {
     public:

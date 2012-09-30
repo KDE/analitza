@@ -26,7 +26,9 @@
 #include "analitzaplotexport.h"
 #include "plottingenums.h"
 
-namespace Analitza { class Variables; class Expression; }
+namespace Analitza {
+class Variables;
+class Expression;
 class PlotsModel;
 class DictionaryItem;
 
@@ -64,5 +66,7 @@ private:
     
     PlotsModel *m_model;
 };
+
+}
 
 #endif // ANALITZAPLOT_PLOTITEM_H

@@ -38,6 +38,8 @@
 // bool isinf(double x) { return !finite(x) && x==x; }
 #endif
 
+using namespace Analitza;
+
 Q_DECLARE_METATYPE(PlotItem*);
 
 using namespace std;
@@ -47,10 +49,12 @@ using namespace std;
 QColor const Plotter2D::m_axeColor(100,100,255);
 QColor const Plotter2D::m_derivativeColor(90,90,160);
 
-struct GridInfo
-{
-	qreal inc, xini, yini, xend, yend;
-};
+namespace Analitza {
+    struct GridInfo
+    {
+        qreal inc, xini, yini, xend, yend;
+    };
+}
 
 Plotter2D::Plotter2D(const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_dirty(true), m_size(size), m_model(0)

@@ -26,6 +26,8 @@
 
 #include "private/utils/marchingcubes.h"
 
+using namespace Analitza;
+
 class ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static class? better macros FooClass*/
 {
 public:

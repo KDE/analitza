@@ -53,6 +53,7 @@ static QString IconName() { return (name); }
 #define EXAMPLES(exs) \
 static QStringList Examples() { return (exs); }
 
+namespace Analitza {
 
 class AbstractFunctionGraph : public AbstractMappingGraph
 {
@@ -225,5 +226,6 @@ private:
     QMap<QString, RealInterval > m_argumentIntervals;
 };
 
+}
 
 #endif // ABSTRACTFUNCTIONGRAPH_H

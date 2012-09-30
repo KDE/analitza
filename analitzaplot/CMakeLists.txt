@@ -84,9 +84,7 @@ install(FILES
     plotsmodel.h
     plotsdictionarymodel.h
     plotter2d.h
-    plotsview2d.h
     plotter3d.h
-    plotsview3d.h
     plottingenums.h
     plotsfactory.h
 

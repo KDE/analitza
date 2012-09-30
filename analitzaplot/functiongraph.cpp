@@ -20,8 +20,9 @@
 #include "functiongraph.h"
 
 #include "private/abstractfunctiongraph.h"
-
 #include "private/functiongraphfactory.h"
+
+using namespace Analitza;
 
 FunctionGraph::FunctionGraph(AbstractFunctionGraph *g)
     : PlotItem("123123213123", Qt::black)

@@ -23,6 +23,8 @@
 #include <analitzaplot/plotsmodel.h>
 #include <analitzaplot/plotsdictionarymodel.h>
 
+using namespace Analitza;
+
 QTEST_KDEMAIN_CORE( PlotsDictionaryModelTest )
 
 Q_DECLARE_METATYPE(PlotItem*);

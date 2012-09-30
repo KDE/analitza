@@ -24,6 +24,9 @@
 #include "plotitem.h"
 #include <QPair>
 
+namespace Analitza
+{
+
 class AbstractFunctionGraph;
 
 class ANALITZAPLOT_EXPORT FunctionGraph : public PlotItem
@@ -70,6 +73,6 @@ private:
     QString m_display;
 };
 
-
+}
 
 #endif // FUNCTIONGRAPH2_H

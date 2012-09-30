@@ -29,6 +29,8 @@
 #define M_PI           3.14159265358979323846
 #endif
 
+using namespace Analitza;
+
 static const double pi=M_PI;
 
 class ImplicitPolar : public AbstractPlaneCurve, MarchingSquares

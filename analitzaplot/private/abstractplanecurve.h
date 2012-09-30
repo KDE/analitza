@@ -26,7 +26,8 @@
 #define CONSTRUCTORS(name) \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractPlaneCurve(functionExpression, variables) { }
 
-namespace Analitza { class Variables; }
+namespace Analitza {
+class Variables;
 
 class AbstractPlaneCurve : public AbstractFunctionGraph 
 {
@@ -44,5 +45,7 @@ public:
 protected:
     bool addPoint(const QPointF& p);
 };
+
+}
 
 #endif // ANALITZAPLOT_ABSTRACTPLANECURVE_H

@@ -18,8 +18,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef FUNCTIONSPAINTER3D_H
-#define FUNCTIONSPAINTER3D_H
+#ifndef PLOTTER3D_H
+#define PLOTTER3D_H
 
 #include "plotitem.h"
 
@@ -35,8 +35,10 @@
 class QAbstractItemModel;
 class QPainter;
 class QPaintDevice;
-
 class QModelIndex;
+
+namespace Analitza
+{
 
 /**
  * @class Plotter3D
@@ -149,7 +151,9 @@ class ANALITZAPLOT_EXPORT Plotter3D
         CartesianAxis m_currentAxisIndicator;
         bool m_simpleRotation;
         QVector3D m_simpleRotationVector;
-    QVector3D m_lightpos;
+        QVector3D m_lightpos;
 };
 
-#endif // FUNCTIONSPAINTER3D_H
+}
+
+#endif // PLOTTER3D_H

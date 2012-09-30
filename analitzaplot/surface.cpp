@@ -23,6 +23,8 @@
 #include "private/functiongraphfactory.h"
 #include "private/abstractsurface.h"
 
+using namespace Analitza;
+
 Surface::Surface(AbstractFunctionGraph* g): FunctionGraph(g)
 {}
 

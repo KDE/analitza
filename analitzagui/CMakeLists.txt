@@ -40,6 +40,8 @@ install(FILES
 	operatorsmodel.h
 	variablesmodel.h
 	expressionedit.h
+	plotsview2d.h
+	plotsview3d.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
 )

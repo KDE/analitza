@@ -26,6 +26,8 @@
 #include <analitza/localize.h>
 #include <QVector3D>
 
+using namespace Analitza;
+
 //TODO macros para las prop e abajo
 
 //NOTE 

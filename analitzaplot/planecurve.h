@@ -32,7 +32,6 @@ namespace Analitza
 {
 class Variables;
 class Expression;
-}
 class AbstractPlaneCurve;
 class AbstractSurface;
 
@@ -48,5 +47,7 @@ public:
     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
     QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse 
 };
+
+}
 
 #endif // ANALITZAPLOT_FUNCTION_H

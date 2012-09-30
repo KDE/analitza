@@ -29,6 +29,8 @@
 #include "abstractspacecurve.h"
 #include "utils/mathutils.h"
 
+using namespace Analitza;
+
 using std::atan2;
 
 AbstractSpaceCurve::AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v)

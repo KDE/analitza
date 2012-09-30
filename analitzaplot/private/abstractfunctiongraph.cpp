@@ -24,6 +24,8 @@
 #include "analitza/variable.h"
 #include <analitza/variables.h>
 
+using namespace Analitza;
+
 // combobox For 3 or fewer options, use a set of radio buttons. 
 // no combo para dict For more than 10 options, use a list. 
 // get new plots 

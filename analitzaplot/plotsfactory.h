@@ -22,15 +22,13 @@
 #include "plottingenums.h"
 #include "analitzaplotexport.h"
 #include <analitza/expression.h>
-#include <QColor>
 
+class QColor;
+
+namespace Analitza {
+class Variables;
 class FunctionGraph;
 class PlotsModel;
-namespace Analitza {
-    class Expression;
-    class Variables;
-}
-
 class PlotItem;
 
 class ANALITZAPLOT_EXPORT PlotBuilder
@@ -61,5 +59,7 @@ class ANALITZAPLOT_EXPORT PlotsFactory
         PlotBuilder requestPlot(const Analitza::Expression& expresssion, Dimension dim) const;
         QStringList examples(Dimensions s) const;
 };
+
+}
 
 #endif // PLOTSFACTORY_H

@@ -25,6 +25,8 @@
 #define CONSTRUCTORS(name) \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) : AbstractSurface(functionExpression, variables) { }
 
+namespace Analitza {
+
 class AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
 {
 public:
@@ -50,5 +52,7 @@ private:
     void doStrip(int n, const QVector3D &p0,  const QVector3D &p1, const QVector3D &p2, const QVector3D &p3);
     void createFace( QVector3D *buffer );
 };
+
+}
 
 #endif // ABSTRACTSURFACE_H

@@ -25,6 +25,8 @@
 #include <analitza/vector.h>
 #include <analitza/localize.h>
 
+using namespace Analitza;
+
 //TODO macros para las prop e abajo
 
 class Frp : public AbstractSurface/*, static class? better macros FooClass*/

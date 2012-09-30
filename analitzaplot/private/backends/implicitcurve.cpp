@@ -30,6 +30,7 @@
 #include <analitza/expressiontype.h>
 #include <analitza/variable.h>
 #include <analitza/variables.h>
+#include "private/utils/marchingsquares.h"
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
@@ -37,7 +38,7 @@
 
 static const double pi=M_PI;
 
-#include "private/utils/marchingsquares.h"
+using namespace Analitza;
 
 class FunctionImplicit : public AbstractPlaneCurve, public MarchingSquares
 {

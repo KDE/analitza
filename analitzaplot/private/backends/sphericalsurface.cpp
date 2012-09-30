@@ -25,6 +25,8 @@
 #include <analitza/value.h>
 #include <analitza/vector.h>
 
+using namespace Analitza;
+
 class SphericalSurface : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:

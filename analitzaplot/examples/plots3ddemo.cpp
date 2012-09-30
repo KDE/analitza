@@ -29,9 +29,11 @@
 #include "analitzaplot/surface.h"
 #include "analitzaplot/spacecurve.h"
 #include "analitzaplot/plotsmodel.h"
-#include "analitzaplot/plotsview3d.h"
+#include <analitzagui/plotsview3d.h>
 #include <plotsfactory.h>
 #include <analitza/expression.h>
+
+using namespace Analitza;
 
 int main(int argc, char *argv[])
 {

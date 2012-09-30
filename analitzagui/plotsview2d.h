@@ -40,6 +40,9 @@
  */
 
 class QItemSelectionModel;
+
+namespace Analitza
+{
 class PlotsModel;
 
 class ANALITZAGUI_EXPORT PlotsView2D : public QWidget, public Plotter2D
@@ -154,5 +157,7 @@ private:
     QItemSelectionModel* m_selection;
     QAbstractItemModel *m_currentModel; // use this pointer to disconnect signals when change the model
 };
+
+}
 
 #endif

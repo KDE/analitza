@@ -24,6 +24,8 @@
 #include <analitza/analyzer.h>
 #include <QStringList>
 
+using namespace Analitza;
+
 K_GLOBAL_STATIC(PlotsFactory, factoryInstance)
 
 PlotsFactory::PlotsFactory()

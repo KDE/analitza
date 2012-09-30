@@ -19,6 +19,7 @@
 
 #include "abstractplotitem.h"
 
+using namespace Analitza;
 
 AbstractMappingGraph::~AbstractMappingGraph()
 {

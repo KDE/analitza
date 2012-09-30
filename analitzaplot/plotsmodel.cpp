@@ -29,6 +29,8 @@
 #include <KIcon>
 #include <analitzaplot/functiongraph.h>
 
+using namespace Analitza;
+
 Q_DECLARE_METATYPE(PlotItem*);
 
 PlotsModel::PlotsModel(QObject* parent)

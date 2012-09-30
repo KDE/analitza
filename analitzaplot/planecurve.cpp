@@ -26,6 +26,7 @@
 
 #include "private/functiongraphfactory.h"
 
+using namespace Analitza;
 
 PlaneCurve::PlaneCurve(AbstractFunctionGraph* g )
     : FunctionGraph(g)

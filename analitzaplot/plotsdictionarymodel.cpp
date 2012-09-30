@@ -26,6 +26,8 @@
 #include <analitzaplot/plotsfactory.h>
 #include <QFile>
 
+using namespace Analitza;
+
 PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent)
     : QStandardItemModel(parent)
     , m_currentItem(-1)

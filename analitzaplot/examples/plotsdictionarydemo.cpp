@@ -26,6 +26,8 @@
 #include <plotsdictionarymodel.h>
 #include <plotsmodel.h>
 
+using namespace Analitza;
+
 int main(int argc, char *argv[])
 {
     KAboutData aboutData("PlotsDictionaryDemo",

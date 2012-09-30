@@ -30,6 +30,8 @@
 #endif
 static const double pi=M_PI;
 
+using namespace Analitza;
+
 class FunctionPolar : public AbstractPlaneCurve
 {
 public:

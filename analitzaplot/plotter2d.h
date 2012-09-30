@@ -17,9 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-#ifndef FUNCTIONSPAINTER_H
-#define FUNCTIONSPAINTER_H
+#ifndef PLOTTER2D_H
+#define PLOTTER2D_H
 
 #include <QRectF>
 #include <QLineF>
@@ -30,13 +29,15 @@
 #include "analitzaplotexport.h"
 #include <analitzaplot/plottingenums.h>
 
-struct GridInfo;
-class PlotItem;
 class QAbstractItemModel;
 class QPainter;
 class QPaintDevice;
-
 class QModelIndex;
+
+namespace Analitza
+{
+struct GridInfo;
+class PlotItem;
 
 class ANALITZAPLOT_EXPORT Plotter2D
 {
@@ -132,4 +133,6 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QColor m_gridColor;
 };
 
-#endif // FUNCTIONSPAINTER_H
+}
+
+#endif // PLOTTER2D_H

@@ -16,12 +16,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
 #include "spacecurve.h"
 
 #include <KDE/KLocalizedString>
 
 #include "private/abstractspacecurve.h"
+
+using namespace Analitza;
 
 SpaceCurve::SpaceCurve(AbstractFunctionGraph* g)
     : FunctionGraph(g)

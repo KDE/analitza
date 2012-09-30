@@ -23,12 +23,8 @@
 
 #include <plottingenums.h>
 
-//NOTE
-//para construir estos backends/abstract solo re necesitaa que su ctor tenga exp y varmod ... 
-//en la funcion y en el metodo factory id es donde se requiere que tenga mas detalle ademas de exp y varsmod
-// por ejemolo coordsys en el caso de surf
+namespace Analitza {
 
-class QString;
 class AbstractMappingGraph //strategy pattern
 {
 public:
@@ -43,5 +39,7 @@ public:
 protected:
     AbstractMappingGraph() {}
 };
+
+}
 
 #endif // ABSTRACTMAPPINGGRAPH_H

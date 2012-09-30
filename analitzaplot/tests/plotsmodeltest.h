@@ -21,9 +21,7 @@
 
 #include <QObject>
 
-class PlotsModel;
-
-namespace Analitza { class Variables; }
+namespace Analitza { class Variables; class PlotsModel; }
 
 class PlotsModelTest : public QObject
 {
@@ -39,7 +37,7 @@ Q_OBJECT
         void testExamples2D();
 
 	private:
-        PlotsModel *m_model;
+        Analitza::PlotsModel *m_model;
 };
 
 #endif

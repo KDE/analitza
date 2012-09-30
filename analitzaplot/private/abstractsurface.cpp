@@ -25,6 +25,8 @@
 #define MAXSTRIP 32
 #define MAXALONG  32
 
+using namespace Analitza;
+
 AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
 : AbstractFunctionGraph(e, v)
 {}

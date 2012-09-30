@@ -20,6 +20,8 @@
 #include "plotitem.h"
 #include "plotsmodel.h"
 
+using namespace Analitza;
+
 PlotItem::PlotItem(const QString &n, const QColor& col)
     : m_name(n)
     , m_color(col)

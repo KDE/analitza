@@ -25,7 +25,10 @@
 
 #include "analitzaplotexport.h"
 
+namespace Analitza
+{
 class PlotsModel;
+
 class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public QStandardItemModel
 {
 Q_OBJECT
@@ -51,5 +54,6 @@ private:
     int m_currentItem;
 };
 
-#endif
+}
 
+#endif

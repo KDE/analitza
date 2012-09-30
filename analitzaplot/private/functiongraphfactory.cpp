@@ -24,6 +24,8 @@
 #include <analitza/analyzer.h>
 #include <KLocalizedString>
 
+using namespace Analitza;
+
 FunctionGraphFactory* FunctionGraphFactory::m_self=0;
 
 QString FunctionGraphFactory::typeName(const QString& id) const

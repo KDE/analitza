@@ -24,7 +24,8 @@
 #define CONSTRUCTORS(name) \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractSpaceCurve(functionExpression, variables) { }
 
-namespace Analitza { class Variables; }
+namespace Analitza {
+class Variables;
 
 class AbstractSpaceCurve : public AbstractFunctionGraph 
 {
@@ -48,5 +49,6 @@ private:
     AbstractSpaceCurve();
 };
 
+}
 
 #endif // ABSTRACTSPACECURVE_H

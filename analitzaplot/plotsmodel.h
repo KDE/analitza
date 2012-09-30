@@ -24,6 +24,8 @@
 
 #include "analitzaplot/analitzaplotexport.h"
 
+namespace Analitza
+{
 class PlotItem;
 
 class ANALITZAPLOT_EXPORT PlotsModel : public QAbstractListModel
@@ -62,4 +64,6 @@ private:
     int m_resolution;
 };
 
-#endif // FUNCTIONGRAPHMODEL_H
+}
+
+#endif // PLOTSMODEL_H

@@ -40,6 +40,8 @@
 #include <cmath>
 #include <KColorUtils>
 
+using namespace Analitza;
+
 PlotsView2D::PlotsView2D(QWidget *parent)
     : QWidget(parent)
     , Plotter2D(size())

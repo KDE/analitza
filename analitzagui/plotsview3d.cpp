@@ -27,6 +27,8 @@
 #include <QVector>
 #include <QDebug>
 
+using namespace Analitza;
+
 PlotsView3D::PlotsView3D(QWidget *parent)
     : QGLWidget(parent), m_selection(0)
 {

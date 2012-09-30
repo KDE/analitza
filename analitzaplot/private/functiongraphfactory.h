@@ -41,14 +41,13 @@ static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, An
 #define REGISTER_PLANECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim2D, FunctionGraphFactory::createPlotItem<PlaneCurve>, __VA_ARGS__)
 #define REGISTER_SPACECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, FunctionGraphFactory::createPlotItem<SpaceCurve>, __VA_ARGS__)
 #define REGISTER_SURFACE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, FunctionGraphFactory::createPlotItem<Surface>, __VA_ARGS__)
-        
+
+namespace Analitza {
+class Variables;
+class Expression;
+class ExpressionType;
 class AbstractFunctionGraph;
 class PlotItem;
-namespace Analitza {
-    class Variables;
-    class Expression;
-    class ExpressionType;
-}
 
 class FunctionGraphFactory
 {
@@ -106,5 +105,6 @@ private:
     QMap<QString, BuilderFunctionWithVars> builderFunctionsWithVars;
 };
 
+}
 
 #endif // ABSTRACTFUNCTIONGRAPHFACTORY_H

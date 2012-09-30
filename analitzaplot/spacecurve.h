@@ -24,6 +24,8 @@
 #include "functiongraph.h"
 #include <QVector3D>
 
+namespace Analitza {
+
 class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {
 public:
@@ -37,5 +39,7 @@ public:
 protected:
     SpaceCurve();
 };
+
+}
 
 #endif // SPACECURVE_H

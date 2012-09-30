@@ -28,9 +28,12 @@
 #include "analitzaguiexport.h"
 #include <analitzaplot/plotter3d.h>
 
+class QItemSelectionModel;
+
+namespace Analitza
+{
 class Surface;
 class PlotItem;
-class QItemSelectionModel;
 
 class ANALITZAGUI_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
 {
@@ -69,6 +72,6 @@ private:
     double old_x, old_y;
 };
 
+}
+
 #endif
-
-

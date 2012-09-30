@@ -31,7 +31,7 @@
 #include <cmath>
 
 using namespace std;
-using Analitza::Expression;
+using namespace Analitza;
 
 QTEST_KDEMAIN_CORE( PlotsModelTest )
 

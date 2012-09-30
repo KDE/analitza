@@ -16,9 +16,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
-
 #include "private/abstractsurface.h"
 // #include "private/surfacefactory.h"
 #include "private/functiongraphfactory.h"
@@ -26,6 +23,8 @@
 #include <analitza/localize.h>
 #include <analitza/value.h>
 #include <analitza/vector.h>
+
+using namespace Analitza;
 
 class ParamSurf : public AbstractSurface
 {

@@ -36,9 +36,10 @@
 // bool isinf(double x) { return !finite(x) && x==x; }
 #endif
 
-Q_DECLARE_METATYPE(PlotItem*);
-
 using namespace std;
+using namespace Analitza;
+
+Q_DECLARE_METATYPE(PlotItem*);
 
 const GLubyte Plotter3D::XAxisArrowColor[] = {250 -1 , 1, 1};
 const GLubyte Plotter3D::YAxisArrowColor[] = {1, 255 - 1, 1};
