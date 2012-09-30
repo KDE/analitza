@@ -22,8 +22,6 @@
 
 #include "abstractfunctiongraph.h"
 
-class Box3D;
-
 #define CONSTRUCTORS(name) \
 name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) : AbstractSurface(functionExpression, variables) { }
 
@@ -51,9 +49,6 @@ private:
     void doQuad(int n, int m, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3);
     void doStrip(int n, const QVector3D &p0,  const QVector3D &p1, const QVector3D &p2, const QVector3D &p3);
     void createFace( QVector3D *buffer );
-    
-
-    
 };
 
 #endif // ABSTRACTSURFACE_H

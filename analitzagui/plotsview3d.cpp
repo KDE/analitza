@@ -19,9 +19,9 @@
  *************************************************************************************/
 
 #include "plotsview3d.h"
-#include "plotsmodel.h"
-#include "surface.h"
-#include "spacecurve.h"
+#include <analitzaplot/plotsmodel.h>
+#include <analitzaplot/surface.h>
+#include <analitzaplot/spacecurve.h>
 #include <QVector3D>
 #include <qitemselectionmodel.h>
 #include <QVector>

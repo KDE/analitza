@@ -23,10 +23,12 @@ set(analitzagui_SRCS
 	algebrahighlighter.cpp
 	variablesmodel.cpp
 	expressionedit.cpp
+    plotsview3d.cpp
+    plotsview2d.cpp
 )
 
 kde4_add_library(analitzagui SHARED ${analitzagui_SRCS})
-target_link_libraries(analitzagui ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDEUI_LIBS} ${QT_QTSVG_LIBRARY} analitza analitzaplot)
+target_link_libraries(analitzagui ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDEUI_LIBS} ${QT_QTSVG_LIBRARY} ${QT_QTOPENGL_LIBRARY} analitza analitzaplot)
 
 set_target_properties(analitzagui PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 
@@ -39,4 +41,5 @@ install(FILES
 	variablesmodel.h
 	expressionedit.h
 
-    DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel)
+    DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
+)

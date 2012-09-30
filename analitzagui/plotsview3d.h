@@ -25,14 +25,14 @@
 #include <QMouseEvent>
 
 #include <QModelIndex>
-#include "analitzaplotexport.h"
-#include "plotter3d.h"
+#include "analitzaguiexport.h"
+#include <analitzaplot/plotter3d.h>
 
 class Surface;
 class PlotItem;
 class QItemSelectionModel;
 
-class ANALITZAPLOT_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
+class ANALITZAGUI_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
 {
     Q_OBJECT
 

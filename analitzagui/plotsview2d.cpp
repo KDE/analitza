@@ -28,17 +28,16 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QFile>
+#include <QDebug>
+#include <QItemSelectionModel>
+#include <QApplication>
+#include <QClipboard>
 
 #include <analitza/localize.h>
-#include <QDebug>
-
 #include <analitza/analyzer.h>
-#include "plotter2d.h"
-#include "plotsmodel.h"
+#include <analitzaplot/plotter2d.h>
+#include <analitzaplot/plotsmodel.h>
 #include <cmath>
-#include <QtGui/qitemselectionmodel.h>
-#include <qapplication.h>
-#include <QClipboard>
 #include <KColorUtils>
 
 PlotsView2D::PlotsView2D(QWidget *parent)

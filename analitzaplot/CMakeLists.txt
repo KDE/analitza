@@ -46,7 +46,6 @@ set ( analitzaplot_SRCS
     private/backends/sphericalsurface.cpp
     private/backends/implicitsurface.cpp
 
-    #public API
     plotsfactory.cpp
     plotitem.cpp
     functiongraph.cpp
@@ -56,25 +55,18 @@ set ( analitzaplot_SRCS
     plotsmodel.cpp
     plotsdictionarymodel.cpp
     plotter2d.cpp
-    plotsview3d.cpp
     plotter3d.cpp
-    plotsview2d.cpp
 )
 
 kde4_add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
 target_link_libraries ( analitzaplot
-  #OpenGL
   ${OPENGL_gl_LIBRARY}
   ${OPENGL_glu_LIBRARY}
-  #${GLEW_GLEW_LIBRARY}
-  #Qt
+  
   ${QT_QTCORE_LIBRARY}
   ${QT_QTGUI_LIBRARY}
-  ${QT_QTOPENGL_LIBRARY}
-  ${QT_QTXML_LIBRARY}
-  #KDE
-  #${KDE4_KDECORE_LIBS}
-  ${KDE4_KDEUI_LIBS}
+  ${KDE4_KDECORE_LIBS}
+
   analitza
 )
 
@@ -83,7 +75,6 @@ set_target_properties(analitzaplot PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOV
 install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
-    #public api
     analitzaplotexport.h
     plotitem.h
     functiongraph.h

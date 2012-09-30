@@ -31,8 +31,8 @@
 #include <QPixmap>
 #include <QModelIndex>
 
-#include "analitzaplotexport.h"
-#include "plotter2d.h"
+#include "analitzaguiexport.h"
+#include <analitzaplot/plotter2d.h>
 
 /**
  *  This class lets you create a widget that can draw multiple 2D graphs.
@@ -42,7 +42,7 @@
 class QItemSelectionModel;
 class PlotsModel;
 
-class ANALITZAPLOT_EXPORT PlotsView2D : public QWidget, public Plotter2D
+class ANALITZAGUI_EXPORT PlotsView2D : public QWidget, public Plotter2D
 {
 Q_OBJECT
 Q_PROPERTY(bool squares READ squares WRITE setSquares)
