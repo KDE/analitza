@@ -30,7 +30,6 @@ namespace Analitza {
 class Variables;
 class Expression;
 class PlotsModel;
-class DictionaryItem;
 
 class ANALITZAPLOT_EXPORT PlotItem 
 {
