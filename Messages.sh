@@ -1,5 +1,5 @@
 #! /bin/sh
-sed 's/.*\/\/ *\([^ ]*\) *\/\/.*/i18nc(\"dictionary\", \"\1\");/' analitzaplot/data/plots/*.plots | grep i18nc\(\" > dictionaryplots_i18n.cpp
-$XGETTEXT analitzagui/*.cpp analitza/*.cpp dictionaryplots_i18n.cpp -o $podir/analitza.pot
+perl extractplots --context="dictionary" analitzaplot/data/plots/*.plots >> rc.cpp
+$XGETTEXT analitzagui/*.cpp analitza/*.cpp rc.cpp -o $podir/analitza.pot
 
-rm -f dictionaryplots_i18n.cpp
+rm -f rc.cpp

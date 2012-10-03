@@ -1,0 +1,90 @@
+#!/usr/bin/env perl
+
+# Copyright (c) 2012 Pino Toscano <pino@kde.org>
+
+sub usage
+{
+  warn <<"EOF";
+
+extractplots [OPTIONS] FILENAMES...
+
+This script extract descriptions from Analitza plots and
+writes on standard output (usually redirected to rc.cpp) the equivalent
+i18n() calls so that xgettext can parse them.
+
+--context=name    : Give i18n calls a context name: i18nc("name", ...)
+--help|?          : Display this summary
+
+EOF
+
+  exit;
+}
+
+###########################################################################################
+
+use strict;
+use warnings;
+use Getopt::Long;
+
+sub escape_to_c($) {
+    my $text = shift;
+
+    $text =~ s/\\/\\\\/g; # escape \
+    $text =~ s/\"/\\\"/g; # escape "
+
+    return $text;
+}
+
+###########################################################################################
+
+GetOptions ("context=s"   => \my $opt_context,       # I18N context
+            "help|?"      => \&usage );
+
+unless (@ARGV)
+{
+  warn "No filename specified";
+  exit;
+}
+
+###########################################################################################
+
+sub out_message {
+    my ($ctxt, $text, @cmnts) = @_;
+    for my $cmnt (@cmnts) {
+        print qq|// $cmnt\n|;
+    }
+    if (defined $text) {
+        $text = escape_to_c($text);
+        if (defined $ctxt) {
+            $ctxt = escape_to_c($ctxt);
+            print qq|i18nc("$ctxt", "$text");\n|;
+        } else {
+            print qq|i18n("$text");\n|;
+        }
+    }
+}
+
+for my $file_name (@ARGV)
+{
+  my $fh;
+
+  unless (open $fh, "<", $file_name)
+  {
+    next;
+  }
+
+  while (<$fh>)
+  {
+    my $string = $_;
+    if ($string =~ /.*\/\/ *([^ ]*) *\/\/.*/)
+    {
+      my @comments = ();
+
+      (my $norm_fname = $file_name) =~ s/^\.\///;
+      push @comments, "i18n: file: $norm_fname:$.";
+      out_message($opt_context, $1, @comments);
+    }
+  }
+
+  close $fh or warn "Failed to close: '$file_name': $!";
+}
