@@ -37,6 +37,8 @@
 #include <analitza/analyzer.h>
 #include <analitza/variables.h>
 
+using namespace Analitza;
+
 class HelpTip : public QLabel
 {
 	public:

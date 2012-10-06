@@ -27,15 +27,14 @@
 
 #include "analitzaguiexport.h"
 
+class OperatorsModel;
+class QKeyEvent;
+
 namespace Analitza
 {
 class Variables;
 class Analyzer;
 class Expression;
-}
-
-class OperatorsModel;
-class QKeyEvent;
 
 /**
 *	The expression edit widget is the one where we will input our expressions.
@@ -167,5 +166,7 @@ class ANALITZAGUI_EXPORT ExpressionEdit : public QPlainTextEdit
 		QTimer* m_hideHelpTip;
 		int m_lineHeight;
 };
+
+}
 
 #endif

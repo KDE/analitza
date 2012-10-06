@@ -24,10 +24,7 @@
 #include <analitza/analitzautils.h>
 #include <QDebug>
 
-using Analitza::Variables;
-using Analitza::Expression;
-using Analitza::Object;
-using Analitza::Cn;
+using namespace Analitza;
 
 VariablesModel::VariablesModel(Variables* v, QObject *parent)
 	: QAbstractTableModel(parent), m_vars(v), m_editable(true)
