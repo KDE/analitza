@@ -1701,7 +1701,6 @@ Expression Analyzer::derivative(const QString& var)
 {
 	Q_ASSERT(m_exp.isCorrect());
 	
-	Expression exp;
 	QStringList vars;
 	Object* deriv=m_exp.tree();
 	if(m_exp.isLambda()){
@@ -1728,10 +1727,8 @@ Expression Analyzer::derivative(const QString& var)
 		lambda->appendBranch(bvar);
 	}
 	lambda->appendBranch(o);
-	
-	exp.setTree(lambda);
-	
-	return exp;
+	Expression::computeDepth(lambda);
+	return Expression(lambda);
 }
 
 Expression Analyzer::dependenciesToLambda() const

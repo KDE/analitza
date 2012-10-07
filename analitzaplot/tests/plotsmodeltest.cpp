@@ -63,6 +63,7 @@ void PlotsModelTest::testAppend_data()
                               "? selector(2, vector{x, 1/x} ) }";
     QTest::newRow("x->diff1") << "x->(diff(x:x))(x)";
     QTest::newRow("x->diffx") << "x->(diff(x^2:x))(x)";
+	QTest::newRow("x->absdiv") << "abs(4-2x)/(x-1)";
     QTest::newRow("y->flat") << "y->1";
     QTest::newRow("y->trigonometric") << "y->sin y";
     QTest::newRow("polar->scalar") << "q->2";
