@@ -41,8 +41,7 @@ SurfaceTest::~SurfaceTest()
 }
 
 void SurfaceTest::initTestCase()
-{
-}
+{}
 
 void SurfaceTest::cleanupTestCase()
 {}
@@ -76,7 +75,15 @@ void SurfaceTest::testIncorrect()
 {
     QFETCH(QString, input);
 
-    QVERIFY(!PlotsFactory::self()->requestPlot(Expression(input), Dim3D).canDraw());
+    PlotBuilder rp = PlotsFactory::self()->requestPlot(Expression(input), Dim3D);
+    if(rp.canDraw()) {
+        FunctionGraph* f = rp.create(Qt::red, "lala");
+        Surface* surface = dynamic_cast<Surface*>(f);
+        QVERIFY(surface);
+        
+        surface->update(QVector3D(-1,-1,-1), QVector3D(1,1,1));
+        QVERIFY(!f->isCorrect() || surface->vertices().isEmpty());
+    }
 }
 
 //TODO

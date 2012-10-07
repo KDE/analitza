@@ -17,8 +17,8 @@
  *************************************************************************************/
 
 #include "spacecurvetest.h"
-#include "analitzaplot/spacecurve.h"
 #include <plotsfactory.h>
+#include "analitzaplot/spacecurve.h"
 #include "analitza/expression.h"
 #include "analitza/variables.h"
 #include <qtest_kde.h>
@@ -74,14 +74,22 @@ void SpaceCurveTest::testIncorrect_data()
     QTest::newRow("wrong-parametric") << "t->vector{v*s,r}";
     QTest::newRow("wrong-variable") << "t->vector{t(t), 8, 4}";
     QTest::newRow("wrong-inf-2ndcomp") << "t->vector{t, t/0, t}";
-    QTest::newRow("wrong-nan-3rdcomp") << "t->vector{t, 3*t*t, t/0 - t/0}";
+    QTest::newRow("wrong-nan-3rdcomp") << "t->vector{t, 3*t*t, t/0}";
 }
 
 void SpaceCurveTest::testIncorrect()
 {
     QFETCH(QString, input);
 
-    QVERIFY(!PlotsFactory::self()->requestPlot(Expression(input), Dim3D).canDraw());
+	PlotBuilder rp = PlotsFactory::self()->requestPlot(Expression(input), Dim3D);
+    if(rp.canDraw()) {
+        FunctionGraph* f = rp.create(Qt::red, "lala");
+        SpaceCurve* curve = dynamic_cast<SpaceCurve*>(f);
+        QVERIFY(curve);
+        
+        curve->update(QVector3D(-1,-1,-1), QVector3D(1,1,1));
+        QVERIFY(!f->isCorrect() || curve->points().isEmpty());
+    }
 }
 
 //TODO

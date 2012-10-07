@@ -42,8 +42,7 @@ PlaneCurveTest::~PlaneCurveTest()
 }
 
 void PlaneCurveTest::initTestCase()
-{
-}
+{}
 
 void PlaneCurveTest::cleanupTestCase()
 {}
@@ -91,7 +90,15 @@ void PlaneCurveTest::testIncorrect()
 {
     QFETCH(QString, input);
 
-    QVERIFY(!PlotsFactory::self()->requestPlot(Expression(input), Dim2D).canDraw());
+    PlotBuilder rp = PlotsFactory::self()->requestPlot(Expression(input), Dim2D);
+    if(rp.canDraw()) {
+        FunctionGraph* f = rp.create(Qt::red, "lala");
+        PlaneCurve* curve = dynamic_cast<PlaneCurve*>(f);
+        QVERIFY(curve);
+        
+        curve->update(QRectF(-5,-5,10,10));
+        QVERIFY(!f->isCorrect() || curve->points().isEmpty());
+    }
 }
 
 void PlaneCurveTest::testJumps_data()
