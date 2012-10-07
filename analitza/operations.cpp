@@ -48,7 +48,10 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			a *= b;
 			break;
 		case Operator::divide:
-			a /=b;
+			if(KDE_ISLIKELY(b!=0.))
+				a /= b;
+			else
+				*correct=new QString(i18n("Cannot divide by 0."));
 			break;
 		case Operator::minus:
 			a -= b;
