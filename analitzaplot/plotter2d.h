@@ -81,8 +81,10 @@ class ANALITZAPLOT_EXPORT Plotter2D
         // tick symbols
         void updateGridColor(const QColor &color) { m_gridColor = color;  forceRepaint(); }
         void updateTickScale(const QString& m_tickScaleSymbol, qreal m_tickScaleSymbolValue, int m_tickScaleNumerator, int m_tickScaleDenominator);
-        void setTicksShown(QFlags<Qt::Orientation> o) { m_ticksShown = o; forceRepaint(); }
-        void setAxesShown(QFlags<Qt::Orientation> o) { m_axesShown = o; forceRepaint(); }
+        void setTicksShown(Qt::Orientations o) { m_ticksShown = o; forceRepaint(); }
+        void setAxesShown(Qt::Orientations o) { m_axesShown = o; forceRepaint(); }
+        
+        Qt::Orientations ticksShown() const { return m_ticksShown; }
         
     protected:
         QRectF lastViewport() const { return viewport; }
@@ -125,8 +127,8 @@ class ANALITZAPLOT_EXPORT Plotter2D
         qreal m_tickScaleSymbolValue;
         int m_tickScaleNumerator;
         int m_tickScaleDenominator;
-        QFlags<Qt::Orientation> m_ticksShown;
-        QFlags<Qt::Orientation> m_axesShown;
+        Qt::Orientations m_ticksShown;
+        Qt::Orientations m_axesShown;
         QString m_axisXLabel;
         QString m_axisYLabel;
         
