@@ -45,8 +45,10 @@ PlotsModel::~PlotsModel()
 
 void PlotsModel::clear()
 {
-	qDeleteAll(m_items);
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    qDeleteAll(m_items);
     m_items.clear();
+    endRemoveRows();
 }
 
 Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
