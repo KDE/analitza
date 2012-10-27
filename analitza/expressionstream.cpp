@@ -22,6 +22,7 @@ using namespace Analitza;
 
 ExpressionStream::ExpressionStream(QTextStream* dev)
 	: m_dev(dev)
+	, m_interrupted(false)
 {}
 
 bool ExpressionStream::atEnd() const
@@ -29,14 +30,28 @@ bool ExpressionStream::atEnd() const
 	return m_dev->atEnd();
 }
 
+QString ExpressionStream::lastLine() const
+{
+	return m_last;
+}
+
+bool ExpressionStream::isInterrupted() const
+{
+	return m_interrupted;
+}
+
 Expression ExpressionStream::next()
 {
-	QString line;
+	m_last.clear();
 	for(; !atEnd(); ) {
-		line += m_dev->readLine();
-		if(Expression::isCompleteExpression(line) || m_dev->atEnd()) {
+		m_last += m_dev->readLine()+'\n';
+		if(Expression::isCompleteExpression(m_last)) {
+			break;
+		} else if(m_dev->atEnd()) {
+			m_interrupted = true;
 			break;
 		}
 	}
-	return Analitza::Expression(line, Expression::isMathML(line));
+	QString last = m_last.trimmed();
+	return Analitza::Expression(last, Expression::isMathML(last));
 }

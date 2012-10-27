@@ -31,10 +31,14 @@ class ANALITZA_EXPORT ExpressionStream
 		ExpressionStream(QTextStream* dev);
 		
 		bool atEnd() const;
+		bool isInterrupted() const;
 		Analitza::Expression next();
+		QString lastLine() const;
 		
 	private:
 		QTextStream* m_dev;
+		QString m_last;
+		bool m_interrupted;
 };
 
 }

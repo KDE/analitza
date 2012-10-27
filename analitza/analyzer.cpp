@@ -170,10 +170,13 @@ void Analyzer::importScript(QTextStream* stream)
 	ExpressionStream s(stream);
 	for(; !s.atEnd(); ) {
 		setExpression(s.next());
-		calculate();
+		if(!s.isInterrupted())
+			calculate();
 		
-		if(!isCorrect())
+		if(!isCorrect()) {
+			m_err += s.lastLine();
 			break;
+		}
 	}
 }
 
