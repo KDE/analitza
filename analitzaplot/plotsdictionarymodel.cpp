@@ -104,6 +104,7 @@ void PlotsDictionaryModel::updatePlotsModel()
     QModelIndex idx = index(m_currentItem, 0);
     Analitza::Expression exp(idx.data(ExpressionRole).toString());
     PlotBuilder req = PlotsFactory::self()->requestPlot(exp, Dim2D);
+//     qDebug() << exp.toString();
     Q_ASSERT(req.canDraw());
     m_plots->addPlot(req.create(Qt::blue, idx.data(Qt::DisplayRole).toString()));
 }
