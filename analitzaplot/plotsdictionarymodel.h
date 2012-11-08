@@ -29,6 +29,9 @@ namespace Analitza
 {
 class PlotsModel;
 
+//WARNING @PlotsDictionaryModel needs dictionary files (*.plots), currently we 
+//are working to add plots files for next version coming (kde >= 4.10.x).
+
 class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public QStandardItemModel
 {
 Q_OBJECT
