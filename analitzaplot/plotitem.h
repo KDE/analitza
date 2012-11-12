@@ -53,6 +53,9 @@ public:
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool v);
     
+    //WARNING @apol this method is for private communication with plotitem
+    // why is in public api? sometime the use of friends are good
+    // and this context collention/item is a good case when the use of friend is a good thing
     void setModel(PlotsModel *m);
 
 protected:
