@@ -45,6 +45,10 @@ PlotsDictionaryModel::~PlotsDictionaryModel()
 void PlotsDictionaryModel::createDictionary(const QString& title, const QString& file)
 {
     QString localurl = KStandardDirs::locate("data", file);
+    if (localurl.isEmpty()) {
+        qWarning() << "cannot locate" << file;
+        return;
+    }
 
     QFile device(localurl);
 
