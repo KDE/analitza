@@ -31,6 +31,7 @@ class PlotItem;
 class ANALITZAPLOT_EXPORT PlotsModel : public QAbstractListModel
 {
 Q_OBJECT
+friend class PlotItem;
 public:
     enum Roles {
         DimensionRole = Qt::UserRole+1,
@@ -50,7 +51,6 @@ public:
 
     void addPlot(PlotItem *it);
     void updatePlot(int row, PlotItem* it);
-    void emitChanged(PlotItem* it);
 
     /** @returns an identifier that's not present in the model */
     QString freeId() const;
@@ -59,6 +59,10 @@ public:
     Q_SCRIPTABLE void clear();
 
     void setResolution(int res);
+
+protected:
+    void emitChanged(PlotItem* it);
+
 private:
     QList<PlotItem*> m_items;
     int m_resolution;

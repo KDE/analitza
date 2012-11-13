@@ -33,6 +33,7 @@ class PlotsModel;
 
 class ANALITZAPLOT_EXPORT PlotItem 
 {
+friend class PlotsModel;
 public:
     PlotItem(const QString &name, const QColor& col);
     virtual ~PlotItem();
@@ -52,10 +53,9 @@ public:
 
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool v);
-    
-    void setModel(PlotsModel *m);
 
 protected:
+    void setModel(PlotsModel *m);
     void emitDataChanged();
 
 private:
