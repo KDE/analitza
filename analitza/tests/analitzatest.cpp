@@ -277,7 +277,7 @@ void AnalitzaTest::testDerivativeSimple()
 		Expression r=a->calculate();
 		
 		if(a->isCorrect())
-			QCOMPARE(QString::number(valCalc), QString::number(r.toReal().value()));
+			QCOMPARE(QString::number(valCalc).left(5), QString::number(r.toReal().value()).left(5));
 	}
 	a->setExpression(Expression("diff("+expression+":x)", false));
 	a->simplify();

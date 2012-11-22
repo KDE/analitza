@@ -1795,7 +1795,7 @@ double Analyzer::derivative(const QVector<Object*>& values )
 	
 	setStack(values);
 	
-	Expression e1(calc(m_exp.tree()));
+	Expression e1(calculateLambda());
 	if(!isCorrect())
 		return 0.;
 	
@@ -1810,7 +1810,7 @@ double Analyzer::derivative(const QVector<Object*>& values )
 		v->setValue(v->value()+h);
 	}
 	
-	Expression e2(calc(m_exp.tree()));
+	Expression e2(calculateLambda());
 	if(!isCorrect())
 		return 0.;
 	
