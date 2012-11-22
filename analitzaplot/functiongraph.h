@@ -54,12 +54,23 @@ public:
     QPair<double, double> interval(const QString &argname) const;
     bool setInterval(const QString &argname, double min, double max);
     
+    /** @returns the parameters that a function expects */
     QStringList parameters() const;
 
+    /**
+     * The display property will store the expression like it's been entered by the user.
+     * This is useful because sometimes the expression is modified when entered so that
+     * we can plot it properly, this remembers what the user entered.
+     */
     QString display() const;
-    void setDisplay(const QString& m_display);
+    void setDisplay(const QString& display);
     
-    void setResolution(int resolution);
+    /** 
+     * This method gives a hint to the backend of how many @p points we want the plots to have.
+     * This is useful for telling the plot implementations an idea of where is this going to be plotted, so
+     * we can use lighter computations if we're previewing or if we're in a small device.
+     */
+    void setResolution(int points);
     
 protected:
 	FunctionGraph(AbstractFunctionGraph* g);
