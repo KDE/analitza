@@ -240,6 +240,7 @@ void AnalitzaTest::testDerivativeSimple_data()
 	QTest::newRow("timesminus2") << "cos(x)-x*sin(x)" << "-2*sin(x)-x*cos(x)";
 	QTest::newRow("log") << "log(x)" << "1/(2.30258509299*x)";
 	QTest::newRow("vector") << "vector { x, x^2 }" << "vector { 1, 2*x }";
+	QTest::newRow("exp") << "exp(x**2)" << "2*x*exp(x^2)";
 }
 
 void AnalitzaTest::testDerivativeSimple()
