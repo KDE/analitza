@@ -17,12 +17,13 @@
  *************************************************************************************/
 
 #include <QMainWindow>
-#include <QTreeView>
 #include <QVBoxLayout>
+#include <QListView>
 
 #include <kapplication.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
+#include <analitzagui/plotsview2d.h>
 #include <plotsdictionarymodel.h>
 #include <plotsmodel.h>
 
@@ -36,7 +37,7 @@ int main(int argc, char *argv[])
                          "1.0",
                          ki18n("PlotsDictionaryDemo"),
                          KAboutData::License_LGPL_V3,
-                         ki18n("(c) 2012 Aleix Pol Gonazlez"),
+                         ki18n("(c) 2012 Aleix Pol Gonzalez"),
                          ki18n("PlotsDictionaryDemo"),
                          "http://www.kde.org");
 
@@ -46,15 +47,19 @@ int main(int argc, char *argv[])
     QWidget central;
     central.resize(800,600);
     QHBoxLayout *layout = new QHBoxLayout(&central);
-    QTreeView* tree = new QTreeView(&central);
+    QListView* tree = new QListView(&central);
     PlotsDictionaryModel m;
     tree->setModel(&m);
     layout->addWidget(tree);
+    QObject::connect(tree->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), &m, SLOT(setCurrentIndex(QModelIndex)));
     
-    QTreeView* plots = new QTreeView(&central);
+    QListView* plots = new QListView(&central);
     plots->setModel(m.plotModel());
     layout->addWidget(plots);
-    QObject::connect(tree, SIGNAL(clicked(QModelIndex)), &m, SLOT(setCurrentIndex(QModelIndex)));
+    
+    PlotsView2D* view2d = new PlotsView2D(&central);
+    view2d->setModel(m.plotModel());
+    layout->addWidget(view2d);
     
     central.show();
     return app.exec();
