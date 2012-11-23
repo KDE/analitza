@@ -454,7 +454,7 @@ bool ExpressionEdit::returnPress()
 	if(isMathML()) {
 		emit returnPressed();
 	} else {
-		bool complete = Expression::isCompleteExpression(toPlainText());
+		bool complete = Analitza::Expression::isCompleteExpression(toPlainText());
 		haveToPress = !complete;
 		setCorrect(complete);
 		if(complete)
