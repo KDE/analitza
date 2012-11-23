@@ -50,45 +50,15 @@ public:
 
     void addPlot(PlotItem *it);
     void updatePlot(int row, PlotItem* it);
-    
-    //WARNING @apol this method is for private communication with plotitem
-    // why is in public api? sometime the use of friends are good
-    // and this context collention/item is a good case when the use of friend is a good thing
     void emitChanged(PlotItem* it);
-    
-    //DEPRECATED @apol Why this method? why the client needs to know the freeid?
-    //model can contain same names for plots, id are used only for internal tasks
-    // like persintence and so on
-    /**
-      * @returns an identifier that's not present in the model 
-      * @warning Deprecated since 4.11.
-      */
-#ifndef KDE_NO_DEPRECATED
-    QString KDE_DEPRECATED freeId() const;
-#endif
 
-    //DEPRECATED @apol this kind of queries are done by proxies no by the model
-    // so this method is like a hack for this class ... we need to follow the model->proxy
-    // architecture by qt
-    /**
-      * @warning Deprecated since 4.11.
-      */
-#ifndef KDE_NO_DEPRECATED
-    QModelIndex KDE_DEPRECATED indexForName(const QString& name);
-#endif
-    
+    /** @returns an identifier that's not present in the model */
+    QString freeId() const;
+
+    QModelIndex indexForName(const QString& name);
     Q_SCRIPTABLE void clear();
 
-    //DEPRECATED @apol Why this method? this class is a model class it doesn't have to do 
-    //nothing with graphics/rendering tasks, also each algorithm will resolve the best 
-    //resolution value
-    /**
-      * @warning Deprecated since 4.11.
-      */
-#ifndef KDE_NO_DEPRECATED
-    void KDE_DEPRECATED setResolution(int res);
-#endif
-    
+    void setResolution(int res);
 private:
     QList<PlotItem*> m_items;
     int m_resolution;
