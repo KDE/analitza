@@ -477,7 +477,7 @@ Analitza::Expression ExpressionEdit::expression() const
 
 bool ExpressionEdit::isCorrect() const
 {
-	return m_correct && Expression::isCompleteExpression(toPlainText());
+	return m_correct && Analitza::Expression::isCompleteExpression(toPlainText());
 }
 
 #include "expressionedit.moc"
