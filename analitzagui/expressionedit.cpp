@@ -454,16 +454,11 @@ bool ExpressionEdit::returnPress()
 	if(isMathML()) {
 		emit returnPressed();
 	} else {
-		ExpLexer lex(toPlainText());
-		ExpressionParser ex;
-		ex.parse(&lex);
-		if(lex.isCompletelyRead()) {
-			setCorrect(true);
+		bool complete = Expression::isCompleteExpression(toPlainText());
+		haveToPress = !complete;
+		setCorrect(complete);
+		if(complete)
 			emit returnPressed();
-		} else {
-			setCorrect(false);
-			haveToPress=true;
-		}
 	}
 	m_helptip->hide();
 	return haveToPress;
@@ -478,6 +473,11 @@ void ExpressionEdit::insertText(const QString& text)
 Analitza::Expression ExpressionEdit::expression() const
 {
 	return Analitza::Expression(text(), isMathML());
+}
+
+bool ExpressionEdit::isCorrect() const
+{
+	return m_correct && Expression::isCompleteExpression(toPlainText());
 }
 
 #include "expressionedit.moc"
