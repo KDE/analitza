@@ -83,7 +83,7 @@ class ANALITZAGUI_EXPORT ExpressionEdit : public QPlainTextEdit
 		void setCorrect(bool cor);
 		
 		/** Checks whether it has been set to correct. */
-		bool isCorrect() const { return m_correct; }
+		bool isCorrect() const;
 		
 		/** Sets the string @p ans that will be entered when an operator is pressed. */
 		void setAns(const QString &ans) { m_ans=ans; }
