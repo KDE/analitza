@@ -1,10 +1,8 @@
 project(analitzaplot)
 
-find_package ( OpenGL REQUIRED )
-
-if(NOT OPENGL_GLU_FOUND)
+if(OPENGL_FOUND AND NOT OPENGL_GLU_FOUND)
     message(FATAL_ERROR "GLU was not found")
-endif(NOT OPENGL_GLU_FOUND)
+endif(OPENGL_FOUND AND NOT OPENGL_GLU_FOUND)
 
 find_path(IEEEFP_DIR ieeefp.h)
 if(IEEEFP_DIR)
@@ -12,12 +10,9 @@ if(IEEEFP_DIR)
     add_definitions(-DHAVE_IEEEFP_H)
 endif(IEEEFP_DIR)
 
-
 include_directories (
   ${OPENGL_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
-  .
-  ..
 )
 
 set ( analitzaplot_SRCS
@@ -55,20 +50,26 @@ set ( analitzaplot_SRCS
     plotsmodel.cpp
     plotsdictionarymodel.cpp
     plotter2d.cpp
-    plotter3d.cpp
 )
+if(HAVE_OPENGL)
+    list(APPEND analitzaplot_SRCS plotter3d.cpp)
+endif(HAVE_OPENGL)
 
 kde4_add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
 target_link_libraries ( analitzaplot
-  ${OPENGL_gl_LIBRARY}
-  ${OPENGL_glu_LIBRARY}
-  
   ${QT_QTCORE_LIBRARY}
   ${QT_QTGUI_LIBRARY}
   ${KDE4_KDECORE_LIBS}
 
   analitza
 )
+
+if(HAVE_OPENGL)
+    target_link_libraries ( analitzaplot
+        ${OPENGL_gl_LIBRARY}
+        ${OPENGL_glu_LIBRARY}
+    )
+endif(HAVE_OPENGL)
 
 set_target_properties(analitzaplot PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 
@@ -84,12 +85,16 @@ install(FILES
     plotsmodel.h
     plotsdictionarymodel.h
     plotter2d.h
-    plotter3d.h
     plottingenums.h
     plotsfactory.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
 )
+
+if(HAVE_OPENGL)
+    install(FILES
+        plotter3d.h DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
+endif(HAVE_OPENGL)
 
 add_subdirectory(data)
 add_subdirectory(tests)

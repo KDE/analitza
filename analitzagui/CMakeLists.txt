@@ -2,15 +2,7 @@ project(analitzagui)
 
 add_subdirectory(tests)
 
-# find_package(Eigen3 REQUIRED)
-
-include_directories (
-  ${EIGEN3_INCLUDE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  .
-  ..
-)
-
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 find_path(IEEEFP_DIR ieeefp.h)
 if(IEEEFP_DIR)
@@ -23,9 +15,11 @@ set(analitzagui_SRCS
 	algebrahighlighter.cpp
 	variablesmodel.cpp
 	expressionedit.cpp
-    plotsview3d.cpp
     plotsview2d.cpp
 )
+if(HAVE_OPENGL)
+    list(APPEND analitzagui_SRCS plotsview3d.cpp)
+endif(HAVE_OPENGL)
 
 kde4_add_library(analitzagui SHARED ${analitzagui_SRCS})
 target_link_libraries(analitzagui ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDEUI_LIBS} ${QT_QTSVG_LIBRARY} ${QT_QTOPENGL_LIBRARY} analitza analitzaplot)
@@ -41,7 +35,14 @@ install(FILES
 	variablesmodel.h
 	expressionedit.h
 	plotsview2d.h
-	plotsview3d.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
 )
+
+if(HAVE_OPENGL)
+    install(FILES
+        plotsview3d.h
+
+        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
+    )
+endif(HAVE_OPENGL)
