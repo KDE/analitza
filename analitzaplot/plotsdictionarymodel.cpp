@@ -34,24 +34,18 @@ PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent)
 {
     setHorizontalHeaderLabels(QStringList() << i18nc("@title:column", "Name"));
     
-    createDictionary("Dictionary1", "libanalitza/data/plots/basic_curves.plots");
-    createDictionary("Conics", "libanalitza/data/plots/conics.plots");
-    createDictionary("Polar", "libanalitza/data/plots/polar.plots");
+    QStringList res = KGlobal::dirs()->findAllResources("data", "libanalitza/plots/*.plots");
+    foreach(const QString& f, res) {
+        createDictionary(f);
+    }
 }
 
 PlotsDictionaryModel::~PlotsDictionaryModel()
 {}
 
-void PlotsDictionaryModel::createDictionary(const QString& title, const QString& file)
+void PlotsDictionaryModel::createDictionary(const QString& file)
 {
-    QString localurl = KStandardDirs::locate("data", file);
-    if (localurl.isEmpty()) {
-        qWarning() << "cannot locate" << file;
-        return;
-    }
-
-    QFile device(localurl);
-
+    QFile device(file);
     if (device.open(QFile::ReadOnly | QFile::Text)) {
         QTextStream stream(&device);
         Analitza::ExpressionStream s(&stream);
@@ -67,12 +61,11 @@ void PlotsDictionaryModel::createDictionary(const QString& title, const QString&
             if(!comments.isEmpty())
                 item->setToolTip(i18nc("dictionary", comments.first().trimmed().toUtf8())); //see Messages.sh for more info
             item->setData(expression.toString(), ExpressionRole);
-            item->setData(title, TitleRole);
-            item->setData(localurl, FileRole);
+            item->setData(file, FileRole);
             appendRow(item);
         }
     } else
-        qWarning() << "couldn't open" << localurl;
+        qWarning() << "couldn't open" << file;
 }
 
 PlotsModel* PlotsDictionaryModel::plotModel()

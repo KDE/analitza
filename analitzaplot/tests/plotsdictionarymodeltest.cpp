@@ -49,8 +49,8 @@ void PlotsDictionaryModelTest::testDictionaries()
 		QVariant v=idx.data(Qt::DisplayRole);
 		QVERIFY(v.isValid());
 		QVERIFY(v.type()==QVariant::String);
-		QVERIFY(v.toString()!="");
-		QVERIFY(idx.data(PlotsDictionaryModel::ExpressionRole).toString()!="");
+		QVERIFY(!v.toString().isEmpty());
+		QVERIFY(!idx.data(PlotsDictionaryModel::ExpressionRole).toString().isEmpty());
 		
 		m.setCurrentRow(i);
 		QCOMPARE(plot->rowCount(), 1);

@@ -36,7 +36,7 @@ class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public QStandardItemModel
 {
 Q_OBJECT
 public:
-    enum Roles { ExpressionRole = Qt::UserRole+1, TitleRole, FileRole };
+    enum Roles { ExpressionRole = Qt::UserRole+1, FileRole };
     PlotsDictionaryModel(QObject* parent = 0);
     ~PlotsDictionaryModel();
     
@@ -51,7 +51,7 @@ public slots:
     
 private:
     void updatePlotsModel();
-    void createDictionary(const QString& title, const QString& file);
+    void createDictionary(const QString& path);
     
     QPointer<PlotsModel> m_plots;
     int m_currentItem;
