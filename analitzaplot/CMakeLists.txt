@@ -11,9 +11,14 @@ if(IEEEFP_DIR)
 endif(IEEEFP_DIR)
 
 include_directories (
-  ${OPENGL_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+if(OPENGL_FOUND)
+ include_directories (
+  ${OPENGL_INCLUDE_DIR}
+ )
+endif(OPENGL_FOUND)
 
 set ( analitzaplot_SRCS
     private/utils/mathutils.cpp
