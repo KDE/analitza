@@ -44,6 +44,7 @@ public:
     void setCurrentRow(int row);
     
     PlotsModel* plotModel();
+    void createDictionary(const QString& path);
     
 public slots:
     ///convenience class for currentRow
@@ -51,7 +52,6 @@ public slots:
     
 private:
     void updatePlotsModel();
-    void createDictionary(const QString& path);
     
     QPointer<PlotsModel> m_plots;
     int m_currentItem;

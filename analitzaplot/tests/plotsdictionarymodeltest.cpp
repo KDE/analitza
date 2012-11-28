@@ -19,6 +19,7 @@
 
 #include "plotsdictionarymodeltest.h"
 #include <qtest_kde.h>
+#include <KStandardDirs>
 #include <analitzaplot/plotitem.h>
 #include <analitzaplot/plotsmodel.h>
 #include <analitzaplot/plotsdictionarymodel.h>
@@ -39,9 +40,13 @@ PlotsDictionaryModelTest::~PlotsDictionaryModelTest()
 void PlotsDictionaryModelTest::testDictionaries()
 {
 	PlotsDictionaryModel m;
+	m.clear(); //we don't want the installed, we want the ones in the source directory
+	QStringList res = KGlobal::dirs()->findAllResources("data", SOURCE_DIR "/../data/plots/*.plots");
+	foreach(const QString& f, res) {
+		m.createDictionary(f);
+	}
 	
-	if(m.rowCount()==0)
-		QFAIL("please install before running the test");
+	QVERIFY(m.rowCount()>0);
 	PlotsModel* plot = m.plotModel();
 	
 	for(int i=0; i<m.rowCount(); i++) {

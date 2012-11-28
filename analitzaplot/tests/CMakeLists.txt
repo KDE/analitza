@@ -12,5 +12,6 @@ target_link_libraries(surfacetest ${testLibs})
 kde4_add_unit_test(plotsmodeltest plotsmodeltest.cpp)
 target_link_libraries(plotsmodeltest ${testLibs})
 
+add_definitions("-DSOURCE_DIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}\\\"")
 kde4_add_unit_test(plotsdictionarymodeltest plotsdictionarymodeltest.cpp)
 target_link_libraries(plotsdictionarymodeltest ${testLibs})
