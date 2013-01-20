@@ -26,25 +26,27 @@ using namespace Analitza;
 Vector::Vector(const Vector& v)
 	: Object(Object::vector)//, m_elements(v.m_elements.size())
 {
+    m_elements.reserve(v.m_elements.size());
 	foreach(const Object* o, v.m_elements)
 	{
 		m_elements.append(o->copy());
 	}
 }
 
-Vector::~Vector()
-{
-	qDeleteAll(m_elements);
-}
-
 Vector::Vector(int size)
 	: Object(Object::vector)//, m_elements(size)
-{}
+{
+    m_elements.reserve(size);
+}
+
+Vector::~Vector()
+{
+    qDeleteAll(m_elements);
+}
 
 Object* Vector::copy() const
 {
 	Vector *v=new Vector(size());
-// 	m_elements.reserve(v->m_elements.size());
 	foreach(const Object* o, m_elements)
 	{
 		v->m_elements.append(o->copy());
