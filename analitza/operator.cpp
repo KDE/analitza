@@ -66,7 +66,7 @@ Operator::OperatorType Operator::toOperatorType(const QString &e)
 	OperatorType ret=none;
 	for(int i=none; ret==none && i<nOfOps; i++) {
 		if(words[i]==e)
-			ret = (OperatorType) i;
+			ret = OperatorType(i);
 	}
 	
 	return ret;
