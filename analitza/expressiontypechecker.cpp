@@ -28,6 +28,7 @@
 #include <localize.h>
 #include "apply.h"
 #include "value.h"
+#include "matrix.h"
 
 QDebug operator<<(QDebug dbg, const Analitza::ExpressionType &c)
 {
@@ -173,13 +174,13 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 		{
 			ExpressionType secondType=*it;
 			
-			QList<ExpressionType> secndTypes=secondType.type()==ExpressionType::Many ? secondType.alternatives() : QList<ExpressionType>() << secondType;
+			QList<ExpressionType> secondTypes=secondType.type()==ExpressionType::Many ? secondType.alternatives() : QList<ExpressionType>() << secondType;
 			int starsbase=m_stars;
 // 			static int ind=3;
 // 			qDebug() << qPrintable("+" +QString(ind++, '-')) << o->toString() << firstType << secondType;
 			
 			foreach(const ExpressionType& _first, firstTypes) {
-				foreach(const ExpressionType& _second, secndTypes) {
+				foreach(const ExpressionType& _second, secondTypes) {
 					QMap<int, ExpressionType> _starToType;
 					bool matches=ExpressionType::matchAssumptions(&_starToType, _first.assumptions(), _second.assumptions());
 					//TODO: maybe error here
@@ -419,15 +420,17 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 				
 				ExpressionType anyList(ExpressionType::List, anyItem);
 				ExpressionType anyVector(ExpressionType::Vector, anyItem, -1);
+				ExpressionType anyMatrix(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, anyItem, -2), -3);
 				
 				ExpressionType anyContainer(ExpressionType::Many);
 				anyContainer.addAlternative(anyList);
 				anyContainer.addAlternative(anyVector);
+				anyContainer.addAlternative(anyMatrix);
 				
 				bool ret = anyItem.addAssumption(static_cast<Ci*>(c->domain())->name(), anyContainer);
 				if(ret)
 					tt=anyItem;
-			} else if(current.type()==ExpressionType::Vector || current.type()==ExpressionType::List) {
+			} else if(current.type()==ExpressionType::Vector || current.type()==ExpressionType::List || current.type()==ExpressionType::Matrix) {
 				tt=current.contained();
 				tt.addAssumptions(current.assumptions());
 			} else
@@ -767,7 +770,7 @@ QString ExpressionTypeChecker::acceptListOrVector(const T* v, ExpressionType::Ty
 	if(cont.type()==ExpressionType::Many) {
 		ExpressionType toret(ExpressionType::Many);
 		foreach(const ExpressionType& contalt, cont.alternatives()) {
-			QMap< QString, ExpressionType > assumptions;
+			QMap<QString, ExpressionType> assumptions;
 			assumptions=typeIs(v->constBegin(), v->constEnd(), contalt);
 			ExpressionType cc(t, contalt, size);
 			
@@ -778,7 +781,7 @@ QString ExpressionTypeChecker::acceptListOrVector(const T* v, ExpressionType::Ty
 		
 		current=toret;
 	} else if(!cont.isError()) {
-		QMap< QString, ExpressionType > assumptions=typeIs(v->constBegin(), v->constEnd(), cont);
+		QMap<QString, ExpressionType> assumptions=typeIs(v->constBegin(), v->constEnd(), cont);
 		current=ExpressionType(t, cont, size);
 		current.addAssumptions(assumptions);
 	} else
@@ -796,6 +799,18 @@ QString ExpressionTypeChecker::accept(const List* l)
 QString ExpressionTypeChecker::accept(const Vector* l)
 {
 	acceptListOrVector(l, ExpressionType::Vector, l->size());
+	return QString();
+}
+
+QString ExpressionTypeChecker::accept(const Matrix* m)
+{
+	acceptListOrVector(m, ExpressionType::Matrix, m->size());
+	return QString();
+}
+
+QString ExpressionTypeChecker::accept(const MatrixRow* mr)
+{
+	acceptListOrVector(mr, ExpressionType::Vector, mr->size());
 	return QString();
 }
 

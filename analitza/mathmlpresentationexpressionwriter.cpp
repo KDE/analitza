@@ -26,6 +26,7 @@
 #include "variable.h"
 #include "apply.h"
 #include <analitza/analitzautils.h>
+#include "matrix.h"
 
 using namespace Analitza;
 
@@ -298,6 +299,16 @@ QString MathMLPresentationExpressionWriter::accept(const Vector* var)
 QString MathMLPresentationExpressionWriter::accept(const List* var)
 {
 	return "<mrow><mo>[</mo>"+convertElements(var->constBegin(), var->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>";
+}
+
+QString MathMLPresentationExpressionWriter::accept(const Matrix* m)
+{
+	return "<mrow><mo>[</mo>"+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>";
+}
+
+QString MathMLPresentationExpressionWriter::accept(const MatrixRow* m)
+{
+	return "<mrow><mo>[</mo>"+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>";
 }
 
 QString Analitza::MathMLPresentationExpressionWriter::accept ( const Analitza::Apply* a )

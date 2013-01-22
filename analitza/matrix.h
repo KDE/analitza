@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2010 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2013 by Aleix Pol <aleixpol@kde.org>                               *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -16,36 +16,50 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+#ifndef MATRIX_H
+#define MATRIX_H
 
-#ifndef ABSTRACTEXPRESSIONTRANSFORMER_H
-#define ABSTRACTEXPRESSIONTRANSFORMER_H
+#include "object.h"
+#include "vector.h"
 
-namespace Analitza
-{
-class Ci;
+namespace Analitza {
+
 class Vector;
-class Matrix;
-class MatrixRow;
-class Container;
-class List;
-class Apply;
-class Object;
 
-class AbstractExpressionTransformer
+class MatrixRow : public Vector
 {
 	public:
-		virtual ~AbstractExpressionTransformer();
+		MatrixRow(int size=0);
+		virtual QString visit(ExpressionWriter* e) const;
 		
-		virtual Object* walk(const Object* o);
-		virtual Object* walkApply(const Apply* o);
-		virtual Object* walkVariable(const Ci* o);
-		virtual Object* walkList(const List* o);
-		virtual Object* walkVector(const Vector* o);
-		virtual Object* walkMatrix(const Matrix* o);
-		virtual Object* walkMatrixRow(const MatrixRow* o);
-		virtual Object* walkContainer(const Container* o);
+		MatrixRow* copy() const;
+};
+
+class Matrix : public Object
+{
+	public:
+		typedef QVector<Object*>::iterator iterator;
+		typedef QVector<Object*>::const_iterator const_iterator;
+		
+		Matrix();
+		void appendBranch(Object* o);
+		
+		virtual Object* copy() const;
+		virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;
+		virtual QString visit(ExpressionWriter* exp) const;
+		const_iterator constBegin() const { return m_rows.constBegin(); }
+		const_iterator constEnd() const { return m_rows.constEnd(); }
+		iterator begin() { return m_rows.begin(); }
+		iterator end() { return m_rows.end(); }
+		QList< Object* > values() const;
+		bool operator==(const Matrix& m) const;
+		int size() const { return m_rows.size(); }
+		Analitza::Matrix::iterator erase(const Analitza::Matrix::iterator& it) { return m_rows.erase(it); }
+
+	private:
+		QVector<Object*> m_rows;
 };
 
 }
 
-#endif // ABSTRACTEXPRESSIONWALKER_H
+#endif // MATRIX_H

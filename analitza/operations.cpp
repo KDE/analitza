@@ -30,6 +30,7 @@
 #include "expressiontypechecker.h"
 #include "customobject.h"
 #include "localize.h"
+#include "matrix.h"
 
 using namespace std;
 using namespace Analitza;
@@ -333,7 +334,7 @@ Object * Operations::reduceVectorReal(Operator::OperatorType op, Vector * v1, Cn
 
 Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, Vector * v2, QString** correct)
 {
-	if(v1->size()!=v2->size()) {
+	if(v1->size()!=v2->size()) { //FIXME: unneeded?
 		*correct=new QString(i18n("Cannot operate on different sized vectors."));
 		return new Cn(0.);
 	}
@@ -431,6 +432,35 @@ Object* Operations::reduceRealList(Operator::OperatorType op, Cn* oper, List* v1
 	return 0;
 }
 
+Object* Operations::reduceCustomCustom(Operator::OperatorType op, CustomObject* v1, CustomObject* v2, QString** )
+{
+	switch(op) {
+		case Operator::neq:
+			return new Cn(v1->value()!=v2->value());
+		case Operator::eq:
+			return new Cn(v1->value()==v2->value());
+		default:
+			break;
+	}
+	
+	Q_ASSERT(false && "not implemented, please report");
+	return 0;
+}
+
+Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct)
+{
+	Matrix::iterator it2=m2->begin();
+	qDebug() << "!!" << m1->toString() << m2->toString();
+	for(Matrix::iterator it1=m1->begin(); it1!=m1->end(); ++it1)
+	{
+		*it1 = reduceVectorVector(op, static_cast<MatrixRow*>(*it1), static_cast<MatrixRow*>(*it2), correct);
+		
+		it2 = m2->erase(it2);
+	}
+	delete m2;
+	return m1;
+}
+
 ExpressionType TypeTriplet(const ExpressionType& a,const ExpressionType& b,const ExpressionType& c) { return ExpressionType(ExpressionType::Lambda).addParameter(a).addParameter(b).addParameter(c); }
 
 //TODO: test that there's one output per input
@@ -445,6 +475,9 @@ QList<ExpressionType> Operations::infer(Operator::OperatorType op)
 			ret << TypeTriplet(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
 							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
 							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 			break;
 		case Operator::divide:
 			ret << TypeTriplet(ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value));
@@ -598,31 +631,18 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 	return ret;
 }
 
-Object* Operations::reduceCustomCustom(Operator::OperatorType op, CustomObject* v1, CustomObject* v2, QString** )
-{
-	switch(op) {
-		case Operator::neq:
-			return new Cn(v1->value()!=v2->value());
-		case Operator::eq:
-			return new Cn(v1->value()==v2->value());
-		default:
-			break;
-	}
-	
-	Q_ASSERT(false && "not implemented, please report");
-	return 0;
-}
-
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
-	{0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0},
-	{0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0},
-	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0},
-	{0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
+	{0,0,0,0,0,0,0,0,0,0,0},
+	{0, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0},
+	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,0,0},
+	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
 };
 
 Object * Operations::reduce(Operator::OperatorType op, Object * val1, Object * val2, QString** correct)

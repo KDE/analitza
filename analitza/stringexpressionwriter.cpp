@@ -26,6 +26,7 @@
 #include "variable.h"
 #include "apply.h"
 #include "analitzautils.h"
+#include "matrix.h"
 
 using namespace Analitza;
 
@@ -78,6 +79,16 @@ QString StringExpressionWriter::accept(const Operator* op)
 QString StringExpressionWriter::accept(const Vector* vec)
 {
 	return QString("vector { %1 }").arg(allValues<Vector::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(", ")));
+}
+
+QString StringExpressionWriter::accept(const Matrix* m)
+{
+	return QString("matrix { %1 }").arg(allValues(m->constBegin(), m->constEnd(), this).join(QString(", ")));
+}
+
+QString StringExpressionWriter::accept(const MatrixRow* mr)
+{
+	return QString("matrixrow { %1 }").arg(allValues(mr->constBegin(), mr->constEnd(), this).join(QString(", ")));
 }
 
 QString StringExpressionWriter::accept(const List* vec)

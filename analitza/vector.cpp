@@ -39,6 +39,13 @@ Vector::Vector(int size)
     m_elements.reserve(size);
 }
 
+
+Vector::Vector(Object::ObjectType t, int size)
+	: Object(t)
+{
+	m_elements.reserve(size);
+}
+
 Vector::~Vector()
 {
     qDeleteAll(m_elements);
@@ -46,7 +53,7 @@ Vector::~Vector()
 
 Object* Vector::copy() const
 {
-	Vector *v=new Vector(size());
+	Vector *v=new Vector(m_type, size());
 	foreach(const Object* o, m_elements)
 	{
 		v->m_elements.append(o->copy());

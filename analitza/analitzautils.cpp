@@ -29,6 +29,7 @@
 #include "apply.h"
 #include <QVariant>
 #include "customobject.h"
+#include "matrix.h"
 
 using namespace Analitza;
 namespace AnalitzaUtils
@@ -45,6 +46,12 @@ QStringList dependencies(const Object* o, const QStringList& scope)
 			if(!scope.contains(i->name()))
 				ret += i->name();
 		}	break;
+		case Object::matrix: {
+			const Matrix *v=(const Matrix*) o;
+			for(Matrix::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
+				ret += dependencies(*it, scope).toSet();
+			}
+		}	break;
 		case Object::vector: {
 			const Vector *v=(const Vector*) o;
 			for(Vector::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
@@ -54,6 +61,12 @@ QStringList dependencies(const Object* o, const QStringList& scope)
 		case Object::list: {
 			const List *v=(const List*) o;
 			for(List::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
+				ret += dependencies(*it, scope).toSet();
+			}
+		}	break;
+		case Object::matrixrow: {
+			const MatrixRow *v=(const MatrixRow*) o;
+			for(MatrixRow::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
 				ret += dependencies(*it, scope).toSet();
 			}
 		}	break;
@@ -111,6 +124,20 @@ bool hasTheVar(const QSet<QString> & vars, const Object * o)
 		case Object::vector: {
 			const Vector *v=static_cast<const Vector*>(o);
 			Vector::const_iterator it, itEnd=v->constEnd();
+			for(it=v->constBegin(); it!=itEnd; ++it) {
+				found |= hasTheVar(vars, *it);
+			}
+		}	break;
+		case Object::matrix: {
+			const Matrix *v=static_cast<const Matrix*>(o);
+			Matrix::const_iterator it, itEnd=v->constEnd();
+			for(it=v->constBegin(); it!=itEnd; ++it) {
+				found |= hasTheVar(vars, *it);
+			}
+		}	break;
+		case Object::matrixrow: {
+			const MatrixRow *v=static_cast<const MatrixRow*>(o);
+			MatrixRow::const_iterator it, itEnd=v->constEnd();
 			for(it=v->constBegin(); it!=itEnd; ++it) {
 				found |= hasTheVar(vars, *it);
 			}
@@ -193,6 +220,18 @@ bool hasVars(const Analitza::Object* o, const QStringList& bvars)
 		case Object::vector: {
 			Vector *v=(Vector*) o;
 			for(Vector::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
+				r |= hasVars(*it, bvars);
+			}
+		}	break;
+		case Object::matrix: {
+			Matrix *v=(Matrix*) o;
+			for(Matrix::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
+				r |= hasVars(*it, bvars);
+			}
+		}	break;
+		case Object::matrixrow: {
+			MatrixRow *v=(MatrixRow*) o;
+			for(MatrixRow::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
 				r |= hasVars(*it, bvars);
 			}
 		}	break;
@@ -311,6 +350,24 @@ struct ObjectWalker : public ExpressionWriter
 		return QString();
 	}
 	
+	virtual QString accept(const Matrix* m) {
+		qDebug() << prefix().constData() << "| matrix: ";
+		ind++;
+		for(Matrix::const_iterator it=m->constBegin(); it!=m->constEnd(); ++it)
+			visitNow(*it);
+		ind--;
+		return QString();
+	}
+	
+	virtual QString accept(const MatrixRow* m) {
+		qDebug() << prefix().constData() << "| matrix: ";
+		ind++;
+		for(MatrixRow::const_iterator it=m->constBegin(); it!=m->constEnd(); ++it)
+			visitNow(*it);
+		ind--;
+		return QString();
+	}
+	
 	QByteArray prefix()
 	{
 		QByteArray ret(m_prefix);
@@ -373,6 +430,12 @@ bool equalTree(const Object * o1, const Object * o2)
 			break;
 		case Object::custom:
 			eq = *static_cast<const CustomObject*>(o1)==*static_cast<const CustomObject*>(o2);
+			break;
+		case Object::matrix:
+			eq = *static_cast<const Matrix*>(o1)==*static_cast<const Matrix*>(o2);
+			break;
+		case Object::matrixrow:
+			eq = *static_cast<const MatrixRow*>(o1)==*static_cast<const MatrixRow*>(o2);
 			break;
 		case Object::none:
 			eq=false;
@@ -454,7 +517,7 @@ T* replaceDepthTemplate(int depth, T* tree, Object* towhat)
 {
 	Tit it=tree->begin(), itEnd=tree->end();
 	for(; it!=itEnd; ++it)
-		*it=replaceDepth(depth, *it, towhat);
+		*it = replaceDepth(depth, *it, towhat);
 	return tree;
 }
 
@@ -474,6 +537,10 @@ Object* replaceDepth(int depth, Object* tree, Object* towhat)
 			return replaceDepthTemplate<List, List::iterator>(depth, static_cast<List*>(tree), towhat);
 		case Object::vector:
 			return replaceDepthTemplate<Vector, Vector::iterator>(depth, static_cast<Vector*>(tree), towhat);
+		case Object::matrix:
+			return replaceDepthTemplate<Matrix, Matrix::iterator>(depth, static_cast<Matrix*>(tree), towhat);
+		case Object::matrixrow:
+			return replaceDepthTemplate<MatrixRow, MatrixRow::iterator>(depth, static_cast<MatrixRow*>(tree), towhat);
 		case Object::container:
 			return replaceDepthTemplate<Container, Container::iterator>(depth, static_cast<Container*>(tree), towhat);
 		case Object::variable: {
@@ -524,6 +591,10 @@ int countDepth(int depth, const Object* tree)
 			return countDepthTemplate<List, List::const_iterator>(depth, static_cast<const List*>(tree));
 		case Object::vector:
 			return countDepthTemplate<Vector, Vector::const_iterator>(depth, static_cast<const Vector*>(tree));
+		case Object::matrix:
+			return countDepthTemplate<Matrix, Matrix::const_iterator>(depth, static_cast<const Matrix*>(tree));
+		case Object::matrixrow:
+			return countDepthTemplate<MatrixRow, MatrixRow::const_iterator>(depth, static_cast<const MatrixRow*>(tree));
 		case Object::container:
 			return countDepthTemplate<Container, Container::const_iterator>(depth, static_cast<const Container*>(tree));
 		case Object::variable: {

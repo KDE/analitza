@@ -28,6 +28,7 @@
 #include "stringexpressionwriter.h"
 #include "apply.h"
 #include "analitzautils.h"
+#include "matrix.h"
 
 using namespace Analitza;
 
@@ -59,6 +60,16 @@ HtmlExpressionWriter::HtmlExpressionWriter(const Object* o)
 QString HtmlExpressionWriter::accept(const Vector* vec)
 {
 	return keyword("vector ")+oper("{ ")+allValues<Vector::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(", ")))+oper(" }");
+}
+
+QString HtmlExpressionWriter::accept(const Matrix* m)
+{
+	return keyword("matrix ")+oper("{ ")+allValues(m->constBegin(), m->constEnd(), this).join(QString(oper(", ")))+oper(" }");
+}
+
+QString HtmlExpressionWriter::accept(const MatrixRow* mr)
+{
+	return keyword("matrixrow ")+oper("{ ")+allValues(mr->constBegin(), mr->constEnd(), this).join(QString(oper(", ")))+oper(" }");
 }
 
 QString HtmlExpressionWriter::accept(const List* vec)

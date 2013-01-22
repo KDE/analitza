@@ -48,6 +48,8 @@ public:
 		apply,		/**< Describes an object as an application. */
 		oper,		/**< Describes an object as an operator. */
 		container,	/**< Describes an object as a container. */
+		matrix,		/**< Describes an object as a matrix. */
+		matrixrow,	/**< Describes an object as a matrix row. */
 		custom		/**< Describes a custom object */
 	};
 	

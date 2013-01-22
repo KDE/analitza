@@ -43,6 +43,8 @@ class HtmlExpressionWriter : public ExpressionWriter
 		virtual QString accept(const List* l);
 		virtual QString accept(const Apply* a);
 		virtual QString accept(const CustomObject* c);
+		virtual QString accept(const Matrix* c);
+		virtual QString accept(const MatrixRow* c);
 		
 		QString result() const { return m_result; }
 		

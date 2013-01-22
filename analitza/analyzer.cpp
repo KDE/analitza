@@ -36,6 +36,7 @@
 #include "transformation.h"
 #include "substituteexpression.h"
 #include "expressionstream.h"
+#include "matrix.h"
 
 // #define SCRIPT_PROFILER
 
@@ -364,6 +365,15 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
 		}
 // 		qDebug() << "XXX" << ;
 		ret=nv;
+	} else if(branch->type()==Object::matrix) {
+		const Matrix* v=static_cast<const Matrix*>(branch);
+		Matrix* nv=new Matrix;
+		Matrix::const_iterator it, itEnd=v->constEnd();
+		for(it=v->constBegin(); it!=itEnd; ++it) {
+			Object* res=eval(*it, resolve, unscoped);
+			nv->appendBranch(res);
+		}
+		ret=nv;
 	} else if(branch->type()==Object::apply) {
 		const Apply* c=static_cast<const Apply*>(branch);
 		Operator op = c->firstOperator();
@@ -439,7 +449,7 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
 				if(r->domain()) {
 					QScopedPointer<Object> o(r->domain());
 					r->domain()=eval(r->domain(), resolve, unscoped);
-					resolved=r->domain()->type()==Object::list || r->domain()->type()==Object::vector;
+					resolved=r->domain()->type()==Object::list || r->domain()->type()==Object::vector || r->domain()->type()==Object::matrix;
 				} else {
 					if(r->dlimit()) {
 						QScopedPointer<Object> o(r->dlimit());
@@ -598,6 +608,18 @@ Object* Analyzer::calcDeclare(const Container* c)
 	return ret;
 }
 
+template<class T, class Tit>
+Object* Analyzer::calcElements(const Object* root, T* nv)
+{
+	const T *v=static_cast<const T*>(root);
+	Tit it, itEnd=v->constEnd();
+	
+	for(it=v->constBegin(); it!=itEnd; ++it)
+		nv->appendBranch(calc(*it));
+	
+	return nv;
+}
+
 Object* Analyzer::calc(const Object* root)
 {
 	Q_ASSERT(root);
@@ -610,26 +632,18 @@ Object* Analyzer::calc(const Object* root)
 		case Object::apply:
 			ret = operate((const Apply*) root);
 			break;
-		case Object::vector: {
-			const Vector *v=static_cast<const Vector*>(root);
-			Vector *nv= new Vector(v->size());
-			Vector::const_iterator it, itEnd=v->constEnd();
-			
-			for(it=v->constBegin(); it!=itEnd; ++it)
-				nv->appendBranch(calc(*it));
-			
-			ret = nv;
-		}	break;
-		case Object::list: {
-			const List *v=static_cast<const List*>(root);
-			List *nv= new List;
-			List::const_iterator it, itEnd=v->constEnd();
-			
-			for(it=v->constBegin(); it!=itEnd; ++it)
-				nv->appendBranch(calc(*it));
-			
-			ret = nv;
-		}	break;
+		case Object::vector:
+			ret = calcElements<Vector, Vector::const_iterator>(root, new Vector(static_cast<const Vector*>(root)->size()));
+			break;
+		case Object::list:
+			ret = calcElements<List, List::const_iterator>(root, new List);
+			break;
+		case Object::matrix:
+			ret = calcElements<Matrix, Matrix::const_iterator>(root, new Matrix);
+			break;
+		case Object::matrixrow:
+			ret = calcElements<MatrixRow, MatrixRow::const_iterator>(root, new MatrixRow);
+			break;
 		case Object::value:
 		case Object::custom:
 			ret=root->copy();
@@ -648,7 +662,6 @@ Object* Analyzer::calc(const Object* root)
 		case Object::none:
 			break;
 	}
-	
 	Q_ASSERT(ret);
 	return ret;
 }
@@ -855,6 +868,11 @@ BoundingIterator* Analyzer::initBVarsContainer(const Analitza::Apply* n, int bas
 	QVector<Ci*> bvars=n->bvarCi();
 	
 	switch(domain->type()) {
+		case Object::matrix:
+			Q_ASSERT(false && "fixme: properly iterate through elements when bounding");
+			if(static_cast<Matrix*>(domain)->size()>0)
+				ret=new TypeBoundingIterator<Matrix, Matrix::const_iterator>(m_runStack, base, bvars, static_cast<Matrix*>(domain));
+			break;
 		case Object::list:
 			if(static_cast<List*>(domain)->size()>0)
 				ret=new TypeBoundingIterator<List, List::const_iterator>(m_runStack, base, bvars, static_cast<List*>(domain));
@@ -1122,6 +1140,8 @@ Object* Analyzer::simp(Object* root)
 		}
 	} else if(root->type()==Object::vector) {
 		iterateAndSimp<Vector, Vector::iterator>(static_cast<Vector*>(root));
+	} else if(root->type()==Object::matrix) {
+		iterateAndSimp<Matrix, Matrix::iterator>(static_cast<Matrix*>(root));
 	} else if(root->type()==Object::list) {
 		iterateAndSimp<List, List::iterator>(static_cast<List*>(root));
 	} else if(root->type()==Object::apply) {
@@ -1845,6 +1865,8 @@ Object* Analyzer::applyAlpha(Object* o, int min)
 			case Object::container:	alphaConversion(static_cast<Container*>(o), min); break;
 			case Object::vector:	alphaConversion<Vector, Vector::iterator>(static_cast<Vector*>(o), min); break;
 			case Object::list:		alphaConversion<List, List::iterator>(static_cast<List*>(o), min); break;
+			case Object::matrix:	alphaConversion<Matrix, Matrix::iterator>(static_cast<Matrix*>(o), min); break;
+			case Object::matrixrow:	alphaConversion<MatrixRow, MatrixRow::iterator>(static_cast<MatrixRow*>(o), min); break;
 			case Object::apply:		alphaConversion(static_cast<Apply*>(o), min); break;
 			case Object::variable: {
 				Ci *var = static_cast<Ci*>(o);
@@ -1858,7 +1880,10 @@ Object* Analyzer::applyAlpha(Object* o, int min)
 					}
 				}
 			}	break;
-			default:
+			case Object::none:
+			case Object::value:
+			case Object::oper:
+			case Object::custom:
 				break;
 		}
 	return o;

@@ -77,7 +77,7 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("direct") << "(x->x)(3)" << "num";
 	QTest::newRow("lambda") << "fnum" << "a -> num";
 	QTest::newRow("call") << "fnum(3)" << "num";
-	QTest::newRow("plus") << "fplus" << "(num -> num) | (<num,-1> -> <num,-1>)";
+	QTest::newRow("plus") << "fplus" << "(num -> num) | (<num,-1> -> <num,-1>) | ({num,-1x-2} -> {num,-1x-2})";
 	QTest::newRow("call plus") << "fplus(3)" << "num";
 	QTest::newRow("call plus vect") << "fplus(vector{3})" << "<num,1>";
 	QTest::newRow("vec to vec") << "tovector(vector{3})" << "<<num,1>,2>";
@@ -120,7 +120,7 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("selec_cos") << "v->cos(selector(1, v))" << "(<num,-1> -> num) | ([num] -> num)";
 	QTest::newRow("shadowed_param") << "fv->cos(fv)" << "num -> num";
 	QTest::newRow("eq") << "x->eq(1,x)" << "num -> bool";
-	QTest::newRow("list@sum") << "v->sum(i^2 : i@v)" << "([num] -> num) | (<num,-1> -> num)";
+	QTest::newRow("list@sum") << "v->sum(i^2 : i@v)" << "([num] -> num) | (<num,-1> -> num) | ({num,-3x-2} -> num)";
 	
 	QTest::newRow("bounded sum_up") << "n->sum(x : x=n..0)" << "num -> num";
 	QTest::newRow("bounded sum_down") << "n->sum(x : x=0..n)" << "num -> num";
@@ -182,6 +182,11 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("nary") << "l->and(l=3, l=3, l=3)" << "num -> bool";
 	QTest::newRow("nary1") << "l->and(valid(l), l=3, l=3)" << "num -> bool";
 	QTest::newRow("nary2") << "l->and(l=3, l=3, valid(l))" << "num -> bool";
+	
+	QTest::newRow("matrix") << "matrix { matrixrow { 1 } }" << "{num,1x1}";
+	QTest::newRow("matrix2r") << "matrix { matrixrow { 1 }, matrixrow { 2 } }" << "{num,2x1}";
+	QTest::newRow("matrix2c") << "matrix { matrixrow { 1, 2 } }" << "{num,1x2}";
+	QTest::newRow("matrix+") << "matrix { matrixrow { 1 }, matrixrow { 2 } }+matrix { matrixrow { 1 }, matrixrow { 2 } }" << "{num,2x1}";
 }
 
 void TypeCheckTest::testConstruction()

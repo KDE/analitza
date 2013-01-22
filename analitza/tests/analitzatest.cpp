@@ -199,6 +199,9 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::newRow("filter") << "filter(x->x>5, list {3,4,5,6,7})" << "list { 6, 7 }";
 	
 	QTest::newRow("forall1") << "forall(a<w:a@list { 2 })" << "2<w";
+	
+	QTest::newRow("matrix") << "matrix { matrixrow { 1, 2 } }" << "matrix { matrixrow { 1, 2 } }";
+	QTest::newRow("matrix+") << "matrix { matrixrow { 1, 2 } }+matrix{ matrixrow { 1, 2 } }" << "matrix { matrixrow { 2, 4 } }";
 }
 
 void AnalitzaTest::testTrivialEvaluate()
@@ -610,6 +613,8 @@ void AnalitzaTest::testSimplify_data()
 	QTest::newRow("mono") << "2*x*y+3*x*y" << "5*x*y";
 	QTest::newRow("mono1") << "2*y+y" << "3*y";
 	QTest::newRow("mono2") << "-y+1" << "-y+1";
+	
+	QTest::newRow("matrix") << "matrix { matrixrow { x, y, z } }" << "matrix { matrixrow { x, y, z } }";
 	
 	//equations
 	QTest::newRow("eqminus") << "x-3=0" << "x=3";

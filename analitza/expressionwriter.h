@@ -35,6 +35,8 @@ class Container;
 class Operator;
 class Vector;
 class List;
+class Matrix;
+class MatrixRow;
 
 /**
  *	This class represents an expression writer.
@@ -55,6 +57,8 @@ class ExpressionWriter
 		virtual QString accept(const List* l) = 0;
 		virtual QString accept(const Apply* a) = 0;
 		virtual QString accept(const CustomObject* c) = 0;
+		virtual QString accept(const Matrix* c) = 0;
+		virtual QString accept(const MatrixRow* c) = 0;
 		
 		virtual QString result() const=0;
 };

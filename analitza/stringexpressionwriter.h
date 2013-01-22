@@ -42,6 +42,8 @@ class StringExpressionWriter : public ExpressionWriter
 		virtual QString accept(const Operator* var);
 		virtual QString accept(const Vector* var);
 		virtual QString accept(const List* l);
+		virtual QString accept(const Matrix* m);
+		virtual QString accept(const MatrixRow* mr);
 		virtual QString accept(const Apply* a);
 		virtual QString accept(const CustomObject* c);
 		

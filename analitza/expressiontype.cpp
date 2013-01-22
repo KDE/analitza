@@ -102,7 +102,8 @@ ExpressionType::ExpressionType(ExpressionType::Type t, int any)
 ExpressionType::ExpressionType(ExpressionType::Type t, const ExpressionType& contained, int s)
     : m_type(t), m_contained(QList<ExpressionType>() << contained), m_size(s)
 {
-	Q_ASSERT(m_type==List || m_type==Vector);  Q_ASSERT(m_type!=Vector || m_size!=0);
+	Q_ASSERT(m_type==List || m_type==Vector || m_type==Matrix);
+	Q_ASSERT(m_type!=Vector || m_size!=0);
 	m_assumptions=contained.assumptions();
 }
 
@@ -143,6 +144,9 @@ QString ExpressionType::toString() const
             break;
         case ExpressionType::Vector:
             ret='<'+typesToString(m_contained).join("$")+','+QString::number(m_size)+'>';
+            break;
+        case ExpressionType::Matrix:
+            ret=QString("{%1,%2x%3}").arg(contained().contained().toString()).arg(m_size).arg(contained().size());
             break;
         case ExpressionType::Error:
             ret="err";
@@ -263,12 +267,11 @@ ExpressionType ExpressionType::starsToType(const QMap< int, ExpressionType>& inf
 // 	qDebug() << qPrintable("hohohoho"+QString(++deep, '-')) << *this << info << &info;
 	
 // 	qDebug() << ".........." << *this << info.keys();
-	if((m_type==ExpressionType::Any || (m_type==ExpressionType::Vector && m_size<0)) && info.contains(m_any)) {
+	if((m_type==ExpressionType::Any || ((m_type==ExpressionType::Vector || m_type==ExpressionType::Matrix) && m_size<0)) && info.contains(m_any)) {
 		if(m_type==ExpressionType::Any)
 			ret=info.value(m_any);
 		else {
 			ret=info.value(m_size);
-			
 			QMap<int, ExpressionType> info2(info);
 			info2.remove(m_size);
 			ret.m_contained.first()=ret.m_contained.first().starsToType(info2);
@@ -321,9 +324,10 @@ bool ExpressionType::canCompareTo(const ExpressionType& type) const
 			case ExpressionType::List:
 				ret=contained().canCompareTo(type.contained());
 				break;
+			case ExpressionType::Matrix:
 			case ExpressionType::Vector:
 				ret=contained().canCompareTo(type.contained());
-				if(m_size>0 && type.m_size>0)
+				if(ret && m_size>0 && type.m_size>0)
 					ret = m_size == type.m_size;
 				break;
 			case ExpressionType::Object:
@@ -383,6 +387,8 @@ bool ExpressionType::canReduceTo(const ExpressionType& type) const
 		ret &= contained().canReduceTo(type.contained());
 	} else if(m_type==List && type.m_type==List) {
 		ret = contained().canReduceTo(type.contained());
+	} else if(m_type==Matrix && type.m_type==Matrix) {
+		ret = contained().canReduceTo(type.contained());
 	}
 	
 // 	qDebug() << "OOOOOOOOOOOOO" << *this << type << ret;
@@ -436,6 +442,7 @@ void ExpressionType::starsSimplification(ExpressionType& t, QMap<int, int>& redu
 			break;
 		case ExpressionType::Many:
 		case ExpressionType::Vector:
+		case ExpressionType::Matrix:
 		case ExpressionType::List:
 		case ExpressionType::Lambda:
 			for(QList<ExpressionType>::iterator it=t.m_contained.begin(), itEnd=t.m_contained.end(); it!=itEnd; ++it) {
@@ -647,6 +654,17 @@ QMap<int, ExpressionType> ExpressionType::computeStars(const QMap<int, Expressio
 				ret=computeStars(initial, candidate.contained(), type.contained());
 			}
 			break;
+		case ExpressionType::Matrix:
+			if(type.type()==ExpressionType::Matrix) { // remove? assert?
+				ret=computeStars(initial, candidate.contained(), type.contained());
+				
+				if(candidate.size()<0) {
+					ExpressionType t=type;
+					t.m_contained.first()=t.m_contained.first().starsToType(ret);
+					ret[candidate.size()] = t;
+				}
+			}
+			break;
 		case ExpressionType::Vector:
 			if(type.type()==ExpressionType::Vector) { // remove?
 				ret=computeStars(initial, candidate.contained(), type.contained());
@@ -796,4 +814,11 @@ QList<ExpressionType> ExpressionType::lambdaFromArgs(const QList<ExpressionType>
 QString ExpressionType::objectName() const
 {
 	return m_objectName;
+}
+
+ExpressionType ExpressionType::contained() const
+{
+	Q_ASSERT(m_type==Vector || m_type==List || m_type==Matrix);
+	Q_ASSERT(m_contained.size()==1);
+	return m_contained.first();
 }

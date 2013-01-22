@@ -27,6 +27,7 @@
 #include "apply.h"
 #include "explexer.h"
 #include "analitzautils.h"
+#include "matrix.h"
 
 using namespace Analitza;
 
@@ -75,6 +76,26 @@ QString MathMLExpressionWriter::accept(const Vector* vec)
 		elements += (*it)->visit(this);
 	}
 	return QString("<vector>%1</vector>").arg(elements.join(QString()));
+}
+
+QString MathMLExpressionWriter::accept(const Matrix* m)
+{
+	QStringList elements;
+	for(Matrix::const_iterator it=m->constBegin(); it!=m->constEnd(); ++it)
+	{
+		elements += (*it)->visit(this);
+	}
+	return QString("<matrix>%1</matrix>").arg(elements.join(QString()));
+}
+
+QString MathMLExpressionWriter::accept(const MatrixRow* mr)
+{
+	QStringList elements;
+	for(Matrix::const_iterator it=mr->constBegin(); it!=mr->constEnd(); ++it)
+	{
+		elements += (*it)->visit(this);
+	}
+	return QString("<matrixrow>%1</matrixrow>").arg(elements.join(QString()));
 }
 
 QString MathMLExpressionWriter::accept(const List* vec)

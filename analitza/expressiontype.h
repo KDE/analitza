@@ -31,7 +31,7 @@ class ANALITZA_EXPORT ExpressionType
 {
 	public:
 		///Just use undefined type when returning from a recursion
-		enum Type { Error=0, Value, Vector, List, Lambda, Any, Many, Object, Char, Bool };
+		enum Type { Error=0, Value, Vector, List, Lambda, Any, Many, Object, Char, Bool, Matrix };
 		QString toString() const;
 		
 		ExpressionType(Type t=Error, int any=-1);
@@ -52,7 +52,7 @@ class ANALITZA_EXPORT ExpressionType
 		bool isError() const;
 		
 		Type type() const { return m_type; }
-		ExpressionType contained() const { Q_ASSERT(m_type==Vector || m_type==List); return m_contained.first(); }
+		ExpressionType contained() const;
 		QList<ExpressionType> alternatives() const { Q_ASSERT(m_type==Many); return m_contained; }
 		
 		/** In case it's a Many type, it adds @p t as an alternative. If @p t is a Many type too, they will be merged */
@@ -91,6 +91,7 @@ class ANALITZA_EXPORT ExpressionType
 		/** when it's a many type, reduce to the one(s) that can be reduced to */
 		void reduce(const ExpressionType& type);
 		
+		/** @returns the name of a custom type */
 		QString objectName() const;
 		
 		static ExpressionType minimumType(const ExpressionType& t1, const ExpressionType& t2);

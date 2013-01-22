@@ -23,11 +23,29 @@
 #include "vector.h"
 #include "apply.h"
 #include "variable.h"
+#include "matrix.h"
 
 using namespace Analitza;
 
 AbstractExpressionTransformer::~AbstractExpressionTransformer()
 {}
+
+#define ITERATION_WALKER(T, ...)\
+Object* AbstractExpressionTransformer::walk##T(const T* pattern)\
+{\
+	T* ret = new T(__VA_ARGS__);\
+	T ::const_iterator it=pattern->constBegin(), itEnd=pattern->constEnd();\
+	for(; it!=itEnd; ++it) {\
+		ret->appendBranch(walk(*it));\
+	}\
+	return ret;\
+}
+
+ITERATION_WALKER(List)
+ITERATION_WALKER(Matrix)
+ITERATION_WALKER(MatrixRow)
+ITERATION_WALKER(Vector, pattern->size())
+ITERATION_WALKER(Container, pattern->containerType())
 
 Object* AbstractExpressionTransformer::walk(const Object* pattern)
 {
@@ -45,6 +63,10 @@ Object* AbstractExpressionTransformer::walk(const Object* pattern)
 			return walkList(static_cast<const List*>(pattern));
 		case Object::vector:
 			return walkVector(static_cast<const Vector*>(pattern));
+		case Object::matrix:
+			return walkMatrix(static_cast<const Matrix*>(pattern));
+		case Object::matrixrow:
+			return walkMatrixRow(static_cast<const MatrixRow*>(pattern));
 		case Object::oper:
 		case Object::value:
 		case Object::custom:
@@ -56,21 +78,6 @@ Object* AbstractExpressionTransformer::walk(const Object* pattern)
 	Q_ASSERT(false);
 	return 0;
 }
-
-#define ITERATION_WALKER(T, ...)\
-Object* AbstractExpressionTransformer::walk##T(const T* pattern)\
-{\
-	T* ret = new T(__VA_ARGS__);\
-	T ::const_iterator it=pattern->constBegin(), itEnd=pattern->constEnd();\
-	for(; it!=itEnd; ++it) {\
-		ret->appendBranch(walk(*it));\
-	}\
-	return ret;\
-}
-
-ITERATION_WALKER(List)
-ITERATION_WALKER(Vector, pattern->size())
-ITERATION_WALKER(Container, pattern->containerType())
 
 Object* AbstractExpressionTransformer::walkApply(const Analitza::Apply* pattern)
 {

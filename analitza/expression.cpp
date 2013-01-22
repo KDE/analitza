@@ -35,6 +35,7 @@
 #include "apply.h"
 #include "customobject.h"
 #include "localize.h"
+#include "matrix.h"
 
 static void print_dom(const QDomNode& in, int ind);
 
@@ -297,7 +298,16 @@ static void variableDepth(Object* o, int& next, const QMap<QString, int>& scope,
 			Vector *v=(Vector*) o;
 			for(Vector::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it)
 				variableDepth(*it, next, scope);
-			
+		}	break;
+		case Object::matrix: {
+			Matrix *v=(Matrix*) o;
+			for(Matrix::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it)
+				variableDepth(*it, next, scope);
+		}	break;
+		case Object::matrixrow: {
+			MatrixRow *v=(MatrixRow*) o;
+			for(MatrixRow::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it)
+				variableDepth(*it, next, scope);
 		}	break;
 		case Object::list: {
 			List *v=(List*) o;
@@ -448,6 +458,12 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
 		case Object::list:
 			ret=addElements<List>(new List, &elem);
 			break;
+		case Object::matrix:
+			ret=addElements<Matrix>(new Matrix, &elem);
+			break;
+		case Object::matrixrow:
+			ret=addElements<MatrixRow>(new MatrixRow, &elem);
+			break;
 		case Object::apply: {
 			Apply *a=addElements<Apply>(new Apply, &elem);
 			if(a && !check(a)) {
@@ -503,6 +519,10 @@ enum Object::ObjectType Expression::whatType(const QString& tag)
 		ret= Object::vector;
 	else if(tag=="list")
 		ret= Object::list;
+	else if(tag=="matrix")
+		ret= Object::matrix;
+	else if(tag=="matrixrow")
+		ret= Object::matrixrow;
 	else if(tag=="apply")
 		ret= Object::apply;
 	else if(Operator::toOperatorType(tag)!=0)
@@ -813,6 +833,8 @@ static void renameTree(Object* o, int depth, const QString& newName)
 		case Object::container: { CHECK_TYPE(Container); } break;
 		case Object::list: { CHECK_TYPE(List); } break;
 		case Object::vector: { CHECK_TYPE(Vector); } break;
+		case Object::matrix: { CHECK_TYPE(Matrix); } break;
+		case Object::matrixrow: { CHECK_TYPE(MatrixRow); } break;
 		
 		case Object::none:
 		case Object::value:

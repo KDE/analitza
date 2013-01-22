@@ -103,6 +103,8 @@ void ExpressionTest::testConversion_data()
 	QTest::newRow("string2") << "\"a\"";
 	QTest::newRow("string3") << "\"a&b\"";
 	QTest::newRow("string4") << "\"a\\\"b\"";
+	
+	QTest::newRow("matrix") << "matrix { matrixrow { 1 } }";
 }
 
 void ExpressionTest::testConversion()

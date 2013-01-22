@@ -28,6 +28,7 @@ namespace Analitza
 class List;
 class Cn;
 class Vector;
+class Matrix;
 class CustomObject;
 class ExpressionType;
 
@@ -58,6 +59,8 @@ class Operations
 		static Object* reduceRealList(Operator::OperatorType op, Cn *oper, List* vector, QString** correct);
 		static Object* reduceListList(Operator::OperatorType op, List* l1, List* l2, QString** correct);
 		static Cn* reduceUnaryList(Operator::OperatorType op, List* l, QString** correct);
+		
+		static Object* reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct);
 		
 		static Object* reduceCustomCustom(Operator::OperatorType op, CustomObject* v1, CustomObject* v2, QString** correct);
 };
