@@ -26,7 +26,7 @@ namespace Analitza {
 
 class Vector;
 
-class MatrixRow : public Vector
+class ANALITZA_EXPORT MatrixRow : public Vector
 {
 	public:
 		MatrixRow(int size=0);
@@ -35,7 +35,7 @@ class MatrixRow : public Vector
 		MatrixRow* copy() const;
 };
 
-class Matrix : public Object
+class ANALITZA_EXPORT Matrix : public Object
 {
 	public:
 		typedef QVector<Object*>::iterator iterator;
