@@ -183,7 +183,6 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 				foreach(const ExpressionType& _second, secondTypes) {
 					QMap<int, ExpressionType> _starToType;
 					bool matches=ExpressionType::matchAssumptions(&_starToType, _first.assumptions(), _second.assumptions());
-					//TODO: maybe error here
 					
 					if(!matches) {
 // 						qDebug() << "peee" << ExpressionType::wrongAssumptions(_first.assumptions(), _second.assumptions());
@@ -198,7 +197,7 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 						
 						ExpressionType first =_first .starsToType(_starToType);
 						ExpressionType second=_second.starsToType(_starToType);
-// 						qDebug() << "9999999" << _second.assumptions() << second.assumptions() << starToType;
+// 						qDebug() << "9999999" << _first.assumptions() << first.assumptions() << starToType;
 						
 						starToType=ExpressionType::computeStars(starToType, first,  opt.parameters()[0]);
 						starToType=ExpressionType::computeStars(starToType, second, opt.parameters()[1]);
@@ -211,8 +210,8 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 // 						qDebug() << "XXXXXX" << starToParam;
 // 						qDebug() << "PPPPPP" << opt << first << second << "|||||" << first.assumptions() << second.assumptions();
 						
-// 						starToType=ExpressionType::computeStars(starToType, first,  opt.param1.starsToType(starToParam));
-// 						starToType=ExpressionType::computeStars(starToType, second, opt.param2.starsToType(starToParam));
+// 						starToType=ExpressionType::computeStars(starToType, first,  opt.parameters()[0].starsToType(starToParam));
+// 						starToType=ExpressionType::computeStars(starToType, second, opt.parameters()[1].starsToType(starToParam));
 						
 // 						first =first .starsToType(starToType);
 // 						second=second.starsToType(starToType);
