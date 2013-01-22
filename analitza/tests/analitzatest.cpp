@@ -202,6 +202,8 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	
 	QTest::newRow("matrix") << "matrix { matrixrow { 1, 2 } }" << "matrix { matrixrow { 1, 2 } }";
 	QTest::newRow("matrix+") << "matrix { matrixrow { 1, 2 } }+matrix{ matrixrow { 1, 2 } }" << "matrix { matrixrow { 2, 4 } }";
+	QTest::newRow("matrix@") << "selector(1, matrix { matrixrow { 1, 2 } })" << "vector { 1, 2 }";
+	QTest::newRow("matrix@@") << "selector(1, selector(1, matrix { matrixrow { 1, 2 } }))" << "1";
 }
 
 void AnalitzaTest::testTrivialEvaluate()

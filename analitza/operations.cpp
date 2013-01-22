@@ -450,7 +450,6 @@ Object* Operations::reduceCustomCustom(Operator::OperatorType op, CustomObject* 
 Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct)
 {
 	Matrix::iterator it2=m2->begin();
-	qDebug() << "!!" << m1->toString() << m2->toString();
 	for(Matrix::iterator it1=m1->begin(); it1!=m1->end(); ++it1)
 	{
 		*it1 = reduceVectorVector(op, static_cast<MatrixRow*>(*it1), static_cast<MatrixRow*>(*it2), correct);
@@ -459,6 +458,30 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 	}
 	delete m2;
 	return m1;
+}
+
+Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
+{
+	if(op==Operator::selector) {
+		Vector* ret;
+		int select=v->intValue();
+		if(select<1 || (select-1) >= m1->size()) {
+			*correct=new QString(i18n("Invalid index for a container"));
+			ret=new Vector(1);
+		} else {
+			MatrixRow* row = static_cast<MatrixRow*>(m1->values()[select-1]);
+			Vector* nv = new Vector(row->size());
+			for(Vector::iterator it=row->begin(); it!=row->end(); ++it) {
+				nv->appendBranch((*it));
+				*it = 0;
+			}
+			ret = nv;
+		}
+		delete v;
+		delete m1;
+		return ret;
+	}
+	return 0;
 }
 
 ExpressionType TypeTriplet(const ExpressionType& a,const ExpressionType& b,const ExpressionType& c) { return ExpressionType(ExpressionType::Lambda).addParameter(a).addParameter(b).addParameter(c); }
@@ -543,6 +566,9 @@ QList<ExpressionType> Operations::infer(Operator::OperatorType op)
 			ret << TypeTriplet(ExpressionType(ExpressionType::Value),
 							   ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Any, 1)),
 							   ExpressionType(ExpressionType::Any, 1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Value),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any, 1), -1), -2),
+							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any, 1), -1));
 			break;
 		case Operator::_union:
 			ret << TypeTriplet(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Any, 1)),
@@ -633,7 +659,7 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,0,0},
+	{0, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,0,0},
 	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
@@ -660,7 +686,7 @@ Operations::UnaryOp Operations::opsUnary[] = {
 	0, //variable
 	(Operations::UnaryOp) Operations::reduceUnaryVector,
 	(Operations::UnaryOp) Operations::reduceUnaryList,
-	0,0,0
+	0,0
 };
 
 Object * Operations::reduceUnary(Operator::OperatorType op, Object * val, QString** correct)

@@ -115,7 +115,7 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("somelist") << "t->list{t,t^2}" << "num -> [num]";
 	QTest::newRow("x->piece") << "x->piecewise { gt(x,0) ? selector(1, vector{x, 1/x}),"
 									"? selector(2, vector{x, 1/x} ) }" << "num -> num";
-	QTest::newRow("div") << "v->selector(1, v)/selector(2, v)" << "(<num,-1> -> num) | (<num,-1> -> <num,-1>) | ([num] -> num) | ([<num,-1>] -> <num,-1>)";
+	QTest::newRow("div") << "v->selector(1, v)/selector(2, v)" << "(<num,-1> -> num) | (<num,-1> -> <num,-1>) | ([num] -> num) | ([<num,-1>] -> <num,-1>) | ({num,-2x-1} -> <num,-1>)";
 	
 	QTest::newRow("selec_cos") << "v->cos(selector(1, v))" << "(<num,-1> -> num) | ([num] -> num)";
 	QTest::newRow("shadowed_param") << "fv->cos(fv)" << "num -> num";
@@ -136,10 +136,10 @@ void TypeCheckTest::testConstruction_data()
 	
 	QTest::newRow("tail") << "ptail:=(elems,i)->piecewise { card(elems)>=i ? union(list{elems[i]}, ptail(elems, i+1)), ? list{} }"
 						<< "(<a,-1> -> num -> [a]) | ([a] -> num -> [a])";
-	QTest::newRow("tail1") << "(elems,i)->list{elems[i]}" << "(<a,-1> -> num -> [a]) | ([a] -> num -> [a])";
+	QTest::newRow("tail1") << "(elems,i)->list{elems[i]}" << "(<a,-1> -> num -> [a]) | ([a] -> num -> [a]) | ({a,-2x-1} -> num -> [<a,-1>])";
 	QTest::newRow("tailp") << "(elems,i)->piecewise{ card(elems)>=i ? list{elems[i]}, ? list{}}" << "(<a,-1> -> num -> [a]) | ([a] -> num -> [a])";
-	QTest::newRow("tail3") << "(elems,i)->union(list{elems[i]}, list{})" << "(<a,-1> -> num -> [a]) | ([a] -> num -> [a])";
-	QTest::newRow("tail4") << "ptail:=(elems,i)->union(list{elems[i]}, ptail(elems, i))" << "(<a,-1> -> num -> [a]) | ([a] -> num -> [a])";
+	QTest::newRow("tail3") << "(elems,i)->union(list{elems[i]}, list{})" << "(<a,-1> -> num -> [a]) | ([a] -> num -> [a]) | ({b,-2x-1} -> num -> [<b,-1>])";
+	QTest::newRow("tail4") << "ptail:=(elems,i)->union(list{elems[i]}, ptail(elems, i))" << "(<a,-1> -> num -> [a]) | ([a] -> num -> [a]) | ({b,-2x-1} -> num -> [<b,-1>])";
 // 	QTest::newRow("tail5") << "(elems,i)->list{list{elems[i]}, ptail(elems, i)}" << "(<a,-1> -> num -> [a]) | ([a] -> num -> [a])";
 	QTest::newRow("tail6") << "tail" << "(<a,-1> -> [a]) | ([a] -> [a])";
 	
@@ -162,11 +162,11 @@ void TypeCheckTest::testConstruction_data()
 								<< "((a -> b -> b) -> b -> <a,-1> -> b) | ((a -> b -> b) -> b -> [a] -> b)";
 	QTest::newRow("foldr1") << "foldr1:=(f,elems)->piecewise {card(elems)=1 ? elems[1], ? f(elems[1], foldr1(f, elems)) }"
 								<< "((a -> a -> a) -> <a,-1> -> a) | ((a -> a -> a) -> [a] -> a)";
-	QTest::newRow("foldr11") << "(f,elems)->f(elems[1], f(elems[2], elems[3]))" << "((a -> a -> a) -> <a,-1> -> a) | ((a -> a -> a) -> [a] -> a)";
-	QTest::newRow("foldr2") << "(f,elems)->f(elems[1], elems[2])" << "((a -> a -> b) -> <a,-1> -> b) | ((a -> a -> b) -> [a] -> b)";
-	QTest::newRow("foldr3") << "(f,elems)->f(elems[1])" << "((a -> b) -> <a,-1> -> b) | ((a -> b) -> [a] -> b)";
+	QTest::newRow("foldr11") << "(f,elems)->f(elems[1], f(elems[2], elems[3]))" << "((a -> a -> a) -> <a,-1> -> a) | ((a -> a -> a) -> [a] -> a) | ((<b,-1> -> <b,-1> -> <b,-1>) -> {b,-2x-1} -> a)";
+	QTest::newRow("foldr2") << "(f,elems)->f(elems[1], elems[2])" << "((a -> a -> b) -> <a,-1> -> b) | ((a -> a -> b) -> [a] -> b) | ((<a,-1> -> <a,-1> -> b) -> {a,-2x-1} -> b)";
+	QTest::newRow("foldr3") << "(f,elems)->f(elems[1])" << "((a -> b) -> <a,-1> -> b) | ((a -> b) -> [a] -> b) | ((<a,-1> -> b) -> {a,-2x-1} -> b)";
 	QTest::newRow("foldr4") << "(f,elems)->f(cos(elems[1]))" << "((num -> a) -> <num,-1> -> a) | ((num -> a) -> [num] -> a)";
-	QTest::newRow("foldr5") << "(f,elems)->f(f(elems[1]))" << "((a -> a) -> <a,-1> -> a) | ((a -> a) -> [a] -> a)";
+	QTest::newRow("foldr5") << "(f,elems)->f(f(elems[1]))" << "((a -> a) -> <a,-1> -> a) | ((a -> a) -> [a] -> a) | ((<b,-1> -> <b,-1>) -> {b,-2x-1} -> a)";
 	QTest::newRow("foldr6") << "(f,elems)->piecewise {card(elems)=1 ? cos(elems[1]), ? f(elems) }"
 								<< "((<num,-1> -> num) -> <num,-1> -> num) | (([num] -> num) -> [num] -> num)";
 	
@@ -187,6 +187,8 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("matrix2r") << "matrix { matrixrow { 1 }, matrixrow { 2 } }" << "{num,2x1}";
 	QTest::newRow("matrix2c") << "matrix { matrixrow { 1, 2 } }" << "{num,1x2}";
 	QTest::newRow("matrix+") << "matrix { matrixrow { 1 }, matrixrow { 2 } }+matrix { matrixrow { 1 }, matrixrow { 2 } }" << "{num,2x1}";
+	QTest::newRow("matrix_selector0") << "selector(1, matrix { matrixrow { 1 }, matrixrow { 2 } })" << "<num,1>";
+	QTest::newRow("matrix_selector1") << "selector(1, selector(1, matrix { matrixrow { 1 }, matrixrow { 2 } }))" << "num";
 }
 
 void TypeCheckTest::testConstruction()
