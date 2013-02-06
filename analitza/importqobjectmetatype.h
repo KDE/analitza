@@ -24,7 +24,7 @@
 
 namespace Analitza {
 class Analyzer;
-}
+
 
 class ANALITZA_EXPORT ImportQMetaObject
 {
@@ -36,5 +36,7 @@ class ANALITZA_EXPORT ImportQMetaObject
 	private:
 		Analitza::Analyzer* m_a;
 };
+
+}
 
 #endif

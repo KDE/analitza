@@ -34,6 +34,14 @@ class List;
 class Operator;
 }
 
+/**
+ * \namespace AnalitzaUtils
+ * 
+ * \brief Utils for manipulate the objects of the tree.
+ * 
+ * \ingroup AnalitzaModule
+ */
+
 namespace AnalitzaUtils
 {
 	

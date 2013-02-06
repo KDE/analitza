@@ -31,9 +31,10 @@ namespace Analitza
 {
 
 /**
-*	The CustomObject class is the one that represents a value in the expression trees.
-*	@author Aleix Pol <aleixpol@kde.org>  
-*/
+ * \class CustomObject
+ * 
+ * \ingroup AnalitzaModule
+ */
 
 class ANALITZA_EXPORT CustomObject : public Object
 {

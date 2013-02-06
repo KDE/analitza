@@ -25,8 +25,6 @@
 #include "analitzaexport.h"
 #include "object.h"
 
-class QDomElement;
-
 namespace Analitza
 {
 class Ci;
@@ -34,10 +32,14 @@ class Container;
 class Cn;
 
 /**
- *	This class represents an expression.
- *	Expression let to convert it to string, MathML and make some little queries to it, without calculating anything.
+ * \class Expression
+ * 
+ * \ingroup AnalitzaModule
  *
- *	@author Aleix Pol <aleixpol@kde.org>  
+ * \brief Represents a mathematical expression.
+ *
+ * Expression let to convert it to string, MathML and make some little queries 
+ * to it, without calculating anything.
  */
 
 class ANALITZA_EXPORT Expression

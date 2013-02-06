@@ -29,6 +29,16 @@ class Apply;
 class Object;
 class Operator;
 
+/**
+ * \class Monomial
+ * 
+ * \ingroup AnalitzaModule
+ *
+ * \brief Monomial object.
+ *
+ * It allows you compose and create a Polynomial.
+ */
+
 class Monomial
 {
 	public:
@@ -40,6 +50,19 @@ class Monomial
 		qreal first;
 		Analitza::Object* second;
 };
+
+/**
+ * \class Polynomial
+ * 
+ * \ingroup AnalitzaModule
+ *
+ * \brief Polynomial object.
+ *
+ * The important method in this class is negate, wich change the sign of the Monomial 
+ * referenced by an index.
+ *
+ * \author Aleix Pol <aleixpol@kde.org>
+ */
 
 class Polynomial : public QList<Monomial>
 {

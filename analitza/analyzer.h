@@ -42,10 +42,18 @@ class Container;
 class Operator;
 class Ci;
 
-//FIXME: Explain that better and with examples.
 /**
- *	This is the base Math class. Analyzer will be the one that will calculate things.
- *	@author Aleix Pol <aleixpol@kde.org>  
+ * \class Analyzer
+ * 
+ * \ingroup AnalitzaModule
+ *
+ * \brief The parser: Evaluates and calculates math expressions.
+ *
+ * Is the base Math class, Analyzer can evaluate simple expressions, expressions 
+ * that contains any number of variables and lambda expressions.
+ * 
+ * If Analyzer is created with a custom Variables module, then calculate() or evaluate() 
+ * will be aware of the variables inside the module.
  */
 
 class ANALITZA_EXPORT Analyzer

@@ -30,10 +30,14 @@ class Cn;
 class Expression;
 class Object;
 
+
 /**
-*	Stores the variables in a hash map and make them available 
-*	@author Aleix Pol <aleixpol@kde.org>  
-*/
+ * \class Variables
+ * 
+ * \ingroup AnalitzaModule
+ *
+ * \brief Stores the variables in a hash map and make them available.
+ */
 
 class ANALITZA_EXPORT Variables : public QHash<QString, Object*>
 {

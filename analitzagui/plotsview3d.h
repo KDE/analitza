@@ -35,6 +35,17 @@ namespace Analitza
 class Surface;
 class PlotItem;
 
+/**
+ * \class PlotsView3D
+ * 
+ * \ingroup AnalitzaGUIModule
+ *
+ * \brief Widget that allows visualization of 3D plots.
+ *
+ * This class lets you create a widget that can draw multiple 3D graphs. This widget 
+ * use Plotter3D and OpenGL as a backend.
+ */
+
 class ANALITZAGUI_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
 {
     Q_OBJECT

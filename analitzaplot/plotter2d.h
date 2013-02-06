@@ -39,6 +39,16 @@ namespace Analitza
 struct GridInfo;
 class PlotItem;
 
+/**
+ * \class Plotter2D
+ * 
+ * \ingroup AnalitzaPlotModule
+ *
+ * \brief Render 2D plots.
+ *
+ * This class uses QPainter as backend for drawing plots.
+ */
+
 class ANALITZAPLOT_EXPORT Plotter2D
 {
     public:
