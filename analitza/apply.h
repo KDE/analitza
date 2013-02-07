@@ -28,14 +28,9 @@ class Operator;
 class Ci;
 
 /**
- * \class Apply
- * 
- * \ingroup AnalitzaModule
- *
- * \brief This class is the one that will correspond to MathML apply tags.
- *
- * Stores and helps to retrieve any data it has inside like bvars, 
- * operators and values.
+ *	This class is the one that will correspond to MathML apply tags.
+ *	Stores and helps to retrieve any data it has inside like bvars, operators and values
+ *	@author Aleix Pol <aleixpol@kde.org>  
  */
 
 class ANALITZA_EXPORT Apply : public Object

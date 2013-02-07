@@ -31,14 +31,9 @@ namespace Analitza
 class Ci;
 
 /**
- * \class Container
- * 
- * \ingroup AnalitzaModule
- *
- * \brief Container represents special tags of MathML called containers.
- *
- * This class is the one that will correspond to MathML container.
- * e.g. apply, mathml, bvar, uplimit...
+ *	This class is the one that will correspond to MathML container.
+ *	e.g. apply, mathml, bvar, uplimit...
+ *	@author Aleix Pol <aleixpol@kde.org>  
  */
 
 class ANALITZA_EXPORT Container : public Object

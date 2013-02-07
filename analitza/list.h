@@ -25,12 +25,6 @@
 namespace Analitza
 {
 
-/**
- * \class List
- * 
- * \ingroup AnalitzaModule
- */
-
 class ANALITZA_EXPORT List : public Object
 {
 	public:

@@ -34,23 +34,16 @@
 #include "analitzaguiexport.h"
 #include <analitzaplot/plotter2d.h>
 
+/**
+ *  This class lets you create a widget that can draw multiple 2D graphs.
+ *  @author Aleix Pol Gonzàlez
+ */
 
 class QItemSelectionModel;
 
 namespace Analitza
 {
 class PlotsModel;
-
-/**
- * \class PlotsView2D
- * 
- * \ingroup AnalitzaGUIModule
- *
- * \brief Widget that allows visualization of 2D plots.
- *
- * This class lets you create a widget that can draw multiple 2D graphs. This widget 
- * use Plotter2D as a backend.
- */
 
 class ANALITZAGUI_EXPORT PlotsView2D : public QWidget, public Plotter2D
 {

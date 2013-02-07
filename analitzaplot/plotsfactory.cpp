@@ -22,7 +22,6 @@
 #include <analitzaplot/functiongraph.h>
 #include "private/functiongraphfactory.h"
 #include <analitza/analyzer.h>
-#include <analitza/variables.h>
 #include <QStringList>
 
 using namespace Analitza;
@@ -37,7 +36,7 @@ PlotsFactory* PlotsFactory::self()
 	return factoryInstance;
 }
 
-PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimension dim, Variables *vars) const
+PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimension dim) const
 {
 	QStringList errs;
 	
@@ -48,69 +47,35 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
 		return b;
 	}
 	
-	Expression exp(testexp);
+	Analitza::Expression exp(testexp);
 	if(exp.isDeclaration())
 		exp = exp.declarationValue();
 	
 	if(exp.isEquation())
 		exp = exp.equationToFunction();
-
+	
+	Analitza::Analyzer a;
+	a.setExpression(exp);
+	a.setExpression(a.dependenciesToLambda());
+	
 	QString id;
-	Expression finalexp;
-
-	//NOTE ... since Analyzer and Variables are strongly coupled
-	if (vars)
-	{
-		Analyzer a(vars);
-		a.setExpression(exp);
-
-		// not all expressions are non-lambda, soma may have vars of any variables module
-		if (!exp.isLambda()) 
-			a.setExpression(a.dependenciesToLambda());
-
-		if(a.isCorrect()) {
-			QString expectedid = FunctionGraphFactory::self()->trait(a.expression(), a.type(), dim);
-			if(FunctionGraphFactory::self()->contains(expectedid)) {
-				id = expectedid;
-			} else
-				errs << i18n("Function type not recognized");
-		} else {
-			errs << a.errors();
-		}
-		
-		finalexp = a.expression();
+	if(a.isCorrect()) {
+		QString expectedid = FunctionGraphFactory::self()->trait(a.expression(), a.type(), dim);
+		if(FunctionGraphFactory::self()->contains(expectedid)) {
+			id = expectedid;
+		} else
+			errs << i18n("Function type not recognized");
+	} else {
+		errs << a.errors();
 	}
-	else
-	{
-		Analyzer a;
-		a.setExpression(exp);
-
-		// not all expressions are non-lambda, soma may have vars of any variables module
-		if (!exp.isLambda()) 
-			a.setExpression(a.dependenciesToLambda());
-
-		if(a.isCorrect()) {
-			QString expectedid = FunctionGraphFactory::self()->trait(a.expression(), a.type(), dim);
-			if(FunctionGraphFactory::self()->contains(expectedid)) {
-				id = expectedid;
-			} else
-				errs << i18n("Function type not recognized");
-		} else {
-			errs << a.errors();
-		}
-		
-		finalexp = a.expression();
-	}
-
+	
 	Q_ASSERT(!errs.isEmpty() || !id.isEmpty());
-	Q_ASSERT(finalexp.isCorrect() && !finalexp.toString().isEmpty());
-
+	
 	PlotBuilder b;
 	b.m_errors = errs;
 	b.m_id = id;
-	b.m_expression = finalexp;
+	b.m_expression = a.expression();
 	b.m_display = testexp.toString();
-	b.m_vars = vars;
 	return b;
 }
 
@@ -130,9 +95,9 @@ bool PlotBuilder::canDraw() const
 	return m_errors.isEmpty() && !m_id.isEmpty();
 }
 
-FunctionGraph* PlotBuilder::create(const QColor& color, const QString& name) const
+FunctionGraph* PlotBuilder::create(const QColor& color, const QString& name, Analitza::Variables* v) const
 {
-	FunctionGraph* it = FunctionGraphFactory::self()->buildItem(m_id, m_expression, m_vars);
+	FunctionGraph* it = FunctionGraphFactory::self()->buildItem(m_id, m_expression, v);
 	it->setColor(color);
 	it->setName(name);
 	it->setDisplay(m_display);

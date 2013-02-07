@@ -17,6 +17,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+
 #ifndef SPACECURVE_H
 #define SPACECURVE_H
 
@@ -24,16 +25,6 @@
 #include <QVector3D>
 
 namespace Analitza {
-
-/**
- * \class SpaceCurve
- * 
- * \ingroup AnalitzaPlotModule
- *
- * \brief Represents a curve in 3D space.
- *
- * This class contains all necessary data that Plotter3D will use to draw the curve.
- */
 
 class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {

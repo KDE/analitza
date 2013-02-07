@@ -23,6 +23,7 @@
 
 #include "plotitem.h"
 
+
 #include <QModelIndex>
 #include <QRect>
 #include <QVector3D>
@@ -40,17 +41,18 @@ namespace Analitza
 {
 
 /**
- * \class Plotter3D
+ * @class Plotter3D
+ * @author Percy Camilo T. Aucahuasi
+ * @short This class manage the OpenGL scene where the plots will be rendered.
  * 
- * \ingroup AnalitzaPlotModule
- *
- * \brief This class manage the OpenGL scene where the plots will be rendered.
- *
  * Plotter3D provides an agnostic way to manage a 3d scene for draw math plots, 
  * Contains just OpenGL calls, so is uncoupled with QWidget nor QtQuick. This 
  * class needs the PlotsModel (to create the geometry for 3D plots) and also 
  * exposes some methods to change the scene (like hide/show the axis or 
  * reference planes for example)
+ * 
+ * @internal current implementation is using display lists as geometries store.
+ * 
  */
 
 class ANALITZAPLOT_EXPORT Plotter3D

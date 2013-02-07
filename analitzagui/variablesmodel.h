@@ -27,14 +27,7 @@ namespace Analitza
 class Variables;
 class Expression;
 
-/**
- * \class VariablesModel
- * 
- * \ingroup AnalitzaGUIModule
- *
- * \brief Is a model class that has a relation of all operators string with their VariableType.
- */
-
+/** Variables model is a model class that has a relation of all operators string with their VariableType. */
 class ANALITZAGUI_EXPORT VariablesModel : public QAbstractTableModel
 {
 	Q_OBJECT

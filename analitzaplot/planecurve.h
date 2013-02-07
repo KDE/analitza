@@ -35,16 +35,6 @@ class Expression;
 class AbstractPlaneCurve;
 class AbstractSurface;
 
-/**
- * \class PlaneCurve
- * 
- * \ingroup AnalitzaPlotModule
- *
- * \brief Represents a curve in 2D space.
- *
- * This class contains all necessary data that Plotter2D will use to draw the curve.
- */
-
 class ANALITZAPLOT_EXPORT PlaneCurve : public FunctionGraph 
 {
 public:

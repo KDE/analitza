@@ -23,14 +23,7 @@
 namespace Analitza
 {
 
-/**
- * \class Ci
- * 
- * \ingroup AnalitzaModule
- *
- * \brief A variable object, name refers to MathML standard.
- */
-
+/** A variable object, name refers to MathML standard. */
 class ANALITZA_EXPORT Ci : public Object
 {
 	public:

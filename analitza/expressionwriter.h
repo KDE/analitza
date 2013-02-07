@@ -39,11 +39,9 @@ class Matrix;
 class MatrixRow;
 
 /**
- * \class ExpressionWriter
- * 
- * \ingroup AnalitzaModule
+ *	This class represents an expression writer.
  *
- * \brief This class represents an expression writer.
+ *	@author Aleix Pol <aleixpol@kde.org>  
  */
 
 class ExpressionWriter

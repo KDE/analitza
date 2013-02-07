@@ -25,11 +25,9 @@ namespace Analitza
 {
 
 /**
- * \class MathMLExpressionWriter
- * 
- * \ingroup AnalitzaModule
+ *	This class represents the mathml expression writer.
  *
- * \brief This class represents the mathml expression writer.
+ *	@author Aleix Pol <aleixpol@kde.org>  
  */
 
 class MathMLExpressionWriter : public ExpressionWriter

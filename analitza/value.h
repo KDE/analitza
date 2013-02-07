@@ -30,14 +30,9 @@ namespace Analitza
 {
 
 /**
- * \class Cn
- * 
- * \ingroup AnalitzaModule
- *
- * \brief Cn is a value in MathML.
- *
- * The Cn class is the one that represents a value in the expression trees.
- */
+*	The Cn class is the one that represents a value in the expression trees.
+*	@author Aleix Pol <aleixpol@kde.org>
+*/
 
 class ANALITZA_EXPORT Cn : public Object
 {

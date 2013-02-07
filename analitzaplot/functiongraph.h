@@ -17,6 +17,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+
 #ifndef FUNCTIONGRAPH2_H
 #define FUNCTIONGRAPH2_H
 
@@ -25,16 +26,6 @@
 
 namespace Analitza
 {
-
-/**
- * \class FunctionGraph
- * 
- * \ingroup AnalitzaPlotModule
- *
- * \brief Base class for any object that is a lambda expression.
- *
- * This class is a common interface for functions objects.
- */
 
 class AbstractFunctionGraph;
 
