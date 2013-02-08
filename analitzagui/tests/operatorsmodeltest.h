@@ -42,7 +42,7 @@ class OperatorsModelTest : public QObject
 		void cleanupTestCase();
 		
 	private:
-		OperatorsModel m;
+		Analitza::OperatorsModel m;
 };
 
 #endif
