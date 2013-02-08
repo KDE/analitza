@@ -31,26 +31,15 @@ class FunctionGraph;
 class PlotsModel;
 class PlotItem;
 
-/**
- * \class PlotBuilder
- * 
- * \ingroup AnalitzaPlotModule
- *
- * \brief Build a plot and exposes its most importat attributes.
- *
- * This class is a builder that is create by PlotsFactory.
- */
-
 class ANALITZAPLOT_EXPORT PlotBuilder
 {
     friend class PlotsFactory;
     public:
         QStringList errors() const { return m_errors; }
         bool canDraw() const;
-        FunctionGraph* create(const QColor& color, const QString& name) const;
+        FunctionGraph* create(const QColor& color, const QString& name, Analitza::Variables* v = 0) const;
         Analitza::Expression expression() const;
         QString display() const;
-        Variables *vars() const;
 
     protected:
         PlotBuilder() {}
@@ -59,31 +48,15 @@ class ANALITZAPLOT_EXPORT PlotBuilder
         QStringList m_errors;
         Analitza::Expression m_expression;
         QString m_display;
-        Variables *m_vars;
 };
-
-/**
- * \class PlotsFactory
- * 
- * \ingroup AnalitzaPlotModule
- *
- * \brief Allows create plot builders.
- *
- * This is a singleton class that can create PlotBuilder and exposes some 
- * expressions examples of many type of plots (curves, surfaces,etc.).
- *
- * \author Aleix Pol <aleixpol@kde.org>
- */
 
 class ANALITZAPLOT_EXPORT PlotsFactory
 {
     public:
         PlotsFactory();
-
+        
         static PlotsFactory* self();
-		
-		/** @p vars is necesary because @p expression can contains variables of any Variables module. */
-        PlotBuilder requestPlot(const Analitza::Expression& expresssion, Dimension dim, Variables *vars = 0) const;
+        PlotBuilder requestPlot(const Analitza::Expression& expresssion, Dimension dim) const;
         QStringList examples(Dimensions s) const;
 };
 

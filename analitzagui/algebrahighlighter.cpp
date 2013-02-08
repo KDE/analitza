@@ -28,8 +28,6 @@
 #include <analitza/explexer.h>
 #include <analitza/expressionparser.h>
 
-using namespace Analitza;
-
 AlgebraHighlighter::AlgebraHighlighter(QTextDocument *doc, const Analitza::Analyzer *na)
 	: QSyntaxHighlighter(doc), m_correct(true), m_mode(Autodetect), m_pos(0), a(na)
 {

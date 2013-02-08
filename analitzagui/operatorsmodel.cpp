@@ -22,7 +22,7 @@
 #include <analitza/localize.h>
 #include <QFont>
 
-using namespace Analitza;
+using Analitza::Operator;
 
 OperatorsModel::OperatorsModel(QObject *parent) : QAbstractTableModel(parent), m_vars(0)
 {

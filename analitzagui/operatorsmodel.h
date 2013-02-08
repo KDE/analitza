@@ -26,18 +26,9 @@ namespace Analitza
 {
 class Variables;
 class Operator;
+}
 
-/**
- * \class OperatorsModel
- * 
- * \ingroup AnalitzaGUIModule
- *
- * \brief A model class for operators.
- *
- * Operators model is a model class that has a relation of all operators string 
- * with their OperatorType.
- */
-
+/** Operators model is a model class that has a relation of all operators string with their OperatorType. */
 class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
 {
 	public:
@@ -72,7 +63,5 @@ class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
 	private:
 		const Analitza::Variables *m_vars;
 };
-
-}
 
 #endif

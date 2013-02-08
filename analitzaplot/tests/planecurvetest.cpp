@@ -156,7 +156,7 @@ void PlaneCurveTest::testParamIntervals()
     m_vars->modify("a", -4.0);
     m_vars->modify("b", -9.5);
 
-    PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D).create(Qt::red, "hola");
+    PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D).create(Qt::red, "hola", m_vars);
     PlaneCurve* f3 = dynamic_cast<PlaneCurve*>(plot);
     QVERIFY(f3->isCorrect());
 

@@ -29,12 +29,13 @@
 
 class QKeyEvent;
 
+class OperatorsModel;
+
 namespace Analitza
 {
 class Variables;
 class Analyzer;
 class Expression;
-class OperatorsModel;
 
 /**
  * \class ExpressionEdit

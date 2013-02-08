@@ -141,7 +141,7 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                     Analitza::Expression valexp = AnalitzaUtils::variantToExpression(value);
                     PlotItem* it = m_items[index.row()];
 
-                    PlotBuilder plot = PlotsFactory::self()->requestPlot(valexp, it->spaceDimension(), it->variables());
+                    PlotBuilder plot = PlotsFactory::self()->requestPlot(valexp, it->spaceDimension());
                     if (plot.canDraw()) {
                         if (m_items[index.row()]->expression() != valexp) {
                             delete m_items[index.row()];
