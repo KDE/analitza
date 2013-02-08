@@ -26,9 +26,11 @@ namespace Analitza
 {
 
 /**
- *	This class represents the string expression writer.
+ * \class StringExpressionWriter
+ * 
+ * \ingroup AnalitzaModule
  *
- *	@author Aleix Pol <aleixpol@kde.org>  
+ * \brief This class represents the string expression writer.
  */
 
 class StringExpressionWriter : public ExpressionWriter

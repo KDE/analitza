@@ -28,6 +28,17 @@ namespace Analitza
 {
 class PlotItem;
 
+/**
+ * \class PlotsModel
+ * 
+ * \ingroup AnalitzaPlotModule
+ *
+ * \brief Collection of many instances of PlotItem.
+ *
+ * This class contains all plots that will be rendered by plotters. Also it 
+ * allows to show the plots in Qt views suchs QListView or QTreeView.
+ */
+
 class ANALITZAPLOT_EXPORT PlotsModel : public QAbstractListModel
 {
 Q_OBJECT

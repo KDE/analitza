@@ -25,6 +25,16 @@
 
 namespace Analitza {
 
+/**
+ * \class Surface
+ * 
+ * \ingroup AnalitzaPlotModule
+ *
+ * \brief Represents a surface in 3D space.
+ *
+ * This class contains all necessary data that Plotter3D will use to draw the surface.
+ */
+
 class ANALITZAPLOT_EXPORT Surface : public FunctionGraph
 {
 public:

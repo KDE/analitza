@@ -25,6 +25,12 @@
 namespace Analitza
 {
 
+/**
+ * \class Vector
+ * 
+ * \ingroup AnalitzaModule
+ */
+
 class ANALITZA_EXPORT Vector : public Object
 {
 	public:

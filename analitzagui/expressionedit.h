@@ -1,7 +1,7 @@
 /*************************************************************************************
- *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
+ *  Copyright (C) 2007 by Aleix Pol <aleixpol@kde.org>                               *
  *  modify it under the terms of the GNU General Public License                      *
  *  as published by the Free Software Foundation; either version 2                   *
  *  of the License, or (at your option) any later version.                           *
@@ -27,7 +27,6 @@
 
 #include "analitzaguiexport.h"
 
-class OperatorsModel;
 class QKeyEvent;
 
 namespace Analitza
@@ -35,12 +34,17 @@ namespace Analitza
 class Variables;
 class Analyzer;
 class Expression;
+class OperatorsModel;
 
 /**
-*	The expression edit widget is the one where we will input our expressions.
-*	
-*	@author Aleix Pol i Gonzalez <aleixpol@kde.org>  
-*/
+ * \class ExpressionEdit
+ * 
+ * \ingroup AnalitzaGUIModule
+ *
+ * \brief A widget for manipulate mathemathical expressions.
+ *
+ * The expression edit widget is the one where we will input our expressions.
+ */
 
 class ANALITZAGUI_EXPORT ExpressionEdit : public QPlainTextEdit
 {

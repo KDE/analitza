@@ -31,6 +31,16 @@ class Variables;
 class Expression;
 class PlotsModel;
 
+/**
+ * \class PlotItem
+ * 
+ * \ingroup AnalitzaPlotModule
+ *
+ * \brief Represents a visual item.
+ *
+ * This class containes common properties of any plot object.
+ */
+
 class ANALITZAPLOT_EXPORT PlotItem 
 {
 friend class PlotsModel;

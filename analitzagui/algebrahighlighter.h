@@ -22,12 +22,17 @@
 #include <QSyntaxHighlighter>
 #include "analitzaguiexport.h"
 
-/**
- *	The AlgebraHighlighter class is used to highlight the ExpressionEdit text.
- *	@author <aleixpol@kde.org>  
- */
+namespace Analitza
+{
+class Analyzer;
 
-namespace Analitza { class Analyzer; }
+/**
+ * \class AlgebraHighlighter
+ * 
+ * \ingroup AnalitzaGUIModule
+ *
+ * \brief The AlgebraHighlighter class is used to highlight the ExpressionEdit text.
+ */
 
 class ANALITZAGUI_EXPORT AlgebraHighlighter : public QSyntaxHighlighter
 {
@@ -90,5 +95,7 @@ class ANALITZAGUI_EXPORT AlgebraHighlighter : public QSyntaxHighlighter
 		QTextCharFormat bold;
 		const Analitza::Analyzer* a;
 };
+
+}
 
 #endif

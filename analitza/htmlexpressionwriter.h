@@ -25,9 +25,11 @@ namespace Analitza
 {
 
 /**
- *	This class represents the string expression writer.
+ * \class HtmlExpressionWriter
+ * 
+ * \ingroup AnalitzaModule
  *
- *	@author Aleix Pol <aleixpol@kde.org>  
+ * \brief This class represents the string expression writer.
  */
 
 class HtmlExpressionWriter : public ExpressionWriter

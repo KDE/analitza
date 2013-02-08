@@ -25,7 +25,14 @@
 namespace Analitza
 {
 
-/** The Operator class is the operator representation in the trees. */
+/**
+ * \class Operator
+ * 
+ * \ingroup AnalitzaModule
+ *
+ * \brief Is the operator representation in the trees.
+ */
+
 class ANALITZA_EXPORT Operator : public Object
 {
 	public:
