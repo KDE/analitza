@@ -37,8 +37,6 @@
 #include "localize.h"
 #include "matrix.h"
 
-static void print_dom(const QDomNode& in, int ind);
-
 using namespace Analitza;
 
 class Expression::ExpressionPrivate : public QSharedData
@@ -761,7 +759,18 @@ Expression Expression::elementAt(int position) const
 	
 	return Expression(v->at(position)->copy());
 }
-// 
+
+void Expression::setElementAt(int position, const Expression& exp)
+{
+	Q_ASSERT(isVector());
+	Object* o = actualRoot(d->m_tree);
+	Q_ASSERT(o);
+	Vector *v=static_cast<Vector*>(o);
+	
+	delete v->at(position);
+	v->setAt(position, exp.tree()->copy());
+}
+
 QStringList Expression::error() const
 {
 	return d->m_err;

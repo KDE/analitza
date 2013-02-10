@@ -139,6 +139,11 @@ class ANALITZA_EXPORT Expression
 		Expression elementAt(int position) const;
 		
 		/**
+		 *	sets an expression value @p value to a @p position
+		 */
+		void setElementAt(int position, const Analitza::Expression& exp);
+		
+		/**
 		 *	Returns the tree associated to this object.
 		 */
 		const Object* tree() const;
