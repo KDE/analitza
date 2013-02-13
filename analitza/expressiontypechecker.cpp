@@ -179,6 +179,7 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 // 			static int ind=3;
 // 			qDebug() << qPrintable("+" +QString(ind++, '-')) << o->toString() << firstType << secondType;
 			
+			bool found = false;
 			foreach(const ExpressionType& _first, firstTypes) {
 				foreach(const ExpressionType& _second, secondTypes) {
 					QMap<int, ExpressionType> _starToType;
@@ -232,27 +233,26 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 							toadd.addAssumptions(assumptions);
 							toadd=toadd.starsToType(starToParam);
 							
-							if(firstPair)
+							if(firstPair) {
 								ret += toadd;
-							else {
+								found = true;
+							} else {
 								QList<ExpressionType>::iterator it=ret.begin(), itEnd=ret.end();
 								for(; it!=itEnd; ++it) {
 									QMap<int, ExpressionType> stars;
 									if(toadd.canReduceTo(*it) && ExpressionType::matchAssumptions(&stars, it->assumptions(), toadd.assumptions())) {
 										bool b=ExpressionType::assumptionsMerge(it->assumptions(), toadd.starsToType(stars).assumptions());
 										Q_ASSERT(b);
+										found = true;
 										break;
 									} else if(it->canReduceTo(toadd) && ExpressionType::matchAssumptions(&stars, it->assumptions(), toadd.assumptions())) {
 										toadd=toadd.starsToType(stars);
 										bool b=ExpressionType::assumptionsMerge(toadd.assumptions(), it->assumptions());
 										Q_ASSERT(b);
 										*it=toadd;
+										found = true;
 										break;
 									}
-								}
-								
-								if(it==itEnd) {
-									addError(i18n("Could not find a type that unifies '%1'", o->toString()));
 								}
 							}
 						}
@@ -262,6 +262,9 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 // 						}
 					}
 				}
+			}
+			if(!found) {
+				addError(i18n("Could not find a type that unifies '%1'", o->toString()));
 			}
 // 			qDebug() << qPrintable("\\"+QString(--ind, '-')) << o->toString() << ret;
 		}
