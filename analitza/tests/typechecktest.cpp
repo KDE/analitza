@@ -179,6 +179,8 @@ void TypeCheckTest::testConstruction_data()
 	
 	QTest::newRow("scopes") << "or((x->list{}=x)(list{}), (x->x=0)(0))" << "bool";
 	
+	QTest::newRow("unify") << "t->vector { 1, times(2, 3, t) }" << "num -> <num,2>";
+	
 	QTest::newRow("nary") << "l->and(l=3, l=3, l=3)" << "num -> bool";
 	QTest::newRow("nary1") << "l->and(valid(l), l=3, l=3)" << "num -> bool";
 	QTest::newRow("nary2") << "l->and(l=3, l=3, valid(l))" << "num -> bool";
@@ -197,8 +199,8 @@ void TypeCheckTest::testConstruction()
 	ExpressionType type=t.check(e);
 	if(!t.isCorrect()) qDebug() << "errors: " << t.errors();
 	
-	QCOMPARE(type.simplifyStars().toString(), output);
 	QVERIFY(t.isCorrect());
+	QCOMPARE(type.simplifyStars().toString(), output);
 }
 
 void TypeCheckTest::testUncorrection()
@@ -248,6 +250,7 @@ void TypeCheckTest::testUncorrection_data()
 	
 	QTest::newRow("twoargs") << "(x->x(3))((x,y)->x+y)";
 	QTest::newRow("times") << "x(x+1)";
+	QTest::newRow("unify") << "min(2, 3, list{})";
 	
 	//TODO: Add invalid recursive call
 }
