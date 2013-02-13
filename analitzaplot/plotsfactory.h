@@ -37,9 +37,10 @@ class ANALITZAPLOT_EXPORT PlotBuilder
     public:
         QStringList errors() const { return m_errors; }
         bool canDraw() const;
-        FunctionGraph* create(const QColor& color, const QString& name, Analitza::Variables* v = 0) const;
+        FunctionGraph* create(const QColor& color, const QString& name) const;
         Analitza::Expression expression() const;
         QString display() const;
+        Variables* m_vars;
 
     protected:
         PlotBuilder() {}
@@ -56,8 +57,11 @@ class ANALITZAPLOT_EXPORT PlotsFactory
         PlotsFactory();
         
         static PlotsFactory* self();
-        PlotBuilder requestPlot(const Analitza::Expression& expresssion, Dimension dim) const;
+        PlotBuilder requestPlot(const Analitza::Expression& expresssion, Dimension dim, Variables* vars = 0) const;
         QStringList examples(Dimensions s) const;
+
+    private:
+        Variables* m_vars;
 };
 
 }

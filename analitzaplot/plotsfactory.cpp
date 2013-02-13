@@ -22,6 +22,7 @@
 #include <analitzaplot/functiongraph.h>
 #include "private/functiongraphfactory.h"
 #include <analitza/analyzer.h>
+#include <analitza/variables.h>
 #include <QStringList>
 
 using namespace Analitza;
@@ -29,6 +30,7 @@ using namespace Analitza;
 K_GLOBAL_STATIC(PlotsFactory, factoryInstance)
 
 PlotsFactory::PlotsFactory()
+	: m_vars(new Variables)
 {}
 
 PlotsFactory* PlotsFactory::self()
@@ -36,7 +38,7 @@ PlotsFactory* PlotsFactory::self()
 	return factoryInstance;
 }
 
-PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimension dim) const
+PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimension dim, Variables* vars) const
 {
 	QStringList errs;
 	
@@ -54,7 +56,7 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
 	if(exp.isEquation())
 		exp = exp.equationToFunction();
 	
-	Analitza::Analyzer a;
+	Analitza::Analyzer a(vars ? vars : m_vars);
 	a.setExpression(exp);
 	a.setExpression(a.dependenciesToLambda());
 	
@@ -76,6 +78,7 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
 	b.m_id = id;
 	b.m_expression = a.expression();
 	b.m_display = testexp.toString();
+	b.m_vars = vars;
 	return b;
 }
 
@@ -95,9 +98,9 @@ bool PlotBuilder::canDraw() const
 	return m_errors.isEmpty() && !m_id.isEmpty();
 }
 
-FunctionGraph* PlotBuilder::create(const QColor& color, const QString& name, Analitza::Variables* v) const
+FunctionGraph* PlotBuilder::create(const QColor& color, const QString& name) const
 {
-	FunctionGraph* it = FunctionGraphFactory::self()->buildItem(m_id, m_expression, v);
+	FunctionGraph* it = FunctionGraphFactory::self()->buildItem(m_id, m_expression, m_vars);
 	it->setColor(color);
 	it->setName(name);
 	it->setDisplay(m_display);
