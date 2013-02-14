@@ -54,7 +54,8 @@ QString keyword(const QString& op) { return i18nc("html representation of an ope
 
 HtmlExpressionWriter::HtmlExpressionWriter(const Object* o)
 {
-	m_result=o->visit(this);
+	if(o)
+		m_result=o->visit(this);
 }
 
 QString HtmlExpressionWriter::accept(const Vector* vec)

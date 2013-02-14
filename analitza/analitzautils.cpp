@@ -399,7 +399,7 @@ void objectWalker(const Object* root, const QByteArray& prefix)
 
 bool equalTree(const Object * o1, const Object * o2)
 {
-	Q_ASSERT(o1 && o2);
+	Q_ASSERT((o1 && o2) || (!o1 && !o2));
 	if(o1==o2)
 		return true;
 	else if(o1->type()!=o2->type())

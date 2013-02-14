@@ -148,6 +148,7 @@ void ExpressionTest::testCopy_data()
 	QTest::newRow("function definition") << "f:=x->x+1";
 	QTest::newRow("summatory") << "sum(x:x=1..10)";
 	QTest::newRow("conditional") << "piecewise { x ? y, ? 33 }";
+	QTest::newRow("empty") << "";
 }
 
 void ExpressionTest::testCopy()

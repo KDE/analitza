@@ -151,8 +151,9 @@ void Analyzer::setExpression(const Expression & e)
 {
 	m_exp=e;
 	flushErrors();
-	
-	if(m_exp.isCorrect()) {
+	if(!e.tree()) {
+		m_err << i18n("Cannot calculate an empty expression");
+	} else if(m_exp.isCorrect()) {
 		ExpressionTypeChecker check(m_vars);
 		check.initializeVars(m_builtin.varTypes());
 		m_currentType=check.check(m_exp);
@@ -1105,7 +1106,7 @@ Object* Analyzer::calcDiff(const Apply* c)
 
 void Analyzer::simplify()
 {
-	if(m_exp.isCorrect()) {
+	if(m_exp.isCorrect() && m_exp.tree()) {
 		m_runStackTop = 0;
 		Object* o=simp(m_exp.tree());
 		m_exp.setTree(o);
@@ -1722,7 +1723,7 @@ Object* Analyzer::simpPiecewise(Container *c)
 
 Expression Analyzer::derivative(const QString& var)
 {
-	Q_ASSERT(m_exp.isCorrect());
+	Q_ASSERT(m_exp.isCorrect() && m_exp.tree());
 	
 	QStringList vars;
 	Object* deriv=m_exp.tree();
@@ -1810,7 +1811,7 @@ double Analyzer::derivative(const QVector<Object*>& values )
 {
 	//c++ numerical recipes p. 192. Only for f'
 	//Image
-	Q_ASSERT(m_exp.isCorrect());
+	Q_ASSERT(m_exp.isCorrect() && m_exp.tree());
 	Q_ASSERT(values.size()==m_exp.bvarList().size());
 	
 	setStack(values);

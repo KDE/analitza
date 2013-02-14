@@ -94,7 +94,7 @@ Expression::Expression(const Expression & e)
 	: d(new ExpressionPrivate(0))
 {
 	d->m_err=e.d->m_err;
-	if(e.isCorrect())
+	if(e.isCorrect() && e.d->m_tree)
 		d->m_tree = e.d->m_tree->copy();
 }
 
@@ -130,6 +130,11 @@ Expression Expression::operator=(const Expression & e)
 
 bool Expression::setText(const QString & exp)
 {
+	if(exp.isEmpty()) {
+		delete d->m_tree;
+		d->m_tree = 0;
+		return true;
+	}
 	d->m_err.clear();
 	ExpLexer lex(exp);
 	ExpressionParser parser;
@@ -533,7 +538,7 @@ enum Object::ObjectType Expression::whatType(const QString& tag)
 
 bool Expression::operator==(const Expression & e) const
 {
-	return e.d->m_tree && d->m_tree && AnalitzaUtils::equalTree(e.d->m_tree, d->m_tree);
+	return AnalitzaUtils::equalTree(e.d->m_tree, d->m_tree);
 }
 
 bool Expression::operator!=(const Expression& e) const
@@ -550,7 +555,7 @@ void Expression::clear()
 
 bool Expression::isCorrect() const
 {
-	return d && d->m_tree && d->m_err.isEmpty();
+	return !(d || d->m_tree) || d->m_err.isEmpty();
 }
 
 QStringList Expression::bvarList() const
