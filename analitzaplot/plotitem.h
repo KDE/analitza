@@ -21,6 +21,7 @@
 #define ANALITZAPLOT_PLOTITEM_H
 
 #include <QStringList>
+#include <QSet>
 #include <QColor>
 
 #include "analitzaplotexport.h"
@@ -64,6 +65,10 @@ public:
     bool isVisible() const { return m_graphVisible; }
     void setVisible(bool v);
 
+    void clearTags();
+    void addTags(const QSet<QString>& tag);
+	QSet<QString> tags() const;
+
 protected:
     void setModel(PlotsModel *m);
     void emitDataChanged();
@@ -72,6 +77,7 @@ private:
     QString m_name;
     QColor m_color;
     bool m_graphVisible;
+    QSet<QString> m_tags;
     
     PlotsModel *m_model;
 };

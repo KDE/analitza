@@ -64,3 +64,18 @@ void PlotItem::setVisible(bool v)
 	m_graphVisible = v;
 	emitDataChanged();
 }
+
+void PlotItem::addTags(const QSet<QString>& tag)
+{
+	m_tags += tag;
+}
+
+void PlotItem::clearTags()
+{
+	m_tags.clear();
+}
+
+QSet<QString> PlotItem::tags() const
+{
+	return m_tags;
+}
