@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 			qDebug() << "Use: " << argv[0] << "[Options] ...";
 			qDebug() << "\t--evaluate:\tTries to simplify symbolically before calculating";
 			qDebug() << "\t--calculate:\tCalculates straight away. If some symbol is missing, it will fail";
-			qDebug() << "\t--print-times:\tOutputs the ellapsed time of an operation";
+			qDebug() << "\t--print-time:\tOutputs the ellapsed time of an operation";
 			qDebug() << "\t--help:\t\twill print this help";
 			qDebug() << "\t...\t\tfiles that will be executed first";
 			return 0;
