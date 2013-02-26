@@ -26,6 +26,11 @@ Matrix::Matrix()
 	: Object(matrix)
 {}
 
+Matrix::~Matrix()
+{
+	qDeleteAll(m_rows);
+}
+
 Object* Matrix::copy() const
 {
 	Matrix* nm = new Matrix;
