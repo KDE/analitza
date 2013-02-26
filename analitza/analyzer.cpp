@@ -1371,9 +1371,12 @@ Object* Analyzer::simpApply(Apply* c)
 				delete c;
 				root = new Cn(true);
 			} else if(!existsjustvar && deps.size()==1) {
-				if(allButFirstZero)
-					root = *c->firstValue();
-				else {
+				if(allButFirstZero) {
+					Analitza::Apply::iterator first = c->firstValue();
+					root = *first;
+					c->m_params.erase(first);
+					delete c;
+				} else {
 					Apply* a = new Apply;
 					a->appendBranch(new Operator(Operator::minus));
 					
@@ -1400,6 +1403,7 @@ Object* Analyzer::simpApply(Apply* c)
 						a->appendBranch(new Operator(Operator::eq));
 						a->appendBranch(new Ci(deps.first()));
 						a->appendBranch(r.first());
+						delete root;
 						root = a;
 					} else {
 						Apply* na = new Apply;
@@ -1411,6 +1415,7 @@ Object* Analyzer::simpApply(Apply* c)
 							a->appendBranch(o);
 							na->appendBranch(a);
 						}
+						delete root;
 						root = na;
 					}
 				} else if(!root->isZero()) {
