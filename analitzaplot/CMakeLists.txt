@@ -20,6 +20,19 @@ if(OPENGL_FOUND)
  )
 endif(OPENGL_FOUND)
 
+
+if(BOOST_FOUND)
+ include_directories (
+   ${Boost_INCLUDE_DIRS}
+ )
+endif(BOOST_FOUND)
+
+if(BOOST_FOUND)
+ include_directories (
+   ${EIGEN3_INCLUDE_DIR}
+ )
+endif(BOOST_FOUND)
+
 set ( analitzaplot_SRCS
     private/utils/mathutils.cpp
     private/utils/quadtree.cpp

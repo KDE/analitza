@@ -1,8 +1,11 @@
 project(analitza)
 
+cmake_minimum_required(VERSION 2.8.8)
+
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 set(CMAKE_MODULE_PATH ${analitza_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+
 
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
 
@@ -12,9 +15,18 @@ macro_optional_find_package(Readline)
 macro_bool_to_01(READLINE_FOUND HAVE_READLINE)
 macro_log_feature(READLINE_FOUND "GNU Readline" "Allows KAlgebra to provide a console interface." "http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html" FALSE "" "")
 
+#Checking whether we can 3d features of analitzaplot
 macro_optional_find_package(OpenGL)
 macro_bool_to_01(OPENGL_FOUND HAVE_OPENGL)
 macro_log_feature(OPENGL_FOUND "OpenGL" "Support for 3D graphs in Analitza" "http://opengl.org" FALSE "" "")
+
+#Checking whether we can build some plots that depedends on eigen and boost
+macro_optional_find_package(Eigen3)
+macro_bool_to_01(EIGEN3_FOUND HAVE_EIGEN3)
+macro_log_feature(EIGEN3_FOUND "Eigen3" "Support for special graphs in Analitza" "http://eigen.tuxfamily.org" FALSE "" "")
+
+macro_optional_find_package(Boost)
+macro_log_feature(Boost_FOUND "Boost C++ Libraries" "Support for special graphs in Analitza" "http://www.boost.org" FALSE "" "")
 
 include_directories(.)
 add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
