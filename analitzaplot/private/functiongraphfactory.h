@@ -35,7 +35,7 @@
 #define REGISTER_FUNCTIONGRAPH_DIM(dim, constructor, name) \
 static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(dim, constructor, vcreate##name, \
-        name ::TypeName(), name ::ExpressionType, name ::CoordSystem(), name ::Parameters(), \
+        name ::TypeName(), name ::MathExpressionType, name ::CoordSystem(), name ::Parameters(), \
         name ::IconName(), name ::Examples); }
 
 #define REGISTER_PLANECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim2D, FunctionGraphFactory::createPlotItem<PlaneCurve>, __VA_ARGS__)

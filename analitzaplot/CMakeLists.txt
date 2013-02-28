@@ -21,17 +21,17 @@ if(OPENGL_FOUND)
 endif(OPENGL_FOUND)
 
 
-if(BOOST_FOUND)
+if(Boost_FOUND)
  include_directories (
    ${Boost_INCLUDE_DIRS}
  )
-endif(BOOST_FOUND)
+endif(Boost_FOUND)
 
-if(BOOST_FOUND)
+if(Boost_FOUND)
  include_directories (
    ${EIGEN3_INCLUDE_DIR}
  )
-endif(BOOST_FOUND)
+endif(Boost_FOUND)
 
 set ( analitzaplot_SRCS
     private/utils/mathutils.cpp
@@ -69,9 +69,13 @@ set ( analitzaplot_SRCS
     plotsdictionarymodel.cpp
     plotter2d.cpp
 )
-if(HAVE_OPENGL)
+if(OPENGL_FOUND)
     list(APPEND analitzaplot_SRCS plotter3d.cpp)
-endif(HAVE_OPENGL)
+endif(OPENGL_FOUND)
+
+# if(Boost_FOUND)
+#     list(APPEND analitzaplot_SRCS private/backends/integralcurve.cpp)
+# endif(Boost_FOUND)
 
 kde4_add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
 target_link_libraries ( analitzaplot
@@ -82,12 +86,12 @@ target_link_libraries ( analitzaplot
   analitza
 )
 
-if(HAVE_OPENGL)
+if(OPENGL_FOUND)
     target_link_libraries ( analitzaplot
         ${OPENGL_gl_LIBRARY}
         ${OPENGL_glu_LIBRARY}
     )
-endif(HAVE_OPENGL)
+endif(OPENGL_FOUND)
 
 set_target_properties(analitzaplot PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 
@@ -109,10 +113,10 @@ install(FILES
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
 )
 
-if(HAVE_OPENGL)
+if(OPENGL_FOUND)
     install(FILES
         plotter3d.h DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
-endif(HAVE_OPENGL)
+endif(OPENGL_FOUND)
 
 add_subdirectory(data)
 add_subdirectory(tests)

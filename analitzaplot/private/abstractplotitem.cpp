@@ -21,7 +21,7 @@
 
 using namespace Analitza;
 
-AbstractMappingGraph::~AbstractMappingGraph()
+AbstractShape::~AbstractShape()
 {
 }
 

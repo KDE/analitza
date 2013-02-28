@@ -84,12 +84,16 @@ bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, PlotItemConstuct
     QStringList arguments(_arguments);
     qSort(arguments);
     
+//     qDebug() << QString(typeNameFunction) << expressionTypeFunction().toString();
+    
+    //NOTE this id is different for each functiongraph plot
     QString id = QString::number((int)dim)+"|"+
                  QString::number((int)coordinateSystemFunction)+"|"+
+                 expressionTypeFunction().toString() +"|"+
                  arguments.join(",");
                  
                 
-    Q_ASSERT(!contains(id)); // verificar que no se registren los mismos tipos
+    Q_ASSERT(!contains(id)); // check for don't register the same plot types
 
     typeNameFunctions[id] = typeNameFunction;
     expressionTypeFunctions[id] = expressionTypeFunction;

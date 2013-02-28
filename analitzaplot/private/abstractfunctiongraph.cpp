@@ -34,7 +34,7 @@ using namespace Analitza;
 // For lists of ten or more items, increase this minimum size as appropriate. 
 
 AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
-    : AbstractMappingGraph()
+    : AbstractShape()
     , m_resolution(200)
     , m_e(e)
     , m_varsmod(v)

@@ -37,73 +37,74 @@ using namespace Analitza;
 
 int main(int argc, char *argv[])
 {
-    KAboutData aboutData("PlotView2DTest",
-                         0,
-                         ki18n("PlotView2DTest"),
-                         "1.0",
-                         ki18n("PlotView2DTest"),
-                         KAboutData::License_LGPL_V3,
-                         ki18n("(c) 2012 Percy Camilo T. Aucahuasi"),
-                         ki18n("PlotView2DTest"),
-                         "http://www.kde.org");
+	KAboutData aboutData("PlotView2DTest",
+						 0,
+						 ki18n("PlotView2DTest"),
+						 "1.0",
+						 ki18n("PlotView2DTest"),
+						 KAboutData::License_LGPL_V3,
+						 ki18n("(c) 2012 Percy Camilo T. Aucahuasi"),
+						 ki18n("PlotView2DTest"),
+						 "http://www.kde.org");
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
-    KCmdLineOptions options;
-    options.add("all-disabled", ki18n("marks all the plots as not visible"));
-    KCmdLineArgs::addCmdLineOptions(options);
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    KApplication app;
+	KCmdLineArgs::init(argc, argv, &aboutData);
+	KCmdLineOptions options;
+	options.add("all-disabled", ki18n("marks all the plots as not visible"));
+	KCmdLineArgs::addCmdLineOptions(options);
+	KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+	KApplication app;
 
-    QMainWindow *mainWindow = new QMainWindow();
-    mainWindow->setMinimumSize(640, 480);
-    mainWindow->statusBar()->show();
+	QMainWindow *mainWindow = new QMainWindow();
+	mainWindow->setMinimumSize(640, 480);
+	mainWindow->statusBar()->show();
 
-    QWidget *central = new QWidget(mainWindow);
-    QVBoxLayout *layout = new QVBoxLayout(central);
-    
-    QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
+	QWidget *central = new QWidget(mainWindow);
+	QVBoxLayout *layout = new QVBoxLayout(central);
+	
+	QSplitter *tabs = new QSplitter(Qt::Horizontal, central);
 
-    layout->addWidget(tabs);
+	layout->addWidget(tabs);
 
-    //BEGIN test calls
-    
-    PlotsModel *model = new PlotsModel(tabs);
-    
-    PlotsView2D *view2d = new PlotsView2D(tabs);
-//     view2d->setSquares(false);
-    view2d->setModel(model);
+	//BEGIN test calls
 
-    PlotsFactory* s = PlotsFactory::self();
-    model->addPlot(s->requestPlot(Analitza::Expression("4*sin(2*q)"), Dim2D).create(Qt::cyan, "polar curv"));
-    model->addPlot(s->requestPlot(Analitza::Expression("p**2=cos(r)*(3*pi/4)**2"), Dim2D).create(Qt::yellow, "implicit polar curv"));
-    model->addPlot(s->requestPlot(Analitza::Expression("x->x*x"), Dim2D).create(Qt::magenta, "f(x)"));
-    model->addPlot(s->requestPlot(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), Dim2D).create(Qt::green, "khipu"));
-    model->addPlot(s->requestPlot(Analitza::Expression("t->vector{t*t+1, t+2}"), Dim2D).create(Qt::blue, "param2d1"));
-    model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x-y*y"), Dim3D).create(Qt::red, "3D"));
+	PlotsModel *model = new PlotsModel(tabs);
+	
+	PlotsView2D *view2d = new PlotsView2D(tabs);
+	view2d->setSquares(false);
+	view2d->setTicksShown(0);
+	view2d->setModel(model);
 
-    //END test calls
+	PlotsFactory* s = PlotsFactory::self();
+//	 model->addPlot(s->requestPlot(Analitza::Expression("4*sin(2*q)"), Dim2D).create(Qt::cyan, "polar curv"));
+//	 model->addPlot(s->requestPlot(Analitza::Expression("p**2=cos(r)*(3*pi/4)**2"), Dim2D).create(Qt::yellow, "implicit polar curv"));
+//	 model->addPlot(s->requestPlot(Analitza::Expression("x->x*x"), Dim2D).create(Qt::magenta, "f(x)"));
+//	 model->addPlot(s->requestPlot(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), Dim2D).create(Qt::green, "khipu"));
+//	 model->addPlot(s->requestPlot(Analitza::Expression("t->vector{t*t+1, t+2}"), Dim2D).create(Qt::blue, "param2d1"));
+//	 model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x-y*y"), Dim3D).create(Qt::red, "3D"));
+// 	model->addPlot(s->requestPlot(Analitza::Expression("ode(12)"), Dim2D).create(Qt::darkBlue, "integral curve"));
+	
+	//END test calls
 
-    if(args->isSet("all-disabled"))
-        for(int i=0; i<model->rowCount(); ++i)
-            model->setData(model->index(i), false, Qt::CheckStateRole);
+	if(args->isSet("all-disabled"))
+		for(int i=0; i<model->rowCount(); ++i)
+			model->setData(model->index(i), false, Qt::CheckStateRole);
 
-    QTreeView *viewsource = new QTreeView(tabs);
-    viewsource->setModel(model);
-    
-    view2d->setSelectionModel(viewsource->selectionModel());
-    
-    tabs->addWidget(viewsource);
-    tabs->addWidget(view2d);
+	QTreeView *viewsource = new QTreeView(tabs);
+	viewsource->setModel(model);
+	
+	view2d->setSelectionModel(viewsource->selectionModel());
+	
+	tabs->addWidget(viewsource);
+	tabs->addWidget(view2d);
 
-    PlotsModel *model2 = new PlotsModel(tabs);
-    view2d->setModel(model2);
-    
-    view2d->setModel(model);
+	PlotsModel *model2 = new PlotsModel(tabs);
+	view2d->setModel(model2);
+	
+	view2d->setModel(model);
 
-    mainWindow->setCentralWidget(central);
+	mainWindow->setCentralWidget(central);
 
-    mainWindow->show();
+	mainWindow->show();
 
-    return app.exec();
+	return app.exec();
 }
-

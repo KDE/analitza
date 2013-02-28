@@ -36,7 +36,7 @@ const QString typeName() const { return i18n(TypeName()); } \
 static const char* TypeName() { return name; } 
 
 #define EXPRESSION_TYPE(name) \
-static Analitza::ExpressionType ExpressionType() { return Analitza::ExpressionType(name); }
+static Analitza::ExpressionType MathExpressionType() { return Analitza::ExpressionType(name); }
 
 #define COORDDINATE_SYSTEM(name) \
 CoordinateSystem coordinateSystem() const { return CoordSystem(); } \
@@ -55,7 +55,7 @@ static QStringList Examples() { return (exs); }
 
 namespace Analitza {
 
-class AbstractFunctionGraph : public AbstractMappingGraph
+class AbstractFunctionGraph : public AbstractShape
 {
 friend class FunctionGraphFactory;
 public:

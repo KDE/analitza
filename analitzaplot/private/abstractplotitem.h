@@ -22,13 +22,16 @@
 #define ABSTRACTMAPPINGGRAPH_H
 
 #include <plottingenums.h>
+#include <QStringList>
 
 namespace Analitza {
 
-class AbstractMappingGraph //strategy pattern
+class Variables;
+	
+class AbstractShape //strategy pattern
 {
 public:
-    virtual ~AbstractMappingGraph();
+    virtual ~AbstractShape();
 
     virtual const QString typeName() const = 0;
     virtual QString iconName() const = 0;
@@ -36,8 +39,14 @@ public:
     virtual Dimension spaceDimension() const = 0;
     virtual CoordinateSystem coordinateSystem() const = 0;
     
+	virtual QStringList errors() const = 0;
+	virtual bool isCorrect() const = 0;
+
+	virtual Variables *variables() const = 0;
+    virtual void setVariables(Analitza::Variables *variables) = 0;
+
 protected:
-    AbstractMappingGraph() {}
+    AbstractShape() {}
 };
 
 }
