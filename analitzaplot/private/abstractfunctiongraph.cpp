@@ -33,8 +33,8 @@ using namespace Analitza;
 // Make the list control large enough that it can show at least four items at a time without scrolling. 
 // For lists of ten or more items, increase this minimum size as appropriate. 
 
-AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
-    : AbstractShape()
+AbstractFunctionGraphOld::AbstractFunctionGraphOld(const Analitza::Expression& e, Analitza::Variables* v)
+    : AbstractShapeOld()
     , m_resolution(200)
     , m_e(e)
     , m_varsmod(v)
@@ -55,23 +55,23 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
     analyzer->setStack(stack);
 }
 
-AbstractFunctionGraph::~AbstractFunctionGraph()
+AbstractFunctionGraphOld::~AbstractFunctionGraphOld()
 {
     qDeleteAll(m_argumentValues);
     delete analyzer;
 }
 
-Dimension AbstractFunctionGraph::spaceDimension() const
+Dimension AbstractFunctionGraphOld::spaceDimension() const
 {
     return FunctionGraphFactory::self()->spaceDimension(m_internalId);
 }
 
-Analitza::Variables *AbstractFunctionGraph::variables() const 
+Analitza::Variables *AbstractFunctionGraphOld::variables() const 
 { 
     return m_varsmod;
 }
 
-void AbstractFunctionGraph::setVariables(Analitza::Variables* variables)
+void AbstractFunctionGraphOld::setVariables(Analitza::Variables* variables)
 {
     Q_ASSERT(variables);
     
@@ -86,12 +86,12 @@ void AbstractFunctionGraph::setVariables(Analitza::Variables* variables)
     m_varsmod = variables;
 }
 
-const Analitza::Expression& AbstractFunctionGraph::expression() const
+const Analitza::Expression& AbstractFunctionGraphOld::expression() const
 {
     return m_e;
 }
 
-QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interval(const QString &argname, bool evaluate) const
+QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraphOld::interval(const QString &argname, bool evaluate) const
 {
     Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
@@ -110,7 +110,7 @@ QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interva
     return ret;
 }
 
-bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
+bool AbstractFunctionGraphOld::setInterval(const QString &argname, const Analitza::Expression &min, const Analitza::Expression &max)
 {
     Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
@@ -126,7 +126,7 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::
     return true;
 }
 
-QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) const
+QPair<double, double> AbstractFunctionGraphOld::interval(const QString &argname) const
 {
     Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
@@ -144,7 +144,7 @@ QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) co
     return ret;
 }
 
-bool AbstractFunctionGraph::setInterval(const QString &argname, double min, double max)
+bool AbstractFunctionGraphOld::setInterval(const QString &argname, double min, double max)
 {
     Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
@@ -156,22 +156,22 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, double min, doub
     return true;
 }
 
-Analitza::Cn* AbstractFunctionGraph::arg(const QString& argname)
+Analitza::Cn* AbstractFunctionGraphOld::arg(const QString& argname)
 {
 	return m_argumentValues[argname];
 }
 
-bool AbstractFunctionGraph::hasIntervals() const
+bool AbstractFunctionGraphOld::hasIntervals() const
 {
     return !m_argumentIntervals.isEmpty();
 }
 
-bool AbstractFunctionGraph::isCorrect() const
+bool AbstractFunctionGraphOld::isCorrect() const
 {
     return m_errors.isEmpty() && analyzer->isCorrect();
 }
 
-QStringList AbstractFunctionGraph::errors() const
+QStringList AbstractFunctionGraphOld::errors() const
 {
     QStringList ret = m_errors+analyzer->errors();
     ret.removeDuplicates();

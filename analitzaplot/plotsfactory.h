@@ -21,6 +21,7 @@
 
 #include "plottingenums.h"
 #include "analitzaplotexport.h"
+#include "plotitem.h"
 #include <analitza/expression.h>
 
 class QColor;
@@ -63,6 +64,11 @@ class ANALITZAPLOT_EXPORT PlotsFactory
     private:
         Variables* m_vars;
 };
+
+///
+
+
+
 
 }
 

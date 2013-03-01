@@ -28,7 +28,7 @@
 using namespace Analitza;
 
 AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractFunctionGraph(e, v)
+: AbstractFunctionGraphOld(e, v)
 {}
 
 AbstractSurface::~AbstractSurface()

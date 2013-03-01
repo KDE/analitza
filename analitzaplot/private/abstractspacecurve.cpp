@@ -34,7 +34,7 @@ using namespace Analitza;
 using std::atan2;
 
 AbstractSpaceCurve::AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v)
-: AbstractFunctionGraph(e, v)
+: AbstractFunctionGraphOld(e, v)
 {}
 
 AbstractSpaceCurve::~AbstractSpaceCurve()

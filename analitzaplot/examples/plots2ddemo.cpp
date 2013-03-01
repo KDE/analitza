@@ -75,9 +75,9 @@ int main(int argc, char *argv[])
 	view2d->setModel(model);
 
 	PlotsFactory* s = PlotsFactory::self();
-//	 model->addPlot(s->requestPlot(Analitza::Expression("4*sin(2*q)"), Dim2D).create(Qt::cyan, "polar curv"));
-//	 model->addPlot(s->requestPlot(Analitza::Expression("p**2=cos(r)*(3*pi/4)**2"), Dim2D).create(Qt::yellow, "implicit polar curv"));
-//	 model->addPlot(s->requestPlot(Analitza::Expression("x->x*x"), Dim2D).create(Qt::magenta, "f(x)"));
+	 model->addPlot(s->requestPlot(Analitza::Expression("4*sin(2*q)"), Dim2D).create(Qt::cyan, "polar curv"));
+// 	 model->addPlot(s->requestPlot(Analitza::Expression("p**2=cos(r)*(3*pi/4)**2"), Dim2D).create(Qt::yellow, "implicit polar curv"));
+	 model->addPlot(s->requestPlot(Analitza::Expression("x->x*x"), Dim2D).create(Qt::magenta, "f(x)"));
 //	 model->addPlot(s->requestPlot(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), Dim2D).create(Qt::green, "khipu"));
 //	 model->addPlot(s->requestPlot(Analitza::Expression("t->vector{t*t+1, t+2}"), Dim2D).create(Qt::blue, "param2d1"));
 //	 model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x-y*y"), Dim3D).create(Qt::red, "3D"));
@@ -105,6 +105,9 @@ int main(int argc, char *argv[])
 	mainWindow->setCentralWidget(central);
 
 	mainWindow->show();
-
+	
+	Shape fx("x->x*x");
+	PlaneCurve curve(fx);
+	
 	return app.exec();
 }

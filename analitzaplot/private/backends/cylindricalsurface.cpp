@@ -73,7 +73,7 @@ bool Frp::setInterval(const QString& argname, const Analitza::Expression& min, c
     if (argname == QString("p") && max_val >= 2*M_PI)
         return false;
     
-    return AbstractFunctionGraph::setInterval(argname, min, max);
+    return AbstractFunctionGraphOld::setInterval(argname, min, max);
 }
 
 bool Frp::setInterval(const QString& argname, double min, double max)
@@ -85,7 +85,7 @@ bool Frp::setInterval(const QString& argname, double min, double max)
         return false;
     
 
-    return AbstractFunctionGraph::setInterval(argname, min, max);
+    return AbstractFunctionGraphOld::setInterval(argname, min, max);
 }
 
 Frp::Frp(const Analitza::Expression& e): AbstractSurface(e)

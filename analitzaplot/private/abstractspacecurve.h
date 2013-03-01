@@ -27,7 +27,7 @@ name (const Analitza::Expression &functionExpression, Analitza::Variables *varia
 namespace Analitza {
 class Variables;
 
-class AbstractSpaceCurve : public AbstractFunctionGraph 
+class AbstractSpaceCurve : public AbstractFunctionGraphOld 
 {
 public:
     AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v = 0);

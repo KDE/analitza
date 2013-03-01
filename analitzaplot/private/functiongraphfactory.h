@@ -33,32 +33,32 @@
 #include "surface.h"
 
 #define REGISTER_FUNCTIONGRAPH_DIM(dim, constructor, name) \
-static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
+static AbstractFunctionGraphOld * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
         namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(dim, constructor, vcreate##name, \
         name ::TypeName(), name ::MathExpressionType, name ::CoordSystem(), name ::Parameters(), \
         name ::IconName(), name ::Examples); }
 
-#define REGISTER_PLANECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim2D, FunctionGraphFactory::createPlotItem<PlaneCurve>, __VA_ARGS__)
-#define REGISTER_SPACECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, FunctionGraphFactory::createPlotItem<SpaceCurve>, __VA_ARGS__)
-#define REGISTER_SURFACE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, FunctionGraphFactory::createPlotItem<Surface>, __VA_ARGS__)
+#define REGISTER_PLANECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim2D, FunctionGraphFactory::createPlotItem<PlaneCurveOld>, __VA_ARGS__)
+#define REGISTER_SPACECURVE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, FunctionGraphFactory::createPlotItem<SpaceCurveOld>, __VA_ARGS__)
+#define REGISTER_SURFACE(...) REGISTER_FUNCTIONGRAPH_DIM(Dim3D, FunctionGraphFactory::createPlotItem<SurfaceOld>, __VA_ARGS__)
 
 namespace Analitza {
 class Variables;
 class Expression;
 class ExpressionType;
-class AbstractFunctionGraph;
+class AbstractFunctionGraphOld;
 class PlotItem;
 
 class FunctionGraphFactory
 {
 public:
-    typedef AbstractFunctionGraph* (*BuilderFunctionWithVars)(const Analitza::Expression&, Analitza::Variables* );
-    typedef FunctionGraph* (*PlotItemConstuctor)(AbstractFunctionGraph*);
+    typedef AbstractFunctionGraphOld* (*BuilderFunctionWithVars)(const Analitza::Expression&, Analitza::Variables* );
+    typedef FunctionGraph* (*PlotItemConstuctor)(AbstractFunctionGraphOld*);
     typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
     typedef QStringList (*ExamplesFunction)();
     
     template <class T>
-    static FunctionGraph* createPlotItem(AbstractFunctionGraph* g)
+    static FunctionGraph* createPlotItem(AbstractFunctionGraphOld* g)
     { return new T(g); }
 
     QString typeName(const QString& id) const;
@@ -81,7 +81,7 @@ public:
     QString trait(const Analitza::Expression& expr, const Analitza::ExpressionType& t, Dimension dim) const;
     bool contains(const QString &id) const;
     
-    AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
+    AbstractFunctionGraphOld * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
     FunctionGraph* buildItem(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
 
     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredFunctionGraphs() const;

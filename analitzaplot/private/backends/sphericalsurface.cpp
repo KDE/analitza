@@ -74,7 +74,7 @@ bool SphericalSurface::setInterval(const QString& argname, const Analitza::Expre
     if (argname == QString("p") && max_val > M_PI)
         return false;
     
-    return AbstractFunctionGraph::setInterval(argname, min, max);
+    return AbstractFunctionGraphOld::setInterval(argname, min, max);
 }
 
 bool SphericalSurface::setInterval(const QString& argname, double min, double max)
@@ -89,7 +89,7 @@ bool SphericalSurface::setInterval(const QString& argname, double min, double ma
     if (argname == QString("p") && max > M_PI)
         return false;
     
-    return AbstractFunctionGraph::setInterval(argname, min, max);
+    return AbstractFunctionGraphOld::setInterval(argname, min, max);
 }
 
 SphericalSurface::SphericalSurface(const Analitza::Expression& e): AbstractSurface(e)

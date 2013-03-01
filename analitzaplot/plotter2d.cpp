@@ -328,7 +328,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     p.setRenderHint(QPainter::Antialiasing, true);
     for (int k = 0; k < m_model->rowCount(); ++k )
     {
-        PlaneCurve* curve = dynamic_cast<PlaneCurve *>(itemAt(k));
+        PlaneCurveOld* curve = dynamic_cast<PlaneCurveOld *>(itemAt(k));
 
         //NOTE GSOC POINTS=0
         //no siempre el backend va a generar puntos y si no lo hace no quiere decir que esta mal,
@@ -427,7 +427,7 @@ void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end)
     viewportFixed.setTopLeft(viewport.bottomLeft());
     viewportFixed.setHeight(fabs(viewport.height()));
     for(int i=start; i<=end; i++) {
-        PlaneCurve* curve = dynamic_cast<PlaneCurve *>(itemAt(i));
+        PlaneCurveOld* curve = dynamic_cast<PlaneCurveOld *>(itemAt(i));
 
         if (!curve || !curve->isVisible())
             continue;
@@ -446,7 +446,7 @@ QPair<QPointF, QString> Plotter2D::calcImage(const QPointF& ndp) const
         return QPair<QPointF, QString>();
 
     //DEPRECATED if (m_model->data(model()->index(currentFunction()), FunctionGraphModel::VisibleRole).toBool())
-    PlaneCurve* curve = dynamic_cast<PlaneCurve*>(itemAt(currentFunction()));
+    PlaneCurveOld* curve = dynamic_cast<PlaneCurveOld*>(itemAt(currentFunction()));
     if (curve && curve->isVisible())
         return curve->image(ndp);
 
@@ -502,7 +502,7 @@ QLineF Plotter2D::slope(const QPointF& dp) const
     if (!m_model || currentFunction() == -1)
         return QLineF();
 
-    PlaneCurve* plot = dynamic_cast<PlaneCurve*>(itemAt(currentFunction()));
+    PlaneCurveOld* plot = dynamic_cast<PlaneCurveOld*>(itemAt(currentFunction()));
     if (plot && plot->isVisible())
     {
         QLineF ret = plot->tangent(dp);

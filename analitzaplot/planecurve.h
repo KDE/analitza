@@ -17,15 +17,20 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+
 #ifndef ANALITZAPLOT_FUNCTION_H
 #define ANALITZAPLOT_FUNCTION_H
 
 #include "functiongraph.h"
+#include <analitza/expression.h>
+#include <analitza/analyzer.h>
 
 #include <QMap>
 #include <QPoint>
 #include <QRectF>
 #include <QLineF>
+#include <QExplicitlySharedDataPointer>
+#include <QVector>
 #include <QColor>
 
 namespace Analitza
@@ -33,7 +38,6 @@ namespace Analitza
 class Variables;
 class Expression;
 class AbstractPlaneCurve;
-class AbstractSurface;
 
 /**
  * \class PlaneCurve
@@ -45,18 +49,94 @@ class AbstractSurface;
  * This class contains all necessary data that Plotter2D will use to draw the curve.
  */
 
-class ANALITZAPLOT_EXPORT PlaneCurve : public FunctionGraph 
+class ANALITZAPLOT_EXPORT PlaneCurveOld : public FunctionGraph 
 {
 public:
-    PlaneCurve(AbstractFunctionGraph* g);
-    virtual ~PlaneCurve();
+	PlaneCurveOld(AbstractFunctionGraphOld* g);
+	virtual ~PlaneCurveOld();
 
-    QVector<int> jumps() const;
-    const QVector<QPointF> & points() const;
-    void update(const QRectF& viewport);
-    QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
-    QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse 
+	QVector<int> jumps() const;
+	const QVector<QPointF> & points() const;
+	void update(const QRectF& viewport);
+	QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
+	QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse 
 };
+
+///
+
+class PlaneCurveData : public FunctionGraphData
+{
+public:
+	PlaneCurveData();
+	PlaneCurveData(const PlaneCurveData &other);
+	PlaneCurveData(const Analitza::Expression& expresssion, Variables* vars);
+	~PlaneCurveData();
+	
+	QVector<int> m_jumps;
+	QVector<QPointF> m_points;
+};
+
+class ANALITZAPLOT_EXPORT PlaneCurve : public AbstractFunctionGraph<PlaneCurve>
+{
+public:
+	PlaneCurve();
+	PlaneCurve(const PlaneCurve &other);
+	PlaneCurve(const Shape &shape);
+	PlaneCurve(const Analitza::Expression &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
+	PlaneCurve(const QString &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
+
+	//BEGIN AbstractShape interface
+	void clearTags();
+	void addTags(const QSet<QString> &tags);
+	QColor color() const;
+	CoordinateSystem coordinateSystem() const;
+	QStringList errors() const;
+	Expression expression() const;
+	QString id() const;
+	QMap<QString, QString> information() const;
+	QString iconName() const;
+	bool isValid() const;
+	bool isVisible() const;
+	QString name() const;
+	void setColor(const QColor &color);
+	void setExpression(const Expression &expression);
+	void setName(const QString &name);
+	void setVisible(bool visible);
+	Dimension spaceDimension() const;
+	QSet<QString> tags() const;
+	QString typeName() const;
+	Variables *variables() const;
+	
+	bool operator==(const PlaneCurve &other) const;
+	bool operator!=(const PlaneCurve &other) const;
+	PlaneCurve & operator=(const PlaneCurve &other);
+	//END AbstractShape interface
+	
+	//BEGIN AbstractFunctionGraph interface
+	QStringList arguments() const;
+	QPair<Expression, Expression> limits(const QString &arg) const;
+	QStringList parameters() const;
+	void setLimits(const QString &arg, double min, double max);
+	void setLimits(const QString &arg, const Expression &min, const Expression &max);
+	Shape toShape() const;
+	//END AbstractFunctionGraph interface
+	
+	QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
+	QVector<int> jumps() const;
+	QVector<QPointF> points() const;
+	QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse
+	void update(const QRectF& viewport);
+	
+	//BEGIN static AbstractShape interface
+	static QStringList builtinMethods();
+	static bool canBuild(const Expression &expression, Analitza::Variables* vars = 0);
+	//END static AbstractShape interface
+	
+private:
+	QExplicitlySharedDataPointer<PlaneCurveData> d;
+};
+
+// singleton or namespace para el buuilder de las clases concretas
 
 }
 

@@ -93,7 +93,7 @@ void PlaneCurveTest::testIncorrect()
     PlotBuilder rp = PlotsFactory::self()->requestPlot(Expression(input), Dim2D);
     if(rp.canDraw()) {
         FunctionGraph* f = rp.create(Qt::red, "lala");
-        PlaneCurve* curve = dynamic_cast<PlaneCurve*>(f);
+        PlaneCurveOld* curve = dynamic_cast<PlaneCurveOld*>(f);
         QVERIFY(curve);
         
         curve->update(QRectF(-5,-5,10,10));
@@ -116,7 +116,7 @@ void PlaneCurveTest::testJumps()
     QFETCH(int, jumps);
 
     PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D).create(Qt::red, "hola");
-    PlaneCurve* f3 = dynamic_cast<PlaneCurve*>(plot);
+    PlaneCurveOld* f3 = dynamic_cast<PlaneCurveOld*>(plot);
     QVERIFY(f3->isCorrect());
     f3->update(QRect(-10, 10, 20, -20));
     QVERIFY(f3->isCorrect());
@@ -157,7 +157,7 @@ void PlaneCurveTest::testParamIntervals()
     m_vars->modify("b", -9.5);
 
     PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D, m_vars).create(Qt::red, "hola");
-    PlaneCurve* f3 = dynamic_cast<PlaneCurve*>(plot);
+    PlaneCurveOld* f3 = dynamic_cast<PlaneCurveOld*>(plot);
     QVERIFY(f3->isCorrect());
 
     QVERIFY(f3->setInterval(param, interval_value.first, interval_value.second));

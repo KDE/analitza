@@ -36,7 +36,7 @@ namespace Analitza
  * This class is a common interface for functions objects.
  */
 
-class AbstractFunctionGraph;
+class AbstractFunctionGraphOld;
 
 class ANALITZAPLOT_EXPORT FunctionGraph : public PlotItem
 {
@@ -82,16 +82,40 @@ public:
     void setResolution(int points);
     
 protected:
-	FunctionGraph(AbstractFunctionGraph* g);
-    AbstractFunctionGraph *backend() const { return m_functionGraph; }
+	FunctionGraph(AbstractFunctionGraphOld* g);
+    AbstractFunctionGraphOld *backend() const { return m_functionGraph; }
 
 private:
     FunctionGraph(const FunctionGraph &other);
     
-    AbstractFunctionGraph *m_functionGraph;
+    AbstractFunctionGraphOld *m_functionGraph;
     QStringList m_errors;
     QString m_display;
 };
+
+///
+
+class FunctionGraphData : public ShapeData
+{
+public:
+	virtual ~FunctionGraphData() {}
+	
+	QMap< QString, QPair< Expression, Expression > > m_arguments;
+};
+
+template <typename ShapeType>
+class AbstractFunctionGraph : public AbstractShape<ShapeType> // X->F(X) : Kn->Km, K: real or complex 
+{
+public:
+	virtual QStringList arguments() const = 0; // X in X->F(X)
+	virtual QPair<Expression, Expression> limits(const QString &arg) const = 0;
+	virtual QStringList parameters() const = 0; // a,b,c... in X->F(X,a,b,c,...)
+	virtual void setLimits(const QString &arg, double min, double max) = 0; //x,y,z also bvars like theta and vars in Variables ...update geometry
+	virtual void setLimits(const QString &arg, const Expression &min, const Expression &max) = 0; //x,y,z also bvars like theta and vars in Variables ...update geometry
+	virtual Shape toShape() const = 0;
+};
+
+
 
 }
 

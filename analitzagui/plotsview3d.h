@@ -32,7 +32,7 @@ class QItemSelectionModel;
 
 namespace Analitza
 {
-class Surface;
+class SurfaceOld;
 class PlotItem;
 
 /**

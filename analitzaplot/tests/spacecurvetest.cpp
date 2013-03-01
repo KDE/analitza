@@ -84,7 +84,7 @@ void SpaceCurveTest::testIncorrect()
 	PlotBuilder rp = PlotsFactory::self()->requestPlot(Expression(input), Dim3D);
     if(rp.canDraw()) {
         FunctionGraph* f = rp.create(Qt::red, "lala");
-        SpaceCurve* curve = dynamic_cast<SpaceCurve*>(f);
+        SpaceCurveOld* curve = dynamic_cast<SpaceCurveOld*>(f);
         QVERIFY(curve);
         
         curve->update(QVector3D(-1,-1,-1), QVector3D(1,1,1));

@@ -28,10 +28,10 @@ namespace Analitza {
 
 class Variables;
 	
-class AbstractShape //strategy pattern
+class AbstractShapeOld //strategy pattern
 {
 public:
-    virtual ~AbstractShape();
+    virtual ~AbstractShapeOld();
 
     virtual const QString typeName() const = 0;
     virtual QString iconName() const = 0;
@@ -46,7 +46,7 @@ public:
     virtual void setVariables(Analitza::Variables *variables) = 0;
 
 protected:
-    AbstractShape() {}
+    AbstractShapeOld() {}
 };
 
 }

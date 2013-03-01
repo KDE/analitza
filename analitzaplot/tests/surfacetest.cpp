@@ -78,7 +78,7 @@ void SurfaceTest::testIncorrect()
     PlotBuilder rp = PlotsFactory::self()->requestPlot(Expression(input), Dim3D);
     if(rp.canDraw()) {
         FunctionGraph* f = rp.create(Qt::red, "lala");
-        Surface* surface = dynamic_cast<Surface*>(f);
+        SurfaceOld* surface = dynamic_cast<SurfaceOld*>(f);
         QVERIFY(surface);
         
         surface->update(QVector3D(-1,-1,-1), QVector3D(1,1,1));

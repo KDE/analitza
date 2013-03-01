@@ -35,12 +35,12 @@ namespace Analitza {
  * This class contains all necessary data that Plotter3D will use to draw the surface.
  */
 
-class ANALITZAPLOT_EXPORT Surface : public FunctionGraph
+class ANALITZAPLOT_EXPORT SurfaceOld : public FunctionGraph
 {
 public:
-    Surface(AbstractFunctionGraph* g);
+    SurfaceOld(AbstractFunctionGraphOld* g);
     
-    virtual ~Surface();
+    virtual ~SurfaceOld();
 
     //Own
 

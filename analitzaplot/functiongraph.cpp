@@ -24,7 +24,7 @@
 
 using namespace Analitza;
 
-FunctionGraph::FunctionGraph(AbstractFunctionGraph *g)
+FunctionGraph::FunctionGraph(AbstractFunctionGraphOld *g)
     : PlotItem("123123213123", Qt::black)
     , m_functionGraph(g)
 {

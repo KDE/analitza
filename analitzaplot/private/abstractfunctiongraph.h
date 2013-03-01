@@ -55,12 +55,12 @@ static QStringList Examples() { return (exs); }
 
 namespace Analitza {
 
-class AbstractFunctionGraph : public AbstractShape
+class AbstractFunctionGraphOld : public AbstractShapeOld
 {
 friend class FunctionGraphFactory;
 public:
-    AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v = 0);
-    virtual ~AbstractFunctionGraph();
+    AbstractFunctionGraphOld(const Analitza::Expression& e, Analitza::Variables* v = 0);
+    virtual ~AbstractFunctionGraphOld();
     
     Dimension spaceDimension() const;
 

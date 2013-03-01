@@ -25,34 +25,34 @@
 
 using namespace Analitza;
 
-Surface::Surface(AbstractFunctionGraph* g): FunctionGraph(g)
+SurfaceOld::SurfaceOld(AbstractFunctionGraphOld* g): FunctionGraph(g)
 {}
 
-Surface::~Surface()
+SurfaceOld::~SurfaceOld()
 {}
 
-void Surface::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+void SurfaceOld::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
     Q_ASSERT(backend());
     
     static_cast<AbstractSurface*>(backend())->update(oppositecorner1, oppositecorner2);
 }
 
-const QVector< double > Surface::vertices() const
+const QVector< double > SurfaceOld::vertices() const
 {
     Q_ASSERT(backend());
 
     return static_cast<AbstractSurface*>(backend())->vertices;
 }
 
-const QVector< double > Surface::normals() const
+const QVector< double > SurfaceOld::normals() const
 {
     Q_ASSERT(backend());
 
     return static_cast<AbstractSurface*>(backend())->normals;
 }
 
-const QVector< unsigned int > Surface::indexes() const
+const QVector< unsigned int > SurfaceOld::indexes() const
 {
     Q_ASSERT(backend());
 

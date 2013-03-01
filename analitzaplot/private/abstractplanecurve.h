@@ -29,7 +29,7 @@ name (const Analitza::Expression &functionExpression, Analitza::Variables *varia
 namespace Analitza {
 class Variables;
 
-class AbstractPlaneCurve : public AbstractFunctionGraph 
+class AbstractPlaneCurve : public AbstractFunctionGraphOld 
 {
 public:
     AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v = 0);

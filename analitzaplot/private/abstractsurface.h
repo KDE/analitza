@@ -27,7 +27,7 @@ name (const Analitza::Expression &functionExpression, Analitza::Variables *varia
 
 namespace Analitza {
 
-class AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
+class AbstractSurface : public AbstractFunctionGraphOld //strategy pattern for curves
 {
 public:
     explicit AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v = 0);

@@ -21,7 +21,7 @@
 
 using namespace Analitza;
 
-AbstractShape::~AbstractShape()
+AbstractShapeOld::~AbstractShapeOld()
 {
 }
 

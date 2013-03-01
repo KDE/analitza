@@ -24,26 +24,26 @@
 
 using namespace Analitza;
 
-SpaceCurve::SpaceCurve(AbstractFunctionGraph* g)
+SpaceCurveOld::SpaceCurveOld(AbstractFunctionGraphOld* g)
     : FunctionGraph(g)
 {}
 
-SpaceCurve::~SpaceCurve()
+SpaceCurveOld::~SpaceCurveOld()
 {}
 
-const QVector<QVector3D> & SpaceCurve::points() const
+const QVector<QVector3D> & SpaceCurveOld::points() const
 {
     Q_ASSERT(backend());
     return static_cast<AbstractSpaceCurve*>(backend())->points;
 }
 
-QVector< int > SpaceCurve::jumps() const
+QVector< int > SpaceCurveOld::jumps() const
 {
     Q_ASSERT(backend());
     return static_cast<AbstractSpaceCurve*>(backend())->jumps;
 }
 
-void SpaceCurve::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+void SpaceCurveOld::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
     Q_ASSERT(backend());
     static_cast<AbstractSpaceCurve*>(backend())->update(oppositecorner1, oppositecorner2);

@@ -116,3 +116,22 @@ QString PlotBuilder::display() const
 {
 	return m_display;
 }
+
+///
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

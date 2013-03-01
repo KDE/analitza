@@ -35,18 +35,18 @@ namespace Analitza {
  * This class contains all necessary data that Plotter3D will use to draw the curve.
  */
 
-class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
+class ANALITZAPLOT_EXPORT SpaceCurveOld : public FunctionGraph
 {
 public:
-    SpaceCurve(AbstractFunctionGraph* g);
-    virtual ~SpaceCurve();
+    SpaceCurveOld(AbstractFunctionGraphOld* g);
+    virtual ~SpaceCurveOld();
 
     QVector<int> jumps() const;
     const QVector<QVector3D> & points() const;
     void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
 
 protected:
-    SpaceCurve();
+    SpaceCurveOld();
 };
 
 }

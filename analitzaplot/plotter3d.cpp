@@ -212,7 +212,7 @@ void Plotter3D::drawPlots()
     {
         //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
         for (int i = 0; i < m_model->rowCount(); ++i) {
-            PlotItem* item = dynamic_cast<Surface*>(itemAt(i));
+            PlotItem* item = dynamic_cast<SurfaceOld*>(itemAt(i));
 
             if (item && item->isVisible())
                 addPlots(item);
@@ -231,7 +231,7 @@ void Plotter3D::drawPlots()
         glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
         glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
 
-        if (SpaceCurve *curv = dynamic_cast<SpaceCurve*>(item))
+        if (SpaceCurveOld *curv = dynamic_cast<SpaceCurveOld*>(item))
         {
             
             const QVector<QVector3D> points = curv->points();
@@ -275,7 +275,7 @@ void Plotter3D::drawPlots()
 //             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             
         }
-        else if (Surface *surf = dynamic_cast<Surface*>(item)) 
+        else if (SurfaceOld *surf = dynamic_cast<SurfaceOld*>(item)) 
         {
             //NOTE
             //los indices empeizan en cero solo se puede tener un solo array bufer cuando se usa vbo
@@ -472,12 +472,12 @@ void Plotter3D::addPlots(PlotItem* item)
 {
     Q_ASSERT(item);
 
-    if (Surface* surf = dynamic_cast<Surface*>(item))
+    if (SurfaceOld* surf = dynamic_cast<SurfaceOld*>(item))
     {
         if (surf->indexes().isEmpty())
             surf->update(QVector3D(), QVector3D());
     }
-    else if (SpaceCurve* c = dynamic_cast<SpaceCurve*>(item))
+    else if (SpaceCurveOld* c = dynamic_cast<SpaceCurveOld*>(item))
     {
         if (c->points().isEmpty())
             c->update(QVector3D(), QVector3D());
@@ -497,7 +497,7 @@ void Plotter3D::addPlots(PlotItem* item)
     glColor3fv(diffuseColor);
     glColor3i(item->color().red(), item->color().green(), item->color().blue());
 
-    if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
+    if (SpaceCurveOld *curve = dynamic_cast<SpaceCurveOld*>(item))
     {
 //         glEnable(GL_LINE_SMOOTH);
 
@@ -583,7 +583,7 @@ void Plotter3D::addPlots(PlotItem* item)
     }
     else
     {
-        Surface* surf = dynamic_cast<Surface*>(item);
+        SurfaceOld* surf = dynamic_cast<SurfaceOld*>(item);
     
         int bufferSize;
 
