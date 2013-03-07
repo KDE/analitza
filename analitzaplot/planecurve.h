@@ -103,7 +103,7 @@ public:
 	void setExpression(const Expression &expression);
 	void setName(const QString &name);
 	void setVisible(bool visible);
-	Dimension spaceDimension() const;
+	Dimension dimension() const;
 	QSet<QString> tags() const;
 	QString typeName() const;
 	Variables *variables() const;

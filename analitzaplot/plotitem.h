@@ -111,24 +111,18 @@ template <typename ShapeType>
 class ANALITZAPLOT_EXPORT ShapeInterface
 {
 public:
-	virtual void clearTags() = 0;
-	virtual void addTags(const QSet<QString> &tags) = 0;
 	virtual QColor color() const = 0;
 	virtual CoordinateSystem coordinateSystem() const = 0;
 	virtual QStringList errors() const = 0;
 	virtual Expression expression() const = 0;
-	virtual QString id() const = 0; //read only attr always shape needs to be unique aboject in canvas and analitza context
 	virtual QString iconName() const = 0;
-// 	virtual bool isBuiltinMethod() const = 0; // if false is a simple expression
 	virtual bool isValid() const = 0; // see if expression match its definition
 	virtual bool isVisible() const = 0;
 	virtual QString name() const = 0;
 	virtual void setColor(const QColor &color) = 0;
-	virtual void setExpression(const Expression &expression) = 0; // use definition to valid
 	virtual void setName(const QString &name) = 0;
 	virtual void setVisible(bool visible) = 0;
-	virtual Dimension spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
-	virtual QSet<QString> tags() const = 0;
+	virtual Dimension dimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
 	virtual QString typeName() const = 0;
 	virtual Variables *variables() const = 0;
 	

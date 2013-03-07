@@ -199,7 +199,7 @@ void PlaneCurve::setVisible(bool visible)
 	d->m_visible = visible;
 }
 
-Dimension PlaneCurve::spaceDimension() const
+Dimension PlaneCurve::dimension() const
 {
 	return d->m_spaceDimension;
 }
