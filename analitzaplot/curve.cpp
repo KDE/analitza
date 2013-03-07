@@ -1,24 +1,41 @@
-// /*************************************************************************************
-//  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
-//  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
-//  *                                                                                   *
-//  *  This program is free software; you can redistribute it and/or                    *
-//  *  modify it under the terms of the GNU General Public License                      *
-//  *  as published by the Free Software Foundation; either version 2                   *
-//  *  of the License, or (at your option) any later version.                           *
-//  *                                                                                   *
-//  *  This program is distributed in the hope that it will be useful,                  *
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
-//  *  GNU General Public License for more details.                                     *
-//  *                                                                                   *
-//  *  You should have received a copy of the GNU General Public License                *
-//  *  along with this program; if not, write to the Free Software                      *
-//  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
-//  *************************************************************************************/
-// 
-// 
-// #include "curve.h"
+/*************************************************************************************
+ *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *                                                                                   *
+ *  This program is free software; you can redistribute it and/or                    *
+ *  modify it under the terms of the GNU General Public License                      *
+ *  as published by the Free Software Foundation; either version 2                   *
+ *  of the License, or (at your option) any later version.                           *
+ *                                                                                   *
+ *  This program is distributed in the hope that it will be useful,                  *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
+ *  GNU General Public License for more details.                                     *
+ *                                                                                   *
+ *  You should have received a copy of the GNU General Public License                *
+ *  along with this program; if not, write to the Free Software                      *
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
+ *************************************************************************************/
+
+#include "curve.h"
+
+#include "shapedata_p.h"
+
+#include "analitza/analyzer.h"
+
+using namespace Analitza;
+
+class CurveData : public QSharedData, public ShapeData
+{
+public:
+    CurveData();
+    CurveData(const CurveData &other);
+    CurveData(const Analitza::Expression& expresssion, Variables* vars);
+    ~CurveData() {}
+    
+    QScopedPointer<Analyzer> m_analyzer; // internal expression
+};
+
+
 // 
 // #include <KDE/KLocalizedString>
 // 
@@ -26,7 +43,7 @@
 // 
 // #include "private/functiongraphfactory.h"
 // 
-// using namespace Analitza;
+
 // 
 // PlaneCurveOld::PlaneCurveOld(AbstractFunctionGraphOld* g )
 //     : FunctionGraph(g)
@@ -75,22 +92,22 @@
 // 
 // ///
 // 
-// PlaneCurveData::PlaneCurveData()
+// CurveData::CurveData()
 // {
 // 
 // }
 // 
-// PlaneCurveData::PlaneCurveData(const PlaneCurveData& other)
+// CurveData::CurveData(const CurveData& other)
 // {
 // 
 // }
 // 
-// PlaneCurveData::PlaneCurveData(const Expression& expresssion, Variables* vars)
+// CurveData::CurveData(const Expression& expresssion, Variables* vars)
 // {
 // 
 // }
 // 
-// // PlaneCurveData::~PlaneCurveData()
+// // CurveData::~CurveData()
 // // {
 // // 
 // // }
@@ -101,7 +118,7 @@
 // 
 // 
 // Curve::Curve()
-// 	: d(new PlaneCurveData)
+// 	: d(new CurveData)
 // {
 // 	
 // }

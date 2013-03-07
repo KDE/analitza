@@ -16,16 +16,15 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef ANALITZAPLOT_PLOTITEM_H
-#define ANALITZAPLOT_PLOTITEM_H
-
-#include <QStringList>
-#include <QSet>
-#include <QColor>
+#ifndef ANALITZAPLOT_PLOTITEM_H_DATA
+#define ANALITZAPLOT_PLOTITEM_H_DATA
 
 #include "analitzaplotexport.h"
 #include "plottingenums.h"
-#include <analitza/analyzer.h>
+
+class QStringList;
+class QColor;
+class QVector3D;
 
 namespace Analitza {
 class Variables;
@@ -45,9 +44,11 @@ class Expression;
 template <typename ShapeType>
 class ANALITZAPLOT_EXPORT ShapeInterface
 {
+    
 public:
     virtual QColor color() const = 0;
     virtual CoordinateSystem coordinateSystem() const = 0;
+    virtual Dimension dimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety/top dimension
     virtual QStringList errors() const = 0;
     virtual Expression expression() const = 0;
     virtual QString iconName() const = 0;
@@ -57,13 +58,13 @@ public:
     virtual void setColor(const QColor &color) = 0;
     virtual void setName(const QString &name) = 0;
     virtual void setVisible(bool visible) = 0;
-    virtual Dimension dimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety/top dimension
     virtual QString typeName() const = 0;
+    virtual void plot(const QVector3D &oppositecorner1, const QVector3D &oppositecorner2); // draw in openglcontext Update the surfaces's data @p oppositecorner1 and @p oppositecorner2 form an axis-aligned bounding box.
     virtual Variables *variables() const = 0;
     
-    virtual bool operator==(const ShapeType &other) const = 0;
-    virtual bool operator!=(const ShapeType &other) const = 0;
-    virtual ShapeType & operator=(const ShapeType &other) = 0;
+//     virtual bool operator==(const ShapeType &other) const = 0;
+//     virtual bool operator!=(const ShapeType &other) const = 0;
+//     virtual ShapeType & operator=(const ShapeType &other) = 0;
 };
 
 }
