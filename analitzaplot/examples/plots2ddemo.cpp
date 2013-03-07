@@ -106,8 +106,7 @@ int main(int argc, char *argv[])
 
 	mainWindow->show();
 	
-	Shape fx("x->x*x");
-	PlaneCurve curve(fx);
+	PlaneCurve curve("fx");
 	
 	return app.exec();
 }

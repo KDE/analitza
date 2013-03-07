@@ -145,6 +145,13 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QColor m_gridColor;
 };
 
+
+///
+
+
+
+
+
 }
 
 #endif // PLOTTER2D_H
