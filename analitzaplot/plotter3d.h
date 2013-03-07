@@ -21,7 +21,7 @@
 #ifndef PLOTTER3D_H
 #define PLOTTER3D_H
 
-#include "plotitem.h"
+#include "shapeinterface.h"
 
 #include <QModelIndex>
 #include <QRect>

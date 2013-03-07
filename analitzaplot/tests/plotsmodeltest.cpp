@@ -18,7 +18,7 @@
 
 #include "plotsmodeltest.h"
 
-#include "analitzaplot/planecurve.h"
+#include "analitzaplot/curve.h"
 #include "analitzaplot/plotsmodel.h"
 #include <plotsfactory.h>
 #include <surface.h>

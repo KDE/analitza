@@ -20,7 +20,7 @@
 #include "plotsmodel.h"
 
 #include "plotsfactory.h"
-#include "plotitem.h"
+#include "shapeinterface.h"
 
 #include "analitza/analitzautils.h"
 #include <KLocalizedString>

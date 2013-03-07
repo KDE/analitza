@@ -20,7 +20,7 @@
 #ifndef FUNCTIONGRAPH2_H
 #define FUNCTIONGRAPH2_H
 
-#include "plotitem.h"
+#include "shapeinterface.h"
 #include <QPair>
 
 namespace Analitza

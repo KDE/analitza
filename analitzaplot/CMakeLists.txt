@@ -60,9 +60,9 @@ set ( analitzaplot_SRCS
     private/backends/implicitsurface.cpp
 
     plotsfactory.cpp
-    plotitem.cpp
+    shapeinterface.cpp
     functiongraph.cpp
-    planecurve.cpp
+    curve.cpp
     spacecurve.cpp
     surface.cpp
     plotsmodel.cpp

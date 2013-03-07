@@ -17,7 +17,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "plotitem.h"
+#include "shapeinterface.h"
 #include "plotsmodel.h"
 
 using namespace Analitza;

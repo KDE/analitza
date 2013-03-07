@@ -28,7 +28,7 @@
 #include <QPair>
 #include <QMap>
 
-#include "planecurve.h"
+#include "curve.h"
 #include "spacecurve.h"
 #include "surface.h"
 

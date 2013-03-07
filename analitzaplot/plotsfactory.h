@@ -21,7 +21,7 @@
 
 #include "plottingenums.h"
 #include "analitzaplotexport.h"
-#include "plotitem.h"
+#include "shapeinterface.h"
 #include <analitza/expression.h>
 
 class QColor;

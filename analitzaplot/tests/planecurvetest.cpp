@@ -18,7 +18,7 @@
  *************************************************************************************/
 
 #include "planecurvetest.h"
-#include "analitzaplot/planecurve.h"
+#include "analitzaplot/curve.h"
 #include <plotsfactory.h>
 #include "analitza/expression.h"
 #include "analitza/variables.h"

@@ -64,7 +64,7 @@ public:
 
 ///
 
-class PlaneCurveData : public ShapeData
+class PlaneCurveData : public QSharedData
 {
 public:
 	PlaneCurveData();
@@ -72,6 +72,21 @@ public:
 	PlaneCurveData(const Analitza::Expression& expresssion, Variables* vars);
 	~PlaneCurveData() {}
 	
+	//from shape
+	QScopedPointer<Analyzer> m_analyzer;
+    bool m_builtinMethod;
+    QColor m_color;
+    CoordinateSystem m_coordinateSystem;
+    Expression m_expression;
+    QString m_id;
+    QString m_iconName;
+    QString m_name;
+    int m_size;
+    Dimension m_spaceDimension;
+    QSet<QString> m_tags;
+    QString m_typeName;
+    bool m_visible;
+	//end from shape
 	QMap< QString, QPair< Expression, Expression > > m_arguments; // from old functiongraphiface
 
 	QVector<int> m_jumps;

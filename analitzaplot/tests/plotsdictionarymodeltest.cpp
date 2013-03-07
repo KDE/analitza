@@ -20,7 +20,7 @@
 #include "plotsdictionarymodeltest.h"
 #include <qtest_kde.h>
 #include <KStandardDirs>
-#include <analitzaplot/plotitem.h>
+#include <analitzaplot/shapeinterface.h>
 #include <analitzaplot/plotsmodel.h>
 #include <analitzaplot/plotsdictionarymodel.h>
 

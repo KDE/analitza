@@ -19,7 +19,7 @@
 
 #include "plotter2d.h"
 
-#include "planecurve.h"
+#include "curve.h"
 
 #include "plotsmodel.h"
 #include "private/utils/mathutils.h"

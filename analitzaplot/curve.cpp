@@ -18,7 +18,7 @@
  *************************************************************************************/
 
 
-#include "planecurve.h"
+#include "curve.h"
 
 #include <KDE/KLocalizedString>
 

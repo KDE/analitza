@@ -68,7 +68,7 @@ public:
 
     void clearTags();
     void addTags(const QSet<QString>& tag);
-	QSet<QString> tags() const;
+    QSet<QString> tags() const;
 
 protected:
     void setModel(PlotsModel *m);
@@ -85,57 +85,40 @@ private:
 
 ///
 
-//TODO move to _p header
-class ShapeData : public QSharedData// this class have to be base class of all shareddatas
-{
-public:
-	
-	
-	QScopedPointer<Analyzer> m_analyzer;
-	bool m_builtinMethod;
-	QColor m_color;
-	CoordinateSystem m_coordinateSystem;
-	Expression m_expression;
-	QString m_id;
-	QString m_iconName;
-	QString m_name;
-	int m_size;
-	Dimension m_spaceDimension;
-	QSet<QString> m_tags;
-	QString m_typeName;
-	bool m_visible;
-};
+/**
+ * \interface ShapeInterface
+ * 
+ * \ingroup AnalitzaPlotModule
+ *
+ * \brief Commmon contract/interface for all shape types.
+ *
+ * Concrete classes have to implement implicit memory sharing by using 
+ * QSharedDataPointer
+ */
 
-//concrete classes implment explicit memory sharin semantic (and lighweightpatterhn)
 template <typename ShapeType>
 class ANALITZAPLOT_EXPORT ShapeInterface
 {
 public:
-	virtual QColor color() const = 0;
-	virtual CoordinateSystem coordinateSystem() const = 0;
-	virtual QStringList errors() const = 0;
-	virtual Expression expression() const = 0;
-	virtual QString iconName() const = 0;
-	virtual bool isValid() const = 0; // see if expression match its definition
-	virtual bool isVisible() const = 0;
-	virtual QString name() const = 0;
-	virtual void setColor(const QColor &color) = 0;
-	virtual void setName(const QString &name) = 0;
-	virtual void setVisible(bool visible) = 0;
-	virtual Dimension dimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
-	virtual QString typeName() const = 0;
-	virtual Variables *variables() const = 0;
-	
-	virtual bool operator==(const ShapeType &other) const = 0;
-	virtual bool operator!=(const ShapeType &other) const = 0;
-	virtual ShapeType & operator=(const ShapeType &other) = 0;
-	
-	//BEGIN static interface
-	// static QStringList builtinMethods();
-	// static bool canBuild(const Expression &expression, Analitza::Variables* vars = 0);
-	//END static interface
+    virtual QColor color() const = 0;
+    virtual CoordinateSystem coordinateSystem() const = 0;
+    virtual QStringList errors() const = 0;
+    virtual Expression expression() const = 0;
+    virtual QString iconName() const = 0;
+    virtual bool isValid() const = 0; // see if expression match its definition
+    virtual bool isVisible() const = 0;
+    virtual QString name() const = 0;
+    virtual void setColor(const QColor &color) = 0;
+    virtual void setName(const QString &name) = 0;
+    virtual void setVisible(bool visible) = 0;
+    virtual Dimension dimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety/top dimension
+    virtual QString typeName() const = 0;
+    virtual Variables *variables() const = 0;
+    
+    virtual bool operator==(const ShapeType &other) const = 0;
+    virtual bool operator!=(const ShapeType &other) const = 0;
+    virtual ShapeType & operator=(const ShapeType &other) = 0;
 };
-
 
 }
 

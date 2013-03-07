@@ -26,7 +26,7 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 
-#include "analitzaplot/planecurve.h"
+#include "analitzaplot/curve.h"
 #include "analitzaplot/surface.h"
 #include "analitzagui//plotsview2d.h"
 #include "analitzaplot/plotsmodel.h"
