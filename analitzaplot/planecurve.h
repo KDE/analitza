@@ -78,13 +78,13 @@ public:
 	QVector<QPointF> m_points;
 };
 
-class ANALITZAPLOT_EXPORT PlaneCurve : public ShapeInterface<PlaneCurve>
+class ANALITZAPLOT_EXPORT Curve : public ShapeInterface<Curve>
 {
 public:
-	PlaneCurve();
-	PlaneCurve(const PlaneCurve &other);
-	PlaneCurve(const Analitza::Expression &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
-	PlaneCurve(const QString &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
+	Curve();
+	Curve(const Curve &other);
+	Curve(const Analitza::Expression &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
+	Curve(const QString &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
 
 	//BEGIN AbstractShape interface
 	void clearTags();
@@ -108,9 +108,9 @@ public:
 	QString typeName() const;
 	Variables *variables() const;
 	
-	bool operator==(const PlaneCurve &other) const;
-	bool operator!=(const PlaneCurve &other) const;
-	PlaneCurve & operator=(const PlaneCurve &other);
+	bool operator==(const Curve &other) const;
+	bool operator!=(const Curve &other) const;
+	Curve & operator=(const Curve &other);
 	//END AbstractShape interface
 	
 	//BEGIN AbstractFunctionGraph interface

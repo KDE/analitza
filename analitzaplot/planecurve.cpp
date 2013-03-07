@@ -100,23 +100,23 @@ PlaneCurveData::PlaneCurveData(const Expression& expresssion, Variables* vars)
 ///
 
 
-PlaneCurve::PlaneCurve()
+Curve::Curve()
 	: d(new PlaneCurveData)
 {
 	
 }
 
-PlaneCurve::PlaneCurve(const PlaneCurve &other)
+Curve::Curve(const Curve &other)
 {
 	
 }
 
-PlaneCurve::PlaneCurve(const Analitza::Expression &expresssion, Variables* vars)
+Curve::Curve(const Analitza::Expression &expresssion, Variables* vars)
 {
 	
 }
 
-PlaneCurve::PlaneCurve(const QString &expresssion, Variables* vars)
+Curve::Curve(const QString &expresssion, Variables* vars)
 {
 	
 }
@@ -124,178 +124,178 @@ PlaneCurve::PlaneCurve(const QString &expresssion, Variables* vars)
 
 
 //BEGIN AbstractShape interface
-void PlaneCurve::clearTags()
+void Curve::clearTags()
 {
 	d->m_tags.clear();;
 }
 
-void PlaneCurve::addTags(const QSet<QString> &tags)
+void Curve::addTags(const QSet<QString> &tags)
 {
 	d->m_tags = tags;
 }
 
-QColor PlaneCurve::color() const
+QColor Curve::color() const
 {
 	return d->m_color;
 }
 
-CoordinateSystem PlaneCurve::coordinateSystem() const
+CoordinateSystem Curve::coordinateSystem() const
 {
 	return d->m_coordinateSystem;
 }
 
-QStringList PlaneCurve::errors() const
+QStringList Curve::errors() const
 {
 	return QStringList();
 }
 
-Expression PlaneCurve::expression() const
+Expression Curve::expression() const
 {
 	return d->m_expression;
 }
 
-QString PlaneCurve::id() const
+QString Curve::id() const
 {
 	return d->m_id;
 }
 
-QString PlaneCurve::iconName() const
+QString Curve::iconName() const
 {
 	return d->m_iconName;
 }
 
-bool PlaneCurve::isValid() const
+bool Curve::isValid() const
 {
 	return false;
 }
 
-bool PlaneCurve::isVisible() const
+bool Curve::isVisible() const
 {
 	return d->m_visible;
 }
 
-QString PlaneCurve::name() const
+QString Curve::name() const
 {
 	return d->m_name;
 }
 
-void PlaneCurve::setColor(const QColor &color)
+void Curve::setColor(const QColor &color)
 {
 	d->m_color = color;
 }
 
-void PlaneCurve::setExpression(const Expression &expression)
+void Curve::setExpression(const Expression &expression)
 {
 	d->m_expression = expression; //TODO
 }
 
-void PlaneCurve::setName(const QString &name)
+void Curve::setName(const QString &name)
 {
 	d->m_name = name;
 }
 
-void PlaneCurve::setVisible(bool visible)
+void Curve::setVisible(bool visible)
 {
 	d->m_visible = visible;
 }
 
-Dimension PlaneCurve::dimension() const
+Dimension Curve::dimension() const
 {
 	return d->m_spaceDimension;
 }
 
-QSet<QString> PlaneCurve::tags() const
+QSet<QString> Curve::tags() const
 {
 	return d->m_tags;
 }
 
-QString PlaneCurve::typeName() const
+QString Curve::typeName() const
 {
 	return d->m_typeName;
 }
 
-Variables * PlaneCurve::variables() const
+Variables * Curve::variables() const
 {
 	return d->m_analyzer->variables();
 }
 
 
-bool PlaneCurve::operator==(const PlaneCurve &other) const
+bool Curve::operator==(const Curve &other) const
 {
 	return false; // TODO
 }
 
-bool PlaneCurve::operator!=(const PlaneCurve &other) const
+bool Curve::operator!=(const Curve &other) const
 {
 	return !((*this) == other);
 }
 
-PlaneCurve & PlaneCurve::operator=(const PlaneCurve &other)
+Curve & Curve::operator=(const Curve &other)
 {
 	return *this; //TODO
 }
 //END AbstractShape interface
 
 //BEGIN AbstractFunctionGraph interface
-QStringList PlaneCurve::arguments() const
+QStringList Curve::arguments() const
 {
 	return d->m_arguments.keys();
 }
 
-QPair<Expression, Expression> PlaneCurve::limits(const QString &arg) const
+QPair<Expression, Expression> Curve::limits(const QString &arg) const
 {
 	return qMakePair(Expression(), Expression());
 }
 
-QStringList PlaneCurve::parameters() const
+QStringList Curve::parameters() const
 {
 	return QStringList(); //TODO
 }
 
-void PlaneCurve::setLimits(const QString &arg, double min, double max)
+void Curve::setLimits(const QString &arg, double min, double max)
 {
 	
 }
 
-void PlaneCurve::setLimits(const QString &arg, const Expression &min, const Expression &max)
+void Curve::setLimits(const QString &arg, const Expression &min, const Expression &max)
 {
 	
 }
 
 //END AbstractFunctionGraph interface
 
-QPair<QPointF, QString> PlaneCurve::image(const QPointF &mousepos)
+QPair<QPointF, QString> Curve::image(const QPointF &mousepos)
 {
 	return qMakePair(QPointF(), QString());
 }
 
-QVector<int> PlaneCurve::jumps() const
+QVector<int> Curve::jumps() const
 {
 	return d->m_jumps;
 }
 
-QVector<QPointF> PlaneCurve::points() const
+QVector<QPointF> Curve::points() const
 {
 	return d->m_points;
 }
 
-QLineF PlaneCurve::tangent(const QPointF &mousepos)
+QLineF Curve::tangent(const QPointF &mousepos)
 {
 	return QLineF(); //TODO
 }
 
-void PlaneCurve::update(const QRectF& viewport)
+void Curve::update(const QRectF& viewport)
 {
 	
 }
 
 //BEGIN static AbstractShape interface
-QStringList PlaneCurve::builtinMethods()
+QStringList Curve::builtinMethods()
 {
 	return QStringList();
 }
 
-bool PlaneCurve::canBuild(const Expression &expression, Analitza::Variables* vars)
+bool Curve::canBuild(const Expression &expression, Analitza::Variables* vars)
 {
 	return true;
 }
