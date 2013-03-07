@@ -111,11 +111,6 @@ PlaneCurve::PlaneCurve(const PlaneCurve &other)
 	
 }
 
-PlaneCurve::PlaneCurve(const Shape &shape)
-{
-	
-}
-
 PlaneCurve::PlaneCurve(const Analitza::Expression &expresssion, Variables* vars)
 {
 	
@@ -263,11 +258,6 @@ void PlaneCurve::setLimits(const QString &arg, double min, double max)
 void PlaneCurve::setLimits(const QString &arg, const Expression &min, const Expression &max)
 {
 	
-}
-
-Shape PlaneCurve::toShape() const
-{
-	return Shape();
 }
 
 //END AbstractFunctionGraph interface

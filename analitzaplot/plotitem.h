@@ -142,61 +142,6 @@ public:
 	//END static interface
 };
 
-// for KAlgebra use case, this class will implements toShapeTypeMethod ... sort of a GenericShape class /method factory
-// this a class withouth gometric data 
-// this class store only relevant data for containers
-class ANALITZAPLOT_EXPORT Shape : public AbstractShape<Shape>
-{
-public:
-	Shape();
-	Shape(const Shape &other);
-	Shape(const Analitza::Expression &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
-	Shape(const QString &expresssion, Variables* vars = 0);
-
-	//BEGIN AbstractShape interface
-	void clearTags();
-	void addTags(const QSet<QString> &tags);
-	QColor color() const;
-	CoordinateSystem coordinateSystem() const;
-	QStringList errors() const;
-	Expression expression() const;
-	QString id() const;
-	QMap<QString, QString> information() const;
-	QString iconName() const;
-	bool isValid() const;
-	bool isVisible() const;
-	QString name() const;
-	void setColor(const QColor &color);
-	void setExpression(const Expression &expression);
-	void setName(const QString &name);
-	void setVisible(bool visible);
-	Dimension spaceDimension() const;
-	QSet<QString> tags() const;
-	QString typeName() const;
-	Variables *variables() const;
-	
-	bool operator==(const Shape &other) const;
-	bool operator!=(const Shape &other) const;
-	Shape & operator=(const Shape &other);
-	//END AbstractShape interface
-	
-	template <typename ShapeType>
-	static void registerShapeType(const QString &className) // we don't use typeinfo because is a library here
-	{
-			Q_ASSERT(!m_shapeTypes.contains(className));
-			
-			m_shapeTypes.insert(className, ShapeType::canBuild);
-	}
-	
-private:
-	typedef bool (*TestBuilderMethod)(const Analitza::Expression&, Analitza::Variables*);
-	
-	static QHash< QString, TestBuilderMethod > m_shapeTypes;
-	
-	QExplicitlySharedDataPointer<ShapeData> d;
-};
-
-
 
 }
 

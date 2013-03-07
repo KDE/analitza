@@ -81,7 +81,6 @@ class ANALITZAPLOT_EXPORT PlaneCurve : public AbstractFunctionGraph<PlaneCurve>
 public:
 	PlaneCurve();
 	PlaneCurve(const PlaneCurve &other);
-	PlaneCurve(const Shape &shape);
 	PlaneCurve(const Analitza::Expression &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
 	PlaneCurve(const QString &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
 
@@ -118,7 +117,6 @@ public:
 	QStringList parameters() const;
 	void setLimits(const QString &arg, double min, double max);
 	void setLimits(const QString &arg, const Expression &min, const Expression &max);
-	Shape toShape() const;
 	//END AbstractFunctionGraph interface
 	
 	QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
