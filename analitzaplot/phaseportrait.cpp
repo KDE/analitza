@@ -1,6 +1,5 @@
 // /*************************************************************************************
-//  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
-//  *  Copyright (C) 2012 by Aleix Pol Gonzalez <aleixpol@kde.org>                      *
+//  *  Copyright (C) 2010 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
 //  *                                                                                   *
 //  *  This program is free software; you can redistribute it and/or                    *
 //  *  modify it under the terms of the GNU General Public License                      *
@@ -17,46 +16,35 @@
 //  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 //  *************************************************************************************/
 // 
-// #ifndef ANALITZAPLOT_PLOTSDICTIONARYMODEL_H
-// #define ANALITZAPLOT_PLOTSDICTIONARYMODEL_H
+// #include "spacecurve.h"
 // 
-// #include <QStandardItemModel>
-// #include <QPointer>
+// #include <KDE/KLocalizedString>
 // 
-// #include "analitzaplotexport.h"
+// #include "private/abstractspacecurve.h"
 // 
-// namespace Analitza
+// using namespace Analitza;
+// 
+// SpaceCurveOld::SpaceCurveOld(AbstractFunctionGraphOld* g)
+//     : FunctionGraph(g)
+// {}
+// 
+// SpaceCurveOld::~SpaceCurveOld()
+// {}
+// 
+// const QVector<QVector3D> & SpaceCurveOld::points() const
 // {
-// class PlotsModel;
-// 
-// //WARNING @PlotsDictionaryModel needs dictionary files (*.plots), currently we 
-// //are working to add plots files for next version coming (kde >= 4.10.x).
-// 
-// class ANALITZAPLOT_EXPORT PlotsDictionaryModel : public QStandardItemModel
-// {
-// Q_OBJECT
-// public:
-//     enum Roles { ExpressionRole = Qt::UserRole+1, FileRole };
-//     PlotsDictionaryModel(QObject* parent = 0);
-//     ~PlotsDictionaryModel();
-//     
-//     int currentRow() const;
-//     void setCurrentRow(int row);
-//     
-//     PlotsModel* plotModel();
-//     void createDictionary(const QString& path);
-//     
-// public slots:
-//     ///convenience class for currentRow
-//     void setCurrentIndex(const QModelIndex& idx);
-//     
-// private:
-//     void updatePlotsModel();
-//     
-//     QPointer<PlotsModel> m_plots;
-//     int m_currentItem;
-// };
-// 
+//     Q_ASSERT(backend());
+//     return static_cast<AbstractSpaceCurve*>(backend())->points;
 // }
 // 
-// #endif
+// QVector< int > SpaceCurveOld::jumps() const
+// {
+//     Q_ASSERT(backend());
+//     return static_cast<AbstractSpaceCurve*>(backend())->jumps;
+// }
+// 
+// void SpaceCurveOld::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+// {
+//     Q_ASSERT(backend());
+//     static_cast<AbstractSpaceCurve*>(backend())->update(oppositecorner1, oppositecorner2);
+// }

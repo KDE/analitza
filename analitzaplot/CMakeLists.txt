@@ -33,45 +33,49 @@ if(Boost_FOUND)
  )
 endif(Boost_FOUND)
 
+# set ( analitzaplot_SRCS
+#     private/utils/mathutils.cpp
+#     private/utils/quadtree.cpp
+#     private/utils/marchingsquares.cpp
+#     private/utils/octree.cpp
+#     private/utils/marchingcubes.cpp
+# 
+#     private/abstractplotitem.cpp
+#     private/abstractfunctiongraph.cpp
+#     private/abstractplanecurve.cpp
+#     private/abstractspacecurve.cpp
+#     private/abstractsurface.cpp
+#     private/functiongraphfactory.cpp
+# 
+#     private/backends/cartesiansurface.cpp
+#     private/backends/implicitcurve.cpp
+#     private/backends/cartesiancurve.cpp
+#     private/backends/cylindricalsurface.cpp
+#     private/backends/parametriccurve2d.cpp
+#     private/backends/parametriccurve3d.cpp
+#     private/backends/parametricsurface.cpp
+#     private/backends/polarcurve.cpp
+#     private/backends/implicitpolarcurve.cpp
+#     private/backends/sphericalsurface.cpp
+#     private/backends/implicitsurface.cpp
+# 
+#     plotsfactory.cpp
+#     shapeinterface.cpp
+#     vectorfield.cpp
+#     curve.cpp
+#     phaseportrait.cpp
+#     surface.cpp
+#     curvesmodel.cpp
+#     plotsdictionarymodel.cpp
+#     plotter2d.cpp
+# )
 set ( analitzaplot_SRCS
-    private/utils/mathutils.cpp
-    private/utils/quadtree.cpp
-    private/utils/marchingsquares.cpp
-    private/utils/octree.cpp
-    private/utils/marchingcubes.cpp
-
-    private/abstractplotitem.cpp
-    private/abstractfunctiongraph.cpp
-    private/abstractplanecurve.cpp
-    private/abstractspacecurve.cpp
-    private/abstractsurface.cpp
-    private/functiongraphfactory.cpp
-
-    private/backends/cartesiansurface.cpp
-    private/backends/implicitcurve.cpp
-    private/backends/cartesiancurve.cpp
-    private/backends/cylindricalsurface.cpp
-    private/backends/parametriccurve2d.cpp
-    private/backends/parametriccurve3d.cpp
-    private/backends/parametricsurface.cpp
-    private/backends/polarcurve.cpp
-    private/backends/implicitpolarcurve.cpp
-    private/backends/sphericalsurface.cpp
-    private/backends/implicitsurface.cpp
-
-    plotsfactory.cpp
     shapeinterface.cpp
-    functiongraph.cpp
-    curve.cpp
-    spacecurve.cpp
-    surface.cpp
-    plotsmodel.cpp
-    plotsdictionarymodel.cpp
-    plotter2d.cpp
 )
-if(OPENGL_FOUND)
-    list(APPEND analitzaplot_SRCS plotter3d.cpp)
-endif(OPENGL_FOUND)
+
+# if(OPENGL_FOUND)
+#     list(APPEND analitzaplot_SRCS plotter3d.cpp)
+# endif(OPENGL_FOUND)
 
 # if(Boost_FOUND)
 #     list(APPEND analitzaplot_SRCS private/backends/integralcurve.cpp)
@@ -97,28 +101,35 @@ set_target_properties(analitzaplot PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOV
 
 install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
+# install(FILES
+#     analitzaplotexport.h
+#     plotitem.h
+#     functiongraph.h
+#     planecurve.h
+#     spacecurve.h
+#     surface.h
+#     plotsmodel.h
+#     plotsdictionarymodel.h
+#     plotter2d.h
+#     plottingenums.h
+#     plotsfactory.h
+# 
+#     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
+# )
+
 install(FILES
     analitzaplotexport.h
-    plotitem.h
-    functiongraph.h
-    planecurve.h
-    spacecurve.h
-    surface.h
-    plotsmodel.h
-    plotsdictionarymodel.h
-    plotter2d.h
-    plottingenums.h
-    plotsfactory.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
 )
 
-if(OPENGL_FOUND)
-    install(FILES
-        plotter3d.h DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
-endif(OPENGL_FOUND)
+
+# if(OPENGL_FOUND)
+#     install(FILES
+#         plotter3d.h DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
+# endif(OPENGL_FOUND)
 
 add_subdirectory(data)
-add_subdirectory(tests)
+# add_subdirectory(tests)
 add_subdirectory(examples)
 

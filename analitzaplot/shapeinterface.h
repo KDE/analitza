@@ -1,6 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2007-2011 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *  Copyright (C) 2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -31,59 +30,6 @@
 namespace Analitza {
 class Variables;
 class Expression;
-class PlotsModel;
-
-/**
- * \class PlotItem
- * 
- * \ingroup AnalitzaPlotModule
- *
- * \brief Represents a visual item.
- *
- * This class containes common properties of any plot object.
- */
-
-class ANALITZAPLOT_EXPORT PlotItem 
-{
-friend class PlotsModel;
-public:
-    PlotItem(const QString &name, const QColor& col);
-    virtual ~PlotItem();
-
-    virtual const Analitza::Expression & expression() const = 0;
-    virtual QString display() const = 0;
-    virtual Analitza::Variables * variables() const = 0;
-    virtual QString typeName() const = 0;
-    virtual QString iconName() const = 0;
-    virtual Dimension spaceDimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety dimension
-    virtual CoordinateSystem coordinateSystem() const = 0;
-    
-    QString name() const { return m_name; }
-    void setName(const QString &newName);
-    QColor color() const { return m_color; }
-    void setColor(const QColor& newColor);
-
-    bool isVisible() const { return m_graphVisible; }
-    void setVisible(bool v);
-
-    void clearTags();
-    void addTags(const QSet<QString>& tag);
-    QSet<QString> tags() const;
-
-protected:
-    void setModel(PlotsModel *m);
-    void emitDataChanged();
-
-private:
-    QString m_name;
-    QColor m_color;
-    bool m_graphVisible;
-    QSet<QString> m_tags;
-    
-    PlotsModel *m_model;
-};
-
-///
 
 /**
  * \interface ShapeInterface
@@ -93,7 +39,7 @@ private:
  * \brief Commmon contract/interface for all shape types.
  *
  * Concrete classes have to implement implicit memory sharing by using 
- * QSharedDataPointer
+ * QSharedDataPointer.
  */
 
 template <typename ShapeType>
