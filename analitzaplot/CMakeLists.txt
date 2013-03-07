@@ -70,7 +70,7 @@ endif(Boost_FOUND)
 #     plotter2d.cpp
 # )
 set ( analitzaplot_SRCS
-    shapeinterface.cpp
+curve.cpp
 )
 
 # if(OPENGL_FOUND)
