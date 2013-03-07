@@ -108,7 +108,7 @@ public:
 
 //concrete classes implment explicit memory sharin semantic (and lighweightpatterhn)
 template <typename ShapeType>
-class ANALITZAPLOT_EXPORT AbstractShape
+class ANALITZAPLOT_EXPORT ShapeInterface
 {
 public:
 	virtual void clearTags() = 0;

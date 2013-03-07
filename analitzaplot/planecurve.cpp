@@ -90,10 +90,10 @@ PlaneCurveData::PlaneCurveData(const Expression& expresssion, Variables* vars)
 
 }
 
-PlaneCurveData::~PlaneCurveData()
-{
-
-}
+// PlaneCurveData::~PlaneCurveData()
+// {
+// 
+// }
 
 
 
@@ -120,6 +120,8 @@ PlaneCurve::PlaneCurve(const QString &expresssion, Variables* vars)
 {
 	
 }
+
+
 
 //BEGIN AbstractShape interface
 void PlaneCurve::clearTags()

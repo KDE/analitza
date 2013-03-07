@@ -64,19 +64,21 @@ public:
 
 ///
 
-class PlaneCurveData : public FunctionGraphData
+class PlaneCurveData : public ShapeData
 {
 public:
 	PlaneCurveData();
 	PlaneCurveData(const PlaneCurveData &other);
 	PlaneCurveData(const Analitza::Expression& expresssion, Variables* vars);
-	~PlaneCurveData();
+	~PlaneCurveData() {}
 	
+	QMap< QString, QPair< Expression, Expression > > m_arguments; // from old functiongraphiface
+
 	QVector<int> m_jumps;
 	QVector<QPointF> m_points;
 };
 
-class ANALITZAPLOT_EXPORT PlaneCurve : public AbstractFunctionGraph<PlaneCurve>
+class ANALITZAPLOT_EXPORT PlaneCurve : public ShapeInterface<PlaneCurve>
 {
 public:
 	PlaneCurve();
@@ -112,11 +114,11 @@ public:
 	//END AbstractShape interface
 	
 	//BEGIN AbstractFunctionGraph interface
-	QStringList arguments() const;
+	QStringList arguments() const;// X->F(X) : Kn->Km, K: real or complex so args := X in X->F(X)
 	QPair<Expression, Expression> limits(const QString &arg) const;
-	QStringList parameters() const;
-	void setLimits(const QString &arg, double min, double max);
-	void setLimits(const QString &arg, const Expression &min, const Expression &max);
+	QStringList parameters() const;// a,b,c... in X->F(X,a,b,c,...)
+	void setLimits(const QString &arg, double min, double max);//x,y,z also bvars like theta and vars in Variables ...update geometry
+	void setLimits(const QString &arg, const Expression &min, const Expression &max);//x,y,z also bvars like theta and vars in Variables ...update geometry
 	//END AbstractFunctionGraph interface
 	
 	QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
