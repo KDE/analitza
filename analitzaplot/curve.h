@@ -25,6 +25,7 @@
 
 class QPointF;
 class QLineF;
+class QVector3D;
 
 namespace Analitza
 {
@@ -46,6 +47,9 @@ public:
     Curve(const Curve &other);
     Curve(const Analitza::Expression &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
     Curve(const QString &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
+    ~Curve();
+    
+    //virtual void animate  (       )    virtualslot
     
     QColor color() const;
     CoordinateSystem coordinateSystem() const;
@@ -56,7 +60,7 @@ public:
     bool isValid() const;
     bool isVisible() const;
     QString name() const;
-    void plot(const QVector3D& oppositecorner1, const QVector3D& oppositecorner2);
+    void plot(const QGLContext * context = 0);
     void setColor(const QColor &color);
     void setName(const QString &name);
     void setVisible(bool visible);

@@ -74,7 +74,7 @@ curve.cpp
 )
 
 # if(OPENGL_FOUND)
-#     list(APPEND analitzaplot_SRCS plotter3d.cpp)
+    list(APPEND analitzaplot_SRCS plotter.cpp)
 # endif(OPENGL_FOUND)
 
 # if(Boost_FOUND)
@@ -85,17 +85,19 @@ kde4_add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
 target_link_libraries ( analitzaplot
   ${QT_QTCORE_LIBRARY}
   ${QT_QTGUI_LIBRARY}
+        ${OPENGL_gl_LIBRARY}
+        ${OPENGL_glu_LIBRARY}
+  ${QT_QTOPENGL_LIBRARY}
   ${KDE4_KDECORE_LIBS}
 
   analitza
 )
 
-if(OPENGL_FOUND)
+# if(OPENGL_FOUND)
     target_link_libraries ( analitzaplot
-        ${OPENGL_gl_LIBRARY}
-        ${OPENGL_glu_LIBRARY}
+
     )
-endif(OPENGL_FOUND)
+# endif(OPENGL_FOUND)
 
 set_target_properties(analitzaplot PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 

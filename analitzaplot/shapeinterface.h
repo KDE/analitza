@@ -21,6 +21,7 @@
 
 #include "analitzaplotexport.h"
 #include "plottingenums.h"
+#include <QGLFunctions>
 
 class QStringList;
 class QColor;
@@ -59,7 +60,7 @@ public:
     virtual void setName(const QString &name) = 0;
     virtual void setVisible(bool visible) = 0;
     virtual QString typeName() const = 0;
-    virtual void plot(const QVector3D &oppositecorner1, const QVector3D &oppositecorner2); // draw in openglcontext Update the surfaces's data @p oppositecorner1 and @p oppositecorner2 form an axis-aligned bounding box.
+    virtual void plot(const QGLContext * context = 0) = 0; // draw in openglcontext Update the surfaces's data @p oppositecorner1 and @p oppositecorner2 form an axis-aligned bounding box.
     virtual Variables *variables() const = 0;
     
 //     virtual bool operator==(const ShapeType &other) const = 0;

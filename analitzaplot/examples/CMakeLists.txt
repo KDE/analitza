@@ -1,4 +1,9 @@
-set(testLibs ${QT_QTXML_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} analitza analitzaplot analitzagui)
+set(testLibs ${QT_QTXML_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS}
+        ${OPENGL_gl_LIBRARY}
+        ${OPENGL_glu_LIBRARY}
+  ${QT_QTOPENGL_LIBRARY}
+  
+analitza analitzaplot analitzagui)
 
 kde4_add_executable(plots2ddemo plots2ddemo.cpp)
 target_link_libraries(plots2ddemo ${testLibs})
