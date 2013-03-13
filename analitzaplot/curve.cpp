@@ -353,7 +353,15 @@ Variables * Curve::variables() const
 
 bool Curve::operator==(const Curve &other) const
 {
-    return false; // TODO
+    return (d->m_color == other.d->m_color) &&
+        (d->m_coordinateSystem == other.d->m_coordinateSystem) &&
+        (d->m_dimension == other.d->m_dimension) &&
+        (d->m_errors == other.d->m_errors) &&
+        (d->m_expression == other.d->m_expression) &&
+        (d->m_iconName == other.d->m_iconName) &&
+        (d->m_name == other.d->m_name) &&
+        (d->m_typeName == other.d->m_typeName) &&
+        (d->m_visible == other.d->m_visible);
 }
 
 bool Curve::operator!=(const Curve &other) const

@@ -168,9 +168,9 @@ void Plotter::plot(const QGLContext * context)
     c2.setName("big0");
     
     Curve c3 = c1;
-    c2 = c1;
+    c2 = c3;
     
-    qDebug() << c2.name();
+    qDebug() << (c2 != c1);
     
     c2.plot(context);
 }
