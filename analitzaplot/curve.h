@@ -46,7 +46,6 @@ public:
     Curve();
     Curve(const Curve &other);
     Curve(const Analitza::Expression &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
-    Curve(const QString &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
     ~Curve();
     
     //virtual void animate  (       )    virtualslot

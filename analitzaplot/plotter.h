@@ -56,11 +56,12 @@ class ANALITZAPLOT_EXPORT Plotter : protected QGLFunctions
         virtual ~Plotter();
 
         virtual void initialize();
-        virtual void plot();
+        virtual void plot(const QGLContext* context);
         virtual void setViewport(GLint x, GLint y, GLsizei width, GLsizei height);
         
         GLhandleARB shader_programme;
         GLuint vbo;
+        
 
 //         /** Force OpenGL to render the scene. QGLWidget should call updateGL in this method. */
 //         virtual void renderGL() = 0;
@@ -169,7 +170,7 @@ protected:
 
     void paintGL()
     {
-        plot();
+        plot(context());
         
 
     }

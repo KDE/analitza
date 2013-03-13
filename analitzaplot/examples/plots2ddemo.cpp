@@ -117,6 +117,10 @@
 
 #include "analitzaplot/shapeinterface.h"
 #include <plotter.h>
+#include <curve.h>
+#include <analitza/analyzer.h>
+#include <analitza/value.h>
+#include <analitza/variables.h>
 
 
 #include <QGLWidget>
@@ -129,10 +133,44 @@ using namespace Analitza;
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
+//     conclusion usar is implicit y siempre dependencies to lambda para cuando sea ecuacion
+//     Variables *vars = new Variables;
+//     vars->modify("a", 15);
+//     
+//     Expression exp("x*x+y*y=a+x");
+//     
+//     Cn *x = new Cn;
+//     x->setValue(3);
+//     Cn *y = new Cn;
+//     y->setValue(3);
+//     
+//     QStack<Object*> runStack;
+//     runStack.push(x);
+//     runStack.push(y);
+//     
+//     Analyzer a(vars);
+//     a.setExpression(exp.equationToFunction());
+//     a.setExpression(a.dependenciesToLambda());
+//     a.setStack(runStack);
+//     
+//     qDebug() << a.calculateLambda().toString() << a.expression().toString();
+//     
+//     delete x;
+//     delete y;
+//     delete vars;
+
+//     Curve c(Expression("x+y=5"));
+    
+//     qDebug() << c.errors();
+//     c.plot();
+    
+    
+    
     
     MyGLDrawer w;
     w.show();
     
+
     return app.exec();
 }
 

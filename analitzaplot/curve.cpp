@@ -22,6 +22,9 @@
 #include "shapedata_p.h"
 
 #include "analitza/analyzer.h"
+#include <analitza/variable.h>
+#include <analitza/value.h>
+#include <KLocalizedString>
 
 using namespace Analitza;
 
@@ -33,29 +36,89 @@ public:
     CurveData(const Analitza::Expression& expresssion, Variables* vars);
     ~CurveData();
     
-    QScopedPointer<Analyzer> m_analyzer; // internal expression
+    Analyzer *m_analyzer; // internal expression
+    QHash<QString, Cn*> m_args;
+    bool m_glready;
 };
 
-
 Curve::CurveData::CurveData()
+    : m_glready(false)
 {
 
 }
 
 Curve::CurveData::CurveData(const CurveData& other)
     : QSharedData(other)
+    , ShapeData(other)
+    , m_glready(false)
 {
-
 }
 
 Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
+    : m_glready(false)
 {
+    if (expresssion.isCorrect())
+    {
+        if (expresssion.isEquation()) 
+        {
+            if (vars)
+                m_analyzer = new Analyzer(vars);
+            else
+                m_analyzer = new Analyzer;
 
+            m_analyzer->setExpression(expresssion.equationToFunction());
+            m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
+            
+            if (m_analyzer->expression().parameters().size() == 2)
+            {
+                if ((m_analyzer->expression().parameters().at(0)->name() == "x") && 
+                    (m_analyzer->expression().parameters().at(1)->name() == "y"))
+                {
+                    m_expression = expresssion;
+                    
+                    m_args.insert("x", new Cn);
+                    m_args.insert("y", new Cn);
+                    
+                    QStack<Object*> runStack;
+                    runStack.push(m_args.value("x"));
+                    runStack.push(m_args.value("y"));
+                    
+                    m_analyzer->setStack(runStack);
+                }
+                else
+                {
+                    m_errors << i18n("Implicit curve has only 2 vars x and y");
+                }
+            }
+            else
+            {
+                m_errors << i18n("Implicit curve has only 2 vars");
+            }
+        }
+        else if (expresssion.isLambda()) // args->Func(args)
+        {
+            
+        }
+        else // BUILTHMETHODS if (expresssion.isCustomObject())
+        {
+            m_errors << i18n("Curve type not recognized");
+        }
+    }
+    else
+    {
+        m_errors << i18n("The expression is not correct");
+    }
+
+//     if (!m_errors.isEmpty())
+//         delete m_analyzer;
 }
 
 Curve::CurveData::~CurveData()
 {
-
+    qDebug() << "FERE";
+    
+    qDeleteAll(m_args);
+    delete m_analyzer;
 }
 
 
@@ -75,12 +138,7 @@ Curve::Curve(const Curve &other)
 }
 
 Curve::Curve(const Analitza::Expression &expresssion, Variables* vars)
-    : d(new CurveData)
-{
-}
-
-Curve::Curve(const QString &expresssion, Variables* vars)
-    : d(new CurveData)
+    : d(new CurveData(expresssion, vars))
 {
 }
 
@@ -107,7 +165,7 @@ Dimension Curve::dimension() const
 
 QStringList Curve::errors() const
 {
-    return QStringList();
+    return d->m_errors;
 }
 
 Expression Curve::expression() const
@@ -135,8 +193,46 @@ QString Curve::name() const
     return d->m_name;
 }
 
-void Curve::plot(const QGLContext* context)
+bool isSimilar(double a, double b, double diff)
 {
+    return std::fabs(a-b) < diff;
+}
+
+void Curve::plot(const QGLContext* context)
+{    
+//     if (!d->m_glready)
+//     {
+//         qDebug() << "init" << d->m_analyzer->calculateLambda().toString();
+//         
+//         d->m_glready = true;
+//     }
+//     else
+//     {
+//         qDebug() << "render" << d->m_analyzer->calculateLambda().toString();
+//     }
+
+    Cn *x = d->m_args.value("x");
+    Cn *y = d->m_args.value("y");
+
+    
+    for (double xval = -1; xval <= 1; xval += 0.1)
+        for (double yval = -1; yval <= 1; yval += 0.1)
+        {
+            x->setValue(xval);
+            y->setValue(yval);
+            
+            if (isSimilar(d->m_analyzer->calculateLambda().toReal().value(), 0, 0.001))
+            {
+                glBegin(GL_POINTS);
+                
+                glColor3ub(255,255,0);
+                glVertex2d(x->value(), y->value());
+                
+                glEnd();
+            }
+        }
+    
+    
 //     QGLFunctions gl(context);
 //     bool npot = funcs.hasOpenGLFeature(QGLFunctions::NPOTTextures);
 //  
