@@ -383,7 +383,7 @@ Curve & Curve::operator=(const Curve &other)
     d->m_visible = other.d->m_visible;
     //END basic shape data
     
-    //force to create opengl buffer again in plot method
+    //NOTE force to create opengl buffer again in plot method
     d->m_glready = false;
     
     qDeleteAll(d->m_args);
@@ -398,7 +398,7 @@ Curve & Curve::operator=(const Curve &other)
                     
     d->m_analyzer->setStack(runStack);
     
-    return *this; //TODO
+    return *this;
 }
 
 
