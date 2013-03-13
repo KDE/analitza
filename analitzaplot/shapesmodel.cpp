@@ -1,48 +1,43 @@
-// /*************************************************************************************
-//  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
-//  *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
-//  *                                                                                   *
-//  *  This program is free software; you can redistribute it and/or                    *
-//  *  modify it under the terms of the GNU General Public License                      *
-//  *  as published by the Free Software Foundation; either version 2                   *
-//  *  of the License, or (at your option) any later version.                           *
-//  *                                                                                   *
-//  *  This program is distributed in the hope that it will be useful,                  *
-//  *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
-//  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
-//  *  GNU General Public License for more details.                                     *
-//  *                                                                                   *
-//  *  You should have received a copy of the GNU General Public License                *
-//  *  along with this program; if not, write to the Free Software                      *
-//  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
-//  *************************************************************************************/
-// 
-// #include "plotsmodel.h"
-// 
-// #include "plotsfactory.h"
-// #include "shapeinterface.h"
-// 
-// #include "analitza/analitzautils.h"
-// #include <KLocalizedString>
-// 
-// #include <QDebug>
-// #include <KIcon>
-// #include <analitzaplot/functiongraph.h>
-// 
-// using namespace Analitza;
-// 
+/*************************************************************************************
+ *  Copyright (C) 2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *                                                                                   *
+ *  This program is free software; you can redistribute it and/or                    *
+ *  modify it under the terms of the GNU General Public License                      *
+ *  as published by the Free Software Foundation; either version 2                   *
+ *  of the License, or (at your option) any later version.                           *
+ *                                                                                   *
+ *  This program is distributed in the hope that it will be useful,                  *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
+ *  GNU General Public License for more details.                                     *
+ *                                                                                   *
+ *  You should have received a copy of the GNU General Public License                *
+ *  along with this program; if not, write to the Free Software                      *
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
+ *************************************************************************************/
+
+#include "shapesmodel.h"
+
+#include "analitza/analitzautils.h"
+#include <KLocalizedString>
+
+#include <QDebug>
+#include <KIcon>
+
+using namespace Analitza;
+
 // Q_DECLARE_METATYPE(PlotItem*);
-// 
-// PlotsModel::PlotsModel(QObject* parent)
-//     : QAbstractListModel(parent)
+
+PlotsModel::PlotsModel(QObject* parent)
+    : QAbstractListModel(parent)
 //     , m_resolution(500)
-// {}
-// 
-// PlotsModel::~PlotsModel()
-// {
+{}
+
+PlotsModel::~PlotsModel()
+{
 //     clear();
-// }
-// 
+}
+
 // void PlotsModel::clear()
 // {
 //     if (!m_items.isEmpty()) {
@@ -52,30 +47,30 @@
 //         endRemoveRows();
 //     }
 // }
-// 
-// Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
-// {
-//     if(index.isValid())
-//         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
-//     else
-//         return 0;
-// }
-// 
-// QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int role) const
-// {
-//     if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
-//         switch(section) 
-//         {
-//             case 0: return i18nc("@title:column", "Name");
-//             case 1: return i18nc("@title:column", "Plot");
-//         }
-//     }
-//     
-//     return QAbstractListModel::headerData(section, orientation, role);
-// }
-// 
-// QVariant PlotsModel::data(const QModelIndex & index, int role) const
-// {
+
+Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
+{
+    if(index.isValid())
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+    else
+        return 0;
+}
+
+QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
+        switch(section) 
+        {
+            case 0: return i18nc("@title:column", "Name");
+            case 1: return i18nc("@title:column", "Plot");
+        }
+    }
+    
+    return QAbstractListModel::headerData(section, orientation, role);
+}
+
+QVariant PlotsModel::data(const QModelIndex & index, int role) const
+{
 //     if(!index.isValid() || index.row()>=m_items.count())
 //         return QVariant();
 // 
@@ -112,13 +107,13 @@
 //         case PlotRole:
 //             return qVariantFromValue<PlotItem*>(tmpcurve);
 //     }
-// 
-//     
-//     return QVariant();
-// }
-// 
-// bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int role)
-// {
+
+    
+    return QVariant();
+}
+
+bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
 //     if (!index.isValid())
 //         return false;
 // 
@@ -162,29 +157,29 @@
 //             m_items[index.row()]->setColor(value.value<QColor>());
 //             return true;
 //     }
-// 
-//     return false;
-// }
-// 
-// int PlotsModel::rowCount(const QModelIndex & parent) const
-// {
-//     if(parent.isValid())
-//         return 0;
-//     else
-//         return m_items.size();
-// }
-// 
-// int PlotsModel::columnCount(const QModelIndex& parent) const
-// {
-//     Q_UNUSED(parent);
-//     return 2;
-// }
-// 
-// 
-// bool PlotsModel::removeRows(int row, int count, const QModelIndex& parent)
-// {
+
+    return false;
+}
+
+int PlotsModel::rowCount(const QModelIndex & parent) const
+{
+    if(parent.isValid())
+        return 0;
+    else
+        return m_items.size();
+}
+
+int PlotsModel::columnCount(const QModelIndex& parent) const
+{
+    Q_UNUSED(parent);
+    return 2;
+}
+
+
+bool PlotsModel::removeRows(int row, int count, const QModelIndex& parent)
+{    
 //     Q_ASSERT(row<m_items.size());
-//     if(parent.isValid())
+//     if(parent.isValid())                                
 //         return false;
 //     
 //     beginRemoveRows(QModelIndex(), row, row+count-1);
@@ -193,24 +188,14 @@
 //     }
 //     endRemoveRows();
 //     
-//     return true;
-// }
-// 
-// void PlotsModel::addPlot(PlotItem* it)
-// {
-//     Q_ASSERT(it);
-// 
-//     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
-// 
-//     it->setModel(this);
-//     m_items.append(it);
-//     
-//     if(FunctionGraph* g=dynamic_cast<FunctionGraph*>(it))
-//         g->setResolution(m_resolution);
-// 
-//     endInsertRows();
-// }
-// 
+    return true;
+}
+
+void PlotsModel::addCurve(const Curve& curve)
+{
+
+}
+
 // void PlotsModel::updatePlot(int row, PlotItem* it)
 // {
 // 	it->setModel(this);
@@ -220,14 +205,7 @@
 // 	QModelIndex idx = index(row);
 // 	emit dataChanged(idx, idx);
 // }
-// 
-// void PlotsModel::emitChanged(PlotItem* it)
-// {
-//     int row = m_items.indexOf(it);
-//     QModelIndex idx = index(row);
-//     emit dataChanged(idx, idx);
-// }
-// 
+
 // QModelIndex PlotsModel::indexForName(const QString& name)
 // {
 // 	const int rows = rowCount();
@@ -238,7 +216,7 @@
 // 	}
 // 	return QModelIndex();
 // }
-// 
+
 // QString PlotsModel::freeId() const
 // {
 // 	//TODO: figure out a better way
@@ -254,4 +232,4 @@
 //             g->setResolution(res);
 //     }
 // }
-// 
+

@@ -41,6 +41,13 @@
 using namespace std;
 using namespace Analitza;
 
+Plotter::Plotter(QAbstractItemModel* model)
+    : m_model(model)
+{
+    circle = Curve(Expression("x*x+y*y=0.3*0.3"));
+
+}
+
 Plotter::~Plotter()
 {
 }
@@ -161,18 +168,24 @@ void Plotter::plot(const QGLContext * context)
     
 //     a.plot(context);
     
-    Curve c1(Expression("x+y=1"));
-    c1.setName("Linea");
+///
     
-    Curve c2(Expression("x*x+y*y=0.3*0.3"));
-    c2.setName("big0");
+//     Curve c1(Expression("x+y=1"));
+//     c1.setName("Linea");
+//     
+//     Curve c2(Expression("x*x+y*y=0.3*0.3"));
+//     c2.setName("big0");
+//     
+//     Curve c3 = c1;
+//     c2 = c3;
+//     
+//     qDebug() << c2.name() ;
+//     
+//     c2.plot(context);
     
-    Curve c3 = c1;
-    c2 = c3;
-    
-    qDebug() << (c2 != c1);
-    
-    c2.plot(context);
+///
+    circle.plot(context);
+
 }
 
 void Plotter::setViewport(GLint x, GLint y, GLsizei width, GLsizei height)

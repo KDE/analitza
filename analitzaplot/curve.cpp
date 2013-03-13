@@ -28,22 +28,14 @@
 
 using namespace Analitza;
 
-class Curve::CurveData : public QSharedData
+class Curve::CurveData : public QSharedData, public ShapeData
 {
 public:
     CurveData();
     CurveData(const CurveData &other);
     CurveData(const Analitza::Expression& expresssion, Variables* vars);
     ~CurveData();
-        QColor m_color;
-    CoordinateSystem m_coordinateSystem;
-    Dimension m_dimension;
-    QStringList m_errors;
-    Expression m_expression; //visible expression
-    QString m_iconName;
-    QString m_name;
-    QString m_typeName;
-    bool m_visible;
+
     Analyzer *m_analyzer; // internal expression
     QHash<QString, Cn*> m_args;
     bool m_glready;
@@ -51,13 +43,14 @@ public:
 
 Curve::CurveData::CurveData()
     : m_glready(false)
+    , m_analyzer(0)
 {
 
 }
 
 Curve::CurveData::CurveData(const CurveData& other)
     : QSharedData(other)
-//     , ShapeData(other)
+    , ShapeData(other)
     , m_glready(false)
 {
     m_analyzer = new Analyzer(*other.m_analyzer);
@@ -134,7 +127,9 @@ Curve::CurveData::~CurveData()
 //     qDebug() << "FERE";
     
     qDeleteAll(m_args);
-    delete m_analyzer;
+    
+    if (m_analyzer)
+        delete m_analyzer;
 }
 
 
@@ -387,7 +382,9 @@ Curve & Curve::operator=(const Curve &other)
     d->m_glready = false;
     
     qDeleteAll(d->m_args);
-    delete d->m_analyzer;
+    
+    if (d->m_analyzer)
+        delete d->m_analyzer;
     
     d->m_analyzer = new Analyzer(*other.d->m_analyzer);
     d->m_args["x"] = static_cast<Cn*>(other.d->m_args.value("x")->copy());

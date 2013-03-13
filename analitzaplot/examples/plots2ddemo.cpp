@@ -114,6 +114,7 @@
 
 #include <QtDebug>
 #include <QTimer>
+#include <qtconcurrentrun.h>
 
 #include "analitzaplot/shapeinterface.h"
 #include <plotter.h>
@@ -128,8 +129,18 @@
 
 using namespace Analitza;
 
-
-using namespace Analitza;
+/*
+double area() 
+{
+    double ret = 0;
+    for (long int i = 0; i < 100; i++)
+    {
+        ret += 0.001;
+        
+        qDebug() << "Hola" << ret;
+    }
+    return ret;
+}*/
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -173,8 +184,14 @@ int main(int argc, char *argv[]) {
     
     MyGLDrawer w;
     w.show();
+//     QTimer::singleShot(2000, &app, SLOT(quit()));
+//     
+//     QFuture<double> r = QtConcurrent::run<double>(&area);
+//     qDebug() << "CHAUUUUUUUUUUUU" << "heheheh";
+//     QFuture<double> r2 = QtConcurrent::run<double>(&area);
+//     qDebug() << "GG";
     
-
+    
     return app.exec();
 }
 

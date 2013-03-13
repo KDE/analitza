@@ -71,6 +71,7 @@ endif(Boost_FOUND)
 # )
 set ( analitzaplot_SRCS
 curve.cpp
+shapesmodel.cpp
 )
 
 # if(OPENGL_FOUND)

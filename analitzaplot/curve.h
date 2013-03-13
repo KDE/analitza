@@ -82,8 +82,6 @@ private:
     QSharedDataPointer<CurveData> d;
 };
 
-// singleton or namespace para el buuilder de las clases concretas
-
 }
 
 #endif // ANALITZAPLOT_FUNCTION_H

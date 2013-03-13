@@ -20,6 +20,7 @@
 #define PLOTTER3D_H
 
 #include "shapeinterface.h"
+#include "curve.h"
 
 #include <QModelIndex>
 #include <QRect>
@@ -51,16 +52,30 @@ namespace Analitza
 
 class ANALITZAPLOT_EXPORT Plotter : protected QGLFunctions
 {
-    public:
-//         Plotter(QAbstractItemModel* model = 0);
-        virtual ~Plotter();
+public:
+    Plotter(QAbstractItemModel* model = 0);
+    virtual ~Plotter();
 
-        virtual void initialize();
-        virtual void plot(const QGLContext* context);
-        virtual void setViewport(GLint x, GLint y, GLsizei width, GLsizei height);
-        
+    virtual void initialize();
+    QAbstractItemModel *model() const;
+    virtual void plot(const QGLContext* context);
+//     void setModel(QAbstractItemModel* model); not yet
+    virtual void setViewport(GLint x, GLint y, GLsizei width, GLsizei height);
+    
+private:
+    QAbstractItemModel *m_model;
+    
+    
+    
+    
+///
+    
+private:
+    //WARNING experimental
         GLhandleARB shader_programme;
         GLuint vbo;
+    Curve circle;
+
         
 
 //         /** Force OpenGL to render the scene. QGLWidget should call updateGL in this method. */
