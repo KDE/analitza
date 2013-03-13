@@ -28,14 +28,22 @@
 
 using namespace Analitza;
 
-class Curve::CurveData : public QSharedData, public ShapeData
+class Curve::CurveData : public QSharedData
 {
 public:
     CurveData();
     CurveData(const CurveData &other);
     CurveData(const Analitza::Expression& expresssion, Variables* vars);
     ~CurveData();
-    
+        QColor m_color;
+    CoordinateSystem m_coordinateSystem;
+    Dimension m_dimension;
+    QStringList m_errors;
+    Expression m_expression; //visible expression
+    QString m_iconName;
+    QString m_name;
+    QString m_typeName;
+    bool m_visible;
     Analyzer *m_analyzer; // internal expression
     QHash<QString, Cn*> m_args;
     bool m_glready;
@@ -49,9 +57,17 @@ Curve::CurveData::CurveData()
 
 Curve::CurveData::CurveData(const CurveData& other)
     : QSharedData(other)
-    , ShapeData(other)
+//     , ShapeData(other)
     , m_glready(false)
 {
+    m_analyzer = new Analyzer(*other.m_analyzer);
+    m_args["x"] = static_cast<Cn*>(other.m_args.value("x")->copy());
+    m_args["y"] = static_cast<Cn*>(other.m_args.value("y")->copy());
+    QStack<Object*> runStack;
+    runStack.push(m_args.value("x"));
+    runStack.push(m_args.value("y"));
+                    
+    m_analyzer->setStack(runStack);
 }
 
 Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
@@ -115,7 +131,7 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
 
 Curve::CurveData::~CurveData()
 {
-    qDebug() << "FERE";
+//     qDebug() << "FERE";
     
     qDeleteAll(m_args);
     delete m_analyzer;
@@ -215,8 +231,8 @@ void Curve::plot(const QGLContext* context)
     Cn *y = d->m_args.value("y");
 
     
-    for (double xval = -1; xval <= 1; xval += 0.1)
-        for (double yval = -1; yval <= 1; yval += 0.1)
+    for (double xval = -1; xval <= 1; xval += 0.01)
+        for (double yval = -1; yval <= 1; yval += 0.01)
         {
             x->setValue(xval);
             y->setValue(yval);
@@ -335,21 +351,56 @@ Variables * Curve::variables() const
     return d->m_analyzer->variables();
 }
 
+bool Curve::operator==(const Curve &other) const
+{
+    return false; // TODO
+}
 
-// bool Curve::operator==(const Curve &other) const
-// {
-//     return false; // TODO
-// }
-// 
-// bool Curve::operator!=(const Curve &other) const
-// {
-//     return !((*this) == other);
-// }
-// 
-// Curve & Curve::operator=(const Curve &other)
-// {
-//     return *this; //TODO
-// }
+bool Curve::operator!=(const Curve &other) const
+{
+    return !((*this) == other);
+}
+
+Curve & Curve::operator=(const Curve &other)
+{
+    //BEGIN basic shape data
+    d->m_color = other.d->m_color;
+    d->m_coordinateSystem = other.d->m_coordinateSystem;
+    d->m_dimension = other.d->m_dimension;
+    d->m_errors = other.d->m_errors;
+    d->m_expression = other.d->m_expression;
+    d->m_iconName = other.d->m_iconName;
+    d->m_name = other.d->m_name;
+    d->m_typeName = other.d->m_typeName;
+    d->m_visible = other.d->m_visible;
+    //END basic shape data
+    
+    //force to create opengl buffer again in plot method
+    d->m_glready = false;
+    
+    qDeleteAll(d->m_args);
+    delete d->m_analyzer;
+    
+    d->m_analyzer = new Analyzer(*other.d->m_analyzer);
+    d->m_args["x"] = static_cast<Cn*>(other.d->m_args.value("x")->copy());
+    d->m_args["y"] = static_cast<Cn*>(other.d->m_args.value("y")->copy());
+    QStack<Object*> runStack;
+    runStack.push(d->m_args.value("x"));
+    runStack.push(d->m_args.value("y"));
+                    
+    d->m_analyzer->setStack(runStack);
+    
+    return *this; //TODO
+}
+
+
+
+
+
+
+
+
+
 // //END AbstractShape interface
 // 
 // //BEGIN AbstractFunctionGraph interface

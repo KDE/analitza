@@ -154,10 +154,25 @@ void Plotter::plot(const QGLContext * context)
     
 //     static Curve a(Expression("x->x*x"));
     
-    Curve c(Expression("x+y=0.5"));
-    c.plot(context);
+//     Curve c(Expression("x+y=0.5"));
+//     c.plot(context);
+    
+//     qDebug() << c.expression().toString();
     
 //     a.plot(context);
+    
+    Curve c1(Expression("x+y=1"));
+    c1.setName("Linea");
+    
+    Curve c2(Expression("x*x+y*y=0.3*0.3"));
+    c2.setName("big0");
+    
+    Curve c3 = c1;
+    c2 = c1;
+    
+    qDebug() << c2.name();
+    
+    c2.plot(context);
 }
 
 void Plotter::setViewport(GLint x, GLint y, GLsizei width, GLsizei height)

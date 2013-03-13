@@ -66,9 +66,9 @@ public:
     QString typeName() const;
     Variables *variables() const;
     
-//     bool operator==(const Curve &other) const;
-//     bool operator!=(const Curve &other) const;
-//     Curve & operator=(const Curve &other);
+    bool operator==(const Curve &other) const;
+    bool operator!=(const Curve &other) const;
+    Curve & operator=(const Curve &other);
     
 //     QStringList arguments() const;// X->F(X) : Kn->Km, K: real or complex so args := X in X->F(X)
 //     QPair<double, double> argumentLimits(const QString &arg) const;

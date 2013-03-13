@@ -167,6 +167,10 @@ int main(int argc, char *argv[]) {
     
     
     
+    
+    
+    
+    
     MyGLDrawer w;
     w.show();
     
