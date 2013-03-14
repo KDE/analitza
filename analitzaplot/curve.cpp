@@ -235,12 +235,14 @@ bool isSimilar(double a, double b, double diff)
 void Curve::plot(/*const QGLContext* context*/)
 {    
     
-
+// qDebug() << points.size();
     
     if (!d->m_geocalled)
     {
-//         d->m_geometrize = QtConcurrent::run<void>(*this, &Curve::geometrize);
-        geometrize();
+//         qDebug() << this;
+//NOTE if *this is passed then we have a copy ctr call and thread will work over a new Curve ... so we need to pass "this"
+        d->m_geometrize = QtConcurrent::run<void>(this, &Curve::geometrize);
+//         geometrize();
         
         d->m_geocalled = true;
     }
@@ -248,7 +250,6 @@ void Curve::plot(/*const QGLContext* context*/)
     {
         if (d->m_done)
         {
-            qDebug() << "ENTRAA";
             //load gl buffer
             if (!d->m_glready)
             {
@@ -425,24 +426,12 @@ Variables * Curve::variables() const
 
 void Curve::geometrize(/*const QGLContext * context*/)
 {
+    
     Cn *x = d->m_args.value("x");
     Cn *y = d->m_args.value("y");
 
     double step = 0.0015;
     
-//     points << -0.9;
-//     points <<  -0.9;
-//     points <<  -1;
-// 
-//     points <<   0.9;
-//     points <<  -0.9;
-//     points <<  -1;
-// 
-//     points <<   0.9;
-//     points <<   0.9;
-//     points <<  -1;
-    
-//     QVector<double> points;
     for (double xval = -1; xval <= 1; xval += step)
         for (double yval = -1; yval <= 1; yval += step)
         {
@@ -455,44 +444,7 @@ void Curve::geometrize(/*const QGLContext * context*/)
             }
         }
         d->m_done = true;
-        
-//     GLfloat points[9];
-// 
-//     points[0] = -0.9;
-//     points[1] = -0.9;
-//     points[2] = -1;
-// 
-//     points[3] =  0.9;
-//     points[4] = -0.9;
-//     points[5] = -1;
-// 
-//     points[6] =  0.9;
-//     points[7] =  0.9;
-//     points[8] = -1;
-
-//     QGLContext::currentContext()
-    
-
-
-////
-    
-    
-
-//     glUseProgram (shader_programme);
-//     GLint vl = glGetAttribLocation(shader_programme, "vertex");
-//     glBindBuffer (GL_ARRAY_BUFFER, vbo);
-//     glVertexAttribPointer(vl, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//     glEnableVertexAttribArray(vl);
-// //     glEnableClientState(GL_VERTEX_ARRAY);
-//     glDrawArrays (GL_TRIANGLES, 0, 3);
-// //     glDisableClientState(GL_VERTEX_ARRAY);
-//     glDisableVertexAttribArray(vl);
-//     glUseProgram(0);
-                    
-//         glBegin(GL_POINTS);
-//         glColor3ub(255,0,0);
-//         glVertex3f(0,0.5,0);
-//         glEnd();
+//         qDebug() << "DONE" << d->m_done << this;
 }
 
 bool Curve::operator==(const Curve &other) const
