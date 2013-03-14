@@ -22,6 +22,11 @@
 #include "shapeinterface.h"
 
 #include <QSharedDataPointer>
+#include <QVector>
+
+
+#define GL_GLEXT_PROTOTYPES
+#include <GL/glu.h>
 
 class QPointF;
 class QLineF;
@@ -59,7 +64,7 @@ public:
     bool isValid() const;
     bool isVisible() const;
     QString name() const;
-    void plot(const QGLContext * context = 0);
+    void plot(/*const QGLContext * context = 0*/);
     void setColor(const QColor &color);
     void setName(const QString &name);
     void setVisible(bool visible);
@@ -77,9 +82,16 @@ public:
 //     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
 //     QPair<double, double> tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse
     
+protected:
+    void geometrize(/*const QGLContext * context = 0*/);
+    
 private:
     class CurveData;
     QSharedDataPointer<CurveData> d;
+        GLhandleARB shader_programme;
+        GLuint vbo;
+    QVector<double> points;
+
 };
 
 }

@@ -26,7 +26,12 @@
 #include <QRect>
 #include <QVector3D>
 #include <QMatrix4x4>
-#include <QGLFunctions>
+// #include <QGLFunctions> //NOTE we use glew until QTBUG-5729 get fixed (issue with opengl and threads -contex buffers
+
+#define GL_GLEXT_PROTOTYPES
+#include <GL/glu.h>
+
+#include <QGLWidget>
 
 class QAbstractItemModel;
 class QPainter;
@@ -50,7 +55,7 @@ namespace Analitza
  * reference planes for example)
  */
 
-class ANALITZAPLOT_EXPORT Plotter : protected QGLFunctions
+class ANALITZAPLOT_EXPORT Plotter //NOTE we use glew until QTBUG-5729 get fixed (issue with opengl and threads -contex buffers) : protected QGLFunctions
 {
 public:
     Plotter(QAbstractItemModel* model = 0);
@@ -58,7 +63,7 @@ public:
 
     virtual void initialize();
     QAbstractItemModel *model() const;
-    virtual void plot(const QGLContext* context);
+    virtual void plot(/*const QGLContext* context*/);
 //     void setModel(QAbstractItemModel* model); not yet
     virtual void setViewport(GLint x, GLint y, GLsizei width, GLsizei height);
     
@@ -185,7 +190,7 @@ protected:
 
     void paintGL()
     {
-        plot(context());
+        plot(/*context()*/);
         
 
     }

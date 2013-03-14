@@ -18,6 +18,10 @@
 
 #include "curve.h"
 
+#include <QVector3D>
+#include <QMatrix4x4>
+
+
 
 #include "shapedata_p.h"
 
@@ -25,6 +29,12 @@
 #include <analitza/variable.h>
 #include <analitza/value.h>
 #include <KLocalizedString>
+#include <qfuture.h>
+#include <qtconcurrentrun.h>
+#include <QGLWidget>
+
+
+
 
 using namespace Analitza;
 
@@ -39,10 +49,15 @@ public:
     Analyzer *m_analyzer; // internal expression
     QHash<QString, Cn*> m_args;
     bool m_glready;
+    QFuture<void> m_geometrize; // geometry acces to thread
+    bool m_geocalled; // if thread is called then there is not need to call it again
+    bool m_done;
 };
 
 Curve::CurveData::CurveData()
     : m_glready(false)
+    , m_geocalled(false)
+    , m_done(false)
     , m_analyzer(0)
 {
 
@@ -52,7 +67,10 @@ Curve::CurveData::CurveData(const CurveData& other)
     : QSharedData(other)
     , ShapeData(other)
     , m_glready(false)
+    , m_done(false)
+    , m_geocalled(false)
 {
+    //TODO is exp = other.exp then geometrize and geocalled doesn't need to be cleared
     m_analyzer = new Analyzer(*other.m_analyzer);
     m_args["x"] = static_cast<Cn*>(other.m_args.value("x")->copy());
     m_args["y"] = static_cast<Cn*>(other.m_args.value("y")->copy());
@@ -65,6 +83,8 @@ Curve::CurveData::CurveData(const CurveData& other)
 
 Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     : m_glready(false)
+    , m_done(false)
+    , m_geocalled(false)
 {
     if (expresssion.isCorrect())
     {
@@ -125,6 +145,7 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
 Curve::CurveData::~CurveData()
 {
 //     qDebug() << "FERE";
+    m_geometrize.cancel();
     
     qDeleteAll(m_args);
     
@@ -155,6 +176,8 @@ Curve::Curve(const Analitza::Expression &expresssion, Variables* vars)
 
 Curve::~Curve()
 {
+    glDeleteBuffers(1, &vbo);
+    glDeleteProgram(shader_programme);
 }
 
 
@@ -209,8 +232,91 @@ bool isSimilar(double a, double b, double diff)
     return std::fabs(a-b) < diff;
 }
 
-void Curve::plot(const QGLContext* context)
+void Curve::plot(/*const QGLContext* context*/)
 {    
+    
+
+    
+    if (!d->m_geocalled)
+    {
+//         d->m_geometrize = QtConcurrent::run<void>(*this, &Curve::geometrize);
+        geometrize();
+        
+        d->m_geocalled = true;
+    }
+    else
+    {
+        if (d->m_done)
+        {
+            qDebug() << "ENTRAA";
+            //load gl buffer
+            if (!d->m_glready)
+            {
+                d->m_glready = true;
+//                 qDebug() << "data" << points.size();
+                glGenBuffers (1, &vbo);
+
+                glBindBuffer (GL_ARRAY_BUFFER, vbo);
+                glBufferData (GL_ARRAY_BUFFER, sizeof(double)*points.size(), points.data(), GL_STATIC_DRAW);
+                
+            const GLchar *str = "\n\
+            attribute vec3 vertex;\n\
+            void\n\
+            main()\n\
+            {\n\
+                gl_Position =  vec4( vertex, 1.0 );\n\
+            }\n\
+            ";
+                
+            const GLchar *strb = "\n\
+            void\n\
+            main()\n\
+            {\n\
+                gl_FragColor = vec4(1,1,0,1);\n\
+            }\n\
+            ";
+                
+
+                GLuint vs = glCreateShader (GL_VERTEX_SHADER);
+                glShaderSource (vs, 1, &str, NULL);
+                glCompileShader (vs);
+                
+                GLuint fs = glCreateShader (GL_FRAGMENT_SHADER);
+                glShaderSource (fs, 1, &strb, NULL);
+                glCompileShader (fs);
+                
+                shader_programme = glCreateProgram ();
+                glAttachShader (shader_programme, fs);
+                glAttachShader (shader_programme, vs);
+                glBindAttribLocation(shader_programme, 0, "vertex");
+                glBindAttribLocation(shader_programme, 1, "colour");
+                glLinkProgram (shader_programme);
+                
+                GLchar     log[2000] = {0};
+                glGetProgramInfoLog(shader_programme, 2000, 0, log);
+                
+                qDebug() << "err load buffer "<< QString(log);
+            }
+        }
+    }
+    
+    if (vbo)
+    {
+    glUseProgram (shader_programme);
+    GLint vl = glGetAttribLocation(shader_programme, "vertex");
+    glBindBuffer (GL_ARRAY_BUFFER, vbo);
+    glVertexAttribPointer(vl, 3, GL_DOUBLE, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(vl);
+//     glEnableClientState(GL_VERTEX_ARRAY);
+    glDrawArrays (GL_POINTS, 0, points.size());
+//     glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableVertexAttribArray(vl);
+    glUseProgram(0);
+    }
+
+///
+    
+//     context->makeCurrent();
 //     if (!d->m_glready)
 //     {
 //         qDebug() << "init" << d->m_analyzer->calculateLambda().toString();
@@ -222,26 +328,7 @@ void Curve::plot(const QGLContext* context)
 //         qDebug() << "render" << d->m_analyzer->calculateLambda().toString();
 //     }
 
-    Cn *x = d->m_args.value("x");
-    Cn *y = d->m_args.value("y");
 
-    
-    for (double xval = -1; xval <= 1; xval += 0.01)
-        for (double yval = -1; yval <= 1; yval += 0.01)
-        {
-            x->setValue(xval);
-            y->setValue(yval);
-            
-            if (isSimilar(d->m_analyzer->calculateLambda().toReal().value(), 0, 0.001))
-            {
-                glBegin(GL_POINTS);
-                
-                glColor3ub(255,255,0);
-                glVertex2d(x->value(), y->value());
-                
-                glEnd();
-            }
-        }
     
     
 //     QGLFunctions gl(context);
@@ -250,17 +337,7 @@ void Curve::plot(const QGLContext* context)
 //     
 //     GLfloat points[9];
 // 
-//     points[0] = -39.9;
-//     points[1] = -0.9;
-//     points[2] = -1;
-// 
-//     points[3] =  0.9;
-//     points[4] = -11110.9;
-//     points[5] = -13;
-// 
-//     points[6] =  0.9;
-//     points[7] =  10.9;
-//     points[8] = -19;
+
 // 
 //     unsigned int vbo = 0;
 //     glGenBuffers (1, &vbo);
@@ -346,6 +423,78 @@ Variables * Curve::variables() const
     return d->m_analyzer->variables();
 }
 
+void Curve::geometrize(/*const QGLContext * context*/)
+{
+    Cn *x = d->m_args.value("x");
+    Cn *y = d->m_args.value("y");
+
+    double step = 0.0015;
+    
+//     points << -0.9;
+//     points <<  -0.9;
+//     points <<  -1;
+// 
+//     points <<   0.9;
+//     points <<  -0.9;
+//     points <<  -1;
+// 
+//     points <<   0.9;
+//     points <<   0.9;
+//     points <<  -1;
+    
+//     QVector<double> points;
+    for (double xval = -1; xval <= 1; xval += step)
+        for (double yval = -1; yval <= 1; yval += step)
+        {
+            x->setValue(xval);
+            y->setValue(yval);
+            
+            if (isSimilar(d->m_analyzer->calculateLambda().toReal().value(), 0, step))
+            {
+                points << x->value() << y->value() << 0.;
+            }
+        }
+        d->m_done = true;
+        
+//     GLfloat points[9];
+// 
+//     points[0] = -0.9;
+//     points[1] = -0.9;
+//     points[2] = -1;
+// 
+//     points[3] =  0.9;
+//     points[4] = -0.9;
+//     points[5] = -1;
+// 
+//     points[6] =  0.9;
+//     points[7] =  0.9;
+//     points[8] = -1;
+
+//     QGLContext::currentContext()
+    
+
+
+////
+    
+    
+
+//     glUseProgram (shader_programme);
+//     GLint vl = glGetAttribLocation(shader_programme, "vertex");
+//     glBindBuffer (GL_ARRAY_BUFFER, vbo);
+//     glVertexAttribPointer(vl, 3, GL_FLOAT, GL_FALSE, 0, 0);
+//     glEnableVertexAttribArray(vl);
+// //     glEnableClientState(GL_VERTEX_ARRAY);
+//     glDrawArrays (GL_TRIANGLES, 0, 3);
+// //     glDisableClientState(GL_VERTEX_ARRAY);
+//     glDisableVertexAttribArray(vl);
+//     glUseProgram(0);
+                    
+//         glBegin(GL_POINTS);
+//         glColor3ub(255,0,0);
+//         glVertex3f(0,0.5,0);
+//         glEnd();
+}
+
 bool Curve::operator==(const Curve &other) const
 {
     return (d->m_color == other.d->m_color) &&
@@ -380,6 +529,8 @@ Curve & Curve::operator=(const Curve &other)
     
     //NOTE force to create opengl buffer again in plot method
     d->m_glready = false;
+    d->m_geocalled = false; //TODO see copy ctor
+    d->m_done = false;
     
     qDeleteAll(d->m_args);
     

@@ -21,7 +21,6 @@
 
 #include "analitzaplotexport.h"
 #include "plottingenums.h"
-#include <QGLFunctions>
 
 class QStringList;
 class QColor;
@@ -61,12 +60,15 @@ public:
     virtual void setVisible(bool visible) = 0;
     virtual QString typeName() const = 0;
     //PLotter can need do the task in a thread so use  QtConcurrent::run<double>(&ShapeType::plot);
-//     virtual void plot(const QGLContext * context = 0) = 0; // draw in openglcontext Update the surfaces's data @p oppositecorner1 and @p oppositecorner2 form an axis-aligned bounding box.
+    virtual void plot(/*const QGLContext * context = 0*/) = 0; // draw in openglcontext Update the surfaces's data @p oppositecorner1 and @p oppositecorner2 form an axis-aligned bounding box.
     virtual Variables *variables() const = 0;
     
 //     virtual bool operator==(const ShapeType &other) const = 0;
 //     virtual bool operator!=(const ShapeType &other) const = 0;
 //     virtual ShapeType & operator=(const ShapeType &other) = 0;
+    
+protected:
+    virtual void geometrize() = 0; // constructs the geometry of shape with QtConcurrent::run then we use the data in plotmethod
 };
 
 }

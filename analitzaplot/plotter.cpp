@@ -29,6 +29,7 @@
 
 #include <cmath>
 #include <QDebug>
+#include <qtconcurrentrun.h>
 #include <KLocalizedString>
 #include <KColorUtils>
 #include <GL/glu.h>
@@ -54,7 +55,7 @@ Plotter::~Plotter()
 
 void Plotter::initialize()
 {
-    initializeGLFunctions();
+//     initializeGLFunctions();
     
     glClearColor(0,0,0,0);
     
@@ -138,7 +139,7 @@ void Plotter::initialize()
 //     qDebug() << QString(log);
 }
 
-void Plotter::plot(const QGLContext * context)
+void Plotter::plot(/*const QGLContext * context*/)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     
@@ -184,7 +185,10 @@ void Plotter::plot(const QGLContext * context)
 //     c2.plot(context);
     
 ///
-    circle.plot(context);
+    circle.plot(/*context*/);
+    
+//     QtConcurrent::run<void>(circle, &Curve::plot, context);
+    
 
 }
 
