@@ -126,6 +126,9 @@
 
 #include <QGLWidget>
 #include <QApplication>
+#include <kapplication.h>
+#include <kaboutdata.h>
+#include <kcmdlineargs.h>
 
 using namespace Analitza;
 
@@ -143,7 +146,19 @@ double area()
 }*/
 
 int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+    
+    
+    KAboutData about("khipu", "gplacs", ki18n(I18N_NOOP("Khipu")), "version", ki18n("description"),
+                     KAboutData::License_GPL, ki18n("(C) 2010-2012, Percy Camilo Triveño Aucahuasi"));
+    
+    KCmdLineArgs::init(argc, argv, &about);
+
+    KCmdLineOptions options;
+    
+    KCmdLineArgs::addCmdLineOptions(options);
+
+    KApplication app;
+    
 //     conclusion usar is implicit y siempre dependencies to lambda para cuando sea ecuacion
 //     Variables *vars = new Variables;
 //     vars->modify("a", 15);

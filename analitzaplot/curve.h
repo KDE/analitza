@@ -83,7 +83,7 @@ public:
 //     QPair<double, double> tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse
     
 protected:
-    void geometrize(/*const QGLContext * context = 0*/);
+    void geometrize();
     
 private:
     class CurveData;
@@ -91,6 +91,8 @@ private:
         GLhandleARB shader_programme;
         GLuint vbo;
     QVector<double> points;
+    bool cancelnow;
+    int *m_cancont;
 
 };
 

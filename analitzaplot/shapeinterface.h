@@ -68,7 +68,7 @@ public:
 //     virtual ShapeType & operator=(const ShapeType &other) = 0;
     
 protected:
-    virtual void geometrize() = 0; // constructs the geometry of shape with QtConcurrent::run then we use the data in plotmethod
+//     virtual void geometrize() = 0; // constructs the geometry of shape with QtConcurrent::run then we use the data in plotmethod
 };
 
 }

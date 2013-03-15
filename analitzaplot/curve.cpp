@@ -52,6 +52,7 @@ public:
     QFuture<void> m_geometrize; // geometry acces to thread
     bool m_geocalled; // if thread is called then there is not need to call it again
     bool m_done;
+    
 };
 
 Curve::CurveData::CurveData()
@@ -71,14 +72,20 @@ Curve::CurveData::CurveData(const CurveData& other)
     , m_geocalled(false)
 {
     //TODO is exp = other.exp then geometrize and geocalled doesn't need to be cleared
-    m_analyzer = new Analyzer(*other.m_analyzer);
-    m_args["x"] = static_cast<Cn*>(other.m_args.value("x")->copy());
-    m_args["y"] = static_cast<Cn*>(other.m_args.value("y")->copy());
-    QStack<Object*> runStack;
-    runStack.push(m_args.value("x"));
-    runStack.push(m_args.value("y"));
-                    
-    m_analyzer->setStack(runStack);
+    m_analyzer = new Analyzer(other.m_analyzer->variables());
+    
+    if (other.m_expression.tree())
+    {
+        m_analyzer->setExpression(other.m_expression); // TODO
+    
+        m_args["x"] = static_cast<Cn*>(other.m_args.value("x")->copy());
+        m_args["y"] = static_cast<Cn*>(other.m_args.value("y")->copy());
+        QStack<Object*> runStack;
+        runStack.push(m_args.value("x"));
+        runStack.push(m_args.value("y"));
+                        
+        m_analyzer->setStack(runStack);
+    }
 }
 
 Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
@@ -145,7 +152,9 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
 Curve::CurveData::~CurveData()
 {
 //     qDebug() << "FERE";
-    m_geometrize.cancel();
+//     cancelnow = true;
+//     m_geometrize.cancel(); run doesn't support cancel
+//     m_geometrize.waitForFinished();
     
     qDeleteAll(m_args);
     
@@ -161,17 +170,19 @@ Curve::CurveData::~CurveData()
 Curve::Curve()
     : d(new CurveData)
 {
-    
+    vbo = 0;
 }
 
 Curve::Curve(const Curve &other)
     : d(other.d)
 {
+    vbo = 0;
 }
 
 Curve::Curve(const Analitza::Expression &expresssion, Variables* vars)
     : d(new CurveData(expresssion, vars))
 {
+    vbo = 0;
 }
 
 Curve::~Curve()
@@ -250,6 +261,7 @@ void Curve::plot(/*const QGLContext* context*/)
     {
         if (d->m_done)
         {
+
             //load gl buffer
             if (!d->m_glready)
             {
@@ -297,10 +309,11 @@ void Curve::plot(/*const QGLContext* context*/)
                 glGetProgramInfoLog(shader_programme, 2000, 0, log);
                 
                 qDebug() << "err load buffer "<< QString(log);
+//                     plot();
             }
         }
     }
-    
+//     qDebug() << vbo;
     if (vbo)
     {
     glUseProgram (shader_programme);
@@ -425,7 +438,11 @@ Variables * Curve::variables() const
 }
 
 void Curve::geometrize(/*const QGLContext * context*/)
-{
+{    
+    //NOTE STRONG checks policy here, because this method is in a new thread but with working with "this" ... 
+    // if this is destroyed (call to dtor) then we need to be carefull before use analitza
+    
+    //It may happends that current instance is destroyed then we need to check if we are using the same instance
     
     Cn *x = d->m_args.value("x");
     Cn *y = d->m_args.value("y");
@@ -433,16 +450,33 @@ void Curve::geometrize(/*const QGLContext * context*/)
     double step = 0.0015;
     
     for (double xval = -1; xval <= 1; xval += step)
+    {
         for (double yval = -1; yval <= 1; yval += step)
         {
-            x->setValue(xval);
-            y->setValue(yval);
-            
-            if (isSimilar(d->m_analyzer->calculateLambda().toReal().value(), 0, step))
+            if (x && y) 
             {
-                points << x->value() << y->value() << 0.;
+//                 if (d->m_analyzer->expression().tree())
+                {
+                    x->setValue(xval);
+                    y->setValue(yval);
+                    
+                    if (d->m_analyzer->isCorrect())
+                    {
+                        Expression expval = d->m_analyzer->calculateLambda();
+                        
+                        if (expval.isCorrect() && !expval.toString().isEmpty())
+                        {
+                            Cn val = expval.toReal();
+
+                            if (val.format() == Analitza::Cn::Real)
+                                if (isSimilar(val.value(), 0, step))
+                                    points << x->value() << y->value() << 0.;
+                        }
+                    }
+                }
             }
         }
+    }
         d->m_done = true;
 //         qDebug() << "DONE" << d->m_done << this;
 }
