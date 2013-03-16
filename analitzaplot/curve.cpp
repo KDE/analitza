@@ -28,13 +28,11 @@
 #include "analitza/analyzer.h"
 #include <analitza/variable.h>
 #include <analitza/value.h>
+#include <analitza/variables.h>
 #include <KLocalizedString>
 #include <qfuture.h>
 #include <qtconcurrentrun.h>
 #include <QGLWidget>
-
-
-
 
 using namespace Analitza;
 
@@ -47,19 +45,20 @@ public:
     ~CurveData();
 
     Analyzer *m_analyzer; // internal expression
+    Variables *m_vars; // variables module, just ignore m_analyzer->variables: there is not way to know if is owned or external module vars
     QHash<QString, Cn*> m_args;
     bool m_glready;
     QFuture<void> m_geometrize; // geometry acces to thread
     bool m_geocalled; // if thread is called then there is not need to call it again
     bool m_done;
-    
 };
 
 Curve::CurveData::CurveData()
-    : m_glready(false)
+    : m_analyzer(0)
+    , m_vars(0)
+    , m_glready(false)
     , m_geocalled(false)
     , m_done(false)
-    , m_analyzer(0)
 {
 
 }
@@ -67,29 +66,36 @@ Curve::CurveData::CurveData()
 Curve::CurveData::CurveData(const CurveData& other)
     : QSharedData(other)
     , ShapeData(other)
+    , m_analyzer(0)
+    , m_vars(0)
     , m_glready(false)
     , m_done(false)
     , m_geocalled(false)
 {
-    //TODO is exp = other.exp then geometrize and geocalled doesn't need to be cleared
-    m_analyzer = new Analyzer(other.m_analyzer->variables());
-    
-    if (other.m_expression.tree())
+    if (other.m_analyzer)
     {
-        m_analyzer->setExpression(other.m_expression); // TODO
-    
-        m_args["x"] = static_cast<Cn*>(other.m_args.value("x")->copy());
-        m_args["y"] = static_cast<Cn*>(other.m_args.value("y")->copy());
-        QStack<Object*> runStack;
-        runStack.push(m_args.value("x"));
-        runStack.push(m_args.value("y"));
-                        
-        m_analyzer->setStack(runStack);
+        if (other.m_vars)
+            m_analyzer = new Analyzer(other.m_vars);
+        else
+            m_analyzer = new Analyzer;
     }
+    
+    //TODO is exp = other.exp then geometrize and geocalled doesn't need to be cleared
+    m_analyzer->setExpression(other.m_expression); // TODO
+    
+    m_args["x"] = static_cast<Cn*>(other.m_args.value("x")->copy());
+    m_args["y"] = static_cast<Cn*>(other.m_args.value("y")->copy());
+    QStack<Object*> runStack;
+    runStack.push(m_args.value("x"));
+    runStack.push(m_args.value("y"));
+    
+    m_analyzer->setStack(runStack);
 }
 
 Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
-    : m_glready(false)
+    : m_analyzer(0)
+    , m_vars(vars)
+    , m_glready(false)
     , m_done(false)
     , m_geocalled(false)
 {
@@ -133,7 +139,15 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
         }
         else if (expresssion.isLambda()) // args->Func(args)
         {
-            
+            if (expresssion.parameters().size() == 1)
+            {
+                
+            }
+            else
+            {
+//             m_errors << i18n("Curve type not recognized");
+                
+            }
         }
         else // BUILTHMETHODS if (expresssion.isCustomObject())
         {
@@ -274,7 +288,7 @@ QString Curve::iconName() const
 
 bool Curve::isValid() const
 {
-    return true; // TODO
+    return d->m_errors.isEmpty();
 }
 
 bool Curve::isVisible() const
@@ -389,14 +403,9 @@ void Curve::setVisible(bool visible)
     d->m_visible = visible;
 }
 
-QString Curve::typeName() const
-{
-    return d->m_typeName;
-}
-
 Variables * Curve::variables() const
 {
-    return d->m_analyzer->variables();
+    return d->m_vars;
 }
 
 bool Curve::operator==(const Curve &other) const
@@ -408,7 +417,6 @@ bool Curve::operator==(const Curve &other) const
         (d->m_expression == other.d->m_expression) &&
         (d->m_iconName == other.d->m_iconName) &&
         (d->m_name == other.d->m_name) &&
-        (d->m_typeName == other.d->m_typeName) &&
         (d->m_visible == other.d->m_visible);
 }
 
@@ -427,7 +435,6 @@ Curve & Curve::operator=(const Curve &other)
     d->m_expression = other.d->m_expression;
     d->m_iconName = other.d->m_iconName;
     d->m_name = other.d->m_name;
-    d->m_typeName = other.d->m_typeName;
     d->m_visible = other.d->m_visible;
     //END basic shape data
     
@@ -441,7 +448,14 @@ Curve & Curve::operator=(const Curve &other)
     if (d->m_analyzer)
         delete d->m_analyzer;
     
-    d->m_analyzer = new Analyzer(*other.d->m_analyzer);
+    if (other.d->m_analyzer)
+    {
+        if (other.d->m_vars)
+            d->m_analyzer = new Analyzer(other.d->m_vars);
+        else
+            d->m_analyzer = new Analyzer;
+    }
+    
     d->m_args["x"] = static_cast<Cn*>(other.d->m_args.value("x")->copy());
     d->m_args["y"] = static_cast<Cn*>(other.d->m_args.value("y")->copy());
     QStack<Object*> runStack;

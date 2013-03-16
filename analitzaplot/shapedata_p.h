@@ -33,7 +33,6 @@ struct ShapeData
     Expression m_expression; //visible expression
     QString m_iconName;
     QString m_name;
-    QString m_typeName;
     bool m_visible;
 };
 

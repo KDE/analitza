@@ -59,7 +59,6 @@ public:
     virtual void setColor(const QColor &color) = 0;
     virtual void setName(const QString &name) = 0;
     virtual void setVisible(bool visible) = 0;
-    virtual QString typeName() const = 0;
     virtual void plot() = 0; // draw in openglcontext Update the surfaces's data @p oppositecorner1 and @p oppositecorner2 form an axis-aligned bounding box.
     virtual Variables *variables() const = 0;
     

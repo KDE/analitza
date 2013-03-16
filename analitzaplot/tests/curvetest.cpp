@@ -54,8 +54,10 @@ void PlaneCurveTest::testCopyCompare_data()
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("name");
     QTest::addColumn<QColor>("color");
-    
-    QTest::newRow("basic_implicit") << "x*x+y*y=6" << "circle" << QColor(Qt::blue);
+    //TODO need other Curve attrs
+
+    QTest::newRow("growth-function") << "x->exp(x)" << "upupup" << QColor(Qt::red);
+    QTest::newRow("basic-implicit") << "x*x+y*y=6" << "circle" << QColor(Qt::blue);
 }
 
 void PlaneCurveTest::testCopyCompare()
@@ -79,19 +81,20 @@ void PlaneCurveTest::testCopyCompare()
 
 void PlaneCurveTest::testCorrect_data()
 {
-    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expression");
 
     QTest::newRow("fx-diag-line") << "x->x";
     QTest::newRow("fy-diag-line") << "y->y";
     QTest::newRow("vector-diag-line") << "t->vector{t,t}";
-    QTest::newRow("simple-algebraic") << "x*x+y*y=3";
+    QTest::newRow("simple-algebraic") << "x*x + y*y = 3";
+    QTest::newRow("complex-implicit") << "abs(x)*sin(y)*x -y*y = x+y";
 }
 
 void PlaneCurveTest::testCorrect()
 {
-    QFETCH(QString, input);
+    QFETCH(QString, expression);
 
-    Curve curve(Expression(input), m_vars);
+    Curve curve(Expression(expression), m_vars);
     curve.createGeometry();
     
     QVERIFY(curve.isValid());
@@ -101,8 +104,8 @@ void PlaneCurveTest::testIncorrect_data()
 {
     QTest::addColumn<QString>("input");
 
-    QTest::newRow("empty expression") << "";
-    QTest::newRow("undefined var") << "x:=w";
+    QTest::newRow("empty-expression") << "";
+    QTest::newRow("undefined-var") << "x:=w";
     QTest::newRow("parametric-wrongvector") << "t->vector{3}";
     QTest::newRow("wrong-dimension") << "vector{2,3}";
     QTest::newRow("wrong-dimension-y") << "y->vector{2,3}";
