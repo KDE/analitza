@@ -34,7 +34,7 @@ class QVector3D;
 
 namespace Analitza
 {
-
+    
 /**
  * \class Curve
  * 
@@ -69,13 +69,14 @@ public:
     void setColor(const QColor &color);
     void setName(const QString &name);
     void setVisible(bool visible);
-    QString typeName() const;
     Variables *variables() const;
     
     bool operator==(const Curve &other) const;
     bool operator!=(const Curve &other) const;
     Curve & operator=(const Curve &other);
     
+//     qstring type(clasification style/type enum)
+//     qlist point singular points
 //     QStringList arguments() const;// X->F(X) : Kn->Km, K: real or complex so args := X in X->F(X)
 //     QPair<double, double> argumentLimits(const QString &arg) const;
 //     void setArgumentLimits(const QString &arg, double min, double max);//x,y,z also bvars like theta and vars in Variables ...update geometry
@@ -86,6 +87,9 @@ public:
 private:
     class CurveData;
     QSharedDataPointer<CurveData> d;
+    
+    
+    //WARNING TODO
         GLhandleARB shader_programme;
         GLuint vbo;
     QVector<double> points;

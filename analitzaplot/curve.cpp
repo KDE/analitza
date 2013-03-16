@@ -29,6 +29,7 @@
 #include <analitza/variable.h>
 #include <analitza/value.h>
 #include <analitza/variables.h>
+#include <analitza/vector.h>
 #include <KLocalizedString>
 #include <qfuture.h>
 #include <qtconcurrentrun.h>
@@ -36,17 +37,25 @@
 
 using namespace Analitza;
 
+
+
+
+
+
 class Curve::CurveData : public QSharedData, public ShapeData
 {
 public:
     CurveData();
     CurveData(const CurveData &other);
-    CurveData(const Analitza::Expression& expresssion, Variables* vars);
+    CurveData(const Expression& expresssion, Variables* vars);
     ~CurveData();
 
     Analyzer *m_analyzer; // internal expression
     Variables *m_vars; // variables module, just ignore m_analyzer->variables: there is not way to know if is owned or external module vars
     QHash<QString, Cn*> m_args;
+    
+    
+    //WARNING refactor this EXPERIMENTAL
     bool m_glready;
     QFuture<void> m_geometrize; // geometry acces to thread
     bool m_geocalled; // if thread is called then there is not need to call it again
@@ -99,65 +108,130 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     , m_done(false)
     , m_geocalled(false)
 {
-    if (expresssion.isCorrect())
+    if (expresssion.isCorrect() && !expresssion.toString().isEmpty())
     {
-        if (expresssion.isEquation()) 
+        //TODO move to common place
+        //WARNING TODO this hack is just for those curves that are defined as functions
+        const ExpressionType fxtype = Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value));
+                   
+        QList< QPair<ExpressionType, QStringList> > validtypes;
+        validtypes << qMakePair(fxtype, QStringList("x"));
+        validtypes << qMakePair(fxtype, QStringList("y"));
+        validtypes << qMakePair(fxtype, QStringList("r"));
+        //vector valued function 2D
+        validtypes << qMakePair(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
+            .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
+            .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)), QStringList("t"));
+        //vector valued function 3D
+        validtypes << qMakePair(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                   Analitza::ExpressionType(Analitza::ExpressionType::Vector,
+                                            Analitza::ExpressionType(Analitza::ExpressionType::Value), 3)), QStringList("t"));
+        //implicit
+        validtypes << qMakePair(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
+        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
+        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
+        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)), QStringList("x") << "y");
+        
+        if (m_vars)
+            m_analyzer = new Analyzer(m_vars);
+        else
+            m_analyzer = new Analyzer;
+        
+        Expression testexp = expresssion;
+        
+        Analitza::Expression exp(testexp);
+        if(exp.isDeclaration())
+            exp = exp.declarationValue();
+        
+        if(exp.isEquation())
+            exp = exp.equationToFunction();
+        
+        m_analyzer->setExpression(exp);
+        m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
+        
+        bool invalidexp = false;
+        
+        int nmath = 0;
+//             if (!m_analyzer->expression().toString().isEmpty() && m_analyzer->isCorrect())
+        for (int i = 0; i < validtypes.size(); ++i)
         {
-            if (vars)
-                m_analyzer = new Analyzer(vars);
-            else
-                m_analyzer = new Analyzer;
-
-            m_analyzer->setExpression(expresssion.equationToFunction());
-            m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
-            
-            if (m_analyzer->expression().parameters().size() == 2)
+//                     qDebug() << validtypes[i].first.toString() << m_analyzer->type().toString() << m_analyzer->expression().toString();
+            if (m_analyzer->expression().bvarList() == validtypes[i].second && m_analyzer->type().canReduceTo(validtypes[i].first))
             {
-                if ((m_analyzer->expression().parameters().at(0)->name() == "x") && 
-                    (m_analyzer->expression().parameters().at(1)->name() == "y"))
-                {
-                    m_expression = expresssion;
-                    
-                    m_args.insert("x", new Cn);
-                    m_args.insert("y", new Cn);
-                    
-                    QStack<Object*> runStack;
-                    runStack.push(m_args.value("x"));
-                    runStack.push(m_args.value("y"));
-                    
-                    m_analyzer->setStack(runStack);
-                }
-                else
-                {
-                    m_errors << i18n("Implicit curve has only 2 vars x and y");
-                }
-            }
-            else
-            {
-                m_errors << i18n("Implicit curve has only 2 vars");
+                    ++nmath;
+                    break;
             }
         }
-        else if (expresssion.isLambda()) // args->Func(args)
-        {
-            if (expresssion.parameters().size() == 1)
-            {
-                
-            }
-            else
-            {
-//             m_errors << i18n("Curve type not recognized");
-                
-            }
-        }
-        else // BUILTHMETHODS if (expresssion.isCustomObject())
+        
+        if (nmath == 0)
         {
             m_errors << i18n("Curve type not recognized");
         }
+            
+        
+//         if (!invalidexp)
+//         {
+//             //TODO review this code
+//             QStringList validargs; // valid args
+//             validargs << "x" << "y" << "t" << "r";
+//             
+//             int nargs = m_analyzer->expression().parameters().size();
+//         
+//             if (0 <  nargs && nargs <= 2)
+//             {
+//                 bool invalid = false;
+//                 
+//                 foreach (Ci *arg, m_analyzer->expression().parameters())
+//                 {
+//                     if (!validargs.contains(arg->name()))
+//                     {
+//                         invalid = true;
+//                         
+//                         break;
+//                     }
+//                 }
+//                 
+//                 if (invalid)
+//                     m_errors << i18n("Wrong name of arguments");
+//                 
+//                 if (m_analyzer->expression().parameters().first()->name() == "t")
+//                 {
+//                     if (m_analyzer->expression().lambdaBody().isVector())
+//                     {
+//                         Vector *v = static_cast<Vector*>(m_analyzer->expression().lambdaBody().tree());
+//                         
+//                         if (!(1 < v->size() && v->size() < 4))
+//                             m_errors << i18n("Parametric curve need 2 or 3 arguments");
+//                     }
+//                     else
+//                         m_errors << i18n("Curve with t as argument is a vector valued function");
+//                 }
+//             }
+//             else
+//                 m_errors << i18n("Wrong number of arguments");
+// 
+//             if (m_errors.isEmpty())
+//             {
+//                 QStack<Object*> runStack;
+//                 foreach (Ci *arg, m_analyzer->expression().parameters())
+//                 {
+//                     m_args.insert(arg->name(), new Cn);
+//                     runStack.push(m_args.value(arg->name()));
+//                 }
+//             
+//                 m_analyzer->setStack(runStack);
+//             }
+//             else
+//                 m_errors << i18n("Curve type not recognized");
+//         }
+//         else
+//             m_errors << i18n("Curve type not recognized");
     }
     else
-    {
         m_errors << i18n("The expression is not correct");
-    }
 
 //     if (!m_errors.isEmpty())
 //         delete m_analyzer;
@@ -198,7 +272,7 @@ Curve::Curve(const Curve &other)
     vbo = 0;
 }
 
-Curve::Curve(const Analitza::Expression &expresssion, Variables* vars)
+Curve::Curve(const Expression &expresssion, Variables* vars)
     : d(new CurveData(expresssion, vars))
 {
     vbo = 0;
@@ -253,7 +327,7 @@ void Curve::createGeometry()
                         {
                             Cn val = expval.toReal();
 
-                            if (val.format() == Analitza::Cn::Real)
+                            if (val.format() == Cn::Real)
                                 if (isSimilar(val.value(), 0, step))
                                     points << x->value() << y->value() << 0.;
                         }
@@ -456,12 +530,14 @@ Curve & Curve::operator=(const Curve &other)
             d->m_analyzer = new Analyzer;
     }
     
-    d->m_args["x"] = static_cast<Cn*>(other.d->m_args.value("x")->copy());
-    d->m_args["y"] = static_cast<Cn*>(other.d->m_args.value("y")->copy());
     QStack<Object*> runStack;
-    runStack.push(d->m_args.value("x"));
-    runStack.push(d->m_args.value("y"));
-                    
+
+    foreach (const QString &key, other.d->m_args.keys())
+    {
+        d->m_args.insert(key, static_cast<Cn*>(other.d->m_args.value(key)->copy()));
+        runStack.push(d->m_args.value(key));
+    }
+    
     d->m_analyzer->setStack(runStack);
     
     return *this;
@@ -536,7 +612,7 @@ Curve & Curve::operator=(const Curve &other)
 //     return QStringList();
 // }
 // 
-// bool Curve::canBuild(const Expression &expression, Analitza::Variables* vars)
+// bool Curve::canBuild(const Expression &expression, Variables* vars)
 // {
 //     return true;
 // }
