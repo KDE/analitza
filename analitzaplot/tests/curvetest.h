@@ -40,9 +40,12 @@ Q_OBJECT
         void testCopyCompare(); // use of =, == and != operators
         void testCopyCompare_data();
         
-        void testCorrect(); // correct curves
-        void testCorrect_data();
-
+        void testCorrectNativeExpressions(); // correct curves in native analitza sintax
+        void testCorrectNativeExpressions_data();
+        
+        void testCorrectCustomExpressions(); // correct curves with custom expression (builtin methods)
+        void testCorrectCustomExpressions_data();
+        
         void testIncorrect(); // cases that can not be drawn
         void testIncorrect_data();
 

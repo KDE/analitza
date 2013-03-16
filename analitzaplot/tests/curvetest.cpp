@@ -79,7 +79,7 @@ void PlaneCurveTest::testCopyCompare()
     QCOMPARE(curve1, curve4);
 }
 
-void PlaneCurveTest::testCorrect_data()
+void PlaneCurveTest::testCorrectNativeExpressions_data()
 {
     QTest::addColumn<QString>("expression");
 
@@ -90,7 +90,7 @@ void PlaneCurveTest::testCorrect_data()
     QTest::newRow("complex-implicit") << "abs(x)*sin(y)*x -y*y = x+y";
 }
 
-void PlaneCurveTest::testCorrect()
+void PlaneCurveTest::testCorrectNativeExpressions()
 {
     QFETCH(QString, expression);
 
@@ -98,6 +98,16 @@ void PlaneCurveTest::testCorrect()
     curve.createGeometry();
     
     QVERIFY(curve.isValid());
+}
+
+void PlaneCurveTest::testCorrectCustomExpressions_data()
+{
+
+}
+
+void PlaneCurveTest::testCorrectCustomExpressions()
+{
+
 }
 
 void PlaneCurveTest::testIncorrect_data()
