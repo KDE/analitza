@@ -37,6 +37,9 @@ Q_OBJECT
     private slots:
         void initTestCase();
 
+        void testCopyCompare(); // use of =, == and != operators
+        void testCopyCompare_data();
+        
         void testCorrect(); // correct curves
         void testCorrect_data();
 

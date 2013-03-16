@@ -23,6 +23,7 @@
 #include "analitza/variables.h"
 #include <qtest_kde.h>
 #include <cmath>
+#include <QColor>
 
 using namespace std;
 using namespace Analitza;
@@ -32,19 +33,49 @@ QTEST_KDEMAIN_CORE( PlaneCurveTest )
 PlaneCurveTest::PlaneCurveTest(QObject *parent)
     : QObject(parent)
 {
-    m_vars=new Analitza::Variables;
 }
 
 PlaneCurveTest::~PlaneCurveTest()
 {
-    delete m_vars;
 }
 
 void PlaneCurveTest::initTestCase()
-{}
+{
+    m_vars = new Analitza::Variables;
+}
 
 void PlaneCurveTest::cleanupTestCase()
-{}
+{
+    delete m_vars;
+}
+
+void PlaneCurveTest::testCopyCompare_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<QString>("name");
+    QTest::addColumn<QColor>("color");
+    
+    QTest::newRow("basic_implicit") << "x*x+y*y=6" << "circle" << QColor(Qt::blue);
+}
+
+void PlaneCurveTest::testCopyCompare()
+{
+    QFETCH(QString, expression);
+    QFETCH(QString, name);
+    QFETCH(QColor, color);
+
+    Curve curve1(Expression(expression), m_vars);
+    curve1.setName(name);
+    curve1.setColor(color);
+    
+    Curve curve2(curve1);
+    Curve curve3 = curve2;
+    Curve curve4;
+    curve4 = curve3;
+
+    QVERIFY(curve4.isValid());
+    QCOMPARE(curve1, curve4);
+}
 
 void PlaneCurveTest::testCorrect_data()
 {
