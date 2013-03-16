@@ -134,6 +134,6 @@ install(FILES
 # endif(OPENGL_FOUND)
 
 add_subdirectory(data)
-# add_subdirectory(tests)
+add_subdirectory(tests)
 add_subdirectory(examples)
 

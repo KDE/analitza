@@ -166,6 +166,11 @@ Curve::CurveData::~CurveData()
 
 ///
 
+bool isSimilar(double a, double b, double diff)
+{
+    return std::fabs(a-b) < diff;
+}
+
 
 Curve::Curve()
     : d(new CurveData)
@@ -203,6 +208,50 @@ CoordinateSystem Curve::coordinateSystem() const
     return d->m_coordinateSystem;
 }
 
+void Curve::createGeometry()
+{
+    //NOTE STRONG checks policy here, because this method is in a new thread but with working with "this" ... 
+    // if this is destroyed (call to dtor) then we need to be carefull before use analitza
+    
+    //It may happends that current instance is destroyed then we need to check if we are using the same instance
+    
+    Cn *x = d->m_args.value("x");
+    Cn *y = d->m_args.value("y");
+
+    double step = 0.015;
+    
+    for (double xval = -1; xval <= 1; xval += step)
+    {
+        for (double yval = -1; yval <= 1; yval += step)
+        {
+            if (x && y) 
+            {
+//                 if (d->m_analyzer->expression().tree())
+                {
+                    x->setValue(xval);
+                    y->setValue(yval);
+                    
+                    if (d->m_analyzer->isCorrect())
+                    {
+                        Expression expval = d->m_analyzer->calculateLambda();
+                        
+                        if (expval.isCorrect() && !expval.toString().isEmpty())
+                        {
+                            Cn val = expval.toReal();
+
+                            if (val.format() == Analitza::Cn::Real)
+                                if (isSimilar(val.value(), 0, step))
+                                    points << x->value() << y->value() << 0.;
+                        }
+                    }
+                }
+            }
+        }
+    }
+        d->m_done = true;
+//         qDebug() << "DONE" << d->m_done << this;
+}
+
 Dimension Curve::dimension() const
 {
     return d->m_dimension;
@@ -225,7 +274,7 @@ QString Curve::iconName() const
 
 bool Curve::isValid() const
 {
-    return false;
+    return true; // TODO
 }
 
 bool Curve::isVisible() const
@@ -238,11 +287,6 @@ QString Curve::name() const
     return d->m_name;
 }
 
-bool isSimilar(double a, double b, double diff)
-{
-    return std::fabs(a-b) < diff;
-}
-
 void Curve::plot(/*const QGLContext* context*/)
 {    
     
@@ -252,8 +296,9 @@ void Curve::plot(/*const QGLContext* context*/)
     {
 //         qDebug() << this;
 //NOTE if *this is passed then we have a copy ctr call and thread will work over a new Curve ... so we need to pass "this"
-        d->m_geometrize = QtConcurrent::run<void>(this, &Curve::geometrize);
+//         d->m_geometrize = QtConcurrent::run<void>(this, &Curve::geometrize);
 //         geometrize();
+createGeometry();
         
         d->m_geocalled = true;
     }
@@ -327,89 +372,6 @@ void Curve::plot(/*const QGLContext* context*/)
     glDisableVertexAttribArray(vl);
     glUseProgram(0);
     }
-
-///
-    
-//     context->makeCurrent();
-//     if (!d->m_glready)
-//     {
-//         qDebug() << "init" << d->m_analyzer->calculateLambda().toString();
-//         
-//         d->m_glready = true;
-//     }
-//     else
-//     {
-//         qDebug() << "render" << d->m_analyzer->calculateLambda().toString();
-//     }
-
-
-    
-    
-//     QGLFunctions gl(context);
-//     bool npot = funcs.hasOpenGLFeature(QGLFunctions::NPOTTextures);
-//  
-//     
-//     GLfloat points[9];
-// 
-
-// 
-//     unsigned int vbo = 0;
-//     glGenBuffers (1, &vbo);
-//     glBindBuffer (GL_ARRAY_BUFFER, vbo);
-//     glBufferData (GL_ARRAY_BUFFER, 9 * sizeof (GLfloat), points, GL_STATIC_DRAW);
-//     
-// const GLchar *str = "\n\
-// #version 150\n\
-// const mat3 projection = mat3(\n\
-//  vec3(3.0/4.0, 0.0, 0.0),\n\
-//  vec3(    0.0, 1.0, 0.0),\n\
-//  vec3(    0.0, 0.0, 1.0)\n\
-// );\n\
-// varying vec3 vertex;\n\
-// void\n\
-// main()\n\
-// {\n\
-//     gl_Position = vec4(vertex, 1.0);\n\
-// }\n\
-// ";
-//     
-// const GLchar *strb = "\n\
-// #version 150\n\
-// out vec4 fragmentColor;\n\
-// void\n\
-// main()\n\
-// {\n\
-//     fragmentColor = vec4(0.0, 1.0, 0.0, 1.0);\n\
-// }\n\
-// ";
-//     
-//     unsigned int vs = glCreateShader (GL_VERTEX_SHADER);
-//     glShaderSource (vs, 1, &str, NULL);
-//     glCompileShader (vs);
-//     unsigned int fs = glCreateShader (GL_FRAGMENT_SHADER);
-//     glShaderSource (fs, 1, &strb, NULL);
-//     glCompileShader (fs);
-//     
-//     unsigned int shader_programme = glCreateProgram ();
-//     glAttachShader (shader_programme, fs);
-//     glAttachShader (shader_programme, vs);
-//     glLinkProgram (shader_programme);
-// 
-//     glUseProgram (shader_programme);
-//     GLint vl = glGetAttribLocation(shader_programme, "vertex");
-//     glBindBuffer (GL_ARRAY_BUFFER, vbo);
-//     glVertexAttribPointer(vl, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//     glEnableVertexAttribArray(vl);
-// //     glEnableClientState(GL_VERTEX_ARRAY);
-//     glDrawArrays (GL_TRIANGLES, 0, 3);
-// //     glDisableClientState(GL_VERTEX_ARRAY);
-//     glDisableVertexAttribArray(vl);
-//     glUseProgram(0);
-//                     
-// //         glBegin(GL_POINTS);
-// //         glColor3ub(255,0,0);
-// //         glVertex3f(0,0.5,0);
-// //         glEnd();
 }
 
 void Curve::setColor(const QColor &color)
@@ -435,50 +397,6 @@ QString Curve::typeName() const
 Variables * Curve::variables() const
 {
     return d->m_analyzer->variables();
-}
-
-void Curve::geometrize(/*const QGLContext * context*/)
-{    
-    //NOTE STRONG checks policy here, because this method is in a new thread but with working with "this" ... 
-    // if this is destroyed (call to dtor) then we need to be carefull before use analitza
-    
-    //It may happends that current instance is destroyed then we need to check if we are using the same instance
-    
-    Cn *x = d->m_args.value("x");
-    Cn *y = d->m_args.value("y");
-
-    double step = 0.0015;
-    
-    for (double xval = -1; xval <= 1; xval += step)
-    {
-        for (double yval = -1; yval <= 1; yval += step)
-        {
-            if (x && y) 
-            {
-//                 if (d->m_analyzer->expression().tree())
-                {
-                    x->setValue(xval);
-                    y->setValue(yval);
-                    
-                    if (d->m_analyzer->isCorrect())
-                    {
-                        Expression expval = d->m_analyzer->calculateLambda();
-                        
-                        if (expval.isCorrect() && !expval.toString().isEmpty())
-                        {
-                            Cn val = expval.toReal();
-
-                            if (val.format() == Analitza::Cn::Real)
-                                if (isSimilar(val.value(), 0, step))
-                                    points << x->value() << y->value() << 0.;
-                        }
-                    }
-                }
-            }
-        }
-    }
-        d->m_done = true;
-//         qDebug() << "DONE" << d->m_done << this;
 }
 
 bool Curve::operator==(const Curve &other) const

@@ -1,7 +1,7 @@
-# set(testLibs ${QT_QTXML_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBS} analitza analitzaplot analitzagui)
-# 
-# kde4_add_unit_test(planecurvetest planecurvetest.cpp)
-# target_link_libraries(planecurvetest ${testLibs})
+set(testLibs ${QT_QTXML_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBS} analitza analitzaplot analitzagui)
+
+kde4_add_unit_test(curvetest curvetest.cpp)
+target_link_libraries(curvetest ${testLibs})
 # 
 # kde4_add_unit_test(spacecurvetest spacecurvetest.cpp)
 # target_link_libraries(spacecurvetest ${testLibs})

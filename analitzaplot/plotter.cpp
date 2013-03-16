@@ -185,7 +185,7 @@ void Plotter::plot(/*const QGLContext * context*/)
 //     c2.plot(context);
     
 ///
-    circle.plot(/*context*/);
+//     circle.plot(/*context*/);
     
 //     QtConcurrent::run<void>(circle, &Curve::plot, context);
     

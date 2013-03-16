@@ -57,6 +57,7 @@ public:
     
     QColor color() const;
     CoordinateSystem coordinateSystem() const;
+    void createGeometry();
     Dimension dimension() const;
     QStringList errors() const;
     Expression expression() const;
@@ -81,9 +82,6 @@ public:
 //     QStringList parameters() const;// a,b,c... in X->F(X,a,b,c,...)
 //     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
 //     QPair<double, double> tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse
-    
-protected:
-    void geometrize();
     
 private:
     class CurveData;
