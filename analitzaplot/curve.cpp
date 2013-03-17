@@ -108,6 +108,7 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     , m_done(false)
     , m_geocalled(false)
 {
+    //BIG TODO
     if (expresssion.isCorrect() && !expresssion.toString().isEmpty())
     {
         //TODO move to common place
@@ -144,31 +145,54 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
         
         Analitza::Expression exp(testexp);
         if(exp.isDeclaration())
+        {
             exp = exp.declarationValue();
-        
-        if(exp.isEquation())
-            exp = exp.equationToFunction();
-        
-        m_analyzer->setExpression(exp);
-        m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
-        
-        bool invalidexp = false;
-        
-        int nmath = 0;
-//             if (!m_analyzer->expression().toString().isEmpty() && m_analyzer->isCorrect())
-        for (int i = 0; i < validtypes.size(); ++i)
-        {
-//                     qDebug() << validtypes[i].first.toString() << m_analyzer->type().toString() << m_analyzer->expression().toString();
-            if (m_analyzer->expression().bvarList() == validtypes[i].second && m_analyzer->type().canReduceTo(validtypes[i].first))
-            {
-                    ++nmath;
-                    break;
-            }
+            m_analyzer->setExpression(exp);
         }
-        
-        if (nmath == 0)
+        else
+        if(exp.isEquation())
         {
-            m_errors << i18n("Curve type not recognized");
+            exp = exp.equationToFunction();
+            m_analyzer->setExpression(exp);
+            m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
+        }
+        else
+            if(!exp.isLambda())
+            {
+                m_analyzer->setExpression(exp);
+            }
+            else
+            {
+                if (exp.parameters().size() == 1)
+                {
+                    //si es lambda deberia generar la misma expression al llamar de dependenciesToLambda si no es asi es test del bucle abajo fallara
+                    m_analyzer->setExpression(exp);
+                    m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
+                }
+                else
+                    m_errors << i18n("Wrong number of params for lambda ctor");
+            }
+        
+        if (m_errors.isEmpty())
+        {
+            bool invalidexp = false;
+            
+            int nmath = 0;
+    //             if (!m_analyzer->expression().toString().isEmpty() && m_analyzer->isCorrect())
+            for (int i = 0; i < validtypes.size(); ++i)
+            {
+    //                     qDebug() << validtypes[i].first.toString() << m_analyzer->type().toString() << m_analyzer->expression().toString();
+                if (m_analyzer->expression().bvarList() == validtypes[i].second && m_analyzer->type().canReduceTo(validtypes[i].first))
+                {
+                        ++nmath;
+                        break;
+                }
+            }
+            
+            if (nmath == 0)
+            {
+                m_errors << i18n("Curve type not recognized");
+            }
         }
             
         

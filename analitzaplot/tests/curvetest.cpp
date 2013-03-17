@@ -123,13 +123,13 @@ void PlaneCurveTest::testIncorrect_data()
     QTest::newRow("wrong-parametric") << "t->v";
     QTest::newRow("wrong-variable") << "x->x(x)";
     QTest::newRow("wrong-call") << "(x+1)(x+2)";
-    QTest::newRow("wrong-inf") << "y->y/0";
-    QTest::newRow("wrong-nan") << "x/0 + y/0 = 89";
+    QTest::newRow("not-a-function") << "t";
+    QTest::newRow("not-a-2d-function") << "(x,y)->3-sin(x)*sin(y)";
     QTest::newRow("collision") << "(x,y)->5=x*y";
-
-//     QTest::newRow("implicit.notindomain") << "(x,y)->3-sin(x)*sin(y)";
-
-//     QTest::newRow("not a function") << "t";
+    
+    //TODO here need to implement createGeometry
+//     QTest::newRow("wrong-inf") << "y->y/0";TODO
+//     QTest::newRow("wrong-nan") << "x/0 + y/0 = 89";TODO
 }
 
 void PlaneCurveTest::testIncorrect()
