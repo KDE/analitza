@@ -36,7 +36,7 @@ Q_OBJECT
 
     private slots:
         void initTestCase();
-
+        
         void testCopyCompare(); // use of =, == and != operators
         void testCopyCompare_data();
         

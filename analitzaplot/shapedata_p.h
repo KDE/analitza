@@ -24,8 +24,10 @@
 
 namespace Analitza {
     
-struct ShapeData
+class ShapeData
 {
+public:
+    ShapeData() : m_visible(true) {}
     QColor m_color;
     CoordinateSystem m_coordinateSystem;
     Dimension m_dimension;

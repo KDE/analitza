@@ -54,10 +54,12 @@ void PlaneCurveTest::testCopyCompare_data()
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("name");
     QTest::addColumn<QColor>("color");
+    QTest::addColumn<bool>("visible");
+    
     //TODO need other Curve attrs
 
-    QTest::newRow("growth-function") << "x->exp(x)" << "upupup" << QColor(Qt::red);
-    QTest::newRow("basic-implicit") << "x*x+y*y=6" << "circle" << QColor(Qt::blue);
+    QTest::newRow("growth-function") << "x->exp(x)" << "upupup" << QColor(Qt::red) << true;
+    QTest::newRow("basic-implicit") << "x*x+y*y=6" << "circle" << QColor(Qt::blue) << false;
 }
 
 void PlaneCurveTest::testCopyCompare()
@@ -65,16 +67,21 @@ void PlaneCurveTest::testCopyCompare()
     QFETCH(QString, expression);
     QFETCH(QString, name);
     QFETCH(QColor, color);
-
+    QFETCH(bool, visible);
+    
     Curve curve1(Expression(expression), m_vars);
     curve1.setName(name);
     curve1.setColor(color);
+    curve1.setVisible(false);
     
     Curve curve2(curve1);
     Curve curve3 = curve2;
     Curve curve4;
+    
+    QVERIFY(!curve4.isValid()); // curve4 is a invalid empty/null curve (null shape message in errors)
+    
     curve4 = curve3;
-
+    
     QVERIFY(curve4.isValid());
     QCOMPARE(curve1, curve4);
 }
@@ -88,6 +95,7 @@ void PlaneCurveTest::testCorrectNativeExpressions_data()
     QTest::newRow("vector-diag-line") << "t->vector{t,t}";
     QTest::newRow("simple-algebraic") << "x*x + y*y = 3";
     QTest::newRow("complex-implicit") << "abs(x)*sin(y)*x -y*y = x+y";
+    QTest::newRow("vector-3d") << "t->vector{sin(t), cos(t), t}";
 }
 
 void PlaneCurveTest::testCorrectNativeExpressions()

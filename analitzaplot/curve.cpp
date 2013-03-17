@@ -37,11 +37,6 @@
 
 using namespace Analitza;
 
-
-
-
-
-
 class Curve::CurveData : public QSharedData, public ShapeData
 {
 public:
@@ -63,13 +58,16 @@ public:
 };
 
 Curve::CurveData::CurveData()
-    : m_analyzer(0)
+    : QSharedData()
+    , ShapeData()
+    , m_analyzer(0)
     , m_vars(0)
     , m_glready(false)
     , m_geocalled(false)
     , m_done(false)
 {
-
+    //TODO better messages and make this a ... define this in shapedata ... add some ctor there
+    m_errors << i18n("Invalid null curve, use other ctors");
 }
 
 Curve::CurveData::CurveData(const CurveData& other)
@@ -102,7 +100,9 @@ Curve::CurveData::CurveData(const CurveData& other)
 }
 
 Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
-    : m_analyzer(0)
+    : QSharedData()
+    , ShapeData()
+    , m_analyzer(0)
     , m_vars(vars)
     , m_glready(false)
     , m_done(false)
@@ -194,65 +194,6 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
                 m_errors << i18n("Curve type not recognized");
             }
         }
-            
-        
-//         if (!invalidexp)
-//         {
-//             //TODO review this code
-//             QStringList validargs; // valid args
-//             validargs << "x" << "y" << "t" << "r";
-//             
-//             int nargs = m_analyzer->expression().parameters().size();
-//         
-//             if (0 <  nargs && nargs <= 2)
-//             {
-//                 bool invalid = false;
-//                 
-//                 foreach (Ci *arg, m_analyzer->expression().parameters())
-//                 {
-//                     if (!validargs.contains(arg->name()))
-//                     {
-//                         invalid = true;
-//                         
-//                         break;
-//                     }
-//                 }
-//                 
-//                 if (invalid)
-//                     m_errors << i18n("Wrong name of arguments");
-//                 
-//                 if (m_analyzer->expression().parameters().first()->name() == "t")
-//                 {
-//                     if (m_analyzer->expression().lambdaBody().isVector())
-//                     {
-//                         Vector *v = static_cast<Vector*>(m_analyzer->expression().lambdaBody().tree());
-//                         
-//                         if (!(1 < v->size() && v->size() < 4))
-//                             m_errors << i18n("Parametric curve need 2 or 3 arguments");
-//                     }
-//                     else
-//                         m_errors << i18n("Curve with t as argument is a vector valued function");
-//                 }
-//             }
-//             else
-//                 m_errors << i18n("Wrong number of arguments");
-// 
-//             if (m_errors.isEmpty())
-//             {
-//                 QStack<Object*> runStack;
-//                 foreach (Ci *arg, m_analyzer->expression().parameters())
-//                 {
-//                     m_args.insert(arg->name(), new Cn);
-//                     runStack.push(m_args.value(arg->name()));
-//                 }
-//             
-//                 m_analyzer->setStack(runStack);
-//             }
-//             else
-//                 m_errors << i18n("Curve type not recognized");
-//         }
-//         else
-//             m_errors << i18n("Curve type not recognized");
     }
     else
         m_errors << i18n("The expression is not correct");
@@ -263,21 +204,14 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
 
 Curve::CurveData::~CurveData()
 {
-//     qDebug() << "FERE";
-//     cancelnow = true;
-//     m_geometrize.cancel(); run doesn't support cancel
-//     m_geometrize.waitForFinished();
-    
     qDeleteAll(m_args);
     
     if (m_analyzer)
         delete m_analyzer;
 }
 
-
-
 ///
-
+//TODO movo to common place
 bool isSimilar(double a, double b, double diff)
 {
     return std::fabs(a-b) < diff;
