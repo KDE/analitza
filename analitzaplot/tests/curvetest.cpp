@@ -56,8 +56,6 @@ void PlaneCurveTest::testCopyCompare_data()
     QTest::addColumn<QColor>("color");
     QTest::addColumn<bool>("visible");
     
-    //TODO need other Curve attrs
-
     QTest::newRow("growth-function") << "x->exp(x)" << "upupup" << QColor(Qt::red) << true;
     QTest::newRow("basic-implicit") << "x*x+y*y=6" << "circle" << QColor(Qt::blue) << false;
 }
@@ -89,7 +87,7 @@ void PlaneCurveTest::testCopyCompare()
 void PlaneCurveTest::testCorrectNativeExpressions_data()
 {
     QTest::addColumn<QString>("expression");
-
+    
     QTest::newRow("fx-diag-line") << "x->x";
     QTest::newRow("fy-diag-line") << "y->y";
     QTest::newRow("vector-diag-line") << "t->vector{t,t}";

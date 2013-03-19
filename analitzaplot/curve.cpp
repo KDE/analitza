@@ -23,7 +23,7 @@
 
 
 
-#include "shapedata_p.h"
+#include "private/shapedata.h"
 
 #include "analitza/analyzer.h"
 #include <analitza/variable.h>
@@ -241,8 +241,6 @@ Curve::~Curve()
     glDeleteBuffers(1, &vbo);
     glDeleteProgram(shader_programme);
 }
-
-
 
 QColor Curve::color() const
 {

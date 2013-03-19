@@ -42,8 +42,24 @@ namespace Analitza
  *
  * \brief Represents a curve in 2D or 3D space.
  *
- * This class contains all necessary data that Plotter2D will use to draw the curve.
+ * This class contains all necessary data that Plotter will use to draw the curve.
  */
+
+/*
+NOTE
+For implicit curves
+1 (fast) space partition
+2 detect multiple components: query the tree structure
+3 use PC continuation over each component
+4 (opt) try to parametrized each component (for analysis)
+
+For curves of real valued functions
+1 use the parametric form method
+
+For curves in parametric form 
+1 draw (simple)
+2 do the all geometric analysis here (normal, curvature, tangent, etc)
+*/
 
 class ANALITZAPLOT_EXPORT Curve : public ShapeInterface<Curve>
 {
