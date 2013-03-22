@@ -37,17 +37,14 @@ Q_OBJECT
     private slots:
         void initTestCase();
         
-        void testCopyCompare(); // use of =, == and != operators
         void testCopyCompare_data();
+        void testCopyCompare(); // use of =, == and != operators
         
-        void testCorrectNativeExpressions(); // correct curves in native analitza sintax
-        void testCorrectNativeExpressions_data();
+        void testCorrectExpressions_data();
+        void testCorrectExpressions(); // correct curves in native analitza sintax
         
-        void testCorrectCustomExpressions(); // correct curves with custom expression (builtin methods)
-        void testCorrectCustomExpressions_data();
-        
-        void testIncorrect(); // cases that can not be drawn
         void testIncorrect_data();
+        void testIncorrect(); // cases that can not be drawn
 
         void cleanupTestCase();
     private:
