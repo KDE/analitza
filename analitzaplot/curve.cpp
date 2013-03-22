@@ -99,6 +99,31 @@ Curve::CurveData::CurveData(const CurveData& other)
     m_analyzer->setStack(runStack);
 }
 
+
+//TODO put this class in other file 
+class ODE : public Analitza::FunctionDefinition
+{
+    virtual Expression operator()(const QList< Expression >& args)
+    {
+//         if (args.isEmpty())
+//         {
+            Expression err("2+3");
+//             err.addError("Bad ode ... ");
+            
+            return err;
+//         }
+//         
+//         
+//             
+//         qDebug() << "AKIII WIII";
+//         
+//         
+//         return Expression();
+    }
+};
+
+
+
 Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     : QSharedData()
     , ShapeData()
@@ -142,12 +167,14 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
             m_analyzer = new Analyzer;
         
         Expression testexp = expresssion;
+        bool original = false; //TODO rename to custombuiltingflag/canbebuiltin or something like that
         
         Analitza::Expression exp(testexp);
         if(exp.isDeclaration())
         {
             exp = exp.declarationValue();
             m_analyzer->setExpression(exp);
+            
         }
         else
         if(exp.isEquation())
@@ -160,6 +187,9 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
             if(!exp.isLambda())
             {
                 m_analyzer->setExpression(exp);
+                
+                //can be custom so marked
+                original = true;
             }
             else
             {
@@ -190,9 +220,24 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
             }
             
             if (nmath == 0)
-            {
-                m_errors << i18n("Curve type not recognized");
-            }
+                if (original) // can be a custom builtin method
+                {
+                    ExpressionType ode_t(ExpressionType::Lambda);
+                    ode_t.addParameter(ExpressionType(ExpressionType::Value));
+                    ode_t.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
+                    
+                    m_analyzer->builtinMethods()->insertFunction("ode", ode_t, new ODE);
+                    //we need to register again the expression ... soo see if line above can put in the begining of this ctr ... TODO
+                    m_analyzer->setExpression(expresssion);
+                    
+                    qDebug() << ode_t.toString() << m_analyzer->calculate().toString();
+                    
+                }
+                else // is a native analitza expression (aka not custom builtin) but is not correct
+                {
+                    
+                    m_errors << i18n("Curve type not recognized");
+                }
         }
     }
     else
