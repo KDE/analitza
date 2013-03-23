@@ -688,6 +688,31 @@ Expression Expression::equationToFunction() const
 	return *this;
 }
 
+Expression Expression::equationLeftSide() const
+{
+	Object* o = actualRoot(d->m_tree);
+	if(o && o->isApply()) {
+		Apply *c1 = (Apply*) o;
+		if(c1->firstOperator().operatorType()==Operator::eq) {
+			return Expression(c1->at(0)->copy());
+		}
+	}
+	return *this;
+}
+
+Expression Expression::equationRightSide() const
+{
+	Object* o = actualRoot(d->m_tree);
+	if(o && o->isApply()) {
+		Apply *c1 = (Apply*) o;
+		if(c1->firstOperator().operatorType()==Operator::eq) {
+			return Expression(c1->at(1)->copy());
+		}
+	}
+	return *this;
+}
+
+
 QList<Ci*> Expression::parameters() const
 {
 	QList<Ci*> ret;

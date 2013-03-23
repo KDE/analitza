@@ -228,6 +228,12 @@ class ANALITZA_EXPORT Expression
 		/** @returns the expression that evaluates the current equation to equal 0 */
 		Expression equationToFunction() const;
 		
+		/** @returns the left side in case is an equation */
+		Expression equationLeftSide() const;
+		
+		/** @returns the right side in case is an equation */
+		Expression equationRightSide() const;
+		
 		QStringList comments() const;
 		
 		/**
