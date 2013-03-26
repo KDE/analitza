@@ -21,6 +21,8 @@
 #include "analitzaplot/curve.h"
 #include "analitza/expression.h"
 #include "analitza/variables.h"
+#include <analitza/builtinmethods.h>
+#include <analitza/analyzer.h>
 #include <qtest_kde.h>
 #include <cmath>
 #include <QColor>
@@ -38,6 +40,14 @@ PlaneCurveTest::PlaneCurveTest(QObject *parent)
 PlaneCurveTest::~PlaneCurveTest()
 {
 }
+
+class ODE : public FunctionDefinition
+{
+    virtual Expression operator()(const QList< Expression >& args)
+    {
+        return Expression("sin(12)");
+    }
+};
 
 void PlaneCurveTest::initTestCase()
 {
@@ -94,9 +104,9 @@ void PlaneCurveTest::testCorrectExpressions_data()
     QTest::newRow("simple-algebraic") << "x*x + y*y = 3";
     QTest::newRow("complex-implicit") << "abs(x)*sin(y)*x -y*y = x+y";
     QTest::newRow("vector-3d") << "t->vector{sin(t), cos(t), t}";
-    QTest::newRow("ode-integral-curve-exp") << "x->list{y, 1, 0, 1}"; // y'=y
-    QTest::newRow("ode-kmplot-example-cos") << "x->list{-y, 2, 0, 1, 0}"; // y''=-y
-//     QTest::newRow("ode-high-order-vars") << "x->list{d6y, 2, 0, 1, 0}"; // y''=-y
+    QTest::newRow("ode-integral-curve-exp") << "x->list{1, y, 0, 1}"; // y'=y
+    QTest::newRow("ode-kmplot-example-cos") << "x->list{2, -y, 0, 1, 0}"; // y''=-y
+    QTest::newRow("ode-high-order-vars") << "x->list{6, -d2y + 3x - 1, 0, 1, 0, 0, 0, 0, 0}"; // y(6)=-y''+3x-1
 }
 
 void PlaneCurveTest::testCorrectExpressions()
@@ -127,9 +137,9 @@ void PlaneCurveTest::testIncorrect_data()
     QTest::newRow("collision") << "(x,y)->5=x*y";
     QTest::newRow("bad-ode-empty") << "x->list{}";
     QTest::newRow("bad-ode-few-args") << "x->list{y,1}";
-    QTest::newRow("bad-ode-order-not-int") << "x->list{y,45.98,0,1}";
-    QTest::newRow("bad-ode-wrong-initconds") << "x->list{y,1,x,list{}}";
-//     QTest::newRow("bad-ode-wrong-vars") << "x->list{t+v,1,0,1}";
+    QTest::newRow("bad-ode-order-not-int") << "x->list{45.98,y,0,1}";
+    QTest::newRow("bad-ode-wrong-initconds") << "x->list{1,y,x,list{}}";
+//     QTest::newRow("bad-ode-wrong-vars") << "x->list{t+v,1,0,1}";//TODO
     
     //TODO here need to implement createGeometry
 //     QTest::newRow("wrong-inf") << "y->y/0";TODO

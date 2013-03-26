@@ -190,34 +190,26 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
                         }
                         else
                         {
-                            //ULTRA TODO
-//                             Analyzer a;
-//                             a.setExpression(list.first());
-                            
-//                             qDebug() << a.dependenciesToLambda().bvarList();
-                            
-                            //check all values
-                            for (int i = 1; i<list.size(); ++i)
-                                if (!list.at(i).isCorrect() || list.at(i).toString().isEmpty() 
-                                    || !list.at(i).isReal())
-                                {
-                                    m_errors << "Not good values in " << QString::number(i);
-                                    break;
-                                }
-                                
-                            if (m_errors.isEmpty())
+                            //check0
+                            if (!list.first().toReal().isInteger())
                             {
-                                //TODO review this 
-//                                 if (list.at(i).toReal().format() == Cn::)
-//                                 {
-//                                     m_errors << "need real vaues as initial conditions";
-//                                     
-//                                     break;
-//                                 }
-
-                                if (!list.at(1).toReal().isInteger())
+                                m_errors << "second arg is the order, is a internet value";
+                            }
+                            else
+                            {
+                            //check1 TODO
+//                                 if ()
+//                                 else
                                 {
-                                    m_errors << "second arg is the order, is a internet value";
+                                    //check2 to n-1
+                                    //check all values
+                                    for (int i = 2; i<list.size(); ++i)
+                                        if (!list.at(i).isCorrect() || list.at(i).toString().isEmpty() 
+                                            || !list.at(i).isReal())
+                                        {
+                                            m_errors << "Not good values in " << QString::number(i);
+                                            break;
+                                        }
                                 }
                             }
                         }
