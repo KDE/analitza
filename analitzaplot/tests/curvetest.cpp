@@ -94,6 +94,9 @@ void PlaneCurveTest::testCorrectExpressions_data()
     QTest::newRow("simple-algebraic") << "x*x + y*y = 3";
     QTest::newRow("complex-implicit") << "abs(x)*sin(y)*x -y*y = x+y";
     QTest::newRow("vector-3d") << "t->vector{sin(t), cos(t), t}";
+    QTest::newRow("ode-integral-curve-exp") << "x->list{y, 1, 0, 1}"; // y'=y
+    QTest::newRow("ode-kmplot-example-cos") << "x->list{-y, 2, 0, 1, 0}"; // y''=-y
+//     QTest::newRow("ode-high-order-vars") << "x->list{d6y, 2, 0, 1, 0}"; // y''=-y
 }
 
 void PlaneCurveTest::testCorrectExpressions()
@@ -108,7 +111,7 @@ void PlaneCurveTest::testCorrectExpressions()
 
 void PlaneCurveTest::testIncorrect_data()
 {
-    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expression");
 
     QTest::newRow("empty-expression") << "";
     QTest::newRow("undefined-var") << "x:=w";
@@ -122,6 +125,11 @@ void PlaneCurveTest::testIncorrect_data()
     QTest::newRow("not-a-function") << "t";
     QTest::newRow("not-a-2d-function") << "(x,y)->3-sin(x)*sin(y)";
     QTest::newRow("collision") << "(x,y)->5=x*y";
+    QTest::newRow("bad-ode-empty") << "x->list{}";
+    QTest::newRow("bad-ode-few-args") << "x->list{y,1}";
+    QTest::newRow("bad-ode-order-not-int") << "x->list{y,45.98,0,1}";
+    QTest::newRow("bad-ode-wrong-initconds") << "x->list{y,1,x,list{}}";
+//     QTest::newRow("bad-ode-wrong-vars") << "x->list{t+v,1,0,1}";
     
     //TODO here need to implement createGeometry
 //     QTest::newRow("wrong-inf") << "y->y/0";TODO
@@ -130,9 +138,9 @@ void PlaneCurveTest::testIncorrect_data()
 
 void PlaneCurveTest::testIncorrect()
 {
-    QFETCH(QString, input);
-
-    Curve curve(Expression(input), m_vars);
+    QFETCH(QString, expression);
+    
+    Curve curve(Expression(expression), m_vars);
     curve.createGeometry();
     
     QVERIFY(!curve.isValid());

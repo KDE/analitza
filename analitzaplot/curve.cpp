@@ -113,28 +113,33 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     {
         //TODO move to common place
         //WARNING TODO this hack is just for those curves that are defined as functions
-        const ExpressionType fxtype = Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value));
-                   
+        const ExpressionType fxtype = ExpressionType(ExpressionType::Lambda).addParameter(
+                ExpressionType(ExpressionType::Value)).addParameter(
+                ExpressionType(ExpressionType::Value));
+                
         QList< QPair<ExpressionType, QStringList> > validtypes;
         validtypes << qMakePair(fxtype, QStringList("x"));
         validtypes << qMakePair(fxtype, QStringList("y"));
         validtypes << qMakePair(fxtype, QStringList("r"));
         //vector valued function 2D
-        validtypes << qMakePair(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
-            .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
-            .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)), QStringList("t"));
+        validtypes << qMakePair(ExpressionType(ExpressionType::Lambda)
+            .addParameter(ExpressionType(ExpressionType::Value))
+            .addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), 2)), QStringList("t"));
         //vector valued function 3D
-        validtypes << qMakePair(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
-                   Analitza::ExpressionType(Analitza::ExpressionType::Vector,
-                                            Analitza::ExpressionType(Analitza::ExpressionType::Value), 3)), QStringList("t"));
+        validtypes << qMakePair(ExpressionType(ExpressionType::Lambda).addParameter(
+                ExpressionType(ExpressionType::Value)).addParameter(
+                ExpressionType(ExpressionType::Vector,
+                                            ExpressionType(ExpressionType::Value), 3)), QStringList("t"));
         //implicit
-        validtypes << qMakePair(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
-        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
-        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
-        .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)), QStringList("x") << "y");
+        validtypes << qMakePair(ExpressionType(ExpressionType::Lambda)
+        .addParameter(ExpressionType(ExpressionType::Value))
+        .addParameter(ExpressionType(ExpressionType::Value))
+        .addParameter(ExpressionType(ExpressionType::Value)), QStringList("x") << "y");
+        
+        //integral curve: ode solution
+        validtypes << qMakePair(ExpressionType(ExpressionType::Lambda)
+        .addParameter(ExpressionType(ExpressionType::Value))
+        .addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value))), QStringList("x"));
         
         if (m_vars)
             m_analyzer = new Analyzer(m_vars);
@@ -143,12 +148,11 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
         
         Expression testexp = expresssion;
         
-        Analitza::Expression exp(testexp);
+        Expression exp(testexp);
         if(exp.isDeclaration())
         {
             exp = exp.declarationValue();
             m_analyzer->setExpression(exp);
-            
         }
         else
         if(exp.isEquation())
@@ -164,11 +168,66 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
             }
             else
             {
+                m_analyzer->setExpression(exp);
+                
                 if (exp.parameters().size() == 1)
                 {
-                    //si es lambda deberia generar la misma expression al llamar de dependenciesToLambda si no es asi es test del bucle abajo fallara
-                    m_analyzer->setExpression(exp);
-                    m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
+                    //solo aplicar el test si el body del lambda es list: pues es es ODE y tiene 
+                    // variables extras que no queremos que se conviarte la expresion en lambda de esas variables (d[n-1]y)
+                    
+                    if (expresssion.lambdaBody().isList())
+                    { // is a ode case the check listitem by listitem
+                        QList<Expression> list = expresssion.lambdaBody().toExpressionList();
+                        
+                        // 1st F 
+                        // 2nd is n: the order
+                        // 3rd: x0
+                        // 4rd: y(x0)
+                        // we need 3rd and 4rd fix to get a specific solution and not a generic one
+                        if (list.size() < 4)
+                        {
+                            m_errors << "need ode argumetns in list";
+                        }
+                        else
+                        {
+                            //ULTRA TODO
+//                             Analyzer a;
+//                             a.setExpression(list.first());
+                            
+//                             qDebug() << a.dependenciesToLambda().bvarList();
+                            
+                            //check all values
+                            for (int i = 1; i<list.size(); ++i)
+                                if (!list.at(i).isCorrect() || list.at(i).toString().isEmpty() 
+                                    || !list.at(i).isReal())
+                                {
+                                    m_errors << "Not good values in " << QString::number(i);
+                                    break;
+                                }
+                                
+                            if (m_errors.isEmpty())
+                            {
+                                //TODO review this 
+//                                 if (list.at(i).toReal().format() == Cn::)
+//                                 {
+//                                     m_errors << "need real vaues as initial conditions";
+//                                     
+//                                     break;
+//                                 }
+
+                                if (!list.at(1).toReal().isInteger())
+                                {
+                                    m_errors << "second arg is the order, is a internet value";
+                                }
+                            }
+                        }
+                    }
+                    else // 
+                    {
+                        //si es lambda deberia generar la misma expression al llamar de dependenciesToLambda si no es asi es test del bucle abajo fallara
+                        m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
+                    }
+                        
                 }
                 else
                     m_errors << i18n("Wrong number of params for lambda ctor");
@@ -180,6 +239,8 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
             
             int nmath = 0;
     //             if (!m_analyzer->expression().toString().isEmpty() && m_analyzer->isCorrect())
+//             qDebug() << m_analyzer->expression().toString();
+            
             for (int i = 0; i < validtypes.size(); ++i)
             {
     //                     qDebug() << validtypes[i].first.toString() << m_analyzer->type().toString() << m_analyzer->expression().toString();
@@ -189,7 +250,6 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
                         break;
                 }
             }
-            
             if (nmath == 0)
                 m_errors << i18n("Curve type not recognized");
         }

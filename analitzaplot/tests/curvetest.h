@@ -45,6 +45,8 @@ Q_OBJECT
         
         void testIncorrect_data();
         void testIncorrect(); // cases that can not be drawn
+// ctor de curve con qlist y en el model pon solo addcurve pro con tipos nativos de qt
+// el plottype ctor con typos de datos como exprresion en el model como string ...
 
         void cleanupTestCase();
     private:
