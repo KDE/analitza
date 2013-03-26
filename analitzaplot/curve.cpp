@@ -357,8 +357,9 @@ QStringList Curve::errors() const
     return d->m_errors;
 }
 
-Expression Curve::expression() const
+Expression Curve::expression(bool symbolic) const
 {
+    //TODO SYMBOLIC
     return d->m_expression;
 }
 

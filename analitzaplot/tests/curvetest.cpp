@@ -107,6 +107,9 @@ void PlaneCurveTest::testCorrectExpressions_data()
     QTest::newRow("ode-integral-curve-exp") << "x->list{1, y, 0, 1}"; // y'=y
     QTest::newRow("ode-kmplot-example-cos") << "x->list{2, -y, 0, 1, 0}"; // y''=-y
     QTest::newRow("ode-high-order-vars") << "x->list{6, -d2y + 3x - 1, 0, 1, 0, 0, 0, 0, 0}"; // y(6)=-y''+3x-1
+    //TODO analitzaplot will draw interpolating polynomials too
+//     QTest::newRow("lagrange-poly-xynodes") << "x->list{list{0,1,2}, list{10,10.2,10.5}}";
+//     QTest::newRow("lagrange-poly-xypoints") << "x->list{vector{0,10}, vector{1,10.2}, vector{2,10.5}}";
 }
 
 void PlaneCurveTest::testCorrectExpressions()

@@ -76,7 +76,7 @@ public:
     void createGeometry();
     Dimension dimension() const;
     QStringList errors() const;
-    Expression expression() const;
+    Expression expression(bool symbolic = false) const;
     QString iconName() const;
     bool isValid() const;
     bool isVisible() const;

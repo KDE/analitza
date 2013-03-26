@@ -51,7 +51,7 @@ public:
     virtual void createGeometry() = 0; // heavy task ... the user would need to use threads here
     virtual Dimension dimension() const = 0; // dim of the space where the item can be drawn ... IS NOT the variety/top dimension
     virtual QStringList errors() const = 0;
-    virtual Expression expression() const = 0;
+    virtual Expression expression(bool symbolic = false) const = 0; // if symbolic true then the child have to try to return the best symbolic expression
     virtual QString iconName() const = 0;
     virtual bool isValid() const = 0; // see if expression match its definition
     virtual bool isVisible() const = 0;
