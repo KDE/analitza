@@ -16,21 +16,12 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef ANALITZAPLOT_FUNCTION_H
-#define ANALITZAPLOT_FUNCTION_H
+#ifndef ANALITZAPLOT_CURVE_H
+#define ANALITZAPLOT_CURVE_H
 
 #include "shapeinterface.h"
 
 #include <QSharedDataPointer>
-#include <QVector>
-
-
-#define GL_GLEXT_PROTOTYPES
-#include <GL/glu.h>
-
-class QPointF;
-class QLineF;
-class QVector3D;
 
 namespace Analitza
 {
@@ -66,10 +57,8 @@ class ANALITZAPLOT_EXPORT Curve : public ShapeInterface<Curve>
 public:
     Curve();
     Curve(const Curve &other);
-    Curve(const Analitza::Expression &expresssion, Variables* vars = 0);// { if is builtin else is eq, expr, lambda,etc }
+    Curve(const Analitza::Expression &expresssion, Variables* vars = 0);
     ~Curve();
-    
-    //virtual void animate  (       )    virtualslot
     
     QColor color() const;
     CoordinateSystem coordinateSystem() const;
@@ -91,10 +80,12 @@ public:
     bool operator!=(const Curve &other) const;
     Curve & operator=(const Curve &other);
     
+    //TODO
 //     qstring type(clasification style/type enum)
 //     qlist point singular points
 //     QStringList arguments() const;// X->F(X) : Kn->Km, K: real or complex so args := X in X->F(X)
 //     QPair<double, double> argumentLimits(const QString &arg) const;
+// QPair<Expression, Expression> Curve::limits(const QString &arg) const again??? 
 //     void setArgumentLimits(const QString &arg, double min, double max);//x,y,z also bvars like theta and vars in Variables ...update geometry
 //     QStringList parameters() const;// a,b,c... in X->F(X,a,b,c,...)
 //     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
@@ -103,17 +94,8 @@ public:
 private:
     class CurveData;
     QSharedDataPointer<CurveData> d;
-    
-    
-    //WARNING TODO
-        GLhandleARB shader_programme;
-        GLuint vbo;
-    QVector<double> points;
-    bool cancelnow;
-    int *m_cancont;
-
 };
 
 }
 
-#endif // ANALITZAPLOT_FUNCTION_H
+#endif // ANALITZAPLOT_CURVE_H

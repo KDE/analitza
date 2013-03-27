@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef ANALITZAPLOT_PLOTITEM_H_DATA
-#define ANALITZAPLOT_PLOTITEM_H_DATA
+#ifndef ANALITZAPLOT_SHAPEINTERFACE_H
+#define ANALITZAPLOT_SHAPEINTERFACE_H
 
 #include "analitzaplotexport.h"
 #include "plottingenums.h"
@@ -36,15 +36,11 @@ class Expression;
  * \ingroup AnalitzaPlotModule
  *
  * \brief Commmon contract/interface for all shape types.
- *
- * Concrete classes have to implement implicit memory sharing by using 
- * QSharedDataPointer.
  */
 
 template <typename ShapeType>
 class ANALITZAPLOT_EXPORT ShapeInterface
 {
-    
 public:
     virtual QColor color() const = 0;
     virtual CoordinateSystem coordinateSystem() const = 0;
@@ -65,10 +61,8 @@ public:
     virtual bool operator==(const ShapeType &other) const = 0;
     virtual bool operator!=(const ShapeType &other) const = 0;
     virtual ShapeType & operator=(const ShapeType &other) = 0;
-    
-protected:
 };
 
 }
 
-#endif // ANALITZAPLOT_PLOTITEM_H
+#endif // ANALITZAPLOT_SHAPEINTERFACE_H

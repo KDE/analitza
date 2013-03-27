@@ -35,7 +35,6 @@ if(Boost_FOUND)
 endif(Boost_FOUND)
 
 # set ( analitzaplot_SRCS
-#     private/utils/mathutils.cpp
 #     private/utils/quadtree.cpp
 #     private/utils/marchingsquares.cpp
 #     private/utils/octree.cpp
@@ -73,6 +72,8 @@ endif(Boost_FOUND)
 set ( analitzaplot_SRCS
 curve.cpp
 shapesmodel.cpp
+private/mathutils.cpp
+
 )
 
 # if(OPENGL_FOUND)

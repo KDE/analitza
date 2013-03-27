@@ -39,25 +39,6 @@ enum CoordinateSystem {
     Spherical
 };
 
-enum CartesianAxis {
-    XAxis = 1,
-    YAxis,
-    ZAxis,
-    InvalidAxis // used for query/select between some axis 
-};
-
-enum PlotStyle { 
-    Dots = 1,
-    Wired, 
-    Solid
-};
-
-enum PlottingFocusPolicy
-{
-    Current,
-    All
-};
-
 }
 
 #endif

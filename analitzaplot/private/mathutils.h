@@ -1,6 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *  Copyright (C) 2010-2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -22,14 +22,20 @@
 
 #include <QLineF>
 #include <QVector3D>
+#include "analitza/expressiontype.h"
+
+namespace Analitza 
+{
+
+ExpressionType createFunctionType(int fromDim, int toDim); // 2,2 crea un mapa, 1,1 crea un valued function de var real ...
 
 QPointF polarToCartesian(double radial, double polar);
 
 void cartesianToPolar(double x, double y, double &radial, double &polar);
 
-QVector3D cylindricalToCartesian(double radial, double polar, double height);
+void cylindricalToCartesian(double radial, double polar, double height, double &x, double &y, double &z);
 
-QVector3D sphericalToCartesian(double radial, double azimuth, double polar);
+void sphericalToCartesian(double radial, double azimuth, double polar, double &x, double &y, double &z);
 
 bool isSimilar(double a, double b, double diff = .0000001);
 
@@ -38,5 +44,7 @@ bool traverse(double p1, double p2, double next);
 QLineF slopeToLine(const double &der);
 
 QLineF mirrorXY(const QLineF& l);
+
+}
 
 #endif

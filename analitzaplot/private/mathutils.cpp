@@ -1,6 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   * 
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -21,6 +21,13 @@
 
 #include <cmath>
 
+using namespace Analitza;
+
+Analitza::ExpressionType createFunctionType(int fromDim, int toDim)
+{
+    return ExpressionType();
+}
+
 QPointF polarToCartesian(double radial, double polar)
 {
     return QPointF(radial*cos(polar), radial*sin(polar)); 
@@ -32,14 +39,18 @@ void cartesianToPolar(double x, double y, double &radial, double &polar)
     polar = atan2(y,x);
 }
 
-QVector3D cylindricalToCartesian(double radial, double polar, double height)
+void cylindricalToCartesian(double radial, double polar, double height, double &x, double &y, double &z)
 {
-    return QVector3D(radial*cos(polar), radial*sin(polar), height);
+    x = radial*cos(polar);
+    y = radial*sin(polar);
+    z = height;
 }
 
-QVector3D sphericalToCartesian(double radial, double azimuth, double polar)
+void sphericalToCartesian(double radial, double azimuth, double polar, double &x, double &y, double &z)
 {
-    return QVector3D(radial*cos(azimuth)*sin(polar), radial*sin(azimuth)*sin(polar), radial*cos(polar));
+    x = radial*cos(azimuth)*sin(polar);
+    y = radial*sin(azimuth)*sin(polar);
+    z = radial*cos(polar);
 }
 
 bool traverse(double p1, double p2, double next)
@@ -50,11 +61,6 @@ bool traverse(double p1, double p2, double next)
     bool ret = (diff>0 && diff2<-delta) || (diff<0 && diff2>delta);
     
     return ret;
-}
-
-bool isSimilar(double a, double b, double diff)
-{
-    return std::fabs(a-b) < diff;
 }
 
 QLineF slopeToLine(const double &der)
