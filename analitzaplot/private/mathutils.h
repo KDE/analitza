@@ -17,8 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef MATHUTILS_H
-#define MATHUTILS_H
+#ifndef ANALITZAPLOT_MATHUTILS_H
+#define ANALITZAPLOT_MATHUTILS_H
 
 #include <QLineF>
 #include <QVector3D>
@@ -27,9 +27,19 @@
 namespace Analitza 
 {
 
+/**
+ * \namespace MathUtils
+ * 
+ * \ingroup AnalitzaPlotModule
+ *
+ * \brief Numeric and symbolic math helpers.
+ */
+
+namespace MathUtils
+{
 ExpressionType createFunctionType(int fromDim, int toDim); // 2,2 crea un mapa, 1,1 crea un valued function de var real ...
 
-QPointF polarToCartesian(double radial, double polar);
+void polarToCartesian(double radial, double polar, double &x, double &y);
 
 void cartesianToPolar(double x, double y, double &radial, double &polar);
 
@@ -44,7 +54,8 @@ bool traverse(double p1, double p2, double next);
 QLineF slopeToLine(const double &der);
 
 QLineF mirrorXY(const QLineF& l);
+}
 
 }
 
-#endif
+#endif // ANALITZAPLOT_MATHUTILS_H

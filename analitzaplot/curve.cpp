@@ -22,6 +22,7 @@
 // #include <GL/glu.h>
 
 #include "private/shapedata.h"
+#include "private/mathutils.h"
 
 #include "analitza/analyzer.h"
 #include <analitza/variable.h>
@@ -97,7 +98,7 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
                 ExpressionType(ExpressionType::Value));
                 
         QList< QPair<ExpressionType, QStringList> > validtypes;
-        validtypes << qMakePair(fxtype, QStringList("x"));
+        validtypes << qMakePair(MathUtils::createFunctionType(1,1), QStringList("x"));
         validtypes << qMakePair(fxtype, QStringList("y"));
         validtypes << qMakePair(fxtype, QStringList("r"));
         //vector valued function 2D

@@ -23,37 +23,51 @@
 
 using namespace Analitza;
 
-Analitza::ExpressionType createFunctionType(int fromDim, int toDim)
+ExpressionType MathUtils::createFunctionType(int fromDim, int toDim)
 {
-    return ExpressionType();
+    Q_ASSERT(fromDim > 0);
+    Q_ASSERT(toDim > 0);
+    
+    ExpressionType ret(ExpressionType::Lambda);
+    
+    for (int i = 0; i < fromDim; ++i)
+        ret.addParameter(ExpressionType(ExpressionType::Value));
+    
+    if (toDim == 1)
+        ret.addParameter(ExpressionType(ExpressionType::Value));
+    else
+        ret.addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), toDim));
+    
+    return ret;
 }
 
-QPointF polarToCartesian(double radial, double polar)
+void MathUtils::polarToCartesian(double radial, double polar, double &x, double &y)
 {
-    return QPointF(radial*cos(polar), radial*sin(polar)); 
+    x = radial*cos(polar);
+    y = radial*sin(polar);
 }
 
-void cartesianToPolar(double x, double y, double &radial, double &polar)
+void MathUtils::cartesianToPolar(double x, double y, double &radial, double &polar)
 {
     radial = sqrt(x*x+y*y);
     polar = atan2(y,x);
 }
 
-void cylindricalToCartesian(double radial, double polar, double height, double &x, double &y, double &z)
+void MathUtils::cylindricalToCartesian(double radial, double polar, double height, double &x, double &y, double &z)
 {
     x = radial*cos(polar);
     y = radial*sin(polar);
     z = height;
 }
 
-void sphericalToCartesian(double radial, double azimuth, double polar, double &x, double &y, double &z)
+void MathUtils::sphericalToCartesian(double radial, double azimuth, double polar, double &x, double &y, double &z)
 {
     x = radial*cos(azimuth)*sin(polar);
     y = radial*sin(azimuth)*sin(polar);
     z = radial*cos(polar);
 }
 
-bool traverse(double p1, double p2, double next)
+bool MathUtils::traverse(double p1, double p2, double next)
 {
     static const double delta=3;
     double diff=p2-p1, diff2=next-p2;
@@ -63,7 +77,7 @@ bool traverse(double p1, double p2, double next)
     return ret;
 }
 
-QLineF slopeToLine(const double &der)
+QLineF MathUtils::slopeToLine(const double &der)
 {
     double arcder = atan(der);
     const double len=6.*der;
@@ -76,7 +90,7 @@ QLineF slopeToLine(const double &der)
     return QLineF(from, to);
 }
 
-QLineF mirrorXY(const QLineF& l)
+QLineF MathUtils::mirrorXY(const QLineF& l)
 {
     return QLineF(l.y1(), l.x1(), l.y2(), l.x2());
 }

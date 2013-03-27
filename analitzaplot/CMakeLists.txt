@@ -70,9 +70,9 @@ endif(Boost_FOUND)
 #     plotter2d.cpp
 # )
 set ( analitzaplot_SRCS
+private/mathutils.cpp
 curve.cpp
 shapesmodel.cpp
-private/mathutils.cpp
 
 )
 
