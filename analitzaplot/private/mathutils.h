@@ -23,6 +23,7 @@
 #include <QLineF>
 #include <QVector3D>
 #include "analitza/expressiontype.h"
+#include <plottingenums.h>
 
 namespace Analitza 
 {
@@ -37,7 +38,10 @@ namespace Analitza
 
 namespace MathUtils
 {
-ExpressionType createFunctionType(int fromDim, int toDim); // 2,2 crea un mapa, 1,1 crea un valued function de var real ...
+
+ExpressionType createRealValuedFunctionType(Dimension fromDim = Dim1D);
+ExpressionType createVectorValuedFunctionType(Dimension fromDim, Dimension toDim);
+ExpressionType createListValuedFunctionType(Dimension fromDim = Dim1D);
 
 void polarToCartesian(double radial, double polar, double &x, double &y);
 

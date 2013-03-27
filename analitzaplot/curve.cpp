@@ -91,35 +91,16 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     //BIG TODO
     if (expresssion.isCorrect() && !expresssion.toString().isEmpty())
     {
-        //TODO move to common place
-        //WARNING TODO this hack is just for those curves that are defined as functions
-        const ExpressionType fxtype = ExpressionType(ExpressionType::Lambda).addParameter(
-                ExpressionType(ExpressionType::Value)).addParameter(
-                ExpressionType(ExpressionType::Value));
-                
-        QList< QPair<ExpressionType, QStringList> > validtypes;
-        validtypes << qMakePair(MathUtils::createFunctionType(1,1), QStringList("x"));
-        validtypes << qMakePair(fxtype, QStringList("y"));
-        validtypes << qMakePair(fxtype, QStringList("r"));
-        //vector valued function 2D
-        validtypes << qMakePair(ExpressionType(ExpressionType::Lambda)
-            .addParameter(ExpressionType(ExpressionType::Value))
-            .addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), 2)), QStringList("t"));
-        //vector valued function 3D
-        validtypes << qMakePair(ExpressionType(ExpressionType::Lambda).addParameter(
-                ExpressionType(ExpressionType::Value)).addParameter(
-                ExpressionType(ExpressionType::Vector,
-                                            ExpressionType(ExpressionType::Value), 3)), QStringList("t"));
-        //implicit
-        validtypes << qMakePair(ExpressionType(ExpressionType::Lambda)
-        .addParameter(ExpressionType(ExpressionType::Value))
-        .addParameter(ExpressionType(ExpressionType::Value))
-        .addParameter(ExpressionType(ExpressionType::Value)), QStringList("x") << "y");
+        const ExpressionType onetoonefunc_t = MathUtils::createRealValuedFunctionType();
         
-        //integral curve: ode solution
-        validtypes << qMakePair(ExpressionType(ExpressionType::Lambda)
-        .addParameter(ExpressionType(ExpressionType::Value))
-        .addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value))), QStringList("x"));
+        QList< QPair<ExpressionType, QStringList> > validtypes;
+        validtypes << qMakePair(onetoonefunc_t, QStringList("x"));
+        validtypes << qMakePair(onetoonefunc_t, QStringList("y"));
+        validtypes << qMakePair(onetoonefunc_t, QStringList("r"));
+        validtypes << qMakePair(MathUtils::createVectorValuedFunctionType(Dim1D, Dim2D), QStringList("t")); // vector valued function 2D
+        validtypes << qMakePair(MathUtils::createVectorValuedFunctionType(Dim1D, Dim3D), QStringList("t")); // vector valued function 3D
+        validtypes << qMakePair(MathUtils::createRealValuedFunctionType(Dim2D), QStringList("x") << "y"); // implicit curve
+        validtypes << qMakePair(MathUtils::createListValuedFunctionType(), QStringList("x")); // integral curve: ode solution
         
         if (m_vars)
             m_analyzer = new Analyzer(m_vars);

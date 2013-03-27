@@ -23,20 +23,64 @@
 
 using namespace Analitza;
 
-ExpressionType MathUtils::createFunctionType(int fromDim, int toDim)
+ExpressionType MathUtils::createRealValuedFunctionType(Dimension fromDim)
 {
-    Q_ASSERT(fromDim > 0);
-    Q_ASSERT(toDim > 0);
+    Q_ASSERT(fromDim != Analitza::DimAll);
     
     ExpressionType ret(ExpressionType::Lambda);
+    ret.addParameter(ExpressionType(ExpressionType::Value));
     
-    for (int i = 0; i < fromDim; ++i)
-        ret.addParameter(ExpressionType(ExpressionType::Value));
+    switch (fromDim)
+    {
+        case Analitza::Dim2D: ret.addParameter(ExpressionType(ExpressionType::Value)); break;
+        case Analitza::Dim3D: ret.addParameter(ExpressionType(ExpressionType::Value)).addParameter(ExpressionType(ExpressionType::Value)); break;
+    }
     
-    if (toDim == 1)
-        ret.addParameter(ExpressionType(ExpressionType::Value));
-    else
-        ret.addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), toDim));
+    ret.addParameter(ExpressionType(ExpressionType::Value));
+    
+    return ret;
+}
+
+ExpressionType MathUtils::createVectorValuedFunctionType(Dimension fromDim, Dimension toDim)
+{
+    Q_ASSERT(fromDim != Analitza::DimAll || toDim != Analitza::Dim1D || toDim != Analitza::DimAll);
+    
+    ExpressionType ret(ExpressionType::Lambda);
+    ret.addParameter(ExpressionType(ExpressionType::Value));
+    
+    switch (fromDim)
+    {
+        case Analitza::Dim2D: ret.addParameter(ExpressionType(ExpressionType::Value)); break;
+        case Analitza::Dim3D: ret.addParameter(ExpressionType(ExpressionType::Value)).addParameter(ExpressionType(ExpressionType::Value)); break;
+    }
+    
+    int components = 0;
+    
+    switch (toDim)
+    {
+        case Analitza::Dim2D: components = 2; break;
+        case Analitza::Dim3D: components = 3; break;
+    }
+    
+    ret.addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), components));
+    
+    return ret;
+}
+
+ExpressionType MathUtils::createListValuedFunctionType(Dimension fromDim)
+{
+    Q_ASSERT(fromDim != Analitza::DimAll);
+    
+    ExpressionType ret(ExpressionType::Lambda);
+    ret.addParameter(ExpressionType(ExpressionType::Value));
+    
+    switch (fromDim)
+    {
+        case Analitza::Dim2D: ret.addParameter(ExpressionType(ExpressionType::Value)); break;
+        case Analitza::Dim3D: ret.addParameter(ExpressionType(ExpressionType::Value)).addParameter(ExpressionType(ExpressionType::Value)); break;
+    }
+    
+    ret.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
     
     return ret;
 }
