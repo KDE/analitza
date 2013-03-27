@@ -41,16 +41,16 @@ public:
     CurveData(const Expression& expresssion, Variables* vars);
     ~CurveData();
 
-    QScopedPointer<Analyzer> m_analyzer; // internal expression
     Variables *m_vars; // variables module, just ignore m_analyzer->variables: there is not way to know if is owned or external module vars
+    QScopedPointer<Analyzer> m_analyzer; // internal expression
     QHash<QString, Cn*> m_args;
 };
 
 Curve::CurveData::CurveData()
     : QSharedData()
     , ShapeData()
-    , m_analyzer(0)
     , m_vars(0)
+    , m_analyzer(0)
 {
     //TODO better messages and make this a ... define this in shapedata ... add some ctor there
     m_errors << i18n("Invalid null curve, use other ctors");
@@ -59,34 +59,40 @@ Curve::CurveData::CurveData()
 Curve::CurveData::CurveData(const CurveData& other)
     : QSharedData(other)
     , ShapeData(other)
-    , m_analyzer(0)
     , m_vars(0)
+    , m_analyzer(0)
 {
-    if (other.m_analyzer)
+    if (other.m_expression.isCorrect() && !other.m_expression.toString().isEmpty())
     {
-        if (other.m_vars)
-            m_analyzer.reset(new Analyzer(other.m_vars));
-        else
-            m_analyzer.reset(new Analyzer);
+        m_vars = other.m_vars;
+        
+        if (other.m_analyzer)
+        {
+            if (other.m_vars)
+                m_analyzer.reset(new Analyzer(m_vars));
+            else
+                m_analyzer.reset(new Analyzer);
+        }
+        
+        m_analyzer->setExpression(other.m_expression);
+        
+        QStack<Object*> runStack;
+        
+        foreach(const QString &arg, m_args.keys())
+        {
+            m_args.insert(arg, static_cast<Cn*>(other.m_args.value(arg)->copy()));
+            runStack.push(m_args.value(arg));
+        }
+        
+        m_analyzer->setStack(runStack);
     }
-    
-    //TODO is exp = other.exp then geometrize and geocalled doesn't need to be cleared
-    m_analyzer->setExpression(other.m_expression); // TODO
-    
-    m_args["x"] = static_cast<Cn*>(other.m_args.value("x")->copy());
-    m_args["y"] = static_cast<Cn*>(other.m_args.value("y")->copy());
-    QStack<Object*> runStack;
-    runStack.push(m_args.value("x"));
-    runStack.push(m_args.value("y"));
-    
-    m_analyzer->setStack(runStack);
 }
 
 Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     : QSharedData()
     , ShapeData()
+    , m_vars(0)
     , m_analyzer(0)
-    , m_vars(vars)
 {
     QScopedPointer<Analyzer> analyzer;
     
@@ -103,8 +109,8 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
         validtypes.append(qMakePair(MathUtils::createRealValuedFunctionType(Dim2D), QStringList("x") << "y")); // implicit curve
         validtypes.append(qMakePair(MathUtils::createListValuedFunctionType(), QStringList("x"))); // integral curve: ode solution
         
-        if (m_vars)
-            analyzer.reset(new Analyzer(m_vars));
+        if (vars)
+            analyzer.reset(new Analyzer(vars));
         else
             analyzer.reset(new Analyzer);
         
@@ -198,9 +204,13 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     }
     else
         m_errors << i18n("The expression is not correct");
-
+    
     if (m_errors.isEmpty())
+    {
+        m_vars = vars;
         m_analyzer.reset(analyzer.take());
+        m_expression = expresssion; //NOTE the is important if this is empty then the shape is null see other ctors
+    }
 }
 
 Curve::CurveData::~CurveData()
@@ -320,6 +330,7 @@ bool Curve::operator==(const Curve &other) const
         (d->m_expression == other.d->m_expression) &&
         (d->m_iconName == other.d->m_iconName) &&
         (d->m_name == other.d->m_name) &&
+        (d->m_vars == other.d->m_vars) && 
         (d->m_visible == other.d->m_visible);
 }
 
@@ -343,10 +354,12 @@ Curve & Curve::operator=(const Curve &other)
     
     qDeleteAll(d->m_args);
     
+    d->m_vars = other.d->m_vars;
+    
     if (other.d->m_analyzer)
     {
         if (other.d->m_vars)
-            d->m_analyzer.reset(new Analyzer(other.d->m_vars));
+            d->m_analyzer.reset(new Analyzer(d->m_vars));
         else
             d->m_analyzer.reset(new Analyzer);
     }
