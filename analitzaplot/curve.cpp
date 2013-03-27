@@ -41,7 +41,7 @@ public:
     CurveData(const Expression& expresssion, Variables* vars);
     ~CurveData();
 
-    Analyzer *m_analyzer; // internal expression
+    QScopedPointer<Analyzer> m_analyzer; // internal expression
     Variables *m_vars; // variables module, just ignore m_analyzer->variables: there is not way to know if is owned or external module vars
     QHash<QString, Cn*> m_args;
 };
@@ -65,9 +65,9 @@ Curve::CurveData::CurveData(const CurveData& other)
     if (other.m_analyzer)
     {
         if (other.m_vars)
-            m_analyzer = new Analyzer(other.m_vars);
+            m_analyzer.reset(new Analyzer(other.m_vars));
         else
-            m_analyzer = new Analyzer;
+            m_analyzer.reset(new Analyzer);
     }
     
     //TODO is exp = other.exp then geometrize and geocalled doesn't need to be cleared
@@ -88,116 +88,105 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     , m_analyzer(0)
     , m_vars(vars)
 {
-    //BIG TODO
+    QScopedPointer<Analyzer> analyzer;
+    
     if (expresssion.isCorrect() && !expresssion.toString().isEmpty())
     {
         const ExpressionType onetoonefunc_t = MathUtils::createRealValuedFunctionType();
         
         QList< QPair<ExpressionType, QStringList> > validtypes;
-        validtypes << qMakePair(onetoonefunc_t, QStringList("x"));
-        validtypes << qMakePair(onetoonefunc_t, QStringList("y"));
-        validtypes << qMakePair(onetoonefunc_t, QStringList("r"));
-        validtypes << qMakePair(MathUtils::createVectorValuedFunctionType(Dim1D, Dim2D), QStringList("t")); // vector valued function 2D
-        validtypes << qMakePair(MathUtils::createVectorValuedFunctionType(Dim1D, Dim3D), QStringList("t")); // vector valued function 3D
-        validtypes << qMakePair(MathUtils::createRealValuedFunctionType(Dim2D), QStringList("x") << "y"); // implicit curve
-        validtypes << qMakePair(MathUtils::createListValuedFunctionType(), QStringList("x")); // integral curve: ode solution
+        validtypes.append(qMakePair(onetoonefunc_t, QStringList("x")));
+        validtypes.append(qMakePair(onetoonefunc_t, QStringList("y")));
+        validtypes.append(qMakePair(onetoonefunc_t, QStringList("r")));
+        validtypes.append(qMakePair(MathUtils::createVectorValuedFunctionType(Dim1D, Dim2D), QStringList("t"))); // vector valued function 2D
+        validtypes.append(qMakePair(MathUtils::createVectorValuedFunctionType(Dim1D, Dim3D), QStringList("t"))); // vector valued function 3D
+        validtypes.append(qMakePair(MathUtils::createRealValuedFunctionType(Dim2D), QStringList("x") << "y")); // implicit curve
+        validtypes.append(qMakePair(MathUtils::createListValuedFunctionType(), QStringList("x"))); // integral curve: ode solution
         
         if (m_vars)
-            m_analyzer = new Analyzer(m_vars);
+            analyzer.reset(new Analyzer(m_vars));
         else
-            m_analyzer = new Analyzer;
+            analyzer.reset(new Analyzer);
         
-        Expression testexp = expresssion;
-        
-        Expression exp(testexp);
-        if(exp.isDeclaration())
+        if (expresssion.isDeclaration())
         {
-            exp = exp.declarationValue();
-            m_analyzer->setExpression(exp);
+            analyzer->setExpression(expresssion.declarationValue());
         }
         else
-        if(exp.isEquation())
-        {
-            exp = exp.equationToFunction();
-            m_analyzer->setExpression(exp);
-            m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
-        }
-        else
-            if(!exp.isLambda())
+            if (expresssion.isEquation()) // implicit curve
             {
-                m_analyzer->setExpression(exp);
+                analyzer->setExpression(expresssion.equationToFunction());
+                analyzer->setExpression(analyzer->dependenciesToLambda());
             }
             else
-            {
-                m_analyzer->setExpression(exp);
-                
-                if (exp.parameters().size() == 1)
+                if (expresssion.isLambda())
                 {
-                    //solo aplicar el test si el body del lambda es list: pues es es ODE y tiene 
-                    // variables extras que no queremos que se conviarte la expresion en lambda de esas variables (d[n-1]y)
+                    analyzer->setExpression(expresssion);
                     
-                    if (expresssion.lambdaBody().isList())
-                    { // is a ode case the check listitem by listitem
-                        QList<Expression> list = expresssion.lambdaBody().toExpressionList();
-                        
-                        // 1st F 
-                        // 2nd is n: the order
-                        // 3rd: x0
-                        // 4rd: y(x0)
-                        // we need 3rd and 4rd fix to get a specific solution and not a generic one
-                        if (list.size() < 4)
+                    if (expresssion.parameters().size() == 1) // ode case
+                    {
+                        if (expresssion.lambdaBody().isList()) // check if is a list
                         {
-                            m_errors << "need ode argumetns in list";
-                        }
-                        else
-                        {
-                            //check0
-                            if (!list.first().toReal().isInteger())
+                            QList<Expression> list = expresssion.lambdaBody().toExpressionList();
+                            
+                            // 1st F 
+                            // 2nd is n: the order
+                            // 3rd: x0
+                            // 4rd: y(x0)
+                            // we need 3rd and 4rd fix to get a specific solution and not a generic one
+                            if (list.size() < 4)
                             {
-                                m_errors << "second arg is the order, is a internet value";
+                                m_errors << "need ode argumetns in list";
                             }
                             else
                             {
-                            //check1 TODO
-//                                 if ()
-//                                 else
+                                //check0
+                                if (!list.first().toReal().isInteger())
                                 {
-                                    //check2 to n-1
-                                    //check all values
-                                    for (int i = 2; i<list.size(); ++i)
-                                        if (!list.at(i).isCorrect() || list.at(i).toString().isEmpty() 
-                                            || !list.at(i).isReal())
-                                        {
-                                            m_errors << "Not good values in " << QString::number(i);
-                                            break;
-                                        }
+                                    m_errors << "second arg is the order, is a internet value";
+                                }
+                                else
+                                {
+                                //check1 TODO
+    //                                 if ()
+    //                                 else
+                                    {
+                                        //check2 to n-1
+                                        //check all values
+                                        for (int i = 2; i<list.size(); ++i)
+                                            if (!list.at(i).isCorrect() || list.at(i).toString().isEmpty() 
+                                                || !list.at(i).isReal())
+                                            {
+                                                m_errors << "Not good values in " << QString::number(i);
+                                                break;
+                                            }
+                                    }
                                 }
                             }
                         }
+                        else // 
+                        {
+                            //si es lambda deberia generar la misma expression al llamar de dependenciesToLambda si no es asi es test del bucle abajo fallara
+                            analyzer->setExpression(analyzer->dependenciesToLambda());
+                        }
+                            
                     }
-                    else // 
-                    {
-                        //si es lambda deberia generar la misma expression al llamar de dependenciesToLambda si no es asi es test del bucle abajo fallara
-                        m_analyzer->setExpression(m_analyzer->dependenciesToLambda());
-                    }
-                        
+                    else
+                        m_errors << i18n("Wrong number of params for lambda ctor");
                 }
                 else
-                    m_errors << i18n("Wrong number of params for lambda ctor");
-            }
+                {
+                    analyzer->setExpression(expresssion);
+                }
         
         if (m_errors.isEmpty())
         {
-            bool invalidexp = false;
-            
             int nmath = 0;
-    //             if (!m_analyzer->expression().toString().isEmpty() && m_analyzer->isCorrect())
-//             qDebug() << m_analyzer->expression().toString();
             
             for (int i = 0; i < validtypes.size(); ++i)
             {
-    //                     qDebug() << validtypes[i].first.toString() << m_analyzer->type().toString() << m_analyzer->expression().toString();
-                if (m_analyzer->expression().bvarList() == validtypes[i].second && m_analyzer->type().canReduceTo(validtypes[i].first))
+    //                     qDebug() << validtypes[i].first.toString() << analyzer->type().toString() << analyzer->expression().toString();
+                if (analyzer->expression().bvarList() == validtypes[i].second && analyzer->type().canReduceTo(validtypes[i].first))
                 {
                         ++nmath;
                         break;
@@ -210,16 +199,13 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     else
         m_errors << i18n("The expression is not correct");
 
-//     if (!m_errors.isEmpty())
-//         delete m_analyzer;
+    if (m_errors.isEmpty())
+        m_analyzer.reset(analyzer.take());
 }
 
 Curve::CurveData::~CurveData()
 {
     qDeleteAll(m_args);
-    
-    if (m_analyzer)
-        delete m_analyzer;
 }
 
 ///
@@ -357,15 +343,12 @@ Curve & Curve::operator=(const Curve &other)
     
     qDeleteAll(d->m_args);
     
-    if (d->m_analyzer)
-        delete d->m_analyzer;
-    
     if (other.d->m_analyzer)
     {
         if (other.d->m_vars)
-            d->m_analyzer = new Analyzer(other.d->m_vars);
+            d->m_analyzer.reset(new Analyzer(other.d->m_vars));
         else
-            d->m_analyzer = new Analyzer;
+            d->m_analyzer.reset(new Analyzer);
     }
     
     QStack<Object*> runStack;
