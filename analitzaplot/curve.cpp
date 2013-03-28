@@ -263,7 +263,7 @@ void Curve::createGeometry()
     if (d->m_expression.isEquation() && d->m_errors.isEmpty())
     {
 //         qDebug() << d->m_expression.toString() << d->m_args.size();
-        MathUtils::QuadTree *quadtree = new MathUtils::QuadTree(0,0, 1);
+        MathUtils::QuadTree *quadtree = new MathUtils::QuadTree(2,0.1, 10);
         
         adaptiveQuadTreeSubdivisionImplicitCurve(quadtree);
         
@@ -391,6 +391,27 @@ Curve & Curve::operator=(const Curve &other)
 
 void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root)
 {
+    Expression f = d->m_analyzer->expression();
+    f.renameArgument(2, "x");
+    
+    Analyzer af;
+    af.setExpression(f.lambdaBody());
+    af.setExpression(af.dependenciesToLambda());
+    af.simplify();
+    
+    Analyzer adf;
+    adf.setExpression(af.derivative("x"));
+    adf.simplify();
+    
+    Cn *nx = new Cn;
+    QVector<Object*> run;
+    run.append(nx);
+    
+    af.setStack(run);
+    adf.setStack(run);
+    
+    ///
+    
     Cn *x = d->m_args.value("x");
     Cn *y = d->m_args.value("y");
     
@@ -436,12 +457,34 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root)
         
         const double se = d->m_analyzer->calculateLambda().toReal().value();
         
+        bool root = false;
+        
+        double prev = node->x;
+        double next = 0;
+        for (int i = 0; i < 100; ++i)
+        {
+            nx->setValue(prev);
+            double fprev = af.calculateLambda().toReal().value();
+            double dfprev = adf.calculateLambda().toReal().value();
+            
+            next = prev - fprev/dfprev;
+            prev = next;
+            
+            if (fabs(next-prev)<0.0001)
+            {
+                root = true;
+                break;
+            }
+        }
+        
+//         if (root)
         if (MathUtils::oppositeSign(ne, nw) ||
             MathUtils::oppositeSign(nw, sw) ||
             MathUtils::oppositeSign(sw, se) ||
             MathUtils::oppositeSign(se, ne))
         {
-            if (node->size < 0.001)
+            
+            if (node->size < 0.1)
             {
 //                 qDebug() << root->nodes[i]->x << root->nodes[i]->y;
                 glBegin(GL_POINTS);
@@ -455,4 +498,6 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root)
             }
         }
     }
+    
+    delete nx;
 }

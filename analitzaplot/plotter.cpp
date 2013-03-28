@@ -192,7 +192,11 @@ void Plotter::plot(/*const QGLContext * context*/)
     
     ///
     
-    Curve c(Expression("y=x*x"));
+    
+//     Curve c(Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)-2*x+y=0")); //TODO hard
+    Curve c(Expression("x*x+y*y=6"));
+//     Curve c(Expression("y=5*sin(5*x)")); //TODO
+//     Curve c(Expression("y*sin(x) + x*cos(y) = 1"));
     c.createGeometry();
 
 }
@@ -200,4 +204,9 @@ void Plotter::plot(/*const QGLContext * context*/)
 void Plotter::setViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 {
     glViewport(x, y, width, height);
+    
+    double s = 5;
+    glLoadIdentity();
+    glOrtho(-s,s,-s,s,-s,s);
+    
 }
