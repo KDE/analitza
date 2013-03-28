@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2012-2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -17,68 +17,33 @@
  *************************************************************************************/
 
 
-#ifndef FUNCTIONGRAPH2_H__oct_q
-#define FUNCTIONGRAPH2_H__oct_q
+#ifndef ANALITZAPLOT_QUADTREE_H
+#define ANALITZAPLOT_QUADTREE_H
+#include <qpoint.h>
+#include <QList>
+#include <QPair>
+#include <analitza/value.h>
+#include <analitza/analyzer.h>
 
-#include <QRectF>
+namespace Analitza  {
+namespace MathUtils {
 
-class Square : public QRectF
+class QuadTree
 {
 public:
-    // QRectF(menor, mayor); en coordenadas de mundo
-    Square(const QPointF &c = QPointF(0,0), double hEdge = 1);
-    Square(double x, double y, double hEdge = 1);
-
-    void setCeter(const QPointF &c);
-    void setCenter(double x, double y);
-
-    double halfEdge() const;
-    void setHalfEdge(double he);
+    QuadTree(double x, double y, double size);
+    ~QuadTree();
+    
+    double x; // center x
+    double y; // center x
+    double size; // edge size of box
+    
+    QuadTree *nodes[4]; // 0:NE 1:NW 2:SW 3:SE
 };
 
 
-struct QNode
-{
-    Square cubo;
-    QNode* nodos[8];
-};
 
+}
+}
 
-/*
- Indice de los nodos
-
- -----
- |2|4|
- -----
- |1|3|
- -----
-*/
-
-
-
-class Quadtree
-{
-private:
-    QNode* raiz;
-
-    //Crea los hijos con los valores adecuados en los vertices
-    void inicializar_nodos(QNode* padre);
-
-    void borrar_rec(QNode* nodo);
-    void crear_rec(QNode* nodo, unsigned int nivel_actual, unsigned int nivel_max);
-
-public:
-    Quadtree(double largo_mundo);
-    Quadtree(Square cubo);
-    ~Quadtree();
-
-    QNode* get_raiz();
-    void crearNivel(unsigned int nivel);
-    void bajarNivel(QNode* nodo);
-    void borrarHijos(QNode* padre);
-
-};
-
-
-#endif
-
+#endif // ANALITZAPLOT_QUADTREE_H

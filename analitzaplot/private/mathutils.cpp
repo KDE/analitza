@@ -111,6 +111,16 @@ void MathUtils::sphericalToCartesian(double radial, double azimuth, double polar
     z = radial*cos(polar);
 }
 
+bool MathUtils::isSimilar(double a, double b, double diff)
+{
+    return std::fabs(a-b) < diff;
+}
+
+bool MathUtils::oppositeSign(double a, double b)
+{
+    return ((a > 0 && b <= 0) || (a <= 0 && b > 0));
+}
+
 bool MathUtils::traverse(double p1, double p2, double next)
 {
     static const double delta=3;

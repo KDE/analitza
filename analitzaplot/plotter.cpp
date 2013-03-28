@@ -189,6 +189,11 @@ void Plotter::plot(/*const QGLContext * context*/)
     
 //     QtConcurrent::run<void>(circle, &Curve::plot, context);
     
+    
+    ///
+    
+    Curve c(Expression("y=x*x"));
+    c.createGeometry();
 
 }
 

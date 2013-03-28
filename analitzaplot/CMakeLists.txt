@@ -35,7 +35,7 @@ if(Boost_FOUND)
 endif(Boost_FOUND)
 
 # set ( analitzaplot_SRCS
-#     private/utils/quadtree.cpp
+#     
 #     private/utils/marchingsquares.cpp
 #     private/utils/octree.cpp
 #     private/utils/marchingcubes.cpp
@@ -70,6 +70,7 @@ endif(Boost_FOUND)
 #     plotter2d.cpp
 # )
 set ( analitzaplot_SRCS
+private/quadtree.cpp
 private/mathutils.cpp
 curve.cpp
 shapesmodel.cpp

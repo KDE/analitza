@@ -53,6 +53,8 @@ void sphericalToCartesian(double radial, double azimuth, double polar, double &x
 
 bool isSimilar(double a, double b, double diff = .0000001);
 
+bool oppositeSign(double a, double b);
+
 bool traverse(double p1, double p2, double next);
 
 QLineF slopeToLine(const double &der);

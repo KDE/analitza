@@ -18,17 +18,17 @@
 
 #include "curve.h"
 
-// #define GL_GLEXT_PROTOTYPES
-// #include <GL/glu.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GL/glu.h>
 
 #include "private/shapedata.h"
 #include "private/mathutils.h"
+#include "private/quadtree.h"
 
 #include "analitza/analyzer.h"
 #include <analitza/variable.h>
 #include <analitza/value.h>
 #include <analitza/variables.h>
-#include <analitza/vector.h>
 #include <KLocalizedString>
 
 using namespace Analitza;
@@ -62,30 +62,30 @@ Curve::CurveData::CurveData(const CurveData& other)
     , m_vars(0)
     , m_analyzer(0)
 {
-    if (other.m_expression.isCorrect() && !other.m_expression.toString().isEmpty())
+    m_vars = other.m_vars;
+    
+    qDeleteAll(m_args);
+    m_args.clear();
+    
+    if (other.m_analyzer)
     {
-        m_vars = other.m_vars;
-        
-        if (other.m_analyzer)
-        {
-            if (other.m_vars)
-                m_analyzer.reset(new Analyzer(m_vars));
-            else
-                m_analyzer.reset(new Analyzer);
-        }
-        
-        m_analyzer->setExpression(other.m_expression);
-        
-        QStack<Object*> runStack;
-        
-        foreach(const QString &arg, m_args.keys())
-        {
-            m_args.insert(arg, static_cast<Cn*>(other.m_args.value(arg)->copy()));
-            runStack.push(m_args.value(arg));
-        }
-        
-        m_analyzer->setStack(runStack);
+        if (other.m_vars)
+            m_analyzer.reset(new Analyzer(m_vars));
+        else
+            m_analyzer.reset(new Analyzer);
     }
+    
+    m_analyzer->setExpression(other.m_expression);
+    
+    QStack<Object*> runStack;
+    
+    foreach(const QString &arg, m_args.keys())
+    {
+        m_args.insert(arg, static_cast<Cn*>(other.m_args.value(arg)->copy()));
+        runStack.push(m_args.value(arg));
+    }
+    
+    m_analyzer->setStack(runStack);
 }
 
 Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
@@ -209,7 +209,18 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
     {
         m_vars = vars;
         m_analyzer.reset(analyzer.take());
-        m_expression = expresssion; //NOTE the is important if this is empty then the shape is null see other ctors
+        
+        QStack<Object*> runStack;
+        
+        foreach(const Ci *arg, m_analyzer->expression().parameters())
+        {
+            m_args.insert(arg->name(), new Cn);
+            runStack.push(m_args.value(arg->name()));
+        }
+        
+        m_analyzer->setStack(runStack);
+        
+        m_expression = expresssion;
     }
 }
 
@@ -217,14 +228,6 @@ Curve::CurveData::~CurveData()
 {
     qDeleteAll(m_args);
 }
-
-///
-//TODO movo to common place
-bool isSimilar(double a, double b, double diff)
-{
-    return std::fabs(a-b) < diff;
-}
-
 
 Curve::Curve()
     : d(new CurveData)
@@ -257,7 +260,15 @@ CoordinateSystem Curve::coordinateSystem() const
 
 void Curve::createGeometry()
 {
-    //TODO
+    if (d->m_expression.isEquation() && d->m_errors.isEmpty())
+    {
+//         qDebug() << d->m_expression.toString() << d->m_args.size();
+        MathUtils::QuadTree *quadtree = new MathUtils::QuadTree(0,0, 1);
+        
+        adaptiveQuadTreeSubdivisionImplicitCurve(quadtree);
+        
+        delete quadtree;
+    }
 }
 
 Dimension Curve::dimension() const
@@ -353,6 +364,7 @@ Curve & Curve::operator=(const Curve &other)
     //END basic shape data
     
     qDeleteAll(d->m_args);
+    d->m_args.clear();
     
     d->m_vars = other.d->m_vars;
     
@@ -375,4 +387,72 @@ Curve & Curve::operator=(const Curve &other)
     d->m_analyzer->setStack(runStack);
     
     return *this;
+}
+
+void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root)
+{
+    Cn *x = d->m_args.value("x");
+    Cn *y = d->m_args.value("y");
+    
+    const double h = root->size*0.5; // half
+    const double hh = root->size*0.5*0.5; // halfhalf
+    
+    const double rxmhh = root->x - hh; // root x minus halfhalf
+    const double rxphh = root->x + hh;
+    const double rymhh = root->y - hh;
+    const double ryphh = root->y + hh;
+    
+    root->nodes[0] = new MathUtils::QuadTree(rxphh, ryphh, h); // NE
+    root->nodes[1] = new MathUtils::QuadTree(rxmhh, ryphh, h); // NW
+    root->nodes[2] = new MathUtils::QuadTree(rxmhh, rymhh, h); // SW
+    root->nodes[3] = new MathUtils::QuadTree(rxphh, rymhh, h); // SE
+    
+    for (int i = 0; i < 4; ++i)
+    {
+        MathUtils::QuadTree *node = root->nodes[i];
+        
+        const double nxmhh = node->x - hh; // node x minus halfhalf
+        const double nxphh = node->x + hh;
+        const double nymhh = node->y - hh;
+        const double nyphh = node->y + hh;
+        
+        x->setValue(nxphh);
+        y->setValue(nyphh);
+        
+        const double ne = d->m_analyzer->calculateLambda().toReal().value();
+        
+        x->setValue(nxmhh);
+        y->setValue(nyphh);
+        
+        const double nw = d->m_analyzer->calculateLambda().toReal().value();
+        
+        x->setValue(nxmhh);
+        y->setValue(nymhh);
+        
+        const double sw = d->m_analyzer->calculateLambda().toReal().value();
+
+        x->setValue(nxphh);
+        y->setValue(nymhh);
+        
+        const double se = d->m_analyzer->calculateLambda().toReal().value();
+        
+        if (MathUtils::oppositeSign(ne, nw) ||
+            MathUtils::oppositeSign(nw, sw) ||
+            MathUtils::oppositeSign(sw, se) ||
+            MathUtils::oppositeSign(se, ne))
+        {
+            if (node->size < 0.001)
+            {
+//                 qDebug() << root->nodes[i]->x << root->nodes[i]->y;
+                glBegin(GL_POINTS);
+                glColor3ub(255,255,0);
+                glVertex2d(node->x, node->y);
+                glEnd();
+            }
+            else
+            {
+                adaptiveQuadTreeSubdivisionImplicitCurve(node);
+            }
+        }
+    }
 }

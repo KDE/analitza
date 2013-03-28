@@ -23,8 +23,11 @@
 
 #include <QSharedDataPointer>
 
-namespace Analitza
-{
+namespace Analitza {
+
+namespace MathUtils {
+class QuadTree; 
+}
     
 /**
  * \class Curve
@@ -70,7 +73,7 @@ public:
     bool isValid() const;
     bool isVisible() const;
     QString name() const;
-    void plot(/*const QGLContext * context = 0*/);
+    void plot();
     void setColor(const QColor &color);
     void setName(const QString &name);
     void setVisible(bool visible);
@@ -90,6 +93,10 @@ public:
 //     QStringList parameters() const;// a,b,c... in X->F(X,a,b,c,...)
 //     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
 //     QPair<double, double> tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse
+    
+private:
+    void adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree* root);
+
     
 private:
     class CurveData;
