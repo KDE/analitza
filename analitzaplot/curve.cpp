@@ -30,6 +30,7 @@
 #include <analitza/value.h>
 #include <analitza/variables.h>
 #include <KLocalizedString>
+#include <QVector2D>
 
 using namespace Analitza;
 
@@ -262,12 +263,12 @@ void Curve::createGeometry()
 {
     if (d->m_expression.isEquation() && d->m_errors.isEmpty())
     {
-//         qDebug() << d->m_expression.toString() << d->m_args.size();
-        MathUtils::QuadTree *quadtree = new MathUtils::QuadTree(2,0.1, 10);
+        MathUtils::QuadTree *quadtree = new MathUtils::QuadTree(0,0, 10);
         
-        adaptiveQuadTreeSubdivisionImplicitCurve(quadtree);
+        QVector<QPointF> points;
+        points.reserve(100);
         
-        delete quadtree;
+        adaptiveQuadTreeSubdivisionImplicitCurve(quadtree, points);
     }
 }
 
@@ -389,28 +390,11 @@ Curve & Curve::operator=(const Curve &other)
     return *this;
 }
 
-void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root)
+int deep = 0;
+
+void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root, QVector<QPointF> &points)
 {
-    Expression f = d->m_analyzer->expression();
-    f.renameArgument(2, "x");
-    
-    Analyzer af;
-    af.setExpression(f.lambdaBody());
-    af.setExpression(af.dependenciesToLambda());
-    af.simplify();
-    
-    Analyzer adf;
-    adf.setExpression(af.derivative("x"));
-    adf.simplify();
-    
-    Cn *nx = new Cn;
-    QVector<Object*> run;
-    run.append(nx);
-    
-    af.setStack(run);
-    adf.setStack(run);
-    
-    ///
+    ++deep;
     
     Cn *x = d->m_args.value("x");
     Cn *y = d->m_args.value("y");
@@ -457,47 +441,29 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root)
         
         const double se = d->m_analyzer->calculateLambda().toReal().value();
         
-        bool root = false;
-        
-        double prev = node->x;
-        double next = 0;
-        for (int i = 0; i < 100; ++i)
-        {
-            nx->setValue(prev);
-            double fprev = af.calculateLambda().toReal().value();
-            double dfprev = adf.calculateLambda().toReal().value();
-            
-            next = prev - fprev/dfprev;
-            prev = next;
-            
-            if (fabs(next-prev)<0.0001)
-            {
-                root = true;
-                break;
-            }
-        }
-        
-//         if (root)
         if (MathUtils::oppositeSign(ne, nw) ||
             MathUtils::oppositeSign(nw, sw) ||
             MathUtils::oppositeSign(sw, se) ||
-            MathUtils::oppositeSign(se, ne))
+            MathUtils::oppositeSign(se, ne) ||
+            deep < 10)
         {
-            
-            if (node->size < 0.1)
+            if (node->size < 1.0)
             {
 //                 qDebug() << root->nodes[i]->x << root->nodes[i]->y;
                 glBegin(GL_POINTS);
                 glColor3ub(255,255,0);
                 glVertex2d(node->x, node->y);
                 glEnd();
+                
+                points.append(QPointF(node->x, node->y));
             }
             else
             {
-                adaptiveQuadTreeSubdivisionImplicitCurve(node);
+                adaptiveQuadTreeSubdivisionImplicitCurve(node, points);
             }
         }
+        else
+        {
+        }
     }
-    
-    delete nx;
 }

@@ -20,6 +20,9 @@
 #define ANALITZAPLOT_CURVE_H
 
 #include "shapeinterface.h"
+#include <QVector>
+#include <QPointF>
+
 
 #include <QSharedDataPointer>
 
@@ -95,7 +98,7 @@ public:
 //     QPair<double, double> tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse
     
 private:
-    void adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree* root);
+    void adaptiveQuadTreeSubdivisionImplicitCurve(Analitza::MathUtils::QuadTree* root, QVector< QPointF >& points);
 
     
 private:
