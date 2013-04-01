@@ -21,6 +21,7 @@
 #define ANALITZAPLOT_MATHUTILS_H
 
 #include <QLineF>
+#include <QPair>
 #include <QVector3D>
 #include "analitza/expressiontype.h"
 #include <plottingenums.h>
@@ -55,7 +56,11 @@ bool isSimilar(double a, double b, double diff = .0000001);
 
 bool oppositeSign(double a, double b);
 
-double linearInterpolation(double a, double b);
+double linearInterpolation(double x, double x0, double x1, double fx0, double fx1);
+
+//domain [x0,x1]x[y0,y1]
+// southwest:f00, southeast:f10, northwest:f01, northeast:f11
+double bilinearInterpolation(double x, double y, double x0, double x1, double y0, double y1, double fx0y0, double fx1y0, double fx0y1, double fx1y1);
 
 bool traverse(double p1, double p2, double next);
 

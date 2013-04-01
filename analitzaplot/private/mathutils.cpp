@@ -121,10 +121,14 @@ bool MathUtils::oppositeSign(double a, double b)
     return ((a > 0 && b <= 0) || (a <= 0 && b > 0));
 }
 
-double MathUtils::linearInterpolation(double a, double b)
+double MathUtils::linearInterpolation(double x, double x0, double x1, double fx0, double fx1)
 {
-    //qassert?? TODO
-    return qAbs(a/(a - b));
+    return fx0 + (x - x0)*(fx1 - fx0)/(x1 - x0);
+}
+
+double MathUtils::bilinearInterpolation(double x, double y, double x0, double x1, double y0, double y1, double fx0y0, double fx1y0, double fx0y1, double fx1y1)
+{
+    return (fx0y0*(x1 - x)*(y1 - y) + fx1y0*(x - x0)*(y1 - y) + fx0y1*(x1 - x)*(y - y0) + fx1y1*(x - x0)*(y - y0))/((x1 - x0)*(y1 - y0));
 }
 
 bool MathUtils::traverse(double p1, double p2, double next)

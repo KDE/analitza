@@ -194,7 +194,7 @@ void Plotter::plot(/*const QGLContext * context*/)
     
     
 //     Curve c(Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)-2*x+y=0"));
-//     Curve c(Expression("(x^2+y^2)^2=2*(250^2)*(x^2-y^2)"));
+//     Curve c(Expression("(x^2+y^2)^2=2*(5^2)*(x^2-y^2)"));
     Curve c(Expression("(x^2+y^2)^3=4*(5^2)*(x^2)*(y^2)"));
     c.createGeometry();
     

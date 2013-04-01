@@ -402,35 +402,51 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
     const int n = (maxx - minx)/h;
     const int m = (maxy - miny)/h;
     
+    double xleft = minx;
+    
+    double southwest = 0;
+    double southeast = 0;
+    double northeast = 0;
+    double northwest = 0;
+    
     for (int i = 0; i < m; ++i)
     {
-        const double xleft = minx + i*h;
+        x->setValue(xleft);
+            
+        double xright = xleft + h;
+        
+        double ybottom = miny;
         
         for(int j = 0; j < n; ++j) 
         {
-            const double ybottom = miny + j*h;
-            const double xright = xleft + h;
-            const double ytop = ybottom + h;
-            
-            x->setValue(xleft);
             y->setValue(ybottom);
             
-            const double southwest = d->m_analyzer->calculateLambda().toReal().value();
+            double ytop = ybottom + h;
+            
+            bool eval = (i % 2 == 0) && (j % 2 == 0);
+            
+            if (eval)
+                southwest = d->m_analyzer->calculateLambda().toReal().value();
+            else
+                southwest = northwest;
             
             x->setValue(xright);
             y->setValue(ybottom);
             
-            const double southeast = d->m_analyzer->calculateLambda().toReal().value();
+            if (eval)
+                southeast = d->m_analyzer->calculateLambda().toReal().value();
+            else
+                southeast = northeast;
             
             x->setValue(xright);
             y->setValue(ytop);
             
-            const double northeast = d->m_analyzer->calculateLambda().toReal().value();
+            northeast = d->m_analyzer->calculateLambda().toReal().value();
             
             x->setValue(xleft);
             y->setValue(ytop);
             
-            const double northwest = d->m_analyzer->calculateLambda().toReal().value();
+            northwest = d->m_analyzer->calculateLambda().toReal().value();
             
             short int topologicalType = 0;
             
@@ -449,21 +465,19 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
             if (topologicalType != 0 && topologicalType != 15) // curve inside the box
             {
                 //TODO move this outside
-                QVector< QPair<double, double> > intersections; // 0:left 1:top 2:right 3:botton
-                
-                
+                QVector< QPair<double, double> > intersections; // 0:left 1:top 2:right 3:botton                
                 
                 if (MathUtils::oppositeSign(southwest, northwest))
-                    intersections << qMakePair(xleft, ybottom + h*MathUtils::linearInterpolation(southwest, northwest));
+                    intersections << qMakePair(xleft, MathUtils::linearInterpolation(0.0, southwest, northwest, ybottom, ytop));
                 
                 if (MathUtils::oppositeSign(northwest, northeast))
-                    intersections << qMakePair(xleft + h*MathUtils::linearInterpolation(northwest, northeast), ytop);
+                    intersections << qMakePair(MathUtils::linearInterpolation(0.0, northwest, northeast, xleft, xright), ytop);
                 
                 if (MathUtils::oppositeSign(southeast, northeast)) 
-                    intersections << qMakePair(xright, ybottom + h*MathUtils::linearInterpolation(southeast, northeast));
+                    intersections << qMakePair(xright, MathUtils::linearInterpolation(0.0, southeast, northeast, ybottom, ytop));
                 
                 if (MathUtils::oppositeSign(southwest, southeast)) 
-                    intersections << qMakePair(xleft + h*MathUtils::linearInterpolation(southwest, southeast), ybottom);
+                    intersections << qMakePair(MathUtils::linearInterpolation(0.0,southwest, southeast, xleft, xright), ybottom);
                 
                 switch (topologicalType)
                 {
@@ -513,6 +527,10 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
                     }
                 }
             }
+            
+            ybottom = ytop;
         }
+        
+        xleft = xright;
     }
 }
