@@ -45,7 +45,7 @@ using namespace Analitza;
 Plotter::Plotter(QAbstractItemModel* model)
     : m_model(model)
 {
-    circle = Curve(Expression("x*x+y*y=0.3*0.3"));
+//     circle = Curve(Expression("x*x+y*y=0.3*0.3"));
 
 }
 
@@ -193,11 +193,10 @@ void Plotter::plot(/*const QGLContext * context*/)
     ///
     
     
-    Curve c(Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)-2*x+y=0"));
+//     Curve c(Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)-2*x+y=0"));
 //     Curve c(Expression("(x^2+y^2)^2=2*(5^2)*(x^2-y^2)"));
 //     Curve c(Expression("(x^2+y^2)^3=4*(5^2)*(x^2)*(y^2)"));
-//     Curve c(Expression("sin(x)+cos(x)=0")); // TODO FAILS CRASH
-//     Curve c(Expression("y*sin(x) + x*cos(y) = 1"));
+    Curve c(Expression("y*sin(x) + x*cos(y) = 1"));
     c.createGeometry();
     
     qDebug() << "------------------------";

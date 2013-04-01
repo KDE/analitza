@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *  Copyright (C) 2010-2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -124,6 +124,9 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
             {
                 analyzer->setExpression(expresssion.equationToFunction());
                 analyzer->setExpression(analyzer->dependenciesToLambda());
+                
+                if (analyzer->expression().bvarList().size() != 2)
+                    m_errors << "implict curve needs 2 vars";
             }
             else
                 if (expresssion.isLambda())
@@ -189,6 +192,7 @@ Curve::CurveData::CurveData(const Expression& expresssion, Variables* vars)
         if (m_errors.isEmpty())
         {
             int nmath = 0;
+            
             
             for (int i = 0; i < validtypes.size(); ++i)
             {
@@ -392,7 +396,7 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
     Cn *x = d->m_args.value("x");
     Cn *y = d->m_args.value("y");
 
-    const double h = 0.5; // box size
+    const double h = 0.2; // box size
     
     const double minx = -5;
     const double maxx = 5;
@@ -423,7 +427,7 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
             
             double ytop = ybottom + h;
             
-            const bool eval = (j % 2 == 0);
+            const bool eval = (j % 2 == 0); // avoid repeat evaluations
             
             if (eval)
                 southwest = d->m_analyzer->calculateLambda().toReal().value();

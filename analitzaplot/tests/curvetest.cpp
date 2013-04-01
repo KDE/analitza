@@ -135,6 +135,9 @@ void PlaneCurveTest::testIncorrect_data()
     QTest::newRow("wrong-parametric") << "t->v";
     QTest::newRow("wrong-variable") << "x->x(x)";
     QTest::newRow("wrong-call") << "(x+1)(x+2)";
+    QTest::newRow("wrong-bvars-implicit") << "sin(k)+cos(j)=0";
+    QTest::newRow("incomplete-bvars-y-implicit") << "sin(x)+cos(x)=0";
+    QTest::newRow("incomplete-bvars-x-implicit") << "8*y^3+abs(y)=cos(y)";
     QTest::newRow("not-a-function") << "t";
     QTest::newRow("not-a-2d-function") << "(x,y)->3-sin(x)*sin(y)";
     QTest::newRow("collision") << "(x,y)->5=x*y";
