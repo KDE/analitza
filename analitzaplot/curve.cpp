@@ -423,7 +423,7 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
             
             double ytop = ybottom + h;
             
-            bool eval = (i % 2 == 0) && (j % 2 == 0);
+            const bool eval = (j % 2 == 0);
             
             if (eval)
                 southwest = d->m_analyzer->calculateLambda().toReal().value();
