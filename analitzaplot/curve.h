@@ -98,7 +98,7 @@ public:
 //     QPair<double, double> tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse
     
 private:
-    void adaptiveQuadTreeSubdivisionImplicitCurve(Analitza::MathUtils::QuadTree* root, QVector< QPointF >& points);
+    void adaptiveQuadTreeSubdivisionImplicitCurve();
 
     
 private:

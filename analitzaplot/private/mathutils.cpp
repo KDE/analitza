@@ -121,6 +121,12 @@ bool MathUtils::oppositeSign(double a, double b)
     return ((a > 0 && b <= 0) || (a <= 0 && b > 0));
 }
 
+double MathUtils::linearInterpolation(double a, double b)
+{
+    //qassert?? TODO
+    return qAbs(a/(a - b));
+}
+
 bool MathUtils::traverse(double p1, double p2, double next)
 {
     static const double delta=3;

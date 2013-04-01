@@ -55,6 +55,8 @@ bool isSimilar(double a, double b, double diff = .0000001);
 
 bool oppositeSign(double a, double b);
 
+double linearInterpolation(double a, double b);
+
 bool traverse(double p1, double p2, double next);
 
 QLineF slopeToLine(const double &der);

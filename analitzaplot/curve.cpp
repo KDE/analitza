@@ -263,12 +263,7 @@ void Curve::createGeometry()
 {
     if (d->m_expression.isEquation() && d->m_errors.isEmpty())
     {
-        MathUtils::QuadTree *quadtree = new MathUtils::QuadTree(0,0, 10);
-        
-        QVector<QPointF> points;
-        points.reserve(100);
-        
-        adaptiveQuadTreeSubdivisionImplicitCurve(quadtree, points);
+        adaptiveQuadTreeSubdivisionImplicitCurve();
     }
 }
 
@@ -392,78 +387,132 @@ Curve & Curve::operator=(const Curve &other)
 
 int deep = 0;
 
-void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root, QVector<QPointF> &points)
+void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
 {
-    ++deep;
-    
     Cn *x = d->m_args.value("x");
     Cn *y = d->m_args.value("y");
-    
-    const double h = root->size*0.5; // half
-    const double hh = root->size*0.5*0.5; // halfhalf
-    
-    const double rxmhh = root->x - hh; // root x minus halfhalf
-    const double rxphh = root->x + hh;
-    const double rymhh = root->y - hh;
-    const double ryphh = root->y + hh;
-    
-    root->nodes[0] = new MathUtils::QuadTree(rxphh, ryphh, h); // NE
-    root->nodes[1] = new MathUtils::QuadTree(rxmhh, ryphh, h); // NW
-    root->nodes[2] = new MathUtils::QuadTree(rxmhh, rymhh, h); // SW
-    root->nodes[3] = new MathUtils::QuadTree(rxphh, rymhh, h); // SE
-    
-    for (int i = 0; i < 4; ++i)
-    {
-        MathUtils::QuadTree *node = root->nodes[i];
-        
-        const double nxmhh = node->x - hh; // node x minus halfhalf
-        const double nxphh = node->x + hh;
-        const double nymhh = node->y - hh;
-        const double nyphh = node->y + hh;
-        
-        x->setValue(nxphh);
-        y->setValue(nyphh);
-        
-        const double ne = d->m_analyzer->calculateLambda().toReal().value();
-        
-        x->setValue(nxmhh);
-        y->setValue(nyphh);
-        
-        const double nw = d->m_analyzer->calculateLambda().toReal().value();
-        
-        x->setValue(nxmhh);
-        y->setValue(nymhh);
-        
-        const double sw = d->m_analyzer->calculateLambda().toReal().value();
 
-        x->setValue(nxphh);
-        y->setValue(nymhh);
+    const double h = 0.5; // box size
+    
+    const double minx = -5;
+    const double maxx = 5;
+    const double miny = -5;
+    const double maxy = 5;
+    
+    const int n = (maxx - minx)/h;
+    const int m = (maxy - miny)/h;
+    
+    for (int i = 0; i < m; ++i)
+    {
+        const double xleft = minx + i*h;
         
-        const double se = d->m_analyzer->calculateLambda().toReal().value();
-        
-        if (MathUtils::oppositeSign(ne, nw) ||
-            MathUtils::oppositeSign(nw, sw) ||
-            MathUtils::oppositeSign(sw, se) ||
-            MathUtils::oppositeSign(se, ne) ||
-            deep < 10)
+        for(int j = 0; j < n; ++j) 
         {
-            if (node->size < 1.0)
+            const double ybottom = miny + j*h;
+            const double xright = xleft + h;
+            const double ytop = ybottom + h;
+            
+            x->setValue(xleft);
+            y->setValue(ybottom);
+            
+            const double southwest = d->m_analyzer->calculateLambda().toReal().value();
+            
+            x->setValue(xright);
+            y->setValue(ybottom);
+            
+            const double southeast = d->m_analyzer->calculateLambda().toReal().value();
+            
+            x->setValue(xright);
+            y->setValue(ytop);
+            
+            const double northeast = d->m_analyzer->calculateLambda().toReal().value();
+            
+            x->setValue(xleft);
+            y->setValue(ytop);
+            
+            const double northwest = d->m_analyzer->calculateLambda().toReal().value();
+            
+            short int topologicalType = 0;
+            
+            if (northwest > 0)
+                topologicalType += 8;
+
+            if (northeast > 0)
+                topologicalType += 4;
+
+            if (southeast > 0)
+                topologicalType += 2;
+
+            if (southwest > 0)
+                topologicalType += 1;
+            
+            if (topologicalType != 0 && topologicalType != 15) // curve inside the box
             {
-//                 qDebug() << root->nodes[i]->x << root->nodes[i]->y;
-                glBegin(GL_POINTS);
-                glColor3ub(255,255,0);
-                glVertex2d(node->x, node->y);
-                glEnd();
+                //TODO move this outside
+                QVector< QPair<double, double> > intersections; // 0:left 1:top 2:right 3:botton
                 
-                points.append(QPointF(node->x, node->y));
+                
+                
+                if (MathUtils::oppositeSign(southwest, northwest))
+                    intersections << qMakePair(xleft, ybottom + h*MathUtils::linearInterpolation(southwest, northwest));
+                
+                if (MathUtils::oppositeSign(northwest, northeast))
+                    intersections << qMakePair(xleft + h*MathUtils::linearInterpolation(northwest, northeast), ytop);
+                
+                if (MathUtils::oppositeSign(southeast, northeast)) 
+                    intersections << qMakePair(xright, ybottom + h*MathUtils::linearInterpolation(southeast, northeast));
+                
+                if (MathUtils::oppositeSign(southwest, southeast)) 
+                    intersections << qMakePair(xleft + h*MathUtils::linearInterpolation(southwest, southeast), ybottom);
+                
+                switch (topologicalType)
+                {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 14:
+                    {
+                        //TODO not opengl just geometry primitives
+                        glBegin(GL_LINES);
+                        glColor3ub(255,0,0);
+                        glVertex2d(intersections[0].first, intersections[0].second);
+                        glVertex2d(intersections[1].first, intersections[1].second);
+                        glEnd();
+                        
+                        break;
+                    }
+                    case 5:
+                    {
+                        //TODO not opengl just geometry primitives
+                        glBegin(GL_LINES);
+                        glColor3ub(0,255,0);
+                        glVertex2d(intersections[0].first, intersections[0].second);
+                        glVertex2d(intersections[2].first, intersections[2].second);
+                        glEnd();
+                        
+                        break;
+                    }
+                    case 10:
+                    {
+                        //TODO not opengl just geometry primitives
+                        glBegin(GL_LINES);
+                        glColor3ub(0,0,255);
+                        glVertex2d(intersections[1].first, intersections[1].second);
+                        glVertex2d(intersections[3].first, intersections[3].second);
+                        glEnd();
+                        
+                        break;
+                    }
+                }
             }
-            else
-            {
-                adaptiveQuadTreeSubdivisionImplicitCurve(node, points);
-            }
-        }
-        else
-        {
         }
     }
 }
