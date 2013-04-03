@@ -100,7 +100,7 @@ public:
     
 private:
     void hilbert(double x0, double y0, double xi, double xj, double yi, double yj, int n, bool &found);
-    void adaptiveQuadTreeSubdivisionImplicitCurve();
+    void adaptiveQuadTreeSubdivisionImplicitCurve(double minx, double maxx, double miny, double maxy, double h);
     void adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root);
 
     class CurveData;

@@ -272,7 +272,7 @@ void Curve::createGeometry()
 {
     if (d->m_expression.isEquation() && d->m_errors.isEmpty())
     {
-        adaptiveQuadTreeSubdivisionImplicitCurve();
+        adaptiveQuadTreeSubdivisionImplicitCurve(-5,5,-5,5, 0.4);
 //         MathUtils::QuadTree *quadtree = new MathUtils::QuadTree(0,0, 10);
 //         
 //         adaptiveQuadTreeSubdivisionImplicitCurve(quadtree);
@@ -439,22 +439,13 @@ void Curve::hilbert(double x0, double y0, double xi, double xj, double yi, doubl
 
 //TODO aplicar un solo algortimo y una sola pasada para todas las curvas de este tipo que esten
 // en el canvas: NO APLICAR UNA PASADA POR CURVA, aprovechar el bucle para evaluar todos
-void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
+void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(double minx, double maxx, double miny, double maxy, double h)
 {
-    const double minx = -5;
-    const double maxx = 5;
-    const double miny = minx;
-    const double maxy = maxx;
+//     double min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
+//     
+//     if (min_grid>0.05 && min_grid < 1)
+//         min_grid = 0.05; // 0.05 es el minimo valor para la presicion
     
-    
-    double min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
-    
-    if (min_grid>0.05 && min_grid < 1)
-        min_grid = 0.05; // 0.05 es el minimo valor para la presicion
-    
-    const double h = 0.5;//min_grid; //0.4; // box size
-
-    qDebug() << h;
     //     const int order = 4;
 //     const double size = 1;//maxx - minx;
 //     double blx = 0;
@@ -474,8 +465,8 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
     Cn *x = d->m_args.value("x");
     Cn *y = d->m_args.value("y");
 
-    const int n = (maxx - minx)/h;
-    const int m = (maxy - miny)/h;
+//     const int n = (maxx - minx)/h;
+//     const int m = (maxy - miny)/h;
     
     double southwest = 0;
     double southeast = 0;
@@ -485,12 +476,12 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
     double xleft = minx;
     
     //BEGIN debug
-    for (int i = 0; i < m; ++i)
+    for (double x_ = minx; x_ <= maxx; x_ += h)
     {
         double xright = xleft + h;
         double ybottom = miny;
         
-        for(int j = 0; j < n; ++j) 
+        for (double y_ = miny; y_ <= maxy; y_ += h)
         {
             double ytop = ybottom + h;
             
@@ -512,8 +503,7 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
     //END debug
     
     xleft = minx;
-    int NN = 0;
-    for (int i = 0; i < m; ++i)
+    for (double x_ = minx; x_ <= maxx; x_ += h)
     {
         x->setValue(xleft);
         
@@ -521,15 +511,16 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
         
         double ybottom = miny;
         
-        for(int j = 0; j < n; ++j) 
+        int j = 0;
+        
+        for (double y_ = miny; y_ <= maxy; y_ += h)
         {
-            ++NN;
-            
             y->setValue(ybottom);
             
             double ytop = ybottom + h;
             
             const bool eval = (j % 2 == 0); // avoid repeat evaluations
+            ++j;
             
             if (eval)
                 southwest = d->m_analyzer->calculateLambda().toReal().value();
@@ -572,71 +563,73 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
             {
                 //sestoy en el mas grande box que tiene la curvas debo segir subdividiendo
                 
+                const double tol = 0.04;
                 
-                
-                
-                
-                
-                //TODO move this outside
-                QVector< QPair<double, double> > intersections; // 0:left 1:top 2:right 3:botton                
-                
-                if (MathUtils::oppositeSign(southwest, northwest))
-                    intersections << qMakePair(xleft, MathUtils::linearInterpolation(0.0, southwest, northwest, ybottom, ytop));
-                
-                if (MathUtils::oppositeSign(northwest, northeast))
-                    intersections << qMakePair(MathUtils::linearInterpolation(0.0, northwest, northeast, xleft, xright), ytop);
-                
-                if (MathUtils::oppositeSign(southeast, northeast)) 
-                    intersections << qMakePair(xright, MathUtils::linearInterpolation(0.0, southeast, northeast, ybottom, ytop));
-                
-                if (MathUtils::oppositeSign(southwest, southeast)) 
-                    intersections << qMakePair(MathUtils::linearInterpolation(0.0,southwest, southeast, xleft, xright), ybottom);
-                
-                switch (topologicalType)
+                if (h >= tol)
+                    adaptiveQuadTreeSubdivisionImplicitCurve(xleft, xright, ybottom, ytop, h*0.5);
+                else
                 {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
+                    //TODO move this outside
+                    QVector< QPair<double, double> > intersections; // 0:left 1:top 2:right 3:botton                
+                    
+                    if (MathUtils::oppositeSign(southwest, northwest))
+                        intersections << qMakePair(xleft, MathUtils::linearInterpolation(0.0, southwest, northwest, ybottom, ytop));
+                    
+                    if (MathUtils::oppositeSign(northwest, northeast))
+                        intersections << qMakePair(MathUtils::linearInterpolation(0.0, northwest, northeast, xleft, xright), ytop);
+                    
+                    if (MathUtils::oppositeSign(southeast, northeast)) 
+                        intersections << qMakePair(xright, MathUtils::linearInterpolation(0.0, southeast, northeast, ybottom, ytop));
+                    
+                    if (MathUtils::oppositeSign(southwest, southeast)) 
+                        intersections << qMakePair(MathUtils::linearInterpolation(0.0,southwest, southeast, xleft, xright), ybottom);
+                    
+                    switch (topologicalType)
                     {
-                        //TODO not opengl just geometry primitives
-                        glBegin(GL_LINES);
-                        glColor3ub(255,0,0);
-                        glVertex2d(intersections[0].first, intersections[0].second);
-                        glVertex2d(intersections[1].first, intersections[1].second);
-                        glEnd();
-                        
-                        break;
-                    }
-                    case 5:
-                    {
-                        //TODO not opengl just geometry primitives
-                        glBegin(GL_LINES);
-                        glColor3ub(0,255,0);
-                        glVertex2d(intersections[0].first, intersections[0].second);
-                        glVertex2d(intersections[2].first, intersections[2].second);
-                        glEnd();
-                        
-                        break;
-                    }
-                    case 10:
-                    {
-                        //TODO not opengl just geometry primitives
-                        glBegin(GL_LINES);
-                        glColor3ub(0,0,255);
-                        glVertex2d(intersections[1].first, intersections[1].second);
-                        glVertex2d(intersections[3].first, intersections[3].second);
-                        glEnd();
-                        
-                        break;
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 6:
+                        case 7:
+                        case 8:
+                        case 9:
+                        case 11:
+                        case 12:
+                        case 13:
+                        case 14:
+                        {
+                            //TODO not opengl just geometry primitives
+                            glBegin(GL_LINES);
+                            glColor3ub(255,0,0);
+                            glVertex2d(intersections[0].first, intersections[0].second);
+                            glVertex2d(intersections[1].first, intersections[1].second);
+                            glEnd();
+                            
+                            break;
+                        }
+                        case 5:
+                        {
+                            //TODO not opengl just geometry primitives
+                            glBegin(GL_LINES);
+                            glColor3ub(0,255,0);
+                            glVertex2d(intersections[0].first, intersections[0].second);
+                            glVertex2d(intersections[2].first, intersections[2].second);
+                            glEnd();
+                            
+                            break;
+                        }
+                        case 10:
+                        {
+                            //TODO not opengl just geometry primitives
+                            glBegin(GL_LINES);
+                            glColor3ub(0,0,255);
+                            glVertex2d(intersections[1].first, intersections[1].second);
+                            glVertex2d(intersections[3].first, intersections[3].second);
+                            glEnd();
+                            
+                            break;
+                        }
                     }
                 }
             }
@@ -717,8 +710,6 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
         
         xleft = xright;
     }
-    
-    qDebug() << "NO" << NN;
 }
 
 void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root)
