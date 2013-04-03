@@ -301,6 +301,11 @@ void AnalitzaTest::testCorrection_data()
 	
 	QStringList script;
 	script.clear();
+	script << "fxy:=(x,y)->(x^2+y^2-4)*((x-1)^2+y^2-0.3)*((x+1)^2+y^2-0.3)*(x^2+(y-2)^2-0.4)*(x^2+(y+2)^2-0.4)";
+	script << "fxy(3.3, 4/pi)";
+	QTest::newRow("complex-fxy-eval") << script << "260437.240931";
+	
+	script.clear();
 	script << "n:=2";
 	script << "n+1";
 	QTest::newRow("simple") << script << "3";
