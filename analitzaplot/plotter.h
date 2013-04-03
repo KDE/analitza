@@ -172,9 +172,16 @@ class ANALITZAPLOT_EXPORT MyGLDrawer : public QGLWidget, public Plotter
     
 public:
     MyGLDrawer(QWidget *parent = 0)
-        : QGLWidget(parent) {}
+        : QGLWidget(parent) {
+            setMinimumSize(640,640);
+        }
         
     virtual ~MyGLDrawer() {}
+    
+    virtual void keyPressEvent(QKeyEvent* )
+    {
+        close();
+    }
 
 protected:
 

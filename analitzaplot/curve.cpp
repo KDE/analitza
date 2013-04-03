@@ -31,6 +31,8 @@
 #include <analitza/variables.h>
 #include <KLocalizedString>
 #include <QVector2D>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace Analitza;
 
@@ -237,16 +239,19 @@ Curve::CurveData::~CurveData()
 Curve::Curve()
     : d(new CurveData)
 {
+    srand(time(0));
 }
 
 Curve::Curve(const Curve &other)
     : d(other.d)
 {
+    srand(time(0));
 }
 
 Curve::Curve(const Expression &expresssion, Variables* vars)
     : d(new CurveData(expresssion, vars))
 {
+    srand(time(0));
 }
 
 Curve::~Curve()
@@ -268,6 +273,12 @@ void Curve::createGeometry()
     if (d->m_expression.isEquation() && d->m_errors.isEmpty())
     {
         adaptiveQuadTreeSubdivisionImplicitCurve();
+//         MathUtils::QuadTree *quadtree = new MathUtils::QuadTree(0,0, 10);
+//         
+//         adaptiveQuadTreeSubdivisionImplicitCurve(quadtree);
+//         
+//         delete quadtree;
+
     }
 }
 
@@ -389,40 +400,131 @@ Curve & Curve::operator=(const Curve &other)
     return *this;
 }
 
-int deep = 0;
+void Curve::hilbert(double x0, double y0, double xi, double xj, double yi, double yj, int n, bool &found)
+{
+    static double old = 0;
+ 
+    if (found) return;
+    
+    if (n <= 0)
+    {
+        double X = x0 + (xi + yi)/2;
+        double Y = y0 + (xj + yj)/2;
+        
+        ///
+        
+        Cn *x = d->m_args.value("x");
+        Cn *y = d->m_args.value("y");
+    
+        x->setValue(X);
+        y->setValue(Y);
+        
+        double val = d->m_analyzer->calculateLambda().toReal().value();
+        
+//         glVertex2d(X,Y);
+        
+        if (MathUtils::oppositeSign(old,val))
+            found = true;
+        
+        old = val;
+    }
+    else
+    {
+        hilbert(x0,               y0,               yi/2, yj/2, xi/2, xj/2, n - 1, found);
+        hilbert(x0 + xi/2,        y0 + xj/2,        xi/2, xj/2, yi/2, yj/2, n - 1, found);
+        hilbert(x0 + xi/2 + yi/2, y0 + xj/2 + yj/2, xi/2, xj/2, yi/2, yj/2, n - 1, found);
+        hilbert(x0 + xi/2 + yi,   y0 + xj/2 + yj,  -yi/2,-yj/2,-xi/2,-xj/2, n - 1, found);
+    }
+}
 
+//TODO aplicar un solo algortimo y una sola pasada para todas las curvas de este tipo que esten
+// en el canvas: NO APLICAR UNA PASADA POR CURVA, aprovechar el bucle para evaluar todos
 void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
 {
+    const double minx = -5;
+    const double maxx = 5;
+    const double miny = minx;
+    const double maxy = maxx;
+    
+    
+    double min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
+    
+    if (min_grid>0.05 && min_grid < 1)
+        min_grid = 0.05; // 0.05 es el minimo valor para la presicion
+    
+    const double h = 0.5;//min_grid; //0.4; // box size
+
+    qDebug() << h;
+    //     const int order = 4;
+//     const double size = 1;//maxx - minx;
+//     double blx = 0;
+//     double bly = 0;
+//     
+//     glBegin(GL_LINE_STRIP);
+//     glColor3ub(50,50,50);
+// //     hilbert(blx, bly, size, 0, 0, size, order);
+//     glEnd();
+//     
+//     glBegin(GL_POINTS);
+//     glColor3ub(255,255,0);
+//     glVertex2d(0,0);
+//     glEnd();
+//     
+//     return ;
     Cn *x = d->m_args.value("x");
     Cn *y = d->m_args.value("y");
 
-    const double h = 0.2; // box size
-    
-    const double minx = -5;
-    const double maxx = 5;
-    const double miny = -5;
-    const double maxy = 5;
-    
     const int n = (maxx - minx)/h;
     const int m = (maxy - miny)/h;
-    
-    double xleft = minx;
     
     double southwest = 0;
     double southeast = 0;
     double northeast = 0;
     double northwest = 0;
     
+    double xleft = minx;
+    
+    //BEGIN debug
+    for (int i = 0; i < m; ++i)
+    {
+        double xright = xleft + h;
+        double ybottom = miny;
+        
+        for(int j = 0; j < n; ++j) 
+        {
+            double ytop = ybottom + h;
+            
+            glColor3ub(10,10,10);
+            glBegin(GL_LINES);
+            glVertex2d(xright, ytop);
+            glVertex2d(xleft, ytop);
+            glEnd();
+            glBegin(GL_LINES);
+            glVertex2d(xleft, ybottom);
+            glVertex2d(xleft, ytop);
+            glEnd();
+            
+            ybottom = ytop;
+        }
+        
+        xleft = xright;
+    }
+    //END debug
+    
+    xleft = minx;
+    int NN = 0;
     for (int i = 0; i < m; ++i)
     {
         x->setValue(xleft);
-            
+        
         double xright = xleft + h;
         
         double ybottom = miny;
         
         for(int j = 0; j < n; ++j) 
         {
+            ++NN;
+            
             y->setValue(ybottom);
             
             double ytop = ybottom + h;
@@ -456,18 +558,25 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
             
             if (northwest > 0)
                 topologicalType += 8;
-
+            
             if (northeast > 0)
                 topologicalType += 4;
-
+            
             if (southeast > 0)
                 topologicalType += 2;
-
+            
             if (southwest > 0)
                 topologicalType += 1;
             
             if (topologicalType != 0 && topologicalType != 15) // curve inside the box
             {
+                //sestoy en el mas grande box que tiene la curvas debo segir subdividiendo
+                
+                
+                
+                
+                
+                
                 //TODO move this outside
                 QVector< QPair<double, double> > intersections; // 0:left 1:top 2:right 3:botton                
                 
@@ -531,10 +640,273 @@ void Curve::adaptiveQuadTreeSubdivisionImplicitCurve()
                     }
                 }
             }
+            else
+            {
+                
+//                 double oldx = x->value();
+//                 double oldy = y->value();
+// //                 
+// //                 x->setValue(xleft + h*.5);
+// //                 y->setValue(ybottom + h*.5);
+// // //                 double val = MathUtils::bilinearInterpolation(xleft + h/8, ybottom + h/3, xleft, xright, ybottom, ytop, southwest, southeast, northwest, northeast);
+// //                 double val = d->m_analyzer->calculateLambda().toReal().value();
+// //                 
+// // //                 Analyzer a;
+// // //                 a.setExpression(d->m_analyzer->derivative("x"));
+// // //                 QVector<Object*> rs;
+// // //                 rs << (Object*)(d->m_args.value("x")) << (Object*)(d->m_args.value("y"));
+// // //                 d->m_analyzer->setStack(rs);
+// // //                 qDebug() << d->m_analyzer->calculateLambda().toReal().value();
+// // //                 qDebug() << x->value() << "\t" << y->value();
+// //                 
+// //                 if (MathUtils::oppositeSign(southwest, val) || MathUtils::oppositeSign(southeast, val) || 
+// //                     MathUtils::oppositeSign(northwest, val) || MathUtils::oppositeSign(southeast, val) ||
+// //                     MathUtils::oppositeSign(southwest, northeast) || MathUtils::oppositeSign(southeast, northwest))
+// //                 {
+// //                     glBegin(GL_POINTS);
+// //                     glColor3ub(255,255,0);
+// //                     glVertex2d(x->value(), y->value());
+// //                     glEnd();
+// //                 }
+//                 
+//                 x->setValue(xleft + h/2 + 0.5*0.5*h*cos(0));
+//                 y->setValue(ybottom + h/2 + 0.5*0.5*h*sin(0));
+// 
+//                 double oldv = d->m_analyzer->calculateLambda().toReal().value();
+//                 
+//                 
+//                 
+//                 
+//                 for (double t = 0; t <= M_PI*2; t+=M_PI/3)
+//                 {
+// //                     double r = rand()%10 + 1;
+//                     double rho = 0.5*0.5*h/1;
+//                     
+//                     double cx = xleft + h/2 + rho*cos(t);
+//                     double cy = ybottom + h/2 + rho*sin(t); 
+//                     
+//                     x->setValue(cx);
+//                     y->setValue(cy);
+//                     
+//                     glBegin(GL_POINTS);
+//                     glColor3ub(0,100,100);
+//                     glVertex2d(cx, cy); // 1/4 de h
+//                     glEnd();
+//                     
+//                     double v = d->m_analyzer->calculateLambda().toReal().value();
+//                     
+// //                     if (MathUtils::oppositeSign(v, oldv))
+// //                     {
+// //                         glBegin(GL_POINTS);
+// //                             glColor3ub(0,255,255);
+// //                             glVertex2d(cx, cy); // 1/4 de h
+// //                         glEnd();
+// //                         
+// //                         break;
+// //                     }
+//                     
+//                     oldv = v;
+//                 }
+//                 
+//                 x->setValue(oldx);
+//                 y->setValue(oldy);
+            }
             
             ybottom = ytop;
         }
         
         xleft = xright;
+    }
+    
+    qDebug() << "NO" << NN;
+}
+
+void Curve::adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root)
+{
+    Cn *x = d->m_args.value("x");
+    Cn *y = d->m_args.value("y");
+    
+    const double h = root->size*0.5; // half
+    const double hh = root->size*0.5*0.5; // halfhalf
+    
+    const double rxmhh = root->x - hh; // root x minus halfhalf
+    const double rxphh = root->x + hh;
+    const double rymhh = root->y - hh;
+    const double ryphh = root->y + hh;
+    
+    root->nodes[0] = new MathUtils::QuadTree(rxphh, ryphh, h); // NE
+    root->nodes[1] = new MathUtils::QuadTree(rxmhh, ryphh, h); // NW
+    root->nodes[2] = new MathUtils::QuadTree(rxmhh, rymhh, h); // SW
+    root->nodes[3] = new MathUtils::QuadTree(rxphh, rymhh, h); // SE
+    
+    for (int i = 0; i < 4; ++i)
+    {
+        MathUtils::QuadTree *node = root->nodes[i];
+        
+        const int order = 4;
+        const double size = node->size;
+        double blx = node->x - hh;
+        double bly = node->y - hh;
+        
+        bool f = false;
+        hilbert(blx, bly, size, 0, 0, size, order, f);
+        
+        if (f)
+        {
+            if ((node->size < 0.5))
+            {
+                const double nxmhh = node->x - hh; // node x minus halfhalf
+                const double nxphh = node->x + hh;
+                const double nymhh = node->y - hh;
+                const double nyphh = node->y + hh;
+
+                const double xleft = nxmhh;
+                const double xright = nxphh;
+                const double ybottom = nymhh;
+                const double ytop = nyphh;
+            
+                x->setValue(nxphh);
+                y->setValue(nyphh);
+                
+                const double northeast = d->m_analyzer->calculateLambda().toReal().value();
+                
+                x->setValue(nxmhh);
+                y->setValue(nyphh);
+                
+                const double northwest = d->m_analyzer->calculateLambda().toReal().value();
+                
+                x->setValue(nxmhh);
+                y->setValue(nymhh);
+                
+                const double southwest = d->m_analyzer->calculateLambda().toReal().value();
+
+                x->setValue(nxphh);
+                y->setValue(nymhh);
+                
+                const double southeast = d->m_analyzer->calculateLambda().toReal().value();
+                
+                short int topologicalType = 0;
+                
+                if (northwest > 0)
+                    topologicalType += 8;
+                
+                if (northeast > 0)
+                    topologicalType += 4;
+                
+                if (southeast > 0)
+                    topologicalType += 2;
+                
+                if (southwest > 0)
+                    topologicalType += 1;
+                
+                if (topologicalType != 0 && topologicalType != 15) // curve inside the box
+                {
+                    //TODO move this outside
+                    QVector< QPair<double, double> > intersections; // 0:left 1:top 2:right 3:botton                
+                    
+                    if (MathUtils::oppositeSign(southwest, northwest))
+                        intersections << qMakePair(xleft, MathUtils::linearInterpolation(0.0, southwest, northwest, ybottom, ytop));
+                    
+                    if (MathUtils::oppositeSign(northwest, northeast))
+                        intersections << qMakePair(MathUtils::linearInterpolation(0.0, northwest, northeast, xleft, xright), ytop);
+                    
+                    if (MathUtils::oppositeSign(southeast, northeast)) 
+                        intersections << qMakePair(xright, MathUtils::linearInterpolation(0.0, southeast, northeast, ybottom, ytop));
+                    
+                    if (MathUtils::oppositeSign(southwest, southeast)) 
+                        intersections << qMakePair(MathUtils::linearInterpolation(0.0,southwest, southeast, xleft, xright), ybottom);
+                    
+                    switch (topologicalType)
+                    {
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 6:
+                        case 7:
+                        case 8:
+                        case 9:
+                        case 11:
+                        case 12:
+                        case 13:
+                        case 14:
+                        {
+                            //TODO not opengl just geometry primitives
+                            glBegin(GL_LINES);
+                            glColor3ub(255,0,0);
+                            glVertex2d(intersections[0].first, intersections[0].second);
+                            glVertex2d(intersections[1].first, intersections[1].second);
+                            glEnd();
+                            
+                            break;
+                        }
+                        case 5:
+                        {
+                            //TODO not opengl just geometry primitives
+                            glBegin(GL_LINES);
+                            glColor3ub(0,255,0);
+                            glVertex2d(intersections[0].first, intersections[0].second);
+                            glVertex2d(intersections[2].first, intersections[2].second);
+                            glEnd();
+                            
+                            break;
+                        }
+                        case 10:
+                        {
+                            //TODO not opengl just geometry primitives
+                            glBegin(GL_LINES);
+                            glColor3ub(0,0,255);
+                            glVertex2d(intersections[1].first, intersections[1].second);
+                            glVertex2d(intersections[3].first, intersections[3].second);
+                            glEnd();
+                            
+                            break;
+                        }
+                    }
+                }
+                
+//                 glBegin(GL_POINTS);
+//                 glColor3ub(255,255,0);
+//                 glVertex2d(node->x, node->y);
+//                 glEnd();
+            }
+            else
+            {
+//                 if (hilbert(node->x - hh, node->y - hh, node->size, 0, 0, node->size, 8))
+                    adaptiveQuadTreeSubdivisionImplicitCurve(node);
+            }
+        }
+        else
+        {
+        }
+        
+        //DEBUG
+//         glBegin(GL_LINES);
+//         glColor3ub(50,50,50);
+//         // | <-
+//         glVertex2d(node->x - hh, node->y - hh);
+//         glVertex2d(node->x - hh, node->y + hh);
+//         glEnd();
+//         
+//         // -
+//         glBegin(GL_LINES);
+//         glColor3ub(50,50,50);
+//         glVertex2d(node->x - hh, node->y + hh);
+//         glVertex2d(node->x + hh, node->y + hh);
+//         glEnd();
+//         
+//         // -> |
+//         glBegin(GL_LINES);
+//         glColor3ub(50,50,50);
+//         glVertex2d(node->x + hh, node->y + hh);
+//         glVertex2d(node->x + hh, node->y - hh);
+//         glEnd();
+//         
+//         // _
+//         glBegin(GL_LINES);
+//         glColor3ub(50,50,50);
+//         glVertex2d(node->x - hh, node->y - hh);
+//         glVertex2d(node->x + hh, node->y - hh);
+//         glEnd();
     }
 }

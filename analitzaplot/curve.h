@@ -64,6 +64,7 @@ public:
     Curve();
     Curve(const Curve &other);
     Curve(const Analitza::Expression &expresssion, Variables* vars = 0);
+//     Curve isosurf1 isosurf2 ctor for implicit space curve := intersec of 2 iso surfs TODO
     ~Curve();
     
     QColor color() const;
@@ -98,10 +99,10 @@ public:
 //     QPair<double, double> tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse
     
 private:
+    void hilbert(double x0, double y0, double xi, double xj, double yi, double yj, int n, bool &found);
     void adaptiveQuadTreeSubdivisionImplicitCurve();
+    void adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root);
 
-    
-private:
     class CurveData;
     QSharedDataPointer<CurveData> d;
 };
