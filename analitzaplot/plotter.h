@@ -79,7 +79,7 @@ private:
     //WARNING experimental
         GLhandleARB shader_programme;
         GLuint vbo;
-    Curve circle;
+    Curve c;
 
         
 
