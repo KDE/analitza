@@ -100,7 +100,11 @@ public:
     
 private:
     void hilbert(double x0, double y0, double xi, double xj, double yi, double yj, int n, bool &found);
-    void adaptiveQuadTreeSubdivisionImplicitCurve(double minx, double maxx, double miny, double maxy, double h);
+    // en truelevel: si un nivel de abajo contiene a la curve, el nivel 1 (que es el primer padre que si contiene) se usara como caja 
+    // para la interpolacion
+    void adaptiveQuadTreeSubdivisionImplicitCurve(double minx, double maxx, double miny, double maxy, double h, int truelevel, 
+        double root_xleft, double root_xright, double root_ybottom, double root_ytop, 
+        double root_southwest, double root_southeast, double root_northeast, double root_northwest, int root_topologicalType);
     void adaptiveQuadTreeSubdivisionImplicitCurve(MathUtils::QuadTree *root);
 
     class CurveData;

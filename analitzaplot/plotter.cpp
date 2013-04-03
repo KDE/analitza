@@ -195,10 +195,12 @@ void Plotter::plot(/*const QGLContext * context*/)
     
     
 //     Curve c(Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)-2*x+y=0"));
-    Curve c(Expression("(x^2+y^2)^2=2*(5^2)*(x^2-y^2)"));
+//     Curve c(Expression("(x^2+y^2)^2=2*(5^2)*(x^2-y^2)"));
 //     Curve c(Expression("(x^2+y^2)^3=4*(5^2)*(x^2)*(y^2)"));
 //     Curve c(Expression("y*sin(x) + x*cos(y) = 1"));
-    
+//     Curve c(Expression("x^3+y^3-x*y=-1/27")); // TODO isolated points
+//     Curve c(Expression("(x-1)*(y-1)=0"));
+    Curve c(Expression("(x^2+y^2-4)*((x-1)^2+y^2-0.3)*((x+1)^2+y^2-0.3)*(x^2+(y-2)^2-0.4)*(x^2+(y+2)^2-0.4)=0"));
 
     QTime t;
     t.start();
