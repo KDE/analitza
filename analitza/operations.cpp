@@ -39,7 +39,6 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 {
 	int residu;
 	double a=oper->value(), b=oper1->value();
-	Cn::ValueFormat format=Cn::ValueFormat(oper->format() | oper1->format());
 	
 	switch(op) {
 		case Operator::plus:
@@ -61,7 +60,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			a = pow(a, b);
 			break;
 		case Operator::rem:
-			format=Cn::Integer;
+			oper->setFormat(Cn::Integer);
 			if(KDE_ISLIKELY(floor(b)!=0.))
 				a = remainder(a, b);
 			else
@@ -69,7 +68,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			break;
 		case Operator::quotient:
 			a = floor(a / b);
-			format=Cn::Integer;
+			oper->setFormat(Cn::Integer);
 			break;
 		case Operator::factorof:
 			if(KDE_ISLIKELY(floor(b)!=0.))
@@ -77,7 +76,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			else
 				*correct=new QString(i18n("Cannot calculate the factor on 0."));
 			
-			format=Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::min:
 			a= a < b? a : b;
@@ -87,47 +86,47 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			break;
 		case Operator::gt:
 			a= a > b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::lt:
 			a= a < b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::eq:
 			a= a == b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::approx:
 			a= fabs(a-b)<0.001? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::neq:
 			a= a != b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::geq:
 			a= a >= b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::leq:
 			a= a <= b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::_and:
 			a= a && b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::_or:
 			a= a || b? 1.0 : 0.0;
-			format = Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::_xor:
 			a= (a || b) && !(a&&b)? 1.0 : 0.0;
-			format = Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::implies:
 			a= (a || !b)? 0.0 : 1.0;
-			format = Cn::Boolean;
+			oper->setFormat(Cn::Boolean);
 			break;
 		case Operator::gcd:  {
 			//code by michael cane aka kiko :)
@@ -138,7 +137,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 				ib = residu;
 			}
 			a=ia; b=ib;
-			format=Cn::Integer;
+			oper->setFormat(Cn::Integer);
 		}	break;
 		case Operator::lcm:
 			//code by michael cane aka kiko :)
@@ -155,7 +154,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 				ia=ic/ia;
 				a=ia; b=ib;
 			}
-			format=Cn::Integer;
+			oper->setFormat(Cn::Integer);
 			break;
 		case Operator::root:
 			a = b==2.0 ? sqrt(a) : pow(a, 1.0/b);
@@ -164,14 +163,12 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			break;
 	}
 	oper->setValue(a);
-	oper->setFormat(format);
 	return oper;
 }
 
 Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString** correct)
 {
 	double a=val->value();
-	Cn::ValueFormat format=val->format();
 	
 	switch(op) {
 		case Operator::minus:
@@ -184,7 +181,7 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 				res*=floor(a);
 			}
 			a=res;
-			format=Cn::Integer;
+			val->setFormat(Cn::Integer);
 		}	break;
 		case Operator::sin:
 			a=sin(a);
@@ -273,15 +270,15 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 		//case Object::imaginary:
 		case Operator::floor:
 			a=floor(a);
-			format=Cn::Integer;
+			val->setFormat(Cn::Integer);
 			break;
 		case Operator::ceiling:
 			a=ceil(a);
-			format=Cn::Integer;
+			val->setFormat(Cn::Integer);
 			break;
 		case Operator::_not:
 			a=!a;
-			format=Cn::Boolean;
+			val->setFormat(Cn::Boolean);
 			break;
 		default:
 			*correct=new QString(i18n("Could not calculate a value %1", Operator(op).toString()));
@@ -289,7 +286,6 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 	}
 	
 	val->setValue(a);
-	val->setFormat(format);
 	return val;
 }
 
