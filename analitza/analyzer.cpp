@@ -718,7 +718,11 @@ Object* Analyzer::operate(const Apply* c)
 				++it;
 				bool stop=isNull(opt, ret);
 				for(; !stop && it!=itEnd; ++it) {
-					ret=Operations::reduce(opt, ret, calc(*it), &error);
+					bool isValue = (*it)->type()==Object::value;
+					Object* v = isValue ? *it : calc(*it);
+					ret=Operations::reduce(opt, ret, v, &error);
+					if(!isValue)
+						delete v;
 					
 					if(KDE_ISUNLIKELY(error)) {
 						m_err.append(*error);
@@ -930,6 +934,7 @@ Object* Analyzer::boundedOperation(const Apply& n, const Operator& t, Object* in
 	do {
 		Object *val=calc(n.m_params.last());
 		ret=Operations::reduce(type, ret, val, &correct);
+		delete val;
 		delete correct;
 	} while(KDE_ISLIKELY(it->hasNext() && !correct && !isNull(type, ret)));
 	
@@ -1352,7 +1357,7 @@ Object* Analyzer::simpApply(Apply* c)
 				else {
 					if((*it)->type()==Object::list && newParams.last()->type()==Object::list) {
 						QString* err=0;
-						Object* ret=Operations::reduce(Operator::_union, newParams.last(), (*it)->copy(), &err);
+						Object* ret=Operations::reduce(Operator::_union, newParams.last(), *it, &err);
 						delete err;
 						newParams.last()=ret;
 						delete *it;
