@@ -50,7 +50,7 @@ class ANALITZA_EXPORT Apply : public Object
 		virtual Apply* copy() const;
 		virtual bool matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* found) const;
 		virtual QString visit(ExpressionWriter* exp) const;
-		Operator firstOperator() const { if(m_op) return *m_op; else return Operator(Operator::function); }
+		Operator firstOperator() const { return m_op; }
 		int countValues() const { return m_params.size(); }
 		
 		void prependBranch(Object* o);
@@ -99,7 +99,7 @@ class ANALITZA_EXPORT Apply : public Object
 		
 		Object* m_ulimit, *m_dlimit, *m_domain;
 		QVector<Ci*> m_bvars;
-		Operator* m_op;
+		Operator m_op;
 };
 
 }

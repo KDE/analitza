@@ -26,7 +26,7 @@
 using namespace Analitza;
 
 Apply::Apply()
-	: Object(apply), m_ulimit(0), m_dlimit(0), m_domain(0), m_op(0)
+	: Object(apply), m_ulimit(0), m_dlimit(0), m_domain(0), m_op(Operator::function)
 {}
 
 Apply::~Apply()
@@ -34,7 +34,6 @@ Apply::~Apply()
 	delete m_dlimit;
 	delete m_ulimit;
 	delete m_domain;
-	delete m_op;
 	qDeleteAll(m_bvars);
 	qDeleteAll(m_params);
 }
@@ -42,7 +41,8 @@ Apply::~Apply()
 bool Apply::addBranch(Object* o)
 {
 	if(o->type()==Object::oper) {
-		m_op = static_cast<Operator*>(o);
+		m_op = *static_cast<Operator*>(o);
+		delete o;
 	} else if(o->isContainer()) {
 		Container* c=static_cast<Container*>(o);
 		switch(c->containerType()) {
@@ -130,7 +130,7 @@ Apply* Apply::copy() const
 	ret->m_dlimit = m_dlimit? m_dlimit->copy() : 0;
 	ret->m_ulimit = m_ulimit? m_ulimit->copy() : 0;
 	ret->m_domain = m_domain? m_domain->copy() : 0;
-	ret->m_op     = m_op    ? m_op->copy()     : 0;
+	ret->m_op     = m_op;
 	
 	foreach(const Ci* var, m_bvars)
 		ret->m_bvars += (Ci*) var->copy();
@@ -151,7 +151,7 @@ bool Apply::matches(const Object* exp, QMap<QString, const Object*>* found) cons
 	
 	QVector<Ci*> vars=m_bvars, cvars = c->bvarCi();
 	bool matching=vars.size()==cvars.size();
-	matching &= bool(m_op)==bool(c->m_op) && (!m_op || m_op->matches(c->m_op, found));
+	matching &= m_op.matches(&c->m_op, found);
 	
 	for(QVector<Ci*>::const_iterator it=vars.constBegin(), cit=cvars.constBegin(), itEnd=vars.constEnd(); matching && it!=itEnd; ++it) {
 		matching &= (*it)->matches(*cit, found);
