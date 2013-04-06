@@ -264,7 +264,7 @@ void Polynomial::simpScalars(bool firstValue)
 	if(!firstValue && m_operator==Operator::minus && !m_scalars.isEmpty())
 		m_scalars.first() = negateObject(m_scalars.first());
 	
-	for(QList<Object*>::iterator i=m_scalars.begin(); i!=m_scalars.end(); ++i) {
+	for(QList<Object*>::const_iterator i=m_scalars.constBegin(); i!=m_scalars.constEnd(); ++i) {
 		bool d=false;
 		
 		Object* aux = *i;

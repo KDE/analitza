@@ -51,7 +51,7 @@ Vector::~Vector()
     qDeleteAll(m_elements);
 }
 
-Object* Vector::copy() const
+Vector* Vector::copy() const
 {
 	Vector *v=new Vector(m_type, size());
 	foreach(const Object* o, m_elements)

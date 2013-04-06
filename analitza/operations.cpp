@@ -165,7 +165,6 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 	}
 	oper->setValue(a);
 	oper->setFormat(format);
-	delete oper1;
 	return oper;
 }
 
@@ -299,26 +298,26 @@ Object * Operations::reduceRealVector(Operator::OperatorType op, Cn * oper, Vect
 	switch(op) {
 		case Operator::selector: {
 			int select=oper->intValue();
+			delete oper;
 			Object* ret=0;
 			if(select<1 || (select-1) >= v1->size()) {
 				*correct=new QString(i18n("Invalid index for a container"));
 				ret=new Cn(0.);
 			} else {
-				ret=v1->at(select-1);
-				v1->setAt(select-1, 0);
+				ret=v1->at(select-1)->copy();
 			}
-			delete oper;
-			delete v1;
 			return ret;
 		}	break;
-		default:
-			for(Vector::iterator it=v1->begin(); it!=v1->end(); ++it)
+		default: {
+			Vector *ret = v1->copy();
+			for(Vector::iterator it=ret->begin(); it!=ret->end(); ++it)
 			{
 				*it=reduce(op, new Cn(*oper), *it, correct);
 			}
 			
 			delete oper;
-			return v1;
+			return ret;
+		}
 	}
 }
 
@@ -328,7 +327,6 @@ Object * Operations::reduceVectorReal(Operator::OperatorType op, Vector * v1, Cn
 	{
 		*it=reduce(op, *it, new Cn(*oper), correct);
 	}
-	delete oper;
 	return v1;
 }
 
@@ -342,13 +340,10 @@ Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, 
 	if(op==Operator::scalarproduct)
 		op=Operator::times;
 	Vector::iterator it2=v2->begin();
-	for(Vector::iterator it1=v1->begin(); it1!=v1->end(); ++it1)
+	for(Vector::iterator it1=v1->begin(); it1!=v1->end(); ++it1, ++it2)
 	{
 		*it1=reduce(op, *it1, *it2, correct);
-		
-		it2=v2->erase(it2);
 	}
-	delete v2;
 	return v1;
 }
 
@@ -375,9 +370,8 @@ Object* Operations::reduceListList(Operator::OperatorType op, List* l1, List* l2
 	switch(op) {
 		case Operator::_union: {
 			List::iterator itEnd=l2->end();
-			for(List::iterator it=l2->begin(); it!=itEnd;) {
-				l1->appendBranch(*it);
-				it=l2->erase(it);
+			for(List::iterator it=l2->begin(); it!=itEnd; ++it) {
+				l1->appendBranch((*it)->copy());
 			}
 			
 			ret=l1;
@@ -389,7 +383,6 @@ Object* Operations::reduceListList(Operator::OperatorType op, List* l1, List* l2
 			ret=new Cn(0.);
 			break;
 	}
-	delete l2;
 	return ret;
 }
 
@@ -423,7 +416,6 @@ Object* Operations::reduceRealList(Operator::OperatorType op, Cn* oper, List* v1
 				v1->setAt(select-1, 0);
 			}
 			delete oper;
-			delete v1;
 			return ret;
 		}	break;
 		default:
@@ -454,9 +446,8 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 	{
 		*it1 = reduceVectorVector(op, static_cast<MatrixRow*>(*it1), static_cast<MatrixRow*>(*it2), correct);
 		
-		it2 = m2->erase(it2);
+		++m2;
 	}
-	delete m2;
 	return m1;
 }
 
@@ -478,7 +469,6 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 			ret = nv;
 		}
 		delete v;
-		delete m1;
 		return ret;
 	}
 	return 0;
