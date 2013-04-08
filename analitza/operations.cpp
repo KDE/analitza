@@ -38,96 +38,81 @@ using namespace Analitza;
 Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const Cn *oper1, QString** correct)
 {
 	int residu;
-	double a=oper->value(), b=oper1->value();
-	Cn::ValueFormat format=Cn::ValueFormat(oper->format() | oper1->format());
+	const double a=oper->value(), b=oper1->value();
 	
 	switch(op) {
 		case Operator::plus:
-			a += b;
+			oper->setValue(a+b);
 			break;
 		case Operator::times:
-			a *= b;
+			oper->setValue(a*b);
 			break;
 		case Operator::divide:
 			if(KDE_ISLIKELY(b!=0.))
-				a /= b;
+				oper->setValue(a / b);
 			else
 				*correct=new QString(i18n("Cannot divide by 0."));
 			break;
 		case Operator::minus:
-			a -= b;
+			oper->setValue(a - b);
 			break;
 		case Operator::power:
-			a = pow(a, b);
+			oper->setValue(pow(a, b));
 			break;
 		case Operator::rem:
-			format=Cn::Integer;
 			if(KDE_ISLIKELY(floor(b)!=0.))
-				a = remainder(a, b);
+				oper->setValue(int(remainder(a, b)));
 			else
 				*correct=new QString(i18n("Cannot calculate the remainder on 0."));
 			break;
 		case Operator::quotient:
-			a = floor(a / b);
-			format=Cn::Integer;
+			oper->setValue(int(floor(a / b)));
 			break;
-		case Operator::factorof:
-			if(KDE_ISLIKELY(floor(b)!=0.))
-				a = ((int(floor(a)) % int(floor(b)))==0) ? 1.0 : 0.0;
+		case Operator::factorof: {
+			int fb = int(floor(b));
+			if(KDE_ISLIKELY(fb!=0))
+				oper->setValue((int(floor(a)) % fb)==0);
 			else
 				*correct=new QString(i18n("Cannot calculate the factor on 0."));
-			
-			format=Cn::Boolean;
-			break;
+		}	break;
 		case Operator::min:
-			a= a < b? a : b;
+			oper->setValue(a < b? a : b);
 			break;
 		case Operator::max:
-			a= a > b? a : b;
+			oper->setValue(a > b? a : b);
 			break;
 		case Operator::gt:
-			a= a > b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setValue(a > b);
 			break;
 		case Operator::lt:
-			a= a < b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setValue(a < b);
 			break;
 		case Operator::eq:
-			a= a == b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setValue(a == b);
 			break;
 		case Operator::approx:
-			a= fabs(a-b)<0.001? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setValue(fabs(a-b)<0.001);
 			break;
 		case Operator::neq:
-			a= a != b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setValue(a != b);
 			break;
 		case Operator::geq:
-			a= a >= b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setValue(a >= b);
 			break;
 		case Operator::leq:
-			a= a <= b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setValue(a <= b);
 			break;
 		case Operator::_and:
-			a= a && b? 1.0 : 0.0;
-			format=Cn::Boolean;
+			oper->setValue(a && b);
 			break;
 		case Operator::_or:
-			a= a || b? 1.0 : 0.0;
-			format = Cn::Boolean;
+			oper->setValue(a || b);
 			break;
 		case Operator::_xor:
-			a= (a || b) && !(a&&b)? 1.0 : 0.0;
-			format = Cn::Boolean;
+			oper->setValue((a || b) && !(a&&b));
 			break;
 		case Operator::implies:
-			a= (a || !b)? 0.0 : 1.0;
-			format = Cn::Boolean;
+			oper->setValue((a || !b));
 			break;
 		case Operator::gcd:  {
 			//code by michael cane aka kiko :)
@@ -137,8 +122,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 				ia = ib;
 				ib = residu;
 			}
-			a=ia; b=ib;
-			format=Cn::Integer;
+			oper->setValue(ia);
 		}	break;
 		case Operator::lcm:
 			//code by michael cane aka kiko :)
@@ -153,143 +137,132 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 					ib = residu;
 				}
 				ia=ic/ia;
-				a=ia; b=ib;
+				oper->setValue(ia);
 			}
-			format=Cn::Integer;
 			break;
 		case Operator::root:
-			a = b==2.0 ? sqrt(a) : pow(a, 1.0/b);
+			oper->setValue(b==2.0 ? sqrt(a) : pow(a, 1.0/b));
 			break;
 		default:
 			break;
 	}
-	oper->setValue(a);
-	oper->setFormat(format);
 	return oper;
 }
 
 Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString** correct)
 {
-	double a=val->value();
-	Cn::ValueFormat format=val->format();
+	const double a=val->value();
 	
 	switch(op) {
 		case Operator::minus:
-			a = -a;
+			val->setValue(-a);
 			break;
 		case Operator::factorial: {
 			//Use gamma from math.h?
 			uint res=1;
-			for(; a>1.; a--) {
-				res*=floor(a);
+			for(int i=a; i>1.; i--) {
+				res*=floor(i);
 			}
-			a=res;
-			format=Cn::Integer;
+			val->setValue(res);
 		}	break;
 		case Operator::sin:
-			a=sin(a);
+			val->setValue(sin(a));
 			break;
 		case Operator::cos:
-			a=cos(a);
+			val->setValue(cos(a));
 			break;
 		case Operator::tan:
-			a=tan(a);
+			val->setValue(tan(a));
 			break;
 		case Operator::sec:
-			a=1./cos(a);
+			val->setValue(1./cos(a));
 			break;
 		case Operator::csc:
-			a=1./sin(a);
+			val->setValue(1./sin(a));
 			break;
 		case Operator::cot:
-			a=1./tan(a);
+			val->setValue(1./tan(a));
 			break;
 		case Operator::sinh:
-			a=sinh(a);
+			val->setValue(sinh(a));
 			break;
 		case Operator::cosh:
-			a=cosh(a);
+			val->setValue(cosh(a));
 			break;
 		case Operator::tanh:
-			a=tanh(a);
+			val->setValue(tanh(a));
 			break;
 		case Operator::sech:
-			a=1.0/cosh(a);
+			val->setValue(1.0/cosh(a));
 			break;
 		case Operator::csch:
-			a=1.0/sinh(a);
+			val->setValue(1.0/sinh(a));
 			break;
 		case Operator::coth:
-			a=cosh(a)/sinh(a);
+			val->setValue(cosh(a)/sinh(a));
 			break;
 		case Operator::arcsin:
-			a=asin(a);
+			val->setValue(asin(a));
 			break;
 		case Operator::arccos:
-			a=acos(a);
+			val->setValue(acos(a));
 			break;
 		case Operator::arctan:
-			a=atan(a);
+			val->setValue(atan(a));
 			break;
 		case Operator::arccot:
-			a=log(a+pow(a*a+1., 0.5));
+			val->setValue(log(a+pow(a*a+1., 0.5)));
 			break;
 		case Operator::arcsinh:
-			a=0.5*(log(1.+1./a)-log(1.-1./a));
+			val->setValue(0.5*(log(1.+1./a)-log(1.-1./a)));
 			break;
 		case Operator::arccosh:
-			a=log(a+sqrt(a-1.)*sqrt(a+1.));
+			val->setValue(log(a+sqrt(a-1.)*sqrt(a+1.)));
 			break;
 		case Operator::arccsc:
-			a=1/asin(a);
+			val->setValue(1/asin(a));
 			break;
 		case Operator::arccsch:
-			a=1/(0.5*(log(1.+1./a)-log(1.-1./a)));
+			val->setValue(1/(0.5*(log(1.+1./a)-log(1.-1./a))));
 			break;
 		case Operator::arcsec:
-			a=1/(acos(a));
+			val->setValue(1/(acos(a)));
 			break;
 		case Operator::arcsech:
-			a=1/(log(a+sqrt(a-1.)*sqrt(a+1.)));
+			val->setValue(1/(log(a+sqrt(a-1.)*sqrt(a+1.))));
 			break;
 		case Operator::arctanh:
-			a=atanh(a);
+			val->setValue(atanh(a));
 			break;
 		case Operator::exp:
-			a=exp(a);
+			val->setValue(exp(a));
 			break;
 		case Operator::ln:
-			a=log(a);
+			val->setValue(log(a));
 			break;
 		case Operator::log:
-			a=log10(a);
+			val->setValue(log10(a));
 			break;
 		case Operator::abs:
-			a= a>=0. ? a : -a;
+			val->setValue(a>=0. ? a : -a);
 			break;
 		//case Object::conjugate:
 		//case Object::arg:
 		//case Object::real:
 		//case Object::imaginary:
 		case Operator::floor:
-			a=floor(a);
-			format=Cn::Integer;
+			val->setValue(floor(a));
 			break;
 		case Operator::ceiling:
-			a=ceil(a);
-			format=Cn::Integer;
+			val->setValue(ceil(a));
 			break;
 		case Operator::_not:
-			a=!a;
-			format=Cn::Boolean;
+			val->setValue(!a);
 			break;
 		default:
 			*correct=new QString(i18n("Could not calculate a value %1", Operator(op).toString()));
 			break;
 	}
-	
-	val->setValue(a);
-	val->setFormat(format);
 	return val;
 }
 

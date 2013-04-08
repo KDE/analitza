@@ -115,3 +115,27 @@ bool Cn::matches(const Object* exp, QMap< QString, const Object* >*) const
 {
 	return exp->type()==type() && *static_cast<const Cn*>(exp)==*this;
 }
+
+void Cn::setValue(const double& v)
+{
+	m_format = Real;
+	m_value = v;
+}
+
+void Cn::setValue(int v)
+{
+	m_format = Integer;
+	m_value = v;
+}
+
+void Cn::setValue(uint v)
+{
+	m_format = Integer;
+	m_value = v;
+}
+
+void Cn::setValue(bool v)
+{
+	m_format = Boolean;
+	m_value = v;
+}
