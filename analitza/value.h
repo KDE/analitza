@@ -70,7 +70,10 @@ class ANALITZA_EXPORT Cn : public Object
 		 *	Sets the new value of this function
 		 *	@param v the new value
 		 */
-		inline void setValue(const double& v) { m_value=v; }
+		void setValue(const double& v);
+		void setValue(int v);
+		void setValue(uint v);
+		void setValue(bool v);
 
 		/**
 		 *	Returns the value.
@@ -94,7 +97,6 @@ class ANALITZA_EXPORT Cn : public Object
 		bool isCharacter() const { return m_format==Char; }
 
 		ValueFormat format() const { return m_format; }
-		void setFormat(ValueFormat v) { m_format=v; }
 
 		/**
 		 *	Sets whether this value is boolean or not.
