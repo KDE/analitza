@@ -676,7 +676,7 @@ bool isNull(Analitza::Operator::OperatorType opt, Object* ret)
 Object* Analyzer::operate(const Apply* c)
 {
 	Object* ret=0;
-	Operator op = c->firstOperator();
+	const Operator& op = c->firstOperator();
 	Operator::OperatorType opt=op.operatorType();
 	
 	switch(opt) {
