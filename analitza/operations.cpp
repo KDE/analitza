@@ -57,7 +57,8 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			oper->setValue(a - b);
 			break;
 		case Operator::power:
-			oper->setValue(pow(a, b));
+			oper->setValue(b==2 ? a*a
+								: pow(a, b));
 			break;
 		case Operator::rem:
 			if(KDE_ISLIKELY(floor(b)!=0.))
