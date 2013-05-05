@@ -159,7 +159,7 @@ public:
             return false;
         else
         {
-            m_expressionValue = Analitza::Expression(expression);
+            m_expressionValue = expression;
 
             return true;
         }

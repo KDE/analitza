@@ -98,10 +98,13 @@ QPair<Analitza::Expression, Analitza::Expression> AbstractFunctionGraph::interva
     QPair<Analitza::Expression, Analitza::Expression> ret;
     
     if (evaluate) {
-        Analitza::Analyzer intervalsAnalizer(analyzer->variables());
+        Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
 
-        ret.first = m_argumentIntervals[argname].lowEndPoint().value(&intervalsAnalizer);
-        ret.second = m_argumentIntervals[argname].highEndPoint().value(&intervalsAnalizer);
+        ret.first = m_argumentIntervals[argname].lowEndPoint().value(intervalsAnalizer);
+        ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer);
+        
+        delete intervalsAnalizer; 
+        
     } else {
         ret.first = m_argumentIntervals[argname].lowEndPoint().value();
         ret.second = m_argumentIntervals[argname].highEndPoint().value();
@@ -114,15 +117,19 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::
 {
     Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
-    Analitza::Analyzer intervalsAnalizer(analyzer->variables());
-
-    double min_val = m_argumentIntervals[argname].lowEndPoint().value(&intervalsAnalizer).toReal().value();
-    double max_val = m_argumentIntervals[argname].highEndPoint().value(&intervalsAnalizer).toReal().value();
-        
+    Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
+    intervalsAnalizer->setExpression(min);
+    double min_val = intervalsAnalizer->calculate().toReal().value();
+    intervalsAnalizer->setExpression(max);
+    double max_val = intervalsAnalizer->calculate().toReal().value();
+    
+    delete intervalsAnalizer;
+    
     if (max_val < min_val)
         return false;
     
     m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));
+    
     return true;
 }
 
@@ -137,9 +144,6 @@ QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) co
     ret.second = m_argumentIntervals[argname].highEndPoint().value(intervalsAnalizer).toReal().value();
     
     delete intervalsAnalizer;
-//     QPair<double, double> ret;
-//     ret.first = m_argumentIntervals[argname].lowEndPoint().value().toReal().value();
-//     ret.second = m_argumentIntervals[argname].highEndPoint().value().toReal().value();
 
     return ret;
 }

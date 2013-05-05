@@ -36,24 +36,27 @@ AbstractSurface::~AbstractSurface()
 
 bool AbstractSurface::buildParametricSurface()
 {
-    QStringList bvars = parameters();
-
-    //TODO remove the assert en el caso de implicitas se deberia tratar siempre de crear la superficies parametrica primero
-    Q_ASSERT(bvars.size() == 2); // solo para superficies que puedan ser parametrizadas
+    double tmpsize = 4.0;
+    qreal umin = -tmpsize;
+    qreal umax = tmpsize;
+    qreal vmin = -tmpsize;
+    qreal vmax = tmpsize;    
     
-//     static QPair<double, double> intervalx = interval(bvars.at(0));
-//     static QPair<double, double> intervaly = interval(bvars.at(1));
-// 
-//     qreal umin = intervalx.first;
-//     qreal umax = intervalx.second;
-//     qreal vmin = intervaly.first;
-//     qreal vmax = intervaly.second;
+    if (hasIntervals())
+    {
+        QStringList bvars = parameters();
 
-    //TODO fix magic numbers
-    qreal umin = -5;
-    qreal umax = 5;
-    qreal vmin = -5;
-    qreal vmax = 5;
+        //TODO remove the assert en el caso de implicitas se deberia tratar siempre de crear la superficies parametrica primero
+        Q_ASSERT(bvars.size() == 2); // solo para superficies que puedan ser parametrizadas
+        
+        QPair<double, double> intervalx = interval(bvars.at(0));
+        QPair<double, double> intervaly = interval(bvars.at(1));
+
+        umin = intervalx.first;
+        umax = intervalx.second;
+        vmin = intervaly.first;
+        vmax = intervaly.second;
+    }
     
     int usteps = MAXALONG;
     int vsteps = MAXAROUND;

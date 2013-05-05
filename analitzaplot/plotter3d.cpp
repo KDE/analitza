@@ -338,6 +338,7 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
         return ;
     }
 
+    
     for(int i=s; i<=e; i++) {
         PlotItem *item = itemAt(i);
 

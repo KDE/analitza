@@ -178,24 +178,17 @@ QList<sMarching_Cube> MarchingCubes::depth_rec(Octree *arbol, sNodo *nodo){
     return cubos;
 }
 
-MarchingCubes::MarchingCubes(/*double min_grid, double arista_mundo, sLimitesEspacio limites*/){
-    //TODO enlazar con arg interval
-        sLimitesEspacio _esp;
+MarchingCubes::MarchingCubes()
+{
 
-            _esp.minX = -7.1; _esp.maxX = 6.6;
-        _esp.minY = -6.3; _esp.maxY = 7.1;
-        _esp.minZ = -7.2; _esp.maxZ = 6.5;
+}
 
-    
-    
-//     this->min_grid = 0.2;
-//     largo_mundo = 2;
-//     mundo = _esp;
-        
-    this->min_grid = 0.2;
+void MarchingCubes::setupSpace(const sLimitesEspacio &spaceLimits)
+{
+    //TODO no magc numbers
+    min_grid = 0.2;
     largo_mundo = 1;
-    mundo = _esp;
-
+    mundo = spaceLimits;    
 }
 
 MarchingCubes::~MarchingCubes()

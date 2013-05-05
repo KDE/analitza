@@ -62,10 +62,39 @@ double ImplicitSurf::evalScalarField(double x, double y, double z)
 
 
 ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e, v)
-{}
+{
+
+}
 
 void ImplicitSurf::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
+    sLimitesEspacio spaceLimits;
+    
+    double tmpsize = 4.0;
+    
+    spaceLimits.minX = -tmpsize;
+    spaceLimits.maxX = tmpsize;
+    spaceLimits.minY = -tmpsize;
+    spaceLimits.maxY = tmpsize;
+    spaceLimits.minZ = -tmpsize;
+    spaceLimits.maxZ = tmpsize;
+    
+    if (hasIntervals())
+    {
+        QPair<double, double> intervalx = interval("x");
+        QPair<double, double> intervaly = interval("y");
+        QPair<double, double> intervalz = interval("z");
+
+        spaceLimits.minX = intervalx.first;
+        spaceLimits.maxX = intervalx.second;
+        spaceLimits.minY = intervaly.first;
+        spaceLimits.maxY = intervaly.second;
+        spaceLimits.minZ = intervalz.first;
+        spaceLimits.maxZ = intervalz.second;
+    }
+    
+    setupSpace(spaceLimits);
+    
     vertices.clear();
     normals.clear();
     indexes.clear();

@@ -115,7 +115,7 @@ bool FunctionGraph::setInterval(const QString &argname, const Analitza::Expressi
     Q_ASSERT(m_functionGraph);
     
     bool ret = m_functionGraph->setInterval(argname, min, max);
-
+    
     if (ret)
         emitDataChanged();
     

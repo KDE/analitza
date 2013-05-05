@@ -25,12 +25,12 @@
 #include <QVector>
 
 struct sLimitesEspacio {
-    int minX;
-    int maxX;
-    int minY;
-    int maxY;
-    int minZ;
-    int maxZ;
+    double minX;
+    double maxX;
+    double minY;
+    double maxY;
+    double minZ;
+    double maxZ;
 };
 
 struct sMarching_Cube{
@@ -109,9 +109,12 @@ private:
     QList<sMarching_Cube> depth_rec(Octree *arbol, sNodo *nodo);
 
 public:
-    //Recibe el tamaño de grilla deseado y el largo del mundo
+    //Recibe el size de grilla deseado y el largo del mundo
     //Produce un min_grid menor o igual al proporcionado
-    MarchingCubes(/*double min_grid, double arista_mundo, sLimitesEspacio limites*/);
+    MarchingCubes();
+    
+    //here we put the size of intervals for x,z,and z ... call setupSpace before buildGeometry
+    void setupSpace(const sLimitesEspacio &spaceLimits);
 
     //Destructor
     ~MarchingCubes();
