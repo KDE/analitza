@@ -8,7 +8,7 @@ target_link_libraries(plotsdictionarydemo ${testLibs})
 
 if(HAVE_OPENGL)
     kde4_add_executable(plots3ddemo plots3ddemo.cpp)
-    target_link_libraries(plots3ddemo ${testLibs})
+    target_link_libraries(plots3ddemo  ${QT_QTOPENGL_LIBRARY} ${testLibs})
 else(HAVE_OPENGL)
     message(STATUS "disabling plots3ddemo because OpenGL is not available")
 endif(HAVE_OPENGL)

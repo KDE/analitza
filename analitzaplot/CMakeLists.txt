@@ -4,6 +4,11 @@ if(OPENGL_FOUND AND NOT OPENGL_GLU_FOUND)
     message(FATAL_ERROR "GLU was not found")
 endif(OPENGL_FOUND AND NOT OPENGL_GLU_FOUND)
 
+if(WIN32)
+    find_package(GLEW REQUIRED)
+    include_directories(${GLEW_INCLUDE_DIRS})
+endif(WIN32)
+
 find_path(IEEEFP_DIR ieeefp.h)
 if(IEEEFP_DIR)
     include_directories(${IEEEFP_DIR})
@@ -75,6 +80,10 @@ if(HAVE_OPENGL)
         ${OPENGL_glu_LIBRARY}
     )
 endif(HAVE_OPENGL)
+
+if(WIN32)
+    target_link_libraries(analitzaplot ${GLEW_LIBRARIES})
+endif(WIN32)
 
 set_target_properties(analitzaplot PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 
