@@ -29,7 +29,11 @@
 #include <QMatrix4x4>
 
 #define GL_GLEXT_PROTOTYPES
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <GL/glew.h>
 #include <GL/glu.h>
+#endif
 
 class QAbstractItemModel;
 class QPainter;
