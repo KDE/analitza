@@ -33,8 +33,9 @@
 #ifdef Q_OS_WIN
 #include <windows.h>
 #include <GL/glew.h>
-#include <GL/glu.h>
 #endif
+
+#include <GL/glu.h>
 
 class QAbstractItemModel;
 class QPainter;
