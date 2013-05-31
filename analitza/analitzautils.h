@@ -61,7 +61,7 @@ namespace AnalitzaUtils
 	bool hasTheVar(const QSet<QString>& vars, const Analitza::Container * c);
 	
 	bool isLambda(const Analitza::Object* o);
-	QStringList dependencies(const Analitza::Object* o, const QStringList& scope);
+	ANALITZA_EXPORT QStringList dependencies(const Analitza::Object* o, const QStringList& scope);
 	
 	/** Returns whether there is any variable in the @p o tree.
 			@p bvars tells the already defined variables (which won't return true). */
