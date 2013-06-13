@@ -144,8 +144,10 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                     PlotBuilder plot = PlotsFactory::self()->requestPlot(valexp, it->spaceDimension());
                     if (plot.canDraw()) {
                         if (m_items[index.row()]->expression() != valexp) {
+                            QColor color=it->color();
+                            QString name=it->name();
                             delete m_items[index.row()];
-                            m_items[index.row()] = plot.create(it->color(), it->name());
+                            m_items[index.row()] = plot.create(color, name);
                         }
                         
                         emit dataChanged(index, index);
