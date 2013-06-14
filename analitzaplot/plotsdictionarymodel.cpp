@@ -33,11 +33,6 @@ PlotsDictionaryModel::PlotsDictionaryModel(QObject* parent)
     , m_currentItem(-1)
 {
     setHorizontalHeaderLabels(QStringList() << i18nc("@title:column", "Name"));
-    
-    QStringList res = KGlobal::dirs()->findAllResources("data", "libanalitza/plots/*.plots");
-    foreach(const QString& f, res) {
-        createDictionary(f);
-    }
 }
 
 PlotsDictionaryModel::~PlotsDictionaryModel()
@@ -49,7 +44,6 @@ void PlotsDictionaryModel::createDictionary(const QString& file)
     if (device.open(QFile::ReadOnly | QFile::Text)) {
         QTextStream stream(&device);
         Analitza::ExpressionStream s(&stream);
-        
         while(!s.atEnd()) {
             Analitza::Expression expression(s.next());
             Q_ASSERT(expression.isCorrect());
@@ -66,6 +60,14 @@ void PlotsDictionaryModel::createDictionary(const QString& file)
         }
     } else
         qWarning() << "couldn't open" << file;
+}
+
+void PlotsDictionaryModel::createAllDictionaries()
+{
+    QStringList res = KGlobal::dirs()->findAllResources("data", "libanalitza/plots/*.plots");
+    foreach(const QString& f, res) {
+        createDictionary(f);
+    }
 }
 
 PlotsModel* PlotsDictionaryModel::plotModel()
@@ -97,13 +99,23 @@ void PlotsDictionaryModel::updatePlotsModel()
     m_plots->clear();
     if(m_currentItem<0)
         return;
-    
+
     QModelIndex idx = index(m_currentItem, 0);
     Analitza::Expression exp(idx.data(ExpressionRole).toString());
     PlotBuilder req = PlotsFactory::self()->requestPlot(exp, Dim2D);
-//     qDebug() << exp.toString();
-    Q_ASSERT(req.canDraw());
+
+    if (!req.canDraw()){ // preference is given to 2D
+        PlotBuilder req = PlotsFactory::self()->requestPlot(exp, Dim3D);
+        Q_ASSERT(req.canDraw());
+        m_plots->addPlot(req.create(Qt::blue, idx.data(Qt::DisplayRole).toString()));
+        return;
+    }
     m_plots->addPlot(req.create(Qt::blue, idx.data(Qt::DisplayRole).toString()));
+}
+
+Analitza::Dimension PlotsDictionaryModel::dimension()
+{
+    return Dimension(m_plots->index(0,0).data(PlotsModel::DimensionRole).toInt());
 }
 
 void PlotsDictionaryModel::setCurrentIndex(const QModelIndex& idx)

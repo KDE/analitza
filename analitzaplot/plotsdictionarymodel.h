@@ -22,9 +22,8 @@
 
 #include <QStandardItemModel>
 #include <QPointer>
-
+#include  <analitzaplot/plottingenums.h>
 #include "analitzaplotexport.h"
-
 namespace Analitza
 {
 class PlotsModel;
@@ -45,14 +44,15 @@ public:
     
     PlotsModel* plotModel();
     void createDictionary(const QString& path);
-    
+    void createAllDictionaries();
+    Analitza::Dimension dimension();
+
 public slots:
     ///convenience class for currentRow
     void setCurrentIndex(const QModelIndex& idx);
     
 private:
     void updatePlotsModel();
-    
     QPointer<PlotsModel> m_plots;
     int m_currentItem;
 };
