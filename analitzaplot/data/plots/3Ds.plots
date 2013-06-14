@@ -1,0 +1,2 @@
+plane1 := (x, y, z)->(x+y+z)-1
+plane2 := (x, y, z)->(x+y+z)-5
