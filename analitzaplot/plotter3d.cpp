@@ -60,6 +60,7 @@ Plotter3D::Plotter3D(QAbstractItemModel* model)
     , m_scale(60)
     , m_currentAxisIndicator(InvalidAxis)
     , m_simpleRotation(false)
+    , m_referencePlaneColor(Qt::darkGray)
 {
     resetViewPrivate(QVector3D(-45, 0, -135));
 }
@@ -739,6 +740,13 @@ void Plotter3D::initAxes()
     glEndList();
 }
 
+void Plotter3D::setReferencePlaneColor(const QColor& color)
+{
+    m_referencePlaneColor=color;
+    initRefPlanes();
+    renderGL();
+}
+
 void Plotter3D::initRefPlanes()
 {
     if (m_sceneObjects.contains(RefPlaneXY))
@@ -748,7 +756,7 @@ void Plotter3D::initRefPlanes()
 
     glNewList(m_sceneObjects.value(RefPlaneXY), GL_COMPILE );
     glLineWidth(1);
-    glColor3ub(48, 48, 48);
+    glColor3ub(m_referencePlaneColor.red(),m_referencePlaneColor.green(),m_referencePlaneColor.blue());
     glBegin( GL_LINES );
     glVertex3f(-150.0, 600.0, m_depth);
     glVertex3f(-150.0,-600.0, m_depth);

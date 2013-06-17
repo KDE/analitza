@@ -115,7 +115,10 @@ class ANALITZAPLOT_EXPORT Plotter3D
         /** Hide the current indicator of the axis */
         void hideAxisHint();
 
-        /**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
+        /** Set the color of the grids of the reference plane in the 3D view */
+        void setReferencePlaneColor(const QColor &color);
+
+	/**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
         void setUseSimpleRotation(bool simplerot) { m_simpleRotation = simplerot; }
 
         /**  Get information about the current rotarion approach: if return true then rotation is simple. */
@@ -155,6 +158,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         bool m_simpleRotation;
         QVector3D m_simpleRotationVector;
         QVector3D m_lightpos;
+        QColor m_referencePlaneColor;
 };
 
 }
