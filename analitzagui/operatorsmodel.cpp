@@ -466,10 +466,11 @@ QString OperatorsModel::example(const Analitza::Operator& o)
 			s="union(list { 1, 2, 3 }, list { 4, 5, 6 })[rem(floor(x), 5)+3]";
 			break;
 		case Operator::map:
-			s=QString("map(x->x+x, list { 1, 2, 3, 4, 5, 6 })[rem(floor(x), 5)+3]").arg(o.toString());
+			s="map(x->x+x, list { 1, 2, 3, 4, 5, 6 })[rem(floor(x), 5)+3]";
 			break;
 		case Operator::filter:
-			s=QString("filter(u->rem(u, 2)=0, list { 2, 4, 3, 4, 8, 6 })[rem(floor(x), 5)+3]").arg(o.toString());
+			s="filter(u->rem(u, 2)=0, list { 2, 4, 3, 4, 8, 6 })[rem(floor(x), 5)+3]";
+			break;
 			break;
 		case Operator::factorial:
 		case Operator::arcsech:
