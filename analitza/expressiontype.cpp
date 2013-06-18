@@ -267,19 +267,15 @@ ExpressionType ExpressionType::starsToType(const QMap<int, ExpressionType>& info
 // 	qDebug() << qPrintable("hohohoho"+QString(++deep, '-')) << *this << info << &info;
 	
 // 	qDebug() << ".........." << *this << info.keys();
-	if((m_type==ExpressionType::Any || ((m_type==ExpressionType::Vector || m_type==ExpressionType::Matrix) && m_size<0)) && info.contains(m_any)) {
-		if(m_type==ExpressionType::Any)
-			ret=info.value(m_any);
-		else {
-			ret=info.value(m_size);
-			QMap<int, ExpressionType> info2(info);
-			info2.remove(m_size);
-			ret.m_contained.first()=ret.m_contained.first().starsToType(info2);
-		}
-		
+	if(m_type==ExpressionType::Any && info.contains(m_any)) {
+		ret=info.value(m_any);
 		ret.m_assumptions=m_assumptions;
-// 		bool b=assumptionsMerge(ret.m_assumptions, m_assumptions);
-// 		Q_ASSERT(b);
+	} else if((m_type==ExpressionType::Vector || m_type==ExpressionType::Matrix) && m_size<0 && info.contains(m_size)) {
+		ret=info.value(m_size);
+		QMap<int, ExpressionType> info2(info);
+		info2.remove(m_size);
+		ret.m_contained.first()=ret.m_contained.first().starsToType(info2);
+		ret.m_assumptions=m_assumptions;
 	} else {
 		ret=*this;
 		
