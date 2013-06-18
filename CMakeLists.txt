@@ -19,6 +19,9 @@ macro_log_feature(OPENGL_FOUND "OpenGL" "Support for 3D graphs in Analitza" "htt
 include_directories(.)
 add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
+set(ANALITZA_LIB_VERSION "5")
+set(ANALITZA_LIB_SOVERSION "0")
+
 add_subdirectory(analitza)
 add_subdirectory(analitzaplot)
 add_subdirectory(analitzagui)
