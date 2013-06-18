@@ -256,9 +256,9 @@ void ExpressionType::addAssumptions(const QMap<QString, ExpressionType>& a)
 	Q_ASSERT(valid);
 }
 
-ExpressionType ExpressionType::starsToType(const QMap< int, ExpressionType>& info) const
+ExpressionType ExpressionType::starsToType(const QMap<int, ExpressionType>& info) const
 {
-	for(QMap< int, ExpressionType >::const_iterator it=info.begin(); it!=info.end(); ++it) {
+	for(QMap<int, ExpressionType>::const_iterator it=info.begin(); it!=info.end(); ++it) {
 		Q_ASSERT(it->type()!=ExpressionType::Any || it->anyValue()!=it.key());
 	}
 	

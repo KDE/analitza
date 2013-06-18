@@ -96,7 +96,7 @@ class ANALITZA_EXPORT ExpressionType
 		
 		static ExpressionType minimumType(const ExpressionType& t1, const ExpressionType& t2);
 		static bool assumptionsMerge(QMap<QString, ExpressionType>& data, const QMap<QString, ExpressionType>& newmap);
-		static void assumptionsUnion(QMap< QString, Analitza::ExpressionType >& data, const QMap< QString, Analitza::ExpressionType >& newmap);
+		static void assumptionsUnion(QMap<QString, ExpressionType>& data, const QMap<QString, ExpressionType>& newmap);
 		static QMap<int, ExpressionType> computeStars(const QMap<int, ExpressionType>& initial, const ExpressionType& candidate, const ExpressionType& type);
 		static bool matchAssumptions(QMap<int, ExpressionType>* stars, const QMap<QString, ExpressionType>& assum1, const QMap<QString, ExpressionType>& assum2);
 		static QStringList wrongAssumptions(const QMap<QString, ExpressionType>& assum1, const QMap<QString, ExpressionType>& assum2);
