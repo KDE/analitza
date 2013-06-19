@@ -115,7 +115,7 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("somelist") << "t->list{t,t^2}" << "num -> [num]";
 	QTest::newRow("x->piece") << "x->piecewise { gt(x,0) ? selector(1, vector{x, 1/x}),"
 									"? selector(2, vector{x, 1/x} ) }" << "num -> num";
-	QTest::newRow("div") << "v->selector(1, v)/selector(2, v)" << "(<num,-1> -> num) | (<num,-1> -> <num,-1>) | ([num] -> num) | ([<num,-1>] -> <num,-1>) | ({num,-2x-1} -> <num,-1>)";
+	QTest::newRow("div") << "v->selector(1, v)/selector(2, v)" << "(<num,-1> -> num) | (<<num,-1>,-1> -> <num,-1>) | ([num] -> num) | ([<num,-1>] -> <num,-1>) | ({num,-2x-1} -> <num,-1>)";
 	
 	QTest::newRow("selec_cos") << "v->cos(selector(1, v))" << "(<num,-1> -> num) | ([num] -> num)";
 	QTest::newRow("shadowed_param") << "fv->cos(fv)" << "num -> num";
@@ -175,7 +175,7 @@ void TypeCheckTest::testConstruction_data()
 	
 	QTest::newRow("arg") << "c->arctan(c[2]/c[1])" << "(<num,-1> -> num) | ([num] -> num)";
 	QTest::newRow("rect") << "v->v[1]*cos(v[2])" << "(<num,-1> -> num) | ([num] -> num)";
-	QTest::newRow("crash") << "u->(v->vector { v[2] })((v->vector { v[2] })(u))" << "(<a,1> -> <a,1>) | ([a] -> <a,1>)";
+	QTest::newRow("crash") << "u->(v->vector { v[2] })((v->vector { v[2] })(u))" << "(<a,1> -> <a,1>) | ([a] -> <a,1>) | ({a,-2x1} -> <<a,1>,1>)";
 	
 	QTest::newRow("scopes") << "or((x->list{}=x)(list{}), (x->x=0)(0))" << "bool";
 	

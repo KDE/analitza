@@ -126,9 +126,10 @@ QList<ExpressionType> ExpressionTypeChecker::computePairs(const QList<Expression
 		}
 	} else 
 		foreach(const ExpressionType& opt, options) {
-// 			qDebug() << "TURURURU" << opt.param << param;
-			if(opt.parameters().first().canReduceTo(param)) //Infer on param!=param but canReduce?
-				ret += opt;
+			if(opt.parameters().first().canReduceTo(param)) {//Infer on param!=param but canReduce?
+				QMap<int, ExpressionType> stars = ExpressionType::computeStars(QMap<int, ExpressionType>(), opt.parameters().first(), param);
+				ret += opt.starsToType(stars);
+			}
 		}
 	
 // 	qDebug() << "_______" << param << exp->toString() << ret;
@@ -151,7 +152,6 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 // 		const QMap<QString, ExpressionType> assumptions=current.assumptions();
 		
 		foreach(const ExpressionType& t, types) {
-// 			qDebug() << "leee" << t.assumptions();
 			QList<ExpressionType> thing=computePairs(Operations::inferUnary(o->operatorType()), t);
 			foreach(const ExpressionType& opt, thing) {
 				ExpressionType tt(opt.parameters().last());
