@@ -191,6 +191,7 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("matrix+") << "matrix { matrixrow { 1 }, matrixrow { 2 } }+matrix { matrixrow { 1 }, matrixrow { 2 } }" << "{num,2x1}";
 	QTest::newRow("matrix_selector0") << "selector(1, matrix { matrixrow { 1 }, matrixrow { 2 } })" << "<num,1>";
 	QTest::newRow("matrix_selector1") << "selector(1, selector(1, matrix { matrixrow { 1 }, matrixrow { 2 } }))" << "num";
+	QTest::newRow("matrix_transpose") << "transpose( matrix { matrixrow { 1, 2 } })" << "{num,2x1}";
 }
 
 void TypeCheckTest::testConstruction()

@@ -350,6 +350,9 @@ QString OperatorsModel::description(const Analitza::Operator& o)
 		case Operator::filter:
 			s = i18n("Removes all elements that don't fit a condition");
 			break;
+		case Operator::transpose:
+			s = i18n("Transpose");
+			break;
 		case Operator::function:
 		case Operator::nOfOps:
 		case Operator::none:
@@ -471,6 +474,8 @@ QString OperatorsModel::example(const Analitza::Operator& o)
 		case Operator::filter:
 			s="filter(u->rem(u, 2)=0, list { 2, 4, 3, 4, 8, 6 })[rem(floor(x), 5)+3]";
 			break;
+		case Operator::transpose:
+			s = "transpose(matrix { matrixrow { 1, 2, 3, 4, 5, 6 } })[rem(floor(x), 5)+3][1]";
 			break;
 		case Operator::factorial:
 		case Operator::arcsech:
