@@ -46,7 +46,7 @@ class MatrixRow;
  * \brief This class represents an expression writer.
  */
 
-class ExpressionWriter
+class ANALITZA_EXPORT ExpressionWriter
 {
 	public:
 		virtual ~ExpressionWriter();
