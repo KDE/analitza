@@ -251,8 +251,19 @@ QPair<QPointF, QString> FunctionX::image(const QPointF& p)
 
 void FunctionX::update(const QRectF& viewport)
 {
-    double l_lim=viewport.top()-.1, r_lim=viewport.bottom()+.1;
+    double l_lim=0, r_lim=0;
+    
+    if (!hasIntervals()) {
+        l_lim=viewport.left();
+        r_lim=viewport.right();
+    } else {
+        QPair< double, double> limits = interval(parameters().first());
+        l_lim = limits.first;
+        r_lim = limits.second;
+    }
+
     calculateValues(l_lim, r_lim);
+    
     for(int i=0; i<points.size(); i++) {
         QPointF p=points[i];
         points[i]=QPointF(p.y(), p.x());
