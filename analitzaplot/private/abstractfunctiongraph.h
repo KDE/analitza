@@ -77,6 +77,7 @@ public:
     
     QPair<double, double> interval(const QString &argname) const;
     virtual bool setInterval(const QString &argname, double min, double max);
+    void clearIntervals();
     bool hasIntervals() const;
     
     virtual QStringList parameters() const = 0;
@@ -104,42 +105,31 @@ private:
 class EndPoint
 {
 public:
-    EndPoint() : m_isInfinite(false)  {}
-    
-    //el owner de *analitza sera functiongraph ... no tiene sentido usar usar esta calse fuera de functiongraph
-    EndPoint(double value): m_isInfinite(false)
+    EndPoint() {}
+
+    EndPoint(double value)
     {
         setValue(value);
     }
 
-    EndPoint(const Analitza::Expression &expression) : m_isInfinite(false)
+    EndPoint(const Analitza::Expression &expression)
     {
         if (!setValue(expression))
             setValue(0.0);
     }
 
-    EndPoint(const EndPoint &other) : m_expressionValue(other.m_expressionValue), m_isInfinite(other.m_isInfinite)
+    EndPoint(const EndPoint &other) : m_expressionValue(other.m_expressionValue)
     {
         
     }
-
-    bool isInfinite() const 
-    {
-        return m_isInfinite;
-    }
     
-    void setInfinite(bool infinite) { m_isInfinite = infinite; }
-    
-    //no cambiar el exp de analyzer en setvalue por el costo ... solo cuando se quier calcular el value
-    //case evaluate = true
     Analitza::Expression value(Analitza::Analyzer *analyzer) const
     { 
-        analyzer->setExpression(m_expressionValue);
+        QString expstr = m_expressionValue.toString();
         
-        if (!m_isInfinite)
-            return analyzer->calculate();
-
-        return Analitza::Expression(Analitza::Cn("inf"));
+        analyzer->setExpression(m_expressionValue);
+            
+        return analyzer->calculate();
     }
 
     Analitza::Expression value() const
@@ -147,7 +137,6 @@ public:
         return m_expressionValue;
     }
     
-    //no cambiar el exp de analyzer en setvalue por el costo ... solo cuando se quier calcular el value
     void setValue(double value)
     { 
         m_expressionValue = Analitza::Expression(Analitza::Cn(value)); 
@@ -169,28 +158,25 @@ public:
     
     bool operator==(const EndPoint &other) const 
     { 
-        return m_expressionValue == other.m_expressionValue && m_isInfinite == other.m_isInfinite;
+        return m_expressionValue == other.m_expressionValue;
     }
     
     EndPoint operator=(const EndPoint& other) 
     {
         m_expressionValue = other.m_expressionValue;
-        m_isInfinite = other.m_isInfinite;
         
         return *this;
     }
 
 private:
     Analitza::Expression m_expressionValue;
-    bool m_isInfinite;
 };
 
 class RealInterval
 {
 public:
     RealInterval() {}
-    RealInterval(const EndPoint &lEndPoint, const EndPoint &hEndPoint) : m_lowEndPoint(lEndPoint), m_highEndPoint(hEndPoint) {
-    }
+    RealInterval(const EndPoint &lEndPoint, const EndPoint &hEndPoint) : m_lowEndPoint(lEndPoint), m_highEndPoint(hEndPoint) {}
     RealInterval(const RealInterval &other) : m_lowEndPoint(other.m_lowEndPoint), m_highEndPoint(other.m_highEndPoint) {}
 
     EndPoint lowEndPoint() const { return m_lowEndPoint; }

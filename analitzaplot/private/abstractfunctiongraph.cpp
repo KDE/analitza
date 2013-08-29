@@ -117,6 +117,12 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, const Analitza::
 {
     Q_ASSERT(analyzer->expression().bvarList().contains(argname));
     
+    if (min == Expression(Analitza::Cn("-inf")) && 
+        max == Expression(Analitza::Cn("inf")))
+    {
+        m_argumentIntervals[argname] = RealInterval(EndPoint(min), EndPoint(max));        
+    }
+    
     Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
     intervalsAnalizer->setExpression(min);
     double min_val = intervalsAnalizer->calculate().toReal().value();
@@ -146,6 +152,11 @@ QPair<double, double> AbstractFunctionGraph::interval(const QString &argname) co
     delete intervalsAnalizer;
 
     return ret;
+}
+
+void AbstractFunctionGraph::clearIntervals()
+{
+    m_argumentIntervals.clear();
 }
 
 bool AbstractFunctionGraph::setInterval(const QString &argname, double min, double max)

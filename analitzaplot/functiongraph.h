@@ -62,6 +62,8 @@ public:
 
     QPair<double, double> interval(const QString &argname) const;
     bool setInterval(const QString &argname, double min, double max);
+    void clearIntervals();
+    bool hasIntervals() const;
     
     /** @returns the parameters that a function expects */
     QStringList parameters() const;

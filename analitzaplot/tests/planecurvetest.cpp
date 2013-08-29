@@ -60,8 +60,10 @@ void PlaneCurveTest::testCorrect_data()
 void PlaneCurveTest::testCorrect()
 {
     QFETCH(QString, input);
+    
+    PlotBuilder pb = PlotsFactory::self()->requestPlot(Expression(input), Dim2D);
 
-    QVERIFY(PlotsFactory::self()->requestPlot(Expression(input), Dim2D).canDraw());
+    QVERIFY(pb.canDraw());
 }
 
 void PlaneCurveTest::testIncorrect_data()

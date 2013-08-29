@@ -141,6 +141,16 @@ bool FunctionGraph::setInterval(const QString &argname, double min, double max)
     return ret;
 }
 
+void FunctionGraph::clearIntervals()
+{
+    m_functionGraph->clearIntervals();
+}
+
+bool FunctionGraph::hasIntervals() const
+{
+    return m_functionGraph->hasIntervals();
+}
+
 QStringList FunctionGraph::parameters() const
 {
     Q_ASSERT(m_functionGraph);
