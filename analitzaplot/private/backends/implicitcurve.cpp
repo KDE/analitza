@@ -71,28 +71,22 @@ void FunctionImplicit::update(const QRectF& vp)
     points.clear();
     jumps.clear();
 
-    //TODO
-//     QPair<double, double> ix = interval("x");
-//     QPair<double, double> iy = interval("y");    
-//     double minx = ix.first;
-//     double maxx = ix.second;
-//     double miny = iy.first;
-//     double maxy = iy.second;
-//     
+    double minx = vp.left();
+    double maxx = vp.right();
+    double miny = vp.top();
+    double maxy = vp.bottom();
     
-    double minx = 0;
-    double maxx = 0;
-    double miny = 0;
-    double maxy = 0;
-    
-    if (!hasIntervals())
+    if (hasIntervals())
     {
-        minx = vp.left();
-        maxx = vp.right();
-        miny = vp.top();
-        maxy = vp.bottom();
-    }
+        QPair<double, double> intervalx = interval("x");
+        QPair<double, double> intervaly = interval("y");
 
+        minx = intervalx.first;
+        maxx = intervalx.second;
+        miny = intervaly.first;
+        maxy = intervaly.second;
+    }
+    
     setWorld(minx, maxx, miny, maxy);
     buildGeometry();
 

@@ -444,48 +444,22 @@ void MarchingSquares::buildGeometry()
 }
 void MarchingSquares::setWorld(double minx, double maxx, double miny, double maxy)
 {
-        sLimitesEspacio2D _esp;
-
-        double a = 4;
-
-        _esp.minX = minx;
-        _esp.maxX = maxx;
-        _esp.minY = miny;
-        _esp.maxY = maxy;
-
-//         qDebug() << _esp.minX << _esp.maxX << _esp.minY << _esp.maxY;
-        
-        largo_mundo = 1;
-
-//         qDebug() << largo_mundo;
-    //a mas pequenio el size se detectan las singularidades
-    min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
-    
-    if (min_grid>0.05 && min_grid < 1)
-        min_grid = 0.05; // 0.05 es el minimo valor para la presicion
-            
-        mundo = _esp;
-
-///
-/*
     sLimitesEspacio2D _esp;
 
-    double w = maxx-minx;
-    double h = maxy-miny;
-    
-    double presc = 0.1;
-    
-    _esp.minX = minx-presc*w;
-    _esp.maxX = maxx+presc*w;
-    _esp.minY = miny-presc*h;
-    _esp.maxY = maxy+presc*h;
+    double a = 4;
 
-    //a mas pequenio el size se detectan las singularidades
+    _esp.minX = minx;
+    _esp.maxX = maxx;
+    _esp.minY = miny;
+    _esp.maxY = maxy;
+
+    largo_mundo = 1;
+
+    // a mas pequenio el size se detectan las singularidades
     min_grid = qMin(fabs(maxx-minx), fabs(maxy-miny))/256;
-    
+
     if (min_grid>0.05 && min_grid < 1)
         min_grid = 0.05; // 0.05 es el minimo valor para la presicion
-    
-    largo_mundo = 1;
-    mundo = _esp;*/
+
+    mundo = _esp;
 }
