@@ -121,3 +121,35 @@ void Fxz::update(const QVector3D & oppositecorner1, const QVector3D & oppositeco
 
 REGISTER_SURFACE(Fxz)
 
+class Fyz : public AbstractSurface/*, static class? better macros FooClass*/
+{
+public:
+    CONSTRUCTORS(Fyz)
+    TYPE_NAME(I18N_NOOP("Surface x=F(y,z)"))
+    EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
+                        Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                        Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
+                        Analitza::ExpressionType(Analitza::ExpressionType::Value)))
+    COORDDINATE_SYSTEM(Cartesian)
+    PARAMETERS(QStringList("y") << "z")
+    ICON_NAME("newfunction3d")
+    EXAMPLES(QStringList("y+z"))
+
+    QVector3D fromParametricArgs(double u, double v);
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
+};
+
+QVector3D Fyz::fromParametricArgs(double u, double v)
+{
+    arg("y")->setValue(u);
+    arg("z")->setValue(v);    
+    
+    return QVector3D(u,analyzer->calculateLambda().toReal().value(),v);
+}
+
+void Fyz::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+{
+    buildParametricSurface();
+}
+
+REGISTER_SURFACE(Fyz)
