@@ -104,6 +104,7 @@ ExpressionType::ExpressionType(ExpressionType::Type t, const ExpressionType& con
 {
 	Q_ASSERT(m_type==List || m_type==Vector || m_type==Matrix);
 	Q_ASSERT(m_type!=Vector || m_size!=0);
+	Q_ASSERT(m_type!=Matrix || contained.type()==Vector);
 	m_assumptions=contained.assumptions();
 }
 
@@ -256,9 +257,9 @@ void ExpressionType::addAssumptions(const QMap<QString, ExpressionType>& a)
 	Q_ASSERT(valid);
 }
 
-ExpressionType ExpressionType::starsToType(const QMap< int, ExpressionType>& info) const
+ExpressionType ExpressionType::starsToType(const QMap<int, ExpressionType>& info) const
 {
-	for(QMap< int, ExpressionType >::const_iterator it=info.begin(); it!=info.end(); ++it) {
+	for(QMap<int, ExpressionType>::const_iterator it=info.begin(); it!=info.end(); ++it) {
 		Q_ASSERT(it->type()!=ExpressionType::Any || it->anyValue()!=it.key());
 	}
 	
@@ -267,19 +268,16 @@ ExpressionType ExpressionType::starsToType(const QMap< int, ExpressionType>& inf
 // 	qDebug() << qPrintable("hohohoho"+QString(++deep, '-')) << *this << info << &info;
 	
 // 	qDebug() << ".........." << *this << info.keys();
-	if((m_type==ExpressionType::Any || ((m_type==ExpressionType::Vector || m_type==ExpressionType::Matrix) && m_size<0)) && info.contains(m_any)) {
-		if(m_type==ExpressionType::Any)
-			ret=info.value(m_any);
-		else {
-			ret=info.value(m_size);
-			QMap<int, ExpressionType> info2(info);
-			info2.remove(m_size);
-			ret.m_contained.first()=ret.m_contained.first().starsToType(info2);
-		}
-		
+	if(m_type==ExpressionType::Any && info.contains(m_any)) {
+		ret=info.value(m_any);
 		ret.m_assumptions=m_assumptions;
-// 		bool b=assumptionsMerge(ret.m_assumptions, m_assumptions);
-// 		Q_ASSERT(b);
+	} else if((m_type==ExpressionType::Vector || m_type==ExpressionType::Matrix) && m_size<0 && info.contains(m_size)) {
+		ret=*this;
+		QMap<int, ExpressionType> info2(info);
+		ExpressionType sometype = info2.take(m_size);
+		ret.m_size = sometype.m_size;
+		ret.m_contained.first() = m_contained.first().starsToType(info2);
+		ret.m_assumptions=m_assumptions;
 	} else {
 		ret=*this;
 		
@@ -290,7 +288,7 @@ ExpressionType ExpressionType::starsToType(const QMap< int, ExpressionType>& inf
 		}
 		
 		if(hasMany) {
-			QList< ExpressionType > args=manyFromArgs(ret.m_contained);
+			QList<ExpressionType> args=manyFromArgs(ret.m_contained);
 			QList<ExpressionType> alts;
 			foreach(const ExpressionType& t, args) {
 				ExpressionType tt=ret;

@@ -88,6 +88,10 @@ bool Matrix::operator==(const Matrix& m) const
 	return eq;
 }
 
+Object* Matrix::at(int i, int j) const
+{
+	return static_cast<const MatrixRow*>(m_rows.at(i))->at(j);
+}
 
 ////// MatrixRow
 MatrixRow::MatrixRow(int size)

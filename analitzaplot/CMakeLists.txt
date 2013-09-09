@@ -85,7 +85,7 @@ if(WIN32)
     target_link_libraries(analitzaplot ${GLEW_LIBRARIES})
 endif(WIN32)
 
-set_target_properties(analitzaplot PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
+set_target_properties(analitzaplot PROPERTIES VERSION ${ANALITZA_LIB_VERSION} SOVERSION ${ANALITZA_LIB_SOVERSION} )
 
 install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 

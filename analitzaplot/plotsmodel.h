@@ -77,6 +77,7 @@ protected:
 private:
     QList<PlotItem*> m_items;
     int m_resolution;
+    int m_namingCount;
 };
 
 }

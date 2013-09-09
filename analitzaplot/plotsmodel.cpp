@@ -203,14 +203,14 @@ void PlotsModel::addPlot(PlotItem* it)
     Q_ASSERT(it);
 
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
-
     it->setModel(this);
     m_items.append(it);
-    
+
     if(FunctionGraph* g=dynamic_cast<FunctionGraph*>(it))
         g->setResolution(m_resolution);
-
     endInsertRows();
+
+    m_namingCount++;
 }
 
 void PlotsModel::updatePlot(int row, PlotItem* it)
@@ -243,8 +243,7 @@ QModelIndex PlotsModel::indexForName(const QString& name)
 
 QString PlotsModel::freeId() const
 {
-	//TODO: figure out a better way
-	return "f"+QString::number(qrand()*rowCount());
+	return "f"+QString::number(m_namingCount);
 }
 
 void PlotsModel::setResolution(int res)

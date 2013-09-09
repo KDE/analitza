@@ -46,10 +46,10 @@ class MatrixRow;
  * \brief This class represents an expression writer.
  */
 
-class ExpressionWriter
+class ANALITZA_EXPORT ExpressionWriter
 {
 	public:
-		virtual ~ExpressionWriter() {}
+		virtual ~ExpressionWriter();
 		
 		virtual QString accept(const Operator* var) = 0;
 		virtual QString accept(const Ci* var) = 0;

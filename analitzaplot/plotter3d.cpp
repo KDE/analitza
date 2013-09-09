@@ -587,8 +587,6 @@ void Plotter3D::addPlots(PlotItem* item)
     {
         Surface* surf = dynamic_cast<Surface*>(item);
     
-        int bufferSize;
-
         //vertices & normals vbo just allows 1 buffferdata of type array_buffer
         glGenBuffers(1, &m_itemGeometries[item].second);
         glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries[item].second);

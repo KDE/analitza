@@ -448,6 +448,28 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 	return 0;
 }
 
+Object* Operations::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QString** )
+{
+	Object* ret = 0;
+	switch(op) {
+		case Operator::transpose: {
+			int sizeA = m->size(), sizeB = static_cast<MatrixRow*>(*m->constBegin())->size();
+			Matrix* mret = new Matrix;
+			for(int i=0; i<sizeB; ++i) {
+				MatrixRow* row = new MatrixRow(sizeA);
+				for(int j=0; j<sizeA; ++j) {
+					row->appendBranch(m->at(j, i)->copy());
+				}
+				mret->appendBranch(row);
+			}
+			ret = mret;
+		}	break;
+		default:
+			break;
+	}
+	return ret;
+}
+
 ExpressionType TypeTriplet(const ExpressionType& a,const ExpressionType& b,const ExpressionType& c) { return ExpressionType(ExpressionType::Lambda).addParameter(a).addParameter(b).addParameter(c); }
 
 //TODO: test that there's one output per input
@@ -574,6 +596,12 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 			ret << TypePair(ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value));
 			ret << TypePair(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any, 1), -1), ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any, 1), -1));
 			break;
+		case Operator::transpose:
+			ret << TypePair(ExpressionType(ExpressionType::Matrix,
+										   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							ExpressionType(ExpressionType::Matrix,
+										   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), -2));
+			break;
 		case Operator::factorial:
 		case Operator::sin:
 		case Operator::cos:
@@ -650,7 +678,10 @@ Operations::UnaryOp Operations::opsUnary[] = {
 	0, //variable
 	(Operations::UnaryOp) Operations::reduceUnaryVector,
 	(Operations::UnaryOp) Operations::reduceUnaryList,
-	0,0
+	0, //apply
+	0, //oper
+	0, //container
+	(Operations::UnaryOp) Operations::reduceUnaryMatrix
 };
 
 Object * Operations::reduceUnary(Operator::OperatorType op, Object * val, QString** correct)

@@ -56,6 +56,7 @@ class ANALITZA_EXPORT Matrix : public Object
 		bool operator==(const Matrix& m) const;
 		int size() const { return m_rows.size(); }
 		Analitza::Matrix::iterator erase(const Analitza::Matrix::iterator& it) { return m_rows.erase(it); }
+		Object* at(int i, int j) const;
 
 	private:
 		QVector<Object*> m_rows;

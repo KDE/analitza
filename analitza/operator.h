@@ -62,6 +62,8 @@ class ANALITZA_EXPORT Operator : public Object
 			
 			map, filter,
 			
+			transpose,
+			
 			function, nOfOps
 		};
 		/** Constructor. Creates an operator with @p t type .*/

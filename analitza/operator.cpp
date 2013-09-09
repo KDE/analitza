@@ -47,6 +47,8 @@ const char Operator::words[nOfOps][14] = {
 	
 	"map", "filter",
 	
+	"transpose",
+	
 	"function"
 };
 
@@ -167,6 +169,7 @@ int Operator::nparams(Operator::OperatorType t)
 		case exists:
 		case diff:
 		case card:
+		case transpose:
 			return 1;
 		case nOfOps:
 		case none:
@@ -257,6 +260,7 @@ Operator Operator::inverse() const
 		case arcsech: ret=Operator::sech; break;
 		case arcsinh: ret=Operator::sinh; break;
 		case arctanh: ret=Operator::tanh; break;
+		case transpose: ret=Operator::transpose; break;
 		default: break;
 	}
 	return Operator(ret);
