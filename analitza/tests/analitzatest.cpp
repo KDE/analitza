@@ -477,6 +477,12 @@ void AnalitzaTest::testCorrection()
 		QVERIFY(b.isCorrect());
 	}
 	QCOMPARE(evalResult.toString(), result);
+
+	QString script = expression.join("\n");
+	script+="\n\n\n";
+	QTextStream stream(&script);
+	a->importScript(&stream);
+	QVERIFY(a->isCorrect());
 }
 
 void AnalitzaTest::testTypeUncorrection()

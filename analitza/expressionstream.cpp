@@ -47,11 +47,10 @@ Expression ExpressionStream::next()
 		m_last += m_dev->readLine()+'\n';
 		if(Expression::isCompleteExpression(m_last)) {
 			break;
-		} else if(m_dev->atEnd()) {
-			m_interrupted = true;
-			break;
 		}
 	}
+	m_dev->skipWhiteSpace();
+	m_interrupted = !Expression::isCompleteExpression(m_last);
 	QString last = m_last.trimmed();
 	return Analitza::Expression(last, Expression::isMathML(last));
 }
