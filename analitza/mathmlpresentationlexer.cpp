@@ -18,9 +18,10 @@
 
 #include "mathmlpresentationlexer.h"
 #include "expressionparser.h"
-#include "localize.h"
+
 #include <QDebug>
 #include <QStringList>
+#include <QCoreApplication>
 
 MathMLPresentationLexer::MathMLPresentationLexer(const QString &source)
 	: AbstractLexer(source), m_xml(source)
@@ -90,7 +91,7 @@ void MathMLPresentationLexer::getToken()
 					else if(op.length()==2 && m_longOperators.contains(op))
 						t = m_longOperators[op];
 					else
-						m_err= i18nc("Error message", "Unknown token '%1'", op);
+						m_err= QCoreApplication::translate("Error message", "Unknown token '%1'").arg(op);
 					m_tokens.append(TOKEN(t, 0));
 				} else {
 					QString text = m_xml.text().toString().trimmed();

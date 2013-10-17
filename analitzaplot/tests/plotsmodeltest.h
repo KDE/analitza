@@ -30,7 +30,7 @@ Q_OBJECT
 		PlotsModelTest(QObject *parent = 0);
 		~PlotsModelTest();
 
-	private slots:
+	private Q_SLOTS:
 		void testAppend();
 		void testAppend_data();
         void testDelete();

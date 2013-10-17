@@ -21,8 +21,8 @@
 #include "abstractfunctiongraph.h"
 
 #include <QStringList>
+#include <QCoreApplication>
 #include <analitza/analyzer.h>
-#include <KLocalizedString>
 
 using namespace Analitza;
 
@@ -30,7 +30,7 @@ FunctionGraphFactory* FunctionGraphFactory::m_self=0;
 
 QString FunctionGraphFactory::typeName(const QString& id) const
 {
-    return i18n(typeNameFunctions[id]);
+    return QCoreApplication::tr(typeNameFunctions[id]);
 }
 
 Analitza::ExpressionType FunctionGraphFactory::expressionType(const QString& id) const

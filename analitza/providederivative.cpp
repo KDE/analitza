@@ -23,10 +23,11 @@
 #include "value.h"
 #include "container.h"
 #include "variable.h"
-#include "localize.h"
+
 #include "list.h"
 #include "vector.h"
 #include "transformation.h"
+#include <QCoreApplication>
 
 using namespace Analitza;
 using namespace AnalitzaUtils;
@@ -89,7 +90,7 @@ Object* ProvideDerivative::walkApply(const Apply* a)
 		
 		if(!ret) {
 			ret = a->copy();
-			m_errors += i18n("Could not calculate the derivative for '%1'", ret->toString());
+			m_errors += QCoreApplication::tr("Could not calculate the derivative for '%1'").arg(ret->toString());
 		}
 		return ret;
 	} else

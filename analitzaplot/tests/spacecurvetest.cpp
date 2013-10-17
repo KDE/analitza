@@ -21,13 +21,13 @@
 #include "analitzaplot/spacecurve.h"
 #include "analitza/expression.h"
 #include "analitza/variables.h"
-#include <qtest_kde.h>
+#include <QtTest/QTest>
 #include <cmath>
 
 using namespace std;
 using namespace Analitza;
 
-QTEST_KDEMAIN_CORE( SpaceCurveTest )
+QTEST_MAIN( SpaceCurveTest )
 
 SpaceCurveTest::SpaceCurveTest(QObject *parent)
     : QObject(parent)

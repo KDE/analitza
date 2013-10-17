@@ -22,6 +22,7 @@
 
 #include <cmath>
 #include <kdemacros.h>
+#include <QCoreApplication>
 
 #include "value.h"
 #include "vector.h"
@@ -29,7 +30,7 @@
 #include "list.h"
 #include "expressiontypechecker.h"
 #include "customobject.h"
-#include "localize.h"
+
 #include "matrix.h"
 
 using namespace std;
@@ -51,7 +52,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			if(KDE_ISLIKELY(b!=0.))
 				oper->setValue(a / b);
 			else
-				*correct=new QString(i18n("Cannot divide by 0."));
+				*correct=new QString(QCoreApplication::tr("Cannot divide by 0."));
 			break;
 		case Operator::minus:
 			oper->setValue(a - b);
@@ -64,7 +65,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			if(KDE_ISLIKELY(floor(b)!=0.))
 				oper->setValue(int(remainder(a, b)));
 			else
-				*correct=new QString(i18n("Cannot calculate the remainder on 0."));
+				*correct=new QString(QCoreApplication::tr("Cannot calculate the remainder on 0."));
 			break;
 		case Operator::quotient:
 			oper->setValue(int(floor(a / b)));
@@ -74,7 +75,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			if(KDE_ISLIKELY(fb!=0))
 				oper->setValue((int(floor(a)) % fb)==0);
 			else
-				*correct=new QString(i18n("Cannot calculate the factor on 0."));
+				*correct=new QString(QCoreApplication::tr("Cannot calculate the factor on 0."));
 		}	break;
 		case Operator::min:
 			oper->setValue(a < b? a : b);
@@ -128,7 +129,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 		case Operator::lcm:
 			//code by michael cane aka kiko :)
 			if(KDE_ISUNLIKELY(floor(a)==0. || floor(b)==0.))
-				*correct=new QString(i18n("Cannot calculate the lcm of 0."));
+				*correct=new QString(QCoreApplication::tr("Cannot calculate the lcm of 0."));
 			else {
 				int ia=floor(a), ib=floor(b);
 				int ic=ia*ib;
@@ -261,7 +262,7 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 			val->setValue(!a);
 			break;
 		default:
-			*correct=new QString(i18n("Could not calculate a value %1", Operator(op).toString()));
+			*correct=new QString(QCoreApplication::tr("Could not calculate a value %1").arg(Operator(op).toString()));
 			break;
 	}
 	return val;
@@ -275,7 +276,7 @@ Object * Operations::reduceRealVector(Operator::OperatorType op, Cn * oper, Vect
 			delete oper;
 			Object* ret=0;
 			if(select<1 || (select-1) >= v1->size()) {
-				*correct=new QString(i18n("Invalid index for a container"));
+				*correct=new QString(QCoreApplication::tr("Invalid index for a container"));
 				ret=new Cn(0.);
 			} else {
 				ret=v1->at(select-1)->copy();
@@ -307,7 +308,7 @@ Object * Operations::reduceVectorReal(Operator::OperatorType op, Vector * v1, Cn
 Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, Vector * v2, QString** correct)
 {
 	if(v1->size()!=v2->size()) { //FIXME: unneeded?
-		*correct=new QString(i18n("Cannot operate on different sized vectors."));
+		*correct=new QString(QCoreApplication::tr("Cannot operate on different sized vectors."));
 		return new Cn(0.);
 	}
 	
@@ -330,7 +331,7 @@ Cn* Operations::reduceUnaryVector(Operator::OperatorType op, Vector * c, QString
 			break;
 		default:
 			//Should be dealt by typechecker. not necessary
-			*correct=new QString(i18n("Could not calculate a vector's %1", Operator(op).toString()));
+			*correct=new QString(QCoreApplication::tr("Could not calculate a vector's %1").arg(Operator(op).toString()));
 			ret=new Cn(0.);
 			break;
 	}
@@ -352,7 +353,7 @@ Object* Operations::reduceListList(Operator::OperatorType op, List* l1, List* l2
 		}	break;
 		default:
 			//Should be dealt by typechecker. not necessary
-			*correct=new QString(i18n("Could not calculate a list's %1", Operator(op).toString()));
+			*correct=new QString(QCoreApplication::tr("Could not calculate a list's %1").arg(Operator(op).toString()));
 			delete l1;
 			ret=new Cn(0.);
 			break;
@@ -368,7 +369,7 @@ Cn* Operations::reduceUnaryList(Operator::OperatorType op, List* l, QString** co
 			ret=new Cn(l->size());
 			break;
 		default:
-			*correct=new QString(i18n("Could not calculate a list's %1", Operator(op).toString()));
+			*correct=new QString(QCoreApplication::tr("Could not calculate a list's %1").arg(Operator(op).toString()));
 			ret=new Cn(0.);
 			break;
 	}
@@ -383,7 +384,7 @@ Object* Operations::reduceRealList(Operator::OperatorType op, Cn* oper, List* v1
 			int select=oper->intValue();
 			Object* ret=0;
 			if(select<1 || (select-1) >= v1->size()) {
-				*correct=new QString(i18n("Invalid index for a container"));
+				*correct=new QString(QCoreApplication::tr("Invalid index for a container"));
 				ret=new Cn(0.);
 			} else {
 				ret=v1->at(select-1);
@@ -431,7 +432,7 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 		Vector* ret;
 		int select=v->intValue();
 		if(select<1 || (select-1) >= m1->size()) {
-			*correct=new QString(i18n("Invalid index for a container"));
+			*correct=new QString(QCoreApplication::tr("Invalid index for a container"));
 			ret=new Vector(1);
 		} else {
 			MatrixRow* row = static_cast<MatrixRow*>(m1->values()[select-1]);

@@ -22,13 +22,13 @@
 #include <plotsfactory.h>
 #include "analitza/expression.h"
 #include "analitza/variables.h"
-#include <qtest_kde.h>
+#include <QtTest/QTest>
 #include <cmath>
 
 using namespace std;
 using namespace Analitza;
 
-QTEST_KDEMAIN_CORE( PlaneCurveTest )
+QTEST_MAIN( PlaneCurveTest )
 
 PlaneCurveTest::PlaneCurveTest(QObject *parent)
     : QObject(parent)

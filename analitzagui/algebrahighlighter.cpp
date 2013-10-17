@@ -18,7 +18,7 @@
  *************************************************************************************/
 
 #include "algebrahighlighter.h"
-#include <QApplication>
+#include <QGuiApplication>
 #include <QStack>
 #include <QPalette>
 

@@ -25,10 +25,10 @@
 #include "expression.h"
 #include "analitzautils.h"
 #include "operations.h"
-#include <localize.h>
 #include "apply.h"
 #include "value.h"
 #include "matrix.h"
+#include <QCoreApplication>
 
 QDebug operator<<(QDebug dbg, const Analitza::ExpressionType &c)
 {
@@ -264,7 +264,7 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 				}
 			}
 			if(!found) {
-				addError(i18n("Could not find a type that unifies '%1'", o->toString()));
+				addError(QCoreApplication::tr("Could not find a type that unifies '%1'").arg(o->toString()));
 			}
 // 			qDebug() << qPrintable("\\"+QString(--ind, '-')) << o->toString() << ret;
 		}
@@ -436,7 +436,7 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 				tt=current.contained();
 				tt.addAssumptions(current.assumptions());
 			} else
-				addError(i18n("The domain should be either a vector or a list"));
+				addError(QCoreApplication::tr("The domain should be either a vector or a list"));
 			//TODO: should control the many case
 		}
 		
@@ -544,9 +544,7 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 						QList<ExpressionType> altargs=f.parameters();
 						
 						if(opt.parameters().size()!=altargs.size()+1) {
-							addError(i18np("Invalid parameter count for '%2'. Should have 1 parameter.",
-														"Invalid parameter count for '%2'. Should have %1 parameters.",
-														opt.parameters().size()-1, c->toString()));
+							addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.", 0, opt.parameters().size()-1).arg(c->toString()));
 							exit=true;
 							break;
 						}
@@ -588,7 +586,7 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 // 					qDebug() << "peee" << c->toString() << signature << exps;
 					
 					current=ExpressionType(ExpressionType::Error);
-					addError(i18n("Could not call '%1'", c->toString()));
+					addError(QCoreApplication::tr("Could not call '%1'").arg(c->toString()));
 				} else
 					current=ret;
 			}
@@ -596,7 +594,7 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 		default:
 			current=solve(&o, c->values());
 			if(current.type()==ExpressionType::Error)
-				addError(i18n("Could not solve '%1'", c->toString()));
+				addError(QCoreApplication::tr("Could not solve '%1'").arg(c->toString()));
 			break;
 	}
 	
@@ -629,7 +627,7 @@ ExpressionType ExpressionTypeChecker::tellTypeIdentity(const QString& name, cons
 			for(QList< ExpressionType >::iterator itf=optsFound.begin(), itfEnd=optsFound.end(); itf!=itfEnd; ++itf) {
 				if(!itf->canReduceTo(type)) {
 // 					qDebug() << "incoherent type" << *itf << type;
-					addError(i18n("Incoherent type for the variable '%1'", name));
+					addError(QCoreApplication::tr("Incoherent type for the variable '%1'").arg(name));
 					break;
 				}
 				QMap<int, ExpressionType> stars;
@@ -652,7 +650,7 @@ QString ExpressionTypeChecker::accept(const Container* c)
 			ExpressionType type=commonType(c->m_params);
 			
 			if(type.isError()) {
-				addError(i18n("Could not determine the type for piecewise"));
+				addError(QCoreApplication::tr("Could not determine the type for piecewise"));
 				current=type;
 			} else {
 				QList<ExpressionType> alts=type.type()==ExpressionType::Many ? type.alternatives() : QList<ExpressionType>() << type, alts2;
@@ -843,7 +841,7 @@ QMap<QString, ExpressionType> ExpressionTypeChecker::typeIs(T it, const T& itEnd
 	}
 	
 	if(!valid)
-		addError(i18n("Unexpected type"));
+		addError(QCoreApplication::tr("Unexpected type"));
 	return ret;
 }
 
@@ -866,7 +864,7 @@ QMap<QString, ExpressionType> ExpressionTypeChecker::typeIs(const Object* o, con
 	}
 	
 	if(!corr)
-		addError(i18n("Cannot convert '%1' to '%2'", o->toString(), type.toString()));
+		addError(QCoreApplication::tr("Cannot convert '%1' to '%2'").arg(o->toString()).arg(type.toString()));
 	
 	return assumptions;
 }

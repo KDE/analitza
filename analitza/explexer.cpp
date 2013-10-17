@@ -18,8 +18,9 @@
 
 #include "explexer.h"
 #include "expressionparser.h"
-#include "localize.h"
+
 #include <QDebug>
+#include <QCoreApplication>
 
 ExpLexer::ExpLexer(const QString &source)
 	: AbstractLexer(source), m_pos(0)
@@ -73,7 +74,7 @@ void ExpLexer::getToken()
 			escaping=a[pos]=='\\';
 		
 		if(pos>=a.size())
-			m_err += i18n("Unexpectedly arrived to the end of the input");
+			m_err += QCoreApplication::tr("Unexpectedly arrived to the end of the input");
 		
 		ret.type=ExpressionTable::tString;
 		ret.val="<cs>"+escape(a.mid(posini, pos-posini))+"</cs>";
@@ -109,7 +110,7 @@ void ExpLexer::getToken()
 		pos += m_realRx.matchedLength();
 	} else {
 		ret.val=-1;
-		m_err=i18n("Unknown token %1", a[pos]);
+		m_err=QCoreApplication::tr("Unknown token %1").arg(a[pos]);
 	}
 	ret.len = pos-oldpos;
 	m_tokens.append(ret);

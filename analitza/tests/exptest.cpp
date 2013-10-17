@@ -19,9 +19,10 @@
 #include "exptest.h"
 #include "explexer.h"
 #include "expressionparser.h"
-#include <qtest_kde.h>
+#include <QtTest/QTest>
+#include <QDebug>
 
-QTEST_KDEMAIN_CORE( ExpTest )
+QTEST_MAIN( ExpTest )
 ExpTest::ExpTest(QObject *parent)
  : QObject(parent)
 {}

@@ -32,7 +32,7 @@ Q_OBJECT
 		MathMLPresentationTest(QObject *parent = 0);
 		~MathMLPresentationTest();
 	
-	private slots:
+	private Q_SLOTS:
 		void initTestCase();
 		
 		void testSimple_data();

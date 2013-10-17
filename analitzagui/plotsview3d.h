@@ -60,10 +60,10 @@ public:
 
     void setSelectionModel(QItemSelectionModel* selection);
 
-public slots:
+public Q_SLOTS:
     void resetView();
     
-private slots:
+private Q_SLOTS:
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);
     void removeFuncs(const QModelIndex &index,int,int);

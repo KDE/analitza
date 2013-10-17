@@ -32,7 +32,7 @@ Q_OBJECT
 		ExpTest(QObject *parent = 0);
 		~ExpTest();
 	
-	private slots:
+	private Q_SLOTS:
 		void initTestCase();
 		
 		void testSimple_data();

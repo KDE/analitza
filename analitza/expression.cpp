@@ -18,6 +18,7 @@
 #include "expression.h"
 
 #include <QDomElement>
+#include <QCoreApplication>
 
 #include "explexer.h"
 #include "expressionparser.h"
@@ -34,7 +35,7 @@
 #include "analitzautils.h"
 #include "apply.h"
 #include "customobject.h"
-#include "localize.h"
+
 #include "matrix.h"
 
 using namespace Analitza;
@@ -159,21 +160,23 @@ bool Expression::ExpressionPrivate::check(const Apply* c)
 	if(((op.nparams()<0 && cnt<=1) || (op.nparams()>-1 && cnt!=op.nparams())) && (opt!=Operator::minus || cnt==0) && opt!=Operator::function)
 	{
 		if(op.nparams()<0)
-			m_err << i18n("<em>%1</em> needs at least 2 parameters", op.toString());
+			m_err << QCoreApplication::tr("<em>%1</em> needs at least 2 parameters").arg(op.toString());
 		else
-			m_err << i18n("<em>%1</em> requires %2 parameters", op.toString(), op.nparams());
+			m_err << QCoreApplication::tr("<em>%1</em> requires %2 parameters")
+											.arg(op.toString())
+											.arg(op.nparams());
 		ret=false;
 	}
 	
 	if(op.isBounded() && !c->hasBVars()) {
-		m_err << i18n("Missing boundary for '%1'", op.toString());
+		m_err << QCoreApplication::tr("Missing boundary for '%1'").arg(op.toString());
 	} else if(!op.isBounded() && c->hasBVars()) {
-		m_err << i18n("Unexpected bounding for '%1'", op.toString());
+		m_err << QCoreApplication::tr("Unexpected bounding for '%1'").arg(op.toString());
 	}
 	
 	if(op.isBounded() && op!=Operator::diff) {
 		if(!(c->ulimit() && c->dlimit()) && !c->domain()) {
-			m_err << i18n("<em>%1</em> missing bounds on '%2'", c->bvarStrings().join(" "), op.toString());
+			m_err << QCoreApplication::tr("<em>%1</em> missing bounds on '%2'").arg(c->bvarStrings().join(" ")).arg(op.toString());
 		}
 	}
 	
@@ -195,7 +198,7 @@ bool Expression::ExpressionPrivate::check(const Container* c)
 	switch(c->containerType()) {
 		case Container::declare:
 			if(c->m_params.size()!=2) {
-				m_err << i18n("Wrong declare");
+				m_err << QCoreApplication::tr("Wrong declare");
 				ret=false;
 			}
 			break;
@@ -205,7 +208,7 @@ bool Expression::ExpressionPrivate::check(const Container* c)
 	}
 	
 	if(c->isEmpty() && c->containerType()!=Container::math) {
-		m_err << i18n("Empty container: %1", c->tagName());
+		m_err << QCoreApplication::tr("Empty container: %1").arg(c->tagName());
 		ret=false;
 	}
 	
@@ -223,7 +226,7 @@ bool Expression::ExpressionPrivate::canAdd(const Object* where, const Object* br
 			bool isPiecewise=where->type()==Object::container
 				&& static_cast<const Container*>(where)->containerType()==Container::piecewise;
 			if(!isPiecewise) {
-				m_err << i18nc("there was a conditional outside a condition structure",
+				m_err << QCoreApplication::translate("there was a conditional outside a condition structure",
 								"We can only have conditionals inside piecewise structures.");
 				correct=false;
 			}
@@ -239,7 +242,7 @@ bool Expression::ExpressionPrivate::canAdd(const Object* where, const Object* br
 			
 			if(bvars.contains(var->name())) {
 				correct=false;
-				m_err << i18n("Cannot have two parameters with the same name like '%1'.", var->name());
+				m_err << QCoreApplication::tr("Cannot have two parameters with the same name like '%1'.").arg(var->name());
 			}
 		}
 	}
@@ -254,7 +257,7 @@ bool Expression::ExpressionPrivate::canAdd(const Object* where, const Object* br
 				isCondition=ct==Container::piece || ct==Container::otherwise;
 				
 				if(cWhere->extractType(Container::otherwise)) {
-					m_err << i18nc("this is an error message. otherwise is the else in a mathml condition",
+					m_err << QCoreApplication::translate("this is an error message. otherwise is the else in a mathml condition",
 						"The <em>otherwise</em> parameter should be the last one");
 					correct=false;
 				}
@@ -262,19 +265,19 @@ bool Expression::ExpressionPrivate::canAdd(const Object* where, const Object* br
 			}
 			
 			if(!isCondition) {
-				m_err << i18nc("there was an element that was not a conditional inside a condition",
-									"%1 is not a proper condition inside the piecewise", branch->toString());
+				m_err << QCoreApplication::translate("there was an element that was not a conditional inside a condition",
+									"%1 is not a proper condition inside the piecewise").arg(branch->toString());
 				correct=false;
 			}
 			
 		} else if(cWhere->containerType()==Container::declare && cWhere->isEmpty() && branch->type()!=Object::variable) {
-			m_err << i18n("We can only declare variables");
+			m_err << QCoreApplication::tr("We can only declare variables");
 			correct=false;
 		}
 		
 		if(cWhere->containerType()==Container::bvar) {
 			if(branch->type()!=Object::variable) {
-				m_err << i18n("We can only have bounded variables");
+				m_err << QCoreApplication::tr("We can only have bounded variables");
 				correct=false;
 			}
 		}
@@ -394,7 +397,7 @@ bool Expression::setMathML(const QString & s)
 	QDomDocument doc;
 	
 	if (!doc.setContent(s)) {
-		d->m_err << i18n("Error while parsing: %1", s);
+		d->m_err << QCoreApplication::tr("Error while parsing: %1").arg(s);
 		return false;
 	}
 	
@@ -425,23 +428,23 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
 				}
 				ret = c;
 			} else
-				m_err << i18nc("An error message", "Container unknown: %1", elem.tagName());
+				m_err << QCoreApplication::translate("An error message", "Container unknown: %1").arg(elem.tagName());
 		}	break;
 		case Object::value:
 			num= new Cn(0.);
 			if(!num->setValue(elem)) {
 				delete num;
-				m_err<< i18n("Cannot codify the %1 value.", elem.text());
+				m_err<< QCoreApplication::tr("Cannot codify the %1 value.").arg(elem.text());
 			} else
 				ret = num;
 			break;
 		case Object::oper:
 			if(elem.hasChildNodes()) {
-				m_err << i18n("The %1 operator cannot have child contexts.", elem.tagName());
+				m_err << QCoreApplication::tr("The %1 operator cannot have child contexts.").arg(elem.tagName());
 			} else {
 				Operator::OperatorType type=Operator::toOperatorType(elem.tagName());
 				if(type==Operator::none)
-					m_err << i18n("The element '%1' is not an operator.", elem.tagName());
+					m_err << QCoreApplication::tr("The element '%1' is not an operator.").arg(elem.tagName());
 				else
 					ret = op = new Operator(type);
 			}
@@ -454,7 +457,7 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
 		case Object::vector: {
 			ret=addElements<Vector>(new Vector(elem.childNodes().count()), &elem);
 			if(elem.childNodes().count()==0) {
-				m_err << i18n("Do not want empty vectors");
+				m_err << QCoreApplication::tr("Do not want empty vectors");
 			}
 // 			qDebug() << "PEEEEEEU" << v->size();
 		}	break;
@@ -477,8 +480,8 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
 		}	break;
 		case Object::none:
 		case Object::custom:
-			m_err << i18nc("Error message due to an unrecognized input",
-							  "Not supported/unknown: %1", elem.tagName());
+			m_err << QCoreApplication::translate("Error message due to an unrecognized input",
+							  "Not supported/unknown: %1").arg(elem.tagName());
 			break;
 	}
 	

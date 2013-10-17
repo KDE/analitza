@@ -47,7 +47,7 @@ public:
     void createAllDictionaries();
     Analitza::Dimension dimension();
 
-public slots:
+public Q_SLOTS:
     ///convenience class for currentRow
     void setCurrentIndex(const QModelIndex& idx);
     

@@ -21,8 +21,8 @@ if(HAVE_OPENGL)
     list(APPEND analitzagui_SRCS plotsview3d.cpp)
 endif(HAVE_OPENGL)
 
-kde4_add_library(analitzagui SHARED ${analitzagui_SRCS})
-target_link_libraries(analitzagui ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDEUI_LIBS} ${QT_QTSVG_LIBRARY} ${QT_QTOPENGL_LIBRARY} analitza analitzaplot)
+add_library(analitzagui SHARED ${analitzagui_SRCS})
+target_link_libraries(analitzagui Qt5::Core Qt5::Widgets ${KDE4_KDEUI_LIBS} Qt5::Svg Qt5::OpenGL analitza analitzaplot)
 
 set_target_properties(analitzagui PROPERTIES VERSION ${ANALITZA_LIB_VERSION} SOVERSION ${ANALITZA_LIB_SOVERSION} )
 

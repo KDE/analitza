@@ -104,12 +104,12 @@ class ANALITZAGUI_EXPORT ExpressionEdit : public QPlainTextEdit
 		
 		/** Sets the @p examples to be shown in the context menu */
 		void setExamples(const QStringList& ex) { m_examples=ex; }
-	public slots:
+	public Q_SLOTS:
 		
 		/** Inserts @p text text where the cursor is and selects it */
 		void insertText(const QString& text);
 		
-	private slots:
+	private Q_SLOTS:
 		void showSimplified();
 		void cursorMov();
 		void updateCompleter();
@@ -133,7 +133,7 @@ class ANALITZAGUI_EXPORT ExpressionEdit : public QPlainTextEdit
 		/** Is the execution function, when return is pressed. */
 		void returnP(); //FIXME: Change my name please
 		
-	signals:
+	Q_SIGNALS:
 		/** Emits that a return has been pressed. */
 		void returnPressed();
 		

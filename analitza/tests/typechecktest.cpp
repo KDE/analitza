@@ -18,13 +18,13 @@
 
 #include "typechecktest.h"
 
-#include <qtest_kde.h>
+#include <QtTest/QTest>
 #include <cmath>
 #include "expression.h"
 #include <expressiontypechecker.h>
 #include <analyzer.h>
 
-QTEST_KDEMAIN_CORE( TypeCheckTest )
+QTEST_MAIN( TypeCheckTest )
 
 using namespace Analitza;
 

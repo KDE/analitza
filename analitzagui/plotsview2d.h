@@ -81,7 +81,7 @@ public:
     
     void setSelectionModel(QItemSelectionModel* selection);
 
-public slots:
+public Q_SLOTS:
     /** Marks the image as dirty and repaints everything. */
     void forceRepaint() { valid=false; repaint(); }
 
@@ -116,14 +116,14 @@ public slots:
     void setTicksShown(QFlags<Qt::Orientation> o) { Plotter2D::setTicksShown(o); }
     void setAxesShown(QFlags<Qt::Orientation> o) { Plotter2D::setAxesShown(o); }
     
-private slots:
+private Q_SLOTS:
     void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
     void updateFuncs(const QModelIndex& start, const QModelIndex& end); //update al setdata 
     void addFuncs(const QModelIndex & parent, int start, int end);
     void removeFuncs(const QModelIndex & parent, int start, int end);
     void changeViewport(const QRectF& vp) { setViewport(vp); }
     
-signals:
+Q_SIGNALS:
     /** Emits a status when it changes. */
     void status(const QString &msg);
     

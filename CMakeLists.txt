@@ -1,26 +1,40 @@
 project(analitza)
 
-find_package(KDE4 REQUIRED)
-include(KDE4Defaults)
-set(CMAKE_MODULE_PATH ${analitza_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+cmake_minimum_required(VERSION 2.8.12)
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
+find_package(ECM 0.0.9 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+find_package(Qt5 5.2 REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg OpenGL Test)
+find_package(KF5 5.0.0 REQUIRED MODULE COMPONENTS CMake Compiler InstallDirs)
+
+include(FeatureSummary)
+include(ECMSetupVersion)
+include(ECMAddTests)
+
+ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
+                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfigVersion.cmake")
 
 #Checking whether we can compile calgebra
-include(CheckIncludeFiles)
-macro_optional_find_package(Readline)
-macro_bool_to_01(READLINE_FOUND HAVE_READLINE)
-macro_log_feature(READLINE_FOUND "GNU Readline" "Allows KAlgebra to provide a console interface." "http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html" FALSE "" "")
+# include(CheckIncludeFiles)
+# macro_optional_find_package(Readline)
+# macro_bool_to_01(READLINE_FOUND HAVE_READLINE)
+# macro_log_feature(READLINE_FOUND "GNU Readline" "Allows KAlgebra to provide a console interface." "http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html" FALSE "" "")
+# 
+# macro_optional_find_package(OpenGL)
+# macro_bool_to_01(OPENGL_FOUND HAVE_OPENGL)
+# macro_log_feature(OPENGL_FOUND "OpenGL" "Support for 3D graphs in Analitza" "http://opengl.org" FALSE "" "")
 
-macro_optional_find_package(OpenGL)
-macro_bool_to_01(OPENGL_FOUND HAVE_OPENGL)
-macro_log_feature(OPENGL_FOUND "OpenGL" "Support for 3D graphs in Analitza" "http://opengl.org" FALSE "" "")
+# add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
-include_directories(.)
-add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
-set(ANALITZA_LIB_VERSION "5.0.0")
-set(ANALITZA_LIB_SOVERSION "5")
+remove_definitions(-DQT_NO_CAST_TO_ASCII)
+remove_definitions(-DQT_NO_CAST_FROM_ASCII)
+remove_definitions(-DQT_NO_CAST_FROM_BYTEARRAY)
+remove_definitions(-DQT_NO_KEYWORDS)
 
 add_subdirectory(analitza)
 add_subdirectory(analitzaplot)
@@ -29,23 +43,28 @@ if(HAVE_READLINE)
 	add_subdirectory(calgebra)
 endif(HAVE_READLINE)
 
-macro_display_feature_log()
+# macro_display_feature_log()
 
-# # # # # # # # # # #  Installation of the CMake config file
-if(KDE4_USE_COMMON_CMAKE_PACKAGE_CONFIG_DIR)
-    set(_analitza_CONFIG_DEST "${LIB_INSTALL_DIR}/cmake/analitza")
-else(KDE4_USE_COMMON_CMAKE_PACKAGE_CONFIG_DIR)
-    set(_analitza_CONFIG_DEST "${LIB_INSTALL_DIR}/analitza")
-endif(KDE4_USE_COMMON_CMAKE_PACKAGE_CONFIG_DIR)
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Analitza")
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/AnalitzaConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake"
+  INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
+  PATH_VARS  INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX
+)
 
-configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/AnalitzaConfig.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake" @ONLY )
-export(TARGETS analitza analitzaplot analitzagui
-  FILE "${PROJECT_BINARY_DIR}/AnalitzaTargets.cmake")
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfigVersion.cmake"
+  DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+  COMPONENT Devel
+)
 
-install( FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake"
-        DESTINATION "${_analitza_CONFIG_DEST}" )
-install( EXPORT AnalitzaTargets
-         DESTINATION "${_analitza_CONFIG_DEST}"
-         NAMESPACE AnalitzaImport__
-         FILE AnalitzaTargets.cmake )
+install(EXPORT AnalitzaTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE AnalitzaTargets.cmake NAMESPACE KF5:: )
+
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h
+  DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel
+)
+
+export(TARGETS analitza analitzaplot analitzagui FILE "${PROJECT_BINARY_DIR}/AnalitzaTargets.cmake")

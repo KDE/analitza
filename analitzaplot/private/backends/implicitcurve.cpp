@@ -25,7 +25,6 @@
 #include <QBitArray>
 #include <QLineF>
 
-#include <analitza/localize.h>
 #include <analitza/value.h>
 #include <analitza/expressiontype.h>
 #include <analitza/variable.h>
@@ -44,7 +43,7 @@ class FunctionImplicit : public AbstractPlaneCurve, public MarchingSquares
 {
 public:
     CONSTRUCTORS(FunctionImplicit)
-    TYPE_NAME(I18N_NOOP("Implicit Curve"))
+    TYPE_NAME(QT_TR_NOOP("Implicit Curve"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))

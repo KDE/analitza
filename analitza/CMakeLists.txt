@@ -40,12 +40,10 @@ set(analitza_SRCS
 	analitzautils.cpp
 	substituteexpression.cpp
 	transformation.cpp
-	
-	localize.cpp
 )
 
-kde4_add_library(analitza SHARED ${analitza_SRCS})
-target_link_libraries(analitza ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${KDE4_KDECORE_LIBS})
+add_library(analitza ${analitza_SRCS})
+target_link_libraries(analitza Qt5::Core Qt5::Xml )
 
 set_target_properties(analitza PROPERTIES VERSION ${ANALITZA_LIB_VERSION} SOVERSION ${ANALITZA_LIB_SOVERSION} )
 

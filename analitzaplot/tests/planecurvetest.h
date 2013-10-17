@@ -34,7 +34,7 @@ Q_OBJECT
 		PlaneCurveTest(QObject *parent = 0);
 		~PlaneCurveTest();
 
-	private slots:
+	private Q_SLOTS:
 		void initTestCase();
 
         void testCorrect(); // correct curves

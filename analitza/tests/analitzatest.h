@@ -33,7 +33,7 @@ Q_OBJECT
 		AnalitzaTest(QObject *parent = 0);
 		~AnalitzaTest();
 	
-	private slots:
+	private Q_SLOTS:
 		void initTestCase();
 		void testTrivialCalculate_data();
 		void testTrivialCalculate();

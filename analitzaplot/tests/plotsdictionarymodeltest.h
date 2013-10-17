@@ -33,7 +33,7 @@ Q_OBJECT
 		PlotsDictionaryModelTest(QObject *parent = 0);
 		~PlotsDictionaryModelTest();
 
-	private slots:
+	private Q_SLOTS:
 		void testDictionaries();
 };
 

@@ -20,7 +20,7 @@
 #include <analitza/expression.h>
 #include <analitza/analyzer.h>
 #include <analitza/variables.h>
-#include <qtest_kde.h>
+#include <QtTest/QTest>
 #include <cmath>
 #include <analitza/analitzautils.h>
 #include <analitza/value.h>
@@ -28,7 +28,7 @@
 using namespace std;
 using Analitza::Expression;
 
-QTEST_KDEMAIN_CORE( OperatorsModelTest )
+QTEST_MAIN( OperatorsModelTest )
 
 OperatorsModelTest::OperatorsModelTest(QObject *parent)
 	: QObject(parent)

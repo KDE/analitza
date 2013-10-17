@@ -30,7 +30,7 @@ class BuiltInTest : public QObject
 		BuiltInTest(QObject* parent = 0);
 		~BuiltInTest();
 		
-	private slots:
+	private Q_SLOTS:
 		void testCall();
 		void testCall_data();
 		

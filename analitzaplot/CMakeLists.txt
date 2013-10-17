@@ -65,11 +65,11 @@ if(HAVE_OPENGL)
     list(APPEND analitzaplot_SRCS plotter3d.cpp)
 endif(HAVE_OPENGL)
 
-kde4_add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
+add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
 target_link_libraries ( analitzaplot
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTGUI_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
+  Qt5::Core
+  Qt5::Gui
+  
 
   analitza
 )

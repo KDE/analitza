@@ -24,7 +24,7 @@
 #include "list.h"
 
 #include <QDebug>
-#include "localize.h"
+
 #include "variable.h"
 #include "analitzautils.h"
 

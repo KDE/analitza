@@ -1,29 +1,20 @@
 include_directories(${analitza_SOURCE_DIR})
 
-set(testLibs ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${QT_QTTEST_LIBRARY} ${KDE4_KDECORE_LIBS} analitza)
+set(testLibs Qt5::Core Qt5::Xml Qt5::Test analitza)
 
-set( analitzatest_SRCS analitzatest.cpp)
-kde4_add_unit_test(analitzatest ${analitzatest_SRCS})
-target_link_libraries(analitzatest ${testLibs})
+ecm_add_tests(
+    analitzatest.cpp
+    expressiontest.cpp
+    exptest.cpp
+    mathmlpresentationtest.cpp
+    typechecktest.cpp
+    builtintest.cpp
+    
+    LINK_LIBRARIES ${testLibs}
+)
 
-set( matchingtest_SRCS matchingtest.cpp ../substituteexpression.cpp ../abstractexpressiontransformer.cpp)
-kde4_add_unit_test(matchingtest ${matchingtest_SRCS})
-target_link_libraries(matchingtest ${testLibs})
-
-set( expressiontest_SRCS expressiontest.cpp)
-kde4_add_unit_test(expressiontest ${expressiontest_SRCS})
-target_link_libraries(expressiontest ${testLibs})
-
-set( exptest_SRCS exptest.cpp)
-kde4_add_unit_test(exptest ${exptest_SRCS})
-target_link_libraries(exptest ${testLibs})
-
-set( mathmlpresentationtest_SRCS mathmlpresentationtest.cpp)
-kde4_add_unit_test(mathmlpresentationtest ${mathmlpresentationtest_SRCS})
-target_link_libraries(mathmlpresentationtest ${testLibs})
-
-kde4_add_unit_test(typechecktest typechecktest.cpp )
-target_link_libraries(typechecktest ${testLibs})
-
-kde4_add_unit_test(builtintest builtintest.cpp )
-target_link_libraries(builtintest ${testLibs})
+ecm_add_test(
+    TEST_NAME matchingtest
+        matchingtest.cpp ../substituteexpression.cpp ../abstractexpressiontransformer.cpp
+    LINK_LIBRARIES ${testLibs}
+)

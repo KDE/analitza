@@ -30,7 +30,7 @@ class TypeCheckTest : public QObject
 		TypeCheckTest(QObject* parent = 0);
 		~TypeCheckTest();
 		
-	private slots:
+	private Q_SLOTS:
 		void testConstruction();
 		void testConstruction_data();
 		

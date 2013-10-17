@@ -21,13 +21,13 @@
 #include <plotsfactory.h>
 #include "analitza/expression.h"
 #include "analitza/variables.h"
-#include <qtest_kde.h>
+#include <QtTest/QTest>
 #include <cmath>
 
 using namespace std;
 using namespace Analitza;
 
-QTEST_KDEMAIN_CORE( SurfaceTest )
+QTEST_MAIN( SurfaceTest )
 
 SurfaceTest::SurfaceTest(QObject *parent)
     : QObject(parent)

@@ -89,6 +89,7 @@ class ANALITZA_EXPORT ExpressionParser : protected $table
 		int errorLineNumber() const { return m_errorLineNumber; }
 		QStringList error() const { return m_err; }
 		QString mathML() const { return m_exp; }
+		QStringList comments() const { return m_comments; }
 
 	private:
 		void reallocateStack();
@@ -102,6 +103,7 @@ class ANALITZA_EXPORT ExpressionParser : protected $table
 		int m_errorLineNumber;
 		QStringList m_err;
 		QString m_exp;
+		QStringList m_comments;
 };
 
 #endif
@@ -133,7 +135,7 @@ class ANALITZA_EXPORT ExpressionParser : protected $table
 #include "expressionparser.h"
 #include "abstractlexer.h"
 #include "operator.h"
-#include "localize.h"
+#include <QCoreApplication>
 
 ExpressionParser::ExpressionParser()
 {}
@@ -419,16 +421,16 @@ case $rule_number:
 			for (int s = 0; s < shifts; ++s) {
 				expectedTokens += '\''+QLatin1String(spell[expected_tokens[s]])+'\'';
 			}
-			error=i18nc("error message", "Expected %1 instead of '%2'", expectedTokens.join(i18n(", ")), tokFound);
+			error=QCoreApplication::translate("error message", "Expected %1 instead of '%2'").arg(expectedTokens.join(QCoreApplication::tr(", ")), tokFound);
 		} else if(tokFoundType==tLpr) {
-			error=i18n("Missing right parenthesis");
+			error=QCoreApplication::tr("Missing right parenthesis");
 		} else if(tokFoundType==tRpr || tokFoundType==tRcb) {
-			error=i18n("Unbalanced right parenthesis");
+			error=QCoreApplication::tr("Unbalanced right parenthesis");
 		} else
 			if(tokFoundType==tId)
-				error=i18n("Unexpected token identifier: %1", lexer->current.val);
+				error=QCoreApplication::tr("Unexpected token identifier: %1").arg(lexer->current.val);
 			else
-				error=i18n("Unexpected token %1", spell[tokFoundType]);
+				error=QCoreApplication::tr("Unexpected token %1").arg(spell[tokFoundType]);
 		m_err.append(error);
 		return false;
 		}

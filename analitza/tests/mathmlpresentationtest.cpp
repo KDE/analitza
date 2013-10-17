@@ -20,12 +20,12 @@
 #include "mathmlpresentationlexer.h"
 #include "expressionparser.h"
 #include "expression.h"
-#include <qtest_kde.h>
+#include <QtTest/QTest>
 #include <QtTest>
 
 using Analitza::Expression;
 
-QTEST_KDEMAIN_CORE(MathMLPresentationTest)
+QTEST_MAIN(MathMLPresentationTest)
 Q_DECLARE_METATYPE(AbstractLexer::TOKEN*)
 
 MathMLPresentationTest::MathMLPresentationTest(QObject *parent)
@@ -334,7 +334,7 @@ void MathMLPresentationTest::testToPresentation_data()
 void MathMLPresentationTest::testToPresentation()
 {
 	if(QString(QTest::currentDataTag())=="piecewise" || QString(QTest::currentDataTag())=="normal function")
-		QSKIP("need to find time to fix piecewise and normal function", SkipSingle);
+		QSKIP("need to find time to fix piecewise and normal function");
 	QFETCH(QString, mml_pr);
 	QFETCH(QString, expression);
 	

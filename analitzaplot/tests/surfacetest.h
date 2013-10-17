@@ -33,7 +33,7 @@ Q_OBJECT
 		SurfaceTest(QObject *parent = 0);
 		~SurfaceTest();
 
-	private slots:
+	private Q_SLOTS:
 		void initTestCase();
 
         void testCorrect(); // correct surfaces

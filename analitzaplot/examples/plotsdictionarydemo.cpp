@@ -20,9 +20,7 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
+#include <QApplication>
 #include <plotsdictionarymodel.h>
 #include <plotsmodel.h>
 
@@ -30,18 +28,7 @@ using namespace Analitza;
 
 int main(int argc, char *argv[])
 {
-    KAboutData aboutData("PlotsDictionaryDemo",
-                         0,
-                         ki18n("PlotsDictionaryDemo"),
-                         "1.0",
-                         ki18n("PlotsDictionaryDemo"),
-                         KAboutData::License_LGPL_V3,
-                         ki18n("(c) 2012 Aleix Pol Gonazlez"),
-                         ki18n("PlotsDictionaryDemo"),
-                         "http://www.kde.org");
-
-    KCmdLineArgs::init(argc, argv, &aboutData);
-    KApplication app;
+    QApplication app(argc, argv);
 
     QWidget central;
     central.resize(800,600);

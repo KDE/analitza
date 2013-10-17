@@ -30,15 +30,14 @@
 #include <QFile>
 #include <QDebug>
 #include <QItemSelectionModel>
+#include <QCoreApplication>
 #include <QApplication>
 #include <QClipboard>
 
-#include <analitza/localize.h>
 #include <analitza/analyzer.h>
 #include <analitzaplot/plotter2d.h>
 #include <analitzaplot/plotsmodel.h>
 #include <cmath>
-#include <KColorUtils>
 
 using namespace Analitza;
 
@@ -211,7 +210,7 @@ void PlotsView2D::mouseReleaseEvent(QMouseEvent *e)
             
             setViewport(r);
         } else
-            sendStatus(i18n("Selected viewport too small"));
+			sendStatus(QCoreApplication::tr("Selected viewport too small"));
     }
     
     mode = None;
@@ -233,7 +232,7 @@ void PlotsView2D::mouseMoveEvent(QMouseEvent *e)
     } else if(e->buttons()==0) {
         if(img.second.isEmpty()) {
             mark = fromWidget(e->pos());
-            sendStatus(i18n("x=%1 y=%2", mark.x(), mark.y()));
+			sendStatus(QCoreApplication::tr("x=%1 y=%2").arg(mark.x()).arg(mark.y()));
         } else
             sendStatus(img.second);
     }

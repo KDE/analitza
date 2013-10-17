@@ -25,7 +25,6 @@
 #include <QLineF>
 #include "analitza/value.h"
 #include "analitza/variable.h"
-#include "analitza/localize.h"
 
 using namespace Analitza;
 
@@ -62,7 +61,7 @@ class FunctionY : public FunctionCartesian
 public:
     FunctionY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
         : FunctionCartesian(functionExpression, variables) { initDerivative(); }
-    TYPE_NAME(I18N_NOOP("Plane Curve F(y)"))
+    TYPE_NAME(QT_TR_NOOP("Plane Curve F(y)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
@@ -78,7 +77,7 @@ class FunctionX : public FunctionCartesian
 public:
     FunctionX(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
         : FunctionCartesian(functionExpression, variables) { initDerivative(); }
-    TYPE_NAME(I18N_NOOP("Plane Curve F(x)"))
+    TYPE_NAME(QT_TR_NOOP("Plane Curve F(x)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
@@ -135,14 +134,14 @@ QPair<QPointF, QString> FunctionCartesian::image(const QPointF &p)
     Analitza::Expression r=analyzer->calculateLambda();
 
     if(!r.isReal())
-        appendError(i18n("We can only draw Real results."));
-    
+        appendError(QCoreApplication::tr("We can only draw Real results."));
+
     dp.setY(r.toReal().value());
     pos = QString("x=%1 y=%2").arg(dp.x(),3,'f',2).arg(dp.y(),3,'f',2);
     return QPair<QPointF, QString>(dp, pos);
 }
 
-QLineF FunctionCartesian::tangent(const QPointF &mousepos) 
+QLineF FunctionCartesian::tangent(const QPointF &mousepos)
 {
     Analitza::Analyzer a(analyzer->variables());
     double ret = 0;
@@ -150,18 +149,18 @@ QLineF FunctionCartesian::tangent(const QPointF &mousepos)
         arg()->setValue(mousepos.x());
         QVector<Analitza::Object*> runStack;
         runStack += arg();
-        
+
         a.setExpression(m_deriv);
         a.setStack(runStack);
         if(a.isCorrect())
             ret = a.calculateLambda().toReal().value();
-        
+
         if(!a.isCorrect()) {
             qDebug() << "Derivative error: " <<  a.errors();
             ret = 0;
         }
     }
-    
+
     if(ret==0) {
         QVector<Analitza::Object*> vars;
         vars.append(new Analitza::Cn(mousepos.x()));
@@ -178,15 +177,15 @@ void FunctionCartesian::optimizeJump()
     qreal x1=before.x(), x2=after.x();
     qreal y1=before.y(), y2=after.y();
     int iterations=5;
-    
+
 //  qDebug() << "+++++++++" << before << after;
     for(; iterations>0; --iterations) {
         qreal dist = x2-x1;
         qreal x=x1+dist/2;
-        
+
         arg()->setValue(x);
         qreal y = analyzer->calculateLambda().toReal().value();
-        
+
         if(fabs(y1-y)<fabs(y2-y)) {
             before.setX(x);
             before.setY(y);
@@ -209,7 +208,7 @@ void FunctionCartesian::calculateValues(double l_lim, double r_lim)
     jumps.clear();
     points.clear();
     points.reserve(m_resolution);
-    
+
     double step = double((-l_lim+r_lim)/m_resolution);
     bool jumping=true;
     for(double x=l_lim; x<r_lim-step; x+=step) {
@@ -217,7 +216,7 @@ void FunctionCartesian::calculateValues(double l_lim, double r_lim)
         Analitza::Cn y = analyzer->calculateLambda().toReal();
         QPointF p(x, y.value());
         bool ch=addPoint(p);
-        
+
         bool jj=jumping;
         jumping=false;
         if(ch && !jj) {
@@ -241,12 +240,12 @@ QPair<QPointF, QString> FunctionX::image(const QPointF& p)
     QPointF dp=p;
     arg()->setValue(dp.y());
     Analitza::Expression r=analyzer->calculateLambda();
-    
+
     if(!r.isReal())
-        appendError(i18n("We can only draw Real results."));
+		appendError(QCoreApplication::tr("We can only draw Real results."));
     
     dp.setX(r.toReal().value());
-    return QPair<QPointF, QString>(dp, i18n("x=%1 y=%2", dp.x(), dp.y()));
+	return QPair<QPointF, QString>(dp, QCoreApplication::tr("x=%1 y=%2").arg(dp.x()).arg(dp.y()));
 }
 
 void FunctionX::update(const QRectF& viewport)

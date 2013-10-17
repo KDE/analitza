@@ -22,7 +22,7 @@
 
 #include <QDomElement>
 
-#include "localize.h"
+
 
 using namespace Analitza;
 

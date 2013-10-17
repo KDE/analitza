@@ -21,14 +21,14 @@
 #include "explexer.h"
 #include "expressionparser.h"
 
-#include <qtest_kde.h>
 #include <cmath>
 #include <analitzautils.h>
+#include <QtTest/QTest>
 
 using namespace std;
 using Analitza::Expression;
 
-QTEST_KDEMAIN_CORE( ExpressionTest )
+QTEST_MAIN( ExpressionTest )
 
 ExpressionTest::ExpressionTest(QObject *parent)
  : QObject(parent)
@@ -148,6 +148,7 @@ void ExpressionTest::testCopy_data()
 	QTest::newRow("function definition") << "f:=x->x+1";
 	QTest::newRow("summatory") << "sum(x:x=1..10)";
 	QTest::newRow("conditional") << "piecewise { x ? y, ? 33 }";
+	QTest::newRow("") << "x²y"; //x**2y
 	QTest::newRow("empty") << "";
 }
 

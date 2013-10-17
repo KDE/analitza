@@ -27,11 +27,8 @@
 #include <QPalette>
 #include <QPen>
 #include <QPainter>
-#include <QApplication>
 #include <cmath>
 #include <QDebug>
-#include <KLocalizedString>
-#include <KColorUtils>
 
 #if defined(HAVE_IEEEFP_H)
 #include <ieeefp.h>

@@ -23,10 +23,11 @@
 #include "plotitem.h"
 
 #include "analitza/analitzautils.h"
-#include <KLocalizedString>
 
 #include <QDebug>
-#include <KIcon>
+#include <QIcon>
+#include <QPixmap>
+#include <QCoreApplication>
 #include <analitzaplot/functiongraph.h>
 
 using namespace Analitza;
@@ -66,8 +67,8 @@ QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int ro
     if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
         switch(section) 
         {
-            case 0: return i18nc("@title:column", "Name");
-            case 1: return i18nc("@title:column", "Plot");
+			case 0: return QCoreApplication::translate("@title:column", "Name");
+			case 1: return QCoreApplication::translate("@title:column", "Plot");
         }
     }
     

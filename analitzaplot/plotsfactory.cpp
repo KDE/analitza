@@ -18,12 +18,12 @@
 
 #include "plotsfactory.h"
 #include "kglobal.h"
-#include <KLocalizedString>
 #include <analitzaplot/functiongraph.h>
 #include "private/functiongraphfactory.h"
 #include <analitza/analyzer.h>
 #include <analitza/variables.h>
 #include <QStringList>
+#include <QCoreApplication>
 
 using namespace Analitza;
 
@@ -43,7 +43,7 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
 	QStringList errs;
 	
 	if(!testexp.isCorrect() || testexp.toString().isEmpty()) {
-		errs << i18n("The expression is not correct");
+		errs << QCoreApplication::tr("The expression is not correct");
 		PlotBuilder b;
 		b.m_errors = errs;
 		return b;
@@ -66,7 +66,7 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
 		if(FunctionGraphFactory::self()->contains(expectedid)) {
 			id = expectedid;
 		} else
-			errs << i18n("Function type not recognized");
+			errs << QCoreApplication::tr("Function type not recognized");
 	} else {
 		errs << a.errors();
 	}

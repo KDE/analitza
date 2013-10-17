@@ -27,9 +27,7 @@
 #include <QApplication>
 #include <QTimer>
 #include <QPropertyAnimation>
-#include <QInputContext>
-
-#include <analitza/localize.h>
+#include <QCoreApplication>
 
 #include <analitzagui/operatorsmodel.h>
 #include <analitza/explexer.h>
@@ -92,7 +90,7 @@ ExpressionEdit::ExpressionEdit(QWidget *parent, AlgebraHighlighter::Mode inimode
 	
 	updateCompleter();
 	
-	completionView->header()->setResizeMode(0, QHeaderView::ResizeToContents);
+	completionView->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 	completionView->showColumn(0);
 	completionView->showColumn(1);
 	completionView->hideColumn(2);
@@ -309,7 +307,7 @@ void ExpressionEdit::showSimplified()
 	QString help;
 	if(a.isCorrect()) {
 		a.simplify();
-		help=i18n("Result: %1", a.expression().toString());
+		help=QCoreApplication::tr("Result: %1").arg(a.expression().toString());
 	}
 	helper(help);
 }
@@ -419,13 +417,13 @@ void ExpressionEdit::contextMenuEvent(QContextMenuEvent * e)
 	QScopedPointer<QMenu> popup(createStandardContextMenu());
 	popup->addSeparator();
 	if(isMathML())
-		popup->addAction(i18n("To Expression"), this, SLOT(toExpression()));
+		popup->addAction(QCoreApplication::tr("To Expression"), this, SLOT(toExpression()));
 	else
-		popup->addAction(i18n("To MathML"), this, SLOT(toMathML()));
+		popup->addAction(QCoreApplication::tr("To MathML"), this, SLOT(toMathML()));
 	
-	popup->addAction(i18n("Simplify"), this, SLOT(simplify()));
+	popup->addAction(QCoreApplication::tr("Simplify"), this, SLOT(simplify()));
 	
-	QMenu* examples=popup->addMenu(i18n("Examples"));
+	QMenu* examples=popup->addMenu(QCoreApplication::tr("Examples"));
 	examples->setEnabled(!m_examples.isEmpty());
 	foreach(const QString &example, m_examples) {
 		QAction* ac=examples->addAction(example);

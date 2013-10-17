@@ -18,8 +18,6 @@
 
 #include "surface.h"
 
-#include "analitza/localize.h"
-
 #include "private/functiongraphfactory.h"
 #include "private/abstractsurface.h"
 

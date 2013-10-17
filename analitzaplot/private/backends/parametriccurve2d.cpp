@@ -23,7 +23,6 @@
 #include <QRectF>
 #include <analitza/value.h>
 #include <analitza/vector.h>
-#include <analitza/localize.h>
 
 using namespace Analitza;
 
@@ -36,7 +35,7 @@ class FunctionParametric : public AbstractPlaneCurve
 {
 public:
     FunctionParametric(const Expression& e, Variables* v = 0);
-    TYPE_NAME(I18N_NOOP("Parametric Curve 2D"))
+    TYPE_NAME(QT_TR_NOOP("Parametric Curve 2D"))
     EXPRESSION_TYPE(
         Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
             .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))

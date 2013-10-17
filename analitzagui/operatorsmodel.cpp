@@ -19,8 +19,8 @@
 #include "operatorsmodel.h"
 #include <analitza/operator.h>
 #include <analitza/variables.h>
-#include <analitza/localize.h>
 #include <QFont>
+#include <QCoreApplication>
 
 using Analitza::Operator;
 
@@ -75,16 +75,16 @@ QVariant OperatorsModel::headerData(int section, Qt::Orientation orientation, in
 	if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
 		switch(section) {
 			case 0:
-				ret=i18nc("@title:column", "Name");
+				ret=QCoreApplication::translate("@title:column", "Name");
 				break;
 			case 1:
-				ret=i18nc("@title:column", "Description");
+				ret=QCoreApplication::translate("@title:column", "Description");
 				break;
 			case 2:
-				ret=i18nc("@title:column", "Parameters");
+				ret=QCoreApplication::translate("@title:column", "Parameters");
 				break;
 			case 3:
-				ret=i18nc("@title:column", "Example");
+				ret=QCoreApplication::translate("@title:column", "Example");
 				break;
 		}
 	}
@@ -106,7 +106,8 @@ int OperatorsModel::columnCount(const QModelIndex &) const
 
 void OperatorsModel::updateInformation()
 {
-	reset();
+	beginResetModel();
+	endResetModel();
 }
 
 QString OperatorsModel::sample(const Analitza::Operator& oper)
@@ -114,18 +115,18 @@ QString OperatorsModel::sample(const Analitza::Operator& oper)
 	QString funcname=oper.toString();
 	QString bounds;
 	if(oper.isBounded()) {
-		bounds=i18nc("Syntax for function bounding", " : var");
+		bounds=QCoreApplication::translate("Syntax for function bounding", " : var");
 		if(oper.operatorType()==Operator::sum || oper.operatorType()==Operator::product)
-			bounds += i18nc("Syntax for function bounding values", "=from..to");
+			bounds += QCoreApplication::translate("Syntax for function bounding values", "=from..to");
 	}
 	
-	QString sample = i18n("%1(", funcname);
+	QString sample = QCoreApplication::tr("%1(").arg(funcname);
 	
 	if(oper.nparams()<0) {
-		return i18n("%1... parameters, ...%2)", sample, bounds);
+		return QCoreApplication::tr("%1... parameters, ...%2)").arg(sample).arg(bounds);
 	} else {
 		for(int i=0; i<oper.nparams(); ++i) {
-			sample += i18n("par%1", i+1);
+			sample += QCoreApplication::tr("par%1").arg(i+1);
 			if(i<oper.nparams()-1)
 				sample += ", ";
 		}
@@ -138,220 +139,220 @@ QString OperatorsModel::description(const Analitza::Operator& o)
 	QString s;
 	switch(o.operatorType()) {
 		case Operator::plus:
-			s = i18n("Addition");
+			s = QCoreApplication::tr("Addition");
 			break;
 		case Operator::times:
-			s = i18n("Multiplication");
+			s = QCoreApplication::tr("Multiplication");
 			break;
 		case Operator::divide:
-			s = i18n("Division");
+			s = QCoreApplication::tr("Division");
 			break;
 		case Operator::minus:
-			s = i18n("Subtraction. Will remove all values from the first one.");
+			s = QCoreApplication::tr("Subtraction. Will remove all values from the first one.");
 			break;
 		case Operator::power:
-			s = i18n("Power");
+			s = QCoreApplication::tr("Power");
 			break;
 		case Operator::rem:
-			s = i18n("Remainder");
+			s = QCoreApplication::tr("Remainder");
 			break;
 		case Operator::quotient:
-			s = i18n("Quotient");
+			s = QCoreApplication::tr("Quotient");
 			break;
 		case Operator::factorof:
-			s = i18n("The factor of");
+			s = QCoreApplication::tr("The factor of");
 			break;
 		case Operator::factorial:
-			s = i18n("Factorial. factorial(n)=n!");
+			s = QCoreApplication::tr("Factorial. factorial(n)=n!");
 			break;
 		case Operator::sin:
-			s = i18n("Function to calculate the sine of a given angle");
+			s = QCoreApplication::tr("Function to calculate the sine of a given angle");
 			break;
 		case Operator::cos:
-			s = i18n("Function to calculate the cosine of a given angle");
+			s = QCoreApplication::tr("Function to calculate the cosine of a given angle");
 			break;
 		case Operator::tan:
-			s = i18n("Function to calculate the tangent of a given angle");
+			s = QCoreApplication::tr("Function to calculate the tangent of a given angle");
 			break;
 		case Operator::sec:
-			s = i18n("Secant");
+			s = QCoreApplication::tr("Secant");
 			break;
 		case Operator::csc:
-			s = i18n("Cosecant");
+			s = QCoreApplication::tr("Cosecant");
 			break;
 		case Operator::cot:
-			s = i18n("Cotangent");
+			s = QCoreApplication::tr("Cotangent");
 			break;
 		case Operator::sinh:
-			s = i18n("Hyperbolic sine");
+			s = QCoreApplication::tr("Hyperbolic sine");
 			break;
 		case Operator::cosh:
-			s = i18n("Hyperbolic cosine");
+			s = QCoreApplication::tr("Hyperbolic cosine");
 			break;
 		case Operator::tanh:
-			s = i18n("Hyperbolic tangent");
+			s = QCoreApplication::tr("Hyperbolic tangent");
 			break;
 		case Operator::sech:
-			s = i18n("Hyperbolic secant");
+			s = QCoreApplication::tr("Hyperbolic secant");
 			break;
 		case Operator::csch:
-			s = i18n("Hyperbolic cosecant");
+			s = QCoreApplication::tr("Hyperbolic cosecant");
 			break;
 		case Operator::coth:
-			s = i18n("Hyperbolic cotangent");
+			s = QCoreApplication::tr("Hyperbolic cotangent");
 			break;
 		case Operator::arcsin:
-			s = i18n("Arc sine");
+			s = QCoreApplication::tr("Arc sine");
 			break;
 		case Operator::arccos:
-			s = i18n("Arc cosine");
+			s = QCoreApplication::tr("Arc cosine");
 			break;
 		case Operator::arctan:
-			s = i18n("Arc tangent");
+			s = QCoreApplication::tr("Arc tangent");
 			break;
 		case Operator::arccot:
-			s = i18n("Arc cotangent");
+			s = QCoreApplication::tr("Arc cotangent");
 			break;
 // 		case Operator::arccoth:
-// 			s = i18n("Hyperbolic arc cotangent");
+// 			s = QCoreApplication::tr("Hyperbolic arc cotangent");
 // 			break;
 		case Operator::arctanh:
-			s = i18n("Hyperbolic arc tangent");
+			s = QCoreApplication::tr("Hyperbolic arc tangent");
 			break;
 		case Operator::sum:
-			s = i18n("Summatory");
+			s = QCoreApplication::tr("Summatory");
 			break;
 		case Operator::product:
-			s = i18n("Productory");
+			s = QCoreApplication::tr("Productory");
 			break;
 		case Operator::forall:
-			s = i18n("For all");
+			s = QCoreApplication::tr("For all");
 			break;
 		case Operator::exists:
-			s = i18n("Exists");
+			s = QCoreApplication::tr("Exists");
 			break;
 		case Operator::diff:
-			s = i18n("Differentiation");
+			s = QCoreApplication::tr("Differentiation");
 			break;
 		case Operator::arcsinh:
-			s = i18n("Hyperbolic arc sine");
+			s = QCoreApplication::tr("Hyperbolic arc sine");
 			break;
 		case Operator::arccosh:
-			s = i18n("Hyperbolic arc cosine");
+			s = QCoreApplication::tr("Hyperbolic arc cosine");
 			break;
 		case Operator::arccsc:
-			s = i18n("Arc cosecant");
+			s = QCoreApplication::tr("Arc cosecant");
 			break;
 		case Operator::arccsch:
-			s = i18n("Hyperbolic arc cosecant");
+			s = QCoreApplication::tr("Hyperbolic arc cosecant");
 			break;
 		case Operator::arcsec:
-			s = i18n("Arc secant");
+			s = QCoreApplication::tr("Arc secant");
 			break;
 		case Operator::arcsech:
-			s = i18n("Hyperbolic arc secant");
+			s = QCoreApplication::tr("Hyperbolic arc secant");
 			break;
 		case Operator::exp:
-			s = i18n("Exponent (e^x)");
+			s = QCoreApplication::tr("Exponent (e^x)");
 			break;
 		case Operator::ln:
-			s = i18n("Base-e logarithm");
+			s = QCoreApplication::tr("Base-e logarithm");
 			break;
 		case Operator::log:
-			s = i18n("Base-10 logarithm");
+			s = QCoreApplication::tr("Base-10 logarithm");
 			break;
 		case Operator::abs:
-			s = i18n("Absolute value. abs(n)=|n|");
+			s = QCoreApplication::tr("Absolute value. abs(n)=|n|");
 			break;
 // 		case Operator::conjugate:
-// 			s = i18n("Conjugate");
+// 			s = QCoreApplication::tr("Conjugate");
 // 			break;
 // 		case Operator::arg:
-// 			s = "---";//i18n("Arg?");
+// 			s = "---";//QCoreApplication::tr("Arg?");
 // 			break;
 // 		case Operator::real:
-// 			s = i18n("Real");
+// 			s = QCoreApplication::tr("Real");
 // 			break;
 // 		case Operator::imaginary:
-// 			s = i18n("Imaginary");
+// 			s = QCoreApplication::tr("Imaginary");
 // 			break;
 		case Operator::floor:
-			s = i18n("Floor value. floor(n)=⌊n⌋");
+			s = QCoreApplication::tr("Floor value. floor(n)=⌊n⌋");
 			break;
 		case Operator::ceiling:
-			s = i18n("Ceil value. ceil(n)=⌈n⌉");
+			s = QCoreApplication::tr("Ceil value. ceil(n)=⌈n⌉");
 			break;
 		case Operator::min:
-			s = i18n("Minimum");
+			s = QCoreApplication::tr("Minimum");
 			break;
 		case Operator::max:
-			s = i18n("Maximum");
+			s = QCoreApplication::tr("Maximum");
 			break;
 		case Operator::gt:
-			s = i18n("Greater than. gt(a,b)=a>b");
+			s = QCoreApplication::tr("Greater than. gt(a,b)=a>b");
 			break;
 		case Operator::lt:
-			s = i18n("Less than. lt(a,b)=a<b");
+			s = QCoreApplication::tr("Less than. lt(a,b)=a<b");
 			break;
 		case Operator::eq:
-			s = i18n("Equal. eq(a,b) = a=b");
+			s = QCoreApplication::tr("Equal. eq(a,b) = a=b");
 			break;
 		case Operator::approx:
-			s = i18n("Approximation. approx(a)=a±n");
+			s = QCoreApplication::tr("Approximation. approx(a)=a±n");
 			break;
 		case Operator::neq:
-			s = i18n("Not equal. neq(a,b)=a≠b");
+			s = QCoreApplication::tr("Not equal. neq(a,b)=a≠b");
 			break;
 		case Operator::geq:
-			s = i18n("Greater or equal. geq(a,b)=a≥b");
+			s = QCoreApplication::tr("Greater or equal. geq(a,b)=a≥b");
 			break;
 		case Operator::leq:
-			s = i18n("Less or equal. leq(a,b)=a≤b");
+			s = QCoreApplication::tr("Less or equal. leq(a,b)=a≤b");
 			break;
 		case Operator::_and:
-			s = i18n("Boolean and");
+			s = QCoreApplication::tr("Boolean and");
 			break;
 		case Operator::_not:
-			s = i18n("Boolean not");
+			s = QCoreApplication::tr("Boolean not");
 			break;
 		case Operator::_or:
-			s = i18n("Boolean or");
+			s = QCoreApplication::tr("Boolean or");
 			break;
 		case Operator::_xor:
-			s = i18n("Boolean xor");
+			s = QCoreApplication::tr("Boolean xor");
 			break;
 		case Operator::implies:
-			s = i18n("Boolean implication");
+			s = QCoreApplication::tr("Boolean implication");
 			break;
 		case Operator::gcd:
-			s = i18n("Greatest common divisor");
+			s = QCoreApplication::tr("Greatest common divisor");
 			break;
 		case Operator::lcm:
-			s = i18n("Least common multiple");
+			s = QCoreApplication::tr("Least common multiple");
 			break;
 		case Operator::root:
-			s = i18n("Root");
+			s = QCoreApplication::tr("Root");
 			break;
 		case Operator::card:
-			s = i18n("Cardinal");
+			s = QCoreApplication::tr("Cardinal");
 			break;
 		case Operator::scalarproduct:
-			s = i18n("Scalar product");
+			s = QCoreApplication::tr("Scalar product");
 			break;
 		case Operator::selector:
-			s = i18n("Select the par1-th element of par2 list or vector");
+			s = QCoreApplication::tr("Select the par1-th element of par2 list or vector");
 			break;
 		case Operator::_union:
-			s = i18n("Joins several items of the same type");
+			s = QCoreApplication::tr("Joins several items of the same type");
 			break;
 		case Operator::map:
-			s = i18n("Applies a function to every element in a list");
+			s = QCoreApplication::tr("Applies a function to every element in a list");
 			break;
 		case Operator::filter:
-			s = i18n("Removes all elements that don't fit a condition");
+			s = QCoreApplication::tr("Removes all elements that don't fit a condition");
 			break;
 		case Operator::transpose:
-			s = i18n("Transpose");
+			s = QCoreApplication::tr("Transpose");
 			break;
 		case Operator::function:
 		case Operator::nOfOps:
@@ -547,8 +548,7 @@ QString OperatorsModel::parameterHelp(const QModelIndex& index, int param, bool 
 	QString funcname = oper.toString();
 	const int op=oper.nparams();
 	if(op == -1) {
-		ret=i18nc("n-ary function prototype", "<em>%1</em>(..., <b>par%2</b>, ...)",
-							funcname, param+1);
+		ret=QCoreApplication::translate("n-ary function prototype", "<em>%1</em>(..., <b>par%2</b>, ...)").arg(funcname).arg(param+1);
 	} else {
 		ret=standardFunctionCallHelp(funcname, param, op, inbounds, oper.isBounded());
 	}
@@ -558,24 +558,24 @@ QString OperatorsModel::parameterHelp(const QModelIndex& index, int param, bool 
 QString OperatorsModel::standardFunctionCallHelp(const QString& funcname, int param, int paramcount, bool inbounds, bool isbounded)
 {
 	QString sample = (param < paramcount || (inbounds && isbounded)) ?
-		i18nc("Function name in function prototype", "<em>%1</em>(", funcname) :
-		i18nc("Uncorrect function name in function prototype", "<em style='color:red'><b>%1</b></em>(", funcname);
+		QCoreApplication::translate("Function name in function prototype", "<em>%1</em>(").arg(funcname) :
+		QCoreApplication::translate("Uncorrect function name in function prototype", "<em style='color:red'><b>%1</b></em>(").arg(funcname);
 		
 	for(int i=0; i<paramcount; ++i) {
-		QString current=i18nc("Parameter in function prototype", "par%1", i+1);
+		QString current=QCoreApplication::translate("Parameter in function prototype", "par%1").arg(i+1);
 		
 		if(i==param)
-			current=i18nc("Current parameter in function prototype", "<b>%1</b>", current);
+			current=QCoreApplication::translate("Current parameter in function prototype", "<b>%1</b>").arg(current);
 		sample += current;
 		if(i<paramcount-1)
-			sample += i18nc("Function parameter separator", ", ");
+			sample += QCoreApplication::translate("Function parameter separator", ", ");
 	}
 	
 	if(isbounded) {
-		static QString bounds=i18nc("Current parameter is the bounding", " : bounds");
+		static QString bounds=QCoreApplication::translate("Current parameter is the bounding", " : bounds");
 		QString p=bounds;
 		if(inbounds)
-			p=i18nc("Current parameter in function prototype", "<b>%1</b>", p);
+			p=QCoreApplication::translate("Current parameter in function prototype", "<b>%1</b>").arg(p);
 		sample += p;
 	}
 	

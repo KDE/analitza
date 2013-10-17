@@ -22,7 +22,8 @@
 #include "container.h"
 #include "vector.h"
 #include <QStringList>
-#include "localize.h"
+#include <QCoreApplication>
+
 #include "list.h"
 #include "variable.h"
 #include "stringexpressionwriter.h"
@@ -48,9 +49,9 @@ QStringList HtmlExpressionWriter::allValues(T it, const T& itEnd, ExpressionWrit
 
 static const QMap<Operator::OperatorType, QString> s_operators=initOperators();
 
-QString oper(const QString& op) { return i18nc("html representation of an operator", "<span class='op'>%1</span>", op); }
-QString oper(const QChar& op) { return i18nc("html representation of an operator", "<span class='op'>%1</span>", op); }
-QString keyword(const QString& op) { return i18nc("html representation of an operator", "<span class='keyword'>%1</span>", op); }
+QString oper(const QString& op) { return QCoreApplication::translate("html representation of an operator", "<span class='op'>%1</span>").arg(op); }
+QString oper(const QChar& op) { return QCoreApplication::translate("html representation of an operator", "<span class='op'>%1</span>").arg(op); }
+QString keyword(const QString& op) { return QCoreApplication::translate("html representation of an operator", "<span class='keyword'>%1</span>").arg(op); }
 
 HtmlExpressionWriter::HtmlExpressionWriter(const Object* o)
 {

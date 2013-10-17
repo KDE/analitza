@@ -20,9 +20,9 @@
 #include <analitza/variables.h>
 #include <analitza/expression.h>
 #include <analitza/value.h>
-#include <analitza/localize.h>
 #include <analitza/analitzautils.h>
 #include <QDebug>
+#include <QCoreApplication>
 
 using namespace Analitza;
 
@@ -86,10 +86,10 @@ QVariant VariablesModel::headerData(int section, Qt::Orientation orientation, in
 	if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
 		switch(section) {
 			case 0:
-				ret=i18nc("@title:column", "Name");
+				ret=QCoreApplication::translate("@title:column", "Name");
 				break;
 			case 1:
-				ret=i18nc("@title:column", "Value");
+				ret=QCoreApplication::translate("@title:column", "Value");
 				break;
 		}
 	}
@@ -114,13 +114,15 @@ QFlags< Qt::ItemFlag > VariablesModel::flags(const QModelIndex& index) const
 
 void VariablesModel::updateInformation()
 {
-	reset();
+	beginResetModel();
+	endResetModel();
 }
 
 void VariablesModel::insertVariable(const QString& name, const Expression& value)
 {
+	beginResetModel();
 	m_vars->modify(name, value);
-	reset();
+	endResetModel();
 }
 
 #include "variablesmodel.moc"

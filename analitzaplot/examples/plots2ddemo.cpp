@@ -22,9 +22,8 @@
 #include <QStatusBar>
 #include <QVBoxLayout>
 
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
+#include <QCommandLineParser>
+#include <QApplication>
 
 #include "analitzaplot/planecurve.h"
 #include "analitzaplot/surface.h"
@@ -37,22 +36,11 @@ using namespace Analitza;
 
 int main(int argc, char *argv[])
 {
-    KAboutData aboutData("PlotView2DTest",
-                         0,
-                         ki18n("PlotView2DTest"),
-                         "1.0",
-                         ki18n("PlotView2DTest"),
-                         KAboutData::License_LGPL_V3,
-                         ki18n("(c) 2012 Percy Camilo T. Aucahuasi"),
-                         ki18n("PlotView2DTest"),
-                         "http://www.kde.org");
-
-    KCmdLineArgs::init(argc, argv, &aboutData);
-    KCmdLineOptions options;
-    options.add("all-disabled", ki18n("marks all the plots as not visible"));
-    KCmdLineArgs::addCmdLineOptions(options);
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    KApplication app;
+	QApplication app(argc, argv);
+	QCommandLineParser parser;
+	parser.setApplicationDescription("PlotView2DTest");
+    parser.addOption(QCommandLineOption("all-disabled", app.tr("marks all the plots as not visible")));
+	parser.process(app);
 
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setMinimumSize(640, 480);
@@ -83,7 +71,7 @@ int main(int argc, char *argv[])
 
     //END test calls
 
-    if(args->isSet("all-disabled"))
+    if(parser.isSet("all-disabled"))
         for(int i=0; i<model->rowCount(); ++i)
             model->setData(model->index(i), false, Qt::CheckStateRole);
 

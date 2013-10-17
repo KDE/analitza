@@ -33,7 +33,7 @@ Q_OBJECT
 		SpaceCurveTest(QObject *parent = 0);
 		~SpaceCurveTest();
 
-	private slots:
+	private Q_SLOTS:
 		void initTestCase();
 
         void testCorrect(); // correct curves

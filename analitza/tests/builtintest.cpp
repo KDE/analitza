@@ -18,15 +18,15 @@
 
 #include "builtintest.h"
 
-#include <qtest_kde.h>
 #include <cmath>
 #include "expression.h"
 #include <expressiontypechecker.h>
 #include <analyzer.h>
 #include <builtinmethods.h>
 #include <value.h>
+#include <QtTest/QTest>
 
-QTEST_KDEMAIN_CORE( BuiltInTest )
+QTEST_MAIN( BuiltInTest )
 
 Q_DECLARE_METATYPE(int*);
 

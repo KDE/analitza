@@ -18,15 +18,17 @@
  *************************************************************************************/
 
 #include "plotsdictionarymodeltest.h"
-#include <qtest_kde.h>
-#include <KStandardDirs>
+#include <QtTest/QTest>
+#include <QStandardPaths>
+#include <QDebug>
+#include <qdir.h>
 #include <analitzaplot/plotitem.h>
 #include <analitzaplot/plotsmodel.h>
 #include <analitzaplot/plotsdictionarymodel.h>
 
 using namespace Analitza;
 
-QTEST_KDEMAIN_CORE( PlotsDictionaryModelTest )
+QTEST_MAIN( PlotsDictionaryModelTest )
 
 Q_DECLARE_METATYPE(PlotItem*);
 
@@ -41,9 +43,10 @@ void PlotsDictionaryModelTest::testDictionaries()
 {
 	PlotsDictionaryModel m;
 	m.clear(); //we don't want the installed, we want the ones in the source directory
-	QStringList res = KGlobal::dirs()->findAllResources("data", SOURCE_DIR "/../data/plots/*.plots");
-	foreach(const QString& f, res) {
-		m.createDictionary(f);
+	QFileInfo f(QFINDTESTDATA("../data/plots/3Ds.plots"));
+	QDir d(f.dir());
+	foreach(const QString& f, d.entryList(QStringList("*.plots"), QDir::Files)) {
+		m.createDictionary(d.filePath(f));
 	}
 	
 	QVERIFY(m.rowCount()>0);

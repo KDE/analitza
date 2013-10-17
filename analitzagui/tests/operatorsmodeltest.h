@@ -33,7 +33,7 @@ class OperatorsModelTest : public QObject
 		OperatorsModelTest(QObject *parent = 0);
 		~OperatorsModelTest();
 	
-	private slots:
+	private Q_SLOTS:
 		void initTestCase();
 		
 		void testExamples_data();

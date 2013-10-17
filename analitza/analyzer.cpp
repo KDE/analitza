@@ -17,8 +17,9 @@
  *************************************************************************************/
 
 #include "analyzer.h"
-#include "localize.h"
+
 #include <kdemacros.h>
+#include <QCoreApplication>
 
 #include "operations.h"
 #include "value.h"
@@ -152,7 +153,7 @@ void Analyzer::setExpression(const Expression & e)
 	m_exp=e;
 	flushErrors();
 	if(!e.tree()) {
-		m_err << i18n("Cannot calculate an empty expression");
+		m_err << QCoreApplication::tr("Cannot calculate an empty expression");
 	} else if(m_exp.isCorrect()) {
 		ExpressionTypeChecker check(m_vars);
 		check.initializeVars(m_builtin.varTypes());
@@ -194,7 +195,7 @@ Expression Analyzer::evaluate()
 		o=simp(o);
 		e.setTree(o);
 	} else {
-		m_err << i18n("Must specify a correct operation");
+		m_err << QCoreApplication::tr("Must specify a correct operation");
 	}
 	return e;
 }
@@ -209,11 +210,11 @@ Expression Analyzer::calculate()
 		e.setTree(calc(m_exp.tree()));
 	} else {
 		if(m_exp.isCorrect() && m_hasdeps)
-			m_err << i18n("Unknown identifier: '%1'",
+			m_err << QCoreApplication::tr("Unknown identifier: '%1'").arg(
 							dependencies(m_exp.tree(), m_vars->keys()+m_builtin.identifiers()).join(
-								i18nc("identifier separator in error message", "', '")));
+								QCoreApplication::translate("identifier separator in error message", "', '")));
 		else
-			m_err << i18n("Must specify a correct operation");
+			m_err << QCoreApplication::tr("Must specify a correct operation");
 	}
 	return e;
 }
@@ -239,12 +240,12 @@ Expression Analyzer::calculateLambda()
 		m_runStackTop = 0;
 		e.setTree(calc(lambda->m_params.last()));
 	} else {
-		m_err << i18n("Must specify a correct operation");
+		m_err << QCoreApplication::tr("Must specify a correct operation");
 		
 		if(m_exp.isCorrect() && m_hasdeps)
-			m_err << i18n("Unknown identifier: '%1'",
+			m_err << QCoreApplication::tr("Unknown identifier: '%1'").arg(
 							dependencies(m_exp.tree(), m_vars->keys()).join(
-								i18nc("identifier separator in error message", "', '")));
+								QCoreApplication::translate("identifier separator in error message", "', '")));
 	}
 	return e;
 }
@@ -575,7 +576,7 @@ Object* Analyzer::calcPiecewise(const Container* c)
 	}
 	
 	if(KDE_ISUNLIKELY(!ret)) {
-		m_err << i18nc("Error message, no proper condition found.", "Could not find a proper choice for a condition statement.");
+		m_err << QCoreApplication::translate("Error message, no proper condition found.", "Could not find a proper choice for a condition statement.");
 		ret=new Cn(0.);
 	}
 	
@@ -888,7 +889,7 @@ BoundingIterator* Analyzer::initBVarsContainer(const Analitza::Apply* n, int bas
 			break;
 		default:
 			Q_ASSERT(false && "Type not supported for bounding.");
-			m_err.append(i18n("Type not supported for bounding."));
+			m_err.append(QCoreApplication::tr("Type not supported for bounding."));
 	}
 	return ret;
 }
@@ -913,9 +914,9 @@ BoundingIterator* Analyzer::initBVarsRange(const Apply* n, int base, Object* obj
 			
 			ret=new RangeBoundingIterator(rr, u, d, 1);
 		} else
-			m_err.append(i18n("The downlimit is greater than the uplimit"));
+			m_err.append(QCoreApplication::tr("The downlimit is greater than the uplimit"));
 	} else
-		m_err.append(i18n("Incorrect uplimit or downlimit."));
+		m_err.append(QCoreApplication::tr("Incorrect uplimit or downlimit."));
 	return ret;
 }
 
@@ -1804,7 +1805,7 @@ bool Analyzer::insertVariable(const QString & name, const Object * value)
 {
 	bool wrong=!isLambda(value) && hasTheVar(QSet<QString>() << name, value);
 	if(wrong)
-		m_err << i18nc("By a cycle i mean a variable that depends on itself", "Defined a variable cycle");
+		m_err << QCoreApplication::translate("By a cycle i mean a variable that depends on itself", "Defined a variable cycle");
 	else
 		m_vars->modify(name, value);
 	
@@ -1846,7 +1847,7 @@ double Analyzer::derivative(const QVector<Object*>& values )
 		return 0.;
 	
 	if(!e1.isReal() || !e2.isReal()) {
-		m_err << i18n("The result is not a number");
+		m_err << QCoreApplication::tr("The result is not a number");
 		return 0;
 	}
 	

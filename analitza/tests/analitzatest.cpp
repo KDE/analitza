@@ -18,7 +18,6 @@
 
 #include "analitzatest.h"
 #include "analyzer.h"
-#include <qtest_kde.h>
 #include <cmath>
 
 #include "apply.h"
@@ -28,8 +27,8 @@
 #include "value.h"
 #include <variable.h>
 #include <analitzautils.h>
+#include <QtTest/QTest>
 //#include <operations.h>
-
 
 using namespace std;
 using Analitza::Cn;
@@ -40,7 +39,7 @@ using Analitza::Operator;
 using Analitza::Container;
 using Analitza::Expression;
 
-QTEST_KDEMAIN_CORE( AnalitzaTest )
+QTEST_MAIN( AnalitzaTest )
 
 AnalitzaTest::AnalitzaTest(QObject *parent)
  : QObject(parent)

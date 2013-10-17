@@ -23,7 +23,6 @@
 
 #include <QRectF>
 #include <analitza/value.h>
-#include <analitza/localize.h>
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
@@ -37,7 +36,7 @@ class ImplicitPolar : public AbstractPlaneCurve, MarchingSquares
 {
 public:
     ImplicitPolar(const Analitza::Expression& e, Analitza::Variables* v = 0);
-    TYPE_NAME(I18N_NOOP("Polar implicit Curve 0=F(r: Radial, p: Polar)"))
+    TYPE_NAME(QT_TR_NOOP("Polar implicit Curve 0=F(r: Radial, p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))

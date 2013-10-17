@@ -27,13 +27,13 @@
 #include "analitza/variables.h"
 #include <analitza/analyzer.h>
 #include <analitza/value.h>
-#include <qtest_kde.h>
+#include <QtTest/QTest>
 #include <cmath>
 
 using namespace std;
 using namespace Analitza;
 
-QTEST_KDEMAIN_CORE( PlotsModelTest )
+QTEST_MAIN( PlotsModelTest )
 
 PlotsModelTest::PlotsModelTest(QObject *parent)
     : QObject(parent)

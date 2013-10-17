@@ -17,12 +17,12 @@
  *************************************************************************************/
 
 #include "matchingtest.h"
-#include <qtest_kde.h>
+#include <QtTest/QTest>
 
 #include <analitza/expression.h>
 #include <substituteexpression.h>
 
-QTEST_KDEMAIN_CORE( MatchingTest )
+QTEST_MAIN( MatchingTest )
 
 using namespace Analitza;
 

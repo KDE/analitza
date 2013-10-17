@@ -1,5 +1,5 @@
 
-#line 111 "exp.g"
+#line 113 "exp.g"
 
 /*************************************************************************************
  *  Copyright (C) 2008 by Aleix Pol <aleixpol@kde.org>                               *
@@ -25,7 +25,7 @@
 #include "expressionparser.h"
 #include "abstractlexer.h"
 #include "operator.h"
-#include "localize.h"
+#include <QCoreApplication>
 
 ExpressionParser::ExpressionParser()
 {}
@@ -69,6 +69,7 @@ bool ExpressionParser::parse(AbstractLexer *lexer)
         yytoken = lexer->lex();
 		while(yytoken==tComment) {
 			//TODO: Add mathml comment
+			m_comments.append(lexer->current.val);
 			yytoken = lexer->lex();
 		}
 		
@@ -92,171 +93,171 @@ bool ExpressionParser::parse(AbstractLexer *lexer)
           act = m_stateStack.at(m_tos++);
           switch (r) {
 
-#line 204 "exp.g"
- case 0: 
-#line 205 "exp.g"
- case 1: 
 #line 207 "exp.g"
+ case 0: 
+#line 208 "exp.g"
+ case 1: 
+#line 210 "exp.g"
 
 case 2:
 	m_exp = "<math>"+sym(1)+"</math>";
 	break;
 
-#line 213 "exp.g"
- case 3: sym(1) = "<declare><ci>"+sym(1)+"</ci>"+sym(3)+"</declare>"; break; 
 #line 216 "exp.g"
- case 4: 
-#line 217 "exp.g"
- case 5: 
+ case 3: sym(1) = "<declare><ci>"+sym(1)+"</ci>"+sym(3)+"</declare>"; break; 
 #line 219 "exp.g"
+ case 4: 
+#line 220 "exp.g"
+ case 5: 
+#line 222 "exp.g"
 
 case 6:
 	sym(1) = lexer->current.val;
 	break;
 
-#line 228 "exp.g"
+#line 231 "exp.g"
 
 case 9:
 	sym(1) = "<ci>"+sym(1)+"</ci>";
 	break;
 
-#line 237 "exp.g"
+#line 240 "exp.g"
 
 case 12:
 	sym(1) = "<apply><selector />"+sym(3)+sym(1)+"</apply>";
 	break;
 
-#line 244 "exp.g"
+#line 247 "exp.g"
 
 case 13:
 	sym(1) = sym(2);
 	break;
 
-#line 254 "exp.g"
- case 18: sym(1)=sym(2); break; 
-#line 255 "exp.g"
- case 19: sym(1)=funcToTag(sym(1)); break; 
 #line 257 "exp.g"
- case 20: sym(1) = "<apply>"+sym(1)+sym(2)+"</apply>"; break; 
+ case 18: sym(1)=sym(2); break; 
 #line 258 "exp.g"
- case 21: sym(1) = "<apply>"+sym(1)+sym(3)+"</apply>"; break; 
-#line 259 "exp.g"
- case 22: sym(1) = "<apply>"+sym(1)+       "</apply>"; break; 
+ case 19: sym(1)=funcToTag(sym(1)); break; 
+#line 260 "exp.g"
+ case 20: sym(1) = "<apply>"+sym(1)+sym(2)+"</apply>"; break; 
 #line 261 "exp.g"
- case 23: sym(1) = "<apply>"+sym(3)+sym(1)+"</apply>"; break; 
+ case 21: sym(1) = "<apply>"+sym(1)+sym(3)+"</apply>"; break; 
 #line 262 "exp.g"
+ case 22: sym(1) = "<apply>"+sym(1)+       "</apply>"; break; 
+#line 264 "exp.g"
+ case 23: sym(1) = "<apply>"+sym(3)+sym(1)+"</apply>"; break; 
+#line 265 "exp.g"
  case 24: sym(1) = "<apply>"+sym(3)+sym(1)+"</apply>"; break; 
-#line 269 "exp.g"
+#line 272 "exp.g"
 
 case 28:
 	sym(1).prepend(sym(3));
 	break;
 
-#line 276 "exp.g"
+#line 279 "exp.g"
 
 case 29:
 	sym(1)=sym(3)+sym(5)+sym(1);
 	break;
 
-#line 283 "exp.g"
+#line 286 "exp.g"
 
 case 30:
 	sym(1)=sym(3)+"<domainofapplication>"+sym(5)+"</domainofapplication>"+sym(1);
 	break;
 
-#line 291 "exp.g"
+#line 294 "exp.g"
 
 case 31:
 	sym(1) = '<'+sym(1)+" />";
 	break;
 
-#line 298 "exp.g"
+#line 301 "exp.g"
 
 case 32:
 	sym(1) = '<'+sym(1)+'>'+sym(3)+"</"+sym(1)+'>';
 	break;
 
-#line 306 "exp.g"
+#line 309 "exp.g"
 
 case 33:
 	sym(1) = "<lambda>"+sym(1)+sym(3)+"</lambda>";
 	break;
 
-#line 314 "exp.g"
+#line 317 "exp.g"
 
 case 34:
 	sym(1) = "<apply><minus />"+sym(2)+"</apply>";
 	break;
 
-#line 321 "exp.g"
+#line 324 "exp.g"
 
 case 35:
 	sym(1) = "<otherwise>"+sym(2)+"</otherwise>";
 	break;
 
-#line 328 "exp.g"
- case 36: sym(1) = "<apply><plus />"  +sym(1)+sym(3)+"</apply>"; break; 
-#line 329 "exp.g"
- case 37: sym(1) = "<apply><minus />" +sym(1)+sym(3)+"</apply>"; break; 
-#line 330 "exp.g"
- case 38: sym(1) = "<apply><times />" +sym(1)+sym(3)+"</apply>"; break; 
 #line 331 "exp.g"
- case 39: sym(1) = "<apply><times />" +sym(1)+sym(2)+"</apply>"; break; 
+ case 36: sym(1) = "<apply><plus />"  +sym(1)+sym(3)+"</apply>"; break; 
 #line 332 "exp.g"
- case 40: sym(1) = "<apply><divide />"+sym(1)+sym(3)+"</apply>"; break; 
+ case 37: sym(1) = "<apply><minus />" +sym(1)+sym(3)+"</apply>"; break; 
 #line 333 "exp.g"
- case 41: sym(1) = "<apply><power />" +sym(1)+sym(3)+"</apply>"; break; 
+ case 38: sym(1) = "<apply><times />" +sym(1)+sym(3)+"</apply>"; break; 
 #line 334 "exp.g"
- case 42: sym(1) = "<apply><eq />"    +sym(1)+sym(3)+"</apply>"; break; 
+ case 39: sym(1) = "<apply><times />" +sym(1)+sym(2)+"</apply>"; break; 
 #line 335 "exp.g"
- case 43: sym(1) = "<apply><leq />"   +sym(1)+sym(3)+"</apply>"; break; 
+ case 40: sym(1) = "<apply><divide />"+sym(1)+sym(3)+"</apply>"; break; 
 #line 336 "exp.g"
- case 44: sym(1) = "<apply><geq />"   +sym(1)+sym(3)+"</apply>"; break; 
+ case 41: sym(1) = "<apply><power />" +sym(1)+sym(3)+"</apply>"; break; 
 #line 337 "exp.g"
- case 45: sym(1) = "<apply><lt />"    +sym(1)+sym(3)+"</apply>"; break; 
+ case 42: sym(1) = "<apply><eq />"    +sym(1)+sym(3)+"</apply>"; break; 
 #line 338 "exp.g"
- case 46: sym(1) = "<apply><gt />"    +sym(1)+sym(3)+"</apply>"; break; 
+ case 43: sym(1) = "<apply><leq />"   +sym(1)+sym(3)+"</apply>"; break; 
 #line 339 "exp.g"
- case 47: sym(1) = "<apply><neq />"   +sym(1)+sym(3)+"</apply>"; break; 
+ case 44: sym(1) = "<apply><geq />"   +sym(1)+sym(3)+"</apply>"; break; 
+#line 340 "exp.g"
+ case 45: sym(1) = "<apply><lt />"    +sym(1)+sym(3)+"</apply>"; break; 
 #line 341 "exp.g"
+ case 46: sym(1) = "<apply><gt />"    +sym(1)+sym(3)+"</apply>"; break; 
+#line 342 "exp.g"
+ case 47: sym(1) = "<apply><neq />"   +sym(1)+sym(3)+"</apply>"; break; 
+#line 344 "exp.g"
  case 48: sym(1) = "<piece>"+sym(3)+sym(1)+"</piece>"; break; 
-#line 346 "exp.g"
+#line 349 "exp.g"
 
 case 50:
 	sym(1) += sym(3);
 	break;
 
-#line 355 "exp.g"
+#line 358 "exp.g"
 
 case 52:
 	sym(1) = sym(2);
 	break;
 
-#line 362 "exp.g"
+#line 365 "exp.g"
 
 case 53:
 	sym(1) = "<bvar><ci>"+sym(1)+"</ci></bvar>";
 	break;
 
-#line 369 "exp.g"
+#line 372 "exp.g"
 
 case 54:
 	sym(1) += sym(3);
 	break;
 
-#line 376 "exp.g"
+#line 379 "exp.g"
 
 case 55:
 	sym(1) += sym(3);
 	break;
 
-#line 383 "exp.g"
+#line 386 "exp.g"
 
 case 56:
 	sym(1) = "<uplimit>"+sym(3)+"</uplimit><downlimit>"+sym(1)+"</downlimit>";
 	break;
 
-#line 389 "exp.g"
+#line 392 "exp.g"
 
 		} // switch
 		m_stateStack[m_tos] = nt_action(act, lhs[r] - TERMINAL_COUNT);
@@ -289,16 +290,16 @@ case 56:
 			for (int s = 0; s < shifts; ++s) {
 				expectedTokens += '\''+QLatin1String(spell[expected_tokens[s]])+'\'';
 			}
-			error=i18nc("error message", "Expected %1 instead of '%2'", expectedTokens.join(i18n(", ")), tokFound);
+			error=QCoreApplication::translate("error message", "Expected %1 instead of '%2'").arg(expectedTokens.join(QCoreApplication::tr(", ")), tokFound);
 		} else if(tokFoundType==tLpr) {
-			error=i18n("Missing right parenthesis");
+			error=QCoreApplication::tr("Missing right parenthesis");
 		} else if(tokFoundType==tRpr || tokFoundType==tRcb) {
-			error=i18n("Unbalanced right parenthesis");
+			error=QCoreApplication::tr("Unbalanced right parenthesis");
 		} else
 			if(tokFoundType==tId)
-				error=i18n("Unexpected token identifier: %1", lexer->current.val);
+				error=QCoreApplication::tr("Unexpected token identifier: %1").arg(lexer->current.val);
 			else
-				error=i18n("Unexpected token %1", spell[tokFoundType]);
+				error=QCoreApplication::tr("Unexpected token %1").arg(spell[tokFoundType]);
 		m_err.append(error);
 		return false;
 		}

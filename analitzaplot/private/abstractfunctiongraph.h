@@ -24,6 +24,7 @@
 #include <analitza/expression.h>
 #include <analitza/analyzer.h>
 #include <analitza/value.h>
+#include <QCoreApplication>
 #include <QPair>
 
 namespace Analitza {
@@ -32,7 +33,7 @@ namespace Analitza {
 }
 
 #define TYPE_NAME(name) \
-const QString typeName() const { return i18n(TypeName()); } \
+const QString typeName() const { return QCoreApplication::tr(TypeName()); } \
 static const char* TypeName() { return name; } 
 
 #define EXPRESSION_TYPE(name) \

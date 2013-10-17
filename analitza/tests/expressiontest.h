@@ -33,7 +33,7 @@ Q_OBJECT
 		ExpressionTest(QObject *parent = 0);
 		~ExpressionTest();
 	
-	private slots:
+	private Q_SLOTS:
 		void initTestCase();
 		
 		/**
