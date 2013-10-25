@@ -32,28 +32,27 @@
 #include <analitzagui/plotsview3d.h>
 #include <plotsfactory.h>
 #include <analitza/expression.h>
+#include <QCommandLineParser>
 
 using namespace Analitza;
 
 int main(int argc, char *argv[])
 {
-    KAboutData aboutData("PlotView3DTest",
-                         0,
-                         ki18n("PlotView3DTest"),
-                         "1.0",
-                         ki18n("PlotView3DTest"),
-                         KAboutData::License_LGPL_V3,
-                         ki18n("(c) 2012 Percy Camilo T. Aucahuasi"),
-                         ki18n("PlotView3DTest"),
-                         "http://www.kde.org");
+//     KAboutData aboutData("PlotView3DTest",
+//                          0,
+//                          ki18n("PlotView3DTest"),
+//                          "1.0",
+//                          ki18n("PlotView3DTest"),
+//                          KAboutData::License_LGPL_V3,
+//                          ki18n("(c) 2012 Percy Camilo T. Aucahuasi"),
+//                          ki18n("PlotView3DTest"),
+//                          "http://www.kde.org");
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
-    KCmdLineOptions options;
-    options.add("all-disabled", ki18n("marks all the plots as not visible"));
-    options.add("simple-rotation", ki18n("uses simple rotation"));
-    KCmdLineArgs::addCmdLineOptions(options);
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    KApplication app;
+	QApplication app(argc, argv);
+	QCommandLineParser parser;
+	parser.setApplicationDescription("PlotView3DTest");
+	parser.addOption(QCommandLineOption("all-disabled", app.tr("marks all the plots as not visible")));
+	parser.process(app);
 
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setMinimumSize(640, 480);
@@ -81,11 +80,11 @@ int main(int argc, char *argv[])
     model->addPlot(s->requestPlot(Analitza::Expression("x*x+y*y-z*z= 1/2"), Dim3D).create(Qt::darkBlue, "implicit 2"));
     //END test calls
 
-    if(args->isSet("all-disabled"))
+    if(parser.isSet("all-disabled"))
         for(int i=0; i<model->rowCount(); i++)
             model->setData(model->index(i), false, Qt::CheckStateRole);
 
-    view3d->setUseSimpleRotation(args->isSet("simple-rotation"));
+    view3d->setUseSimpleRotation(parser.isSet("simple-rotation"));
 
     central->addWidget(viewsource);
     central->addWidget(view3d);
