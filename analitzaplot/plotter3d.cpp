@@ -28,8 +28,6 @@
 
 #include <cmath>
 #include <QDebug>
-#include <KLocalizedString>
-#include <KColorUtils>
 
 #if defined(HAVE_IEEEFP_H)
 #include <ieeefp.h>
@@ -153,7 +151,7 @@ void Plotter3D::drawPlots()
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glMultMatrixd(m_rot.data());
+    glMultMatrixf(m_rot.data());
 
     // Object Drawing :
     glCallList(m_sceneObjects.value(Axes));
@@ -412,9 +410,9 @@ void Plotter3D::rotate(int dx, int dy)
         m_rot.rotate(angle, m_rotFixed.normalized());
         renderGL();
     } else {
-        GLdouble matrix[16] = {0}; // model view matrix from current OpenGL state
+        GLfloat matrix[16] = {0}; // model view matrix from current OpenGL state
 
-        glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
+        glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
 
         QMatrix4x4 matrix4(matrix);
         bool couldInvert;
