@@ -114,7 +114,8 @@ QVector3D SphericalSurface::fromParametricArgs(double a, double p)
 
 void SphericalSurface::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
-//     Q_UNUSED(viewport);
+    Q_UNUSED(oppositecorner1);
+    Q_UNUSED(oppositecorner2);
     buildParametricSurface();
 }
 
