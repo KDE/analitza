@@ -81,6 +81,8 @@ public:
     
     void setSelectionModel(QItemSelectionModel* selection);
 
+	virtual void showEvent(QShowEvent* ev);
+
 public slots:
     /** Marks the image as dirty and repaints everything. */
     void forceRepaint() { valid=false; repaint(); }

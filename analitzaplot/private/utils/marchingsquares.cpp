@@ -389,7 +389,7 @@ void MarchingSquares::identificar_tipo(sMarching_Square cubo) {
 void MarchingSquares::tipo01(QList<sArista2D> aristas)
 {
     
-    if (aristas.isEmpty()) return;
+    if (aristas.size()<2) return;
 
     QList<QPointF> triangulos;
 

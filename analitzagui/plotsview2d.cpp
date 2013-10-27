@@ -64,6 +64,11 @@ PlotsView2D::PlotsView2D(QWidget *parent)
     this->setAutoFillBackground(false);
 }
 
+void PlotsView2D::showEvent(QShowEvent* ev)
+{
+	QWidget::showEvent(ev);
+}
+
 PlotsView2D::~PlotsView2D() {}
 
 void PlotsView2D::drawFunctions(QPaintDevice* pd)
