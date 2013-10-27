@@ -55,6 +55,7 @@ void PlaneCurveTest::testCorrect_data()
     QTest::newRow("fy-diag-line") << "y->y";
     QTest::newRow("vector-diag-line") << "t->vector{t,t}";
     QTest::newRow("simple-algebraic") << "x*x+y*y=3";
+    QTest::newRow("roots") << "y=root(x,y)";
 }
 
 void PlaneCurveTest::testCorrect()
@@ -64,6 +65,16 @@ void PlaneCurveTest::testCorrect()
     PlotBuilder pb = PlotsFactory::self()->requestPlot(Expression(input), Dim2D);
 
     QVERIFY(pb.canDraw());
+    if(pb.canDraw()) {
+        FunctionGraph* item = pb.create(Qt::green, "hola");
+        QVERIFY(item);
+        QVERIFY(item->isCorrect());
+        PlaneCurve* curve = dynamic_cast<PlaneCurve*>(item);
+        QVERIFY(curve);
+
+        curve->update(QRectF(-5,-5,10,10));
+        QVERIFY(item->isCorrect() && !curve->points().isEmpty());
+    }
 }
 
 void PlaneCurveTest::testIncorrect_data()
