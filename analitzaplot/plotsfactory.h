@@ -55,6 +55,7 @@ class ANALITZAPLOT_EXPORT PlotsFactory
 {
     public:
         PlotsFactory();
+        virtual ~PlotsFactory();
         
         static PlotsFactory* self();
         PlotBuilder requestPlot(const Analitza::Expression& expresssion, Dimension dim, Variables* vars = 0) const;

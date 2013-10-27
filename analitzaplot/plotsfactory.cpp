@@ -33,6 +33,11 @@ PlotsFactory::PlotsFactory()
 	: m_vars(new Variables)
 {}
 
+PlotsFactory::~PlotsFactory()
+{
+	delete m_vars;
+}
+
 PlotsFactory* PlotsFactory::self()
 {
 	return factoryInstance;
