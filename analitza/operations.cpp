@@ -21,6 +21,7 @@
 #include <math.h>
 
 #include <cmath>
+#include <complex>
 #include <kdemacros.h>
 
 #include "value.h"
@@ -57,8 +58,9 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			oper->setValue(a - b);
 			break;
 		case Operator::power:
-			oper->setValue(b==2 ? a*a
-								: pow(a, b));
+			oper->setValue( b==2 ? a*a
+					: b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
+								 : pow(a, b));
 			break;
 		case Operator::rem:
 			if(KDE_ISLIKELY(floor(b)!=0.))
@@ -142,7 +144,9 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			}
 			break;
 		case Operator::root:
-			oper->setValue(b==2.0 ? sqrt(a) : pow(a, 1.0/b));
+			oper->setValue(			  b==2.0 ? sqrt(a)
+					  : (b>1 || b<-1) && a<0 ? pow(complex<double>(a), complex<double>(1./b)).real()
+											 : pow(a, 1.0/b));
 			break;
 		default:
 			break;

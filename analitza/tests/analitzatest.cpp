@@ -89,13 +89,15 @@ void AnalitzaTest::testTrivialCalculate_data()
 	QTest::newRow("lambda")  << "(x->x+2)(2)" << 4.;
 	QTest::newRow("lambda2") << "(x->3*x^2)(1)" << 3.;
 	QTest::newRow("lambda3") << "(x->x*sum(t:t=0..3))(2)" << 12.;
-	
+	QTest::newRow("imaginarypow") << "(-4)^(1/4)" << 1.;
+	QTest::newRow("imaginaryroot") << "root(-4, 4)" << 1.;
+
 	//comprehension
 	QTest::newRow("sum.2bvars") << "sum(x*y : (x, y)=1..3)" << 36.;
 	QTest::newRow("sum.list") << "sum(x : x@list{1,5,44})" << 50.;
-	
+
 	QTest::newRow("sum.sum") << "sum(sum(x : x=0..i) : i=0..10)" << 220.;
-	
+
 	QTest::newRow("exists") << "exists(x : x@list{true,true,false})" << 1.;
 	QTest::newRow("forall") << "forall(x : x@list{true,true,false})" << 0.;
 // 	QTest::newRow("emptysum") << "sum(x : x@list{})" << 0.;
