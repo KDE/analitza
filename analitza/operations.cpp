@@ -113,7 +113,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			oper->setValue((a || b) && !(a&&b));
 			break;
 		case Operator::implies:
-			oper->setValue((a || !b));
+			oper->setValue(a || !b);
 			break;
 		case Operator::gcd:  {
 			//code by michael cane aka kiko :)
