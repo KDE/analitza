@@ -214,23 +214,23 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 		case Operator::arccot:
 			val->setValue(log(a+pow(a*a+1., 0.5)));
 			break;
-		case Operator::arcsinh:
-			val->setValue(0.5*(log(1.+1./a)-log(1.-1./a)));
+		case Operator::arcsinh: //see http://en.wikipedia.org/wiki/Inverse_hyperbolic_function
+			val->setValue(asinh(a));
 			break;
 		case Operator::arccosh:
-			val->setValue(log(a+sqrt(a-1.)*sqrt(a+1.)));
+			val->setValue(acosh(a));
 			break;
 		case Operator::arccsc:
 			val->setValue(1/asin(a));
 			break;
 		case Operator::arccsch:
-			val->setValue(1/(0.5*(log(1.+1./a)-log(1.-1./a))));
+			val->setValue(log(1/a+sqrt(1/(a*a)+1)));
 			break;
 		case Operator::arcsec:
 			val->setValue(1/(acos(a)));
 			break;
 		case Operator::arcsech:
-			val->setValue(1/(log(a+sqrt(a-1.)*sqrt(a+1.))));
+			val->setValue(log(1/a+sqrt(1/a+1)*sqrt(1/a-1)));
 			break;
 		case Operator::arctanh:
 			val->setValue(atanh(a));
