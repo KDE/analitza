@@ -90,6 +90,7 @@ void PlotsModelTest::testAppend()
         qDebug() << "errors:" << item->errors();
     QVERIFY(item->isCorrect());
     
+    item->update(QRect(QPoint(-5, 7), QPoint(5, -7)));
     item->update(QRectF(-5,-5,10,10)); // the viewport is in world coordinates (not screen coordinates)
     if(!item->isCorrect())
         qDebug() << "error" << item->errors();
