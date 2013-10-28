@@ -72,6 +72,8 @@ private:
     virtual int currentPlot() const { return -1 ;}
     virtual void modelChanged();
     virtual void renderGL();
+
+    virtual void keyPressEvent(QKeyEvent*);
     
     virtual void wheelEvent(QWheelEvent* ev);
     virtual void mousePressEvent(QMouseEvent *event);

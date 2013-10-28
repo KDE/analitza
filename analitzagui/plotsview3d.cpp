@@ -161,3 +161,15 @@ void PlotsView3D::mouseMoveEvent(QMouseEvent *e)
     old_y = e->y();
     old_x = e->x();
 }
+
+void PlotsView3D::keyPressEvent(QKeyEvent* ev)
+{
+    switch(ev->key()) {
+        case Qt::Key_S:
+            scale(1.1);
+            break;
+        case Qt::Key_W:
+            scale(0.9);
+            break;
+    }
+}
