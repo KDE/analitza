@@ -89,6 +89,7 @@ class ANALITZA_EXPORT ExpressionParser : protected $table
 		int errorLineNumber() const { return m_errorLineNumber; }
 		QStringList error() const { return m_err; }
 		QString mathML() const { return m_exp; }
+		QStringList comments() const { return m_comments; }
 
 	private:
 		void reallocateStack();
@@ -102,6 +103,7 @@ class ANALITZA_EXPORT ExpressionParser : protected $table
 		int m_errorLineNumber;
 		QStringList m_err;
 		QString m_exp;
+		QStringList m_comments;
 };
 
 #endif
