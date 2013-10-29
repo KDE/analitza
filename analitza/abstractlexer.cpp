@@ -44,7 +44,6 @@ QHash<QChar, int> initializeOperators()
 	operators['>']=ExpressionTable::tGt;
 	operators['@']=ExpressionTable::tAt;
 	operators['|']=ExpressionTable::tPipe;
-	operators['i']=ExpressionTable::tImaginary;
 	return operators;
 }
 
