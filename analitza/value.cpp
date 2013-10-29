@@ -67,8 +67,8 @@ bool Cn::setValue(const QDomElement& val)
 			else if (val.text() == "&true;")	{ m_value=1.; m_format=Boolean; }
 			else if (val.text() == "&false;")	{ m_value=0.; m_format=Boolean; }
 			else if (val.text() == "&gamma;")	{ m_value = 0.5772156649; }
+			else if (val.text() == "&ImagniaryI;")	{ m_value=0; m_imaginaryPart=1; m_format=Complex; }
 #if 0
-			else if (val.text() == "&ImagniaryI;")	; //TODO: Not implemented 
 			else if (val.text() == "&infin;")	; //TODO: Not implemented  }
 			else if (val.text() == "&NaN;")		; //TODO: Not implemented  }*/
 #endif
