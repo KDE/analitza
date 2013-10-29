@@ -46,6 +46,7 @@ bool Cn::setValue(const QDomElement& val)
 	bool wrong=false;
 	QString tag = val.tagName();
 	m_format=Real;
+	m_imaginaryPart=0;
 	
 	if(tag == "cn"){ // a is a number
 		if(val.attribute("type", "integer") == "real") {
@@ -90,22 +91,38 @@ void Cn::setValue(const double& v)
 {
 	m_format = Real;
 	m_value = v;
+	m_imaginaryPart = 0;
 }
 
 void Cn::setValue(int v)
 {
 	m_format = Integer;
 	m_value = v;
+	m_imaginaryPart = 0;
 }
 
 void Cn::setValue(uint v)
 {
 	m_format = Integer;
 	m_value = v;
+	m_imaginaryPart = 0;
 }
 
 void Cn::setValue(bool v)
 {
 	m_format = Boolean;
 	m_value = v;
+	m_imaginaryPart = 0;
+}
+
+std::complex<float> Cn::complexValue() const
+{
+	return std::complex<float>(m_value, m_imaginaryPart);
+}
+
+void Cn::setValue(std::complex<float> v)
+{
+	m_format = Complex;
+	m_imaginaryPart = v.imag();
+	m_value = v.real();
 }
