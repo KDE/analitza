@@ -82,17 +82,17 @@ class ANALITZA_EXPORT Cn : public Object
 		inline double& rvalue() { return m_value; }
 
 		/**
-		 *	Returns the value as an int.
+		 *	@returns the value as an int.
 		 */
 		int intValue() const { return static_cast<int>(std::floor(m_value)); }
 
 		/**
-		 *	Returns whether it is a boolean value or not.
+		 *	@returns whether it is a boolean value or not.
 		 */
 		bool isBoolean() const { return m_format==Boolean; }
 
 		/**
-		 *	Returns whether it is a character value or not.
+		 *	@returns whether it is a character value or not.
 		 */
 		bool isCharacter() const { return m_format==Char; }
 
@@ -112,32 +112,32 @@ class ANALITZA_EXPORT Cn : public Object
 // 		static enum ValueFormat whatValueFormat(const QDomElement&);
 
 		/**
-		 *	Returns whether it is an integer value or not.
+		 *	@returns whether it is an integer value or not.
 		 */
 		bool isInteger() const { return std::floor(m_value)==m_value; }
 
 		/**
-		 *	Returns whether @p d is equal than this object.
+		 *	@returns whether @p d is equal than this object.
 		 */
 		bool operator==(const Cn& d) const { return m_value==d.m_value; }
 
 		/**
-		 *	Returns whether @p d is less than this object.
+		 *	@returns whether @p d is less than this object.
 		 */
 		bool operator<(const Cn& d) const { return m_value<d.m_value; }
 
 		/**
-		 *	Returns whether @p d is less than this object's value.
+		 *	@returns whether @p d is less than this object's value.
 		 */
 		bool operator<(double d) const { return m_value<d; }
 
 		/**
-		 *	Returns whether @p d is less or equal than this object.
+		 *	@returns whether @p d is less or equal than this object.
 		 */
 		bool operator<=(const Cn& d) const { return m_value<=d.m_value; }
 
 		/**
-		 *	Returns whether @p d is less or equal than this object's value.
+		 *	@returns whether @p d is less or equal than this object's value.
 		 */
 		bool operator<=(double d) const { return m_value<=d; }
 
