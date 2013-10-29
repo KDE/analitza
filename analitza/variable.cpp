@@ -55,14 +55,19 @@ QString Ci::toMathML() const
 bool Ci::matches(const Object* exp, QMap<QString, const Object*>* found) const
 {
 	bool ret=false;
-	if(found->contains(m_name)) {
-		const Object* v=found->value(m_name);
-		Q_ASSERT(v);
+	const Object* v=found->value(m_name);
+	if(v) {
 		ret=AnalitzaUtils::equalTree(exp, v);
 	} else {
+		Q_ASSERT(!found->contains(m_name));
 		found->insert(m_name, exp);
 		ret=true;
 	}
 // 	qDebug() << "maaatch" << toString() << exp->toString() << ret;
 	return ret;
+}
+
+QString Ci::toHtml() const
+{
+	return QString("<span class='%1'>%2</span>").arg(m_function ? "func" : "var").arg(m_name);
 }

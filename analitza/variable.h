@@ -55,7 +55,7 @@ class ANALITZA_EXPORT Ci : public Object
 		QString toMathML() const;
 		
 		/** Returns the HTML representation of the variable */
-		QString toHtml() const { return QString("<span class='%1'>%2</span>").arg(m_function ? "func" : "var").arg(m_name); }
+		QString toHtml() const;
 		
 		virtual QString visit(ExpressionWriter*) const;
 		virtual bool matches(const Object* pattern, QMap<QString, const Object*>* found) const;
