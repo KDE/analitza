@@ -40,36 +40,6 @@ QString Cn::visit(ExpressionWriter* e) const
 	return e->accept(this);
 }
 
-/*enum Cn::ValueFormat Cn::whatValueFormat(const QDomElement& val)
-{
-	enum ValueFormat ret= none;
-	QString tag = val.tagName();
-	if(tag == "cn"){ // a is a number
-		if(val.attribute("type","real") == "real")		ret = real;
-		else if(val.attribute("type") == "integer")		ret = integer;
-		else if(val.attribute("type") == "e-notation")		ret = real;
-		else if(val.attribute("type") == "rational")		ret = real;
-		else if(val.attribute("type") == "complex-cartesian")	ret = none;
-		else if(val.attribute("type") == "complex-polar")	ret = none;
-		else if(val.attribute("type") == "constant") {
-			if(val.text() == "&pi;")		ret=real;
-			else if (val.text() == "&ee;" || val.text() == "&ExponentialE;")	ret = real;
-			else if (val.text() == "&true;")	ret = boolean;
-			else if (val.text() == "&false;")	ret = boolean;
-			else if (val.text() == "&gamma;")	ret = real;
-			//else if (val.text() == "&ImagniaryI;")	; //TODO: Not implemented 
-			else if (val.text() == "&infin;")	ret=nan;
-			else if (val.text() == "&NaN;")		ret=nan;
-		}
-	} else if(tag=="true")		ret = boolean;
-	else if(tag=="false")		ret = boolean;
-	else if(tag=="pi")		ret = real;
-	else if(tag=="exponentiale")	ret = real;
-	else if(tag=="eulergamma")	ret = real;
-	
-	return ret;
-}*/
-
 bool Cn::setValue(const QDomElement& val)
 {
 // 	this->m_vformat=whatValueFormat(val);

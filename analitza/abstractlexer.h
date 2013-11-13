@@ -21,7 +21,7 @@
 
 #include <QtCore/QString>
 #include <QtCore/QStringList>
-#include <QtCore/QMap>
+#include <QtCore/QHash>
 #include <QtCore/QQueue>
 #include "analitzaexport.h"
 
@@ -56,8 +56,8 @@ class ANALITZA_EXPORT AbstractLexer
 		int m_lines;
 		int m_openPr, m_openCb;
 		QQueue<TOKEN> m_tokens;
-		static QMap<QChar, int> m_operators;
-		static QMap<QString, int> m_longOperators;
+		static QHash<QChar, int> m_operators;
+		static QHash<QString, int> m_longOperators;
 		virtual void getToken()=0;
 		void printQueue(const QQueue<TOKEN>& q) const;
 };

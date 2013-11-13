@@ -70,7 +70,7 @@ void FunctionPolar::update(const QRectF& viewport)
         double pi_factor = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), 
                                 qMax(qAbs(viewport.bottom()), qAbs(viewport.top())));
 
-        pi_factor = qMax(pi_factor, 16.); // 16 steps at minimun
+        pi_factor = qMax(pi_factor, 16.); // 16 steps at minimum
 
         dlimit = -M_PI*pi_factor;
         ulimit =  M_PI*pi_factor;
@@ -83,11 +83,14 @@ void FunctionPolar::update(const QRectF& viewport)
         dlimit = limits.first;
         ulimit = limits.second;
         inv_res = (ulimit-dlimit)/(M_PI*M_PI*16);
-        
     }
     Q_ASSERT(inv_res!=0);
 
     double final=ulimit-inv_res;
+    if((final<0) != (inv_res<0)) {
+        inv_res *= -1;
+    }
+
     for(double th=dlimit; th<final; th+=inv_res) {
         p->setValue(th);
         double r = analyzer->calculateLambda().toReal().value();

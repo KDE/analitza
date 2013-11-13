@@ -141,6 +141,10 @@ void Plotter3D::setViewport(const QRectF& vp)
     renderGL();
 }
 
+// add overloaded functions which call the underlying OpenGL function
+inline void glMultMatrix(const GLfloat  *m) { glMultMatrixf(m); }
+inline void glMultMatrix(const GLdouble *m) { glMultMatrixd(m); }
+
 void Plotter3D::drawPlots()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -396,6 +400,14 @@ void Plotter3D::scale(GLdouble factor)
     renderGL();
 }
 
+inline QMatrix4x4 get_matrix(GLfloat *m)
+{
+    return QMatrix4x4(m[0],  m[1],  m[2],  m[3],
+                      m[4],  m[5],  m[6],  m[7],
+                      m[8],  m[9],  m[10], m[11],
+                      m[12], m[13], m[14], m[15]);
+}
+
 void Plotter3D::rotate(int dx, int dy)
 {
     GLdouble ax = -dy;
@@ -414,7 +426,7 @@ void Plotter3D::rotate(int dx, int dy)
 
         glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
 
-        QMatrix4x4 matrix4(matrix);
+        QMatrix4x4 matrix4(get_matrix(matrix));
         bool couldInvert;
         matrix4 = matrix4.inverted(&couldInvert);
 

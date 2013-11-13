@@ -21,6 +21,7 @@
 #include <math.h>
 
 #include <cmath>
+#include <complex>
 #include <kdemacros.h>
 #include <QCoreApplication>
 
@@ -58,8 +59,9 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			oper->setValue(a - b);
 			break;
 		case Operator::power:
-			oper->setValue(b==2 ? a*a
-								: pow(a, b));
+			oper->setValue( b==2 ? a*a
+					: b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
+								 : pow(a, b));
 			break;
 		case Operator::rem:
 			if(KDE_ISLIKELY(floor(b)!=0.))
@@ -114,7 +116,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			oper->setValue((a || b) && !(a&&b));
 			break;
 		case Operator::implies:
-			oper->setValue((a || !b));
+			oper->setValue(a || !b);
 			break;
 		case Operator::gcd:  {
 			//code by michael cane aka kiko :)
@@ -143,7 +145,9 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			}
 			break;
 		case Operator::root:
-			oper->setValue(b==2.0 ? sqrt(a) : pow(a, 1.0/b));
+			oper->setValue(			  b==2.0 ? sqrt(a)
+					  : (b>1 || b<-1) && a<0 ? pow(complex<double>(a), complex<double>(1./b)).real()
+											 : pow(a, 1.0/b));
 			break;
 		default:
 			break;
@@ -215,23 +219,23 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 		case Operator::arccot:
 			val->setValue(log(a+pow(a*a+1., 0.5)));
 			break;
-		case Operator::arcsinh:
-			val->setValue(0.5*(log(1.+1./a)-log(1.-1./a)));
+		case Operator::arcsinh: //see http://en.wikipedia.org/wiki/Inverse_hyperbolic_function
+			val->setValue(asinh(a));
 			break;
 		case Operator::arccosh:
-			val->setValue(log(a+sqrt(a-1.)*sqrt(a+1.)));
+			val->setValue(acosh(a));
 			break;
 		case Operator::arccsc:
 			val->setValue(1/asin(a));
 			break;
 		case Operator::arccsch:
-			val->setValue(1/(0.5*(log(1.+1./a)-log(1.-1./a))));
+			val->setValue(log(1/a+sqrt(1/(a*a)+1)));
 			break;
 		case Operator::arcsec:
 			val->setValue(1/(acos(a)));
 			break;
 		case Operator::arcsech:
-			val->setValue(1/(log(a+sqrt(a-1.)*sqrt(a+1.))));
+			val->setValue(log(1/a+sqrt(1/a+1)*sqrt(1/a-1)));
 			break;
 		case Operator::arctanh:
 			val->setValue(atanh(a));

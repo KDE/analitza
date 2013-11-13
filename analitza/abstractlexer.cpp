@@ -21,9 +21,9 @@
 #include <QDebug>
 #include <QStringList>
 
-QMap<QChar, int> initializeOperators()
+QHash<QChar, int> initializeOperators()
 {
-	QMap<QChar, int> operators;
+	QHash<QChar, int> operators;
 	operators['+']=ExpressionTable::tAdd;
 	operators['-']=ExpressionTable::tSub;
 	operators['*']=ExpressionTable::tMul;
@@ -46,9 +46,9 @@ QMap<QChar, int> initializeOperators()
 	return operators;
 }
 
-QMap<QString, int> initializeLongOperators()
+QHash<QString, int> initializeLongOperators()
 {
-	QMap<QString, int> longOperators;
+	QHash<QString, int> longOperators;
 	longOperators["->"]=ExpressionTable::tLambda;
 	longOperators[":="]=ExpressionTable::tAssig;
 	longOperators[".."]=ExpressionTable::tLimits;
@@ -59,8 +59,8 @@ QMap<QString, int> initializeLongOperators()
 	return longOperators;
 }
 
-QMap<QChar, int> AbstractLexer::m_operators=initializeOperators();
-QMap<QString, int> AbstractLexer::m_longOperators=initializeLongOperators();
+QHash<QChar, int> AbstractLexer::m_operators=initializeOperators();
+QHash<QString, int> AbstractLexer::m_longOperators=initializeLongOperators();
 
 AbstractLexer::AbstractLexer(const QString &source)
 	: current(-1, 0), m_source(source), m_lines(0), m_openPr(0), m_openCb(0)

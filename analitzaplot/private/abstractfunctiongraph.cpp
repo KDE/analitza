@@ -37,9 +37,9 @@ AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Anal
     : AbstractMappingGraph()
     , m_resolution(200)
     , m_e(e)
-    , m_varsmod(v)
+    , m_varsmod(v ? new Variables(*v) : new Variables)
 {
-    analyzer = v ? new Analitza::Analyzer(v) : new Analitza::Analyzer;
+    analyzer = new Analitza::Analyzer(m_varsmod);
 
     Q_ASSERT(!m_e.isEquation());
     
@@ -59,6 +59,7 @@ AbstractFunctionGraph::~AbstractFunctionGraph()
 {
     qDeleteAll(m_argumentValues);
     delete analyzer;
+    delete m_varsmod;
 }
 
 Dimension AbstractFunctionGraph::spaceDimension() const
@@ -78,6 +79,7 @@ void AbstractFunctionGraph::setVariables(Analitza::Variables* variables)
     Analitza::Expression exp = analyzer->expression();
     QVector<Analitza::Object*> prevStack = analyzer->runStack();
     delete analyzer;
+    delete m_varsmod;
     
     analyzer = new Analitza::Analyzer(variables);
     analyzer->setExpression(exp);
