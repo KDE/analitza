@@ -20,7 +20,10 @@
 #define ANALITZAGUIEXPORT_H
 
 /* needed for KDE_EXPORT macros */
-#include <kdemacros.h>
+// #include <kdemacros.h>
+#define KDE_EXPORT __attribute__ ((visibility("default")))
+#define KDE_IMPORT __attribute__ ((visibility("default")))
+
 #ifndef ANALITZAGUI_EXPORT
 # ifdef MAKE_ANALITZAGUI_LIB
 #  define ANALITZAGUI_EXPORT KDE_EXPORT

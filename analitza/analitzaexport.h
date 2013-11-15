@@ -1,4 +1,3 @@
-
 /*
    This file is part of the KDevelop platform
    Copyright 2006 Matt Rogers <mattr@kde.org>
@@ -23,7 +22,10 @@
 #define ANALITZAEXPORT_H
 
 /* needed for KDE_EXPORT macros */
-#include <kdemacros.h>
+// #include <kdemacros.h>
+#define KDE_EXPORT __attribute__ ((visibility("default")))
+#define KDE_IMPORT __attribute__ ((visibility("default")))
+
 #ifndef ANALITZA_EXPORT
 # ifdef MAKE_ANALITZA_LIB
 #  define ANALITZA_EXPORT KDE_EXPORT

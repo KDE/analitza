@@ -39,8 +39,6 @@ using namespace Analitza;
 
 Q_DECLARE_METATYPE(PlotItem*);
 
-using namespace std;
-
 // #define DEBUG_GRAPH
 
 QColor const Plotter2D::m_axeColor(100,100,255);
@@ -358,8 +356,8 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
             QPointF act=toWidget(vect.at(j));
 
 //          qDebug() << "xxxxx" << act << ultim << isnan(act.y()) << isnan(ultim.y());
-            if(isinf(act.y()) && !isnan(act.y())) qDebug() << "trying to plot from a NaN value" << act << ultim;
-            else if(isinf(act.y()) && isnan(act.y())) qDebug() << "trying to plot to a NaN value";
+            if(std::isinf(act.y()) && !std::isnan(act.y())) qDebug() << "trying to plot from a NaN value" << act << ultim;
+            else if(std::isinf(act.y()) && std::isnan(act.y())) qDebug() << "trying to plot to a NaN value";
 
             bool bothinf=(isinf(ultim.y()) && isinf(act.y())) || (isinf(ultim.x()) && isinf(act.x()));
             if(!bothinf && !isnan(act.y()) && !isnan(ultim.y()) && nextjump!=int(j)) {

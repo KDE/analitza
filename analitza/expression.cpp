@@ -582,7 +582,7 @@ QStringList Expression::bvarList() const
 Cn Expression::toReal() const
 {
 	Object* tree=d->m_tree;
-	if(KDE_ISLIKELY(tree && tree->type()==Object::value))
+	if(Q_LIKELY(tree && tree->type()==Object::value))
 		return *static_cast<Cn*>(tree);
 	else {
 		qDebug() << "trying to return not a real value as real:" << (tree ? tree->toString() : "null");
@@ -593,7 +593,7 @@ Cn Expression::toReal() const
 QString Expression::stringValue() const
 {
 	Object* tree=d->m_tree;
-	if(KDE_ISLIKELY(d->m_tree && d->m_tree->type()==Object::list))
+	if(Q_LIKELY(d->m_tree && d->m_tree->type()==Object::list))
 		return AnalitzaUtils::listToString(static_cast<const List*>(tree));
 	else {
 		qDebug() << "trying to return not a string value as string:" << (tree ? tree->toString() : "null");
@@ -876,7 +876,7 @@ Expression Expression::constructCustomObject(const QVariant& custom, CustomObjec
 QVariant Expression::customObjectValue() const
 {
 	Object* tree=d->m_tree;
-	if(KDE_ISLIKELY(tree && tree->type()==Object::custom))
+	if(Q_LIKELY(tree && tree->type()==Object::custom))
 		return static_cast<const CustomObject*>(tree)->value();
 	else {
 		qDebug() << "trying to return as a custom object something that it is not:" << (tree ? tree->toString() : "null");

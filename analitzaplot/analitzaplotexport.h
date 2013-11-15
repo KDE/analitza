@@ -20,7 +20,10 @@
 #define ANALITZAPLOTEXPORT_H
 
 /* needed for KDE_EXPORT macros */
-#include <kdemacros.h>
+// #include <kdemacros.h>
+#define KDE_EXPORT __attribute__ ((visibility("default")))
+#define KDE_IMPORT __attribute__ ((visibility("default")))
+
 #ifndef ANALITZAPLOT_EXPORT
 # ifdef MAKE_ANALITZAPLOT_LIB
 #  define ANALITZAPLOT_EXPORT KDE_EXPORT

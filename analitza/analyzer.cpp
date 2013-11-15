@@ -18,7 +18,6 @@
 
 #include "analyzer.h"
 
-#include <kdemacros.h>
 #include <QCoreApplication>
 
 #include "operations.h"
@@ -223,7 +222,7 @@ Expression Analyzer::calculateLambda()
 {
 	Expression e;
 	
-	if(KDE_ISLIKELY(!m_hasdeps && m_exp.isCorrect())) {
+	if(Q_LIKELY(!m_hasdeps && m_exp.isCorrect())) {
 		Q_ASSERT(m_exp.tree()->isContainer());
 		Container* math=(Container*) m_exp.tree();
 		Q_ASSERT(math->m_params.first()->isContainer());
@@ -235,7 +234,7 @@ Expression Analyzer::calculateLambda()
 		Container* lambda=(Container*) math;
 		Q_ASSERT(lambda->containerType()==Container::lambda);
 		
-		if(KDE_ISUNLIKELY(m_runStack.first()!=lambda))
+		if(Q_UNLIKELY(m_runStack.first()!=lambda))
 			m_runStack.prepend(lambda);
 		m_runStackTop = 0;
 		e.setTree(calc(lambda->m_params.last()));
@@ -575,7 +574,7 @@ Object* Analyzer::calcPiecewise(const Container* c)
 		}
 	}
 	
-	if(KDE_ISUNLIKELY(!ret)) {
+	if(Q_UNLIKELY(!ret)) {
 		m_err << QCoreApplication::translate("Error message, no proper condition found.", "Could not find a proper choice for a condition statement.");
 		ret=new Cn(0.);
 	}
@@ -725,7 +724,7 @@ Object* Analyzer::operate(const Apply* c)
 					if(!isValue)
 						delete v;
 					
-					if(KDE_ISUNLIKELY(error)) {
+					if(Q_UNLIKELY(error)) {
 						m_err.append(*error);
 						delete error;
 						error=0;
@@ -736,7 +735,7 @@ Object* Analyzer::operate(const Apply* c)
 				}
 			} else {
 				ret=Operations::reduceUnary(opt, calc(*c->firstValue()), &error);
-				if(KDE_ISUNLIKELY(error)) {
+				if(Q_UNLIKELY(error)) {
 					m_err.append(*error);
 					delete error;
 				}
@@ -937,7 +936,7 @@ Object* Analyzer::boundedOperation(const Apply& n, const Operator& t, Object* in
 		ret=Operations::reduce(type, ret, val, &correct);
 		delete val;
 		delete correct;
-	} while(KDE_ISLIKELY(it->hasNext() && !correct && !isNull(type, ret)));
+	} while(Q_LIKELY(it->hasNext() && !correct && !isNull(type, ret)));
 	
 	m_runStack.resize(top);
 	
@@ -1029,7 +1028,7 @@ Object* Analyzer::calcCallFunction(Container* function, const QVector<Object*>& 
 		profiler.push(id);
 #endif
 		Expression exp=(*func)(expargs);
-		if(KDE_ISUNLIKELY(exp.isCorrect())) {
+		if(Q_UNLIKELY(exp.isCorrect())) {
 			ret=exp.tree();
 			exp.setTree(0);
 		} else {
@@ -1192,7 +1191,7 @@ Object* applyTransformations(Object* root, const QList<Transformation>& trans)
 QList<Transformation> simplifications()
 {
 	static QList<Transformation> ret;
-	if(KDE_ISUNLIKELY(ret.isEmpty())) {
+	if(Q_UNLIKELY(ret.isEmpty())) {
 		//divide
 		ret += Transformation(Transformation::parse("f/f"), Transformation::parse("1"));
 		ret += Transformation(Transformation::parse("f/1"), Transformation::parse("f"));
@@ -1321,7 +1320,7 @@ Object* Analyzer::simpApply(Apply* c)
 				c->m_params.last()=0;
 				QString* err=0;
 				val=Operations::reduceUnary(Operator::card, val, &err);
-				if(KDE_ISUNLIKELY(err)) { delete err; }
+				if(Q_UNLIKELY(err)) { delete err; }
 				delete c;
 				root=val;
 			}

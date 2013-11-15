@@ -22,7 +22,6 @@
 
 #include <cmath>
 #include <complex>
-#include <kdemacros.h>
 #include <QCoreApplication>
 
 #include "value.h"
@@ -50,7 +49,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			oper->setValue(a*b);
 			break;
 		case Operator::divide:
-			if(KDE_ISLIKELY(b!=0.))
+			if(Q_LIKELY(b!=0.))
 				oper->setValue(a / b);
 			else
 				*correct=new QString(QCoreApplication::tr("Cannot divide by 0."));
@@ -64,7 +63,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 								 : pow(a, b));
 			break;
 		case Operator::rem:
-			if(KDE_ISLIKELY(floor(b)!=0.))
+			if(Q_LIKELY(floor(b)!=0.))
 				oper->setValue(int(remainder(a, b)));
 			else
 				*correct=new QString(QCoreApplication::tr("Cannot calculate the remainder on 0."));
@@ -74,7 +73,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			break;
 		case Operator::factorof: {
 			int fb = int(floor(b));
-			if(KDE_ISLIKELY(fb!=0))
+			if(Q_LIKELY(fb!=0))
 				oper->setValue((int(floor(a)) % fb)==0);
 			else
 				*correct=new QString(QCoreApplication::tr("Cannot calculate the factor on 0."));
@@ -130,7 +129,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 		}	break;
 		case Operator::lcm:
 			//code by michael cane aka kiko :)
-			if(KDE_ISUNLIKELY(floor(a)==0. || floor(b)==0.))
+			if(Q_UNLIKELY(floor(a)==0. || floor(b)==0.))
 				*correct=new QString(QCoreApplication::tr("Cannot calculate the lcm of 0."));
 			else {
 				int ia=floor(a), ib=floor(b);
