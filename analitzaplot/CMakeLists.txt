@@ -1,9 +1,5 @@
 project(analitzaplot)
 
-if(OPENGL_FOUND AND NOT OPENGL_GLU_FOUND)
-    message(FATAL_ERROR "GLU was not found")
-endif(OPENGL_FOUND AND NOT OPENGL_GLU_FOUND)
-
 if(WIN32)
     find_package(GLEW REQUIRED)
     include_directories(${GLEW_INCLUDE_DIRS})
@@ -74,10 +70,7 @@ target_link_libraries ( analitzaplot
 )
 
 if(HAVE_OPENGL)
-    target_link_libraries ( analitzaplot
-        ${OPENGL_gl_LIBRARY}
-        ${OPENGL_glu_LIBRARY}
-    )
+    target_link_libraries ( analitzaplot ${OPENGL_gl_LIBRARY} )
 endif(HAVE_OPENGL)
 
 if(WIN32)

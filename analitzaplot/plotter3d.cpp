@@ -27,6 +27,7 @@
 #include "private/utils/mathutils.h"
 
 #include <cmath>
+#include <GL/gl.h>
 #include <QDebug>
 
 #if defined(HAVE_IEEEFP_H)
@@ -38,6 +39,15 @@ using namespace std;
 using namespace Analitza;
 
 Q_DECLARE_METATYPE(PlotItem*);
+
+void qgluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
+{
+    const GLdouble ymax = zNear * tan(fovy * M_PI / 360.0);
+    const GLdouble ymin = -ymax;
+    const GLdouble xmin = ymin * aspect;
+    const GLdouble xmax = ymax * aspect;
+    glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
+}
 
 const GLubyte Plotter3D::XAxisArrowColor[] = {250 -1 , 1, 1};
 const GLubyte Plotter3D::YAxisArrowColor[] = {1, 255 - 1, 1};
@@ -148,10 +158,10 @@ inline void glMultMatrix(const GLdouble *m) { glMultMatrixd(m); }
 void Plotter3D::drawPlots()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(m_scale, m_viewport.width()/m_viewport.height(), 0.1, 3000);
+    qgluPerspective(m_scale, m_viewport.width()/m_viewport.height(), 0.1, 3000);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -176,7 +186,7 @@ void Plotter3D::drawPlots()
             case InvalidAxis:
                 break;
         }
-    
+
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
@@ -236,7 +246,7 @@ void Plotter3D::drawPlots()
 
         if (SpaceCurve *curv = dynamic_cast<SpaceCurve*>(item))
         {
-            
+
             const QVector<QVector3D> points = curv->points();
             glBegin(GL_LINES);
 
@@ -252,38 +262,38 @@ void Plotter3D::drawPlots()
 //             glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries.value(curv).second);
 //             glVertexPointer(3, GL_DOUBLE, 0, 0);
 //             glNormalPointer(GL_DOUBLE, sizeof(double)*3, 0);
-// 
+//
 //             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries.value(curv).first);
-// 
+//
 //             //BEGIN draw
 //             // start to render polygons
 //             glEnableClientState(GL_NORMAL_ARRAY);
 //             glEnableClientState(GL_VERTEX_ARRAY);
-// 
+//
 //             glDrawElements(GL_LINES, indexes.size(), GL_UNSIGNED_INT, 0);
-// 
+//
 //             fcolor[0] = 0; fcolor[1] = 0; fcolor[2] = 0; fcolor[3] = 1;
 //             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
 //             glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
 //             glDrawElements(GL_POINTS, indexes.size(), GL_UNSIGNED_INT, 0);
-//             
+//
 //             glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
 //             glDisableClientState(GL_NORMAL_ARRAY);  // disable normal arrays
 //             //END draw
-//             
+//
 //             // it is good idea to release VBOs with ID 0 after use.
 //             // Once bound with 0, all pointers in gl*Pointer() behave as real
 //             // pointer, so, normal vertex array operations are re-activated
 //             glBindBuffer(GL_ARRAY_BUFFER, 0);
 //             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-            
+
         }
-        else if (Surface *surf = dynamic_cast<Surface*>(item)) 
+        else if (Surface *surf = dynamic_cast<Surface*>(item))
         {
             //NOTE
             //los indices empeizan en cero solo se puede tener un solo array bufer cuando se usa vbo
             //por eso en el array buffer se ponen los datos de lops vertices y de las normales
-            
+
             glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries.value(surf).second);
             glVertexPointer(3, GL_DOUBLE, 0, 0);
             glNormalPointer(GL_DOUBLE, sizeof(double)*3, 0);
@@ -305,7 +315,7 @@ void Plotter3D::drawPlots()
             glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
             glDisableClientState(GL_NORMAL_ARRAY);  // disable normal arrays
             //END draw
-            
+
             // it is good idea to release VBOs with ID 0 after use.
             // Once bound with 0, all pointers in gl*Pointer() behave as real
             // pointer, so, normal vertex array operations are re-activated
@@ -341,7 +351,7 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
         return ;
     }
 
-    
+
     for(int i=s; i<=e; i++) {
         PlotItem *item = itemAt(i);
 
@@ -350,7 +360,7 @@ void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
 
         deleteVBO(m_itemGeometries.value(item).first);
         deleteVBO(m_itemGeometries.value(item).second);
-        
+
         if (item->isVisible()) {
             //         addFuncs(QModelIndex(), s.row(), s.row());
             //igual no usar addFuncs sino la funcion interna pues no actualiza los items si tienen data
@@ -384,7 +394,7 @@ void Plotter3D::setModel(QAbstractItemModel* f)
 void Plotter3D::setPlottingFocusPolicy(PlottingFocusPolicy fp)
 {
     m_plottingFocusPolicy = fp;
-    
+
     for (int i = 0; i < m_itemGeometries.size(); ++i)
     {
         deleteVBO(m_itemGeometries.value(itemAt(i)).first);
@@ -394,7 +404,7 @@ void Plotter3D::setPlottingFocusPolicy(PlottingFocusPolicy fp)
     updatePlots(QModelIndex(), 0, m_model->rowCount()-1);
 }
 
-void Plotter3D::scale(GLdouble factor)
+void Plotter3D::scale(qreal factor)
 {
     m_scale = qBound(1., factor*m_scale, 140.);
     renderGL();
@@ -413,7 +423,7 @@ void Plotter3D::rotate(int dx, int dy)
     GLdouble ax = -dy;
     GLdouble ay = -dx;
     double angle = sqrt(ax*ax + ay*ay)/(m_viewport.width() + 1)*360.0;
-    
+
     if (m_simpleRotation) {
         m_rot.setToIdentity();
         resetViewPrivate(m_simpleRotationVector + QVector3D(ax, 0, ay));
@@ -434,9 +444,9 @@ void Plotter3D::rotate(int dx, int dy)
             QVector3D rot(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay,
                           matrix4.row(0).y()*ax + matrix4.row(1).y()*ay,
                           matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
-            
+
             m_rot.rotate(rot.length(), rot.normalized());
-            
+
             renderGL();
         }
     }
@@ -469,14 +479,14 @@ void Plotter3D::showAxisArrowHint(CartesianAxis axis)
         return ;
 
     m_currentAxisIndicator = axis;
-    
+
     renderGL();
 }
 
 void Plotter3D::hideAxisHint()
 {
     m_currentAxisIndicator = InvalidAxis;
-    
+
     renderGL();
 }
 
@@ -518,7 +528,7 @@ void Plotter3D::addPlots(PlotItem* item)
 //         if (m_plottingFocusPolicy == All)
 //             switch (m_plotStyle)
 //             {
-//                 case Solid: 
+//                 case Solid:
 //                 case Wired: glBegin(GL_LINES); break;
 //                 case Dots: glBegin(GL_POINTS); break;
 //             }
@@ -526,16 +536,16 @@ void Plotter3D::addPlots(PlotItem* item)
 //             if (m_plottingFocusPolicy == Current)
 //             {
 //                 QModelIndex pi = m_model->index(currentPlot(), 0);
-// 
+//
 //                 PlotItem* plot = 0;
 //                 if (!pi.isValid())
 //                    plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
-// 
+//
 //                 if (plot == curve)
 //                 {
 //                     switch (m_plotStyle)
 //                     {
-//                         case Solid: 
+//                         case Solid:
 //                         case Wired: glBegin(GL_LINES); break;
 //                         case Dots: glBegin(GL_POINTS); break;
 //                     }
@@ -543,27 +553,27 @@ void Plotter3D::addPlots(PlotItem* item)
 //                 else
 //                     glBegin(GL_LINES);
 //             }
-// 
+//
 /*        const QVector<QVector3D> points = curve->points();
-// 
+//
 //         //TODO copy approach from plotter 2d and use jumps optimization
 //         for (int i = 0; i < points.size() -1 ; ++i)
 //         {
 //             glVertex3d(points[i].x(), points[i].y(), points[i].z());
 //             glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
 //         }
-//         
+//
 //         glEnd();
 //         glDisable(GL_LINE_SMOOTH);
-        
+
         QVector<double> vertices;
         QVector<double> normals;
         indexes.clear();
-        
+
         for (int i = 0; i < points.size(); ++i)
         {
             vertices << points[i].x() << points[i].y() << points[i].z();
-            
+
             if (i%2 != 0)
             {
                 QVector3D n = QVector3D::crossProduct(points[i], points[i-1]).normalized();
@@ -573,7 +583,7 @@ void Plotter3D::addPlots(PlotItem* item)
                 indexes.append(indexes.size());
             }
         }
-                
+
         int bufferSize;
 
         //vertices & normals vbo just allows 1 buffferdata of type array_buffer
@@ -591,12 +601,12 @@ void Plotter3D::addPlots(PlotItem* item)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries[item].first);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*indexes.size(), indexes.data(), GL_STATIC_DRAW);
         //glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
-        //qDebug() << "Index Array in VBO: " << bufferSize << " bytes";  */  
+        //qDebug() << "Index Array in VBO: " << bufferSize << " bytes";  */
     }
     else
     {
         Surface* surf = dynamic_cast<Surface*>(item);
-    
+
         //vertices & normals vbo just allows 1 buffferdata of type array_buffer
         glGenBuffers(1, &m_itemGeometries[item].second);
         glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries[item].second);
@@ -612,7 +622,7 @@ void Plotter3D::addPlots(PlotItem* item)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries[item].first);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*surf->indexes().size(), surf->indexes().data(), GL_STATIC_DRAW);
         //glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
-        //qDebug() << "Index Array in VBO: " << bufferSize << " bytes";        
+        //qDebug() << "Index Array in VBO: " << bufferSize << " bytes";
 
     }
 }
@@ -636,8 +646,8 @@ void Plotter3D::initAxes()
 {
     const GLubyte XAxisColor[] = {250, 0, 0};
     const GLubyte YAxisColor[] = {0, 255, 0};
-    const GLubyte ZAxisColor[] = {0, 0, 255};    
-    
+    const GLubyte ZAxisColor[] = {0, 0, 255};
+
     if (m_sceneObjects.contains(Axes))
         glDeleteLists(m_sceneObjects.value(Axes), 1);
 
@@ -699,10 +709,7 @@ void Plotter3D::initAxes()
     glEnd();
 
     glEndList();
-    
-    GLUquadricObj *sphereObj;
-    sphereObj = gluNewQuadric();
-    
+
     // XArrowAxisHint
     if (m_sceneObjects.contains(XArrowAxisHint))
         glDeleteLists(m_sceneObjects.value(XArrowAxisHint), 1);
@@ -712,7 +719,6 @@ void Plotter3D::initAxes()
 
     glColor3ub(XAxisArrowColor[0]/2, XAxisArrowColor[1]/2, XAxisArrowColor[2]/2);
     glTranslatef(408.0, 0.0, 0.0);
-    gluSphere(sphereObj, 8.0, 32, 32);
     glTranslatef(-408.0, 0.0, 0.0);
     
     glEndList();
@@ -727,7 +733,6 @@ void Plotter3D::initAxes()
 
     glColor3ub(YAxisArrowColor[0]/2, YAxisArrowColor[1]/2, YAxisArrowColor[2]/2);
     glTranslatef(0.0, 408.0, 0.0);
-    gluSphere(sphereObj, 8.0, 32, 32);
     glTranslatef(0.0, -408.0, 0.0);
 
     glEndList();
@@ -742,7 +747,6 @@ void Plotter3D::initAxes()
 
     glColor3ub(ZAxisArrowColor[0]/2, ZAxisArrowColor[1]/2, ZAxisArrowColor[2]/2);
     glTranslatef(0.0, 0.0, 408.0);
-    gluSphere(sphereObj, 8.0, 32, 32);
     glTranslatef(0.0, 0.0, -408.0);
 
     glEndList();

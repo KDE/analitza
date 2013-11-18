@@ -34,8 +34,6 @@
 #include <GL/glew.h>
 #endif
 
-#include <GL/glu.h>
-
 class QAbstractItemModel;
 class QPainter;
 class QPaintDevice;
@@ -61,11 +59,11 @@ namespace Analitza
 class ANALITZAPLOT_EXPORT Plotter3D
 {
     public:
-        static const GLubyte XAxisArrowColor[];
-        static const GLubyte YAxisArrowColor[];
-        static const GLubyte ZAxisArrowColor[];
+        static const quint8 XAxisArrowColor[];
+        static const quint8 YAxisArrowColor[];
+        static const quint8 ZAxisArrowColor[];
 
-        //TODO transparency effect when select current item 
+        //TODO transparency effect when select current item
 //         enum FocusEffect {};
 
         Plotter3D(QAbstractItemModel* model = 0);
@@ -79,7 +77,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         /** Force OpenGL to render the scene. QGLWidget should call updateGL in this method. */
         virtual void renderGL() = 0;
-        
+
         /** Force the plots from @p start to @p end to be recalculated. */
         void updatePlots(const QModelIndex & parent, int start, int end);
 
@@ -93,7 +91,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         void setPlottingFocusPolicy(PlottingFocusPolicy fp);
 
         /** Set the scale of all the scene by @p factor */
-        void scale(GLdouble factor);
+        void scale(qreal factor);
 
         // Advanced rotation features
 
@@ -105,10 +103,10 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         /** Fix the rotation arround @p direction */
         void fixRotation(const QVector3D &direction);
-        
+
         /** Query if the rotation is fixed by a specific direction. */
         bool isRotationFixed() const { return !m_rotFixed.isNull(); }
-        
+
         /** Show a little indicator (as a hint) next to the arrow of @p axis */
         void showAxisArrowHint(CartesianAxis axis);
 
@@ -123,18 +121,18 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         /**  Get information about the current rotarion approach: if return true then rotation is simple. */
         bool isUsingSimpleRotation() const { return m_simpleRotation; }
-        
+
         /** sets the view to the initial perspective */
         void resetView();
 
     protected:
         void addPlots(PlotItem* item);
-        
+
     private:
         void resetViewPrivate(const QVector3D& rot);
-        
+
         enum SceneObjectType {Axes, RefPlaneXY, XArrowAxisHint, YArrowAxisHint, ZArrowAxisHint};
-        
+
         PlotItem *itemAt(int row) const;
 
         void initAxes();
@@ -142,16 +140,16 @@ class ANALITZAPLOT_EXPORT Plotter3D
 
         QAbstractItemModel* m_model;
 
-        QMap<PlotItem*, QPair<GLuint, GLuint> > m_itemGeometries; // pair:=<indexdata_id, vertex-normals_id>
+        QMap<PlotItem*, QPair<quint32, quint32> > m_itemGeometries; // pair:=<indexdata_id, vertex-normals_id>
 
         PlotStyle m_plotStyle;
         PlottingFocusPolicy m_plottingFocusPolicy;
 
         //scene properties
-        QMap<SceneObjectType, GLuint > m_sceneObjects;
+        QMap<SceneObjectType, uint > m_sceneObjects;
         QRectF m_viewport;
-        const GLfloat m_depth;
-        GLdouble m_scale;
+        const qreal m_depth;
+        qreal m_scale;
         QMatrix4x4 m_rot;
         QVector3D m_rotFixed;
         CartesianAxis m_currentAxisIndicator;

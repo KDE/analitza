@@ -24,7 +24,7 @@ ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
 # macro_log_feature(READLINE_FOUND "GNU Readline" "Allows KAlgebra to provide a console interface." "http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html" FALSE "" "")
 # 
 find_package(OpenGL)
-set(HAVE_OPENGL ${OPENGL_FOUND})
+set(HAVE_OPENGL ${OPENGL_FOUND} AND ${OPENGL_GLU_FOUND})
 # macro_log_feature(OPENGL_FOUND "OpenGL" "Support for 3D graphs in Analitza" "http://opengl.org" FALSE "" "")
 
 # add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
