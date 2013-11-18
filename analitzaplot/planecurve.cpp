@@ -20,10 +20,7 @@
 
 #include "planecurve.h"
 
-#include <KDE/KLocalizedString>
-
 #include "private/abstractplanecurve.h"
-
 #include "private/functiongraphfactory.h"
 
 using namespace Analitza;

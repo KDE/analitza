@@ -18,8 +18,6 @@
 
 #include "spacecurve.h"
 
-#include <KDE/KLocalizedString>
-
 #include "private/abstractspacecurve.h"
 
 using namespace Analitza;
