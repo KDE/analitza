@@ -69,7 +69,6 @@ add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
 target_link_libraries ( analitzaplot
   Qt5::Core
   Qt5::Gui
-  
 
   analitza
 )

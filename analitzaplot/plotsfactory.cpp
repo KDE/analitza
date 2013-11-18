@@ -17,7 +17,6 @@
 *************************************************************************************/
 
 #include "plotsfactory.h"
-#include "kglobal.h"
 #include <analitzaplot/functiongraph.h>
 #include "private/functiongraphfactory.h"
 #include <analitza/analyzer.h>
@@ -27,7 +26,7 @@
 
 using namespace Analitza;
 
-K_GLOBAL_STATIC(PlotsFactory, factoryInstance)
+Q_GLOBAL_STATIC(PlotsFactory, factoryInstance)
 
 PlotsFactory::PlotsFactory()
 	: m_vars(new Variables)
