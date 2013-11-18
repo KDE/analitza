@@ -29,10 +29,11 @@
 #include <QPainter>
 #include <cmath>
 #include <QDebug>
+#include <qnumeric.h>
 
 #if defined(HAVE_IEEEFP_H)
 #include <ieeefp.h>
-// bool isinf(double x) { return !finite(x) && x==x; }
+// bool qIsInf(double x) { return !finite(x) && x==x; }
 #endif
 
 using namespace Analitza;
@@ -355,24 +356,24 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
         {
             QPointF act=toWidget(vect.at(j));
 
-//          qDebug() << "xxxxx" << act << ultim << isnan(act.y()) << isnan(ultim.y());
-            if(std::isinf(act.y()) && !std::isnan(act.y())) qDebug() << "trying to plot from a NaN value" << act << ultim;
-            else if(std::isinf(act.y()) && std::isnan(act.y())) qDebug() << "trying to plot to a NaN value";
+//          qDebug() << "xxxxx" << act << ultim << qIsNaN(act.y()) << qIsNaN(ultim.y());
+            if(qIsInf(act.y()) && !qIsNaN(act.y())) qDebug() << "trying to plot from a NaN value" << act << ultim;
+            else if(qIsInf(act.y()) && qIsNaN(act.y())) qDebug() << "trying to plot to a NaN value";
 
-            bool bothinf=(isinf(ultim.y()) && isinf(act.y())) || (isinf(ultim.x()) && isinf(act.x()));
-            if(!bothinf && !isnan(act.y()) && !isnan(ultim.y()) && nextjump!=int(j)) {
-                if(isinf(ultim.y())) {
+            bool bothinf=(qIsInf(ultim.y()) && qIsInf(act.y())) || (qIsInf(ultim.x()) && qIsInf(act.x()));
+            if(!bothinf && !qIsNaN(act.y()) && !qIsNaN(ultim.y()) && nextjump!=int(j)) {
+                if(qIsInf(ultim.y())) {
                     if(act.y()<0) ultim.setY(0);
                     if(act.y()>0) ultim.setY(qpd->height());
                 }
 //
                 QPointF act2(act);
-                if(isinf(act2.y())) {
+                if(qIsInf(act2.y())) {
                     if(ultim.y()<0) act2.setY(0);
                     if(ultim.y()>0) act2.setY(qpd->height());
                 }
 
-//              qDebug() << "xxxxx" << act2 << ultim << isnan(act2.y()) << isnan(ultim.y());
+//              qDebug() << "xxxxx" << act2 << ultim << qIsNaN(act2.y()) << qIsNaN(ultim.y());
 
                 p.drawLine(ultim, act2);
 
