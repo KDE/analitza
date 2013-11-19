@@ -15,12 +15,6 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-if(OPENGL_FOUND)
- include_directories (
-  ${OPENGL_INCLUDE_DIR}
- )
-endif(OPENGL_FOUND)
-
 set ( analitzaplot_SRCS
     private/utils/mathutils.cpp
     private/utils/quadtree.cpp
@@ -57,9 +51,10 @@ set ( analitzaplot_SRCS
     plotsdictionarymodel.cpp
     plotter2d.cpp
 )
-if(HAVE_OPENGL)
+if(OPENGL_FOUND)
+    include_directories ( ${OPENGL_INCLUDE_DIR} )
     list(APPEND analitzaplot_SRCS plotter3d.cpp)
-endif(HAVE_OPENGL)
+endif()
 
 add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
 target_link_libraries ( analitzaplot
@@ -71,7 +66,7 @@ target_link_libraries ( analitzaplot
 
 if(HAVE_OPENGL)
     target_link_libraries ( analitzaplot ${OPENGL_gl_LIBRARY} )
-endif(HAVE_OPENGL)
+endif()
 
 if(WIN32)
     target_link_libraries(analitzaplot ${GLEW_LIBRARIES})
