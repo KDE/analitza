@@ -45,7 +45,7 @@ set(analitza_SRCS
 add_library(analitza ${analitza_SRCS})
 target_link_libraries(analitza Qt5::Core Qt5::Xml )
 
-set_target_properties(analitza PROPERTIES VERSION ${ANALITZA_LIB_VERSION} SOVERSION ${ANALITZA_LIB_SOVERSION} )
+set_target_properties(analitza PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
 install(TARGETS analitza EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 

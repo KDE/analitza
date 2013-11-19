@@ -24,7 +24,7 @@ endif(HAVE_OPENGL)
 add_library(analitzagui SHARED ${analitzagui_SRCS})
 target_link_libraries(analitzagui Qt5::Core Qt5::Widgets ${KDE4_KDEUI_LIBS} Qt5::Svg Qt5::OpenGL analitza analitzaplot)
 
-set_target_properties(analitzagui PROPERTIES VERSION ${ANALITZA_LIB_VERSION} SOVERSION ${ANALITZA_LIB_SOVERSION} )
+set_target_properties(analitzagui PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
 install(TARGETS analitzagui EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
