@@ -31,7 +31,7 @@
 #include <QPixmap>
 #include <QModelIndex>
 
-#include "analitzaguiexport.h"
+#include "analitzawidgets_export.h"
 #include <analitzaplot/plotter2d.h>
 
 
@@ -52,7 +52,7 @@ class PlotsModel;
  * use Plotter2D as a backend.
  */
 
-class ANALITZAGUI_EXPORT PlotsView2D : public QWidget, public Plotter2D
+class ANALITZAWIDGETS_EXPORT PlotsView2D : public QWidget, public Plotter2D
 {
 Q_OBJECT
 Q_PROPERTY(bool squares READ squares WRITE setSquares)

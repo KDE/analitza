@@ -29,7 +29,7 @@
 #include <QMouseEvent>
 
 #include <QModelIndex>
-#include "analitzaguiexport.h"
+#include "analitzawidgets_export.h"
 #include <analitzaplot/plotter3d.h>
 
 class QItemSelectionModel;
@@ -50,7 +50,7 @@ class PlotItem;
  * use Plotter3D and OpenGL as a backend.
  */
 
-class ANALITZAGUI_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
+class ANALITZAWIDGETS_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
 {
     Q_OBJECT
 
