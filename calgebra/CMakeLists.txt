@@ -5,7 +5,7 @@ set(calgebra_SRCS
 )
 
 add_executable(calgebra ${calgebra_SRCS})
-target_link_libraries(calgebra Qt5::Core ${READLINE_LIBRARY} analitza)
+target_link_libraries(calgebra Qt5::Core ${READLINE_LIBRARY} Analitza)
 
 install(TARGETS calgebra ${INSTALL_TARGETS_DEFAULT_ARGS})
 

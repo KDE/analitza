@@ -1,4 +1,4 @@
-project(analitzaplot)
+project(AnalitzaPlot)
 
 if(WIN32)
     find_package(GLEW REQUIRED)
@@ -56,25 +56,25 @@ if(OPENGL_FOUND)
     list(APPEND analitzaplot_SRCS plotter3d.cpp)
 endif()
 
-add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
-target_link_libraries ( analitzaplot
+add_library( AnalitzaPlot SHARED ${analitzaplot_SRCS} )
+target_link_libraries ( AnalitzaPlot
   Qt5::Core
   Qt5::Gui
 
-  analitza
+  Analitza
 )
 
 if(HAVE_OPENGL)
-    target_link_libraries ( analitzaplot ${OPENGL_gl_LIBRARY} )
+    target_link_libraries ( AnalitzaPlot ${OPENGL_gl_LIBRARY} )
 endif()
 
 if(WIN32)
-    target_link_libraries(analitzaplot ${GLEW_LIBRARIES})
+    target_link_libraries(AnalitzaPlot ${GLEW_LIBRARIES})
 endif(WIN32)
 
-set_target_properties(analitzaplot PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
+set_target_properties(AnalitzaPlot PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
-install(TARGETS analitzaplot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS AnalitzaPlot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     analitzaplotexport.h

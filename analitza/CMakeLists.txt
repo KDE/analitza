@@ -1,4 +1,4 @@
-project(analitza)
+project(AnalitzaCore)
 
 add_subdirectory(tests)
 
@@ -42,12 +42,13 @@ set(analitza_SRCS
 	transformation.cpp
 )
 
-add_library(analitza ${analitza_SRCS})
-target_link_libraries(analitza Qt5::Core Qt5::Xml )
+add_library(Analitza ${analitza_SRCS})
+target_link_libraries(Analitza Qt5::Core Qt5::Xml)
+target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>")
 
-set_target_properties(analitza PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
+set_target_properties(Analitza PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
-install(TARGETS analitza EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS Analitza EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES 
 	abstractlexer.h

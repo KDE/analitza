@@ -1,4 +1,4 @@
-project(analitzagui)
+project(AnalitzaGui)
 
 add_subdirectory(tests)
 
@@ -17,16 +17,16 @@ set(analitzagui_SRCS
 	expressionedit.cpp
     plotsview2d.cpp
 )
+add_library(AnalitzaGui SHARED ${analitzagui_SRCS})
 if(HAVE_OPENGL)
     list(APPEND analitzagui_SRCS plotsview3d.cpp)
 endif(HAVE_OPENGL)
 
-add_library(analitzagui SHARED ${analitzagui_SRCS})
 target_link_libraries(analitzagui Qt5::Core Qt5::Widgets ${KDE4_KDEUI_LIBS} Qt5::Svg Qt5::OpenGL analitza analitzaplot)
 
-set_target_properties(analitzagui PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
+set_target_properties(AnalitzaGui PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
-install(TARGETS analitzagui EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS AnalitzaGui EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
 	algebrahighlighter.h

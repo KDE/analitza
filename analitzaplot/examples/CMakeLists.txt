@@ -1,4 +1,4 @@
-set(testLibs Qt5::Xml Qt5::Test Qt5::Widgets ${KDE4_KDEUI_LIBS} analitza analitzaplot analitzagui)
+set(testLibs Qt5::Xml Qt5::Test Qt5::Widgets Analitza AnalitzaPlot AnalitzaWidgets)
 
 add_executable(plots2ddemo plots2ddemo.cpp)
 target_link_libraries(plots2ddemo ${testLibs})

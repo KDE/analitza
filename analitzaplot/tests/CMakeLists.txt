@@ -7,5 +7,5 @@ ecm_add_tests(
     plotsmodeltest.cpp
     plotsdictionarymodeltest.cpp
 
-    LINK_LIBRARIES Qt5::Xml Qt5::Test Qt5::Gui  analitza analitzaplot analitzagui
+    LINK_LIBRARIES Qt5::Xml Qt5::Test Qt5::Gui Analitza AnalitzaPlot AnalitzaGui
 )

@@ -1,4 +1,4 @@
-project(analitza)
+project(Analitza)
 
 cmake_minimum_required(VERSION 2.8.12)
 
@@ -6,7 +6,8 @@ find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-find_package(Qt5 5.2 REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg OpenGL Test)
+set(QT_REQUIRED_VERSION 5.2)
+find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg OpenGL Test)
 find_package(KF5 5.0.0 REQUIRED MODULE COMPONENTS CMake Compiler InstallDirs)
 
 include(FeatureSummary)
@@ -66,5 +67,3 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h
   DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel
 )
-
-export(TARGETS analitza analitzaplot analitzagui FILE "${PROJECT_BINARY_DIR}/AnalitzaTargets.cmake")
