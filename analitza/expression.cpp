@@ -901,7 +901,7 @@ static void print_dom(const QDomNode& in, int ind)
 	else
 		qDebug("%s%s", qPrintable(a), qPrintable(in.toElement().tagName()));
 	
-	for(unsigned int i=0 ; i<in.childNodes().length(); i++){
+	for(int i=0 ; i<in.childNodes().length(); i++){
 		if(in.childNodes().item(i).isElement())
 			print_dom(in.childNodes().item(i), ind+1);
 	}
