@@ -27,8 +27,8 @@
 
 #include "analitzaplot/planecurve.h"
 #include "analitzaplot/surface.h"
-#include "analitzagui//plotsview2d.h"
 #include "analitzaplot/plotsmodel.h"
+#include "analitzawidgets/plotsview2d.h"
 #include <plotsfactory.h>
 #include <analitza/expression.h>
 
