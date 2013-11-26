@@ -10,7 +10,7 @@ set(analitzagui_SRCS
 	variablesmodel.cpp
 	expressionedit.cpp
 )
-add_library(AnalitzaGui SHARED ${analitzagui_SRCS})
+add_library(AnalitzaGui ${analitzagui_SRCS})
 target_link_libraries(AnalitzaGui Qt5::Core Qt5::OpenGL Analitza)
 
 set_target_properties(AnalitzaGui PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )

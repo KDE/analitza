@@ -56,7 +56,7 @@ if(OPENGL_FOUND)
     list(APPEND analitzaplot_SRCS plotter3d.cpp)
 endif()
 
-add_library( AnalitzaPlot SHARED ${analitzaplot_SRCS} )
+add_library( AnalitzaPlot ${analitzaplot_SRCS} )
 target_link_libraries ( AnalitzaPlot
   Qt5::Core
   Qt5::Gui

@@ -15,7 +15,7 @@ if(HAVE_OPENGL)
     list(APPEND analitzaplot_SRCS plotsview3d.cpp)
 endif(HAVE_OPENGL)
 
-add_library(AnalitzaWidgets SHARED ${analitzaplot_SRCS})
+add_library(AnalitzaWidgets ${analitzaplot_SRCS})
 target_link_libraries(AnalitzaWidgets PUBLIC Qt5::Widgets Qt5::OpenGL Analitza AnalitzaPlot
                                       PRIVATE Qt5::Svg
 )
