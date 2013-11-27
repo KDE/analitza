@@ -66,7 +66,7 @@ class Graph2DMobile : public QQuickPaintedItem, public Analitza::Plotter2D
 		bool m_dirty;
 		int m_currentFunction;
 		
-		QPixmap m_buffer;
+		QImage m_buffer;
 		QRectF defViewport;
 };
 

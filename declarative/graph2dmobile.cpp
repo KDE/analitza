@@ -43,7 +43,7 @@ void Graph2DMobile::paint(QPainter* p)
 		return;
 	
 	if(m_buffer.size()!=boundingRect().size()) {
-		m_buffer = QPixmap(boundingRect().size().toSize());
+		m_buffer = QImage(boundingRect().size().toSize(), QImage::Format_ARGB32);
 		setPaintedSize(boundingRect().size().toSize());
 	}
 	
@@ -55,7 +55,7 @@ void Graph2DMobile::paint(QPainter* p)
 		m_dirty=false;
 	}
 	
-	p->drawPixmap(QPoint(0,0), m_buffer);
+	p->drawImage(QPoint(0,0), m_buffer);
 }
 
 void Graph2DMobile::forceRepaint()
