@@ -53,5 +53,9 @@ Graph2DView {
 			lastX=mouse.x
 			lastY=mouse.y
 		}
+
+		onWheel: {
+			view.scale(wheel.angleDelta.y>0 ? 0.9 : 1.1, wheel.x, wheel.y)
+		}
 	}
 }
