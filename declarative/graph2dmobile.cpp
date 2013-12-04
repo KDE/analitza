@@ -87,7 +87,7 @@ void Graph2DMobile::updateFuncs(const QModelIndex& start, const QModelIndex& end
 void Graph2DMobile::scale(qreal s, int x, int y)
 {
 	QRectF userViewport = lastUserViewport();
-	if(s<1 || (userViewport.height() < -3. && userViewport.width() > 3.)) {
+	if(s>1 || (userViewport.height() < -3. && userViewport.width() > 3.)) {
 		scaleViewport(s, QPoint(x,y));
 	}
 }

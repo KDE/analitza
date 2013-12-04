@@ -6,14 +6,11 @@ Graph2DView {
 	anchors.fill: parent
 	
 	squares: true
-	
+	ticksShown: false
+
 	PinchArea {
 		anchors.fill: parent
 		property double thePreviousScale: 1
-// 			dragAxis: YAxis
-		
-// 			onPinchFinished
-// 			onPinchStarted: 
 		
 		function distance(p1, p2)
 		{
@@ -31,9 +28,9 @@ Graph2DView {
 				
 				var theCurrentScale = startDistance/currentDistance
 				
-				var doScale = theCurrentScale/thePreviousScale
+				var doScale = thePreviousScale/theCurrentScale
 				view.scale(doScale, view.width/2, view.height/2)
-// 					console.log("scale...", startDistance, theCurrentScale, doScale)
+				console.log("scale...", startDistance, theCurrentScale, doScale)
 				thePreviousScale = theCurrentScale
 			}
 		}
