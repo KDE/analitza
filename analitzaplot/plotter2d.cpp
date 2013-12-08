@@ -154,12 +154,10 @@ void Plotter2D::drawAxes(QPainter* painter, CoordinateSystem coordsys) const
     
     switch (coordsys) 
     {
-        case Polar:
-            drawPolarGrid(painter, grid);
-            break;
-        default:
-            drawCartesianGrid(painter, grid);
+        case Polar: drawPolarGrid(painter, grid); break;
+        default: drawCartesianGrid(painter, grid);
     }
+    
     drawMainAxes(painter);
     //NOTE always draw the ticks at the end: avoid the grid lines overlap the ticks text
     drawTicks(painter, grid);
@@ -223,8 +221,8 @@ void Plotter2D::drawMainAxes(QPainter* painter) const
 void Plotter2D::drawTicks(QPainter* painter, const GridInfo& gridinfo) const
 {
     const double inc = gridinfo.inc;
-    const unsigned short axisxseparation = 16;
-    const unsigned short axisyseparation = 4;
+    const unsigned short axisxseparation = 16; // distance between tick text and x-axis 
+    const unsigned short axisyseparation = 4; // distance between tick text and y-axis
     const unsigned short textposcorrection = 2;
     
     painter->setRenderHint(QPainter::Antialiasing, true);    
@@ -278,18 +276,62 @@ void Plotter2D::drawTicks(QPainter* painter, const GridInfo& gridinfo) const
 
 void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
 {
-	painter->setRenderHint(QPainter::Antialiasing, true);
-	const QPen gridPen(m_gridColor);
-	painter->setPen(gridPen);
-    if (m_squares) {
-		qreal until = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), qMax(qAbs(viewport.top()), qAbs(viewport.bottom())));
-		until *= std::sqrt(2);
-        for (qreal i = grid.inc; i < until; i +=grid.inc )
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    const QPen gridPen(m_gridColor);
+    painter->setPen(gridPen);
+    
+    const unsigned short nsubinc = grid.sub5? 5:4; // count for draw sub intervals
+    const double inc = grid.inc/nsubinc; // inc with sub intervals
+    
+    QPen subGridPen = gridPen;
+    QColor col = m_gridColor;
+    col.setHsvF(col.hsvHueF(), col.hsvSaturationF(), col.valueF()*0.4);
+    subGridPen.setColor(col);
+    
+    if (m_squares) 
+    {
+        qreal until = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), qMax(qAbs(viewport.top()), qAbs(viewport.bottom())));
+        until *= std::sqrt(2);
+        
+        int k = 1;
+        
+        for (qreal i = inc; i < until; i += inc, ++k)
         {
             QPointF p(toWidget(QPointF(i,i)));
             QPointF p2(toWidget(QPointF(-i,-i)));
             QRectF er(p.x(),p.y(), p2.x()-p.x(),p2.y()-p.y());
+            
+            if (k % nsubinc == 0)
+                painter->setPen(gridPen);
+            else // sub intervals
+                painter->setPen(subGridPen);
+            
             painter->drawEllipse(er);
+        }
+    }
+    else
+    {
+        QPointF p;
+        int i = 0;
+        
+        for (double x =grid.xini; x <grid.xend; x += inc, ++i)
+        {
+            if (x == 0.0) continue;
+            
+            p = toWidget(QPointF(x, 0.));
+
+            painter->drawLine(p, p+QPointF(0.,-3.));
+        }
+        
+        i = 0;
+        
+        for(double y = grid.yini; y < grid.yend; y += inc, ++i)
+        {
+            if (y == 0.0) continue;
+            
+            p = toWidget(QPointF(0., y));
+
+            painter->drawLine(p, p+QPointF(3.,0.));
         }
     }
 }
@@ -297,7 +339,6 @@ void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
 void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
 {
     f->setRenderHint(QPainter::Antialiasing, false);
-    QPointF p;
     const QPen gridPen(m_gridColor);
     f->setPen(gridPen);
     
@@ -309,9 +350,10 @@ void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
     col.setHsvF(col.hsvHueF(), col.hsvSaturationF(), col.valueF()*0.4);
     subGridPen.setColor(col);
     
+    QPointF p;
     int i = 0;
     
-    for(double x =grid.xini; x <grid.xend; x += inc, ++i)
+    for (double x =grid.xini; x <grid.xend; x += inc, ++i)
     {
         if (x == 0.0) continue;
         
@@ -332,7 +374,7 @@ void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
     
     i = 0;
     
-    for(double y = grid.yini; y < grid.yend; y += inc, ++i)
+    for (double y = grid.yini; y < grid.yend; y += inc, ++i)
     {
         if (y == 0.0) continue;
         
