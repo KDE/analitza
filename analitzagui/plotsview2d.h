@@ -57,13 +57,6 @@ class ANALITZAGUI_EXPORT PlotsView2D : public QWidget, public Plotter2D
 Q_OBJECT
 Q_PROPERTY(bool squares READ squares WRITE setSquares)
 public:
-    /** The graph mode will especify the selection mode we are using at the moment */
-    enum GraphMode {
-        None=0,     /**< Normal behaviour */
-        Pan,        /**< Panning, translates the viewport. */
-        Selection   /**< There is a rectangle delimiting a region, for zooming. */
-    };
-    
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
@@ -90,6 +83,7 @@ public slots:
     /** Sets the viewport to a default viewport. */
     void resetViewport() { setViewport(defViewport); }
     
+    //TODO setzoomanimation
     /** Zooms in to the Viewport center */
     void zoomIn();
     
@@ -114,9 +108,10 @@ public slots:
     void setXAxisLabel(const QString &label) { Plotter2D::setXAxisLabel(label); }
     void setYAxisLabel(const QString &label) { Plotter2D::setYAxisLabel(label); }
     void updateGridColor(const QColor &color) { Plotter2D::updateGridColor(color); }
-    void updateTickScale(QString s, qreal v, int n, int d) { Plotter2D::updateTickScale(s,v,n,d); }
+    void setTicksFormat(TicksFormat tsfmt) { Plotter2D::setTicksFormat(tsfmt); }
     void setTicksShown(QFlags<Qt::Orientation> o) { Plotter2D::setTicksShown(o); }
     void setAxesShown(QFlags<Qt::Orientation> o) { Plotter2D::setAxesShown(o); }
+    //TODO  set bgcolor, setbgcolormode auto means that colo is chosses based in lumninosisty onf current bgprofiles
     
 private slots:
     void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
@@ -130,6 +125,15 @@ signals:
     void status(const QString &msg);
     
     void viewportChanged(const QRectF&);
+    
+private:
+    //TODO setviewmodemosusemovemode, pan
+    /** The graph mode will especify the selection mode we are using at the moment */
+    enum GraphMode {
+        None=0,     /**< Normal behaviour */
+        Pan,        /**< Panning, translates the viewport. */
+        Selection   /**< There is a rectangle delimiting a region, for zooming. */
+    };
     
 private:
     virtual void viewportChanged();

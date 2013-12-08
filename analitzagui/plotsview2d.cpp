@@ -57,8 +57,9 @@ PlotsView2D::PlotsView2D(QWidget *parent)
     
     this->setMouseTracking(!m_readonly);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->setMinimumSize(128, 128);
     
-    defViewport = QRectF(QPointF(-12., 10.), QSizeF(24., -20.));
+    defViewport = QRectF(QPointF(-10.0, 10.0), QSizeF(20.0, -20.0));
     resetViewport();
     
     this->setAutoFillBackground(false);

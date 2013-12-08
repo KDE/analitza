@@ -58,6 +58,15 @@ enum PlottingFocusPolicy
     All
 };
 
+enum TicksFormat // used in plotters 
+{
+    Number = 1, 
+    SymbolSqrt2, 
+    SymbolSqrt3, 
+    SymbolE, 
+    SymbolPi
+};
+
 }
 
 #endif

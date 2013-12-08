@@ -1,6 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2011 by Aleix Pol <aleixpol@kde.org>                               *
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2012-2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <cmath>
 #include <QDebug>
+#include <QStack>
 #include <KLocalizedString>
 #include <KColorUtils>
 
@@ -59,40 +60,106 @@ namespace Analitza {
 Plotter2D::Plotter2D(const QSizeF& size)
     : m_squares(true), m_keepRatio(true), m_dirty(true), m_size(size), m_model(0)
     , m_tickScaleSymbolValue(1)
-    , m_tickScaleNumerator(1)
-    , m_tickScaleDenominator(1)
     , m_ticksShown(Qt::Vertical|Qt::Horizontal)
     , m_axesShown(Qt::Vertical|Qt::Horizontal)
     , m_axisXLabel("x")
     , m_axisYLabel("y")
     , m_gridColor(QColor(230,230,230))
+    , m_ticksFormat(Number)
 {}
 
 Plotter2D::~Plotter2D()
 {}
 
-void Plotter2D::drawAxes(QPainter* painter, CoordinateSystem a) const
+const GridInfo Plotter2D::getGridInfo() const
 {
-	GridInfo grid = drawTicks(painter);
-    switch(a) {
-    case Polar:
-        drawPolarGrid(painter, grid);
-        break;
-    default:
-        drawCartesianGrid(painter, grid);
+    GridInfo ret;
+    
+    const double currvpsize = viewport.width();
+    static double oldvpsize = currvpsize;
+    static double inc = m_tickScaleSymbolValue;
+    static double zoomoutacum = 0.0;
+    
+    float zoomfactor = 2;
+    
+    if (currvpsize < 2.0)
+        zoomfactor = 1;
+    
+    static int zoomcount = -1;
+    
+    if (oldvpsize < currvpsize) // zoom-out
+    {
+        zoomoutacum += currvpsize - oldvpsize;
+        
+        if (zoomfactor*inc <= zoomoutacum)
+        {
+            zoomoutacum = 0.0;
+            
+            if (zoomcount % 3 == 0)
+                inc *= 2.5; // 5*h/2
+            else
+                inc *= 2; //2*h
+            
+            ++zoomcount;
+            
+//             qDebug() << "OUT" << zoomcount << inc;
+        }
+    }
+    else // zoom-in
+    {
+        if (oldvpsize > currvpsize) // zoom-out
+        {
+            if (currvpsize <= 2*inc*zoomfactor)
+            {
+                --zoomcount;
+                
+                if (zoomcount % 3 == 0)
+                    inc *= 0.4; // 2*h/5
+                else
+                    inc *= 0.5; // h/2
+                    
+//                 qDebug() << "IN" << zoomcount << inc;
+            }
+        }
+    }
+    
+    oldvpsize = currvpsize;
+
+    ret.inc = inc;
+    ret.xini=floor((viewport.left())/ret.inc)*ret.inc;
+    ret.yini=floor((viewport.bottom())/ret.inc)*ret.inc;
+    ret.xend=ceil((viewport.right())/ret.inc)*ret.inc;
+    ret.yend=ceil((viewport.top())/ret.inc)*ret.inc;
+    
+    return ret; 
+}
+
+void Plotter2D::drawAxes(QPainter* painter, CoordinateSystem coordsys) const
+{
+    GridInfo grid = getGridInfo();
+    
+    switch (coordsys) 
+    {
+        case Polar:
+            drawPolarGrid(painter, grid);
+            break;
+        default:
+            drawCartesianGrid(painter, grid);
     }
     drawMainAxes(painter);
+    //NOTE always draw the ticks at the end: avoid the grid lines overlap the ticks text
+    drawTicks(painter, grid);
 }
 
 void Plotter2D::drawMainAxes(QPainter* painter) const
 {
-	const QFontMetrics fm(painter->font());
+    const QFontMetrics fm(painter->font());
     const QPen axesPen(m_axeColor, 1, Qt::SolidLine);
     const QPointF center = toWidget(QPointF(0.,0.));
-	
+    
     painter->setPen(axesPen);
-	painter->setBrush(axesPen.color());
-
+    painter->setBrush(axesPen.color());
+    
     int startAngleX = 150*16;
     int startAngleY = 240*16;
     int spanAngle = 60*16;
@@ -104,14 +171,16 @@ void Plotter2D::drawMainAxes(QPainter* painter) const
     QRectF rectX(Xright+dpx, Xright-dpx);
     QRectF rectY(Ytop+dpy, Ytop-dpy);
 
-    if (m_axesShown&Qt::Horizontal) {
+    if (m_axesShown&Qt::Horizontal)
+    {
         painter->drawLine(QPointF(0., center.y()), Xright);
         
         painter->setRenderHint(QPainter::Antialiasing, true);
         painter->drawPie(rectX, startAngleX, spanAngle);
     }
 
-    if (m_axesShown&Qt::Vertical) {
+    if (m_axesShown&Qt::Vertical)
+    {
         painter->drawLine(Ytop, QPointF(center.x(), this->height()));
         
         painter->setRenderHint(QPainter::Antialiasing, true);
@@ -137,111 +206,60 @@ void Plotter2D::drawMainAxes(QPainter* painter) const
     //EO write coords
 }
 
-GridInfo Plotter2D::drawTicks(QPainter* painter) const
+void Plotter2D::drawTicks(QPainter* painter, const GridInfo& gridinfo) const
 {
-    painter->setRenderHint(QPainter::Antialiasing, true);
-
-    const QPen gridPen(m_gridColor);
-	const QPen tickPen(QPalette().text().color());
-
-    const QString symbol =m_tickScaleSymbol;
-	const bool symbolFormat = !symbol.isEmpty();
-    const int numerator = m_tickScaleNumerator;
-    const int denominator =m_tickScaleDenominator;
-
-	GridInfo ret;
-    // prcesss
-    qreal coef = qreal(numerator) / qreal(denominator);
-    ret.inc = symbolFormat? coef*m_tickScaleSymbolValue : coef;
-
-    QString numStr = QString::number(numerator);
-    QString denStr = QString::number(denominator);
-
-    //END params of algotihm
-
-    int decimalPrecision = denominator == 1 && !symbolFormat? 0 : denominator == 2? 1 : 2;
-
-    //QString tickLabel = symbol;
-    //QString tickCoef("");
-
-    int correctScale = 1;
-	double decs = std::floor(std::log10(qMax(-viewport.height(), viewport.width())));
-	if(decs>1)
-		correctScale = pow(10, decs)/2;
-
-    ret.inc *= correctScale;
-    ret.xini=floor((viewport.left())/ret.inc)*ret.inc;
-    ret.yini=floor((viewport.bottom())/ret.inc)*ret.inc;
-    ret.xend=ceil((viewport.right())/ret.inc)*ret.inc;
-    ret.yend=ceil((viewport.top())/ret.inc)*ret.inc;
-
-    int i = 1;
-
+    const double inc = gridinfo.inc;
+    const unsigned short axisxseparation = 16;
+    const unsigned short axisyseparation = 4;
+    const unsigned short textposcorrection = 2;
+    
+    painter->setRenderHint(QPainter::Antialiasing, true);    
+    painter->setPen(QPen(QPalette().text().color()));
+    
+    QString s;
     QPointF p;
-
-	QFontMetrics fm(painter->font());
+    
     if (m_ticksShown & Qt::Horizontal)
     {
-        for(double x =ret.xini; x <ret.xend; x +=ret.inc, i+=1)
+        for(double x = inc; x < viewport.right(); x += inc)
         {
-			if(x==0)
-				continue;
             p = toWidget(QPointF(x, 0.));
-
-            painter->setPen(tickPen);
-
-            if (!symbolFormat || !symbolFormat) {
-                QString s = QString::number(x, 'f', decimalPrecision);
-                painter->drawText(p.x() + fm.width(s)/2, p.y()+20, s);
-            } else {
-                int iCorrected = i*correctScale;
-                int sign = x <= 0. ? -1 : 1;
-                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-                painter->drawText(p.x(), p.y()+20, QString::number(sign*val*numerator)+symbol);
-
-                if (denominator != 1 && (iCorrected % denominator != 0))
-                {
-                    painter->drawLine(p.x()-5, p.y()+22, p.x()+fm.width(numStr+symbol), p.y()+22);
-                    painter->drawText(p.x()-10+fm.width(symbol), p.y()+20+fm.height(), denStr);
-                }
-            }
+            s = QString::number(x);
+            int swidth = painter->fontMetrics().width(s);
+            
+            painter->drawText(p.x()-swidth/2+textposcorrection, p.y()+axisxseparation, s);
+        }
+        
+        for(double x = inc; x < -viewport.left(); x += inc)
+        {
+            p = toWidget(QPointF(-x, 0.));
+            s = QString::number(-x);
+            int swidth = painter->fontMetrics().width(s);
+            
+            painter->drawText(p.x()-swidth/2, p.y()+axisxseparation, s);
         }
     }
-
+    
     if (m_ticksShown & Qt::Vertical)
     {
-        i = 1;
-
-        for(double y = ret.yini; y < ret.yend; y +=ret.inc, i+=1)
+        for(double y = inc; y < viewport.top(); y += inc)
         {
-			if(y==0)
-				continue;
             p = toWidget(QPointF(0., y));
-            painter->setPen(tickPen);
+            s = QString::number(y);
+            int swidth = painter->fontMetrics().width(s);
+            
+            painter->drawText(p.x()-swidth-axisyseparation, p.y()+painter->fontMetrics().height()/2-textposcorrection, s);
+        }
 
-            if (!symbolFormat || !symbolFormat) {
-                QString s = QString::number(y, 'f', decimalPrecision);
-                painter->drawText(-20+p.x() - fm.width(s)/2, p.y()+20, s);
-            } else {
-                int iCorrected = i*correctScale;
-                int sign = y <= 0. ? -1 : 1;
-                int val = iCorrected % denominator == 0? iCorrected/denominator : iCorrected;
-
-                QString text = QString::number(sign*val*numerator)+symbol;
-                qreal correctxpos = fm.width(text)+6;
-                painter->drawText(-correctxpos + p.x(), p.y()+5, text);
-
-                if (denominator != 1 && (iCorrected % denominator != 0))
-                {
-                    painter->drawLine(-correctxpos + p.x()-5, p.y()+5,-correctxpos + p.x()+fm.width(numStr+symbol), p.y()+5);
-                    painter->drawText(-correctxpos + p.x()-10+fm.width(symbol), p.y()+5+fm.height(), denStr);
-                }
-            }
-
+        for(double y = inc; y < -viewport.bottom(); y += inc)
+        {
+            p = toWidget(QPointF(0., -y));
+            s = QString::number(-y);
+            int swidth = painter->fontMetrics().width(s);
+            
+            painter->drawText(p.x()-swidth-axisyseparation, p.y()+painter->fontMetrics().height()/2, s);
         }
     }
-    return ret;
 }
 
 void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
@@ -266,26 +284,55 @@ void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
 {
     f->setRenderHint(QPainter::Antialiasing, false);
     QPointF p;
-	const QPen gridPen(m_gridColor);
-	int i = 1;
-	f->setPen(gridPen);
-	
-    for(double x =grid.xini; x <grid.xend; x +=grid.inc, i+=1)
+    const QPen gridPen(m_gridColor);
+    f->setPen(gridPen);
+    const double inc = grid.inc/4; // 4 sub intervals
+    int i = 0;
+    
+    const QPen oldpen = f->pen();
+    QPen newpen = oldpen;
+    QColor col = m_gridColor;
+    col.setHsvF(col.hsvHueF(), col.hsvSaturationF(), col.valueF()*0.4);
+    newpen.setColor(col);
+    
+    for(double x =grid.xini; x <grid.xend; x += inc, ++i)
     {
+        if (x == 0.0) continue;
+        
         p = toWidget(QPointF(x, 0.));
 
         if(m_squares)
+        {
+            if (i % 4 == 0)
+                f->setPen(oldpen);
+            else // sub intervals
+                f->setPen(newpen);
+            
             f->drawLine(QPointF(p.x(), this->height()), QPointF(p.x(), 0.));
+        }
         else
             f->drawLine(p, p+QPointF(0.,-3.));
     }
-
-    for(double y = grid.yini; y < grid.yend; y +=grid.inc, i+=1)
+    
+    f->setPen(oldpen);
+    
+    i = 0;
+    
+    for(double y = grid.yini; y < grid.yend; y += inc, ++i)
     {
+        if (y == 0.0) continue;
+        
         p = toWidget(QPointF(0., y));
 
         if(m_squares)
+        {
+            if (i % 4 == 0)
+                f->setPen(oldpen);
+            else // sub intervals
+                f->setPen(newpen);
+            
             f->drawLine(QPointF(0., p.y()), QPointF(width(), p.y()));
+        }
         else
             f->drawLine(p, p+QPointF(3.,0.));
     }
@@ -458,7 +505,7 @@ void Plotter2D::updateScale(bool repaint)
     viewport=userViewport;
     rang_x= width()/viewport.width();
     rang_y= height()/viewport.height();
-
+    
     if(m_keepRatio && rang_x!=rang_y)
     {
         rang_y=rang_x=qMin(std::fabs(rang_x), std::fabs(rang_y));
@@ -466,10 +513,10 @@ void Plotter2D::updateScale(bool repaint)
         if(rang_x<0.) rang_x=-rang_x;
 
         double newW=width()/rang_x, newH=height()/rang_x;
-
+        
         double mx=(userViewport.width()-newW)/2.;
         double my=(userViewport.height()-newH)/2.;
-
+        
         viewport.setLeft(userViewport.left()+mx);
         viewport.setTop(userViewport.bottom()-my);
         viewport.setWidth(newW);
@@ -545,6 +592,7 @@ void Plotter2D::moveViewport(const QPoint& delta)
 {
     QPointF rel = toViewport(delta);
     QRectF viewport = lastViewport();
+    
     viewport.moveLeft(viewport.left() - rel.x());
     viewport.moveTop(viewport.top() - rel.y());
     setViewport(viewport);
@@ -554,8 +602,8 @@ void Plotter2D::scaleViewport(qreal s, const QPoint& center)
 {
     QPointF p = fromWidget(center);
     QSizeF ns = viewport.size()*s;
-
     QRectF nv(viewport.topLeft(), ns);
+    
     setViewport(nv, false);
 
     QPointF p2 = p-fromWidget(center);
@@ -597,13 +645,9 @@ void Plotter2D::setYAxisLabel(const QString &label)
 
 }
 
-void Plotter2D::updateTickScale(const QString& tickScaleSymbol, qreal tickScaleSymbolValue,
-        int tickScaleNumerator, int tickScaleDenominator)
+void Plotter2D::setTicksFormat(TicksFormat tsfmt)
 {
-    m_tickScaleSymbol = tickScaleSymbol;
-    m_tickScaleSymbolValue = tickScaleSymbolValue;
-    m_tickScaleNumerator = tickScaleNumerator;
-    m_tickScaleDenominator = tickScaleDenominator;
+    m_ticksFormat = tsfmt;
 
     forceRepaint();
 }

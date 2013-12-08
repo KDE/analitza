@@ -90,7 +90,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void setYAxisLabel(const QString &label);
         // tick symbols
         void updateGridColor(const QColor &color) { m_gridColor = color;  forceRepaint(); }
-        void updateTickScale(const QString& m_tickScaleSymbol, qreal m_tickScaleSymbolValue, int m_tickScaleNumerator, int m_tickScaleDenominator);
+        void setTicksFormat(TicksFormat tsfmt);
         void setTicksShown(Qt::Orientations o) { m_ticksShown = o; forceRepaint(); }
         void setAxesShown(Qt::Orientations o) { m_axesShown = o; forceRepaint(); }
         
@@ -109,17 +109,18 @@ class ANALITZAPLOT_EXPORT Plotter2D
         
         QLineF toWidget(const QLineF &) const;
         void setPaintedSize(const QSize& size);
-        void scaleViewport(qreal s, const QPoint& center);
+        void scaleViewport(qreal scale, const QPoint& center);
 
     private:
         void drawAxes(QPainter* painter, CoordinateSystem a) const;
         void drawPolarGrid(QPainter* painter, const GridInfo& inc) const;
         void drawCartesianGrid(QPainter *f, const GridInfo& inc) const;
-		void drawMainAxes(QPainter* painter) const;
-		GridInfo drawTicks(QPainter* painter) const;
+        void drawMainAxes(QPainter* painter) const;
+        void drawTicks(QPainter* painter, const GridInfo& inc) const;
         PlotItem *itemAt(int row) const;
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
+        const GridInfo getGridInfo() const; // calculate correct grid params
         
         double rang_x, rang_y;
         bool m_squares;
@@ -135,14 +136,13 @@ class ANALITZAPLOT_EXPORT Plotter2D
         
         QString m_tickScaleSymbol;
         qreal m_tickScaleSymbolValue;
-        int m_tickScaleNumerator;
-        int m_tickScaleDenominator;
         Qt::Orientations m_ticksShown;
         Qt::Orientations m_axesShown;
         QString m_axisXLabel;
         QString m_axisYLabel;
         
         QColor m_gridColor;
+        TicksFormat m_ticksFormat;
 };
 
 }
