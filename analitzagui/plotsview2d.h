@@ -1,6 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2008 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2012-2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -55,7 +55,19 @@ class PlotsModel;
 class ANALITZAGUI_EXPORT PlotsView2D : public QWidget, public Plotter2D
 {
 Q_OBJECT
-Q_PROPERTY(bool squares READ squares WRITE setSquares)
+
+/** The default value of showGrid property is true. **/
+Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
+
+/** The default grid color is white. **/
+Q_PROPERTY(QColor gridColor READ gridColor WRITE setGridColor)
+
+/** The default background color is QPalette::Base of QPalette::Active. **/
+Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
+
+/** The default value of autoGridStyle property is true. **/
+Q_PROPERTY(bool autoGridStyle READ autoGridStyle WRITE setAutoGridStyle)
+
 public:
     enum Format { PNG, SVG };
     
@@ -107,7 +119,7 @@ public slots:
     //exposed from plotter2d as slots...
     void setXAxisLabel(const QString &label) { Plotter2D::setXAxisLabel(label); }
     void setYAxisLabel(const QString &label) { Plotter2D::setYAxisLabel(label); }
-    void updateGridColor(const QColor &color) { Plotter2D::updateGridColor(color); }
+    void setGridColor(const QColor &color) { Plotter2D::setGridColor(color); }
     void setTicksFormat(TicksFormat tsfmt) { Plotter2D::setTicksFormat(tsfmt); }
     void setTicksShown(QFlags<Qt::Orientation> o) { Plotter2D::setTicksShown(o); }
     void setAxesShown(QFlags<Qt::Orientation> o) { Plotter2D::setAxesShown(o); }

@@ -60,18 +60,31 @@ namespace Analitza {
 }
 
 Plotter2D::Plotter2D(const QSizeF& size)
-    : m_squares(true), m_keepRatio(true), m_dirty(true), m_size(size), m_model(0)
+    : m_showGrid(true)
+    , m_gridColor(Qt::white)
+    , m_backgroundColor(Qt::black)
+    , m_autoGridStyle(true)
+    , m_gridStyleHint(Cartesian)
+    , m_keepRatio(true), m_dirty(true), m_size(size), m_model(0)
     , m_tickScaleSymbolValue(1)
     , m_ticksShown(Qt::Vertical|Qt::Horizontal)
     , m_axesShown(Qt::Vertical|Qt::Horizontal)
     , m_axisXLabel("x")
     , m_axisYLabel("y")
-    , m_gridColor(QColor(230,230,230))
     , m_ticksFormat(Number)
 {}
 
 Plotter2D::~Plotter2D()
 {}
+
+void Plotter2D::setGridStyleHint(CoordinateSystem suggestedgs)
+{
+    Q_ASSERT(suggestedgs == Analitza::Cartesian || suggestedgs == Analitza::Polar);
+    
+    m_gridStyleHint = suggestedgs;
+    
+    forceRepaint();
+}
 
 const GridInfo Plotter2D::getGridInfo() const
 {
@@ -106,13 +119,10 @@ const GridInfo Plotter2D::getGridInfo() const
                 inc *= 2; //2*h
             
             ++zoomcount;
-            
-//             qDebug() << "OUT" << zoomcount << inc;
         }
     }
-    else // zoom-in
-    {
-        if (oldvpsize > currvpsize) // zoom-out
+    else
+        if (oldvpsize > currvpsize) // zoom-in
         {
             if (currvpsize < 2.0)
                 zoomfactor = 1;
@@ -130,11 +140,8 @@ const GridInfo Plotter2D::getGridInfo() const
                     inc *= 0.4; // 2*h/5
                 else
                     inc *= 0.5; // h/2
-                    
-//                 qDebug() << "IN" << zoomcount << inc;
             }
         }
-    }
     
     oldvpsize = currvpsize;
 
@@ -288,7 +295,7 @@ void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
     col.setHsvF(col.hsvHueF(), col.hsvSaturationF(), col.valueF()*0.4);
     subGridPen.setColor(col);
     
-    if (m_squares) 
+    if (m_showGrid) 
     {
         qreal until = qMax(qMax(qAbs(viewport.left()), qAbs(viewport.right())), qMax(qAbs(viewport.top()), qAbs(viewport.bottom())));
         until *= std::sqrt(2);
@@ -359,7 +366,7 @@ void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
         
         p = toWidget(QPointF(x, 0.));
 
-        if(m_squares)
+        if(m_showGrid)
         {
             if (i % nsubinc == 0)
                 f->setPen(gridPen);
@@ -380,7 +387,7 @@ void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
         
         p = toWidget(QPointF(0., y));
 
-        if(m_squares)
+        if(m_showGrid)
         {
             if (i % nsubinc == 0)
                 f->setPen(gridPen);
@@ -414,21 +421,26 @@ PlotItem* Plotter2D::itemAt(int row) const
 void Plotter2D::drawFunctions(QPaintDevice *qpd)
 {
     QPen pfunc(QColor(0,150,0), 2);
-
+    
     QPainter p;
     p.begin(qpd);
     p.setPen(pfunc);
-
+    
     int current=currentFunction();
     PlotItem* plot = itemAt(current);
+    
     CoordinateSystem t = plot ? plot->coordinateSystem() : Cartesian;
+    
+    if (!m_autoGridStyle)
+        t = m_gridStyleHint;
     
     drawAxes(&p, t);
 
     if (!m_model || m_dirty)
         return;
-
+    
     p.setRenderHint(QPainter::Antialiasing, true);
+    
     for (int k = 0; k < m_model->rowCount(); ++k )
     {
         PlaneCurve* curve = dynamic_cast<PlaneCurve *>(itemAt(k));

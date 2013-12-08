@@ -1,6 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2008 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2012-2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -62,12 +62,14 @@ PlotsView2D::PlotsView2D(QWidget *parent)
     defViewport = QRectF(QPointF(-10.0, 10.0), QSizeF(20.0, -20.0));
     resetViewport();
     
+    setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
+    
     this->setAutoFillBackground(false);
 }
 
 void PlotsView2D::showEvent(QShowEvent* ev)
 {
-	QWidget::showEvent(ev);
+    QWidget::showEvent(ev);
 }
 
 PlotsView2D::~PlotsView2D() {}
@@ -76,7 +78,8 @@ void PlotsView2D::drawFunctions(QPaintDevice* pd)
 {
     if(buffer.isNull() || buffer.size()!=size())
         buffer = QPixmap(size());
-    buffer.fill(palette().color(QPalette::Active, QPalette::Base));
+    
+    buffer.fill(backgroundColor());
     
     Plotter2D::drawFunctions(pd);
     
