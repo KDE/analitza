@@ -58,10 +58,10 @@ Q_OBJECT
 
 Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
 
-/** The default grid color is QPalette::Window of QPalette::Active. **/
+/** The default grid color is a soft mix between KColorScheme::NormalBackground and KColorScheme::NormalText (foreground) of QPalette::Active. **/
 Q_PROPERTY(QColor gridColor READ gridColor WRITE setGridColor)
 
-/** The default background color is QPalette::Base of QPalette::Active. **/
+/** The default background color is KColorScheme::NormalBackground of QPalette::Active. **/
 Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
 
 Q_PROPERTY(bool autoGridStyle READ autoGridStyle WRITE setAutoGridStyle)
@@ -118,7 +118,7 @@ public slots:
     void setXAxisLabel(const QString &label) { Plotter2D::setXAxisLabel(label); }
     void setYAxisLabel(const QString &label) { Plotter2D::setYAxisLabel(label); }
     void setGridColor(const QColor &color) { Plotter2D::setGridColor(color); }
-    void setTicksFormat(TicksFormat tsfmt) { Plotter2D::setTicksFormat(tsfmt); }
+    void setTicksFormat(Analitza::TicksFormat tsfmt) { Plotter2D::setTicksFormat(tsfmt); }
     void setTicksShown(QFlags<Qt::Orientation> o) { Plotter2D::setTicksShown(o); }
     void setAxesShown(QFlags<Qt::Orientation> o) { Plotter2D::setAxesShown(o); }
     //TODO  set bgcolor, setbgcolormode auto means that colo is chosses based in lumninosisty onf current bgprofiles

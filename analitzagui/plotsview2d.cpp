@@ -39,6 +39,7 @@
 #include <analitzaplot/plotsmodel.h>
 #include <cmath>
 #include <KColorUtils>
+#include <KColorScheme>
 
 using namespace Analitza;
 
@@ -59,11 +60,20 @@ PlotsView2D::PlotsView2D(QWidget *parent)
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->setMinimumSize(128, 128);
     
+    //BEGIN setup plotter2d grid
     defViewport = QRectF(QPointF(-10.0, 10.0), QSizeF(20.0, -20.0));
     resetViewport();
     
-    setGridColor(palette().color(QPalette::Active, QPalette::Window));
-    setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
+    //colors
+    KColorScheme colorScheme(QPalette::Active);
+    
+    QColor bgcolor = colorScheme.background(KColorScheme::NormalBackground).color();
+    setBackgroundColor(bgcolor);
+    
+    QColor textcolor = colorScheme.foreground(KColorScheme::NormalText).color();
+    QColor gridcolor = KColorUtils::mix(bgcolor, textcolor, 0.1);
+    setGridColor(gridcolor);
+    //END
     
     this->setAutoFillBackground(false);
 }

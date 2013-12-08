@@ -91,12 +91,15 @@ const QColor Plotter2D::computeSubGridColor() const
     if (m_backgroundColor.value() < 200)
     {
         if (m_gridColor.value() < 40)
-            col.setHsv(col.hsvHue(), col.hsvSaturation(), 80);
+            col.setHsv(col.hsvHue(), col.hsvSaturation(), m_gridColor.value()-15);
         else
-            col.setHsv(col.hsvHue(), col.hsvSaturation(), 25);
+            col.setHsv(col.hsvHue(), col.hsvSaturation(), m_gridColor.value()>=255?120:m_gridColor.value()-10);
     }
-    else // e.g: background color white and grid color gray
-        col.setHsv(col.hsvHue(), col.hsvSaturation(), 245);
+    else // e.g: background color white and grid color black
+        if (m_backgroundColor.value() < 245)
+            col.setHsv(col.hsvHue(), col.hsvSaturation(), m_backgroundColor.value()-(m_backgroundColor.value()-200)/3);
+        else
+            col.setHsv(col.hsvHue(), col.hsvSaturation(), m_backgroundColor.value()-(m_backgroundColor.value()-200)/8);            
     
     return col;
 }
@@ -159,8 +162,23 @@ const GridInfo Plotter2D::getGridInfo() const
         }
     
     oldvpsize = currvpsize;
-
-    ret.inc = inc;
+    
+//     static const double sqrt3 = std::sqrt(3.0);
+    
+    ret.inc = inc; 
+    
+//     switch (m_ticksFormat)
+//     {
+//         case Analitza::Number: ret.inc = inc; break;
+//         case Analitza::SymbolSqrt2: ret.inc = M_SQRT2*inc; break;
+//         case Analitza::SymbolSqrt3: ret.inc = sqrt3*inc; break;
+//         case Analitza::SymbolE: ret.inc = M_E*inc; break;
+//         case Analitza::SymbolPi: ret.inc = M_PI*inc; break;
+//     }
+//     ya luego?
+    
+//     qDebug() << ret.inc << m_ticksFormat;
+    
     ret.sub5 = sub5;
     ret.xini=floor((viewport.left())/ret.inc)*ret.inc;
     ret.yini=floor((viewport.bottom())/ret.inc)*ret.inc;
