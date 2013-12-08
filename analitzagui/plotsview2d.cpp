@@ -62,6 +62,7 @@ PlotsView2D::PlotsView2D(QWidget *parent)
     defViewport = QRectF(QPointF(-10.0, 10.0), QSizeF(20.0, -20.0));
     resetViewport();
     
+    setGridColor(palette().color(QPalette::Active, QPalette::Window));
     setBackgroundColor(palette().color(QPalette::Active, QPalette::Base));
     
     this->setAutoFillBackground(false);

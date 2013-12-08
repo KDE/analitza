@@ -56,16 +56,14 @@ class ANALITZAGUI_EXPORT PlotsView2D : public QWidget, public Plotter2D
 {
 Q_OBJECT
 
-/** The default value of showGrid property is true. **/
 Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
 
-/** The default grid color is white. **/
+/** The default grid color is QPalette::Window of QPalette::Active. **/
 Q_PROPERTY(QColor gridColor READ gridColor WRITE setGridColor)
 
 /** The default background color is QPalette::Base of QPalette::Active. **/
 Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
 
-/** The default value of autoGridStyle property is true. **/
 Q_PROPERTY(bool autoGridStyle READ autoGridStyle WRITE setAutoGridStyle)
 
 public:
@@ -86,7 +84,7 @@ public:
     
     void setSelectionModel(QItemSelectionModel* selection);
 
-	virtual void showEvent(QShowEvent* ev);
+    virtual void showEvent(QShowEvent* ev);
 
 public slots:
     /** Marks the image as dirty and repaints everything. */

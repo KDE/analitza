@@ -48,8 +48,8 @@ class PlotItem;
  *
  * This class uses QPainter as backend for drawing plots.
  * The default value of showGrid is true.
- * The default grid color is white.
- * The default background color black.
+ * The default grid color is Qt::lightGray.
+ * The default background color is Qt::white.
  * The default value of autoGridStyle is true.
  */
 
@@ -141,6 +141,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
         const GridInfo getGridInfo() const; // calculate correct grid params
+        const QColor computeSubGridColor() const;
         
         bool m_showGrid;
         QColor m_gridColor;

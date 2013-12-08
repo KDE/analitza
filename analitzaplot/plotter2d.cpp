@@ -31,8 +31,6 @@
 #include <cmath>
 #include <QDebug>
 #include <QStack>
-#include <KLocalizedString>
-#include <KColorUtils>
 
 #if defined(HAVE_IEEEFP_H)
 #include <ieeefp.h>
@@ -61,8 +59,8 @@ namespace Analitza {
 
 Plotter2D::Plotter2D(const QSizeF& size)
     : m_showGrid(true)
-    , m_gridColor(Qt::white)
-    , m_backgroundColor(Qt::black)
+    , m_gridColor(Qt::lightGray)
+    , m_backgroundColor(Qt::white)
     , m_autoGridStyle(true)
     , m_gridStyleHint(Cartesian)
     , m_keepRatio(true), m_dirty(true), m_size(size), m_model(0)
@@ -84,6 +82,23 @@ void Plotter2D::setGridStyleHint(CoordinateSystem suggestedgs)
     m_gridStyleHint = suggestedgs;
     
     forceRepaint();
+}
+
+const QColor Plotter2D::computeSubGridColor() const
+{
+    QColor col = m_gridColor;
+    
+    if (m_backgroundColor.value() < 200)
+    {
+        if (m_gridColor.value() < 40)
+            col.setHsv(col.hsvHue(), col.hsvSaturation(), 80);
+        else
+            col.setHsv(col.hsvHue(), col.hsvSaturation(), 25);
+    }
+    else // e.g: background color white and grid color gray
+        col.setHsv(col.hsvHue(), col.hsvSaturation(), 245);
+    
+    return col;
 }
 
 const GridInfo Plotter2D::getGridInfo() const
@@ -290,10 +305,7 @@ void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
     const unsigned short nsubinc = grid.sub5? 5:4; // count for draw sub intervals
     const double inc = grid.inc/nsubinc; // inc with sub intervals
     
-    QPen subGridPen = gridPen;
-    QColor col = m_gridColor;
-    col.setHsvF(col.hsvHueF(), col.hsvSaturationF(), col.valueF()*0.4);
-    subGridPen.setColor(col);
+    QPen subGridPen = QPen(computeSubGridColor());
     
     if (m_showGrid) 
     {
@@ -352,10 +364,7 @@ void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
     const unsigned short nsubinc = grid.sub5? 5:4; // count for draw sub intervals
     const double inc = grid.inc/nsubinc; // inc with sub intervals
     
-    QPen subGridPen = gridPen;
-    QColor col = m_gridColor;
-    col.setHsvF(col.hsvHueF(), col.hsvSaturationF(), col.valueF()*0.4);
-    subGridPen.setColor(col);
+    QPen subGridPen = QPen(computeSubGridColor());
     
     QPointF p;
     int i = 0;
