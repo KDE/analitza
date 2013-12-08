@@ -612,6 +612,7 @@ void AnalitzaTest::testSimplify_data()
 	QTest::newRow("sum") << "n->sum((i+n) * i : i=0..9)" << "n->sum((i+n)*i:i=0..9)";
 	QTest::newRow("sum.sum") << "k->sum(sum(x:x=0..i):i=0..k)" << "k->sum(sum(x:x=0..i):i=0..k)";
 	QTest::newRow("unrelated sum") << "sum(x : n=0..99)" << "100*x";
+	QTest::newRow("ln") << "ln(x)" << "ln(x)";
 	
 	QTest::newRow("piecewise1") << "piecewise { 1=2 ? 4, ? 3}" << "3";
 	QTest::newRow("piecewise2") << "piecewise { x=2 ? 4, ? 3}" << "piecewise { x=2 ? 4, ? 3 }";
