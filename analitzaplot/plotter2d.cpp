@@ -54,6 +54,8 @@ namespace Analitza {
     struct GridInfo
     {
         qreal inc, xini, yini, xend, yend;
+        // sub5 flag is used for draw sub 5 intervals instead of 4
+        bool sub5; // true if inc=5*pow(10,n) (so draw 5 sub intervals)
     };
 }
 
@@ -76,25 +78,28 @@ const GridInfo Plotter2D::getGridInfo() const
     GridInfo ret;
     
     const double currvpsize = viewport.width();
+    
     static double oldvpsize = currvpsize;
     static double inc = m_tickScaleSymbolValue;
     static double zoomoutacum = 0.0;
+    static int zoomcount = -1;
+    static bool sub5 = false;
     
     float zoomfactor = 2;
-    
-    if (currvpsize < 2.0)
-        zoomfactor = 1;
-    
-    static int zoomcount = -1;
     
     if (oldvpsize < currvpsize) // zoom-out
     {
         zoomoutacum += currvpsize - oldvpsize;
         
-        if (zoomfactor*inc <= zoomoutacum)
+        if (2*zoomfactor*inc <= zoomoutacum)
         {
             zoomoutacum = 0.0;
             
+            if ((zoomcount) % 3 == 0)
+                    sub5 = true;
+                else
+                    sub5 = false;
+
             if (zoomcount % 3 == 0)
                 inc *= 2.5; // 5*h/2
             else
@@ -109,9 +114,17 @@ const GridInfo Plotter2D::getGridInfo() const
     {
         if (oldvpsize > currvpsize) // zoom-out
         {
+            if (currvpsize < 2.0)
+                zoomfactor = 1;
+        
             if (currvpsize <= 2*inc*zoomfactor)
             {
                 --zoomcount;
+                
+                if ((zoomcount - 1) % 3 == 0)
+                    sub5 = true;
+                else
+                    sub5 = false;
                 
                 if (zoomcount % 3 == 0)
                     inc *= 0.4; // 2*h/5
@@ -126,6 +139,7 @@ const GridInfo Plotter2D::getGridInfo() const
     oldvpsize = currvpsize;
 
     ret.inc = inc;
+    ret.sub5 = sub5;
     ret.xini=floor((viewport.left())/ret.inc)*ret.inc;
     ret.yini=floor((viewport.bottom())/ret.inc)*ret.inc;
     ret.xend=ceil((viewport.right())/ret.inc)*ret.inc;
@@ -277,7 +291,7 @@ void Plotter2D::drawPolarGrid(QPainter* painter, const GridInfo& grid) const
             QRectF er(p.x(),p.y(), p2.x()-p.x(),p2.y()-p.y());
             painter->drawEllipse(er);
         }
-	}
+    }
 }
 
 void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
@@ -286,14 +300,16 @@ void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
     QPointF p;
     const QPen gridPen(m_gridColor);
     f->setPen(gridPen);
-    const double inc = grid.inc/4; // 4 sub intervals
-    int i = 0;
     
-    const QPen oldpen = f->pen();
-    QPen newpen = oldpen;
+    const unsigned short nsubinc = grid.sub5? 5:4; // count for draw sub intervals
+    const double inc = grid.inc/nsubinc; // inc with sub intervals
+    
+    QPen subGridPen = gridPen;
     QColor col = m_gridColor;
     col.setHsvF(col.hsvHueF(), col.hsvSaturationF(), col.valueF()*0.4);
-    newpen.setColor(col);
+    subGridPen.setColor(col);
+    
+    int i = 0;
     
     for(double x =grid.xini; x <grid.xend; x += inc, ++i)
     {
@@ -303,18 +319,16 @@ void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
 
         if(m_squares)
         {
-            if (i % 4 == 0)
-                f->setPen(oldpen);
+            if (i % nsubinc == 0)
+                f->setPen(gridPen);
             else // sub intervals
-                f->setPen(newpen);
+                f->setPen(subGridPen);
             
             f->drawLine(QPointF(p.x(), this->height()), QPointF(p.x(), 0.));
         }
         else
             f->drawLine(p, p+QPointF(0.,-3.));
     }
-    
-    f->setPen(oldpen);
     
     i = 0;
     
@@ -326,10 +340,10 @@ void Plotter2D::drawCartesianGrid(QPainter* f, const GridInfo& grid) const
 
         if(m_squares)
         {
-            if (i % 4 == 0)
-                f->setPen(oldpen);
+            if (i % nsubinc == 0)
+                f->setPen(gridPen);
             else // sub intervals
-                f->setPen(newpen);
+                f->setPen(subGridPen);
             
             f->drawLine(QPointF(0., p.y()), QPointF(width(), p.y()));
         }
