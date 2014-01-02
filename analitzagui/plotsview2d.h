@@ -34,7 +34,6 @@
 #include "analitzaguiexport.h"
 #include <analitzaplot/plotter2d.h>
 
-
 class QItemSelectionModel;
 
 namespace Analitza
@@ -84,8 +83,6 @@ public:
     
     void setSelectionModel(QItemSelectionModel* selection);
 
-    virtual void showEvent(QShowEvent* ev);
-
 public slots:
     /** Marks the image as dirty and repaints everything. */
     void forceRepaint() { valid=false; repaint(); }
@@ -93,13 +90,6 @@ public slots:
     /** Sets the viewport to a default viewport. */
     void resetViewport() { setViewport(defViewport); }
     
-    //TODO setzoomanimation
-    /** Zooms in to the Viewport center */
-    void zoomIn();
-    
-    /** Zooms out */
-    void zoomOut();
-        
     /** Returns whether it has a little border frame. */
     bool isFramed() const { return m_framed; }
     
@@ -118,10 +108,15 @@ public slots:
     void setXAxisLabel(const QString &label) { Plotter2D::setXAxisLabel(label); }
     void setYAxisLabel(const QString &label) { Plotter2D::setYAxisLabel(label); }
     void setGridColor(const QColor &color) { Plotter2D::setGridColor(color); }
-    void setTicksFormat(Analitza::TicksFormat tsfmt) { Plotter2D::setTicksFormat(tsfmt); }
-    void setTicksShown(QFlags<Qt::Orientation> o) { Plotter2D::setTicksShown(o); }
-    void setAxesShown(QFlags<Qt::Orientation> o) { Plotter2D::setAxesShown(o); }
+    void setTicksShown(QFlags<Qt::Orientation> o) { Plotter2D::setShowTickLabels(o); }
+    void setAxesShown(QFlags<Qt::Orientation> o) { Plotter2D::setShowAxes(o); }
     //TODO  set bgcolor, setbgcolormode auto means that colo is chosses based in lumninosisty onf current bgprofiles
+    
+    /** Zooms in to the Viewport center */
+    virtual void zoomIn() { Plotter2D::zoomIn(true); }
+        
+    /** Zooms out */
+    virtual void zoomOut() { Plotter2D::zoomOut(true); }
     
 private slots:
     void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
@@ -171,7 +166,7 @@ private:
     //presentation
     QPointF ant;
     QRectF defViewport;
-    void drawFunctions(QPaintDevice*);
+    void drawAll(QPaintDevice*); // render grid+plots into paintdevice
         
     void sendStatus(const QString& msg) { emit status(msg); }
     bool m_framed;

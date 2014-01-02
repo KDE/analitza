@@ -1,6 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2010-2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
+ *  Copyright (C) 2010-2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -30,6 +30,7 @@ enum Dimension {
     Dim3D = 4,
     DimAll = Dim1D | Dim2D | Dim3D
 };
+
 Q_DECLARE_FLAGS(Dimensions, Dimension)
 
 enum CoordinateSystem {
@@ -52,19 +53,35 @@ enum PlotStyle {
     Solid
 };
 
+//TODO review the 3d bahaviour
 enum PlottingFocusPolicy
 {
     Current,
     All
 };
 
-enum TicksFormat // used in plotters 
+//NOTE this is important in order to keep compatibility with KmPlot
+enum GridStyle
 {
-    Number = 1, 
-    SymbolSqrt2, 
-    SymbolSqrt3, 
-    SymbolE, 
-    SymbolPi
+    Squares = 1, // a solid quadrangular (rectangular, if keep aspect radio is off) mesh (in KmPlot is called Lines) 
+    Circles, // classic polar grid: solid circles (ellipses, if keep aspect radio is off) arround origin (in KmPlot is called Polar) 
+    Crosses, // like KmPlot: show only a cross at every node of the quadrangular mesh
+    HorizontalLines, // (or rows) show only horizontal lines of the quadrangular mesh, can be used as horizontal asymptotes
+    VerticalLines, // (or columns) show only vertical lines of the quadrangular mesh, can be used as vertical asymptotes
+};
+
+enum AngleMode
+{
+    Radian,
+    Degree,
+    Gradian
+};
+
+enum ScaleMode // used for draw ticks marks in plotters
+{
+    Linear = 1, // -2 -1 0 1 ...
+    Trigonometric, // -pi 0 +pi
+//     TODO lin-lin, lin-log, log-lin, and log-log.
 };
 
 }

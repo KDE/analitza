@@ -29,6 +29,8 @@
 #include <QKeyEvent>
 #include <QFile>
 #include <QDebug>
+#include <QTimer>
+#include <QPropertyAnimation>
 #include <QItemSelectionModel>
 #include <QApplication>
 #include <QClipboard>
@@ -78,32 +80,29 @@ PlotsView2D::PlotsView2D(QWidget *parent)
     this->setAutoFillBackground(false);
 }
 
-void PlotsView2D::showEvent(QShowEvent* ev)
-{
-    QWidget::showEvent(ev);
-}
-
 PlotsView2D::~PlotsView2D() {}
 
-void PlotsView2D::drawFunctions(QPaintDevice* pd)
+void PlotsView2D::drawAll(QPaintDevice* pd)
 {
-    if(buffer.isNull() || buffer.size()!=size())
-        buffer = QPixmap(size());
-    
-    buffer.fill(backgroundColor());
-    
-    Plotter2D::drawFunctions(pd);
-    
-    valid=true;
+    drawGrid(pd);
+    drawFunctions(pd);
 }
 
 void PlotsView2D::paintEvent(QPaintEvent * )
 {
-    if(!valid)
-        drawFunctions(&buffer);
+    if (!valid)
+    {
+        if (buffer.isNull() || buffer.size()!=size())
+            buffer = QPixmap(size());
+        buffer.fill(backgroundColor());
     
+        drawAll(&buffer);
+
+        valid=true;
+    }
     QPainter p(this);
     p.drawPixmap(QRect(QPoint(0,0), size()), buffer);
+    
     QPen ccursor;
     
 //  finestra.setRenderHint(QPainter::Antialiasing, true);
@@ -179,13 +178,12 @@ void PlotsView2D::paintEvent(QPaintEvent * )
 
 void PlotsView2D::wheelEvent(QWheelEvent *e)
 {
-    QRectF viewport=lastViewport();
+    QRectF viewport=currentViewport();
     int steps = e->delta()/(8*15);
     qreal d = (-0.03*steps) + 1;
     
-    if(d>0 || (viewport.width()+d > 2 && viewport.height()+d < 2)) {
+    if(d>0 || (viewport.width()+d > 2 && viewport.height()+d < 2))
         scaleViewport(d, e->pos());
-    }
 }
 
 void PlotsView2D::mousePressEvent(QMouseEvent *e)
@@ -263,7 +261,8 @@ void PlotsView2D::mouseMoveEvent(QMouseEvent *e)
 
 void PlotsView2D::keyPressEvent(QKeyEvent * e)
 {
-    const double xstep=lastViewport().width()/12., ystep=lastViewport().height()/10.;
+    //TODO use grid info (inc) here, made a public method to return current scale increment
+    const double xstep=currentViewport().width()/12., ystep=currentViewport().height()/10.;
     
     switch(e->key()) {
         case Qt::Key_Right:
@@ -306,7 +305,7 @@ bool PlotsView2D::toImage(const QString &path, Format f)
             QSvgGenerator gen;
             gen.setOutputDevice(&f);
             gen.setSize(this->size());
-            drawFunctions(&gen);
+            drawAll(&gen);
             b=true;
             forceRepaint();
         }   break;
@@ -319,24 +318,6 @@ bool PlotsView2D::toImage(const QString &path, Format f)
     return b;
 }
 
-void PlotsView2D::zoomIn()
-{
-    QRectF userViewport = lastUserViewport();
-    if(userViewport.height() < -3. && userViewport.width() > 3.){
-        setViewport(QRect(userViewport.left() +1., userViewport.top() -1.,
-                    userViewport.width() -2., userViewport.height() +2.));
-    }
-}
-
-void PlotsView2D::zoomOut()
-{
-    QRectF userViewport = lastUserViewport();
-    //FIXME:Bad solution
-    //resolucio=(resolucio*viewport.width())/(viewport.width()+2.);
-    setViewport(QRect(userViewport.left() -1., userViewport.top() +1.,
-                userViewport.width() +2., userViewport.height() -2.));
-}
-
 void PlotsView2D::snapshotToClipboard()
 {
     QClipboard *cb = QApplication::clipboard();
@@ -346,7 +327,7 @@ void PlotsView2D::snapshotToClipboard()
 
 void PlotsView2D::addFuncs(const QModelIndex & parent, int start, int end)
 {
-//     Q_ASSERT(!parent.isValid());
+    Q_ASSERT(!parent.isValid());
     updateFunctions(parent, start, end);
 }
 
@@ -379,7 +360,7 @@ QRectF PlotsView2D::definedViewport() const
 
 void PlotsView2D::viewportChanged()
 {
-    QRectF userViewport=lastUserViewport(), viewport=lastViewport();
+    QRectF userViewport=lastUserViewport(), viewport=currentViewport();
     
     sendStatus(QString("(%1, %2)-(%3, %4)")
             .arg(viewport.left()).arg(viewport.top()).arg(viewport.right()).arg(viewport.bottom()));
