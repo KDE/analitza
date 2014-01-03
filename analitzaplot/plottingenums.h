@@ -24,7 +24,8 @@
 
 namespace Analitza {
 
-enum Dimension {
+enum Dimension
+{
     Dim1D = 1,
     Dim2D = 2,
     Dim3D = 4,
@@ -33,21 +34,24 @@ enum Dimension {
 
 Q_DECLARE_FLAGS(Dimensions, Dimension)
 
-enum CoordinateSystem {
+enum CoordinateSystem
+{
     Cartesian = 1,
     Polar,
     Cylindrical,
     Spherical
 };
 
-enum CartesianAxis {
+enum CartesianAxis
+{
     XAxis = 1,
     YAxis,
     ZAxis,
     InvalidAxis // used for query/select between some axis 
 };
 
-enum PlotStyle { 
+enum PlotStyle
+{
     Dots = 1,
     Wired, 
     Solid
