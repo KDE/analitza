@@ -497,7 +497,7 @@ void Plotter2D::drawGridTickLabels(QPainter* painter, const GridInfo& gridinfo, 
     if (m_showTickLabels & Qt::Vertical)
         drawCartesianTickLabels(painter, gridinfo, YAxis);
     
-    if ((gridStyle == Circles) && m_showPolarAngles) // draw labels for angles (polar axis)
+    if ((gridStyle == Circles) && m_showPolarAngles && m_showGrid) // draw labels for angles (polar axis)
         drawPolarTickLabels(painter, gridinfo);
 }
 
@@ -573,7 +573,12 @@ void Plotter2D::drawCircles(QPainter* painter, const GridInfo& gridinfo, GridSty
                 if (j % alternatesubgridcount == 0)
                     painter->setPen(gridPen);
                 else
+                {
+                    if (!m_showMinorGrid)
+                        continue;
+                    
                     painter->setPen(subGridPen);
+                }
                 
                 p = toWidget(QPointF(r*std::cos(t), r*std::sin(t)));
                 painter->drawLine(origin, p);

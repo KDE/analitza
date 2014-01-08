@@ -63,7 +63,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
 
         /** Sets whether we will draw the grid. */
         void setShowGrid(bool show) { m_showGrid=show; forceRepaint(); }
-        //only works if showgrid is true
+        //only works if showgrid is true. for polar grid it affects to subdivision of angles/rays
         void setShowMinorGrid(bool mt) { m_showMinorGrid=mt; forceRepaint(); }
 
         /** Returns whether we have chosen to draw the grid. */
