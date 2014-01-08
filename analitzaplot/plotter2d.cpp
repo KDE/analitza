@@ -463,10 +463,11 @@ void Plotter2D::drawPolarTickLabels(QPainter* painter, const Plotter2D::GridInfo
     
     const unsigned int drawoverxaxiscount = turns/2;
     const unsigned int drawnextyaxiscount = turns/4;
+    const unsigned int halfturns = drawoverxaxiscount; // or turns/2;
     
     for (int j = 0; j < turns; ++j, ++k, t += h) // Pi6 then 24 turns
     {
-        const QPair<unsigned int, unsigned int> frac = simplifyFraction(k, 12); // npi/12
+        const QPair<unsigned int, unsigned int> frac = simplifyFraction(k, halfturns);
         
         if (k != 0)
             s = computeAngleLabelByFrac(frac.first, frac.second);
