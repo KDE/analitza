@@ -18,7 +18,7 @@
 
 #include "list.h"
 #include "expression.h"
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include "analitzautils.h"
 
 using namespace Analitza;
@@ -55,9 +55,9 @@ void List::appendBranch(Object* o)
 	m_elements.append(o);
 }
 
-QString List::visit(ExpressionWriter* e) const
+QVariant List::accept(AbstractExpressionVisitor* e) const
 {
-	return e->accept(this);
+	return e->visit(this);
 }
 
 bool List::isZero() const

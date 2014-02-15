@@ -26,7 +26,7 @@
 namespace Analitza
 {
 
-class ExpressionWriter;
+class AbstractExpressionVisitor;
 
 /**
  *	\internal
@@ -69,7 +69,7 @@ public:
 	QString toString() const;
 	
 	/** Returns some string depending on the visior */
-	virtual QString visit(ExpressionWriter* exp) const =0;
+	virtual QVariant accept(AbstractExpressionVisitor* exp) const = 0;
 	
 	virtual bool isZero() const { return false; }
 	

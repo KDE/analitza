@@ -17,7 +17,7 @@
  *************************************************************************************/
 
 #include "operator.h"
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 
 using namespace Analitza;
 
@@ -52,9 +52,9 @@ const char Operator::words[nOfOps][14] = {
 	"function"
 };
 
-QString Operator::visit(ExpressionWriter* e) const
+QVariant Operator::accept(AbstractExpressionVisitor* e) const
 {
-	return e->accept(this);
+	return e->visit(this);
 }
 
 QString Operator::name() const

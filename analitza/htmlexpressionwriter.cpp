@@ -36,11 +36,11 @@ using namespace Analitza;
 QMap<Operator::OperatorType, QString> initOperators();
 
 template <class T>
-QStringList HtmlExpressionWriter::allValues(T it, const T& itEnd, ExpressionWriter* writer)
+QStringList HtmlExpressionWriter::allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer)
 {
 	QStringList elements;
 	for(; it!=itEnd; ++it)
-		elements += (*it)->visit(writer);
+		elements += (*it)->accept(writer).toString();
 	
 	return elements;
 }
@@ -55,51 +55,51 @@ QString keyword(const QString& op) { return i18nc("html representation of an ope
 HtmlExpressionWriter::HtmlExpressionWriter(const Object* o)
 {
 	if(o)
-		m_result=o->visit(this);
+		m_result=o->accept(this);
 }
 
-QString HtmlExpressionWriter::accept(const Vector* vec)
+QVariant HtmlExpressionWriter::visit(const Vector* vec)
 {
-	return keyword("vector ")+oper("{ ")+allValues<Vector::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(", ")))+oper(" }");
+	return QString(keyword("vector ")+oper("{ ")+allValues<Vector::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(", ")))+oper(" }"));
 }
 
-QString HtmlExpressionWriter::accept(const Matrix* m)
+QVariant HtmlExpressionWriter::visit(const Matrix* m)
 {
-	return keyword("matrix ")+oper("{ ")+allValues(m->constBegin(), m->constEnd(), this).join(QString(oper(", ")))+oper(" }");
+	return QString(keyword("matrix ")+oper("{ ")+allValues(m->constBegin(), m->constEnd(), this).join(QString(oper(", ")))+oper(" }"));
 }
 
-QString HtmlExpressionWriter::accept(const MatrixRow* mr)
+QVariant HtmlExpressionWriter::visit(const MatrixRow* mr)
 {
-	return keyword("matrixrow ")+oper("{ ")+allValues(mr->constBegin(), mr->constEnd(), this).join(QString(oper(", ")))+oper(" }");
+	return QString(keyword("matrixrow ")+oper("{ ")+allValues(mr->constBegin(), mr->constEnd(), this).join(QString(oper(", ")))+oper(" }"));
 }
 
-QString HtmlExpressionWriter::accept(const List* vec)
+QVariant HtmlExpressionWriter::visit(const List* vec)
 {
 	if(!vec->isEmpty() && vec->at(0)->type()==Object::value && static_cast<Cn*>(vec->at(0))->format()==Cn::Char) {
-		return "<span class='string'>&quot;"+AnalitzaUtils::listToString(vec)+ "&quot;</span>";
+		return QString("<span class='string'>&quot;"+AnalitzaUtils::listToString(vec)+ "&quot;</span>");
 	} else
-		return keyword("list ")+oper("{ ")+allValues<List::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(", ")))+oper(" }");
+		return QString((keyword("list ")+oper("{ ")+allValues<List::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(", ")))+oper(" }")));
 }
 
-QString HtmlExpressionWriter::accept(const Cn* var)
+QVariant HtmlExpressionWriter::visit(const Cn* var)
 {
 	if(var->isBoolean())
-		return "<span class='var'>"+QString(var->isTrue() ? "true" : "false")+"</span>";
+		return QString("<span class='var'>"+QString(var->isTrue() ? "true" : "false")+"</span>");
 	else
-		return "<span class='num'>"+QString::number(var->value(), 'g', 12)+"</span>";
+		return QString("<span class='num'>"+QString::number(var->value(), 'g', 12)+"</span>");
 }
 
-QString HtmlExpressionWriter::accept(const Analitza::Ci* var)
+QVariant HtmlExpressionWriter::visit(const Analitza::Ci* var)
 {
 	return var->toHtml();
 }
 
-QString HtmlExpressionWriter::accept(const Analitza::Operator* o)
+QVariant HtmlExpressionWriter::visit(const Analitza::Operator* o)
 {
-	return "<span class='func'>"+o->toString()+"</span>";
+	return QString("<span class='func'>"+o->toString()+"</span>");
 }
 
-QString HtmlExpressionWriter::accept ( const Analitza::Apply* a )
+QVariant HtmlExpressionWriter::visit ( const Analitza::Apply* a )
 {
 	Operator op=a->firstOperator();
 	QStringList ret;
@@ -109,13 +109,13 @@ QString HtmlExpressionWriter::accept ( const Analitza::Apply* a )
 	if(a->ulimit() || a->dlimit()) {
 		bounds += oper('=');
 		if(a->dlimit())
-			bounds += a->dlimit()->visit(this);
+			bounds += a->dlimit()->accept(this).toString();
 		bounds += oper("..");
 		if(a->ulimit())
-			bounds += a->ulimit()->visit(this);
+			bounds += a->ulimit()->accept(this).toString();
 	}
 	else if(a->domain())
-		bounds += oper('@')+a->domain()->visit(this);
+		bounds += oper('@')+a->domain()->accept(this).toString();
 	
 	int i = 0;
 	foreach(Object* o, a->m_params) {
@@ -125,11 +125,11 @@ QString HtmlExpressionWriter::accept ( const Analitza::Apply* a )
 				Q_ASSERT(false);
 				break;
 			case Object::variable:
-				ret << static_cast<const Ci*>(o)->visit(this);
+				ret << static_cast<const Ci*>(o)->accept(this).toString();
 				break;
 			case Object::apply: {
 				Apply *c = (Apply*) o;
-				QString s = c->visit(this);
+				QString s = c->accept(this).toString();
 				if(s_operators.contains(op.operatorType())) {
 					Operator child_op = c->firstOperator();
 					
@@ -140,7 +140,7 @@ QString HtmlExpressionWriter::accept ( const Analitza::Apply* a )
 				ret << s;
 			}	break;
 			default:
-				ret << o->visit(this);
+				ret << o->accept(this).toString();
 				break;
 		}
 		++i;
@@ -169,7 +169,7 @@ QString HtmlExpressionWriter::accept ( const Analitza::Apply* a )
 		QString bounding;
 		QStringList bvars;
 		foreach(const Ci* bvar, a->bvarCi())
-			bvars += bvar->visit(this);
+			bvars += bvar->accept(this).toString();
 		
 		if(!bounds.isEmpty() || !bvars.isEmpty()) {
 			if(bvars.count()!=1) bounding +=oper('(');
@@ -179,13 +179,13 @@ QString HtmlExpressionWriter::accept ( const Analitza::Apply* a )
 			bounding = ':'+bounding +bounds;
 		}
 		
-		toret += op.visit(this)+oper('(')+ret.join(oper(", "))+bounding+oper(')');
+		toret += op.accept(this).toString()+oper('(')+ret.join(oper(", "))+bounding+oper(')');
 	}
 	
 	return toret;
 }
 
-QString HtmlExpressionWriter::accept(const Container* var)
+QVariant HtmlExpressionWriter::visit(const Container* var)
 {
 	QStringList ret = allValues(var->constBegin(), var->constEnd(), this);
 	
@@ -199,7 +199,7 @@ QString HtmlExpressionWriter::accept(const Container* var)
 			QString last=ret.takeLast();
 			QStringList bvars;
 			foreach(const Ci* bvar, var->bvarCi())
-				bvars += bvar->visit(this);
+				bvars += bvar->accept(this).toString();
 			
 			if(bvars.count()!=1) toret +=oper('(');
 			toret += bvars.join(", ");
@@ -230,7 +230,7 @@ QString HtmlExpressionWriter::accept(const Container* var)
 	return toret;
 }
 
-QString HtmlExpressionWriter::accept(const CustomObject*)
+QVariant HtmlExpressionWriter::visit(const CustomObject*)
 {
-	return "Custom Object";
+	return QString("Custom Object");
 }

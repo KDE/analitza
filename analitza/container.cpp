@@ -18,7 +18,7 @@
 #include "container.h"
 
 #include "expression.h"
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include "vector.h"
 #include "value.h"
 #include "list.h"
@@ -76,9 +76,9 @@ Container* Container::copy() const
 	return new Container(*this);
 }
 
-QString Container::visit(ExpressionWriter* e) const
+QVariant Container::accept(AbstractExpressionVisitor* e) const
 {
-	return e->accept(this);
+	return e->visit(this);
 }
 
 bool Container::isZero() const

@@ -79,13 +79,13 @@ ExpressionType ExpressionTypeChecker::check(const Expression& exp)
 	m_stars=1;
 	current=ExpressionType(ExpressionType::Error);
 	
-	exp.tree()->visit(this);
+	exp.tree()->accept(this);
 	
 // 	qDebug() << "cheeeeeeck" << m_vars;
 	return current;
 }
 
-QString ExpressionTypeChecker::accept(const Operator*) { Q_ASSERT(false && "should not get here"); return QString(); }
+QVariant ExpressionTypeChecker::visit(const Operator*) { Q_ASSERT(false && "should not get here"); return QVariant(); }
 
 bool ExpressionTypeChecker::inferType(const ExpressionType& found, const ExpressionType& targetType, QMap<QString, ExpressionType>* assumptions)
 {
@@ -142,7 +142,7 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 	
 	QList<ExpressionType> paramtypes;
 	for(QVector<Object*>::const_iterator it=parameters.constBegin(), itEnd=parameters.constEnd(); it!=itEnd; ++it) {
-		(*it)->visit(this);
+		(*it)->accept(this);
 		paramtypes += current;
 	}
 	
@@ -282,7 +282,7 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 	}
 }
 
-QString ExpressionTypeChecker::accept(const Ci* var)
+QVariant ExpressionTypeChecker::visit(const Ci* var)
 {
 	if(m_typeForBVar.contains(var->name())) {
 		current=m_typeForBVar.value(var->name());
@@ -305,7 +305,7 @@ bool ExpressionTypeChecker::isVariableDefined(const QString& id) const
 	return m_v->contains(id) || m_vars.contains(id);
 }
 
-QString ExpressionTypeChecker::accept(const Cn* c)
+QVariant ExpressionTypeChecker::visit(const Cn* c)
 {
 	ExpressionType::Type type;
 	
@@ -340,7 +340,7 @@ ExpressionType ExpressionTypeChecker::commonType(const QList<Object*>& values)
 	if(values.isEmpty()) {
 		ret=ExpressionType(ExpressionType::Any, m_stars++);
 	} else foreach(const Object* o, values) {
-		o->visit(this);
+		o->accept(this);
 		
 // 		qDebug()<< "sususu" << current << ret << "||" << current.assumptions() << ret.assumptions();
 		
@@ -391,7 +391,7 @@ ExpressionType ExpressionTypeChecker::commonType(const QList<Object*>& values)
 	return ret;
 }
 
-QString ExpressionTypeChecker::accept(const Apply* c)
+QVariant ExpressionTypeChecker::visit(const Apply* c)
 {
 	QMap<QString, ExpressionType> ctx=m_typeForBVar;
 	QMap<QString, ExpressionType> assumptions;
@@ -402,20 +402,20 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 		ExpressionType tt;
 		if(ul) {
 			Object* dl=c->dlimit();
-			ul->visit(this);
+			ul->accept(this);
 			
 			tt=current; //FIXME: should remove when done
 			if(!current.isError() && current.type()!=ExpressionType::Any)
 				assumptions=typeIs(dl, ExpressionType(current));
 			else {
-				dl->visit(this);
+				dl->accept(this);
 				tt=current;
 				
 				if(!current.isError())
 					assumptions=typeIs(ul, ExpressionType(current));
 			}
 		} else if(c->domain()) {
-			c->domain()->visit(this);
+			c->domain()->accept(this);
 			
 			if(current.type()==ExpressionType::Any) {
 				ExpressionType anyItem(ExpressionType::Any, m_stars++);
@@ -449,7 +449,7 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 		case Operator::none:
 		case Operator::sum:
 		case Operator::product:
-			(*c->firstValue())->visit(this);
+			(*c->firstValue())->accept(this);
 			current.addAssumptions(assumptions);
 			break;
 		case Operator::diff:
@@ -461,7 +461,7 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 			break;
 		case Operator::function: {
 // 					qDebug() << "calling" << c->toString();
-			c->m_params.first()->visit(this);
+			c->m_params.first()->accept(this);
 // 					qDebug() << "retrieved lambda" << c->m_params.first()->toString() << current << current.assumptions();
 			ExpressionType returned = current;
 			assumptions=current.assumptions();
@@ -469,7 +469,7 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 			QList<ExpressionType> exps;
 			Apply::const_iterator it=c->firstValue()+1, itEnd=c->constEnd();
 			for(; it!=itEnd; ++it) {
-				(*it)->visit(this);
+				(*it)->accept(this);
 				
 				exps += current;
 			}
@@ -611,7 +611,7 @@ QString ExpressionTypeChecker::accept(const Apply* c)
 	return QString();
 }
 
-QString ExpressionTypeChecker::accept(const CustomObject*)
+QVariant ExpressionTypeChecker::visit(const CustomObject*)
 {
 	Q_ASSERT(false && "we shouldn't have to construct any custom object");
 	return QString();
@@ -644,7 +644,7 @@ ExpressionType ExpressionTypeChecker::tellTypeIdentity(const QString& name, cons
 
 //1. Check if parameters are applied correctly
 //2. Return the operator result type
-QString ExpressionTypeChecker::accept(const Container* c)
+QVariant ExpressionTypeChecker::visit(const Container* c)
 {
 // 	qDebug() << "XIUXIU" << c->toString();
 	switch(c->containerType()) {
@@ -682,7 +682,7 @@ QString ExpressionTypeChecker::accept(const Container* c)
 		}	break;
 		case Container::piece: {
 			QMap<QString, ExpressionType> assumptions=typeIs(c->m_params.last(), ExpressionType(ExpressionType::Bool)); //condition check
-			c->m_params.first()->visit(this); //we return the body
+			c->m_params.first()->accept(this); //we return the body
 			QList<ExpressionType> alts=current.type()==ExpressionType::Many ? current.alternatives() : QList<ExpressionType>() << current, rets;
 			foreach(const ExpressionType& t, alts) {
 				QMap<int, ExpressionType> stars;
@@ -704,7 +704,7 @@ QString ExpressionTypeChecker::accept(const Container* c)
 			Ci* var = static_cast<Ci*>(c->m_params.first());
 			
 			m_calculating.append(var->name());
-			c->m_params.last()->visit(this);
+			c->m_params.last()->accept(this);
 			m_calculating.removeLast();
 			
 			current=tellTypeIdentity(var->name(), current);
@@ -713,7 +713,7 @@ QString ExpressionTypeChecker::accept(const Container* c)
 			QSet<QString> aux=m_lambdascope;
 			QStringList bvars=c->bvarStrings();
 			m_lambdascope+=bvars.toSet();
-			c->m_params.last()->visit(this);
+			c->m_params.last()->accept(this);
 			m_lambdascope=aux;
 			QMap<QString, ExpressionType> assumptions=current.assumptions();
 			
@@ -750,7 +750,7 @@ QString ExpressionTypeChecker::accept(const Container* c)
 // 			for(Container::const_iterator it=c->constBegin(); it!=c->constEnd(); ++it)
 // 			Q_ASSERT(c->constBegin()+1==c->constEnd());
 			if(c->constBegin()+1==c->constEnd())
-				(*c->constBegin())->visit(this);
+				(*c->constBegin())->accept(this);
 			break;
 	}
 	
@@ -765,7 +765,7 @@ QString ExpressionTypeChecker::accept(const Container* c)
 }
 
 template <class T>
-QString ExpressionTypeChecker::acceptListOrVector(const T* v, ExpressionType::Type t, int size)
+QVariant ExpressionTypeChecker::visitListOrVector(const T* v, ExpressionType::Type t, int size)
 {
 	ExpressionType cont=commonType(v->values());
 	
@@ -792,27 +792,27 @@ QString ExpressionTypeChecker::acceptListOrVector(const T* v, ExpressionType::Ty
 	return QString();
 }
 
-QString ExpressionTypeChecker::accept(const List* l)
+QVariant ExpressionTypeChecker::visit(const List* l)
 {
-	acceptListOrVector(l, ExpressionType::List, 0);
+	visitListOrVector(l, ExpressionType::List, 0);
 	return QString();
 }
 
-QString ExpressionTypeChecker::accept(const Vector* l)
+QVariant ExpressionTypeChecker::visit(const Vector* l)
 {
-	acceptListOrVector(l, ExpressionType::Vector, l->size());
+	visitListOrVector(l, ExpressionType::Vector, l->size());
 	return QString();
 }
 
-QString ExpressionTypeChecker::accept(const Matrix* m)
+QVariant ExpressionTypeChecker::visit(const Matrix* m)
 {
-	acceptListOrVector(m, ExpressionType::Matrix, m->size());
+	visitListOrVector(m, ExpressionType::Matrix, m->size());
 	return QString();
 }
 
-QString ExpressionTypeChecker::accept(const MatrixRow* mr)
+QVariant ExpressionTypeChecker::visit(const MatrixRow* mr)
 {
-	acceptListOrVector(mr, ExpressionType::Vector, mr->size());
+	visitListOrVector(mr, ExpressionType::Vector, mr->size());
 	return QString();
 }
 
@@ -821,7 +821,7 @@ QMap<QString, ExpressionType> ExpressionTypeChecker::typeIs(T it, const T& itEnd
 {
 	QList<ExpressionType> types;
 	for(; it!=itEnd; ++it) {
-		(*it)->visit(this);
+		(*it)->accept(this);
 		types+=current;
 	}
 	types=ExpressionType::manyFromArgs(types);
@@ -849,7 +849,7 @@ QMap<QString, ExpressionType> ExpressionTypeChecker::typeIs(T it, const T& itEnd
 
 QMap<QString, ExpressionType> ExpressionTypeChecker::typeIs(const Object* o, const ExpressionType& type)
 {
-	o->visit(this);
+	o->accept(this);
 // 	qDebug() << "fluuuu" << current << type;
 	
 	bool corr=false;
@@ -879,7 +879,7 @@ ExpressionType ExpressionTypeChecker::typeForVar(const QString& var)
 // 		qDebug() << "checking..." << var;
 		Q_ASSERT(m_v->contains(var));
 		m_calculating += var;
-		m_v->value(var)->visit(this);
+		m_v->value(var)->accept(this);
 		m_calculating.removeLast();
 		current=tellTypeIdentity(var, current);
 		current.clearAssumptions();

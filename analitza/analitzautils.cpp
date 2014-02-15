@@ -18,7 +18,7 @@
 
 #include "analitzautils.h"
 
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include "vector.h"
 #include "value.h"
 #include "list.h"
@@ -280,14 +280,14 @@ bool hasVars(const Analitza::Object* o, const QStringList& bvars)
 	return r;
 }
 
-struct ObjectWalker : public ExpressionWriter
+struct ObjectWalker : public AbstractExpressionVisitor
 {
 	ObjectWalker(const QByteArray& pref) : ind(0), m_prefix(pref) {}
 	
-	virtual QString accept(const Operator* root)
+	virtual QVariant visit(const Operator* root)
 	{ qDebug() << prefix().constData() << "| operator: " << root->toString(); return QString(); }
 	
-	virtual QString accept(const Ci* var)
+	virtual QVariant visit(const Ci* var)
  	{
 		QString value;
 		if(var->depth()>=0)
@@ -299,14 +299,14 @@ struct ObjectWalker : public ExpressionWriter
 		return QString();
 	}
 	
-	virtual QString accept(const Cn* num)
+	virtual QVariant visit(const Cn* num)
 	{ qDebug() << prefix().constData() << "| num: " << num->value() << " format: " << num->format(); return QString(); }
 	
-	virtual QString accept(const CustomObject* c)
+	virtual QVariant visit(const CustomObject* c)
 	{ qDebug() << prefix().constData() << "| custom " << c; return QString(); }
 	
 	
-	virtual QString accept(const Container* c)
+	virtual QVariant visit(const Container* c)
 	{
 		qDebug() << prefix().constData() << "| cont: " << c->tagName();// << "=" << c->toString();
 		ind++;
@@ -316,7 +316,7 @@ struct ObjectWalker : public ExpressionWriter
 		return QString();
 	}
 	
-	virtual QString accept ( const Apply* c )
+	virtual QVariant visit(const Apply* c)
 	{
 		qDebug() << prefix().constData() << "| apply op:" << c->firstOperator().toString();
 		ind++;
@@ -330,7 +330,7 @@ struct ObjectWalker : public ExpressionWriter
 		return QString();
 	}
 	
-	virtual QString accept(const Vector* v)
+	virtual QVariant visit(const Vector* v)
 	{
 		qDebug() << prefix().constData() << "| vector: " << v->size();
 		ind++;
@@ -340,7 +340,7 @@ struct ObjectWalker : public ExpressionWriter
 		return QString();
 	}
 	
-	virtual QString accept(const List* v)
+	virtual QVariant visit(const List* v)
 	{
 		qDebug() << prefix().constData() << "| list: " << v->size();
 		ind++;
@@ -350,7 +350,7 @@ struct ObjectWalker : public ExpressionWriter
 		return QString();
 	}
 	
-	virtual QString accept(const Matrix* m) {
+	virtual QVariant visit(const Matrix* m) {
 		qDebug() << prefix().constData() << "| matrix: ";
 		ind++;
 		for(Matrix::const_iterator it=m->constBegin(); it!=m->constEnd(); ++it)
@@ -359,7 +359,7 @@ struct ObjectWalker : public ExpressionWriter
 		return QString();
 	}
 	
-	virtual QString accept(const MatrixRow* m) {
+	virtual QVariant visit(const MatrixRow* m) {
 		qDebug() << prefix().constData() << "| matrix: ";
 		ind++;
 		for(MatrixRow::const_iterator it=m->constBegin(); it!=m->constEnd(); ++it)
@@ -376,9 +376,9 @@ struct ObjectWalker : public ExpressionWriter
 		return ret;
 	}
 	
-	void visitNow(const Object* o) { if(o) o->visit(this); else qDebug() << prefix().constData() << "Null" ;}
+	void visitNow(const Object* o) { if(o) o->accept(this); else qDebug() << prefix().constData() << "Null" ;}
 	
-	QString result() const { return QString(); }
+	QVariant result() const { return QString(); }
 	
 	int ind;
 	QByteArray m_prefix;

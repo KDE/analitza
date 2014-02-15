@@ -119,7 +119,7 @@ public:
 	/** @return Returns the string associated to the container type. */
 	QString tagName() const;
 	
-	virtual QString visit(ExpressionWriter*) const;
+	virtual QVariant accept(AbstractExpressionVisitor*) const;
 	
 	virtual bool isZero() const;
 	
