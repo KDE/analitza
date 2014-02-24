@@ -143,7 +143,7 @@ void ImportQMetaObject::import(const QMetaObject& t)
 	
 	if(t.superClass()) {
 		QObjectCastToParent *cast = new QObjectCastToParent(t.className(), t.superClass()->className());
-		b->insertFunction(classname+"_toParent", cast->type(), cast);
+		b->insertFunction(classname+QStringLiteral("_toParent"), cast->type(), cast);
 	}
 }
 

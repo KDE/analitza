@@ -21,15 +21,12 @@
 #include <qsplitter.h>
 #include <QVBoxLayout>
 #include <QStatusBar>
-
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
+#include <qapplication.h>
 
 #include "analitzaplot/surface.h"
 #include "analitzaplot/spacecurve.h"
 #include "analitzaplot/plotsmodel.h"
-#include <analitzagui/plotsview3d.h>
+#include "plotsview3d.h"
 #include <plotsfactory.h>
 #include <analitza/expression.h>
 #include <QCommandLineParser>

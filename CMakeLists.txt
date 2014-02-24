@@ -8,11 +8,13 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 set(QT_REQUIRED_VERSION 5.2)
 find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg OpenGL Test Qml Quick)
-find_package(KF5 5.0.0 REQUIRED MODULE COMPONENTS CMake Compiler InstallDirs)
 
 include(FeatureSummary)
 include(ECMSetupVersion)
 include(ECMAddTests)
+include(KDEInstallDirs)
+include(KDEFrameworkCompilerSettings)
+include(KDECMakeSettings)
 
 ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
