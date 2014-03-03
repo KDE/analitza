@@ -8,10 +8,9 @@ set(analitzagui_SRCS
 	operatorsmodel.cpp
 	algebrahighlighter.cpp
 	variablesmodel.cpp
-	expressionedit.cpp
 )
 add_library(AnalitzaGui ${analitzagui_SRCS})
-target_link_libraries(AnalitzaGui Qt5::Core Qt5::OpenGL Analitza)
+target_link_libraries(AnalitzaGui Qt5::Core Qt5::Gui Analitza)
 
 set_target_properties(AnalitzaGui PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
@@ -22,7 +21,6 @@ install(FILES
 	analitzaguiexport.h
 	operatorsmodel.h
 	variablesmodel.h
-	expressionedit.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
 )

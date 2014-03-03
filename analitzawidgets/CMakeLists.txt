@@ -10,13 +10,14 @@ endif(IEEEFP_DIR)
 
 set(analitzaplot_SRCS
     plotsview2d.cpp
+    expressionedit.cpp
 )
 if(HAVE_OPENGL)
     list(APPEND analitzaplot_SRCS plotsview3d.cpp)
 endif(HAVE_OPENGL)
 
 add_library(AnalitzaWidgets ${analitzaplot_SRCS})
-target_link_libraries(AnalitzaWidgets PUBLIC Qt5::Widgets Qt5::OpenGL Analitza AnalitzaPlot
+target_link_libraries(AnalitzaWidgets PUBLIC Qt5::Widgets Qt5::OpenGL Analitza AnalitzaPlot AnalitzaGui
                                       PRIVATE Qt5::Svg
 )
 
@@ -26,6 +27,7 @@ install(TARGETS AnalitzaWidgets EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT
 
 install(FILES
     plotsview2d.h
+    expressionedit.h
     analitzawidgets_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel

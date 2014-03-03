@@ -25,7 +25,7 @@
 #include <QTreeView>
 #include <analitzagui/algebrahighlighter.h>
 
-#include "analitzaguiexport.h"
+#include "analitzawidgets_export.h"
 
 class QKeyEvent;
 
@@ -47,7 +47,7 @@ class Expression;
  * The expression edit widget is the one where we will input our expressions.
  */
 
-class ANALITZAGUI_EXPORT ExpressionEdit : public QPlainTextEdit
+class ANALITZAWIDGETS_EXPORT ExpressionEdit : public QPlainTextEdit
 {
 	Q_OBJECT
 	public:
