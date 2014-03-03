@@ -12,6 +12,7 @@ find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xm
 include(FeatureSummary)
 include(ECMSetupVersion)
 include(ECMAddTests)
+include(ECMPackageConfigHelpers)
 include(KDEInstallDirs)
 include(KDEFrameworkCompilerSettings)
 include(KDECMakeSettings)
@@ -51,7 +52,7 @@ endif(HAVE_READLINE)
 # macro_display_feature_log()
 
 set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Analitza")
-configure_package_config_file(
+ecm_configure_package_config_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/AnalitzaConfig.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake"
   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
