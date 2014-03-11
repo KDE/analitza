@@ -55,7 +55,7 @@ class ANALITZA_EXPORT Vector : public Object
 		void setAt(int i, Object* o) { m_elements[i]=o; }
 		QList<Object*> values() const { return m_elements.toList(); }
 		
-		virtual QString visit (ExpressionWriter* e) const;
+		virtual QVariant accept(AbstractExpressionVisitor* e) const;
 		virtual bool isZero() const;
 		
 		virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const;

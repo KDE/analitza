@@ -18,7 +18,7 @@
 
 #include "vector.h"
 #include "expression.h"
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include "analitzautils.h"
 
 using namespace Analitza;
@@ -66,9 +66,9 @@ void Vector::appendBranch(Object* o)
 	m_elements.append(o);
 }
 
-QString Vector::visit(ExpressionWriter* e) const
+QVariant Vector::accept(AbstractExpressionVisitor* e) const
 {
-	return e->accept(this);
+	return e->visit(this);
 }
 
 bool Vector::isZero() const

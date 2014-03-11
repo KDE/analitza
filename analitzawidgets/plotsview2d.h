@@ -1,6 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2008 by Aleix Pol <aleixpol@kde.org>                          *
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2012-2013 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com> *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -34,7 +34,6 @@
 #include "analitzawidgets_export.h"
 #include <analitzaplot/plotter2d.h>
 
-
 class QItemSelectionModel;
 
 namespace Analitza
@@ -55,15 +54,18 @@ class PlotsModel;
 class ANALITZAWIDGETS_EXPORT PlotsView2D : public QWidget, public Plotter2D
 {
 Q_OBJECT
-Q_PROPERTY(bool squares READ squares WRITE setSquares)
+
+Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
+
+/** The default grid color is a soft mix between KColorScheme::NormalBackground and KColorScheme::NormalText (foreground) of QPalette::Active. **/
+Q_PROPERTY(QColor gridColor READ gridColor WRITE setGridColor)
+
+/** The default background color is KColorScheme::NormalBackground of QPalette::Active. **/
+Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
+
+Q_PROPERTY(bool autoGridStyle READ autoGridStyle WRITE setAutoGridStyle)
+
 public:
-    /** The graph mode will especify the selection mode we are using at the moment */
-    enum GraphMode {
-        None=0,     /**< Normal behaviour */
-        Pan,        /**< Panning, translates the viewport. */
-        Selection   /**< There is a rectangle delimiting a region, for zooming. */
-    };
-    
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
@@ -81,8 +83,6 @@ public:
     
     void setSelectionModel(QItemSelectionModel* selection);
 
-	virtual void showEvent(QShowEvent* ev);
-
 public Q_SLOTS:
     /** Marks the image as dirty and repaints everything. */
     void forceRepaint() { valid=false; repaint(); }
@@ -90,12 +90,6 @@ public Q_SLOTS:
     /** Sets the viewport to a default viewport. */
     void resetViewport() { setViewport(defViewport); }
     
-    /** Zooms in to the Viewport center */
-    void zoomIn();
-    
-    /** Zooms out */
-    void zoomOut();
-        
     /** Returns whether it has a little border frame. */
     bool isFramed() const { return m_framed; }
     
@@ -113,10 +107,16 @@ public Q_SLOTS:
     //exposed from plotter2d as slots...
     void setXAxisLabel(const QString &label) { Plotter2D::setXAxisLabel(label); }
     void setYAxisLabel(const QString &label) { Plotter2D::setYAxisLabel(label); }
-    void updateGridColor(const QColor &color) { Plotter2D::updateGridColor(color); }
-    void updateTickScale(QString s, qreal v, int n, int d) { Plotter2D::updateTickScale(s,v,n,d); }
-    void setTicksShown(QFlags<Qt::Orientation> o) { Plotter2D::setTicksShown(o); }
-    void setAxesShown(QFlags<Qt::Orientation> o) { Plotter2D::setAxesShown(o); }
+    void setGridColor(const QColor &color) { Plotter2D::setGridColor(color); }
+    void setTicksShown(QFlags<Qt::Orientation> o) { Plotter2D::setShowTickLabels(o); }
+    void setAxesShown(QFlags<Qt::Orientation> o) { Plotter2D::setShowAxes(o); }
+    //TODO  set bgcolor, setbgcolormode auto means that colo is chosses based in lumninosisty onf current bgprofiles
+    
+    /** Zooms in to the Viewport center */
+    virtual void zoomIn() { Plotter2D::zoomIn(true); }
+        
+    /** Zooms out */
+    virtual void zoomOut() { Plotter2D::zoomOut(true); }
     
 private Q_SLOTS:
     void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
@@ -130,6 +130,15 @@ Q_SIGNALS:
     void status(const QString &msg);
     
     void viewportChanged(const QRectF&);
+    
+private:
+    //TODO setviewmodemosusemovemode, pan
+    /** The graph mode will especify the selection mode we are using at the moment */
+    enum GraphMode {
+        None=0,     /**< Normal behaviour */
+        Pan,        /**< Panning, translates the viewport. */
+        Selection   /**< There is a rectangle delimiting a region, for zooming. */
+    };
     
 private:
     virtual void viewportChanged();
@@ -157,7 +166,7 @@ private:
     //presentation
     QPointF ant;
     QRectF defViewport;
-    void drawFunctions(QPaintDevice*);
+    void drawAll(QPaintDevice*); // render grid+plots into paintdevice
         
     void sendStatus(const QString& msg) { emit status(msg); }
     bool m_framed;

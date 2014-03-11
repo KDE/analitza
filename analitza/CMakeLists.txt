@@ -10,7 +10,7 @@ set(analitza_SRCS
 	providederivative.cpp
 	abstractexpressiontransformer.cpp
 	expression.cpp
-	expressionwriter.cpp
+	abstractexpressionvisitor.cpp
 	stringexpressionwriter.cpp
 	mathmlexpressionwriter.cpp
 	mathmlpresentationexpressionwriter.cpp
@@ -56,6 +56,7 @@ install(FILES
 	analyzer.h
 	analitzautils.h
 	expression.h
+	abstractexpressionvisitor.h
 	object.h
 	operations.h
 	operator.h
@@ -63,6 +64,11 @@ install(FILES
 	value.h
 	variables.h
 	vector.h
+	apply.h
+	list.h
+	customobject.h
+	container.h
+	matrix.h
 	expressiontype.h
 	builtinmethods.h
 	importqobjectmetatype.h

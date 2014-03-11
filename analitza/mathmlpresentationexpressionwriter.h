@@ -19,7 +19,7 @@
 #ifndef MATHMLPRESENTATIONEXPRESSIONWRITER_H
 #define MATHMLPRESENTATIONEXPRESSIONWRITER_H
 
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include <QMap>
 #include "operator.h"
 
@@ -34,27 +34,27 @@ namespace Analitza
  * \brief This class represents the mathml expression writer.
  */
 
-class MathMLPresentationExpressionWriter : public ExpressionWriter
+class MathMLPresentationExpressionWriter : public AbstractExpressionVisitor
 {
 	public:
 		typedef QString (*operatorToString)(const Apply* o, MathMLPresentationExpressionWriter* w);
 		MathMLPresentationExpressionWriter(const Object* o);
 		
-		virtual QString accept(const Ci* var);
-		virtual QString accept(const Cn* var);
-		virtual QString accept(const Container* var);
-		virtual QString accept(const Operator* var);
-		virtual QString accept(const Vector* var);
-		virtual QString accept(const List* l);
-		virtual QString accept(const Matrix* m);
-		virtual QString accept(const MatrixRow* c);
-		virtual QString accept(const Apply* a);
-		virtual QString accept(const CustomObject* c);
+		virtual QVariant visit(const Ci* var);
+		virtual QVariant visit(const Cn* var);
+		virtual QVariant visit(const Container* var);
+		virtual QVariant visit(const Operator* var);
+		virtual QVariant visit(const Vector* var);
+		virtual QVariant visit(const List* l);
+		virtual QVariant visit(const Matrix* m);
+		virtual QVariant visit(const MatrixRow* c);
+		virtual QVariant visit(const Apply* a);
+		virtual QVariant visit(const CustomObject* c);
 		
-		QString result() const { return m_result; }
+		QVariant result() const { return m_result; }
 		
 	private:
-		QString m_result;
+		QVariant m_result;
 		static operatorToString m_operatorToPresentation[Operator::nOfOps];
 };
 

@@ -113,11 +113,10 @@ void AbstractSurface::doQuad(int n, int m, const QVector3D &p0,  const QVector3D
 
 void AbstractSurface::doStrip(int n, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3)
 {
-    int i, j;
     QVector3D A, B, buffer[3];
     QVector3D theStrip[MAXSTRIP][2];
 
-    for (i=0; i<=n; i++)
+    for (int i=0; i<=n; i++)
     {
         A = QVector3D((p0.x()*(float)(n-i) + p2.x()*(float)i)/(float)n,
                       (p0.y()*(float)(n-i) + p2.y()*(float)i)/(float)n,
@@ -133,8 +132,8 @@ void AbstractSurface::doStrip(int n, const QVector3D &p0,  const QVector3D &p1, 
     
     buffer[0] = theStrip[0][0];
     buffer[1] = theStrip[0][1];
-    for (i=1; i<=n; i++)
-        for (j=0; j<2; j++)
+    for (int i=1; i<=n; i++)
+        for (int j=0; j<2; j++)
         {
             buffer[2] = theStrip[i][j];
             createFace(buffer);

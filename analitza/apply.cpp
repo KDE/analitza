@@ -17,7 +17,7 @@
  *************************************************************************************/
 
 #include "apply.h"
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include <QStringList>
 #include "variable.h"
 #include "analitzautils.h"
@@ -91,9 +91,9 @@ void Apply::prependBranch(Object* o)
 		m_params.prepend(o);
 }
 
-QString Apply::visit(ExpressionWriter* exp) const
+QVariant Apply::accept(AbstractExpressionVisitor* exp) const
 {
-	return exp->accept(this);
+	return exp->visit(this);
 }
 
 QStringList Apply::bvarStrings() const

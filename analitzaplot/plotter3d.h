@@ -116,7 +116,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         /** Set the color of the grids of the reference plane in the 3D view */
         void setReferencePlaneColor(const QColor &color);
 
-	/**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
+        /**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
         void setUseSimpleRotation(bool simplerot) { m_simpleRotation = simplerot; }
 
         /**  Get information about the current rotarion approach: if return true then rotation is simple. */

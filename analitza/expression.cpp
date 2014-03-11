@@ -26,7 +26,6 @@
 #include "value.h"
 #include "vector.h"
 #include "variable.h"
-#include "expressionwriter.h"
 #include "stringexpressionwriter.h"
 #include "htmlexpressionwriter.h"
 #include "mathmlexpressionwriter.h"
@@ -492,26 +491,26 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
 QString Expression::toHtml() const
 {
 	Q_ASSERT(isCorrect());
-	return HtmlExpressionWriter(d->m_tree).result();
+	return HtmlExpressionWriter(d->m_tree).result().toString();
 }
 
 QString Expression::toMathMLPresentation() const
 {
 	Q_ASSERT(isCorrect());
-	return MathMLPresentationExpressionWriter(d->m_tree).result();
+	return MathMLPresentationExpressionWriter(d->m_tree).result().toString();
 }
 
 QString Expression::toMathML() const
 {
 	Q_ASSERT(isCorrect());
-	return MathMLExpressionWriter(d->m_tree).result();
+	return MathMLExpressionWriter(d->m_tree).result().toString();
 }
 
 QString Expression::toString() const
 {
 	Q_ASSERT(isCorrect());
 	StringExpressionWriter s(d->m_tree);
-	return s.result();
+	return s.result().toString();
 }
 
 enum Object::ObjectType Expression::whatType(const QString& tag)

@@ -17,7 +17,7 @@
  *************************************************************************************/
 
 #include "customobject.h"
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 
 using namespace Analitza;
 
@@ -58,7 +58,7 @@ bool CustomObject::operator==(const CustomObject& obj) const
 	return this==&obj || obj.m_value == m_value;
 }
 
-QString CustomObject::visit(ExpressionWriter* exp) const
+QVariant CustomObject::accept(AbstractExpressionVisitor* exp) const
 {
-	return exp->accept(this);
+	return exp->visit(this);
 }

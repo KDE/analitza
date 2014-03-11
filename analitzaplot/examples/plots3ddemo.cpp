@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
     mainWindow->setCentralWidget(central);
     mainWindow->show();
     view3d->setModel(model);
+    view3d->setFocus();
 
     return app.exec();
 }

@@ -33,18 +33,18 @@ using namespace Analitza;
 
 MathMLExpressionWriter::MathMLExpressionWriter(const Object* o)
 {
-	m_result=o->visit(this);
+	m_result=o->accept(this);
 }
 
-QString MathMLExpressionWriter::accept(const Ci* var)
+QVariant MathMLExpressionWriter::visit(const Ci* var)
 {
 	QString attrib;
 	if(var->isFunction())
 		attrib=" type='function'";
-	return "<ci"+attrib+'>'+var->name()+"</ci>";
+	return QString("<ci"+attrib+'>'+var->name()+"</ci>");
 }
 
-QString MathMLExpressionWriter::accept(const Operator* op)
+QVariant MathMLExpressionWriter::visit(const Operator* op)
 {
 	if(op->operatorType()==Operator::function)
 		return QString();
@@ -52,7 +52,7 @@ QString MathMLExpressionWriter::accept(const Operator* op)
 		return QString("<%1 />").arg(op->name());
 }
 
-QString MathMLExpressionWriter::accept(const Cn* val)
+QVariant MathMLExpressionWriter::visit(const Cn* val)
 {
 	if(val->isBoolean()) {
 		if(val->isTrue())
@@ -68,37 +68,37 @@ QString MathMLExpressionWriter::accept(const Cn* val)
 	}
 }
 
-QString MathMLExpressionWriter::accept(const Vector* vec)
+QVariant MathMLExpressionWriter::visit(const Vector* vec)
 {
 	QStringList elements;
 	for(Vector::const_iterator it=vec->constBegin(); it!=vec->constEnd(); ++it)
 	{
-		elements += (*it)->visit(this);
+		elements += (*it)->accept(this).toString();
 	}
 	return QString("<vector>%1</vector>").arg(elements.join(QString()));
 }
 
-QString MathMLExpressionWriter::accept(const Matrix* m)
+QVariant MathMLExpressionWriter::visit(const Matrix* m)
 {
 	QStringList elements;
 	for(Matrix::const_iterator it=m->constBegin(); it!=m->constEnd(); ++it)
 	{
-		elements += (*it)->visit(this);
+		elements += (*it)->accept(this).toString();
 	}
 	return QString("<matrix>%1</matrix>").arg(elements.join(QString()));
 }
 
-QString MathMLExpressionWriter::accept(const MatrixRow* mr)
+QVariant MathMLExpressionWriter::visit(const MatrixRow* mr)
 {
 	QStringList elements;
 	for(Matrix::const_iterator it=mr->constBegin(); it!=mr->constEnd(); ++it)
 	{
-		elements += (*it)->visit(this);
+		elements += (*it)->accept(this).toString();
 	}
 	return QString("<matrixrow>%1</matrixrow>").arg(elements.join(QString()));
 }
 
-QString MathMLExpressionWriter::accept(const List* vec)
+QVariant MathMLExpressionWriter::visit(const List* vec)
 {
 	QStringList elements;
 	if(vec->size()==0)
@@ -110,39 +110,39 @@ QString MathMLExpressionWriter::accept(const List* vec)
 		return ret;
 	} else {
 		for(List::const_iterator it=vec->constBegin(); it!=vec->constEnd(); ++it)
-			elements += (*it)->visit(this);
+			elements += (*it)->accept(this).toString();
 		
 		return QString("<list>%1</list>").arg(elements.join(QString()));
 	}
 }
 
-QString MathMLExpressionWriter::accept(const Container* c)
+QVariant MathMLExpressionWriter::visit(const Container* c)
 {
 	QString ret;
 	foreach(const Object* o, c->m_params)
-		ret += o->visit(this);
+		ret += o->accept(this).toString();
 	
 	return QString("<%1>%2</%1>").arg(c->tagName()).arg(ret);
 }
 
-QString MathMLExpressionWriter::accept(const Apply* a)
+QVariant MathMLExpressionWriter::visit(const Apply* a)
 {
 	QString ret;
 	
-	ret += a->firstOperator().visit(this);
+	ret += a->firstOperator().accept(this).toString();
 	foreach(const Ci* bvar, a->bvarCi())
-		ret += "<bvar>"+bvar->visit(this)+"</bvar>";
-	if(a->ulimit()) ret += "<uplimit>"+a->ulimit()->visit(this)+"</uplimit>";
-	if(a->dlimit()) ret += "<downlimit>"+a->dlimit()->visit(this)+"</downlimit>";
-	if(a->domain()) ret += "<domainofapplication>"+a->domain()->visit(this)+"</domainofapplication>";
+		ret += "<bvar>"+bvar->accept(this).toString()+"</bvar>";
+	if(a->ulimit()) ret += "<uplimit>"+a->ulimit()->accept(this).toString()+"</uplimit>";
+	if(a->dlimit()) ret += "<downlimit>"+a->dlimit()->accept(this).toString()+"</downlimit>";
+	if(a->domain()) ret += "<domainofapplication>"+a->domain()->accept(this).toString()+"</domainofapplication>";
 	
 	foreach(const Object* o, a->m_params)
-		ret += o->visit(this);
+		ret += o->accept(this).toString();
 	
 	return QString("<apply>%1</apply>").arg(ret);
 }
 
-QString MathMLExpressionWriter::accept(const Analitza::CustomObject*)
+QVariant MathMLExpressionWriter::visit(const Analitza::CustomObject*)
 {
 	return "<!-- custom object -->";
 }

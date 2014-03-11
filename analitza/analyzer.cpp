@@ -1188,6 +1188,11 @@ Object* applyTransformations(Object* root, const QList<Transformation>& trans)
 	return root;
 }
 
+bool actuallyE(const Object* o)
+{
+	return o->type()==Object::variable && static_cast<const Ci*>(o)->name()=="e";
+}
+
 QList<Transformation> simplifications()
 {
 	static QList<Transformation> ret;
@@ -1201,9 +1206,11 @@ QList<Transformation> simplifications()
 		ret += Transformation(Transformation::parse("1**k"), Transformation::parse("1"));
 		ret += Transformation(Transformation::parse("x**1"), Transformation::parse("x"));
 		ret += Transformation(Transformation::parse("(x**y)**z"), Transformation::parse("x**(y*z)"));
-		
+
 		//ln
-		ret += Transformation(Transformation::parse("ln e"), Transformation::parse("1"));
+		QMap<QString, Transformation::treeCheck> eulerNumber;
+		eulerNumber.insert("e", actuallyE);
+		ret += Transformation(Transformation::parse("ln e"), Transformation::parse("1"), eulerNumber);
 	}
 	
 	return ret;

@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2008 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2014 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -16,55 +16,9 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef EXPRESSIONWRITER_H
-#define EXPRESSIONWRITER_H
+#include "abstractexpressionvisitor.h"
 
-#include <QString>
+using namespace Analitza;
 
-#include "analitzaexport.h"
-
-namespace Analitza
-{
-
-class Object;
-class Apply;
-class Ci;
-class Cn;
-class CustomObject;
-class Container;
-class Operator;
-class Vector;
-class List;
-class Matrix;
-class MatrixRow;
-
-/**
- * \class ExpressionWriter
- * 
- * \ingroup AnalitzaModule
- *
- * \brief This class represents an expression writer.
- */
-
-class ANALITZA_EXPORT ExpressionWriter
-{
-	public:
-		virtual ~ExpressionWriter();
-		
-		virtual QString accept(const Operator* var) = 0;
-		virtual QString accept(const Ci* var) = 0;
-		virtual QString accept(const Cn* var) = 0;
-		virtual QString accept(const Container* var) = 0;
-		virtual QString accept(const Vector* var) = 0;
-		virtual QString accept(const List* l) = 0;
-		virtual QString accept(const Apply* a) = 0;
-		virtual QString accept(const CustomObject* c) = 0;
-		virtual QString accept(const Matrix* c) = 0;
-		virtual QString accept(const MatrixRow* c) = 0;
-		
-		virtual QString result() const=0;
-};
-
-}
-
-#endif
+AbstractExpressionVisitor::~AbstractExpressionVisitor()
+{}

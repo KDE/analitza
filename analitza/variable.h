@@ -57,7 +57,7 @@ class ANALITZA_EXPORT Ci : public Object
 		/** Returns the HTML representation of the variable */
 		QString toHtml() const;
 		
-		virtual QString visit(ExpressionWriter*) const;
+		virtual QVariant accept(AbstractExpressionVisitor*) const;
 		virtual bool matches(const Object* pattern, QMap<QString, const Object*>* found) const;
 		Ci* copy() const;
 		

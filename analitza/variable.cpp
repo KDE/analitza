@@ -17,7 +17,7 @@
  *************************************************************************************/
 
 #include "variable.h"
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include "analitzautils.h"
 
 using namespace Analitza;
@@ -39,9 +39,9 @@ Ci* Ci::copy() const
 	return c;
 }
 
-QString Ci::visit(ExpressionWriter* e) const
+QVariant Ci::accept(AbstractExpressionVisitor* e) const
 {
-	return e->accept(this);
+	return e->visit(this);
 }
 
 QString Ci::toMathML() const

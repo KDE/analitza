@@ -148,7 +148,7 @@ class ANALITZA_EXPORT Cn : public Object
 
 		QChar character() const { Q_ASSERT(m_format==Char); return QChar(m_char); }
 
-		virtual QString visit(ExpressionWriter*) const;
+		virtual QVariant accept(AbstractExpressionVisitor*) const;
 		virtual bool isZero() const { return m_value==0.; }
 
 		virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;
