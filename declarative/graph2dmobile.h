@@ -33,7 +33,7 @@ class Graph2DMobile : public QQuickPaintedItem, public Analitza::Plotter2D
 	Q_OBJECT
 	Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
 	Q_PROPERTY(QRectF viewport READ lastViewport WRITE setViewport)
-	Q_PROPERTY(bool squares READ squares WRITE setSquares)
+    Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
 	Q_PROPERTY(bool keepAspectRatio READ keepAspectRatio WRITE setKeepAspectRatio)
 	Q_PROPERTY(bool currentFunction READ currentFunction WRITE setCurrentFunction)
 	Q_PROPERTY(bool ticksShown READ ticksShownAtAll WRITE setTicksShownAtAll)
@@ -49,7 +49,7 @@ class Graph2DMobile : public QQuickPaintedItem, public Analitza::Plotter2D
 		
 		void setCurrentFunction(int f) { m_currentFunction = f; }
 		bool ticksShownAtAll() const { return ticksShown()!=0; }
-		void setTicksShownAtAll(bool shown) { setTicksShown(shown ? Qt::Vertical|Qt::Horizontal : Qt::Orientations(0));}
+		void setTicksShownAtAll(bool shown) { setShowTicks(shown ? Qt::Vertical|Qt::Horizontal : Qt::Orientations(0));}
 		
 	public Q_SLOTS:
 		void translate(qreal x, qreal y);
