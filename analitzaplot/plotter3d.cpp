@@ -207,9 +207,7 @@ void Plotter3D::drawPlots()
         return ;
     }
 
-    //NOTE si esto pasa entonces quiere decir que el proxy empezado a filtrar otros items
-    // y si es asi borro todo lo que esta agregado al la memoria de la tarjeta
-    //esto se hace pues m_itemGeometries es una copia del estado actual de model
+    //clean up everything if the model  and itemGeometries are not in sync
     if (m_model->rowCount() != m_itemGeometries.count())
     {
         foreach (PlotItem *item, m_itemGeometries.keys())
@@ -219,11 +217,9 @@ void Plotter3D::drawPlots()
         }
     }
 
-    /// luego paso a verificar el map de display list no este vacio ... si lo esta lo reconstruyo
-
     if (m_itemGeometries.isEmpty())
     {
-        //NOTE no llamar a ninguna funcion que ejucute un updategl, esto para evitar una recursividad
+        // don't call any function that calls updateGL or we'll go into an infinite recursion
         for (int i = 0; i < m_model->rowCount(); ++i) {
             PlotItem* item = dynamic_cast<Surface*>(itemAt(i));
 
@@ -256,37 +252,7 @@ void Plotter3D::drawPlots()
                 glVertex3d(points[i].x(), points[i].y(), points[i].z());
                 glVertex3d(points[i+1].x(), points[i+1].y(), points[i+1].z());
             }
-
             glEnd();
-
-//             glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries.value(curv).second);
-//             glVertexPointer(3, GL_DOUBLE, 0, 0);
-//             glNormalPointer(GL_DOUBLE, sizeof(double)*3, 0);
-//
-//             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries.value(curv).first);
-//
-//             //BEGIN draw
-//             // start to render polygons
-//             glEnableClientState(GL_NORMAL_ARRAY);
-//             glEnableClientState(GL_VERTEX_ARRAY);
-//
-//             glDrawElements(GL_LINES, indexes.size(), GL_UNSIGNED_INT, 0);
-//
-//             fcolor[0] = 0; fcolor[1] = 0; fcolor[2] = 0; fcolor[3] = 1;
-//             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fcolor);
-//             glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, fcolor);
-//             glDrawElements(GL_POINTS, indexes.size(), GL_UNSIGNED_INT, 0);
-//
-//             glDisableClientState(GL_VERTEX_ARRAY);  // disable vertex arrays
-//             glDisableClientState(GL_NORMAL_ARRAY);  // disable normal arrays
-//             //END draw
-//
-//             // it is good idea to release VBOs with ID 0 after use.
-//             // Once bound with 0, all pointers in gl*Pointer() behave as real
-//             // pointer, so, normal vertex array operations are re-activated
-//             glBindBuffer(GL_ARRAY_BUFFER, 0);
-//             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
         }
         else if (Surface *surf = dynamic_cast<Surface*>(item))
         {
