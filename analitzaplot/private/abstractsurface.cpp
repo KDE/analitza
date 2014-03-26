@@ -144,7 +144,7 @@ void AbstractSurface::doStrip(int n, const QVector3D &p0,  const QVector3D &p1, 
 
 void AbstractSurface::createFace(QVector3D *buffer)
 {
-    QVector3D n = QVector3D::crossProduct(buffer[1] - buffer[0], buffer[2] - buffer[1]).normalized();
+    QVector3D n = QVector3D::normal(buffer[0], buffer[1], buffer[2]);
 
     vertices << buffer[0].x() << buffer[0].y() << buffer[0].z() <<
                 buffer[1].x() << buffer[1].y() << buffer[1].z() <<
