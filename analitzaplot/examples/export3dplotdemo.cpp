@@ -43,9 +43,26 @@ int main(int argc, char** argv)
     QCommandLineParser parser;
     parser.addPositionalArgument("expression", QGuiApplication::translate("option description", "Expression to plot"), "expression...");
     parser.addOption(QCommandLineOption("output", QGuiApplication::translate("option description", "Created filename"), "output.x3d"));
+    parser.addOption(QCommandLineOption("interval", QGuiApplication::translate("option description", "Specifies an interval"), "var=num..num"));
 
     parser.process(app);
     PlotsModel model;
+
+    QMap<QString, QPair<double,double> > intervals;
+    foreach(const QString& interval, parser.values("interval")) {
+        int equalIdx = interval.indexOf('=');
+        int dotdotIdx = interval.indexOf("..");
+
+        if(equalIdx<0 || dotdotIdx<0) {
+            qDebug() << "Intervals should be specified as x=b..c";
+        }
+        bool ok;
+        double from = interval.mid(equalIdx+1, dotdotIdx-equalIdx).toDouble(&ok);
+        Q_ASSERT(ok);
+        double to = interval.mid(dotdotIdx+2).toDouble(&ok);
+        Q_ASSERT(ok);
+        intervals[interval.left(equalIdx)] = qMakePair<double, double>(from, to);
+    }
 
     foreach(const QString& input, parser.positionalArguments()) {
         Expression exp(input);
@@ -59,6 +76,12 @@ int main(int argc, char** argv)
         }
 
         FunctionGraph* it = plot.create(Qt::blue, QStringLiteral("hola"));
+        foreach(const QString& bvar, plot.expression().bvarList()) {
+            QMap< QString, QPair< double, double > >::const_iterator itF = intervals.constFind(bvar);
+            if(itF != intervals.constEnd()) {
+                it->setInterval(itF.key(), itF->first, itF->second);
+            }
+        }
         model.addPlot(it);
     }
     ExportPlotter3D plotter(&model);
