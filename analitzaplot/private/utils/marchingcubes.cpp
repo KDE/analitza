@@ -76,7 +76,7 @@
 //     4---------6
 //         9
 
-sMarching_Cube MarchingCubes::evaluar_cubo(Cube cubo){
+sMarching_Cube MarchingCubes::evaluar_cubo(const Cube& cubo){
     sMarching_Cube res;
     QVector3D punto;
     unsigned short int val;
@@ -213,7 +213,7 @@ QList<sMarching_Cube> MarchingCubes::ejecutar()
 
 void MarchingCubes::_addTri(const QVector3D& a, const QVector3D& b, const QVector3D& c)
 {
-    QVector3D n = QVector3D::crossProduct(b - a, c - b).normalized();
+    QVector3D n = QVector3D::normal(a, b, c);
 
     _vertices << a.x() << a.y() << a.z() <<
                 b.x() << b.y() << b.z() <<
@@ -226,7 +226,7 @@ void MarchingCubes::_addTri(const QVector3D& a, const QVector3D& b, const QVecto
     _indexes.append(_indexes.size());
 }
 
-QList<sArista> MarchingCubes::calcular_cortes(sMarching_Cube cubo){
+QList<sArista> MarchingCubes::calcular_cortes(const sMarching_Cube& cubo){
     QList<sArista> aristas;
     sArista temp;
     //0-1

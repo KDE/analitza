@@ -100,7 +100,7 @@ private:
     double min_grid;
     sLimitesEspacio mundo;
     //Evaluar un cubo
-    sMarching_Cube evaluar_cubo(Cube cubo);
+    sMarching_Cube evaluar_cubo(const Cube& cubo);
 
     //Busqueda recursiva (breadth search)
     QList<Cube> breadth_rec(int cubos_lado);
@@ -134,7 +134,7 @@ public:
     
 private:
     //Calcular los cortes
-    QList<sArista> calcular_cortes(sMarching_Cube cubo);
+    QList<sArista> calcular_cortes(const sMarching_Cube& cubo);
     bool signo_opuesto(double a, double b);
 
     //Calcular la posicion en la arista
