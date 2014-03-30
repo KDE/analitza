@@ -76,21 +76,21 @@
 //     4---------6
 //         9
 
-sMarching_Cube MarchingCubes::evaluar_cubo(Cube cubo){
+sMarching_Cube MarchingCubes::evalCube(Cube cubo){
     sMarching_Cube res;
     QVector3D punto;
     unsigned short int val;
 
 
-    //Datos generales
-    res.centro = cubo.center();
-    res.medio_lado = cubo.halfEdge();
+    //basic data
+    res.center = cubo.center();
+    res.half_size = cubo.halfEdge();
 
-    //Llenar vertices
-    double x = res.centro.x();
-    double y = res.centro.y();
-    double z = res.centro.z();
-    double hedge = res.medio_lado;
+    //fill vertices
+    double x = res.center.x();
+    double y = res.center.y();
+    double z = res.center.z();
+    double hedge = res.half_size;
     
     
     res.vertices[0] = evalScalarField(x-hedge, y-hedge, z-hedge);
@@ -102,25 +102,27 @@ sMarching_Cube MarchingCubes::evaluar_cubo(Cube cubo){
     res.vertices[6] = evalScalarField(x+hedge, y+hedge, z-hedge);
     res.vertices[7] = evalScalarField(x+hedge, y+hedge, z+hedge);
 
-    //Definir tipo
-    res.tipo = 0;
+    //define topology type
+    res.type = 0;
     val=1;
-    //Sumar cada vertice segun su posicion
+    
+    //sum each vertex based on position
     for(unsigned int i=0;i<8;i++){
         if(res.vertices[i] > 0){
-            res.tipo += val;
+            res.type += val;
         }
         val*=2;
     }
+    
     return res;
 }
 
-QList<Cube> MarchingCubes::breadth_rec(int cubos_lado){
+QList<Cube> MarchingCubes::breadthSearch(int cubos_lado){
     Cube cubo;
     sMarching_Cube m_cubo;
     bool salir = false;
     QList<Cube> cubos;
-    cubo.setHalfEdge(largo_mundo/(2*cubos_lado));
+    cubo.setHalfEdge(m_worldLength/(2*cubos_lado));
 
     double x = 0;
     double y = 0;
@@ -128,50 +130,48 @@ QList<Cube> MarchingCubes::breadth_rec(int cubos_lado){
     
 // static const double iteration_square_val = 0.5;
 
-    for(int i=mundo.minX;i<=mundo.maxX;i++){
+    for(int i=m_worldLimits.minX;i<=m_worldLimits.maxX;i++){
 //         cubo.centro.x() = (2*i+1)*cubo.medio_lado;
         x = (2*i+1)*cubo.halfEdge();
         
-        for(int j=mundo.minY;j<=mundo.maxY;j++){
+        for(int j=m_worldLimits.minY;j<=m_worldLimits.maxY;j++){
             y = (2*j+1)*cubo.halfEdge();
-            for(int k=mundo.minZ;k<=mundo.maxZ;k++){
+            for(int k=m_worldLimits.minZ;k<=m_worldLimits.maxZ;k++){
                 z = (2*k+1)*cubo.halfEdge();
                 cubo.setCenter(x,y,z);
-                m_cubo = evaluar_cubo(cubo);
-                if(m_cubo.tipo != 0 && m_cubo.tipo != 255){
-                    //Esta dentro del cubo. Detener busqueda
+                m_cubo = evalCube(cubo);
+                if(m_cubo.type != 0 && m_cubo.type != 255){
+                    //if is inside the cube, stop the search ...
                     salir = true;
                     cubos.append(cubo);
                 }
             }
         }
     }
-    if(!salir && 2*cubo.halfEdge() > min_grid){
-        cubos.append(breadth_rec(cubos_lado*2));
+    if(!salir && 2*cubo.halfEdge() > m_minCubeSize){
+        cubos.append(breadthSearch(cubos_lado*2));
         //mundo.maxX*=2; mundo.maxY*=2; mundo.maxZ*=2;
     }
     return cubos;
 }
 
-QList<sMarching_Cube> MarchingCubes::depth_rec(Octree *arbol, sNodo *nodo){
+QList<sMarching_Cube> MarchingCubes::depthSearch(Octree *arbol, sNode *nodo){
     QList<sMarching_Cube> cubos;
     sMarching_Cube m_cubo;
 
-    //Calcular si la superfice lo corta
-    m_cubo = evaluar_cubo(nodo->cubo);
+    //test if surface "cut" the cube
+    m_cubo = evalCube(nodo->cube);
 
-    if(m_cubo.tipo != 0 && m_cubo.tipo != 255){
-        //Superfice corta
-        if(m_cubo.medio_lado*2 > min_grid){ 
+    if(m_cubo.type != 0 && m_cubo.type != 255){
+        //if intersection
+        if(m_cubo.half_size*2 > m_minCubeSize){ 
             //Seguir bajando
-            arbol->bajarNivel(nodo);
+            arbol->downLevel(nodo);
             for(unsigned int i=0; i<8; i++){
-                cubos.append(depth_rec(arbol,nodo->nodos[i]));
+                cubos.append(depthSearch(arbol,nodo->nodes[i]));
             }
-            //No ayuda mucho, pero se puede borrar el arbol conforme ya no se necesite
-            //arbol->borrarHijos(nodo);
         } else {
-            //Detener
+            //stop condition
             cubos.append(m_cubo);
         }
     }
@@ -183,35 +183,33 @@ MarchingCubes::MarchingCubes()
 
 }
 
-void MarchingCubes::setupSpace(const sLimitesEspacio &spaceLimits)
+void MarchingCubes::setupSpace(const SpaceLimits &spaceLimits)
 {
-    //TODO no magc numbers
-    min_grid = 0.2;
-    largo_mundo = 1;
-    mundo = spaceLimits;    
+    //TODO no magic numbers
+    m_minCubeSize = 0.2;
+    m_worldLength = 1;
+    m_worldLimits = spaceLimits;    
 }
 
 MarchingCubes::~MarchingCubes()
 {
 }
 
-QList<sMarching_Cube> MarchingCubes::ejecutar()
+QList<sMarching_Cube> MarchingCubes::getCubes()
 {
     QList<sMarching_Cube> cubos;
-    QList<Cube> found = breadth_rec(largo_mundo);
+    QList<Cube> found = breadthSearch(m_worldLength);
 
-    //Ubicar los cubos (depth search octree)
     foreach(const Cube& iterador, found){
         Octree* arbol = new Octree(iterador);
-        cubos.append(depth_rec(arbol, arbol->get_raiz()));
+        cubos.append(depthSearch(arbol, arbol->getRoot()));
         delete arbol;
     }
 
-    //Devolver los cubos
     return cubos;
 }
 
-void MarchingCubes::_addTri(const QVector3D& a, const QVector3D& b, const QVector3D& c)
+void MarchingCubes::apendTriangle(const QVector3D& a, const QVector3D& b, const QVector3D& c)
 {
     QVector3D n = QVector3D::crossProduct(b - a, c - b).normalized();
 
@@ -226,113 +224,113 @@ void MarchingCubes::_addTri(const QVector3D& a, const QVector3D& b, const QVecto
     _indexes.append(_indexes.size());
 }
 
-QList<sArista> MarchingCubes::calcular_cortes(sMarching_Cube cubo){
-    QList<sArista> aristas;
-    sArista temp;
+QList<Edge> MarchingCubes::computeIntersections(sMarching_Cube cubo){
+    QList<Edge> aristas;
+    Edge temp;
     //0-1
-    if(signo_opuesto(cubo.vertices[0],cubo.vertices[1])){
-        temp.corte = QVector3D(cubo.centro.x()-cubo.medio_lado,
-                               cubo.centro.y()-cubo.medio_lado,
-                               cubo.centro.z()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[0],cubo.vertices[1]));
+    if(oppositeSign(cubo.vertices[0],cubo.vertices[1])){
+        temp.cut = QVector3D(cubo.center.x()-cubo.half_size,
+                               cubo.center.y()-cubo.half_size,
+                               cubo.center.z()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[0],cubo.vertices[1]));
         temp.vertices[0] = 0;
         temp.vertices[1] = 1;
         aristas.append(temp);
     }
     //0-2
-    if(signo_opuesto(cubo.vertices[0],cubo.vertices[2])){
-        temp.corte = QVector3D(cubo.centro.x()-cubo.medio_lado,
-                               cubo.centro.y()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[0],cubo.vertices[2]),
-                               cubo.centro.z()-cubo.medio_lado);
+    if(oppositeSign(cubo.vertices[0],cubo.vertices[2])){
+        temp.cut = QVector3D(cubo.center.x()-cubo.half_size,
+                               cubo.center.y()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[0],cubo.vertices[2]),
+                               cubo.center.z()-cubo.half_size);
         temp.vertices[0] = 0;
         temp.vertices[1] = 2;
         aristas.append(temp);
     }
     //0-4
-    if(signo_opuesto(cubo.vertices[0],cubo.vertices[4])){
-        temp.corte = QVector3D(cubo.centro.x()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[0],cubo.vertices[4]),
-                               cubo.centro.y()-cubo.medio_lado,
-                               cubo.centro.z()-cubo.medio_lado);
+    if(oppositeSign(cubo.vertices[0],cubo.vertices[4])){
+        temp.cut = QVector3D(cubo.center.x()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[0],cubo.vertices[4]),
+                               cubo.center.y()-cubo.half_size,
+                               cubo.center.z()-cubo.half_size);
         temp.vertices[0] = 0;
         temp.vertices[1] = 4;
         aristas.append(temp);
     }
     //1-3
-    if(signo_opuesto(cubo.vertices[1],cubo.vertices[3])){
-        temp.corte = QVector3D(cubo.centro.x()-cubo.medio_lado,
-                               cubo.centro.y()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[1],cubo.vertices[3]),
-                               cubo.centro.z()+cubo.medio_lado);
+    if(oppositeSign(cubo.vertices[1],cubo.vertices[3])){
+        temp.cut = QVector3D(cubo.center.x()-cubo.half_size,
+                               cubo.center.y()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[1],cubo.vertices[3]),
+                               cubo.center.z()+cubo.half_size);
         temp.vertices[0] = 1;
         temp.vertices[1] = 3;
         aristas.append(temp);
     }
     //1-5
-    if(signo_opuesto(cubo.vertices[1],cubo.vertices[5])){
-        temp.corte = QVector3D(cubo.centro.x()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[1],cubo.vertices[5]),
-                           cubo.centro.y()-cubo.medio_lado,
-                           cubo.centro.z()+cubo.medio_lado);
+    if(oppositeSign(cubo.vertices[1],cubo.vertices[5])){
+        temp.cut = QVector3D(cubo.center.x()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[1],cubo.vertices[5]),
+                           cubo.center.y()-cubo.half_size,
+                           cubo.center.z()+cubo.half_size);
         temp.vertices[0] = 1;
         temp.vertices[1] = 5;
         aristas.append(temp);
     }
     //2-3
-    if(signo_opuesto(cubo.vertices[2],cubo.vertices[3])){
-        temp.corte = QVector3D(cubo.centro.x()-cubo.medio_lado,
-                               cubo.centro.y()+cubo.medio_lado,
-                               cubo.centro.z()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[2],cubo.vertices[3]));
+    if(oppositeSign(cubo.vertices[2],cubo.vertices[3])){
+        temp.cut = QVector3D(cubo.center.x()-cubo.half_size,
+                               cubo.center.y()+cubo.half_size,
+                               cubo.center.z()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[2],cubo.vertices[3]));
         temp.vertices[0] = 2;
         temp.vertices[1] = 3;
         aristas.append(temp);
     }
     //2-6
-    if(signo_opuesto(cubo.vertices[2],cubo.vertices[6])){
-        temp.corte = QVector3D(cubo.centro.x()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[2],cubo.vertices[6]),
-                           cubo.centro.y()+cubo.medio_lado,
-                           cubo.centro.z()-cubo.medio_lado);
+    if(oppositeSign(cubo.vertices[2],cubo.vertices[6])){
+        temp.cut = QVector3D(cubo.center.x()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[2],cubo.vertices[6]),
+                           cubo.center.y()+cubo.half_size,
+                           cubo.center.z()-cubo.half_size);
         temp.vertices[0] = 2;
         temp.vertices[1] = 6;
         aristas.append(temp);
     }
     //3-7
-    if(signo_opuesto(cubo.vertices[3],cubo.vertices[7])){
-        temp.corte = QVector3D(cubo.centro.x()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[3],cubo.vertices[7]),
-                           cubo.centro.y()+cubo.medio_lado,
-                           cubo.centro.z()+cubo.medio_lado);
+    if(oppositeSign(cubo.vertices[3],cubo.vertices[7])){
+        temp.cut = QVector3D(cubo.center.x()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[3],cubo.vertices[7]),
+                           cubo.center.y()+cubo.half_size,
+                           cubo.center.z()+cubo.half_size);
         temp.vertices[0] = 3;
         temp.vertices[1] = 7;
         aristas.append(temp);
     }
     //4-5
-    if(signo_opuesto(cubo.vertices[4],cubo.vertices[5])){
-        temp.corte = QVector3D(cubo.centro.x()+cubo.medio_lado,
-                               cubo.centro.y()-cubo.medio_lado,
-                               cubo.centro.z()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[4],cubo.vertices[5]));
+    if(oppositeSign(cubo.vertices[4],cubo.vertices[5])){
+        temp.cut = QVector3D(cubo.center.x()+cubo.half_size,
+                               cubo.center.y()-cubo.half_size,
+                               cubo.center.z()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[4],cubo.vertices[5]));
         temp.vertices[0] = 4;
         temp.vertices[1] = 5;
         aristas.append(temp);
     }
     //4-6
-    if(signo_opuesto(cubo.vertices[4],cubo.vertices[6])){
-        temp.corte = QVector3D(cubo.centro.x()+cubo.medio_lado,
-                               cubo.centro.y()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[4],cubo.vertices[6]),
-                               cubo.centro.z()-cubo.medio_lado);
+    if(oppositeSign(cubo.vertices[4],cubo.vertices[6])){
+        temp.cut = QVector3D(cubo.center.x()+cubo.half_size,
+                               cubo.center.y()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[4],cubo.vertices[6]),
+                               cubo.center.z()-cubo.half_size);
         temp.vertices[0] = 4;
         temp.vertices[1] = 6;
         aristas.append(temp);
     }
     //5-7
-    if(signo_opuesto(cubo.vertices[5],cubo.vertices[7])){
-        temp.corte = QVector3D(cubo.centro.x()+cubo.medio_lado,
-                               cubo.centro.y()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[5],cubo.vertices[7]),
-                               cubo.centro.z()+cubo.medio_lado);
+    if(oppositeSign(cubo.vertices[5],cubo.vertices[7])){
+        temp.cut = QVector3D(cubo.center.x()+cubo.half_size,
+                               cubo.center.y()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[5],cubo.vertices[7]),
+                               cubo.center.z()+cubo.half_size);
         temp.vertices[0] = 5;
         temp.vertices[1] = 7;
         aristas.append(temp);
     }
     //6-7
-    if(signo_opuesto(cubo.vertices[6],cubo.vertices[7])){
-        temp.corte = QVector3D(cubo.centro.x()+cubo.medio_lado,
-                               cubo.centro.y()+cubo.medio_lado,
-                               cubo.centro.z()-cubo.medio_lado+2*cubo.medio_lado*lineal(cubo.vertices[6],cubo.vertices[7]));
+    if(oppositeSign(cubo.vertices[6],cubo.vertices[7])){
+        temp.cut = QVector3D(cubo.center.x()+cubo.half_size,
+                               cubo.center.y()+cubo.half_size,
+                               cubo.center.z()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[6],cubo.vertices[7]));
         temp.vertices[0] = 6;
         temp.vertices[1] = 7;
         aristas.append(temp);
@@ -340,39 +338,38 @@ QList<sArista> MarchingCubes::calcular_cortes(sMarching_Cube cubo){
     return aristas;
 }
 
-bool MarchingCubes::signo_opuesto(double a, double b){
+bool MarchingCubes::oppositeSign(double a, double b){
     return ((a > 0 && b <= 0) || (a <= 0 && b > 0));
 }
 
-double MarchingCubes::lineal(double vert_1, double vert_2){
+double MarchingCubes::linearInterpolation(double vert_1, double vert_2){
     //Posicion de 0 a 1
     return qAbs(vert_1/(vert_1 - vert_2));
 }
 
-void MarchingCubes::agregar_triangulos(QList<QVector3D> &lista_triangulos){
+void MarchingCubes::appendTriangles(QList<QVector3D> &lista_triangulos){
     
     for(int i=0; i<lista_triangulos.count();i+=3){
         
         if (lista_triangulos.size()-3 < i)
             continue;
 
-        _addTri(lista_triangulos.at(i),lista_triangulos.at(i+1),lista_triangulos.at(i+2));
+        apendTriangle(lista_triangulos.at(i),lista_triangulos.at(i+1),lista_triangulos.at(i+2));
 
     }
 
 }
 
-//Tipos:
-void MarchingCubes::identificar_tipo(const sMarching_Cube& cubo){
-    QList<sArista> aristas;
+void MarchingCubes::computeTopologyType(const sMarching_Cube& cubo){
+    QList<Edge> aristas;
     QList<unsigned int> vertices;
     unsigned int it;
 
     //Conseguir aristas y vertices
-    aristas = calcular_cortes(cubo);
+    aristas = computeIntersections(cubo);
     it=0;
     for(unsigned int i=1; i<129; i*=2){
-        if((cubo.tipo & i) == i){
+        if((cubo.type & i) == i){
             vertices.append(it);
         }
         it++;
@@ -381,41 +378,41 @@ void MarchingCubes::identificar_tipo(const sMarching_Cube& cubo){
         it=0;
         vertices.clear();
         for(unsigned int i=1; i<129; i*=2){
-            if((cubo.tipo & i) != i){
+            if((cubo.type & i) != i){
                 vertices.append(it);
             }
             it++;
         }
     }
 
-    //Identificar tipo
+    //get type
     switch(aristas.count()){
     case 3:
-        //Tipo 1
-        tipo01(aristas, vertices);
+        //type 1
+        type01(aristas, vertices);
         return ;
     case 4:
-        //Tipo 2, 5
+        //types 2, 5
         if(vertices.count() == 2){
-            //Tipo 2
-            tipo02(aristas);
+            //type 2
+            type02(aristas);
             return ;
         } else {
-            //Tipo 5
-            tipo05(aristas, vertices);
+            //type 5
+            type05(aristas, vertices);
             return ;
         }
     case 5:
     {
-        //Tipo 4
-        tipo04(aristas, vertices);
+        //type 4
+        type04(aristas, vertices);
         return ;
     }
     case 6:
-        //Tipo 3, 8, 9, 10, 14
+        //types 3, 8, 9, 10, 14
         if(vertices.count() == 2){
-            //Tipo 3 o 10 -> El tipo01 es capaz de dibujar estos casos
-             tipo01(aristas, vertices); return ;
+            //types 3 or 10 -> type01 can draw this cases too
+             type01(aristas, vertices); return ;
         } else {
             for(int i=0; i<vertices.count(); i++){
                 bool tiene_arista = false;
@@ -427,23 +424,23 @@ void MarchingCubes::identificar_tipo(const sMarching_Cube& cubo){
                 }
                 if(!tiene_arista){
                     //Tipo 8
-                    tipo08(aristas, vertices, i);
+                    type08(aristas, vertices, i);
                     return ;
                 }
             }
-            //Tipo 9 o 14 (son iguales)
-            tipo09(aristas,vertices);
+            //types 9 or 14 (are the same)
+            type09(aristas,vertices);
             return ;
         }
     case 7:
-        //Tipo 11
+        //type 11
         {
-            tipo11(aristas, vertices);
+            type11(aristas, vertices);
             return ;
         }
     case 8:
     {
-        //Tipo 6, 13
+        //types 6, 13
         bool encontrado;
         for(int i=0; i<vertices.count()-1; i++){
             encontrado = true;
@@ -457,62 +454,61 @@ void MarchingCubes::identificar_tipo(const sMarching_Cube& cubo){
                 }
             }
             if(encontrado){
-                //Tipo 6
-                tipo06(aristas, vertices, i);
+                //type 6
+                type06(aristas, vertices, i);
                 return ;
             }
         }
-        //Tipo 13
-        tipo13(aristas, vertices);
+        //type 13
+        type13(aristas, vertices);
         return ;
     }
     case 9:
-        //Tipo 12 -> El tipo01 es capaz de dibujar este caso
+        //type 12 -> type01 can draw this case
         {
-        tipo01(aristas, vertices);
+        type01(aristas, vertices);
         return ;
         }
     case 12:
-        //Tipo 7 -> El tipo01 es capaz de dibujar este caso
+        //type 7 -> type01 can draw this case
         {
-                    tipo01(aristas, vertices);
+                    type01(aristas, vertices);
             return ;
             
         }
-    default: qDebug() << "Error al calcular el tipo"; break;
-//         printf("Error al calcular tipo\n");
+    default: qDebug() << "Can't compute the surface type"; break;
     }
 }
 
-void MarchingCubes::tipo01(QList<sArista> aristas, QList<unsigned int> vertices){
+void MarchingCubes::type01(QList<Edge> aristas, QList<unsigned int> vertices){
     QList<QVector3D> triangulos;
-    //Pintar los triangulos
+
     for(int i=0; i<vertices.count(); i++){
         for(int j=0; j<aristas.count(); j++){
             if(aristas.at(j).vertices[0]==vertices[i] || aristas.at(j).vertices[1]==vertices[i]){
-                triangulos << aristas.at(j).corte;
+                triangulos << aristas.at(j).cut;
             }
         }
     }
-    agregar_triangulos(triangulos);
+    appendTriangles(triangulos);
 }
-void MarchingCubes::tipo02(QList<sArista> aristas){
+void MarchingCubes::type02(QList<Edge> aristas){
     QList<QVector3D> triangulos;
-    triangulos << aristas.at(0).corte;
-    triangulos << aristas.at(1).corte;
-    triangulos << aristas.at(2).corte;
-    triangulos << aristas.at(1).corte;
-    triangulos << aristas.at(2).corte;
-    triangulos << aristas.at(3).corte;
-    agregar_triangulos(triangulos);
+    triangulos << aristas.at(0).cut;
+    triangulos << aristas.at(1).cut;
+    triangulos << aristas.at(2).cut;
+    triangulos << aristas.at(1).cut;
+    triangulos << aristas.at(2).cut;
+    triangulos << aristas.at(3).cut;
+    appendTriangles(triangulos);
 }
 
-void MarchingCubes::tipo04(QList<sArista> aristas, QList<unsigned int> vertices){
+void MarchingCubes::type04(QList<Edge> aristas, QList<unsigned int> vertices){
     QList<QVector3D> triangulos;
     unsigned int encontrado, sentido, pos_arista;
     QList< QList<unsigned int> > pos;
 
-    //Encontrar el vertice con solo un corte asociado
+    //find the vertex with just one cut
     for(int i=0;i<vertices.count();i++){
         encontrado = 0;
         for(int j=0; j<aristas.count(); j++){
@@ -525,16 +521,16 @@ void MarchingCubes::tipo04(QList<sArista> aristas, QList<unsigned int> vertices)
             }
         }
         if(encontrado == 1){
-            //Tengo el vertice solitario en ´i´, pintar primer triangulo
+            //we have the singleton vertex in i, so we can get first triangle
             sentido = aristas.at(pos_arista).vertices[1]-aristas.at(pos_arista).vertices[0];
             for(int j=0; j<aristas.count(); j++){
                 if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-                    triangulos << aristas.at(j).corte;
+                    triangulos << aristas.at(j).cut;
                 }
             }
             aristas.removeAt(pos_arista);
 
-            //Agrupar por vertice comun
+            //group by common vertex
             for(int k=0;k<vertices.count();k++){
                 if(i==k){
                     continue;
@@ -547,32 +543,32 @@ void MarchingCubes::tipo04(QList<sArista> aristas, QList<unsigned int> vertices)
                 }
             }
 
-            //Primer triangulo
-            triangulos << aristas.at(pos.at(0).at(0)).corte;
-            triangulos << aristas.at(pos.at(0).at(1)).corte;
+            //first triangle
+            triangulos << aristas.at(pos.at(0).at(0)).cut;
+            triangulos << aristas.at(pos.at(0).at(1)).cut;
             for(int j=0; j<pos.at(1).count(); j++){
                 if(aristas.at(pos.at(1).at(j)).vertices[1] - aristas.at(pos.at(1).at(j)).vertices[0] == sentido){
-                    triangulos << aristas.at(pos.at(1).at(j)).corte;
+                    triangulos << aristas.at(pos.at(1).at(j)).cut;
                 }
             }
 
-            //Segundo triangulo
-            triangulos << aristas.at(pos.at(1).at(0)).corte;
-            triangulos << aristas.at(pos.at(1).at(1)).corte;
+            //second triangle
+            triangulos << aristas.at(pos.at(1).at(0)).cut;
+            triangulos << aristas.at(pos.at(1).at(1)).cut;
             for(int j=0; j<pos.at(0).count(); j++){
                 if(aristas.at(pos.at(0).at(j)).vertices[1] - aristas.at(pos.at(0).at(j)).vertices[0] != sentido){
-                    triangulos << aristas.at(pos.at(0).at(j)).corte;
+                    triangulos << aristas.at(pos.at(0).at(j)).cut;
                 }
             }
             break;
         }
     }
-    agregar_triangulos(triangulos);
+    appendTriangles(triangulos);
 }
-void MarchingCubes::tipo05(QList<sArista> aristas, QList<unsigned int> vertices){
+void MarchingCubes::type05(QList<Edge> aristas, QList<unsigned int> vertices){
     QList<QVector3D> triangulos;
     int vertice_arista[4];
-    //Identificar cada vertice con su arista (los vertices estan ordenados de menor a mayor)
+    //indentify each vertex with its edges (vertices are sort from low to high)
     for(int i=0; i<vertices.count(); i++){
         for(int j=0; j<aristas.count(); j++){
             if(aristas.at(j).vertices[0] == vertices.at(i) || aristas.at(j).vertices[1] == vertices.at(i)){
@@ -582,20 +578,20 @@ void MarchingCubes::tipo05(QList<sArista> aristas, QList<unsigned int> vertices)
         }
     }
     //Pintar triangulos
-    triangulos << aristas.at(vertice_arista[0]).corte;
-    triangulos << aristas.at(vertice_arista[1]).corte;
-    triangulos << aristas.at(vertice_arista[2]).corte;
+    triangulos << aristas.at(vertice_arista[0]).cut;
+    triangulos << aristas.at(vertice_arista[1]).cut;
+    triangulos << aristas.at(vertice_arista[2]).cut;
     triangulos << triangulos.at(1);
     triangulos << triangulos.at(2);
-    triangulos << aristas.at(vertice_arista[3]).corte;
+    triangulos << aristas.at(vertice_arista[3]).cut;
 
-    agregar_triangulos(triangulos);
+    appendTriangles(triangulos);
 }
-void MarchingCubes::tipo06(QList<sArista> aristas, QList<unsigned int> vertices, int ind_vertice_solitario){
-    //Tipo 1 + 4
-    QList<sArista> aristas2;
+void MarchingCubes::type06(QList<Edge> aristas, QList<unsigned int> vertices, int ind_vertice_solitario){
+    //type 1 + 4
+    QList<Edge> aristas2;
     QList<unsigned int> vertices2;
-    //Generar el aristas2
+    //generate edge2
     for(int i=0; i<aristas.count();i++){
         if(aristas.at(i).vertices[0] != vertices.at(ind_vertice_solitario)
            && aristas.at(i).vertices[1] != vertices.at(ind_vertice_solitario)){
@@ -608,7 +604,7 @@ void MarchingCubes::tipo06(QList<sArista> aristas, QList<unsigned int> vertices,
     vertices.removeAt(ind_vertice_solitario);
 }
 
-void MarchingCubes::tipo08(QList<sArista> aristas, QList<unsigned int> vertices, unsigned int ind_vertice_solitario){
+void MarchingCubes::type08(QList<Edge> aristas, QList<unsigned int> vertices, unsigned int ind_vertice_solitario){
     QList<QVector3D> triangulos;
     unsigned int ind_vert = 0, sentido;
     QList<int> orden;
@@ -616,21 +612,21 @@ void MarchingCubes::tipo08(QList<sArista> aristas, QList<unsigned int> vertices,
         ind_vert = 1;
     }
 
-    //Unir dos puntos asociados al primer vertice
+    //join 2 points associated with first vertex
     for(int j=0; j<aristas.count(); j++){
         if(aristas.at(j).vertices[0] == vertices.at(ind_vert) || aristas.at(j).vertices[1] == vertices.at(ind_vert)){
-            triangulos << aristas.at(j).corte;
+            triangulos << aristas.at(j).cut;
             orden.append(j);
         }
     }
-    //Unir con los puntos asociados al 2do vertice
+    //join with points associated with 2nd vertex
     sentido = aristas.at(orden.at(0)).vertices[1] - aristas.at(orden.at(0)).vertices[0];
     for(int j=0; j<aristas.count(); j++){
         if(orden.at(0) == j || orden.at(1) == j){
             continue;
         }
         if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-            triangulos << aristas.at(j).corte;
+            triangulos << aristas.at(j).cut;
             orden.append(j);
             for(int k=0; k<vertices.count(); k++){
                 if(aristas.at(j).vertices[0] == vertices.at(k) || aristas.at(j).vertices[1] == vertices.at(k)){
@@ -646,12 +642,12 @@ void MarchingCubes::tipo08(QList<sArista> aristas, QList<unsigned int> vertices,
     for(int j=0; j<aristas.count(); j++){
         if((aristas.at(j).vertices[0] == vertices.at(ind_vert) || aristas.at(j).vertices[1] == vertices.at(ind_vert))
             && (aristas.at(j).vertices[1] - aristas.at(j).vertices[0] != sentido)){
-            triangulos << aristas.at(j).corte;
+            triangulos << aristas.at(j).cut;
             orden.append(j);
             break;
         }
     }
-    //2 triangulos pintados, faltan 2
+    //2 triangles, we need 2 more ...
     sentido = aristas.at(orden.at(1)).vertices[1] - aristas.at(orden.at(1)).vertices[0];
     triangulos << triangulos.at(0);
     triangulos << triangulos.at(2);
@@ -661,7 +657,7 @@ void MarchingCubes::tipo08(QList<sArista> aristas, QList<unsigned int> vertices,
             continue;
         }
         if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-            triangulos << aristas.at(j).corte;
+            triangulos << aristas.at(j).cut;
             orden.append(j);
             for(int k=0; k<vertices.count(); k++){
                 if(aristas.at(j).vertices[0] == vertices.at(k) || aristas.at(j).vertices[1] == vertices.at(k)){
@@ -677,22 +673,22 @@ void MarchingCubes::tipo08(QList<sArista> aristas, QList<unsigned int> vertices,
     for(int j=0; j<aristas.count(); j++){
         if((aristas.at(j).vertices[0] == vertices.at(ind_vert) || aristas.at(j).vertices[1] == vertices.at(ind_vert))
             && (aristas.at(j).vertices[1] - aristas.at(j).vertices[0] != sentido)){
-            triangulos << aristas.at(j).corte;
+            triangulos << aristas.at(j).cut;
             orden.append(j);
             break;
         }
     }
 
-    agregar_triangulos(triangulos);
+    appendTriangles(triangulos);
 }
-void MarchingCubes::tipo09(QList<sArista> aristas, QList<unsigned int> vertices){
+void MarchingCubes::type09(QList<Edge> aristas, QList<unsigned int> vertices){
     QList<QVector3D> triangulos;
     QList<int> vertices_doble;
     QList< QList<int> > aristas_doble;
     bool doble;
     unsigned int sentido, eje_compartido;
 
-    //Encontrar los vertices dobles
+    //find double vertices
     for(int i=0; i<vertices.count(); i++){
         doble = false;
         for(int j=0; j<aristas.count(); j++){
@@ -706,7 +702,7 @@ void MarchingCubes::tipo09(QList<sArista> aristas, QList<unsigned int> vertices)
             }
         }
     }
-    //Encontrar aristas de los vertices dobles
+    //find vertices of double vertices
     aristas_doble.append(QList<int>());
     aristas_doble.append(QList<int>());
     for(int j=0; j<aristas.count(); j++){
@@ -716,7 +712,7 @@ void MarchingCubes::tipo09(QList<sArista> aristas, QList<unsigned int> vertices)
             aristas_doble.back().append(j);
         }
     }
-    //Encontrar eje compartido
+    //find shared axis
     for(int i=0; i<2; i++){
         for(int j=0; j<2; j++){
             if(aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0] ==
@@ -726,75 +722,75 @@ void MarchingCubes::tipo09(QList<sArista> aristas, QList<unsigned int> vertices)
             }
         }
     }
-    //Primer triangulo
+    //first triangle
     for(int i=0; i<2; i++){
-        triangulos << aristas.at(aristas_doble.at(0).at(i)).corte;
+        triangulos << aristas.at(aristas_doble.at(0).at(i)).cut;
     }
     for(int i=0; i<2; i++){
         if(aristas.at(aristas_doble.at(1).at(i)).vertices[1] - aristas.at(aristas_doble.at(1).at(i)).vertices[0] == eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(1).at(i)).corte;
+            triangulos << aristas.at(aristas_doble.at(1).at(i)).cut;
             break;
        }
     }
-    //Segundo triangulo
+    //second triangle
     for(int i=0; i<2; i++){
-        triangulos << aristas.at(aristas_doble.at(1).at(i)).corte;
+        triangulos << aristas.at(aristas_doble.at(1).at(i)).cut;
     }
     for(int i=0; i<2; i++){
         if(aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0] == eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(0).at(i)).corte;
+            triangulos << aristas.at(aristas_doble.at(0).at(i)).cut;
             break;
        }
     }
-    //Tercer triangulo
+    //third triangle
     for(int i=0; i<2; i++){
         if(aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0] == eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(0).at(i)).corte;
+            triangulos << aristas.at(aristas_doble.at(0).at(i)).cut;
             break;
        }
     }
     for(int i=0; i<2; i++){
         if(aristas.at(aristas_doble.at(1).at(i)).vertices[1] - aristas.at(aristas_doble.at(1).at(i)).vertices[0] != eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(1).at(i)).corte;
+            triangulos << aristas.at(aristas_doble.at(1).at(i)).cut;
             sentido = aristas.at(aristas_doble.at(1).at(i)).vertices[1] - aristas.at(aristas_doble.at(1).at(i)).vertices[0];
             break;
        }
     }
     for(int j=0; j<aristas.count(); j++){
         if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-            triangulos << aristas.at(j).corte;
+            triangulos << aristas.at(j).cut;
         }
     }
-    //Cuarto triangulo
+    //four triangle
     for(int i=0; i<2; i++){
         if(aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0] != eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(0).at(i)).corte;
+            triangulos << aristas.at(aristas_doble.at(0).at(i)).cut;
             sentido = aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0];
             break;
        }
     }
     for(int i=0; i<2; i++){
         if(aristas.at(aristas_doble.at(1).at(i)).vertices[1] - aristas.at(aristas_doble.at(1).at(i)).vertices[0] == eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(1).at(i)).corte;
+            triangulos << aristas.at(aristas_doble.at(1).at(i)).cut;
             break;
        }
     }
     for(int j=0; j<aristas.count(); j++){
         if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-            triangulos << aristas.at(j).corte;
+            triangulos << aristas.at(j).cut;
         }
     }
 
-    agregar_triangulos(triangulos);
+    appendTriangles(triangulos);
 }
 
-void MarchingCubes::tipo11(QList<sArista> aristas, QList<unsigned int> vertices){
-    //Tipo 1 + 2
+void MarchingCubes::type11(QList<Edge> aristas, QList<unsigned int> vertices){
+    //type 1 + 2
     unsigned int vert_solitario;
     bool encontrado;
-    QList<sArista> aristas2;
+    QList<Edge> aristas2;
 
-    //Buscar el vertice solitario
+    //find singleton vertex
     for(int i=0; i<vertices.count()-1; i++){
         encontrado = true;
         for(int j=i+1;j<vertices.count();j++){
@@ -811,7 +807,7 @@ void MarchingCubes::tipo11(QList<sArista> aristas, QList<unsigned int> vertices)
             break;
         }
     }
-    //Generar el aristas2
+    //generate edge2
     for(int i=0; i<aristas.count();i++){
         if(aristas.at(i).vertices[0] != vert_solitario
            && aristas.at(i).vertices[1] != vert_solitario){
@@ -824,12 +820,12 @@ void MarchingCubes::tipo11(QList<sArista> aristas, QList<unsigned int> vertices)
     vertices.append(vert_solitario);
 }
 
-void MarchingCubes::tipo13(QList<sArista> aristas, QList<unsigned int> vertices){
-    //Tipo 2 + 2
+void MarchingCubes::type13(QList<Edge> aristas, QList<unsigned int> vertices){
+    //type 2 + 2
     unsigned int verts[2];
-    QList<sArista> aristas2;
+    QList<Edge> aristas2;
 
-    //Encontrar un par de vertices
+    //find couple of vertices
     verts[0] = vertices.at(0);
     for(int i=1; i<vertices.count(); i++){
         if(vertices.at(i) - verts[0] == 1 ||
@@ -839,7 +835,7 @@ void MarchingCubes::tipo13(QList<sArista> aristas, QList<unsigned int> vertices)
             break;
         }
     }
-    //Generar el aristas2
+    //generate edge2
     for(int i=0; i<aristas.count();i++){
         if(aristas.at(i).vertices[0] != verts[0]
            && aristas.at(i).vertices[1] != verts[0]
@@ -858,16 +854,14 @@ void MarchingCubes::buildGeometry()
     _normals.clear();
     _indexes.clear();
     
-    QList<sMarching_Cube> cubos = ejecutar();
-//     printf("Cubos: %d\n",cubos.count());
+    QList<sMarching_Cube> cubos = getCubes();
 
     sMarching_Cube cubo;
     foreach(cubo, cubos) {
-        //Puede que ahora sea innecesario cambiar el tipo...
-        if(cubo.tipo > 127){
-            cubo.tipo = 255 - cubo.tipo;
+        //we can change the type now ... 
+        if(cubo.type > 127){
+            cubo.type = 255 - cubo.type;
         }
-        identificar_tipo(cubo);
+        computeTopologyType(cubo);
      }
 }
-
