@@ -16,16 +16,15 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-
-
 #ifndef FUNCTIONGRAPH2_H__Q
 #define FUNCTIONGRAPH2_H__Q
 
+#include <QVector3D>
 
 /*
- Indice de los nodos
+ Node index
 
- Capa z+
+ layer z+
 y+
  -----
  |3|7|
@@ -33,7 +32,7 @@ y+
  |1|5|
  ----- x+
 
- Capa z-
+ layer z-
 y+
  -----
  |2|6|
@@ -42,7 +41,6 @@ y+
  ----- x+
 */
 
-#include <QVector3D>
 
 struct Cube
 {
@@ -60,32 +58,31 @@ struct Cube
 
 };
 
-struct sNodo{
-    Cube cubo;
-    sNodo* nodos[8];
+struct sNode{
+    Cube cube;
+    sNode* nodes[8];
 };
 
-
-//TODO replace by kdtree using ANN library
+//TODO we can replace this by kdtree (ANN library)
 class Octree
 {
 private:
-    sNodo* raiz;
+    sNode* m_root;
 
-    //Crea los hijos con los valores adecuados en los vertices
-    void inicializar_nodos(sNodo* padre);
+    //create children with correct vertex values
+    void initNodes(sNode* parent);
 
-    void borrar_rec(sNodo* nodo);
-    void crear_rec(sNodo* nodo, unsigned int nivel_actual, unsigned int nivel_max);
+    void recursiveDelete(sNode* node);
+    void recursiveCreate(sNode* node, unsigned int current_level, unsigned int max_level);
 public:
-    Octree(double largo_mundo);
+    Octree(double world_size);
     Octree(Cube cubo);
     ~Octree();
 
-    sNodo* get_raiz();
-    void crearNivel(unsigned int nivel);
-    void bajarNivel(sNodo* nodo);
-    void borrarHijos(sNodo* padre);
+    sNode* getRoot();
+    void createLevel(unsigned int level);
+    void downLevel(sNode* node);
+    void deleteChildren(sNode* parent);
 
 };
 

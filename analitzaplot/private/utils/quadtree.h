@@ -25,7 +25,6 @@
 class Square : public QRectF
 {
 public:
-    // QRectF(menor, mayor); en coordenadas de mundo
     Square(const QPointF &c = QPointF(0,0), double hEdge = 1);
     Square(double x, double y, double hEdge = 1);
 
@@ -45,7 +44,7 @@ struct QNode
 
 
 /*
- Indice de los nodos
+ node index
 
  -----
  |2|4|
@@ -59,9 +58,9 @@ struct QNode
 class Quadtree
 {
 private:
-    QNode* raiz;
+    QNode* root;
 
-    //Crea los hijos con los valores adecuados en los vertices
+    //create children with correct vertex values
     void inicializar_nodos(QNode* padre);
 
     void borrar_rec(QNode* nodo);

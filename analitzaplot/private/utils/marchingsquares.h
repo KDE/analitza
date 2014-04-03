@@ -49,10 +49,6 @@ struct sArista2D {
 //TODO very bad implementation ... we need to use interval arithmetic plus root finding 
 //to know if a 0 belongs to f(square)
 
-//TODO esta clase se debe parametrizar para que pueda ser usada por implictcurves:
-//MarchingSquares ... en general debe recibir como parametro el tree (octree,kdtree...)
-//y las subclases deben implementar evalScalarfield ...pues esta clase sirve para eso:
-//para convertir un campo K escalar en poligonos.
 class MarchingSquares
 {
 public:
@@ -62,10 +58,6 @@ public:
 
 public:
 private:
-    /*
-     largo_mundo: arista del mundo
-     min_grid: arista minima del cubo a evaluar
-    */
     double largo_mundo;
     double min_grid;
     sLimitesEspacio2D mundo;
@@ -79,14 +71,10 @@ private:
     QList<sMarching_Square> depth_rec(Quadtree *arbol, QNode *nodo);
 
 public:
-    //Recibe el tamaño de grilla deseado y el largo del mundo
-    //Produce un min_grid menor o igual al proporcionado
     MarchingSquares(/*double min_grid, double arista_mundo, sLimitesEspacio2D limites*/);
 
-    //Destructor
     virtual ~MarchingSquares();
 
-    //Ejecutar
     QList<sMarching_Square> ejecutar();
 
     friend class ImplicitSurf;
@@ -98,25 +86,12 @@ public:
     void _addTri(const QPointF &a, const QPointF &b);
 
 private:
-
-    //Calcular los cortes
     QList<sArista2D> calcular_cortes(sMarching_Square cubo);
     bool signo_opuesto(double a, double b);
-
-    //Calcular la posicion en la arista
     double lineal(double vert_1, double vert_2);
-
-    //Agregar triangulos
     void agregar_triangulos(QList<QPointF> &lista_triangulos);
-
-    //Tipos:
     void identificar_tipo(sMarching_Square cubo);
-    // corta 2 aristas y tiene un vertice en el cruce de las aristas
-    //el tipo 1 cubre los casos: 1,2,3,4,6,7,8,9,11,12,13,14
     void tipo01(QList<sArista2D> aristas);
-
-    //el tipo 5 cubre los casos 5 y 10
-    // los casos 5 y 10 son donde se presnetan singularidades: cortes, cusps, etc
     void tipo05(QList<sArista2D> aristas, sMarching_Square cubo);
     
 private:

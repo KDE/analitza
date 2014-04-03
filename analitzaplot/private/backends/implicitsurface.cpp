@@ -67,7 +67,7 @@ ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v
 
 void ImplicitSurf::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
-    sLimitesEspacio spaceLimits;
+    SpaceLimits spaceLimits;
     
     double tmpsize = 4.0;
     
