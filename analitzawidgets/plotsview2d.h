@@ -166,7 +166,6 @@ private:
     //presentation
     QPointF ant;
     QRectF defViewport;
-    void drawAll(QPaintDevice*); // render grid+plots into paintdevice
         
     void sendStatus(const QString& msg) { emit status(msg); }
     bool m_framed;

@@ -49,7 +49,7 @@ class Graph2DMobile : public QQuickPaintedItem, public Analitza::Plotter2D
 		
 		void setCurrentFunction(int f) { m_currentFunction = f; }
 		bool ticksShownAtAll() const { return ticksShown()!=0; }
-		void setTicksShownAtAll(bool shown) { setShowTicks(shown ? Qt::Vertical|Qt::Horizontal : Qt::Orientations(0));}
+		void setTicksShownAtAll(bool shown);
 		
 	public Q_SLOTS:
 		void translate(qreal x, qreal y);

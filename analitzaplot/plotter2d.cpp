@@ -800,6 +800,7 @@ PlotItem* Plotter2D::itemAt(int row) const
 
 void Plotter2D::drawFunctions(QPaintDevice *qpd)
 {
+    drawGrid(qpd);
     QPen pfunc(QColor(0,150,0), 2);
     
     QPainter p;

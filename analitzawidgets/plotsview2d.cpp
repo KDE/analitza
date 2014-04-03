@@ -78,12 +78,6 @@ PlotsView2D::PlotsView2D(QWidget *parent)
 
 PlotsView2D::~PlotsView2D() {}
 
-void PlotsView2D::drawAll(QPaintDevice* pd)
-{
-    drawGrid(pd);
-    drawFunctions(pd);
-}
-
 void PlotsView2D::paintEvent(QPaintEvent * )
 {
     if (!valid)
@@ -92,7 +86,7 @@ void PlotsView2D::paintEvent(QPaintEvent * )
             buffer = QPixmap(size());
         buffer.fill(backgroundColor());
     
-        drawAll(&buffer);
+        drawFunctions(&buffer);
 
         valid=true;
     }
@@ -301,7 +295,7 @@ bool PlotsView2D::toImage(const QString &path, Format f)
             QSvgGenerator gen;
             gen.setOutputDevice(&f);
             gen.setSize(this->size());
-            drawAll(&gen);
+            drawFunctions(&gen);
             b=true;
             forceRepaint();
         }   break;

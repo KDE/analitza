@@ -126,3 +126,9 @@ QStringList Graph2DMobile::addFunction(const QString& expression, Analitza::Vari
 	
 	return err;
 }
+void Graph2DMobile::setTicksShownAtAll(bool shown)
+{
+	Qt::Orientations show = shown ? Qt::Vertical|Qt::Horizontal : Qt::Orientations(0);
+	setShowTicks(show);
+	setShowTickLabels(show);
+}

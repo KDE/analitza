@@ -6,7 +6,7 @@ Graph2DView {
 	anchors.fill: parent
 	
 	showGrid: true
-	ticksShown: false
+	ticksShown: mouse.pressed
 
 	PinchArea {
 		anchors.fill: parent
@@ -37,6 +37,7 @@ Graph2DView {
 	}
 	
 	MouseArea {
+		id: mouse
 		anchors.fill: parent
 		property int lastX: 0
 		property int lastY: 0
