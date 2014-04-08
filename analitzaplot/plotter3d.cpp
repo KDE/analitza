@@ -327,6 +327,14 @@ QVector<int> makeTriangles(const QVector<uint>& input)
 
 void Plotter3D::exportSurfaces(const QString& path) const
 {
+    QFile f(path);
+    bool b = f.open(QIODevice::WriteOnly | QIODevice::Text);
+    Q_ASSERT(b);
+    f.write(QByteArrayLiteral("<?xml version='1.0' encoding='UTF-8'?>\n"
+    "<!DOCTYPE X3D PUBLIC 'ISO//Web3D//DTD X3D 3.2//EN' 'http://www.web3d.org/specifications/x3d-3.2.dtd'>\n"
+    "<X3D profile='Interchange' version='3.2' xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' "
+        "xsd:noNamespaceSchemaLocation='http://www.web3d.org/specifications/x3d-3.2.xsd'>\n"
+        "<Scene>\n"));
     for (int i = 0; i < m_model->rowCount(); ++i)
     {
         PlotItem *item = itemAt(i);
@@ -335,15 +343,7 @@ void Plotter3D::exportSurfaces(const QString& path) const
         if (!surf || !surf->isVisible())
             continue;
 
-        QFile f(path);
-        bool b = f.open(QIODevice::WriteOnly | QIODevice::Text);
-        Q_ASSERT(b);
-
-        f.write(QByteArrayLiteral("<?xml version='1.0' encoding='UTF-8'?>\n"
-        "<!DOCTYPE X3D PUBLIC 'ISO//Web3D//DTD X3D 3.2//EN' 'http://www.web3d.org/specifications/x3d-3.2.dtd'>\n"
-        "<X3D profile='Interchange' version='3.2' xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' "
-            "xsd:noNamespaceSchemaLocation='http://www.web3d.org/specifications/x3d-3.2.xsd'>\n"
-        "<Scene>\n"
+        f.write(QByteArrayLiteral(
             "<Shape>\n"
                 "<Appearance><Material diffuseColor='1 0 0' specularColor='0.8 0.7 0.5'/></Appearance>\n"
                 "<IndexedFaceSet solid='false' normalPerVertex='false' coordIndex='"));
@@ -357,10 +357,11 @@ void Plotter3D::exportSurfaces(const QString& path) const
         f.write(QByteArrayLiteral(
                 "'/>\n"
                 "</IndexedFaceSet>\n"
-            "</Shape>\n"
-        "</Scene>\n"
-        "</X3D>\n"));
+            "</Shape>\n"));
     }
+    f.write(QByteArrayLiteral(
+        "</Scene>\n"
+    "</X3D>\n"));
 }
 
 void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)
