@@ -544,7 +544,7 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 						QList<ExpressionType> altargs=f.parameters();
 						
 						if(opt.parameters().size()!=altargs.size()+1) {
-							addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.", 0, opt.parameters().size()-1).arg(c->toString()));
+							addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(opt.parameters().size()-1).arg(static_cast<Ci*>(c->m_params.first())->name()));
 							exit=true;
 							break;
 						}
