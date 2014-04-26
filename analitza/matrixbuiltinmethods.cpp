@@ -19,11 +19,35 @@
 #include "matrixbuiltinmethods.h"
 
 #include "expression.h"
+#include <QDebug>
 
-Analitza::Expression Analitza::IdentityMatrix::operator()(const QList< Expression >& args)
+using Analitza::Expression;
+using Analitza::ExpressionType;
+
+const QString MatrixRowConstructor::id = QString("row");
+const ExpressionType MatrixRowConstructor::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Any)))
+.addParameter(ExpressionType(ExpressionType::Many));
+
+Expression MatrixRowConstructor::operator()(const QList< Expression >& args)
+{
+	//check paent context, must be insdide a matrix command call
+	qDebug() << "begcomm";
+	qDebug() << args.at(0).toString();
+	qDebug() << args.at(1).toString();
+	qDebug() << args.at(2).toString();
+	qDebug() << "endcomm";
+	return Expression("list{233}");
+}
+
+/*
+
+const QString Analitza::IdentityMatrix::id = QString("matrix");
+// Analitza::ExpressionType ExpressionType() { return Analitza::ExpressionType(name); }
+Expression Analitza::IdentityMatrix::operator()(const QList< Expression >& args)
 {
 		Q_UNUSED(args)
 		return Expression("2");
-}
+}*/
 
 

@@ -19,6 +19,7 @@
 #include "matrixtest.h"
 
 #include <QtTest/QTest>
+#include <QDebug>
 
 #include "analyzer.h"
 //#include <operations.h>
@@ -93,6 +94,9 @@ void MatrixTest::testBuiltinMethods_data()
 
 void MatrixTest::testBuiltinMethods()
 {
+	a->setExpression(Expression("row(2,4,5,6,67)"));
+	qDebug() << a->calculate().toString() << a->errors();
+	
 	//get hos matrix strinx invalid Analitza lang and test commands
 // 	QFETCH(QString, expression);
 // 	QFETCH(double, result);

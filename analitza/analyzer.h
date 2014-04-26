@@ -174,6 +174,8 @@ class ANALITZA_EXPORT Analyzer
 		ExpressionType m_currentType;
 		QMap<QString, ExpressionType> m_variablesTypes;
 		
+		void registerBuiltinMethods(); //util to be called in each ctr
+		
 		Object* calc(const Object* e);
 		Object* operate(const Container*);
 		Object* operate(const Apply*);

@@ -22,16 +22,30 @@
 #include "builtinmethods.h"
 
 namespace Analitza {
-
 class Expression;
-
-class IdentityMatrix : public Analitza::FunctionDefinition
-{
-public:
-	virtual Expression operator()(const QList< Expression >& args);
-	static const QString id() { return "idm"; }
 };
 
-}
+class MatrixRowConstructor: public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+	
+	static const QString id;
+	static const Analitza::ExpressionType type;
+};
+
+// class MatrixCol : public Analitza::FunctionDefinition
+// {
+// public:
+// 	virtual Expression operator()(const QList< Expression >& args);
+// 	static const QString id;
+// };
+
+class IdentityMatrix: public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+	static const QString id;
+};
 
 #endif // MATRIXBUILTINMETHODS_H

@@ -37,6 +37,7 @@
 #include "substituteexpression.h"
 #include "expressionstream.h"
 #include "matrix.h"
+#include "matrixbuiltinmethods.h"
 
 // #define SCRIPT_PROFILER
 
@@ -125,6 +126,7 @@ Analyzer::Analyzer()
 	: m_vars(new Variables), m_varsOwned(true), m_hasdeps(true)
 {
 	m_runStack.reserve(defsize);
+	registerBuiltinMethods();
 }
 
 Analyzer::Analyzer(Variables* v)
@@ -132,6 +134,7 @@ Analyzer::Analyzer(Variables* v)
 {
 	m_runStack.reserve(defsize);
 	Q_ASSERT(v);
+	registerBuiltinMethods();
 }
 
 Analyzer::Analyzer(const Analyzer& a)
@@ -139,12 +142,18 @@ Analyzer::Analyzer(const Analyzer& a)
 {
 	m_vars = new Variables(*a.m_vars);
 	m_runStack.reserve(defsize);
+	registerBuiltinMethods();
 }
 
 Analyzer::~Analyzer()
 {
 	if(m_varsOwned)
 		delete m_vars;
+}
+
+void Analyzer::registerBuiltinMethods()
+{
+	m_builtin.insertFunction(MatrixRowConstructor::id, MatrixRowConstructor::type, new MatrixRowConstructor);
 }
 
 void Analyzer::setExpression(const Expression & e)
