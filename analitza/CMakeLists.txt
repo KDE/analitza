@@ -28,6 +28,7 @@ set(analitza_SRCS
 	apply.cpp
 	customobject.cpp
 	matrix.cpp
+	matrixbuiltinmethods.cpp
 	
 	expressiontype.cpp
 	expressiontypechecker.cpp

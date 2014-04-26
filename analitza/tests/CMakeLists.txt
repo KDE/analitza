@@ -9,6 +9,7 @@ ecm_add_tests(
     mathmlpresentationtest.cpp
     typechecktest.cpp
     builtintest.cpp
+    matrixtest.cpp
     
     LINK_LIBRARIES ${testLibs}
 )
