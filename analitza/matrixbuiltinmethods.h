@@ -85,6 +85,7 @@ public:
 
 //END Normal/Standard Matrix
 
+//BEGIN IdentityMatrixConstructor
 
 class IdentityMatrixConstructor: public Analitza::FunctionDefinition
 {
@@ -94,6 +95,24 @@ public:
 	static const QString id;
 	static const Analitza::ExpressionType type;
 };
+
+//END IdentityMatrixConstructor
+
+//BEGIN DiagonalMatrixConstructor
+
+
+//TODO diag(a,b,c...) as nomrla math semantics and
+//diag(matrix) to obtain the diaonl of a SQUARE matrix as a vector
+class DiagonalMatrixConstructor: public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+
+	static const QString id;
+	static const Analitza::ExpressionType type;
+};
+
+//END DiagonalMatrixConstructor
 
 
 

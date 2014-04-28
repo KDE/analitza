@@ -157,6 +157,7 @@ void Analyzer::registerBuiltinMethods()
 	m_builtin.insertFunction(MatrixColConstructor::id, MatrixColConstructor::type, new MatrixColConstructor);
 	m_builtin.insertFunction(MatrixConstructor::id, MatrixConstructor::type, new MatrixConstructor);
 	m_builtin.insertFunction(IdentityMatrixConstructor::id, IdentityMatrixConstructor::type, new IdentityMatrixConstructor);
+	m_builtin.insertFunction(DiagonalMatrixConstructor::id, DiagonalMatrixConstructor::type, new DiagonalMatrixConstructor);
 }
 
 void Analyzer::setExpression(const Expression & e)
