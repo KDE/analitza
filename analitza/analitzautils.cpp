@@ -644,4 +644,16 @@ QString generateDependencyGraph(const Variables* v)
 	return ret;
 }
 
+void fillMatrix(Matrix* matrix, int nrows, int ncols, double value)
+{
+	for (int row = 0; row < nrows; ++row)
+	{
+		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(ncols);
+		
+		for (int col= 0; col < ncols; ++col)
+			rowobj->appendBranch(new Analitza::Cn(value));
+		
+		matrix->appendBranch(rowobj);
+	}
+}
 }

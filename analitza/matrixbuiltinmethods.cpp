@@ -18,6 +18,7 @@
 
 #include "matrixbuiltinmethods.h"
 
+#include "analitzautils.h"
 #include "expression.h"
 #include "value.h"
 #include "operations.h"
@@ -58,15 +59,7 @@ Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& ar
 			Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
 			Analitza::Matrix *matrix = new Analitza::Matrix();
 			
-			for (int row = 0; row < nrows; ++row)
-			{
-				Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(ncols);
-				
-				for (int col= 0; col < ncols; ++col)
-					rowobj->appendBranch(new Analitza::Cn(0));
-				
-				matrix->appendBranch(rowobj);
-			}
+			AnalitzaUtils::fillMatrix(matrix, nrows, ncols, 0);
 			
 			container->appendBranch(matrix);
 			

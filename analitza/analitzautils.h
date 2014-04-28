@@ -32,6 +32,7 @@ class Expression;
 class Apply;
 class List;
 class Operator;
+class Matrix;
 }
 
 /**
@@ -80,6 +81,9 @@ namespace AnalitzaUtils
 	
 	/** tells how much @p depth is being used inside @p tree */
 	int countDepth(int depth, const Analitza::Object* tree);
+	
+	/** Fills the given @p matrix of size @p nrows x @p ncols with a fixed numeric @p value */
+	void fillMatrix(Analitza::Matrix* matrix, int nrows, int ncols, double value);
 }
 
 #endif // ANALITZAUTILS_H
