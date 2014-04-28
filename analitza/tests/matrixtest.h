@@ -23,6 +23,9 @@
 
 namespace Analitza { class Analyzer; }
 
+/**
+	@author Percy Camilo T. Aucahuasi
+*/
 class MatrixTest : public QObject
 {
 Q_OBJECT

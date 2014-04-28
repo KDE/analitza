@@ -21,31 +21,52 @@
 
 #include "builtinmethods.h"
 
-namespace Analitza {
-class Expression;
+#include "expression.h"
+
+//BEGIN Normal matrix
+
+template<int idval> // idval = 0 means row and idval = 1 means col
+class MatrixVectorConstructor : public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args)
+	{
+		//TODO check when the args ammount is 0
+		return Analitza::Expression::constructList(QList< Analitza::Expression >() << Analitza::Expression::constructCustomObject(vectorTypeInfo, 0) << args);
+	}
+	
+	static const QString id;
+	static const Analitza::ExpressionType type;
+	
+private:
+	static const QVariant vectorTypeInfo; // row or col
 };
 
-class MatrixRowConstructor: public Analitza::FunctionDefinition
+template<int idval>
+const QString MatrixVectorConstructor<idval>::id = idval == 0? "row" : (idval == 1? "col" : QString());
+
+template<int idval>
+const Analitza::ExpressionType MatrixVectorConstructor<idval>::type = Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::List, Analitza::ExpressionType(Analitza::ExpressionType::Any)))
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Many));
+
+template<int idval>
+const QVariant MatrixVectorConstructor<idval>::vectorTypeInfo = QVariant(QString(MatrixVectorConstructor<idval>::id));
+
+typedef MatrixVectorConstructor<0> MatrixRowConstructor;
+typedef MatrixVectorConstructor<1> MatrixColConstructor;
+
+class MatrixConstructor: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-	
+
 	static const QString id;
 	static const Analitza::ExpressionType type;
 };
 
-// class MatrixCol : public Analitza::FunctionDefinition
-// {
-// public:
-// 	virtual Expression operator()(const QList< Expression >& args);
-// 	static const QString id;
-// };
+//END Normal matrix
 
-class IdentityMatrix: public Analitza::FunctionDefinition
-{
-public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-	static const QString id;
-};
+
 
 #endif // MATRIXBUILTINMETHODS_H

@@ -154,6 +154,8 @@ Analyzer::~Analyzer()
 void Analyzer::registerBuiltinMethods()
 {
 	m_builtin.insertFunction(MatrixRowConstructor::id, MatrixRowConstructor::type, new MatrixRowConstructor);
+	m_builtin.insertFunction(MatrixColConstructor::id, MatrixColConstructor::type, new MatrixColConstructor);
+	m_builtin.insertFunction(MatrixConstructor::id, MatrixRowConstructor::type, new MatrixConstructor);
 }
 
 void Analyzer::setExpression(const Expression & e)
