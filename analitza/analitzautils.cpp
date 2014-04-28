@@ -1,5 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
+ *  Copyright (C) 2014 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -646,6 +647,8 @@ QString generateDependencyGraph(const Variables* v)
 
 void fillMatrix(Matrix* matrix, int nrows, int ncols, double value)
 {
+	Q_ASSERT(matrix->size() == 0);
+	
 	for (int row = 0; row < nrows; ++row)
 	{
 		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(ncols);

@@ -1,5 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2007-2009 by Aleix Pol <aleixpol@kde.org>                          *
+ *  Copyright (C) 2014 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -82,7 +83,7 @@ namespace AnalitzaUtils
 	/** tells how much @p depth is being used inside @p tree */
 	int countDepth(int depth, const Analitza::Object* tree);
 	
-	/** Fills the given @p matrix of size @p nrows x @p ncols with a fixed numeric @p value */
+	/** Fills the given empty @p matrix with a fixed numeric @p value, the matrix size will be @p nrows x @p ncols. */
 	void fillMatrix(Analitza::Matrix* matrix, int nrows, int ncols, double value);
 }
 
