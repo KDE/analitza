@@ -33,7 +33,6 @@ using Analitza::Expression;
 using Analitza::ExpressionType;
 
 const QString MatrixConstructor::id = QString("matrix");
-
 const ExpressionType MatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any), -2), -1))
 .addParameter(ExpressionType(ExpressionType::Many));
@@ -151,6 +150,49 @@ Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& ar
 	return ret;
 }
 
+//BEGIN IdentityMatrixConstructor
 
+const QString IdentityMatrixConstructor::id = QString("identitymatrix");
+const ExpressionType IdentityMatrixConstructor::type = MatrixConstructor::type;
 
+Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expression >& args)
+{
+	Expression ret("matrix{}");
+	
+	if (args.isEmpty())
+		return ret;
+	
+	if (args.size() == 1 && args.at(0).isReal())
+	{
+		const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
+		
+		if (nobj->isInteger())
+		{
+			const int n = nobj->value();
+			
+			Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
+			Analitza::Matrix *matrix = new Analitza::Matrix();
+			
+			for (int row = 0; row < n; ++row)
+			{
+				Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
+				
+				for (int col= 0; col < n; ++col)
+					if (row == col)
+						rowobj->appendBranch(new Analitza::Cn(1));
+					else
+						rowobj->appendBranch(new Analitza::Cn(0));
+				
+				matrix->appendBranch(rowobj);
+			}
+			
+			container->appendBranch(matrix);
+			
+			ret.setTree(container);
+		}
+	}
+	
+	return ret;
+}
 
+//END IdentityMatrixConstructor

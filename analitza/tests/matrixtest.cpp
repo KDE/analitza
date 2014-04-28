@@ -97,7 +97,9 @@ void MatrixTest::testBuiltinMethods()
 // 	a->setExpression(Expression("matrix( col(6,47,8,5), col(4, 7,6,7) )"));
 // 	a->setExpression(Expression("matrix( row(6,47,8,5), row(4, 7,6,7) )"));
 // 	a->setExpression(Expression("matrix(row(3,4), row(1,7), row(4,5))")); //GSOC
-	a->setExpression(Expression("matrix(3,4)"));
+// 	a->setExpression(Expression("matrix(3,4)"));
+// 	qDebug() << Expression("identitymatrix(3)").isCorrect();
+	a->setExpression(Expression("identitymatrix(3)"));
 	qDebug() << a->calculate().toString();
 	qDebug() << a->errors();
 	/// GSOC info

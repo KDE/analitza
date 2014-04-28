@@ -64,8 +64,8 @@ typedef MatrixVectorConstructor<1> MatrixColConstructor;
  * \class MatrixConstructor
  * 
  * \brief Defines four ways to construct a normal/standard matrix.
- *
- * matrix(m,n) := nxn square matrix filled with zeros
+ *TODO matrix(n,m,VAL) 
+ * matrix(n) := nxn square matrix filled with zeros
  * matrix(m,n) := mxn-matrix filled with zeros
 Plotter3D provides an agnostic way to manage a 3d scene for draw math plots, 
  * Contains just OpenGL calls, so is uncoupled with QWidget nor QtQuick. This 
@@ -86,6 +86,14 @@ public:
 //END Normal/Standard Matrix
 
 
+class IdentityMatrixConstructor: public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+
+	static const QString id;
+	static const Analitza::ExpressionType type;
+};
 
 
 
