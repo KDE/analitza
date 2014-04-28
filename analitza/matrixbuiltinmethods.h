@@ -23,7 +23,11 @@
 
 #include "expression.h"
 
-//BEGIN Normal matrix
+namespace Analitza {
+class Matrix;
+};
+
+//BEGIN Normal/Standard Matrix
 
 template<int idval> // idval = 0 means row and idval = 1 means col
 class MatrixVectorConstructor : public Analitza::FunctionDefinition
@@ -56,6 +60,20 @@ const QVariant MatrixVectorConstructor<idval>::vectorTypeInfo = QVariant(QString
 typedef MatrixVectorConstructor<0> MatrixRowConstructor;
 typedef MatrixVectorConstructor<1> MatrixColConstructor;
 
+/**
+ * \class MatrixConstructor
+ * 
+ * \brief Defines four ways to construct a normal/standard matrix.
+ *
+ * matrix(m,n) := nxn square matrix filled with zeros
+ * matrix(m,n) := mxn-matrix filled with zeros
+Plotter3D provides an agnostic way to manage a 3d scene for draw math plots, 
+ * Contains just OpenGL calls, so is uncoupled with QWidget nor QtQuick. This 
+ * class needs the PlotsModel (to create the geometry for 3D plots) and also 
+ * exposes some methods to change the scene (like hide/show the axis or 
+ * reference planes for example)
+ */
+
 class MatrixConstructor: public Analitza::FunctionDefinition
 {
 public:
@@ -65,7 +83,9 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-//END Normal matrix
+//END Normal/Standard Matrix
+
+
 
 
 
