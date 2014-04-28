@@ -19,6 +19,7 @@
 #include "matrixbuiltinmethods.h"
 
 #include "expression.h"
+#include "value.h"
 #include "operations.h"
 #include "list.h"
 #include "matrix.h"
@@ -44,99 +45,128 @@ Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& ar
 	
 	if (args.isEmpty())
 		return ret;
-	
-// 	bool usevectors = false;
-// 	bool usesizes = false;
-	
-	int oldsize = -1;
-	QString oldVectorTypeInfo;
-	const Analitza::CustomObject *info; // after the loop ends this give us if the input are rows or cols 
-	
-	//check args are comming from row or col commands
-	for (int i = 0; i < args.size(); ++i)
+
+	//if using sizes as input
+	if (args.size() == 2 && args.at(0).isReal() && args.at(1).isReal()) // check if we have sizes
 	{
-		//Q_ASSERT(args.at(i).isList());
-		if (!args.at(i).isList())
+		const Analitza::Cn *nrowsobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
+		const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
+		
+		if (nrowsobj->isInteger() && ncolsobj->isInteger())
 		{
-			ret.addError("i list, no es list");
+			const int nrows = nrowsobj->value();
+			const int ncols = ncolsobj->value();
 			
-			return ret;
-		}
-		
-		const Analitza::List *list = static_cast<const Analitza::List*>(args.at(i).tree());
-		
-		//Q_ASSERT(list->size() > 1);
-		if (list->size() <= 1)
-		{
-			ret.addError("i list, es vacia o no tiene suf elements");
+			Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
+			Analitza::Matrix *matrix = new Analitza::Matrix();
 			
-			return ret;
-		}
-		
-		//Q_ASSERT(list->at(0)->type() == Analitza::Object::custom);
-		if (list->at(0)->type() != Analitza::Object::custom)
-		{
-			ret.addError("i list, no parece have venido de col o row: first must be custom");
+			for (int row = 0; row < nrows; ++row)
+			{
+				Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(ncols);
+				
+				for (int col= 0; col < ncols; ++col)
+					rowobj->appendBranch(new Analitza::Cn(0));
+				
+				matrix->appendBranch(rowobj);
+			}
 			
-			return ret;
-		}
-		if (i == 0) oldsize = list->size(); //TODO this kind of validation is missing in matrix {...}
-		
-// 		qDebug() << "adasd" << oldsize << list->size() << i;
-		
-		//Q_ASSERT(list->size() == oldsize); // all args/list must have the same size
-		if (list->size() != oldsize)
-		{
-			ret.addError("i list, debe ser de tamanio uniforme con respecto al resto");
+			container->appendBranch(matrix);
 			
-			return ret;
-		}
-		
-		info = static_cast<const Analitza::CustomObject*>(list->at(0));
-	
-		//Q_ASSERT(info->value() == MatrixRowConstructor::id || info->value() == MatrixColConstructor::id);
-		if (info->value() != MatrixRowConstructor::id && info->value() != MatrixColConstructor::id)
-		{
-			ret.addError("i list, debe venir de col o row");
-			
-			return ret;
-		}
-		
-		if (i == 0) oldVectorTypeInfo = info->value().toString();
-		
-		//Q_ASSERT(info->value() == oldVectorTypeInfo);
-		if (info->value() != oldVectorTypeInfo)
-		{
-			ret.addError("i list, debe formarsolo de rows o cols nada de hibridos");
-			
-			return ret;
+			ret.setTree(container);
 		}
 	}
-	
-// 	at this point the input is correct and not empty and info is not nul and has if the input are rows or cols
-// 	also info only has 2 posible values MatrixRowConstructor::id or MatrixColConstructor::id
-// 	and finaly at this point ret is a matrix Object
-	
-	Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
-	Analitza::Matrix *matrix = new Analitza::Matrix();
-	
-	for (int row = 0; row < args.size(); ++row)
+	else // using vectors as input
 	{
-		const Analitza::List *list = static_cast<const Analitza::List*>(args.at(row).tree());
-		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(list->size()-1); // -1 since customobjt (at 0 pos) is not needed
+		int oldsize = -1;
+		QString oldVectorTypeInfo;
+		const Analitza::CustomObject *info; // after the loop ends this give us if the input are rows or cols 
 		
-		for (int i = 1; i < list->size(); ++i) // ignore first element
-			rowobj->appendBranch(list->at(i));
+		//check args are comming from row or col commands
+		for (int i = 0; i < args.size(); ++i)
+		{
+			//Q_ASSERT(args.at(i).isList());
+			if (!args.at(i).isList())
+			{
+				ret.addError("i list, no es list");
+				
+				return ret;
+			}
+			
+			const Analitza::List *list = static_cast<const Analitza::List*>(args.at(i).tree());
+			
+			//Q_ASSERT(list->size() > 1);
+			if (list->size() <= 1)
+			{
+				ret.addError("i list, es vacia o no tiene suf elements");
+				
+				return ret;
+			}
+			
+			//Q_ASSERT(list->at(0)->type() == Analitza::Object::custom);
+			if (list->at(0)->type() != Analitza::Object::custom)
+			{
+				ret.addError("i list, no parece have venido de col o row: first must be custom");
+				
+				return ret;
+			}
+			if (i == 0) oldsize = list->size(); //TODO this kind of validation is missing in matrix {...}
+			
+	// 		qDebug() << "adasd" << oldsize << list->size() << i;
+			
+			//Q_ASSERT(list->size() == oldsize); // all args/list must have the same size
+			if (list->size() != oldsize)
+			{
+				ret.addError("i list, debe ser de tamanio uniforme con respecto al resto");
+				
+				return ret;
+			}
+			
+			info = static_cast<const Analitza::CustomObject*>(list->at(0));
 		
-		matrix->appendBranch(rowobj);
+			//Q_ASSERT(info->value() == MatrixRowConstructor::id || info->value() == MatrixColConstructor::id);
+			if (info->value() != MatrixRowConstructor::id && info->value() != MatrixColConstructor::id)
+			{
+				ret.addError("i list, debe venir de col o row");
+				
+				return ret;
+			}
+			
+			if (i == 0) oldVectorTypeInfo = info->value().toString();
+			
+			//Q_ASSERT(info->value() == oldVectorTypeInfo);
+			if (info->value() != oldVectorTypeInfo)
+			{
+				ret.addError("i list, debe formarsolo de rows o cols nada de hibridos");
+				
+				return ret;
+			}
+		}
+		
+	// 	at this point the input is correct and not empty and info is not nul and has if the input are rows or cols
+	// 	also info only has 2 posible values MatrixRowConstructor::id or MatrixColConstructor::id
+	// 	and finaly at this point ret is a matrix Object
+		
+		Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
+		Analitza::Matrix *matrix = new Analitza::Matrix();
+		
+		for (int row = 0; row < args.size(); ++row)
+		{
+			const Analitza::List *list = static_cast<const Analitza::List*>(args.at(row).tree());
+			Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(list->size()-1); // -1 since customobjt (at 0 pos) is not needed
+			
+			for (int i = 1; i < list->size(); ++i) // ignore first element
+				rowobj->appendBranch(list->at(i)->copy());
+			
+			matrix->appendBranch(rowobj);
+		}
+		
+		if (info->value() == MatrixRowConstructor::id) // if we have rows
+			container->appendBranch(matrix);
+		else // we have cols
+			container->appendBranch(Analitza::Operations::reduceUnary(Analitza::Operator::transpose, matrix, 0));
+		
+		ret.setTree(container);
 	}
-	
-	if (info->value() == MatrixRowConstructor::id) // if we have rows
-		container->appendBranch(matrix);
-	else // we have cols
-		container->appendBranch(Analitza::Operations::reduceUnary(Analitza::Operator::transpose, matrix, 0));
-	
-	ret = Expression(container->toString());
 	
 	return ret;
 }
