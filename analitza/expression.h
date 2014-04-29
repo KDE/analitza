@@ -124,6 +124,11 @@ class ANALITZA_EXPORT Expression
 		bool isVector() const;
 		
 		/**
+		 *	Returns whether it is a matrix expression.
+		 */
+		bool isMatrix() const;
+		
+		/**
 		 *	Returns whether it is a list expression.
 		 */
 		bool isList() const;

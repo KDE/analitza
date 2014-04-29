@@ -723,6 +723,12 @@ bool Expression::isVector() const
 	return o && o->type()==Container::vector;
 }
 
+bool Expression::isMatrix() const
+{
+	Object* o = actualRoot(d->m_tree);
+	return o && o->type()==Container::matrix;
+}
+
 bool Expression::isList() const
 {
 	Object* o = actualRoot(d->m_tree);
