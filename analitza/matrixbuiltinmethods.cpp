@@ -210,25 +210,44 @@ Expression DiagonalMatrixConstructor::operator()(const QList< Analitza::Expressi
 		return ret;
 	
 	Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
-	Analitza::Matrix *matrix = new Analitza::Matrix();
 	
-	const int n = args.size();
-	
-	for (int row = 0; row < n; ++row)
+// 	// check if we can return the diagonal of a matrix as a vector
+// 	if (args.size() == 1 && args.first().isMatrix())
+// 	{
+// 		const Analitza::Matrix *inputmatrix = static_cast<const Analitza::Matrix*>(args.first().tree());
+// 		
+// 		if (inputmatrix->size() > 0)
+// 		{
+// 			const int nrows = inputmatrix->size();
+// 			int ncols = static_cast<const Analitza::MatrixRow*>(inputmatrix->constBegin())->size();
+// // 			for (int row = 0; row < n; ++row)
+// 			
+// 			qDebug() << ncols;
+// 		}
+// 	}
+// 	else // construct a diagonal matrix from args
 	{
-		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
+		Analitza::Matrix *matrix = new Analitza::Matrix();
 		
-		for (int col= 0; col < n; ++col)
-			if (row == col)
-				rowobj->appendBranch(args.at(col).tree()->copy());
-			else
-				rowobj->appendBranch(new Analitza::Cn(0));
+		const int n = args.size();
 		
-		matrix->appendBranch(rowobj);
+		for (int row = 0; row < n; ++row)
+		{
+			Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
+			
+			for (int col= 0; col < n; ++col)
+				if (row == col)
+					rowobj->appendBranch(args.at(col).tree()->copy());
+				else
+					rowobj->appendBranch(new Analitza::Cn(0));
+			
+			matrix->appendBranch(rowobj);
+		}
+		
+		container->appendBranch(matrix);
 	}
 	
-	container->appendBranch(matrix);
-			
+	
 	ret.setTree(container);
 	
 	return ret;
