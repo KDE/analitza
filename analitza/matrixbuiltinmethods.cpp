@@ -24,7 +24,6 @@
 #include "operations.h"
 #include "list.h"
 #include "matrix.h"
-#include "container.h"
 #include "customobject.h"
 
 #include <QDebug>
@@ -55,14 +54,11 @@ Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& ar
 			const int nrows = nrowsobj->value();
 			const int ncols = ncolsobj->value();
 			
-			Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
 			Analitza::Matrix *matrix = new Analitza::Matrix();
 			
 			AnalitzaUtils::fillMatrix(matrix, nrows, ncols, 0);
 			
-			container->appendBranch(matrix);
-			
-			ret.setTree(container);
+			ret.setTree(matrix);
 		}
 	}
 	else //using vectors (rows or cols) as input
@@ -125,7 +121,6 @@ Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& ar
 		
 		//NOTE at this point everything is ok
 		
-		Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
 		Analitza::Matrix *matrix = new Analitza::Matrix();
 		
 		for (int row = 0; row < args.size(); ++row)
@@ -140,11 +135,9 @@ Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& ar
 		}
 		
 		if (info->value() == MatrixRowConstructor::id) // if we have rows as args
-			container->appendBranch(matrix);
+			ret.setTree(matrix);
 		else // we have cols as args
-			container->appendBranch(Analitza::Operations::reduceUnary(Analitza::Operator::transpose, matrix, 0));
-		
-		ret.setTree(container);
+			ret.setTree(Analitza::Operations::reduceUnary(Analitza::Operator::transpose, matrix, 0));
 	}
 	
 	return ret;
@@ -170,7 +163,6 @@ Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expressi
 		{
 			const int n = nobj->value();
 			
-			Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
 			Analitza::Matrix *matrix = new Analitza::Matrix();
 			
 			for (int row = 0; row < n; ++row)
@@ -186,9 +178,7 @@ Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expressi
 				matrix->appendBranch(rowobj);
 			}
 			
-			container->appendBranch(matrix);
-			
-			ret.setTree(container);
+			ret.setTree(matrix);
 		}
 	}
 	
@@ -209,23 +199,39 @@ Expression DiagonalMatrixConstructor::operator()(const QList< Analitza::Expressi
 	if (args.isEmpty())
 		return ret;
 	
-	Analitza::Container *container = new Analitza::Container(Analitza::Container::math);
-	
-// 	// check if we can return the diagonal of a matrix as a vector
-// 	if (args.size() == 1 && args.first().isMatrix())
-// 	{
-// 		const Analitza::Matrix *inputmatrix = static_cast<const Analitza::Matrix*>(args.first().tree());
-// 		
-// 		if (inputmatrix->size() > 0)
-// 		{
-// 			const int nrows = inputmatrix->size();
-// 			int ncols = static_cast<const Analitza::MatrixRow*>(inputmatrix->constBegin())->size();
-// // 			for (int row = 0; row < n; ++row)
-// 			
-// 			qDebug() << ncols;
-// 		}
-// 	}
-// 	else // construct a diagonal matrix from args
+	// check if we can return the diagonal of a matrix as a vector
+	if (args.size() == 1 && args.first().isMatrix())
+	{
+		const Analitza::Matrix *inputmatrix = static_cast<const Analitza::Matrix*>(args.first().tree());
+		
+		if (inputmatrix->size() > 0)
+		{
+			const int n = inputmatrix->size();
+			bool issquare = true;
+			Analitza::Matrix::const_iterator row;
+			
+			for (row = inputmatrix->constBegin(); row != inputmatrix->constEnd(); ++row)
+			{
+// 				qDebug() << "es: " << (*row)->type();
+				if (static_cast<const Analitza::MatrixRow*>(*row)->size() != n)
+				{
+					issquare = false;
+					break;
+				}
+			}
+				
+			if (issquare)
+			{
+				Analitza::Vector *diagonal = new Analitza::Vector(n);
+				
+				for (int i = 0; i < n; ++i)
+					diagonal->appendBranch(inputmatrix->at(i, i)->copy());
+				
+				ret.setTree(diagonal);
+			}
+		}
+	}
+	else // construct a diagonal matrix from args
 	{
 		Analitza::Matrix *matrix = new Analitza::Matrix();
 		
@@ -244,11 +250,8 @@ Expression DiagonalMatrixConstructor::operator()(const QList< Analitza::Expressi
 			matrix->appendBranch(rowobj);
 		}
 		
-		container->appendBranch(matrix);
+		ret.setTree(matrix);
 	}
-	
-	
-	ret.setTree(container);
 	
 	return ret;
 }
