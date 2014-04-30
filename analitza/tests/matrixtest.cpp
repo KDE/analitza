@@ -102,7 +102,7 @@ void MatrixTest::testBuiltinMethods()
 // 	a->setExpression(Expression("identitymatrix(3)"));
 // 	a->setExpression(Expression("diag(5,7,9,16)"));
 // 	a->setExpression(Expression("diag(matrix{matrixrow{3,2,0}, matrixrow{1,4,7}, matrixrow{9,6,5}})"));
-	a->setExpression(Expression("diag(matrix( col(6,47,8,5), col(4, 7,6,7) , col(4, 7,56,7) , col(4, 7,67,79) ))"));
+	a->setExpression(Expression("diag(matrix( row(6,47,8,5), row(4, 7,6,7) , row(4, 7,56,7) , row(4, 7,8,79) ))"));
 	qDebug() << a->calculate().toString();
 	qDebug() << a->errors();
 	/// GSOC info

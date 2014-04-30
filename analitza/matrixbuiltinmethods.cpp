@@ -26,7 +26,9 @@
 #include "matrix.h"
 #include "customobject.h"
 
-#include <QDebug>
+#include <QDebug> //TODO remove this debug header
+
+//TODO better errs mgs and use i18n calls
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
@@ -38,7 +40,7 @@ const ExpressionType MatrixConstructor::type = ExpressionType(ExpressionType::La
 
 Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& args)
 {
-	Expression ret("matrix{}");
+	Expression ret;
 	
 	if (args.isEmpty())
 		return ret;
@@ -60,6 +62,8 @@ Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& ar
 			
 			ret.setTree(matrix);
 		}
+		else
+			ret.addError("size of matrix must be integers, bad format ...");
 	}
 	else //using vectors (rows or cols) as input
 	{
@@ -150,37 +154,49 @@ const ExpressionType IdentityMatrixConstructor::type = MatrixConstructor::type;
 
 Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expression >& args)
 {
-	Expression ret("matrix{}");
+	Expression ret;
 	
 	if (args.isEmpty())
 		return ret;
 	
-	if (args.size() == 1 && args.at(0).isReal())
+	if (args.size() == 1)
 	{
-		const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
-		
-		if (nobj->isInteger())
+		if (!args.first().toString().isEmpty() && args.first().isCorrect())
 		{
-			const int n = nobj->value();
-			
-			Analitza::Matrix *matrix = new Analitza::Matrix();
-			
-			for (int row = 0; row < n; ++row)
+			if (args.first().isReal())
 			{
-				Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
+				const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
 				
-				for (int col= 0; col < n; ++col)
-					if (row == col)
-						rowobj->appendBranch(new Analitza::Cn(1));
-					else
-						rowobj->appendBranch(new Analitza::Cn(0));
-				
-				matrix->appendBranch(rowobj);
+				if (nobj->isInteger())
+				{
+					const int n = nobj->value();
+					
+					Analitza::Matrix *matrix = new Analitza::Matrix();
+					
+					for (int row = 0; row < n; ++row)
+					{
+						Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
+						
+						for (int col= 0; col < n; ++col)
+							if (row == col)
+								rowobj->appendBranch(new Analitza::Cn(1));
+							else
+								rowobj->appendBranch(new Analitza::Cn(0));
+						
+						matrix->appendBranch(rowobj);
+					}
+					
+					ret.setTree(matrix);
+				}
+				else
+					ret.addError("bad format of arg:must be integer");
 			}
-			
-			ret.setTree(matrix);
 		}
+		else
+			ret.addError("incorrect input:empty or bad expression");
 	}
+	else
+		ret.addError("bad numbers of args");
 	
 	return ret;
 }
@@ -194,42 +210,52 @@ const ExpressionType DiagonalMatrixConstructor::type = MatrixConstructor::type;
 
 Expression DiagonalMatrixConstructor::operator()(const QList< Analitza::Expression >& args)
 {
-	Expression ret("matrix{}");
+	Expression ret;
 	
 	if (args.isEmpty())
 		return ret;
 	
 	// check if we can return the diagonal of a matrix as a vector
-	if (args.size() == 1 && args.first().isMatrix())
+	if (args.size() == 1)
 	{
-		const Analitza::Matrix *inputmatrix = static_cast<const Analitza::Matrix*>(args.first().tree());
-		
-		if (inputmatrix->size() > 0)
+		if (!args.first().toString().isEmpty() && args.first().isCorrect())
 		{
-			const int n = inputmatrix->size();
-			bool issquare = true;
-			Analitza::Matrix::const_iterator row;
-			
-			for (row = inputmatrix->constBegin(); row != inputmatrix->constEnd(); ++row)
+			if (args.first().isMatrix())
 			{
-// 				qDebug() << "es: " << (*row)->type();
-				if (static_cast<const Analitza::MatrixRow*>(*row)->size() != n)
+				const Analitza::Matrix *inputmatrix = static_cast<const Analitza::Matrix*>(args.first().tree());
+				
+				if (inputmatrix->size() > 0)
 				{
-					issquare = false;
-					break;
+					const int n = inputmatrix->size();
+					bool issquare = true;
+					Analitza::Matrix::const_iterator row;
+					
+					for (row = inputmatrix->constBegin(); row != inputmatrix->constEnd(); ++row)
+					{
+		// 				qDebug() << "es: " << (*row)->type();
+						if (static_cast<const Analitza::MatrixRow*>(*row)->size() != n)
+						{
+							issquare = false;
+							break;
+						}
+					}
+						
+					if (issquare)
+					{
+						Analitza::Vector *diagonal = new Analitza::Vector(n);
+						
+						for (int i = 0; i < n; ++i)
+							diagonal->appendBranch(inputmatrix->at(i, i)->copy());
+						
+						ret.setTree(diagonal);
+					}
+					else
+						ret.addError("must be square matrix");
 				}
 			}
-				
-			if (issquare)
-			{
-				Analitza::Vector *diagonal = new Analitza::Vector(n);
-				
-				for (int i = 0; i < n; ++i)
-					diagonal->appendBranch(inputmatrix->at(i, i)->copy());
-				
-				ret.setTree(diagonal);
-			}
 		}
+		else
+			ret.addError("empty string o bad strin");
 	}
 	else // construct a diagonal matrix from args
 	{
