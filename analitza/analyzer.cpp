@@ -1046,7 +1046,7 @@ Object* Analyzer::calcCallFunction(Container* function, const QVector<Object*>& 
 			exp.setTree(0);
 		} else {
 			m_err += exp.error();
-			ret = new Cn;
+			ret = new Container(Container::math);
 		}
 	}
 #ifdef SCRIPT_PROFILER
