@@ -165,9 +165,9 @@ Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expressi
 		{
 			if (args.first().isReal())
 			{
-				const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
+				const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.first().tree());
 				
-				if (nobj->isInteger())
+				if (!nobj->isInteger() && nobj->value() > 0)
 				{
 					const int n = nobj->value();
 					
@@ -189,7 +189,7 @@ Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expressi
 					ret.setTree(matrix);
 				}
 				else
-					ret.addError("bad format of arg:must be integer");
+					ret.addError("bad format of arg:must be positve integer");
 			}
 		}
 		else
@@ -278,6 +278,64 @@ Expression DiagonalMatrixConstructor::operator()(const QList< Analitza::Expressi
 		
 		ret.setTree(matrix);
 	}
+	
+	return ret;
+}
+
+/// bands
+
+const QString TridiagonalMatrixConstructor::id = QString("tridiag");
+const ExpressionType TridiagonalMatrixConstructor::type = MatrixConstructor::type;
+
+Expression TridiagonalMatrixConstructor::operator()(const QList< Analitza::Expression >& args)
+{
+	Expression ret;
+	
+	if (args.isEmpty())
+		return ret;
+	
+	if (args.size() != 4)
+	{
+		ret.addError("bad number of args meust be a,b,c,n");
+		
+		return ret;
+	}
+
+	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.last().tree());
+	
+	const int n = nobj->value();
+	
+// 	qDebug() << "CALCLATE 1 " << n;
+	
+	if (!nobj->isInteger() && n > 0)
+	{
+		ret.addError("the last arg (n) must be positve integer");
+		
+		return ret;
+	}
+		
+	Analitza::Matrix *matrix = new Analitza::Matrix();
+	
+	for (int row = 0; row < n; ++row)
+	{
+		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
+		
+		for (int col= 0; col < n; ++col)
+			if (row == col + 1) // a
+				rowobj->appendBranch(args.at(0).tree()->copy());
+			else
+				if (row == col) // b
+					rowobj->appendBranch(args.at(1).tree()->copy());
+				else
+					if (row == col - 1) // c
+						rowobj->appendBranch(args.at(2).tree()->copy());
+					else
+						rowobj->appendBranch(new Analitza::Cn(0));
+		
+		matrix->appendBranch(rowobj);
+	}
+	
+	ret.setTree(matrix);
 	
 	return ret;
 }
