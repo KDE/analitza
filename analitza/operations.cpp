@@ -424,7 +424,7 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 	{
 		*it1 = reduceVectorVector(op, static_cast<MatrixRow*>(*it1), static_cast<MatrixRow*>(*it2), correct);
 		
-		++m2;
+		++it2;
 	}
 	return m1;
 }
