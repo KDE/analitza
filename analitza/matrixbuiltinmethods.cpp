@@ -18,6 +18,7 @@
 
 #include "matrixbuiltinmethods.h"
 
+
 #include "analitzautils.h"
 #include "expression.h"
 #include "value.h"
@@ -33,10 +34,51 @@
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
+
+
+//BEGIN Normal/Standard Matrix
+
 const QString MatrixConstructor::id = QString("matrix");
 const ExpressionType MatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
-.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any), -2), -1))
-.addParameter(ExpressionType(ExpressionType::Many));
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any),100), 100));
 
 Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& args)
 {
@@ -146,6 +188,8 @@ Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& ar
 	
 	return ret;
 }
+
+//END Normal/Standard Matrix
 
 //BEGIN IdentityMatrixConstructor
 
@@ -284,8 +328,31 @@ Expression DiagonalMatrixConstructor::operator()(const QList< Analitza::Expressi
 
 /// bands
 
+//TODO statc in this file static:supportedrettypes and supportedargstypes
+static const ExpressionType variasmatrices()
+{
+	QList<ExpressionType> alternatives;
+	
+	//NOTE this constraint must be admissible since Analitza is not dynamically typed
+	const int max_rows_supported = 10;
+	const int max_cols_supported = 10;
+	
+	for (int row = 1; row <= max_rows_supported; ++row)
+		for (int col = 1; col <= max_cols_supported; ++col)
+			alternatives.append(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), col), row));
+	
+// 	alternatives.append(Analitza::ExpressionType(Analitza::ExpressionType::List, Analitza::ExpressionType(Analitza::ExpressionType::Any)));
+	
+	return ExpressionType(ExpressionType::Many, alternatives);
+}
+
 const QString TridiagonalMatrixConstructor::id = QString("tridiag");
-const ExpressionType TridiagonalMatrixConstructor::type = MatrixConstructor::type;
+const ExpressionType TridiagonalMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(variasmatrices());
 
 Expression TridiagonalMatrixConstructor::operator()(const QList< Analitza::Expression >& args)
 {
@@ -334,6 +401,14 @@ Expression TridiagonalMatrixConstructor::operator()(const QList< Analitza::Expre
 		
 		matrix->appendBranch(rowobj);
 	}
+	
+// 	Analitza::List *list= new Analitza::List();
+// 	list->appendBranch(new Analitza::CustomObject(QVariant(QString("ismatrix")), 0));
+// 	list->appendBranch(matrix);
+// 	
+// 	ret.setTree(list); ///NO WAY, to much impact on many parts of the lib
+	
+	Q_ASSERT(matrix->size() > 0); //sizes (in types) goes from 1 to .. n not from 0 to ... n
 	
 	ret.setTree(matrix);
 	

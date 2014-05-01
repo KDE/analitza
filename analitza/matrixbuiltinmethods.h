@@ -27,6 +27,8 @@ namespace Analitza {
 class Matrix;
 };
 
+//TODO expression::toConsoleString() ... to print matrix properly ...
+
 //BEGIN Normal/Standard Matrix
 
 template<int idval> // idval = 0 means row and idval = 1 means col
@@ -51,8 +53,8 @@ const QString MatrixVectorConstructor<idval>::id = idval == 0? "row" : (idval ==
 
 template<int idval>
 const Analitza::ExpressionType MatrixVectorConstructor<idval>::type = Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
-.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::List, Analitza::ExpressionType(Analitza::ExpressionType::Any)))
-.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Many));
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Many))
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::List, Analitza::ExpressionType(Analitza::ExpressionType::Any)));
 
 template<int idval>
 const QVariant MatrixVectorConstructor<idval>::vectorTypeInfo = QVariant(QString(MatrixVectorConstructor<idval>::id));

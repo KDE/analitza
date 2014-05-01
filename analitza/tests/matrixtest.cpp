@@ -91,7 +91,7 @@ void MatrixTest::testBuiltinMethods_data()
 // 	
 // 	QTest::newRow("lambdacall") << "f:=x->f(x)" << 0.;
 }
-
+using Analitza::ExpressionType;
 void MatrixTest::testBuiltinMethods()
 {
 // 	a->setExpression(Expression("matrix( col(6,47,8,5), col(4, 7,6,7) )"));
@@ -103,9 +103,31 @@ void MatrixTest::testBuiltinMethods()
 // 	a->setExpression(Expression("diag(5,7,9,16)"));
 // 	a->setExpression(Expression("diag(matrix{matrixrow{3,2,0}, matrixrow{1,4,7}, matrixrow{9,6,5}})"));
 // 	a->setExpression(Expression("diag(matrix( row(6,47,8,5), row(4, 7,6,7) , row(4, 7,56,7) , row(4, 7,8,79) ))"));
+// 	a->setExpression(Expression("tridiag(3, 85)"));
+// 	Analitza::ExpressionType t1 = a->type();
+// 	a->setExpression(Expression("matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
+// 	Analitza::ExpressionType t2 = a->type();
+// 	a->setExpression(Expression("a[1][1]"));
+	
+// 	qDebug() << t1.toString();
+// 	qDebug() << t2.toString();
+
+// 	a->setExpression(Expression("matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
+// 	qDebug() << a->type().toString();
+// 	Analitza::ExpressionType ty = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), 5), 5);
+// 	qDebug() << ty.toString();
 	a->setExpression(Expression("tridiag(3, 8, 9, 5)"));
 	qDebug() << a->calculate().toString();
-	qDebug() << a->errors();
+	a->setExpression(Expression("matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
+	qDebug() << a->calculate().toString();
+	a->setExpression(Expression("tridiag(3, 8, 9, 5) +  matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
+// 	qDebug() << a->type().toString() ;
+	qDebug() << a->calculate().toString();
+// 	a->setExpression(Expression("tridiag(3, 8, 9, 5)[1][1]"));
+// 	qDebug() << a->type().toString() ;
+// 	qDebug() << a->calculate().toString();
+// 	qDebug() << a->calculate().toString();
+// 	qDebug() << a->errors();
 	/// GSOC info
 //A := matrix{matrixrow{3,2}, matrixrow{1,7}, matrixrow{4,5}} 
 //A := matrix(row(3,4), row(1,7), row(4,5))
