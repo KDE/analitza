@@ -431,25 +431,35 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 
 Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
 {
-	if(op==Operator::selector) {
-		Vector* ret;
-		int select=v->intValue();
-		if(select<1 || (select-1) >= m1->size()) {
-			*correct=new QString(QCoreApplication::tr("Invalid index for a container"));
-			ret=new Vector(1);
-		} else {
-			MatrixRow* row = static_cast<MatrixRow*>(m1->values()[select-1]);
-			Vector* nv = new Vector(row->size());
-			for(Vector::iterator it=row->begin(); it!=row->end(); ++it) {
-				nv->appendBranch((*it));
-				*it = 0;
+	Object* ret = 0;
+// 	qDebug() << "que op: " << op;
+	switch(op) {
+		case Operator::selector: {
+			int select=v->intValue();
+			if(select<1 || (select-1) >= m1->size()) {
+				*correct=new QString(QCoreApplication::tr("Invalid index for a container"));
+				ret=new Vector(1);
+			} else {
+				MatrixRow* row = static_cast<MatrixRow*>(m1->values()[select-1]);
+				Vector* nv = new Vector(row->size());
+				for(Vector::iterator it=row->begin(); it!=row->end(); ++it) {
+					nv->appendBranch((*it));
+					*it = 0;
+				}
+				ret = nv;
 			}
-			ret = nv;
-		}
-		delete v;
-		return ret;
+			delete v;
+		}	break;
+		case Operator::times: {
+			Matrix *nm = new Matrix();
+			for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
+				nm->appendBranch(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)->copy());
+			ret = nm;
+		}	break;
+		default:
+			break;
 	}
-	return 0;
+	return ret;
 }
 
 Object* Operations::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QString** )
@@ -512,6 +522,9 @@ QList<ExpressionType> Operations::infer(Operator::OperatorType op)
 			ret << TypeTriplet(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
 							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
 							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Value),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 			break;
 		case Operator::eq:
 		case Operator::neq:

@@ -206,6 +206,7 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::newRow("matrix++") << "matrix { matrixrow { 5, 6 }, matrixrow { 4, 0 }}+matrix { matrixrow { 2, 3 }, matrixrow { 4, 0 }}" << "matrix { matrixrow { 7, 9 }, matrixrow { 8, 0 } }";
 	QTest::newRow("matrix@") << "selector(1, matrix { matrixrow { 1, 2 } })" << "vector { 1, 2 }";
 	QTest::newRow("matrix@@") << "selector(1, selector(1, matrix { matrixrow { 1, 2 } }))" << "1";
+	QTest::newRow("scalar multiplication of matrix") << "3*matrix { matrixrow { 5, 6 }, matrixrow { 4, 0 }}" << "matrix { matrixrow { 15, 18 }, matrixrow { 12, 0 } }";
 }
 
 void AnalitzaTest::testTrivialEvaluate()
