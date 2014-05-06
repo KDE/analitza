@@ -293,3 +293,64 @@ void TypeCheckTest::testReduction_data()
 	
 	QTest::newRow("sss") << lambdaStarStar << lambdaNumVector2 << false;
 }
+
+class FooCommand : public Analitza::FunctionDefinition
+{
+	virtual Expression operator()(const QList< Expression >& args)
+	{
+		return Expression("matrix { matrixrow { 8, 9, 0},matrixrow { 7, 5, 3},matrixrow { 1, 2, 10}}");
+	}
+};
+
+void TypeCheckTest::testAlternatives()
+{
+	QFETCH(QString, expression);
+	QFETCH(ExpressionType, type);
+	
+	Analyzer a(v);
+	a.builtinMethods()->insertFunction("foocommand", type, new FooCommand);
+	
+	a.setExpression(Expression(expression));
+	
+	QCOMPARE(a.type(), type);
+	
+	if(!a.isCorrect())
+		qDebug() << "wrong exp:" << a.errors();
+	QVERIFY(a.isCorrect());
+	
+	Expression result = a.calculate();
+	
+	if(!a.isCorrect() || !result.isCorrect())
+		qDebug() << "errors in calc:" << a.errors() << result.error();
+	QVERIFY(result.isCorrect());
+}
+
+void TypeCheckTest::testAlternatives_data()
+{
+	QTest::addColumn<QString>("expression");
+	QTest::addColumn<ExpressionType>("type");
+	
+	ExpressionType f1type = ExpressionType(ExpressionType::Lambda)
+	.addParameter(ExpressionType(ExpressionType::Any))
+	.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+
+	ExpressionType f2type = ExpressionType(ExpressionType::Lambda)
+	.addParameter(ExpressionType(ExpressionType::Any))
+	.addParameter(ExpressionType(ExpressionType::Any))
+	.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+
+	ExpressionType f3type = ExpressionType(ExpressionType::Lambda)
+	.addParameter(ExpressionType(ExpressionType::Any))
+	.addParameter(ExpressionType(ExpressionType::Any))
+	.addParameter(ExpressionType(ExpressionType::Any))
+	.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+
+	QList<ExpressionType> alts;
+	alts << f1type << f2type;
+
+	ExpressionType mytype = ExpressionType(ExpressionType::Many, alts);
+	
+	QTest::newRow("f1type_alt_1param_ok") << "foocommand(3)" << mytype;
+	QTest::newRow("f2type_alt_2params_ok") << "foocommand(3,44)" << mytype;
+	QTest::newRow("f3type_alt_3params_ok") << "foocommand(list{5,6,2},44,vector{3,5})" << mytype;
+}
