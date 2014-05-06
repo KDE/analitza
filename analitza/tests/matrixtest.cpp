@@ -120,17 +120,41 @@ void MatrixTest::testBuiltinMethods()
 // 	qDebug() << a->calculate().toString();
 // 	a->setExpression(Expression("matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
 // 	qDebug() << a->calculate().toString();
-	Expression ee("2*matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }");
+	//beg times
+// 	Expression ee("2*matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }");
+// 	
+// 	a->setExpression(ee);
+// 	qDebug() << a->isCorrect() << a->errors();
+// 	qDebug() << a->type().toString() ;
+// 	Expression cal = a->calculate();
+// 	qDebug() << cal.toString(); /// listo el tipo es reconociado, ahora el problema es calculate
+	//times
 	
-	a->setExpression(ee);
-	qDebug() << a->isCorrect() << a->errors();
-	qDebug() << a->type().toString() ;
-	Expression cal = a->calculate();
-	qDebug() << cal.toString(); /// listo el tipo es reconociado, ahora el problema es calculate
 // 	qDebug() << a->errors();
-// 	a->setExpression(Expression("tridiag(3, 8, 9, 5)[1][1]"));
+	
+// 	a->setExpression(Expression("tridiag(3, 8, 9, 5)+matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
 // 	qDebug() << a->type().toString() ;
 // 	qDebug() << a->calculate().toString();
+	
+
+// 	a->setExpression(Expression("4*identitymatrix(3)+matrix { matrixrow { 8, 9, 0},matrixrow { 7, 5, 3},matrixrow { 1, 2, 10}}"));
+// 	qDebug() << a->type().toString() << a->errors();
+// 	Expression cal = a->calculate();
+// 	qDebug() << cal.toString();
+// 	qDebug() << a->errors();
+
+
+	
+// 	a->setExpression(Expression("matrix(col(1,3),col(5,7))"));
+	a->setExpression(Expression("col(1,3)"));
+// 	qDebug() << a->type().toString() << a->errors();
+// 	Expression cal = a->calculate();
+// 	qDebug() << cal.toString();
+// 	qDebug() << a->errors();
+
+	
+	
+	
 // 	qDebug() << a->calculate().toString();
 // 	qDebug() << a->errors();
 	/// GSOC info

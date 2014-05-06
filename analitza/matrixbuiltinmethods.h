@@ -51,10 +51,65 @@ private:
 template<int idval>
 const QString MatrixVectorConstructor<idval>::id = idval == 0? "row" : (idval == 1? "col" : QString());
 
+
+#include <iostream>
+using Analitza::ExpressionType;
+//TODO statc in this file static:supportedrettypes and supportedargstypes
+static const ExpressionType variasmatrices()
+{
+	QList<ExpressionType> alternatives;
+	
+// 	//NOTE this constraint must be admissible since Analitza is not dynamically typed
+// 	const int max_rows_supported = 10;
+// 	const int max_cols_supported = 10;
+// 	
+// 	for (int row = 1; row <= max_rows_supported; ++row)
+// 		for (int col = 1; col <= max_cols_supported; ++col)
+// 			alternatives.append(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), col), row));
+	
+// 	alternatives.append(Analitza::ExpressionType(Analitza::ExpressionType::List, Analitza::ExpressionType(Analitza::ExpressionType::Any)));
+	
+	ExpressionType theone(ExpressionType::Lambda);
+	const int maxargs = 50;
+	for (int row = 1; row <= 2; ++row)
+	{
+		theone=theone.addParameter(ExpressionType(ExpressionType::Value));
+		alternatives.append(theone);
+	}
+	
+// 	for (int row = 0; row < alternatives.size(); ++row)
+// 	{
+// 		alternatives[row]=alternatives[row].addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+// 		std::cout << "ALT: " << alternatives.at(row).toString().toStdString() << std::endl;
+// 	}
+// 
+	ExpressionType ab = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Many, QList<ExpressionType>() << 
+ExpressionType(ExpressionType::Lambda).addParameter(ExpressionType(ExpressionType::Value)).addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1)) << 
+ExpressionType(ExpressionType::Lambda).addParameter(ExpressionType(ExpressionType::Value)).addParameter(ExpressionType(ExpressionType::Value)).addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1))
+))
+;
+
+		std::cout << "ABT: " << ab.toString().toStdString() << std::endl;
+// return ab;
+
+// 	return alternatives.first();
+	return ExpressionType(ExpressionType::Many, alternatives);
+}
+
 template<int idval>
-const Analitza::ExpressionType MatrixVectorConstructor<idval>::type = Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
-.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Many))
-.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::List, Analitza::ExpressionType(Analitza::ExpressionType::Any)));
+const Analitza::ExpressionType MatrixVectorConstructor<idval>::type = Analitza::ExpressionType(Analitza::ExpressionType::Many,
+QList<ExpressionType>() << 
+Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Any))
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Any))
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::List, Analitza::ExpressionType(Analitza::ExpressionType::Any)))
+<< 
+Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Any))
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Any))
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Any))
+.addParameter(Analitza::ExpressionType(Analitza::ExpressionType::List, Analitza::ExpressionType(Analitza::ExpressionType::Any))));
 
 template<int idval>
 const QVariant MatrixVectorConstructor<idval>::vectorTypeInfo = QVariant(QString(MatrixVectorConstructor<idval>::id));
