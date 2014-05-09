@@ -19,10 +19,8 @@
 #include "matrixtest.h"
 
 #include <QtTest/QTest>
-#include <QDebug>
 
 #include "analyzer.h"
-//#include <operations.h>
 
 using Analitza::Expression;
 
@@ -47,157 +45,111 @@ void MatrixTest::cleanupTestCase()
 
 void MatrixTest::testBuiltinMethods_data()
 {
-	//add matrix strings in analitza language
-// 	QTest::addColumn<QString>("expression");
-// 	QTest::addColumn<double>("result");
-// 
-// 	QTest::newRow("a value") << "2" << 2.;
-// 	QTest::newRow("val.e0") << "12.0e-02" << 12e-2;
-// 	QTest::newRow("vale") << "12e-2" << 12e-2;
-// 	QTest::newRow("val") << "12e2" << 12e2;
-// 	
-// 	QTest::newRow("simple addition") << "2+2" << 4.;
-// 	QTest::newRow("simple power") << "2**99" << pow(2., 99.);
-// 	QTest::newRow("simple multiplication") << "3*3" << 9.;
-// 	QTest::newRow("sinus") << "sin(3*3)" << sin(9.);
-// 	QTest::newRow("declare") << "x:=3" << 3.;
-// 	QTest::newRow("sum") << "sum(x : x=1..99)" << 4950.;
-// 	QTest::newRow("diff") << "(diff(x:x))(1)" << 1.;
-// 	QTest::newRow("diffz") <<"(diff(z:z))(1)" << 1.;
-// 	
-// 	QTest::newRow("product") << "product(n : n=1..5)" << 120.;
-// 	QTest::newRow("factorial") << "factorial(5)" << 120.;
-// 	
-// 	QTest::newRow("simple piecewise") << "piecewise { pi=0? 3, pi=pi?33 }" << 33.;
-// 	QTest::newRow("simple piecewise with otherwise") << "piecewise { pi=0? 3, ?33 }" << 33.;
-// 	QTest::newRow("boolean and") << "and(true,false)" << 0.;
-// 	QTest::newRow("boolean or") << "or(false,true)" << 1.;
-// 	QTest::newRow("boolean not") << "not(false)" << 1.;
-// 	QTest::newRow("lambda")  << "(x->x+2)(2)" << 4.;
-// 	QTest::newRow("lambda2") << "(x->3*x^2)(1)" << 3.;
-// 	QTest::newRow("lambda3") << "(x->x*sum(t:t=0..3))(2)" << 12.;
-// 	QTest::newRow("imaginarypow") << "(-4)^(1/4)" << 1.;
-// 	QTest::newRow("imaginaryroot") << "root(-4, 4)" << 1.;
-// 
-// 	//comprehension
-// 	QTest::newRow("sum.2bvars") << "sum(x*y : (x, y)=1..3)" << 36.;
-// 	QTest::newRow("sum.list") << "sum(x : x@list{1,5,44})" << 50.;
-// 
-// 	QTest::newRow("sum.sum") << "sum(sum(x : x=0..i) : i=0..10)" << 220.;
-// 
-// 	QTest::newRow("exists") << "exists(x : x@list{true,true,false})" << 1.;
-// 	QTest::newRow("forall") << "forall(x : x@list{true,true,false})" << 0.;
-// // 	QTest::newRow("emptysum") << "sum(x : x@list{})" << 0.;
-// 	
-// 	QTest::newRow("lambdacall") << "f:=x->f(x)" << 0.;
+	QTest::addColumn<QStringList>("expression");
+	QTest::addColumn<QString>("result");
+	
+	QStringList script;
+	
+	script.clear();
+	script << "fillmatrix(3, 2, -15.7)";
+	QTest::newRow("simple fill") << script << "matrix { matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 } }";
+	
+	script.clear();
+	script << "A := matrix{matrixrow{2, 3, 6}, matrixrow{-5, 0, 2.3}}";
+	script << "fillmatrix(2, 3, -9) + A";
+	QTest::newRow("fill + A") << script << "matrix { matrixrow { -7, -6, -3 }, matrixrow { -14, -9, -6.7 } }";
+	
+	script.clear();
+	script << "zeromatrix(2,5)";
+	QTest::newRow("simple 0") << script << "matrix { matrixrow { 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 0, 0, 0 } }";
+	
+	script.clear();
+	script << "identitymatrix(3)";
+	QTest::newRow("simple I") << script << "matrix { matrixrow { 1, 0, 0 }, matrixrow { 0, 1, 0 }, matrixrow { 0, 0, 1 } }";
+	
+	script.clear();
+	script << "identitymatrix(3)-identitymatrix(3)";
+	QTest::newRow("I - I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
+	
+	script.clear();
+	script << "0*identitymatrix(3)";
+	QTest::newRow("0*I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
+	
+	script.clear();
+	script << "zeromatrix(3,3) + identitymatrix(3)";
+	QTest::newRow("0 + I") << script << "matrix { matrixrow { 1, 0, 0 }, matrixrow { 0, 1, 0 }, matrixrow { 0, 0, 1 } }";
+	
+	script.clear();
+	script << "diag(vector{5, 3.2, 6, -9})";
+	QTest::newRow("simple diag") << script << "matrix { matrixrow { 5, 0, 0, 0 }, matrixrow { 0, 3.2, 0, 0 }, matrixrow { 0, 0, 6, 0 }, matrixrow { 0, 0, 0, -9 } }";
+	
+	script.clear();
+	script << "diag(vector{1, 1, 1}) - identitymatrix(3)";
+	QTest::newRow("zeromatrix: diag - I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
+	
+	script.clear();
+	script << "v := vector{5, 7.8, -0.6, 3.5}";
+	script << "diag(v)[3][3] + diag(v)[2][3]";
+	QTest::newRow("selector diag") << script << "-0.6";
+	
+	script.clear();
+	script << "tridiag(-2.1, 3.6, 48, 5)";
+	QTest::newRow("simple tridiag") << script << "matrix { matrixrow { 3.6, 48, 0, 0, 0 }, matrixrow { -2.1, 3.6, 48, 0, 0 }, matrixrow { 0, -2.1, 3.6, 48, 0 }, matrixrow { 0, 0, -2.1, 3.6, 48 }, matrixrow { 0, 0, 0, -2.1, 3.6 } }";
+	
+	script.clear();
+	script << "A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -1.2, cos(pi)}, matrixrow{-45, 9.6, -2.3}}";
+	script << "tridiag(-8, 10, 7.2, 3) - identitymatrix(3) + A";
+	QTest::newRow("tridiag - I + A") << script << "matrix { matrixrow { 1.2, 9.5, 5 }, matrixrow { -8, 7.8, 6.2 }, matrixrow { -45, 1.6, 6.7 } }";
+	
+	script.clear();
+	script << "A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -12, 1}, matrixrow{-45, 9.6, cos(pi)}}";
+	script << "getdiag(A)";
+	QTest::newRow("simple getdiag(A)") << script << "vector { -7.8, -12, -1 }";
+	
+	script.clear();
+	script << "A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -12, 1}, matrixrow{-45, 9.6, cos(pi)}}";
+	script << "getdiag(A)[2]";
+	QTest::newRow("selector getdiag") << script << "-12";
+	
+	script.clear();
+	script << "v := vector{5,5,0}";
+	script << "A := matrix{matrixrow{0, -1, 2}, matrixrow{4, 0, -3.2}, matrixrow{5.8, -15, 0}}";
+	script << "B := fillmatrix(3,3, 4.5)";
+	script << "D := diag(v)";
+	script << "I := identitymatrix(3)";
+	script << "O := zeromatrix(3,3)";
+	script << "T := tridiag(2,1,8,3)";
+	script << "A + B + D - cos(pi)*I + O + T";
+	QTest::newRow("complex exp") << script << "matrix { matrixrow { 11.5, 11.5, 6.5 }, matrixrow { 10.5, 11.5, 9.3 }, matrixrow { 10.3, -8.5, 6.5 } }";
 }
-using Analitza::ExpressionType;
+
 void MatrixTest::testBuiltinMethods()
 {
-// 	a->setExpression(Expression("matrix( col(6,47,8,5), col(4, 7,6,7) )"));
-// 	a->setExpression(Expression("matrix( row(6,47,8,5), row(4, 7,6,7) )"));
-// 	a->setExpression(Expression("matrix(row(3,4), row(1,7), row(4,5))")); //GSOC
-// 	a->setExpression(Expression("matrix(3,4)"));
-// 	qDebug() << Expression("identitymatrix(3)").isCorrect();
-// 	a->setExpression(Expression("identitymatrix(3)"));
-// 	a->setExpression(Expression("diag(5,7,9,16)"));
-// 	a->setExpression(Expression("diag(matrix{matrixrow{3,2,0}, matrixrow{1,4,7}, matrixrow{9,6,5}})"));
-// 	a->setExpression(Expression("diag(matrix( row(6,47,8,5), row(4, 7,6,7) , row(4, 7,56,7) , row(4, 7,8,79) ))"));
-// 	a->setExpression(Expression("tridiag(3, 85)"));
-// 	Analitza::ExpressionType t1 = a->type();
-// 	a->setExpression(Expression("matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
-// 	Analitza::ExpressionType t2 = a->type();
-// 	a->setExpression(Expression("a[1][1]"));
+	QFETCH(QStringList, expression);
+	QFETCH(QString, result);
 	
-// 	qDebug() << t1.toString();
-// 	qDebug() << t2.toString();
+	Expression last;
+	Analitza::Analyzer b1;
+	foreach(const QString &exp, expression) {
+		Expression e(exp, false);
+		if(!e.isCorrect()) qDebug() << "error:" << e.error();
+		QVERIFY(e.isCorrect());
+		
+		b1.setExpression(e);
+		
+		if(!b1.isCorrect()) qDebug() << "errors: " << b1.errors();
+		QVERIFY(b1.isCorrect());
+		last = b1.calculate();
+		if(!b1.isCorrect()) qDebug() << "errors:" << e.toString() << b1.errors();
+		QVERIFY(b1.isCorrect());
+	}
+	QCOMPARE(last.toString(), result);
 
-// 	a->setExpression(Expression("matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
-// 	qDebug() << a->type().toString();
-// 	Analitza::ExpressionType ty = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), 5), 5);
-// 	qDebug() << ty.toString();
-// 	a->setExpression(Expression("tridiag(3, 8, 9, 5)"));
-// 	qDebug() << a->calculate().toString();
-// 	a->setExpression(Expression("matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
-// 	qDebug() << a->calculate().toString();
-	//beg times
-// 	Expression ee("2*matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }");
-// 	
-// 	a->setExpression(ee);
-// 	qDebug() << a->isCorrect() << a->errors();
-// 	qDebug() << a->type().toString() ;
-// 	Expression cal = a->calculate();
-// 	qDebug() << cal.toString(); /// listo el tipo es reconociado, ahora el problema es calculate
-	//times
-	
-// 	qDebug() << a->errors();
-	
-// 	a->setExpression(Expression("tridiag(3, 8, 9, 5)+matrix { matrixrow { 8, 9, 0, 0, 0 }, matrixrow { 3, 8, 9, 0, 0 }, matrixrow { 0, 3, 8, 9, 0 }, matrixrow { 0, 0, 3, 8, 9 }, matrixrow { 0, 0, 0, 3, 8 } }"));
-// 	qDebug() << a->type().toString() ;
-// 	qDebug() << a->calculate().toString();
-	
-
-// 	a->setExpression(Expression("4*identitymatrix(3)+matrix { matrixrow { 8, 9, 0},matrixrow { 7, 5, 3},matrixrow { 1, 2, 10}}"));
-// 	qDebug() << a->type().toString() << a->errors();
-// 	Expression cal = a->calculate();
-// 	qDebug() << cal.toString();
-// 	qDebug() << a->errors();
-
-
-	
-// 	a->setExpression(Expression("matrix(col(1,3),col(5,7))"));
-// 	a->setExpression(Expression("col(1,3)"));
-// 	qDebug() << a->type().toString() << a->errors();
-// 	Expression cal = a->calculate();
-// 	qDebug() << cal.toString();
-// 	qDebug() << a->errors();
-
-	
-	
-	
-// 	qDebug() << a->calculate().toString();
-// 	qDebug() << a->errors();
-	/// GSOC info
-//A := matrix{matrixrow{3,2}, matrixrow{1,7}, matrixrow{4,5}} 
-//A := matrix(row(3,4), row(1,7), row(4,5))
-	
-	//get hos matrix strinx invalid Analitza lang and test commands
-// 	QFETCH(QString, expression);
-// 	QFETCH(double, result);
-// 	Expression e(expression, false);
-// 	if(!e.isCorrect()) qDebug() << "error: " << e.error();
-// 	QCOMPARE(e.isCorrect(), true);
-// 	
-// 	a->setExpression(e);
-// 	
-// 	if(!a->isCorrect()) qDebug() << "error: " << a->errors();
-// 	QVERIFY(a->isCorrect());
-// 	QCOMPARE(a->evaluate().toReal().value(), result);
-// 	QVERIFY(a->isCorrect());
-// 	Expression ee=a->calculate();
-// 	if(!a->isCorrect()) qDebug() << "error: " << a->errors();
-// 	QVERIFY(a->isCorrect());
-// 	QCOMPARE(ee.toReal().value(), result);
-// 	QVERIFY(a->isCorrect());
-	
-	
-// 	a->setExpression(Expression("zeromatrix(3,3) + identitymatrix(3) + fillmatrix(3,3, 4) - matrix { matrixrow { 5, 4, 4 }, matrixrow { 4, 5, 4 }, matrixrow { 4, 4, 5 } }"));
-// 		a->setExpression(Expression("getdiag(diag(vector{2,-9, 45, 6}) + identitymatrix(4))"));
-	a->setExpression(Expression("getdiag(diag(vector{2,-9, 45, 6,65})+identitymatrix(5)+tridiag(3,7,8,5))"));
-	qDebug() << a->type().toString() << a->errors();
-	Expression cal = a->calculate();
-	qDebug() << cal.toString();
-	qDebug() << a->errors();
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	QString script = expression.join("\n");
+	script+="\n\n\n";
+	QTextStream stream(&script);
+	a->importScript(&stream);
+	QVERIFY(a->isCorrect());
 }
 
 #include "matrixtest.moc"
