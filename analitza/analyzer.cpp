@@ -153,12 +153,12 @@ Analyzer::~Analyzer()
 
 void Analyzer::registerBuiltinMethods()
 {
-	m_builtin.insertFunction(MatrixRowConstructor::id, MatrixRowConstructor::type, new MatrixRowConstructor);
-	m_builtin.insertFunction(MatrixColConstructor::id, MatrixColConstructor::type, new MatrixColConstructor);
-	m_builtin.insertFunction(MatrixConstructor::id, MatrixConstructor::type, new MatrixConstructor);
+	m_builtin.insertFunction(ZeroMatrixConstructor::id, ZeroMatrixConstructor::type, new ZeroMatrixConstructor);
+	m_builtin.insertFunction(FillMatrixConstructor::id, FillMatrixConstructor::type, new FillMatrixConstructor);
 	m_builtin.insertFunction(IdentityMatrixConstructor::id, IdentityMatrixConstructor::type, new IdentityMatrixConstructor);
 	m_builtin.insertFunction(DiagonalMatrixConstructor::id, DiagonalMatrixConstructor::type, new DiagonalMatrixConstructor);
 	m_builtin.insertFunction(TridiagonalMatrixConstructor::id, TridiagonalMatrixConstructor::type, new TridiagonalMatrixConstructor);
+	m_builtin.insertFunction(GetDiagonalOfMatrix::id, GetDiagonalOfMatrix::type, new GetDiagonalOfMatrix);
 }
 
 void Analyzer::setExpression(const Expression & e)

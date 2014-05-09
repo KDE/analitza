@@ -146,7 +146,7 @@ void MatrixTest::testBuiltinMethods()
 
 	
 // 	a->setExpression(Expression("matrix(col(1,3),col(5,7))"));
-	a->setExpression(Expression("col(1,3)"));
+// 	a->setExpression(Expression("col(1,3)"));
 // 	qDebug() << a->type().toString() << a->errors();
 // 	Expression cal = a->calculate();
 // 	qDebug() << cal.toString();
@@ -179,6 +179,25 @@ void MatrixTest::testBuiltinMethods()
 // 	QVERIFY(a->isCorrect());
 // 	QCOMPARE(ee.toReal().value(), result);
 // 	QVERIFY(a->isCorrect());
+	
+	
+// 	a->setExpression(Expression("zeromatrix(3,3) + identitymatrix(3) + fillmatrix(3,3, 4) - matrix { matrixrow { 5, 4, 4 }, matrixrow { 4, 5, 4 }, matrixrow { 4, 4, 5 } }"));
+// 		a->setExpression(Expression("getdiag(diag(vector{2,-9, 45, 6}) + identitymatrix(4))"));
+	a->setExpression(Expression("getdiag(diag(vector{2,-9, 45, 6,65})+identitymatrix(5)+tridiag(3,7,8,5))"));
+	qDebug() << a->type().toString() << a->errors();
+	Expression cal = a->calculate();
+	qDebug() << cal.toString();
+	qDebug() << a->errors();
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 
 #include "matrixtest.moc"

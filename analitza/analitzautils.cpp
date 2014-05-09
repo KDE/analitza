@@ -649,8 +649,7 @@ void fillMatrix(Matrix* matrix, int nrows, int ncols, double value)
 {
 	Q_ASSERT(matrix->size() == 0);
 	
-	for (int row = 0; row < nrows; ++row)
-	{
+	for (int row = 0; row < nrows; ++row) {
 		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(ncols);
 		
 		for (int col= 0; col < ncols; ++col)
