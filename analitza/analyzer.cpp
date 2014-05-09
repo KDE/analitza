@@ -158,6 +158,7 @@ void Analyzer::registerBuiltinMethods()
 	m_builtin.insertFunction(IdentityMatrixConstructor::id, IdentityMatrixConstructor::type, new IdentityMatrixConstructor);
 	m_builtin.insertFunction(DiagonalMatrixConstructor::id, DiagonalMatrixConstructor::type, new DiagonalMatrixConstructor);
 	m_builtin.insertFunction(TridiagonalMatrixConstructor::id, TridiagonalMatrixConstructor::type, new TridiagonalMatrixConstructor);
+	m_builtin.insertFunction(GetNDiagonalOfMatrix::id, GetNDiagonalOfMatrix::type, new GetNDiagonalOfMatrix);
 	m_builtin.insertFunction(GetDiagonalOfMatrix::id, GetDiagonalOfMatrix::type, new GetDiagonalOfMatrix);
 }
 

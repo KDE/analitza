@@ -76,7 +76,17 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-//getdiag(matrix) to obtain the diaonl of a SQUARE matrix as a vector
+//from reactugular matrix
+class GetNDiagonalOfMatrix: public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+
+	static const QString id;
+	static const Analitza::ExpressionType type;
+};
+
+//getdiag(matrix from square matrix) to obtain the diaonl of a SQUARE matrix as a vector
 class GetDiagonalOfMatrix: public Analitza::FunctionDefinition
 {
 public:

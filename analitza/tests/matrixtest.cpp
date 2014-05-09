@@ -121,6 +121,32 @@ void MatrixTest::testBuiltinMethods_data()
 	script << "T := tridiag(2,1,8,3)";
 	script << "A + B + D - cos(pi)*I + O + T";
 	QTest::newRow("complex exp") << script << "matrix { matrixrow { 11.5, 11.5, 6.5 }, matrixrow { 10.5, 11.5, 9.3 }, matrixrow { 10.3, -8.5, 6.5 } }";
+	
+	script.clear();
+/*
+  matrix{  \n
+	matrixrow { 	3.6,	48, 	 0, 	9, 		80 } \n
+	matrixrow { -	2.1,	3.6,	 48,	 0, 	100 }  \n
+	matrixrow { 	1,	    -2.1,	 3.6,	 48, 	0 }  \n
+	matrixrow { 	0,	 	0, 		-2.1,	 3.6, 	48 } \n
+	matrixrow { 	5,	 	4, 		  3, 	-2.1, 	3.6 } }
+	
+	script << "A := matrix{matrixrow {3.6,48,  0,9,80 }, matrixrow { -	2.1,	3.6,	 48,	 0, 	100 },matrixrow { 	1, -2.1,	 3.6,	 48, 	0 },matrixrow { 	0,	 	0, 		-2.1,	 3.6, 	48 },matrixrow { 	5,	 	4, 		  3, 	-2.1, 	3.6 } }";
+
+
+  matrix{  \n
+	matrixrow { 	3.6,	48, 	 0, 	9, 		80,		4,		5 } \n
+	matrixrow { -	2.1,	3.6,	 48,	 0, 	100,	6,		7 }  \n
+	matrixrow { 	1,	    -2.1,	 3.6,	 48, 	0 ,		8,		9}  \n
+	matrixrow { 	0,	 	0, 		-2.1,	 3.6, 	48 ,	2,		1} \n
+	matrixrow { 	5,	 	4, 		  3, 	-2.1, 	3.6 ,	3,		5} }
+
+	*/
+//  	script << "A := matrix{matrixrow {3.6,48,  0,9,80 ,4,5}, matrixrow { -	2.1,	3.6,	 48,	 0, 	100, 6,7 },matrixrow { 	1, -2.1,	 3.6,	 48, 	0 ,8,9},matrixrow { 	0,	 	0, 		-2.1,	 3.6, 	48,2,1 },matrixrow { 	5,	 	4, 		  3, 	-2.1, 	3.6,3,5 } }";
+script << "A:=identitymatrix(4)";
+	script << "getndiag(list{A,0})";
+	QTest::newRow("getndiag") << script << "-12";
+
 }
 
 void MatrixTest::testBuiltinMethods()

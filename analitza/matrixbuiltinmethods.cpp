@@ -18,17 +18,18 @@
 
 #include "matrixbuiltinmethods.h"
 
+#include <QCoreApplication>
+
 #include "analitzautils.h"
 #include "expression.h"
 #include "value.h"
 #include "matrix.h"
-
-#include <QDebug> //TODO remove this debug header
-
-//TODO better errs mgs and use i18n calls
+#include "list.h"
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
+
+static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix size must be nonnegative integer");
 
 const QString FillMatrixConstructor::id = QString("fillmatrix");
 const ExpressionType FillMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
@@ -57,7 +58,7 @@ Expression FillMatrixConstructor::operator()(const QList< Analitza::Expression >
 		ret.setTree(matrix);
 	}
 	else
-		ret.addError("size of matrix must be positve integers, bad format ...");
+		ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
 	
 	return ret;
 }
@@ -106,7 +107,7 @@ Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expressi
 		ret.setTree(matrix);
 	}
 	else
-		ret.addError("bad format of arg:must be positve integer");
+		ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
 
 	return ret;
 }
@@ -161,7 +162,7 @@ Expression TridiagonalMatrixConstructor::operator()(const QList< Analitza::Expre
 	const int n = nobj->value();
 	
 	if (!nobj->isInteger() && n > 0) {
-		ret.addError("the last arg (n) must be positve integer");
+		ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
 		
 		return ret;
 	}
@@ -192,6 +193,96 @@ Expression TridiagonalMatrixConstructor::operator()(const QList< Analitza::Expre
 }
 
 // utils
+
+
+const QString GetNDiagonalOfMatrix::id = QString("getndiag");
+const ExpressionType GetNDiagonalOfMatrix::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Any)))
+.addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
+
+Expression GetNDiagonalOfMatrix::operator()(const QList< Analitza::Expression >& args)
+{
+	Expression ret("2");
+	
+	const Analitza::List *inputlist = static_cast<const Analitza::List*>(args.first().tree());
+	
+	const unsigned int nargs = inputlist->size();
+	
+	if (nargs > 2)
+	{
+		ret.addError("ERORORO DEBE SER 2 maximo");
+		return ret;
+	}
+	
+	if (inputlist->at(0)->type() != Analitza::Object::matrix)
+	{
+		ret.addError("primero debe ser matrix");
+		
+		return ret;
+	}
+	
+	if (nargs == 2)
+		if (inputlist->at(1)->type() != Analitza::Object::value)
+		{
+			ret.addError("2do debe ser numero entero");
+		
+			return ret;
+		}
+	
+	const Analitza::Matrix *inputmatrix = static_cast<const Analitza::Matrix*>(inputlist->at(0));
+	
+	if (inputmatrix->size() > 0) {
+		const int n = inputmatrix->size();
+		
+		const int npos = nargs == 1? 0 : static_cast<const Analitza::Cn*>(inputlist->at(1))->value();
+		const unsigned int normalizednpos = abs(npos) + 1;
+		const bool negativenpos = 0 > npos;
+		
+		if (negativenpos)
+		{
+			if (normalizednpos > n)
+			{
+				ret.addError("por filas max");
+				
+				return ret;
+			}
+		}
+		else
+			if (normalizednpos > static_cast<const Analitza::MatrixRow*>(inputmatrix->values().first())->size())
+			{
+				ret.addError("por cols max");
+				
+				return ret;
+			}
+		
+		Analitza::Vector *diagonal = new Analitza::Vector(n);
+		
+		if (!negativenpos)
+		{
+		for (int i = -npos; i < n; ++i) 
+			for (int j = 0; j < n+npos; ++j) 
+				if (i==j-npos)
+					diagonal->appendBranch(inputmatrix->at(i, j)->copy());
+				
+
+		}
+		else
+		{
+		for (int i = 0; i < n; ++i) 
+			for (int j = npos; j < static_cast<const Analitza::MatrixRow*>(inputmatrix->values().first())->size(); ++j) 
+				if (i==j-npos)
+					diagonal->appendBranch(inputmatrix->at(i, j)->copy());
+
+			
+		}
+
+		ret.setTree(diagonal);
+	}
+	
+	return ret;
+}
+
+
 
 const QString GetDiagonalOfMatrix::id = QString("getdiag");
 const ExpressionType GetDiagonalOfMatrix::type = ExpressionType(ExpressionType::Lambda)
