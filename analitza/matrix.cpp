@@ -67,6 +67,7 @@ void Matrix::appendBranch(Object* o)
 	Q_ASSERT(o->type()==Object::matrixrow);
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o));
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o)->size()!=0);
+	Q_ASSERT(m_rows.isEmpty()?true:dynamic_cast<MatrixRow*>(o)->size() == dynamic_cast<MatrixRow*>(m_rows.last())->size());
 	m_rows += static_cast<MatrixRow*>(o);
 }
 
