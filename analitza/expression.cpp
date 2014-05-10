@@ -280,7 +280,22 @@ bool Expression::ExpressionPrivate::canAdd(const Object* where, const Object* br
 				correct=false;
 			}
 		}
-	}
+	} else 
+		if(where->type()==Object::matrix) {
+			if(branch->type()==Object::matrixrow) {
+				const Matrix *matrix = static_cast<const Matrix*>(where);
+				const MatrixRow *matrixrow = static_cast<const MatrixRow*>(branch);
+				
+				if (matrix->size() != 0)
+					if (static_cast<MatrixRow*>(matrix->values().last())->size() != matrixrow->size()) {
+						m_err << QCoreApplication::tr("All matrixrow elements must have the same size");
+						correct=false;
+					}
+			} else {
+				m_err << QCoreApplication::tr("The matrix must contain only matrixrow elements");
+				correct=false;
+			}
+		}
 	
 	Q_ASSERT(correct || !m_err.isEmpty());
 	
