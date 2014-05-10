@@ -29,6 +29,7 @@
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
+static const QString MATRIX_EMPTY_ERROR_MESSAGE = QCoreApplication::tr("Matrix can't be empty");
 static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix size must be nonnegative integer");
 
 const QString FillMatrixConstructor::id = QString("fillmatrix");
@@ -48,8 +49,8 @@ Expression FillMatrixConstructor::operator()(const QList< Analitza::Expression >
 	double val = args.size() == 2? 0 : static_cast<const Analitza::Cn*>(args.at(2).tree())->value();
 	
 	if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() > 0 && ncolsobj->value() > 0) {
-		const int nrows = nrowsobj->value();
-		const int ncols = ncolsobj->value();
+		const unsigned int nrows = nrowsobj->value();
+		const unsigned int ncols = ncolsobj->value();
 		
 		Analitza::Matrix *matrix = new Analitza::Matrix();
 		
@@ -86,16 +87,15 @@ Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expressi
 	Expression ret;
 	
 	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.first().tree());
+	const unsigned int n = nobj->value();
 	
-	if (nobj->isInteger() && nobj->value() > 0) {
-		const int n = nobj->value();
-		
+	if (nobj->isInteger() && n > 0) {
 		Analitza::Matrix *matrix = new Analitza::Matrix();
 		
-		for (int row = 0; row < n; ++row) {
+		for (unsigned int row = 0; row < n; ++row) {
 			Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
 			
-			for (int col= 0; col < n; ++col)
+			for (unsigned int col= 0; col < n; ++col)
 				if (row == col)
 					rowobj->appendBranch(new Analitza::Cn(1));
 				else
@@ -105,8 +105,7 @@ Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expressi
 		}
 		
 		ret.setTree(matrix);
-	}
-	else
+	} else
 		ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
 
 	return ret;
@@ -124,12 +123,12 @@ Expression DiagonalMatrixConstructor::operator()(const QList< Analitza::Expressi
 	Analitza::Matrix *matrix = new Analitza::Matrix();
 	
 	const Analitza::Vector *v =  static_cast<const Analitza::Vector*>(args.first().tree());
-	const int n = v->size();
+	const unsigned int n = v->size();
 	
-	for (int row = 0; row < n; ++row) {
+	for (unsigned int row = 0; row < n; ++row) {
 		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
 		
-		for (int col= 0; col < n; ++col)
+		for (unsigned int col= 0; col < n; ++col)
 			if (row == col)
 				rowobj->appendBranch(v->at(col)->copy());
 			else
@@ -158,131 +157,174 @@ Expression TridiagonalMatrixConstructor::operator()(const QList< Analitza::Expre
 	Expression ret;
 
 	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.last().tree());
+	const unsigned int n = nobj->value();
 	
-	const int n = nobj->value();
-	
-	if (!nobj->isInteger() && n > 0) {
-		ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
+	if (nobj->isInteger() && n > 0) {
+		if (!nobj->isInteger() && n > 0) {
+			ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
+			
+			return ret;
+		}
 		
-		return ret;
-	}
-	
-	Analitza::Matrix *matrix = new Analitza::Matrix();
-	
-	for (int row = 0; row < n; ++row) {
-		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
+		Analitza::Matrix *matrix = new Analitza::Matrix();
 		
-		for (int col= 0; col < n; ++col)
-			if (row == col + 1) // a
-				rowobj->appendBranch(args.at(0).tree()->copy());
-			else
-				if (row == col) // b
-					rowobj->appendBranch(args.at(1).tree()->copy());
+		for (unsigned int row = 0; row < n; ++row) {
+			Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
+			
+			for (unsigned int col= 0; col < n; ++col)
+				if (row == col + 1) // a
+					rowobj->appendBranch(args.at(0).tree()->copy());
 				else
-					if (row == col - 1) // c
-						rowobj->appendBranch(args.at(2).tree()->copy());
+					if (row == col) // b
+						rowobj->appendBranch(args.at(1).tree()->copy());
 					else
-						rowobj->appendBranch(new Analitza::Cn(0));
+						if (row == col - 1) // c
+							rowobj->appendBranch(args.at(2).tree()->copy());
+						else
+							rowobj->appendBranch(new Analitza::Cn(0));
+			
+			matrix->appendBranch(rowobj);
+		}
 		
-		matrix->appendBranch(rowobj);
-	}
-	
-	ret.setTree(matrix);
+		ret.setTree(matrix);
+	} else
+		ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
 	
 	return ret;
 }
 
 // utils
 
-
 const QString GetNDiagonalOfMatrix::id = QString("getndiag");
 const ExpressionType GetNDiagonalOfMatrix::type = ExpressionType(ExpressionType::Lambda)
-.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Any)))
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1))
+.addParameter(ExpressionType(ExpressionType::Value))
 .addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
 
 Expression GetNDiagonalOfMatrix::operator()(const QList< Analitza::Expression >& args)
 {
-	Expression ret("2");
+	Expression ret;
 	
-	const Analitza::List *inputlist = static_cast<const Analitza::List*>(args.first().tree());
+	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.last().tree());
 	
-	const unsigned int nargs = inputlist->size();
-	
-	if (nargs > 2)
+	if (nobj->isInteger())
 	{
-		ret.addError("ERORORO DEBE SER 2 maximo");
-		return ret;
-	}
-	
-	if (inputlist->at(0)->type() != Analitza::Object::matrix)
-	{
-		ret.addError("primero debe ser matrix");
+		const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
 		
-		return ret;
-	}
-	
-	if (nargs == 2)
-		if (inputlist->at(1)->type() != Analitza::Object::value)
-		{
-			ret.addError("2do debe ser numero entero");
-		
-			return ret;
-		}
-	
-	const Analitza::Matrix *inputmatrix = static_cast<const Analitza::Matrix*>(inputlist->at(0));
-	
-	if (inputmatrix->size() > 0) {
-		const int n = inputmatrix->size();
-		
-		const int npos = nargs == 1? 0 : static_cast<const Analitza::Cn*>(inputlist->at(1))->value();
-		const unsigned int normalizednpos = abs(npos) + 1;
-		const bool negativenpos = 0 > npos;
-		
-		if (negativenpos)
-		{
-			if (normalizednpos > n)
-			{
-				ret.addError("por filas max");
-				
-				return ret;
+		if (matrix->size() > 0) {
+			const int npos = nobj->value();
+			const unsigned int absnpos = std::abs(npos);
+			const unsigned int absnpos1 = absnpos + 1;
+			const bool isneg = npos < 0;
+			const unsigned int nrows = matrix->size();
+			const unsigned int ncols = static_cast<const Analitza::MatrixRow*>(matrix->values().first())->size();
+			
+			if (isneg) {
+				if (absnpos1 > nrows) {
+					ret.addError("por filas max");
+					return ret;
+				}
+			} else {
+				if (absnpos1 > ncols) {
+					ret.addError("por cols max");
+					return ret;
+				}
 			}
-		}
-		else
-			if (normalizednpos > static_cast<const Analitza::MatrixRow*>(inputmatrix->values().first())->size())
-			{
-				ret.addError("por cols max");
+			
+			Analitza::Vector *diagonal = new Analitza::Vector(std::max(nrows, ncols));
+			
+			if (nrows == ncols) {
+// 				for (int i = 0; i < n; ++i)
+// 					diagonal->appendBranch(matrix->at(i, i)->copy());
+			} else
+				if (nrows > ncols) {
+					
+				} else {
+					
+				}
 				
-				return ret;
-			}
-		
-		Analitza::Vector *diagonal = new Analitza::Vector(n);
-		
-		if (!negativenpos)
-		{
-		for (int i = -npos; i < n; ++i) 
-			for (int j = 0; j < n+npos; ++j) 
-				if (i==j-npos)
-					diagonal->appendBranch(inputmatrix->at(i, j)->copy());
 				
-
-		}
-		else
-		{
-		for (int i = 0; i < n; ++i) 
-			for (int j = npos; j < static_cast<const Analitza::MatrixRow*>(inputmatrix->values().first())->size(); ++j) 
-				if (i==j-npos)
-					diagonal->appendBranch(inputmatrix->at(i, j)->copy());
 
 			
-		}
+			const bool isfat = nrows < ncols;
+// 			const bool issquare = 
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+/*
+			
+			unsigned int to = 0;
+			unsigned int rowoffset = 0;
+			unsigned int coloffset = 0;
+			
+			if (isneg) {
+				if (absnpos1 > nrows) {
+					ret.addError("por filas max");
+					
+					return ret;
+				}
+				
+				to = std::min(ncols,absnpos1);
+				rowoffset = absnpos;
+				coloffset = 0;
+			}
+			else
+			{
+				if (absnpos1 > ncols)
+				{
+					ret.addError("por cols max");
+					
+					return ret;
+				}
+				
+				to = std::min(nrows,absnpos1);
+				rowoffset = 0;
+				coloffset = absnpos;
+			}
+			qDebug() << "CHKR OSEA: " << ncols << absnpos << rowoffset << coloffset;
 
-		ret.setTree(diagonal);
+			for (int i = 0; i < to; ++i) 
+				diagonal->appendBranch(matrix->at(rowoffset+i, coloffset+i)->copy());
+				*/
+// 			if (!negativenpos)
+// 			{
+// 			for (int i = -npos; i < n; ++i) 
+// 				for (int j = 0; j < n+npos; ++j) 
+// 					if (i==j-npos)
+// 						diagonal->appendBranch(matrix->at(i, j)->copy());
+// 					
+// 				
+// 			}
+// 			else
+// 			{
+// 			for (int i = 0; i < n; ++i) 
+// 				for (int j = npos; j < static_cast<const Analitza::MatrixRow*>(matrix->values().first())->size(); ++j) 
+// 					if (i==j-npos)
+// 						diagonal->appendBranch(matrix->at(i, j)->copy());
+// 
+// 				
+// 			}
+
+			ret.setTree(diagonal);
+		} else {
+			ret.addError(MATRIX_EMPTY_ERROR_MESSAGE);
+		}
 	}
+	else
+		ret.addError(QCoreApplication::tr("nth diagonal index must be integer number"));
 	
 	return ret;
 }
-
-
 
 const QString GetDiagonalOfMatrix::id = QString("getdiag");
 const ExpressionType GetDiagonalOfMatrix::type = ExpressionType(ExpressionType::Lambda)

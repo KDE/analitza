@@ -49,7 +49,7 @@ void MatrixTest::testBuiltinMethods_data()
 	QTest::addColumn<QString>("result");
 	
 	QStringList script;
-	
+	/*
 	script.clear();
 	script << "fillmatrix(3, 2, -15.7)";
 	QTest::newRow("simple fill") << script << "matrix { matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 } }";
@@ -121,7 +121,7 @@ void MatrixTest::testBuiltinMethods_data()
 	script << "T := tridiag(2,1,8,3)";
 	script << "A + B + D - cos(pi)*I + O + T";
 	QTest::newRow("complex exp") << script << "matrix { matrixrow { 11.5, 11.5, 6.5 }, matrixrow { 10.5, 11.5, 9.3 }, matrixrow { 10.3, -8.5, 6.5 } }";
-	
+	*/
 	script.clear();
 /*
   matrix{  \n
@@ -135,18 +135,19 @@ void MatrixTest::testBuiltinMethods_data()
 
 
   matrix{  \n
-	matrixrow { 	3.6,	48, 	 0, 	9, 		80,		4,		5 } \n
-	matrixrow { -	2.1,	3.6,	 48,	 0, 	100,	6,		7 }  \n
-	matrixrow { 	1,	    -2.1,	 3.6,	 48, 	0 ,		8,		9}  \n
-	matrixrow { 	0,	 	0, 		-2.1,	 3.6, 	48 ,	2,		1} \n
+	matrixrow { 	3.6,	42, 	 0, 	9, 		80,		4,		5 } \n
+	matrixrow {    -4.1,	3.6,	 45,	 0, 	100,	6,		7 }  \n
+	matrixrow { 	1,	    -2.1,	 3.6,	 47, 	0 ,		8,		9}  \n
+	matrixrow { 	0,	 	0, 		-2.3,	 5.6, 	48 ,	2,		1} \n
 	matrixrow { 	5,	 	4, 		  3, 	-2.1, 	3.6 ,	3,		5} }
 
 	*/
-//  	script << "A := matrix{matrixrow {3.6,48,  0,9,80 ,4,5}, matrixrow { -	2.1,	3.6,	 48,	 0, 	100, 6,7 },matrixrow { 	1, -2.1,	 3.6,	 48, 	0 ,8,9},matrixrow { 	0,	 	0, 		-2.1,	 3.6, 	48,2,1 },matrixrow { 	5,	 	4, 		  3, 	-2.1, 	3.6,3,5 } }";
-script << "A:=identitymatrix(4)";
-	script << "getndiag(list{A,0})";
+ 	script << "A := matrix{matrixrow {3.6,42,  0,9,80 ,4,5}, matrixrow { -4.1,	3.6,	 45,	 0, 	100, 6,7 },matrixrow { 	1, -2.1,	 5.6,	 47, 	0 ,8,9},matrixrow { 	0,	 	0, 		-2.3,	 3.6, 	48,2,1 },matrixrow { 	5,	 	4, 		  3, 	-2.1, 	3.6,3,5 } }";
+//  	script << "A := matrix{matrixrow{2,3}}";
+// script << "A:=identitymatrix(4)";
+// 	script << "getndiag(A,1)";
+// 	script << "matrix{matrixrow{23,3},matrixrow{32,sin(5)}}";
 	QTest::newRow("getndiag") << script << "-12";
-
 }
 
 void MatrixTest::testBuiltinMethods()
