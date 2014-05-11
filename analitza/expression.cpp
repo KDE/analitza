@@ -50,7 +50,7 @@ public:
 	
 	Object* branch(const QDomElement& elem);
 	
-	template <class T>
+	template <class T, class Tcontained = Object>
 	T* addElements(T* v, const QDomElement* elem)
 	{
 		QDomNode n = elem->firstChild();
@@ -59,7 +59,7 @@ public:
 				Object* ob= branch(n.toElement()); //TODO: We should do that better
 				
 				if(ob && canAdd(v, ob)) {
-					v->appendBranch(ob);
+					v->appendBranch(static_cast<Tcontained*>(ob));
 				} else {
 // 					delete ob;
 					delete v;
@@ -479,7 +479,7 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
 			ret=addElements<List>(new List, &elem);
 			break;
 		case Object::matrix:
-			ret=addElements<Matrix>(new Matrix, &elem);
+			ret=addElements<Matrix, MatrixRow>(new Matrix, &elem);
 			break;
 		case Object::matrixrow:
 			ret=addElements<MatrixRow>(new MatrixRow, &elem);

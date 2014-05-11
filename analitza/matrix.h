@@ -44,7 +44,7 @@ class ANALITZA_EXPORT Matrix : public Object
 		
 		Matrix();
 		virtual ~Matrix();
-		void appendBranch(Object* o);
+		void appendBranch(MatrixRow* o);
 		
 		virtual Matrix* copy() const;
 		virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;

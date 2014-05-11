@@ -387,7 +387,7 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
 		Matrix::const_iterator it, itEnd=v->constEnd();
 		for(it=v->constBegin(); it!=itEnd; ++it) {
 			Object* res=eval(*it, resolve, unscoped);
-			nv->appendBranch(res);
+			nv->appendBranch(static_cast<MatrixRow*>(res));
 		}
 		ret=nv;
 	} else if(branch->type()==Object::apply) {
@@ -624,14 +624,14 @@ Object* Analyzer::calcDeclare(const Container* c)
 	return ret;
 }
 
-template<class T, class Tit>
+template<class T, class Tit, class Tcontained>
 Object* Analyzer::calcElements(const Object* root, T* nv)
 {
 	const T *v=static_cast<const T*>(root);
 	Tit it, itEnd=v->constEnd();
 	
 	for(it=v->constBegin(); it!=itEnd; ++it)
-		nv->appendBranch(calc(*it));
+		nv->appendBranch(static_cast<Tcontained*>(calc(*it)));
 	
 	return nv;
 }
@@ -655,7 +655,7 @@ Object* Analyzer::calc(const Object* root)
 			ret = calcElements<List, List::const_iterator>(root, new List);
 			break;
 		case Object::matrix:
-			ret = calcElements<Matrix, Matrix::const_iterator>(root, new Matrix);
+			ret = calcElements<Matrix, Matrix::const_iterator, MatrixRow>(root, new Matrix);
 			break;
 		case Object::matrixrow:
 			ret = calcElements<MatrixRow, MatrixRow::const_iterator>(root, new MatrixRow);

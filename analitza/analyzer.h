@@ -224,7 +224,7 @@ class ANALITZA_EXPORT Analyzer
 		void alphaConversion(Container* a, int min);
 		Object* applyAlpha(Analitza::Object* o, int min);
 		
-		template<class T, class Tit>
+		template<class T, class Tit, class Tcontained = Object>
 		Object* calcElements(const Analitza::Object* root, T* nv);
 };
 

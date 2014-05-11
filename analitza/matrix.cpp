@@ -35,7 +35,7 @@ Matrix::~Matrix()
 Matrix* Matrix::copy() const
 {
 	Matrix* nm = new Matrix;
-	Q_FOREACH(Object* r, m_rows) {
+	foreach(MatrixRow* r, m_rows) {
 		nm->appendBranch(r->copy());
 	}
 	return nm;
@@ -63,9 +63,8 @@ QVariant Matrix::accept(AbstractExpressionVisitor* exp) const
 	return exp->visit(this);
 }
 
-void Matrix::appendBranch(Object* o)
+void Matrix::appendBranch(MatrixRow* o)
 {
-	Q_ASSERT(o->type()==Object::matrixrow);
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o));
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o)->size()!=0);
 	Q_ASSERT(m_rows.isEmpty()?true:dynamic_cast<MatrixRow*>(o)->size() == dynamic_cast<MatrixRow*>(m_rows.last())->size());

@@ -453,7 +453,7 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 		case Operator::times: {
 			Matrix *nm = new Matrix();
 			for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
-				nm->appendBranch(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct));
+				nm->appendBranch(static_cast<MatrixRow*>(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
 			ret = nm;
 		}	break;
 		default:

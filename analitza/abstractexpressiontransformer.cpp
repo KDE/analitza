@@ -42,7 +42,6 @@ Object* AbstractExpressionTransformer::walk##T(const T* pattern)\
 }
 
 ITERATION_WALKER(List)
-ITERATION_WALKER(Matrix)
 ITERATION_WALKER(MatrixRow, pattern->size())
 ITERATION_WALKER(Vector, pattern->size())
 ITERATION_WALKER(Container, pattern->containerType())
@@ -101,4 +100,14 @@ Object* AbstractExpressionTransformer::walkApply(const Analitza::Apply* pattern)
 Object* AbstractExpressionTransformer::walkVariable(const Analitza::Ci* pattern)
 {
 	return pattern->copy();
+}
+
+Object* AbstractExpressionTransformer::walkMatrix(const Matrix* pattern)
+{
+	Matrix* ret = new Matrix;
+	Matrix::const_iterator it=pattern->constBegin(), itEnd=pattern->constEnd();
+	for(; it!=itEnd; ++it) {
+		ret->appendBranch(static_cast<MatrixRow*>(walk(*it)));
+	}
+	return ret;
 }
