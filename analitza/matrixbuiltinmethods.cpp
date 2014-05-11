@@ -31,6 +31,8 @@ using Analitza::ExpressionType;
 
 static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix size must be some integer value greater or equal to zero");
 
+//BEGIN FillMatrixConstructor
+
 const QString FillMatrixConstructor::id = QString("fillmatrix");
 const ExpressionType FillMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Value))
@@ -56,6 +58,11 @@ Expression FillMatrixConstructor::operator()(const QList< Analitza::Expression >
 	return ret;
 }
 
+//END FillMatrixConstructor
+
+
+//BEGIN ZeroMatrixConstructor
+
 const QString ZeroMatrixConstructor::id = QString("zeromatrix");
 const ExpressionType ZeroMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Value))
@@ -68,6 +75,11 @@ Expression ZeroMatrixConstructor::operator()(const QList< Analitza::Expression >
 	
 	return fillMatrix(QList<Analitza::Expression>(args) << Expression(new Analitza::Cn(0)));
 }
+
+//END ZeroMatrixConstructor
+
+
+//BEGIN IdentityMatrixConstructor
 
 const QString IdentityMatrixConstructor::id = QString("identitymatrix");
 const ExpressionType IdentityMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
@@ -103,6 +115,11 @@ Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expressi
 	return ret;
 }
 
+//END IdentityMatrixConstructor
+
+
+//BEGIN DiagonalMatrixConstructor
+
 const QString DiagonalMatrixConstructor::id = QString("diag");
 const ExpressionType DiagonalMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1))
@@ -134,7 +151,10 @@ Expression DiagonalMatrixConstructor::operator()(const QList< Analitza::Expressi
 	return ret;
 }
 
-/// bands
+//END DiagonalMatrixConstructor
+
+
+//BEGIN TridiagonalMatrixConstructor
 
 const QString TridiagonalMatrixConstructor::id = QString("tridiag");
 const ExpressionType TridiagonalMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
@@ -179,7 +199,10 @@ Expression TridiagonalMatrixConstructor::operator()(const QList< Analitza::Expre
 	return ret;
 }
 
-// utils
+//END TridiagonalMatrixConstructor
+
+
+//BEGIN GetNDiagonalOfMatrix
 
 const QString GetNDiagonalOfMatrix::id = QString("getndiag");
 const ExpressionType GetNDiagonalOfMatrix::type = ExpressionType(ExpressionType::Lambda)
@@ -193,113 +216,43 @@ Expression GetNDiagonalOfMatrix::operator()(const QList< Analitza::Expression >&
 	
 	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.last().tree());
 	
-	if (nobj->isInteger())
-	{
+	if (nobj->isInteger()) {
 		const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
-		
+		const unsigned int nrows = matrix->rowCount();
+		const unsigned int ncols = matrix->columnCount();
 		const int npos = nobj->value();
 		const unsigned int absnpos = std::abs(npos);
 		const unsigned int absnpos1 = absnpos + 1;
 		const bool isneg = npos < 0;
-		const unsigned int nrows = matrix->rowCount();
-		const unsigned int ncols = static_cast<const Analitza::MatrixRow*>(matrix->rows().first())->size();
 		
+		unsigned int n = 0; // or until/to
+		unsigned int rowoffset = 0;
+		unsigned int coloffset = 0;
+		
+		//TODO here we need good error messgs 
 		if (isneg) {
 			if (absnpos1 > nrows) {
 				ret.addError("por filas max");
 				return ret;
 			}
-		} else {
+			
+			n = std::min(nrows - absnpos, ncols);
+			rowoffset = absnpos;
+		} else { // square matrix case too
 			if (absnpos1 > ncols) {
 				ret.addError("por cols max");
 				return ret;
 			}
-		}
-		
-		Analitza::Vector *diagonal = new Analitza::Vector(std::max(nrows, ncols));
-		
-		if (nrows == ncols) {
-				for (int i = 0; i < nrows; ++i)
-					diagonal->appendBranch(matrix->at(i, i)->copy());
-		} else
-			if (nrows > ncols) {
-				
-			} else {
-				
-			}
 			
-			
-
-		
-		const bool isfat = nrows < ncols;
-// 			const bool issquare = 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-/*
-		
-		unsigned int to = 0;
-		unsigned int rowoffset = 0;
-		unsigned int coloffset = 0;
-		
-		if (isneg) {
-			if (absnpos1 > nrows) {
-				ret.addError("por filas max");
-				
-				return ret;
-			}
-			
-			to = std::min(ncols,absnpos1);
-			rowoffset = absnpos;
-			coloffset = 0;
-		}
-		else
-		{
-			if (absnpos1 > ncols)
-			{
-				ret.addError("por cols max");
-				
-				return ret;
-			}
-			
-			to = std::min(nrows,absnpos1);
-			rowoffset = 0;
+			n = std::min(nrows, ncols - absnpos);
 			coloffset = absnpos;
 		}
-		qDebug() << "CHKR OSEA: " << ncols << absnpos << rowoffset << coloffset;
-
-		for (int i = 0; i < to; ++i) 
-			diagonal->appendBranch(matrix->at(rowoffset+i, coloffset+i)->copy());
-			*/
-// 			if (!negativenpos)
-// 			{
-// 			for (int i = -npos; i < n; ++i) 
-// 				for (int j = 0; j < n+npos; ++j) 
-// 					if (i==j-npos)
-// 						diagonal->appendBranch(matrix->at(i, j)->copy());
-// 					
-// 				
-// 			}
-// 			else
-// 			{
-// 			for (int i = 0; i < n; ++i) 
-// 				for (int j = npos; j < static_cast<const Analitza::MatrixRow*>(matrix->values().first())->size(); ++j) 
-// 					if (i==j-npos)
-// 						diagonal->appendBranch(matrix->at(i, j)->copy());
-// 
-// 				
-// 			}
-
+		
+		Analitza::Vector *diagonal = new Analitza::Vector(n);
+		
+		for (unsigned int i = 0; i < n; ++i)
+			diagonal->appendBranch(matrix->at(rowoffset + i, coloffset + i)->copy());
+			
 		ret.setTree(diagonal);
 	}
 	else
@@ -308,6 +261,11 @@ Expression GetNDiagonalOfMatrix::operator()(const QList< Analitza::Expression >&
 	return ret;
 }
 
+//END GetNDiagonalOfMatrix
+
+
+//BEGIN GetDiagonalOfMatrix
+
 const QString GetDiagonalOfMatrix::id = QString("getdiag");
 const ExpressionType GetDiagonalOfMatrix::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1))
@@ -315,17 +273,9 @@ const ExpressionType GetDiagonalOfMatrix::type = ExpressionType(ExpressionType::
 
 Expression GetDiagonalOfMatrix::operator()(const QList< Analitza::Expression >& args)
 {
-	Expression ret;
-	
-	const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
-	
-	if (matrix->isSquare()) {
-		GetNDiagonalOfMatrix getNDiagonalOfMatrix;
+	GetNDiagonalOfMatrix getNDiagonalOfMatrix;
 		
-		return getNDiagonalOfMatrix(QList<Analitza::Expression>(args) << Expression(new Analitza::Cn(0)));
-	} else
-		ret.addError("must be square matrix");
-	
-	return ret;
+	return getNDiagonalOfMatrix(QList<Analitza::Expression>(args) << Expression(new Analitza::Cn(0)));
 }
 
+//END GetDiagonalOfMatrix

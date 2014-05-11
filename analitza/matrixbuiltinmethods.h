@@ -52,7 +52,6 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-//TODO diag(vector{a,b,c...}) as nomrla math semantics and
 class DiagonalMatrixConstructor: public Analitza::FunctionDefinition
 {
 public:
@@ -62,11 +61,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-
-//some bands contrs
-
 //tridiag(a, b, c, n)
-
 class TridiagonalMatrixConstructor: public Analitza::FunctionDefinition
 {
 public:
@@ -76,7 +71,6 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-//from reactugular matrix
 class GetNDiagonalOfMatrix: public Analitza::FunctionDefinition
 {
 public:
@@ -86,7 +80,6 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-//getdiag(matrix from square matrix) to obtain the diaonl of a SQUARE matrix as a vector
 class GetDiagonalOfMatrix: public Analitza::FunctionDefinition
 {
 public:
