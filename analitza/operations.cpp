@@ -422,7 +422,7 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 	Matrix::iterator it2=m2->begin();
 	for(Matrix::iterator it1=m1->begin(); it1!=m1->end(); ++it1)
 	{
-		*it1 = reduceVectorVector(op, static_cast<MatrixRow*>(*it1), static_cast<MatrixRow*>(*it2), correct);
+		*it1 = static_cast<MatrixRow*>(reduceVectorVector(op, *it1, *it2, correct));
 		
 		++it2;
 	}
@@ -436,11 +436,11 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 	switch(op) {
 		case Operator::selector: {
 			int select=v->intValue();
-			if(select<1 || (select-1) >= m1->size()) {
+			if(select<1 || (select-1) >= m1->rowCount()) {
 				*correct=new QString(QCoreApplication::tr("Invalid index for a container"));
 				ret=new Vector(1);
 			} else {
-				MatrixRow* row = static_cast<MatrixRow*>(m1->values()[select-1]);
+				MatrixRow* row = static_cast<MatrixRow*>(m1->rows()[select-1]);
 				Vector* nv = new Vector(row->size());
 				for(Vector::iterator it=row->begin(); it!=row->end(); ++it) {
 					nv->appendBranch((*it));
@@ -467,7 +467,7 @@ Object* Operations::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QStr
 	Object* ret = 0;
 	switch(op) {
 		case Operator::transpose: {
-			int sizeA = m->size(), sizeB = static_cast<MatrixRow*>(*m->constBegin())->size();
+			int sizeA = m->rowCount(), sizeB = static_cast<MatrixRow*>(*m->constBegin())->size();
 			Matrix* mret = new Matrix;
 			for(int i=0; i<sizeB; ++i) {
 				MatrixRow* row = new MatrixRow(sizeA);

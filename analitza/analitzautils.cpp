@@ -513,12 +513,12 @@ QString listToString(const List* list)
 	return ret;
 }
 
-template<class T, class Tit>
+template<class T, class Tit, class Tcontained = Object>
 T* replaceDepthTemplate(int depth, T* tree, Object* towhat)
 {
 	Tit it=tree->begin(), itEnd=tree->end();
 	for(; it!=itEnd; ++it)
-		*it = replaceDepth(depth, *it, towhat);
+		*it = static_cast<Tcontained*>(replaceDepth(depth, *it, towhat));
 	return tree;
 }
 
@@ -539,7 +539,7 @@ Object* replaceDepth(int depth, Object* tree, Object* towhat)
 		case Object::vector:
 			return replaceDepthTemplate<Vector, Vector::iterator>(depth, static_cast<Vector*>(tree), towhat);
 		case Object::matrix:
-			return replaceDepthTemplate<Matrix, Matrix::iterator>(depth, static_cast<Matrix*>(tree), towhat);
+			return replaceDepthTemplate<Matrix, Matrix::iterator, MatrixRow>(depth, static_cast<Matrix*>(tree), towhat);
 		case Object::matrixrow:
 			return replaceDepthTemplate<MatrixRow, MatrixRow::iterator>(depth, static_cast<MatrixRow*>(tree), towhat);
 		case Object::container:
@@ -647,7 +647,7 @@ QString generateDependencyGraph(const Variables* v)
 
 void fillMatrix(Matrix* matrix, unsigned int nrows, unsigned int ncols, double value)
 {
-	Q_ASSERT(matrix->size() == 0);
+	Q_ASSERT(matrix->rowCount() == 0);
 	Q_ASSERT(nrows > 0);
 	Q_ASSERT(ncols > 0);
 	

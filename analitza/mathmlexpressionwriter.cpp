@@ -91,7 +91,7 @@ QVariant MathMLExpressionWriter::visit(const Matrix* m)
 QVariant MathMLExpressionWriter::visit(const MatrixRow* mr)
 {
 	QStringList elements;
-	for(Matrix::const_iterator it=mr->constBegin(); it!=mr->constEnd(); ++it)
+	for(MatrixRow::const_iterator it=mr->constBegin(); it!=mr->constEnd(); ++it)
 	{
 		elements += (*it)->accept(this).toString();
 	}

@@ -804,7 +804,36 @@ QVariant ExpressionTypeChecker::visit(const Vector* l)
 
 QVariant ExpressionTypeChecker::visit(const Matrix* m)
 {
-	visitListOrVector(m, ExpressionType::Matrix, m->size());
+	const Matrix* v = m;
+	ExpressionType::Type t = ExpressionType::Matrix;
+	int size = m->rowCount();
+	
+	QList<Object*> values;
+	foreach(MatrixRow *row, m->rows())
+		values.append(row);
+	
+	ExpressionType cont=commonType(values);
+	
+	if(cont.type()==ExpressionType::Many) {
+		ExpressionType toret(ExpressionType::Many);
+		foreach(const ExpressionType& contalt, cont.alternatives()) {
+			QMap<QString, ExpressionType> assumptions;
+			assumptions=typeIs(v->constBegin(), v->constEnd(), contalt);
+			ExpressionType cc(t, contalt, size);
+			
+			bool b=ExpressionType::assumptionsMerge(cc.assumptions(), assumptions);
+			if(b)
+				toret.addAlternative(cc);
+		}
+		
+		current=toret;
+	} else if(!cont.isError()) {
+		QMap<QString, ExpressionType> assumptions=typeIs(v->constBegin(), v->constEnd(), cont);
+		current=ExpressionType(t, cont, size);
+		current.addAssumptions(assumptions);
+	} else
+		current=ExpressionType(ExpressionType::Error);
+	
 	return QString();
 }
 

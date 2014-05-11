@@ -1,5 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2010 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2014 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -31,7 +32,7 @@ Matrix::~Matrix()
 	qDeleteAll(m_rows);
 }
 
-Object* Matrix::copy() const
+Matrix* Matrix::copy() const
 {
 	Matrix* nm = new Matrix;
 	Q_FOREACH(Object* r, m_rows) {
@@ -71,17 +72,9 @@ void Matrix::appendBranch(Object* o)
 	m_rows += static_cast<MatrixRow*>(o);
 }
 
-QList<Object*> Matrix::values() const
-{
-	QList<Object*> ret;
-	foreach(Object* o, m_rows)
-		ret += o;
-	return ret;
-}
-
 bool Matrix::operator==(const Matrix& m) const
 {
-	bool eq = m.size()==size();
+	bool eq = m.rowCount()==rowCount();
 	
 	for(int i=0; eq && i<m_rows.count(); ++i) {
 		eq = eq && *static_cast<MatrixRow*>(m_rows[i])==*static_cast<MatrixRow*>(m.m_rows[i]);
@@ -91,7 +84,17 @@ bool Matrix::operator==(const Matrix& m) const
 
 Object* Matrix::at(int i, int j) const
 {
-	return static_cast<const MatrixRow*>(m_rows.at(i))->at(j);
+	return m_rows.at(i)->at(j);
+}
+
+int Matrix::columnCount() const
+{
+	return m_rows.isEmpty()? 0 : static_cast<const MatrixRow*>(m_rows.first())->size();
+}
+
+bool Matrix::isSquare() const
+{
+	return m_rows.isEmpty()? true : m_rows.size() == static_cast<const MatrixRow*>(m_rows.first())->size();
 }
 
 ////// MatrixRow

@@ -34,8 +34,8 @@ namespace Analitza
 class ANALITZA_EXPORT Vector : public Object
 {
 	public:
-		typedef QVector<Object*>::iterator iterator;
-		typedef QVector<Object*>::const_iterator const_iterator;
+		typedef QList<Object*>::iterator iterator;
+		typedef QList<Object*>::const_iterator const_iterator;
 		
 		Vector(const Vector& v);
 		Vector(int size);
@@ -53,7 +53,7 @@ class ANALITZA_EXPORT Vector : public Object
 		
 		Object* at(int i) const { return m_elements[i]; }
 		void setAt(int i, Object* o) { m_elements[i]=o; }
-		QList<Object*> values() const { return m_elements.toList(); }
+		QList<Object*> values() const { return m_elements; }
 		
 		virtual QVariant accept(AbstractExpressionVisitor* e) const;
 		virtual bool isZero() const;
@@ -66,7 +66,7 @@ class ANALITZA_EXPORT Vector : public Object
 		Vector(Analitza::Object::ObjectType t, int size);
 		
 	private:
-		QVector<Object*> m_elements;
+		QList<Object*> m_elements;
 };
 
 }

@@ -890,7 +890,7 @@ BoundingIterator* Analyzer::initBVarsContainer(const Analitza::Apply* n, int bas
 	switch(domain->type()) {
 		case Object::matrix:
 			Q_ASSERT(false && "fixme: properly iterate through elements when bounding");
-			if(static_cast<Matrix*>(domain)->size()>0)
+			if(static_cast<Matrix*>(domain)->rowCount()>0)
 				ret=new TypeBoundingIterator<Matrix, Matrix::const_iterator>(m_runStack, base, bvars, static_cast<Matrix*>(domain));
 			break;
 		case Object::list:
@@ -1134,13 +1134,13 @@ void Analyzer::simplify()
 	}
 }
 
-template <class T, class Tit>
+template <class T, class Tit, class Tcontained>
 void Analyzer::iterateAndSimp(T* v)
 {
 	Tit it = v->begin(), itEnd=v->end();
 	
 	for(; it!=itEnd; ++it)
-		*it = simp(*it);
+		*it = static_cast<Tcontained*>(simp(*it));
 }
 
 Object* Analyzer::simp(Object* root)
@@ -1162,7 +1162,7 @@ Object* Analyzer::simp(Object* root)
 	} else if(root->type()==Object::vector) {
 		iterateAndSimp<Vector, Vector::iterator>(static_cast<Vector*>(root));
 	} else if(root->type()==Object::matrix) {
-		iterateAndSimp<Matrix, Matrix::iterator>(static_cast<Matrix*>(root));
+		iterateAndSimp<Matrix, Matrix::iterator, MatrixRow>(static_cast<Matrix*>(root));
 	} else if(root->type()==Object::list) {
 		iterateAndSimp<List, List::iterator>(static_cast<List*>(root));
 	} else if(root->type()==Object::apply) {
@@ -1898,7 +1898,7 @@ Object* Analyzer::applyAlpha(Object* o, int min)
 			case Object::container:	alphaConversion(static_cast<Container*>(o), min); break;
 			case Object::vector:	alphaConversion<Vector, Vector::iterator>(static_cast<Vector*>(o), min); break;
 			case Object::list:		alphaConversion<List, List::iterator>(static_cast<List*>(o), min); break;
-			case Object::matrix:	alphaConversion<Matrix, Matrix::iterator>(static_cast<Matrix*>(o), min); break;
+			case Object::matrix:	alphaConversion<Matrix, Matrix::iterator, MatrixRow>(static_cast<Matrix*>(o), min); break;
 			case Object::matrixrow:	alphaConversion<MatrixRow, MatrixRow::iterator>(static_cast<MatrixRow*>(o), min); break;
 			case Object::apply:		alphaConversion(static_cast<Apply*>(o), min); break;
 			case Object::variable: {
@@ -1922,13 +1922,13 @@ Object* Analyzer::applyAlpha(Object* o, int min)
 	return o;
 }
 
-template <class T, class Tit>
+template <class T, class Tit, class Tcontained>
 void Analyzer::alphaConversion(T* o, int min)
 {
 	Q_ASSERT(o);
 	Tit it=o->begin(), itEnd=o->end();
 	for(; it!=itEnd; ++it) {
-		*it = applyAlpha(*it, min);
+		*it = static_cast<Tcontained*>(applyAlpha(*it, min));
 	}
 }
 

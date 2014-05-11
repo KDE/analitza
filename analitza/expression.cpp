@@ -286,8 +286,8 @@ bool Expression::ExpressionPrivate::canAdd(const Object* where, const Object* br
 				const Matrix *matrix = static_cast<const Matrix*>(where);
 				const MatrixRow *matrixrow = static_cast<const MatrixRow*>(branch);
 				
-				if (matrix->size() != 0)
-					if (static_cast<MatrixRow*>(matrix->values().last())->size() != matrixrow->size()) {
+				if (matrix->rowCount() != 0)
+					if (static_cast<MatrixRow*>(matrix->rows().first())->size() != matrixrow->size()) {
 						m_err << QCoreApplication::tr("All matrixrow elements must have the same size");
 						correct=false;
 					}
