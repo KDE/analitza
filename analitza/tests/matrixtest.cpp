@@ -233,6 +233,10 @@ void MatrixTest::testBuiltinMethods_data()
 	script << skinny;
 	script << "getndiag(A,-4)";
 	QTest::newRow("getndiag skinny -4") << script << "vector { 2 }";
+	
+	unsigned int aa = 0;
+					qDebug() << "ERORRRRRRRRRRRRRRRRRRRNOO"<< aa;
+
 }
 
 void MatrixTest::testBuiltinMethods()

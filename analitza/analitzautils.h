@@ -84,7 +84,7 @@ namespace AnalitzaUtils
 	int countDepth(int depth, const Analitza::Object* tree);
 	
 	/** Fills the given empty @p matrix with a fixed numeric @p value, the matrix size will be @p nrows x @p ncols. */
-	void fillMatrix(Analitza::Matrix* matrix, unsigned int nrows, unsigned int ncols, double value);
+	void fillMatrix(Analitza::Matrix* matrix, int nrows, int ncols, double value);
 }
 
 #endif // ANALITZAUTILS_H

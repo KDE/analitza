@@ -645,16 +645,16 @@ QString generateDependencyGraph(const Variables* v)
 	return ret;
 }
 
-void fillMatrix(Matrix* matrix, unsigned int nrows, unsigned int ncols, double value)
+void fillMatrix(Matrix* matrix, int nrows, int ncols, double value)
 {
 	Q_ASSERT(matrix->rowCount() == 0);
 	Q_ASSERT(nrows > 0);
 	Q_ASSERT(ncols > 0);
 	
-	for (unsigned int row = 0; row < nrows; ++row) {
+	for (int row = 0; row < nrows; ++row) {
 		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(ncols);
 		
-		for (unsigned int col= 0; col < ncols; ++col)
+		for (int col= 0; col < ncols; ++col)
 			rowobj->appendBranch(new Analitza::Cn(value));
 		
 		matrix->appendBranch(rowobj);

@@ -91,15 +91,15 @@ Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expressi
 	Expression ret;
 	
 	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.first().tree());
-	const unsigned int n = nobj->value();
+	const int n = nobj->value();
 	
-	if (nobj->isInteger() && n >= 0) {
+	if (nobj->isInteger() && n > 0) {
 		Analitza::Matrix *matrix = new Analitza::Matrix();
 		
-		for (unsigned int row = 0; row < n; ++row) {
+		for (int row = 0; row < n; ++row) {
 			Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
 			
-			for (unsigned int col= 0; col < n; ++col)
+			for (int col= 0; col < n; ++col)
 				if (row == col)
 					rowobj->appendBranch(new Analitza::Cn(1));
 				else
@@ -132,12 +132,12 @@ Expression DiagonalMatrixConstructor::operator()(const QList< Analitza::Expressi
 	Analitza::Matrix *matrix = new Analitza::Matrix();
 	
 	const Analitza::Vector *v =  static_cast<const Analitza::Vector*>(args.first().tree());
-	const unsigned int n = v->size();
+	const int n = v->size();
 	
-	for (unsigned int row = 0; row < n; ++row) {
+	for (int row = 0; row < n; ++row) {
 		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
 		
-		for (unsigned int col= 0; col < n; ++col)
+		for (int col= 0; col < n; ++col)
 			if (row == col)
 				rowobj->appendBranch(v->at(col)->copy());
 			else
@@ -169,15 +169,15 @@ Expression TridiagonalMatrixConstructor::operator()(const QList< Analitza::Expre
 	Expression ret;
 
 	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.last().tree());
-	const unsigned int n = nobj->value();
+	const int n = nobj->value();
 	
 	if (nobj->isInteger() && n >= 0) {
 		Analitza::Matrix *matrix = new Analitza::Matrix();
 		
-		for (unsigned int row = 0; row < n; ++row) {
+		for (int row = 0; row < n; ++row) {
 			Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
 			
-			for (unsigned int col= 0; col < n; ++col)
+			for (int col= 0; col < n; ++col)
 				if (row == col + 1) // a
 					rowobj->appendBranch(args.at(0).tree()->copy());
 				else
@@ -218,21 +218,20 @@ Expression GetNDiagonalOfMatrix::operator()(const QList< Analitza::Expression >&
 	
 	if (nobj->isInteger()) {
 		const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
-		const unsigned int nrows = matrix->rowCount();
-		const unsigned int ncols = matrix->columnCount();
+		const int nrows = matrix->rowCount();
+		const int ncols = matrix->columnCount();
 		const int npos = nobj->value();
-		const unsigned int absnpos = std::abs(npos);
-		const unsigned int absnpos1 = absnpos + 1;
+		const int absnpos = std::abs(npos);
+		const int absnpos1 = absnpos + 1;
 		const bool isneg = npos < 0;
 		
-		unsigned int n = 0; // or until/to
-		unsigned int rowoffset = 0;
-		unsigned int coloffset = 0;
+		int n = 0; // or until/to
+		int rowoffset = 0;
+		int coloffset = 0;
 		
-		//TODO here we need good error messgs 
 		if (isneg) {
 			if (absnpos1 > nrows) {
-				ret.addError("por filas max");
+				ret.addError("The nth diagonal index must be less than the row count");
 				return ret;
 			}
 			
@@ -240,7 +239,7 @@ Expression GetNDiagonalOfMatrix::operator()(const QList< Analitza::Expression >&
 			rowoffset = absnpos;
 		} else { // square matrix case too
 			if (absnpos1 > ncols) {
-				ret.addError("por cols max");
+				ret.addError("The nth diagonal index must be less than the column count");
 				return ret;
 			}
 			
@@ -250,7 +249,7 @@ Expression GetNDiagonalOfMatrix::operator()(const QList< Analitza::Expression >&
 		
 		Analitza::Vector *diagonal = new Analitza::Vector(n);
 		
-		for (unsigned int i = 0; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 			diagonal->appendBranch(matrix->at(rowoffset + i, coloffset + i)->copy());
 			
 		ret.setTree(diagonal);
