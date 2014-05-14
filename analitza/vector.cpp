@@ -20,28 +20,45 @@
 #include "expression.h"
 #include "abstractexpressionvisitor.h"
 #include "analitzautils.h"
+#include "value.h"
 
 using namespace Analitza;
 
 Vector::Vector(const Vector& v)
 	: Object(Object::vector)//, m_elements(v.m_elements.size())
+	, m_hasOnlyNumbers(true)
+	, m_isZero(true)
+	, m_isStandardBasisVector(true)
+	, m_nonZeroTaken(false)
+	, m_isDiagonalRowVector(true)
+	, m_nonZeros(0)
 {
     m_elements.reserve(v.m_elements.size());
-	foreach(const Object* o, v.m_elements)
-	{
+	foreach(const Object* o, v.m_elements) {
 		m_elements.append(o->copy());
 	}
 }
 
 Vector::Vector(int size)
 	: Object(Object::vector)//, m_elements(size)
+	, m_hasOnlyNumbers(true)
+	, m_isZero(true)
+	, m_isStandardBasisVector(true)
+	, m_nonZeroTaken(false)
+	, m_isDiagonalRowVector(true)
+	, m_nonZeros(0)
 {
     m_elements.reserve(size);
 }
 
-
 Vector::Vector(Object::ObjectType t, int size)
 	: Object(t)
+	, m_hasOnlyNumbers(true)
+	, m_isZero(true)
+	, m_isStandardBasisVector(true)
+	, m_nonZeroTaken(false)
+	, m_isDiagonalRowVector(true)
+	, m_nonZeros(0)
 {
 	m_elements.reserve(size);
 }
@@ -54,8 +71,7 @@ Vector::~Vector()
 Vector* Vector::copy() const
 {
 	Vector *v=new Vector(m_type, size());
-	foreach(const Object* o, m_elements)
-	{
+	foreach(const Object* o, m_elements) {
 		v->m_elements.append(o->copy());
 	}
 	return v;
@@ -63,21 +79,42 @@ Vector* Vector::copy() const
 
 void Vector::appendBranch(Object* o)
 {
+	Q_ASSERT(o);
+	
+	if (o->type() != Object::value && m_hasOnlyNumbers)
+		m_hasOnlyNumbers = false;
+	
+	const bool isobjzero = o->isZero();
+	
+	if (!isobjzero) {
+		if (m_isZero)
+			m_isZero = false;
+		
+		if (!m_nonZeroTaken)
+			++m_nonZeros;
+	}
+	
+	if (o->type() == Object::value) {
+		const double val = static_cast<const Cn*>(o)->value();
+		const bool isone = (val == 1);
+		
+		//puse && !m_nonZeroTaken sin testing
+		if (m_nonZeros > 1 && !m_nonZeroTaken) {
+			m_isStandardBasisVector = false;
+			m_isDiagonalRowVector = false;
+			m_nonZeroTaken = true;
+		} else {
+			if (!isone && !isobjzero && m_isStandardBasisVector)
+				m_isStandardBasisVector = false;
+		}
+	}
+	
 	m_elements.append(o);
 }
 
 QVariant Vector::accept(AbstractExpressionVisitor* e) const
 {
 	return e->visit(this);
-}
-
-bool Vector::isZero() const
-{
-	foreach(const Object* o, m_elements) {
-		if(!o->isZero())
-			return false;
-	}
-	return true;
 }
 
 bool Vector::matches(const Object* exp, QMap< QString, const Object* >* found) const
@@ -90,8 +127,7 @@ bool Vector::matches(const Object* exp, QMap< QString, const Object* >* found) c
 	
 	bool matching=true;
 	Vector::const_iterator it, it2, itEnd=m_elements.constEnd();
-	for(it=m_elements.constBegin(), it2=c->m_elements.constBegin(); matching && it!=itEnd; ++it, ++it2)
-	{
+	for(it=m_elements.constBegin(), it2=c->m_elements.constBegin(); matching && it!=itEnd; ++it, ++it2) {
 		matching &= (*it)->matches(*it2, found);
 	}
 	return matching;
