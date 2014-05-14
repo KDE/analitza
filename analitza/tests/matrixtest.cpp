@@ -21,6 +21,8 @@
 #include <QtTest/QTest>
 
 #include "analyzer.h"
+#include <matrix.h>
+#include <container.h>
 
 using Analitza::Expression;
 
@@ -234,9 +236,14 @@ void MatrixTest::testBuiltinMethods_data()
 	script << "getndiag(A,-4)";
 	QTest::newRow("getndiag skinny -4") << script << "vector { 2 }";
 	
-	unsigned int aa = 0;
-					qDebug() << "ERORRRRRRRRRRRRRRRRRRRNOO"<< aa;
-
+// 	script.clear();
+// 	script << skinny;
+// 	script << "isdiag(A)";
+// 	QTest::newRow("is d") << script << "false";
+	
+	script.clear();
+	script << "isidentitymatrix(identitymatrix(5))";
+	QTest::newRow("si es id") << script << "true";
 }
 
 void MatrixTest::testBuiltinMethods()

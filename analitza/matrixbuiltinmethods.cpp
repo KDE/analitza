@@ -273,8 +273,23 @@ const ExpressionType GetDiagonalOfMatrix::type = ExpressionType(ExpressionType::
 Expression GetDiagonalOfMatrix::operator()(const QList< Analitza::Expression >& args)
 {
 	GetNDiagonalOfMatrix getNDiagonalOfMatrix;
-		
+	
 	return getNDiagonalOfMatrix(QList<Analitza::Expression>(args) << Expression(new Analitza::Cn(0)));
 }
 
 //END GetDiagonalOfMatrix
+
+
+const QString IsIdentityMatrix::id = QString("isidentitymatrix");
+const ExpressionType IsIdentityMatrix::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1))
+.addParameter(ExpressionType(ExpressionType::Value));
+
+Expression IsIdentityMatrix::operator()(const QList< Analitza::Expression >& args)
+{
+	const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
+	
+	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(matrix)));
+}
+
+

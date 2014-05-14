@@ -160,6 +160,7 @@ void Analyzer::registerBuiltinMethods()
 	m_builtin.insertFunction(TridiagonalMatrixConstructor::id, TridiagonalMatrixConstructor::type, new TridiagonalMatrixConstructor);
 	m_builtin.insertFunction(GetNDiagonalOfMatrix::id, GetNDiagonalOfMatrix::type, new GetNDiagonalOfMatrix);
 	m_builtin.insertFunction(GetDiagonalOfMatrix::id, GetDiagonalOfMatrix::type, new GetDiagonalOfMatrix);
+	m_builtin.insertFunction(IsIdentityMatrix::id, IsIdentityMatrix::type, new IsIdentityMatrix);
 }
 
 void Analyzer::setExpression(const Expression & e)
