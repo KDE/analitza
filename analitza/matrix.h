@@ -60,9 +60,13 @@ class ANALITZA_EXPORT Matrix : public Object
 		Object* at(int i, int j) const;
 		int columnCount() const;
 		bool isSquare() const;
-
+		virtual bool isZero() const { return m_rows.isEmpty()? false : m_isZero; }
+		bool hasOnlyNumbers() const { return m_rows.isEmpty()? false : m_hasOnlyNumbers; }
+		
 	private:
 		QList<MatrixRow*> m_rows;
+		bool m_isZero;
+		bool m_hasOnlyNumbers;
 };
 
 }

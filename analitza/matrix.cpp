@@ -20,11 +20,14 @@
 #include "matrix.h"
 #include "abstractexpressionvisitor.h"
 #include "vector.h"
+#include "value.h"
 
 using namespace Analitza;
 
 Matrix::Matrix()
 	: Object(matrix)
+	, m_isZero(true)
+	, m_hasOnlyNumbers(true)
 {}
 
 Matrix::~Matrix()
@@ -38,6 +41,7 @@ Matrix* Matrix::copy() const
 	foreach(MatrixRow* r, m_rows) {
 		nm->appendBranch(r->copy());
 	}
+	
 	return nm;
 }
 
@@ -51,10 +55,10 @@ bool Matrix::matches(const Object* exp, QMap< QString, const Object* >* found) c
 	
 	bool matching=true;
 	Matrix::const_iterator it, it2, itEnd=m_rows.constEnd();
-	for(it=m_rows.constBegin(), it2=c->m_rows.constBegin(); matching && it!=itEnd; ++it, ++it2)
-	{
+	for(it=m_rows.constBegin(), it2=c->m_rows.constBegin(); matching && it!=itEnd; ++it, ++it2) {
 		matching &= (*it)->matches(*it2, found);
 	}
+	
 	return matching;
 }
 
@@ -67,8 +71,12 @@ void Matrix::appendBranch(MatrixRow* o)
 {
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o));
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o)->size()!=0);
-	Q_ASSERT(m_rows.isEmpty()?true:dynamic_cast<MatrixRow*>(o)->size() == dynamic_cast<MatrixRow*>(m_rows.last())->size());
-	m_rows += static_cast<MatrixRow*>(o);
+	Q_ASSERT(m_rows.isEmpty()?true:dynamic_cast<MatrixRow*>(o)->size() == dynamic_cast<MatrixRow*>(m_rows.last())->size()); // all rows are same size
+	
+	if (!o->hasOnlyNumbers() && m_hasOnlyNumbers)
+		m_hasOnlyNumbers = false;
+	
+	m_rows.append(static_cast<MatrixRow*>(o));
 }
 
 bool Matrix::operator==(const Matrix& m) const
@@ -78,6 +86,7 @@ bool Matrix::operator==(const Matrix& m) const
 	for(int i=0; eq && i<m_rows.count(); ++i) {
 		eq = eq && *static_cast<MatrixRow*>(m_rows[i])==*static_cast<MatrixRow*>(m.m_rows[i]);
 	}
+	
 	return eq;
 }
 
@@ -109,8 +118,7 @@ QVariant MatrixRow::accept(AbstractExpressionVisitor* e) const
 MatrixRow* MatrixRow::copy() const
 {
 	MatrixRow *m=new MatrixRow(size());
-	for(MatrixRow::const_iterator it=constBegin(); it!=constEnd(); ++it)
-	{
+	for(MatrixRow::const_iterator it=constBegin(); it!=constEnd(); ++it) {
 		m->appendBranch((*it)->copy());
 	}
 	return m;
