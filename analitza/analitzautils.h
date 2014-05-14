@@ -85,6 +85,12 @@ namespace AnalitzaUtils
 	
 	/** Fills the given empty @p matrix with a fixed numeric @p value, the matrix size will be @p nrows x @p ncols. */
 	void fillMatrix(Analitza::Matrix* matrix, int nrows, int ncols, double value);
+	
+	/** Returns whether the @p matrix, with fixed numeric entries, is identity */
+	bool isIdentityMatrix(const Analitza::Matrix* matrix);
+	
+	/** Returns whether the @p matrix, with fixed numeric entries, is a diagonal matrix */
+	bool isDiagonalMatrix(const Analitza::Matrix* matrix);
 }
 
 #endif // ANALITZAUTILS_H

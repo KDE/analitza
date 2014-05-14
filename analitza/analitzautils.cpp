@@ -647,6 +647,7 @@ QString generateDependencyGraph(const Variables* v)
 
 void fillMatrix(Matrix* matrix, int nrows, int ncols, double value)
 {
+	Q_ASSERT(matrix);
 	Q_ASSERT(matrix->rowCount() == 0);
 	Q_ASSERT(nrows > 0);
 	Q_ASSERT(ncols > 0);
@@ -660,4 +661,24 @@ void fillMatrix(Matrix* matrix, int nrows, int ncols, double value)
 		matrix->appendBranch(rowobj);
 	}
 }
+
+bool isIdentityMatrix(const Matrix* matrix)
+{
+	Q_ASSERT(matrix);
+	Q_ASSERT(matrix->hasOnlyNumbers());
+	
+	const int nrows = matrix->rowCount();
+	
+	for (int row = 0; row < nrows; ++row)
+		if (!matrix->rows().at(row)->isStandardBasisVector() || static_cast<const Cn*>(matrix->at(row, row))->value() != 1)
+			return false;
+	
+	return true;
+}
+
+bool isDiagonalMatrix(const Matrix* matrix)
+{
+return true;
+}
+
 }
