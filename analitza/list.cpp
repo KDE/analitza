@@ -52,6 +52,7 @@ List* List::copy() const
 
 void List::appendBranch(Object* o)
 {
+	Q_ASSERT(o);
 	m_elements.append(o);
 }
 
