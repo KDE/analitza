@@ -153,14 +153,17 @@ Analyzer::~Analyzer()
 
 void Analyzer::registerBuiltinMethods()
 {
-	m_builtin.insertFunction(ZeroMatrixConstructor::id, ZeroMatrixConstructor::type, new ZeroMatrixConstructor);
+	m_builtin.insertFunction(FillVectorConstructor::id, FillVectorConstructor::type, new FillVectorConstructor);
 	m_builtin.insertFunction(FillMatrixConstructor::id, FillMatrixConstructor::type, new FillMatrixConstructor);
+	m_builtin.insertFunction(ZeroMatrixConstructor::id, ZeroMatrixConstructor::type, new ZeroMatrixConstructor);
 	m_builtin.insertFunction(IdentityMatrixConstructor::id, IdentityMatrixConstructor::type, new IdentityMatrixConstructor);
 	m_builtin.insertFunction(DiagonalMatrixConstructor::id, DiagonalMatrixConstructor::type, new DiagonalMatrixConstructor);
 	m_builtin.insertFunction(TridiagonalMatrixConstructor::id, TridiagonalMatrixConstructor::type, new TridiagonalMatrixConstructor);
 	m_builtin.insertFunction(GetNDiagonalOfMatrix::id, GetNDiagonalOfMatrix::type, new GetNDiagonalOfMatrix);
 	m_builtin.insertFunction(GetDiagonalOfMatrix::id, GetDiagonalOfMatrix::type, new GetDiagonalOfMatrix);
+	m_builtin.insertFunction(IsZeroMatrix::id, IsZeroMatrix::type, new IsZeroMatrix);
 	m_builtin.insertFunction(IsIdentityMatrix::id, IsIdentityMatrix::type, new IsIdentityMatrix);
+	m_builtin.insertFunction(IsDiagonalMatrix::id, IsDiagonalMatrix::type, new IsDiagonalMatrix);
 }
 
 void Analyzer::setExpression(const Expression & e)

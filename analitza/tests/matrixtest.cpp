@@ -23,6 +23,7 @@
 #include "analyzer.h"
 #include <matrix.h>
 #include <container.h>
+#include <apply.h>
 
 using Analitza::Expression;
 
@@ -54,8 +55,12 @@ void MatrixTest::testBuiltinMethods_data()
 	//TODO test empty matrix as args for commands
 	
 	script.clear();
+	script << "fillvector(3, -2.3)";
+	QTest::newRow("simple fill vector") << script << "vector { -2.3, -2.3, -2.3 }";
+	
+	script.clear();
 	script << "fillmatrix(3, 2, -15.7)";
-	QTest::newRow("simple fill") << script << "matrix { matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 } }";
+	QTest::newRow("simple fill matrix") << script << "matrix { matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 } }";
 	
 	script.clear();
 	script << "A := matrix{matrixrow{2, 3, 6}, matrixrow{-5, 0, 2.3}}";
@@ -242,8 +247,25 @@ void MatrixTest::testBuiltinMethods_data()
 // 	QTest::newRow("is d") << script << "false";
 	
 	script.clear();
+	script << "iszeromatrix(zeromatrix(8,5))";
+	QTest::newRow("si es zero") << script << "true";
+	
+	script.clear();
 	script << "isidentitymatrix(identitymatrix(5))";
 	QTest::newRow("si es id") << script << "true";
+	
+	script.clear();
+	script << "isdiagonalmatrix(identitymatrix(4))";
+	QTest::newRow("sum") << script << "true";
+
+// 	//polyfunc and read lbm body
+// 	
+// 	script.clear();
+// 	script << "isdiagonalmatrix(2,3,4)";
+// 	QTest::newRow("sum2") << script << "true";
+// 	
+// // 	Expression a("x*x");
+// // 	qDebug() << "TTTTT " << (((Analitza::Apply*)((Analitza::Container*)a.tree())->m_params.first())->m_params[0])->type();
 }
 
 void MatrixTest::testBuiltinMethods()
