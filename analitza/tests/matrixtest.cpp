@@ -266,7 +266,8 @@ void MatrixTest::testBuiltinMethods_data()
 // 	script << "isdiagonalmatrix(2,3,4)";
 // 	QTest::newRow("sum2") << script << "true";
 // 	
-	Expression exp("2*(identitymatrix(2) + testcmd(-2, 2,1))");
+// 	Expression exp("2*(identitymatrix(2) + testcmd(-2, 2,1))");
+	Expression exp("2*(identitymatrix(2) + testcmd(2, 3,1))");
 	
 	if (!exp.isCorrect())
 	{

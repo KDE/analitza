@@ -107,9 +107,7 @@ Expression ZeroMatrixConstructor::operator()(const QList< Analitza::Expression >
 //BEGIN IdentityMatrixConstructor
 
 const QString IdentityMatrixConstructor::id = QString("identitymatrix");
-const ExpressionType IdentityMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
-.addParameter(ExpressionType(ExpressionType::Value))
-.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+const ExpressionType IdentityMatrixConstructor::type = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
 
 Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expression >& args)
 {
@@ -343,11 +341,7 @@ Expression IsDiagonalMatrix::operator()(const QList< Analitza::Expression >& arg
 /// experimental
 
 const QString TestCmd::id = QString("testcmd");
-const ExpressionType TestCmd::type = ExpressionType(ExpressionType::Lambda)
-.addParameter(ExpressionType(ExpressionType::Value))
-.addParameter(ExpressionType(ExpressionType::Value))
-.addParameter(ExpressionType(ExpressionType::Value))
-.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+const ExpressionType TestCmd::type = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
 
 Expression TestCmd::operator()(const QList< Analitza::Expression >& args)
 {

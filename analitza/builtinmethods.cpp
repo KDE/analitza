@@ -35,8 +35,10 @@ BuiltinMethods::~BuiltinMethods()
 	qDeleteAll(m_functions);
 }
 
-void BuiltinMethods::insertFunction(const QString& id, const ExpressionType& type, FunctionDefinition* f)
+void BuiltinMethods::insertFunction(const QString& id, const ExpressionType& rettype, FunctionDefinition* f)
 {
+	const ExpressionType type = ExpressionType(ExpressionType::Lambda).addParameter(rettype);
+	
 	if(m_types.contains(id))
 		qDebug() << "Replacing a builtin function called: " << id;
 	

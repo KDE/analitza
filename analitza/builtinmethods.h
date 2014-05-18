@@ -56,12 +56,21 @@ class PointerFunctionDefinition : public FunctionDefinition
 		func m_function;
 };
 
+/**
+ * \class BuiltinMethods
+ * 
+ * \ingroup AnalitzaModule
+ *
+ * \brief Manage custom commands in analitza language.
+ */
+
 class ANALITZA_EXPORT BuiltinMethods
 {
 	public:
 		~BuiltinMethods();
-		/** Adds a new function to the system identified @p id with @p type that can be called using @p f. */
-		void insertFunction(const QString& id, const ExpressionType& type, FunctionDefinition* f);
+		
+		/** Adds to the system a new callable variadic function @p f identified with @p id and with return type @p rettype */
+		void insertFunction(const QString& id, const ExpressionType& rettype, FunctionDefinition* f);
 		
 		/** @returns whether it exists a builtin function named like @p id */
 		bool contains(const QString& id) const { return m_functions.contains(id); }
