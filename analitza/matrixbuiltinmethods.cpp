@@ -350,6 +350,14 @@ const ExpressionType TestCmd::type =  ExpressionType(ExpressionType::Lambda)
 
 Expression TestCmd::operator()(const QList< Analitza::Expression >& args)
 {
+	Expression ret;
+	if (args.size() != 2)
+	{
+		ret.addError("too many args here ... i need 2");
+		
+		return ret;
+	}
+	
 	qDebug() << "INSIDE FUNC " << args.size();
 	ZeroMatrixConstructor zc;
 	return zc(args);

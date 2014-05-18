@@ -272,14 +272,14 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 	return val;
 }
 
-Object* Operations::reduceNoneReal(Operator::OperatorType op, None* cntr, Cn* oper, QString** correct)
+Object* Operations::reduceNoneReal(Operator::OperatorType op, None*, Cn*, QString** correct)
 {
-	return errorCase("error en escalar con none", correct);
+	return errorCase(QCoreApplication::tr("Cannot calculate %1 between a value and an error type").arg(Operator(op).name()), correct);
 }
 
 Object* Operations::reduceRealNone(Operator::OperatorType op, Cn* oper, None* cntr, QString** correct)
 {
-	return errorCase("error en escalar con none", correct);
+	return reduceNoneReal(op, cntr, oper, correct);
 }
 
 Object * Operations::reduceRealVector(Operator::OperatorType op, Cn * oper, Vector * v1, QString** correct)
@@ -513,9 +513,9 @@ Object* Operations::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QStr
 	return ret;
 }
 
-Object* Operations::reduceMatrixNone(Operator::OperatorType op, Matrix* m, None* cntr, QString** correct)
+Object* Operations::reduceMatrixNone(Operator::OperatorType op, Matrix*, None*, QString** correct)
 {
-	return errorCase("erroror en mat oprations", correct);
+	return errorCase(QCoreApplication::tr("Cannot calculate %1 between a matrix and an error type").arg(Operator(op).name()), correct);
 }
 
 Object* Operations::reduceNoneMatrix(Operator::OperatorType op, None* cntr, Matrix* m, QString** correct)

@@ -264,7 +264,7 @@ void MatrixTest::testBuiltinMethods_data()
 	
 	
 // // 	Expression exp("2*(identitymatrix(2) + testcmd(-2, 2,1))");
-// 	Expression exp("2*(identitymatrix(2) + testcmd(2, 3,1))");
+// 	Expression exp("2*(identitymatrix(2) + testcmd(2, 2, 4,2,1))");
 // 	
 // 	if (!exp.isCorrect())
 // 	{
@@ -293,7 +293,9 @@ void MatrixTest::testBuiltinMethods_data()
 // 	qDebug() << "TTTTT " << res.toString();
 // 	qDebug() << "TTTTT " << res.error();
 // 	
-// 	
+// 	qDebug() << "TTTTT ALL OK TTTTT";
+	
+	
 	
 	
 	
