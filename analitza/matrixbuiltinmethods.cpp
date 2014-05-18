@@ -339,3 +339,19 @@ Expression IsDiagonalMatrix::operator()(const QList< Analitza::Expression >& arg
 {
 	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
 }
+
+/// experimental
+
+const QString TestCmd::id = QString("testcmd");
+const ExpressionType TestCmd::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Any)))
+.addParameter(ExpressionType(ExpressionType::Value));
+
+Expression TestCmd::operator()(const QList< Analitza::Expression >& args)
+{
+	qDebug() << "INSIDE FUNC " << args.size();
+	ZeroMatrixConstructor zc;
+	return zc(args);
+}
+
+

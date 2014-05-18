@@ -265,3 +265,8 @@ QVariant StringExpressionWriter::visit(const CustomObject*)
 {
 	return "CustomObject";
 }
+
+QVariant StringExpressionWriter::visit(const None* )
+{
+	return QString();
+}

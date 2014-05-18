@@ -92,5 +92,34 @@ protected:
 	const ObjectType m_type;
 };
 
+
+/**
+ * \class None
+ * 
+ * \ingroup AnalitzaModule
+ *
+ * \brief A empty object that indicates usually an error in the expression tree. 
+ * 
+ * The default convention for an error value is None and the default text to print is 
+ * an empty string. This class does not hold an error string, since any error string will 
+ * be manage mainly in Analyzer, Expression and ExpressionTypeChecker. This class is just a 
+ * flag in memory to indicate that something went wrong in the expression tree.
+ */
+
+class ANALITZA_EXPORT None : public Object
+{
+	public:
+		explicit None() : Object(Object::none) {}
+		virtual ~None() {}
+		
+		bool operator==(const None& ) const { return true; }
+		
+		QString toMathML() const { return QString(); }
+		QString toHtml() const { return QString(); }
+		virtual QVariant accept(Analitza::AbstractExpressionVisitor* visitor) const;
+		virtual bool matches(const Object* pattern, QMap<QString, const Object*>* found) const;
+		None* copy() const;
+};
+
 }
 #endif

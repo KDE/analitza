@@ -528,12 +528,13 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 					current=ret2;
 			} else if(returned.isError()) {
 				current=ExpressionType(ExpressionType::Error);
-			} else {
+			}
+			else {
 				ExpressionType ret(ExpressionType::Many), signature(returned);
 				
 				QList<ExpressionType> alts=signature.type()==ExpressionType::Many ? signature.alternatives() : QList<ExpressionType>() << signature;
 				QList<ExpressionType> args=ExpressionType::lambdaFromArgs(exps);
-				bool exit=false;
+// 				bool exit=false;
 				foreach(const ExpressionType& opt, alts) {
 					if(opt.type()!=ExpressionType::Lambda) {
 // 								addError(i18n("We can only call functions."));
@@ -543,11 +544,11 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 					foreach(const ExpressionType& f, args) {
 						QList<ExpressionType> altargs=f.parameters();
 						
-						if(opt.parameters().size()!=altargs.size()+1) {
-							addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(opt.parameters().size()-1).arg(static_cast<Ci*>(c->m_params.first())->name()));
-							exit=true;
-							break;
-						}
+// 						if(opt.parameters().size()!=altargs.size()+1) {
+// 							addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(opt.parameters().size()-1).arg(static_cast<Ci*>(c->m_params.first())->name()));
+// 							exit=true;
+// 							break;
+// 						}
 						
 						bool valid=true;
 						QMap<QString, ExpressionType> assumptions;
@@ -578,8 +579,8 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 						}
 					}
 					
-					if(exit)
-						break;
+// 					if(exit)
+// 						break;
 				}
 					
 				if(ret.alternatives().isEmpty()) {
@@ -943,5 +944,7 @@ QMap<QString, ExpressionType> ExpressionTypeChecker::variablesTypes() const
 {
 	return m_vars;
 }
+
+QVariant ExpressionTypeChecker::visit(const None* var) { Q_ASSERT(false && "should not get here"); return QVariant(); }
 
 }

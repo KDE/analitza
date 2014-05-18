@@ -125,4 +125,16 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
+/// experimental
+
+class TestCmd: public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+
+	static const QString id;
+	static const Analitza::ExpressionType type;
+};
+
+
 #endif // MATRIXBUILTINMETHODS_H

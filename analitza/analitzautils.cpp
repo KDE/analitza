@@ -285,6 +285,9 @@ struct ObjectWalker : public AbstractExpressionVisitor
 {
 	ObjectWalker(const QByteArray& pref) : ind(0), m_prefix(pref) {}
 	
+	virtual QVariant visit(const None* var)
+	{ qDebug() << prefix().constData() << "| none: " << var->toString(); return QString(); }
+	
 	virtual QVariant visit(const Operator* root)
 	{ qDebug() << prefix().constData() << "| operator: " << root->toString(); return QString(); }
 	

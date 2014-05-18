@@ -38,6 +38,7 @@ class ANALITZA_EXPORT ExpressionTypeChecker : public AbstractExpressionVisitor
 		
 		ExpressionType check(const Expression& exp);
 		
+		virtual QVariant visit(const None* var);
 		virtual QVariant visit(const Operator* var);
 		virtual QVariant visit(const Ci* var);
 		virtual QVariant visit(const Cn* var);

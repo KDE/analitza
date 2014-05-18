@@ -24,3 +24,20 @@ QString Analitza::Object::toString() const
 	StringExpressionWriter e(this);
 	return e.result().toString();
 }
+
+QVariant Analitza::None::accept(Analitza::AbstractExpressionVisitor* visitor) const
+{
+	return visitor->visit(this);
+}
+
+Analitza::None* Analitza::None::copy() const
+{
+	return new None();
+}
+
+bool Analitza::None::matches(const Analitza::Object* exp, QMap< QString, const Object* >* found) const
+{
+	if(Object::none!=exp->type())
+		return false;
+	return true;
+}

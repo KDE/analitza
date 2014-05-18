@@ -164,6 +164,9 @@ void Analyzer::registerBuiltinMethods()
 	m_builtin.insertFunction(IsZeroMatrix::id, IsZeroMatrix::type, new IsZeroMatrix);
 	m_builtin.insertFunction(IsIdentityMatrix::id, IsIdentityMatrix::type, new IsIdentityMatrix);
 	m_builtin.insertFunction(IsDiagonalMatrix::id, IsDiagonalMatrix::type, new IsDiagonalMatrix);
+	
+	/// experimental
+	m_builtin.insertFunction(TestCmd::id, TestCmd::type, new TestCmd);
 }
 
 void Analyzer::setExpression(const Expression & e)
@@ -1052,7 +1055,7 @@ Object* Analyzer::calcCallFunction(Container* function, const QVector<Object*>& 
 			exp.setTree(0);
 		} else {
 			m_err += exp.error();
-			ret = new Container(Container::math);
+			ret = new Container(Container::none);
 		}
 	}
 #ifdef SCRIPT_PROFILER

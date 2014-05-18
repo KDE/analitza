@@ -27,6 +27,7 @@
 namespace Analitza
 {
 class Object;
+class None;
 class Apply;
 class Ci;
 class Cn;
@@ -51,6 +52,7 @@ class ANALITZA_EXPORT AbstractExpressionVisitor
 	public:
 		virtual ~AbstractExpressionVisitor();
 		
+		virtual QVariant visit(const None* var) = 0;
 		virtual QVariant visit(const Operator* var) = 0;
 		virtual QVariant visit(const Ci* var) = 0;
 		virtual QVariant visit(const Cn* var) = 0;

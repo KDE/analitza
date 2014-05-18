@@ -37,6 +37,7 @@ class MathMLExpressionWriter : public AbstractExpressionVisitor
 	public:
 		MathMLExpressionWriter(const Object* o);
 		
+		virtual QVariant visit(const None* var);
 		virtual QVariant visit(const Ci* var);
 		virtual QVariant visit(const Cn* var);
 		virtual QVariant visit(const Container* var);

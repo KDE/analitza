@@ -32,6 +32,7 @@
 #include "customobject.h"
 
 #include "matrix.h"
+#include "container.h"
 
 using namespace std;
 using namespace Analitza;
@@ -271,6 +272,16 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 	return val;
 }
 
+Object* Operations::reduceContainerReal(Operator::OperatorType op, Container* cntr, Cn* oper, QString** correct)
+{
+	return errorCase("error en escalar con none", cntr, correct);
+}
+
+Object* Operations::reduceRealContainer(Operator::OperatorType op, Cn* oper, Container* cntr, QString** correct)
+{
+	return errorCase("error en escalar con none", cntr, correct);
+}
+
 Object * Operations::reduceRealVector(Operator::OperatorType op, Cn * oper, Vector * v1, QString** correct)
 {
 	switch(op) {
@@ -310,9 +321,9 @@ Object * Operations::reduceVectorReal(Operator::OperatorType op, Vector * v1, Cn
 
 Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, Vector * v2, QString** correct)
 {
-	if(v1->size()!=v2->size()) { //FIXME: unneeded?
+	if(v1->size()!=v2->size()) { //FIXME: unneeded? ... aucahuasi: I think is needed ...
 		*correct=new QString(QCoreApplication::tr("Cannot operate on different sized vectors."));
-		return new Cn(0.);
+		return new Container(Container::none); // uniform error value ... empty string
 	}
 	
 	if(op==Operator::scalarproduct)
@@ -419,14 +430,31 @@ Object* Operations::reduceCustomCustom(Operator::OperatorType op, CustomObject* 
 
 Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct)
 {
-	Matrix::iterator it2=m2->begin();
-	for(Matrix::iterator it1=m1->begin(); it1!=m1->end(); ++it1)
-	{
-		*it1 = static_cast<MatrixRow*>(reduceVectorVector(op, *it1, *it2, correct));
-		
-		++it2;
+	Object* ret = 0;
+	switch(op) {
+		//TODO see if we can use here and or xor for matrix too
+		case Operator::plus:
+		case Operator::minus: {
+			if(m1->rowCount() == m2->rowCount() && m1->columnCount() == m2->columnCount()) {
+				Matrix::iterator it2=m2->begin();
+				for(Matrix::iterator it1=m1->begin(); it1!=m1->end(); ++it1, ++it2)
+				{
+					*it1 = static_cast<MatrixRow*>(reduceVectorVector(op, *it1, *it2, correct));
+				}
+				ret = m1;
+			} else {
+				*correct=new QString(QCoreApplication::tr("Addition of two matrices is allowed provided that both matrices have the same number of rows and the same number of columns"));
+				ret=new Matrix();
+			}
+		}	break;
+		case Operator::times: {
+			//TODO feature 2
+		}	break;
+		default:
+			break;
 	}
-	return m1;
+
+	return ret;
 }
 
 Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
@@ -452,6 +480,7 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 		}	break;
 		case Operator::times: {
 			Matrix *nm = new Matrix();
+// 			aqui marca el error solo 
 			for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
 				nm->appendBranch(static_cast<MatrixRow*>(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
 			ret = nm;
@@ -482,6 +511,16 @@ Object* Operations::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QStr
 			break;
 	}
 	return ret;
+}
+
+Object* Operations::reduceMatrixContainer(Operator::OperatorType op, Matrix* m, Container* cntr, QString** correct)
+{
+	return errorCase("erroror en mat oprations", cntr, correct);
+}
+
+Object* Operations::reduceContainerMatrix(Operator::OperatorType op, Container* cntr, Matrix* m, QString** correct)
+{
+	return reduceMatrixContainer(op, m, cntr, correct);
 }
 
 ExpressionType TypeTriplet(const ExpressionType& a,const ExpressionType& b,const ExpressionType& c) { return ExpressionType(ExpressionType::Lambda).addParameter(a).addParameter(b).addParameter(c); }
@@ -668,14 +707,14 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
+	{0, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,(Operations::BinaryOp) reduceRealContainer,(Operations::BinaryOp) reduceRealMatrix,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,0,0},
 	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
+	{0,(Operations::BinaryOp) reduceContainerReal,0,0,0,0,0,0,(Operations::BinaryOp) reduceContainerMatrix,0,0},
+	{0,0,0,0,0,0,0,(Operations::BinaryOp) reduceMatrixContainer, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
 };
@@ -683,6 +722,9 @@ Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] =
 Object * Operations::reduce(Operator::OperatorType op, Object * val1, Object * val2, QString** correct)
 {
 	Object::ObjectType t1=val1->type(), t2=val2->type();
+	
+	qDebug() << "recude OPTS " << t1 << t2;
+
 	
 	BinaryOp f=opsBinary[t1][t2];
 	Q_ASSERT(f);
@@ -707,4 +749,12 @@ Object * Operations::reduceUnary(Operator::OperatorType op, Object * val, QStrin
 	
 	Q_ASSERT(f && "using reduceUnary in a wrong way");
 	return f(op, val, correct);
+}
+
+Object* Operations::errorCase(const QString& error, Container* errorcntr, QString** correct)
+{
+	Q_ASSERT(errorcntr->containerType() == Container::none); // this method is to handle error cases in matrix operations
+	
+	*correct = new QString(error);
+	return new Container(Container::none); //NOTE default convention for error value ... none:empty string
 }

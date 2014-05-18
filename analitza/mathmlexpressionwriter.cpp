@@ -146,3 +146,9 @@ QVariant MathMLExpressionWriter::visit(const Analitza::CustomObject*)
 {
 	return "<!-- custom object -->";
 }
+
+QVariant MathMLExpressionWriter::visit(const None* var)
+{
+	return QString();
+}
+

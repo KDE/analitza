@@ -25,6 +25,8 @@
 namespace Analitza
 {
 
+class Container;
+
 class List;
 class Cn;
 class Vector;
@@ -50,6 +52,8 @@ class Operations
 		
 		static Cn* reduceRealReal(Operator::OperatorType op, Cn *oper, const Cn* oper1, QString** correct);
 		static Cn* reduceUnaryReal(Operator::OperatorType op, Cn *oper, QString** correct);
+		static Object* reduceRealContainer(Operator::OperatorType op, Cn* oper, Container *cntr, QString** correct);
+		static Object* reduceContainerReal(Operator::OperatorType op, Container *cntr, Cn* oper, QString** correct);
 		
 		static Object* reduceRealVector(Operator::OperatorType op, Cn *oper, Vector* vector, QString** correct);
 		static Object* reduceVectorReal(Operator::OperatorType op, Vector* vector, Cn *oper, QString** correct);
@@ -63,8 +67,12 @@ class Operations
 		static Object* reduceRealMatrix(Analitza::Operator::OperatorType op, Analitza::Cn* v, Analitza::Matrix* m1, QString** correct);
 		static Object* reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct);
 		static Object* reduceUnaryMatrix(Analitza::Operator::OperatorType op, Analitza::Matrix* m, QString** correct);
+		static Object* reduceMatrixContainer(Operator::OperatorType op, Matrix* m, Container *cntr, QString** correct);
+		static Object* reduceContainerMatrix(Operator::OperatorType op, Container *cntr, Matrix* m, QString** correct);
 		
 		static Object* reduceCustomCustom(Operator::OperatorType op, CustomObject* v1, CustomObject* v2, QString** correct);
+		
+		static Object* errorCase(const QString &error, Container *errorcntr, QString** correct); // errorcntr is none container
 };
 
 }

@@ -38,6 +38,7 @@ class StringExpressionWriter : public AbstractExpressionVisitor
 	public:
 		StringExpressionWriter(const Object* o);
 		
+		virtual QVariant visit(const None* var);
 		virtual QVariant visit(const Ci* var);
 		virtual QVariant visit(const Cn* var);
 		virtual QVariant visit(const Container* var);

@@ -351,3 +351,9 @@ QVariant MathMLPresentationExpressionWriter::visit(const CustomObject*)
 {
 	return QString("<!-- custom object -->");
 }
+
+QVariant MathMLPresentationExpressionWriter::visit(const None* )
+{
+	return QString();
+}
+

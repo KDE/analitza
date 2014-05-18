@@ -235,3 +235,8 @@ QVariant HtmlExpressionWriter::visit(const CustomObject*)
 {
 	return QString("Custom Object");
 }
+
+QVariant HtmlExpressionWriter::visit(const None* )
+{
+	return QString();
+}

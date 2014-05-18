@@ -53,6 +53,8 @@ void MatrixTest::testBuiltinMethods_data()
 	
 	QStringList script;
 	//TODO test empty matrix as args for commands
+	//TODO test diferent sizes like 2*(identitymatrix(2) + zeromatrix(2,1))
+	//TODO test neg ndexes and extra args ... eg 2*(identitymatrix(2) + testcmd(-2, 2,1))
 	
 	script.clear();
 	script << "fillvector(3, -2.3)";
@@ -264,8 +266,36 @@ void MatrixTest::testBuiltinMethods_data()
 // 	script << "isdiagonalmatrix(2,3,4)";
 // 	QTest::newRow("sum2") << script << "true";
 // 	
-// // 	Expression a("x*x");
-// // 	qDebug() << "TTTTT " << (((Analitza::Apply*)((Analitza::Container*)a.tree())->m_params.first())->m_params[0])->type();
+// 	Expression exp("2*(identitymatrix(2) + testcmd(-2, 2,1))");
+// 	
+// 	if (!exp.isCorrect())
+// 	{
+// 		qDebug() << "TTTTT " << exp.error();
+// 		return ;
+// 	}
+// 	
+// 	Analitza::Analyzer a;
+// 	a.setExpression(exp);
+// 	
+// 	if (!a.isCorrect())
+// 	{
+// 		qDebug() << "TTTTT " << a.errors();
+// 		return;
+// 	}
+// 	
+// 	Expression res = a.calculate();
+// 	
+// 	if (!a.isCorrect())
+// 	{
+// 		qDebug() << "TTTTT " << a.errors();
+// 		return ;
+// 	}
+// 	
+// 	qDebug() << "TTTTT " << res.error();
+// 	qDebug() << "TTTTT " << res.toString();
+// // 	qDebug() << "TTTTT " << res.error();
+// // 	qDebug() << "TTTTT " << ((Analitza::Container*)a.tree())->containerType();
+// // // 	qDebug() << "TTTTT " << (((Analitza::Apply*)((Analitza::Container*)a.tree())->m_params.first())->m_params[0])->type();
 }
 
 void MatrixTest::testBuiltinMethods()
