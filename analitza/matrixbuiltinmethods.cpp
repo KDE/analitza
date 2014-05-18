@@ -344,8 +344,10 @@ Expression IsDiagonalMatrix::operator()(const QList< Analitza::Expression >& arg
 
 const QString TestCmd::id = QString("testcmd");
 const ExpressionType TestCmd::type = ExpressionType(ExpressionType::Lambda)
-.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Any)))
-.addParameter(ExpressionType(ExpressionType::Value));
+.addParameter(ExpressionType(ExpressionType::Value))
+.addParameter(ExpressionType(ExpressionType::Value))
+.addParameter(ExpressionType(ExpressionType::Value))
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 
 Expression TestCmd::operator()(const QList< Analitza::Expression >& args)
 {

@@ -945,6 +945,6 @@ QMap<QString, ExpressionType> ExpressionTypeChecker::variablesTypes() const
 	return m_vars;
 }
 
-QVariant ExpressionTypeChecker::visit(const None* var) { Q_ASSERT(false && "should not get here"); return QVariant(); }
+QVariant ExpressionTypeChecker::visit(const None* ) { Q_ASSERT(false && "should not get here"); return QVariant(); }
 
 }

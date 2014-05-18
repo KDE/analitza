@@ -272,14 +272,14 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 	return val;
 }
 
-Object* Operations::reduceContainerReal(Operator::OperatorType op, Container* cntr, Cn* oper, QString** correct)
+Object* Operations::reduceNoneReal(Operator::OperatorType op, None* cntr, Cn* oper, QString** correct)
 {
-	return errorCase("error en escalar con none", cntr, correct);
+	return errorCase("error en escalar con none", correct);
 }
 
-Object* Operations::reduceRealContainer(Operator::OperatorType op, Cn* oper, Container* cntr, QString** correct)
+Object* Operations::reduceRealNone(Operator::OperatorType op, Cn* oper, None* cntr, QString** correct)
 {
-	return errorCase("error en escalar con none", cntr, correct);
+	return errorCase("error en escalar con none", correct);
 }
 
 Object * Operations::reduceRealVector(Operator::OperatorType op, Cn * oper, Vector * v1, QString** correct)
@@ -323,7 +323,7 @@ Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, 
 {
 	if(v1->size()!=v2->size()) { //FIXME: unneeded? ... aucahuasi: I think is needed ...
 		*correct=new QString(QCoreApplication::tr("Cannot operate on different sized vectors."));
-		return new Container(Container::none); // uniform error value ... empty string
+		return new None();
 	}
 	
 	if(op==Operator::scalarproduct)
@@ -513,14 +513,14 @@ Object* Operations::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QStr
 	return ret;
 }
 
-Object* Operations::reduceMatrixContainer(Operator::OperatorType op, Matrix* m, Container* cntr, QString** correct)
+Object* Operations::reduceMatrixNone(Operator::OperatorType op, Matrix* m, None* cntr, QString** correct)
 {
-	return errorCase("erroror en mat oprations", cntr, correct);
+	return errorCase("erroror en mat oprations", correct);
 }
 
-Object* Operations::reduceContainerMatrix(Operator::OperatorType op, Container* cntr, Matrix* m, QString** correct)
+Object* Operations::reduceNoneMatrix(Operator::OperatorType op, None* cntr, Matrix* m, QString** correct)
 {
-	return reduceMatrixContainer(op, m, cntr, correct);
+	return reduceMatrixNone(op, m, cntr, correct);
 }
 
 ExpressionType TypeTriplet(const ExpressionType& a,const ExpressionType& b,const ExpressionType& c) { return ExpressionType(ExpressionType::Lambda).addParameter(a).addParameter(b).addParameter(c); }
@@ -706,15 +706,15 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 }
 
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
-	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,(Operations::BinaryOp) reduceRealContainer,(Operations::BinaryOp) reduceRealMatrix,0},
+	{0,(Operations::BinaryOp) reduceNoneReal,0,0,0,0,0,0,(Operations::BinaryOp) reduceNoneMatrix,0,0},
+	{(Operations::BinaryOp) reduceRealNone, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,0,0},
 	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0,(Operations::BinaryOp) reduceContainerReal,0,0,0,0,0,0,(Operations::BinaryOp) reduceContainerMatrix,0,0},
-	{0,0,0,0,0,0,0,(Operations::BinaryOp) reduceMatrixContainer, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0},
+	{(Operations::BinaryOp) reduceMatrixNone,0,0,0,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
 };
@@ -751,10 +751,8 @@ Object * Operations::reduceUnary(Operator::OperatorType op, Object * val, QStrin
 	return f(op, val, correct);
 }
 
-Object* Operations::errorCase(const QString& error, Container* errorcntr, QString** correct)
+Object* Operations::errorCase(const QString& error, QString** correct)
 {
-	Q_ASSERT(errorcntr->containerType() == Container::none); // this method is to handle error cases in matrix operations
-	
 	*correct = new QString(error);
-	return new Container(Container::none); //NOTE default convention for error value ... none:empty string
+	return new None;
 }
