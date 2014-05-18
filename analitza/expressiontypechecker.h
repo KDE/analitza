@@ -57,7 +57,7 @@ class ANALITZA_EXPORT ExpressionTypeChecker : public AbstractExpressionVisitor
 		bool isCorrect() const { return m_err.isEmpty() && !current.isError(); }
 		QStringList errors() const;
 		
-		void initializeVars(const QMap<QString, ExpressionType>& types) { m_vars=types; }
+		void initializeVars(const QMap<QString, ExpressionType>& types);
 		QMap<QString, ExpressionType> variablesTypes() const;
 		
 	private:
@@ -86,6 +86,7 @@ class ANALITZA_EXPORT ExpressionTypeChecker : public AbstractExpressionVisitor
 		Variables* m_v;
 		QMap<QString, ExpressionType> m_typeForBVar;
 		QMap<QString, ExpressionType> m_vars;
+		QMap<QString, bool> m_isbuiltin;
 		QSet<QString> m_lambdascope;
 		QStack<const Object*> m_calls;
 		QStringList m_deps;

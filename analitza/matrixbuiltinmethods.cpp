@@ -36,7 +36,7 @@ const QString FillVectorConstructor::id = QString("fillvector");
 const ExpressionType FillVectorConstructor::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Value))
 .addParameter(ExpressionType(ExpressionType::Value))
-.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+.addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
 
 Expression FillVectorConstructor::operator()(const QList< Analitza::Expression >& args)
 {
@@ -107,7 +107,9 @@ Expression ZeroMatrixConstructor::operator()(const QList< Analitza::Expression >
 //BEGIN IdentityMatrixConstructor
 
 const QString IdentityMatrixConstructor::id = QString("identitymatrix");
-const ExpressionType IdentityMatrixConstructor::type = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
+const ExpressionType IdentityMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Value))
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 
 Expression IdentityMatrixConstructor::operator()(const QList< Analitza::Expression >& args)
 {
@@ -320,7 +322,8 @@ Expression IsZeroMatrix::operator()(const QList< Analitza::Expression >& args)
 
 const QString IsIdentityMatrix::id = QString("isidentitymatrix");
 const ExpressionType IsIdentityMatrix::type = ExpressionType(ExpressionType::Lambda)
-.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1))
+//.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1))
+.addParameter(ExpressionType::Any)
 .addParameter(ExpressionType(ExpressionType::Value));
 
 Expression IsIdentityMatrix::operator()(const QList< Analitza::Expression >& args)
@@ -341,7 +344,9 @@ Expression IsDiagonalMatrix::operator()(const QList< Analitza::Expression >& arg
 /// experimental
 
 const QString TestCmd::id = QString("testcmd");
-const ExpressionType TestCmd::type = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
+const ExpressionType TestCmd::type =  ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType::Any)
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 
 Expression TestCmd::operator()(const QList< Analitza::Expression >& args)
 {

@@ -723,9 +723,6 @@ Object * Operations::reduce(Operator::OperatorType op, Object * val1, Object * v
 {
 	Object::ObjectType t1=val1->type(), t2=val2->type();
 	
-	qDebug() << "recude OPTS " << t1 << t2;
-
-	
 	BinaryOp f=opsBinary[t1][t2];
 	Q_ASSERT(f);
 	return f(op, val1, val2, correct);
