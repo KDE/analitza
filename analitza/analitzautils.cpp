@@ -660,8 +660,8 @@ void fillMatrix(Matrix* matrix, int nrows, int ncols, double value)
 {
 	Q_ASSERT(matrix);
 	Q_ASSERT(matrix->rowCount() == 0);
-	Q_ASSERT(nrows > 0);
-	Q_ASSERT(ncols > 0);
+	Q_ASSERT(nrows >= 0);
+	Q_ASSERT(ncols >= 0);
 	
 	for (int row = 0; row < nrows; ++row) {
 		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(ncols);

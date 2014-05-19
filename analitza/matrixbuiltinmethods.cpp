@@ -26,13 +26,17 @@
 #include "matrix.h"
 #include "list.h"
 #include "container.h"
+#include "operations.h"
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
+static const ExpressionType MATRIX_CONSTRUCTOR_TYPE = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType::Any)
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix size must be some integer value greater or equal to zero");
 
-const QString FillVectorConstructor::id = QString("fillvector");
+const QString FillVectorConstructor::id = QString("vector");
 const ExpressionType FillVectorConstructor::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Value))
 .addParameter(ExpressionType(ExpressionType::Value))
@@ -50,7 +54,7 @@ Expression FillVectorConstructor::operator()(const QList< Analitza::Expression >
 		ret.setTree(vector);
 	}
 	else
-		ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
+		ret.addError(QCoreApplication::tr("Vector size must be some integer value greater or equal to zero"));
 	
 	return ret;
 }
@@ -58,27 +62,147 @@ Expression FillVectorConstructor::operator()(const QList< Analitza::Expression >
 
 //BEGIN FillMatrixConstructor
 
-const QString FillMatrixConstructor::id = QString("fillmatrix");
-const ExpressionType FillMatrixConstructor::type = ExpressionType(ExpressionType::Lambda)
-.addParameter(ExpressionType(ExpressionType::Value))
-.addParameter(ExpressionType(ExpressionType::Value))
-.addParameter(ExpressionType(ExpressionType::Value))
-.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+const QString MatrixConstructor::id = QString("matrix");
+const ExpressionType MatrixConstructor::type = MATRIX_CONSTRUCTOR_TYPE;
 
-Expression FillMatrixConstructor::operator()(const QList< Analitza::Expression >& args)
+Expression MatrixConstructor::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
 	
-	const Analitza::Cn *nrowsobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
-	const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
+	const int nargs = args.size();
 	
-	if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() >= 0 && ncolsobj->value() >= 0) {
-		Analitza::Matrix *matrix = new Analitza::Matrix();
-		AnalitzaUtils::fillMatrix(matrix, nrowsobj->intValue(), ncolsobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
-		ret.setTree(matrix);
+	switch(nargs) {
+		case 0: {
+			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(MatrixConstructor::id));
+			
+			return ret;
+		}	break;
+		case 1: {
+			if (args.at(0).tree()->type() == Analitza::Object::value) {
+				const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
+				
+				if (nobj->isInteger() && nobj->value() >= 0) {
+					Analitza::Matrix *matrix = new Analitza::Matrix();
+					const int n = nobj->intValue();
+					AnalitzaUtils::fillMatrix(matrix, n, n, 0);
+					ret.setTree(matrix);
+				} else
+					ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
+				
+				return ret;
+			}
+		}	break;
+		case 2: {
+			if (args.at(0).tree()->type() == Analitza::Object::value && args.at(1).tree()->type() == Analitza::Object::value) {
+				const Analitza::Cn *nrowsobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
+				const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
+				
+				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() >= 0 && ncolsobj->value() >= 0) {
+					Analitza::Matrix *matrix = new Analitza::Matrix();
+					AnalitzaUtils::fillMatrix(matrix, nrowsobj->intValue(), ncolsobj->intValue(), 0);
+					ret.setTree(matrix);
+				} else
+					ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
+				
+				return ret;
+			}
+		}	break;
+		case 3: {
+			if (args.at(0).tree()->type() == Analitza::Object::value && 
+				args.at(1).tree()->type() == Analitza::Object::value && 
+				args.at(2).tree()->type() == Analitza::Object::value) {
+				const Analitza::Cn *nrowsobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
+				const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
+				
+				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() >= 0 && ncolsobj->value() >= 0) {
+					Analitza::Matrix *matrix = new Analitza::Matrix();
+					AnalitzaUtils::fillMatrix(matrix, nrowsobj->intValue(), ncolsobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
+					ret.setTree(matrix);
+				} else
+					ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
+				
+				return ret;
+			}
+		}	break;
 	}
-	else
-		ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
+	
+	if (args.first().tree()->type() == Analitza::Object::matrixrow) {
+		bool allrows = true; // assumes all are rows
+		int lastsize = static_cast<const Analitza::MatrixRow*>(args.first().tree())->size();
+		Analitza::Matrix *matrix = new Analitza::Matrix();
+		
+		for (int i = 0; i < nargs && allrows; ++i) {
+			if (args.at(i).tree()->type() == Analitza::Object::matrixrow)
+			{
+				const Analitza::MatrixRow *row = static_cast<const Analitza::MatrixRow*>(args.at(i).tree());
+				
+				if (row->size() == lastsize)
+					matrix->appendBranch(row->copy());
+				else {
+					allrows = false;
+					ret.addError(QCoreApplication::tr("All matrixrow elements must have the same size"));
+				}
+			}
+			else
+				allrows = false;
+		}
+		
+		if (!ret.isCorrect()) {
+			delete matrix;
+			
+			return ret;
+		} else if (allrows) {
+			ret.setTree(matrix);
+			
+			return ret;
+		} else {
+			ret.addError("allrows but some are not rows ... so bad args");
+			delete matrix;
+		}
+	} else if (args.first().tree()->type() == Analitza::Object::vector) {
+		bool allcols = true; // assumes all are columns (vectors)
+		int lastsize = static_cast<const Analitza::Vector*>(args.first().tree())->size();
+		Analitza::Matrix *matrix = new Analitza::Matrix();
+		
+		for (int j = 0; j < nargs && allcols; ++j) {
+			if (args.at(j).tree()->type() == Analitza::Object::vector)
+			{
+				const Analitza::Vector *col = static_cast<const Analitza::Vector*>(args.at(j).tree());
+				const int length = col->size();
+				
+				if (length == lastsize) {
+					Analitza::MatrixRow *row = new Analitza::MatrixRow(length);
+					
+					for (int i = 0; i < col->size(); ++i)
+						row->appendBranch(col->at(i)->copy());
+					
+					matrix->appendBranch(row);
+				}
+				else {
+					allcols = false;
+					//TODO better msgs
+					ret.addError(QCoreApplication::tr("All matrixcols elements must have the same size"));
+				}
+			}
+			else
+				allcols = false;
+		}
+		
+		if (!ret.isCorrect()) {
+			delete matrix;
+			
+			return ret;
+		} else if (allcols) {
+			ret.setTree(Analitza::Operations::reduceUnary(Analitza::Operator::transpose, matrix, 0));
+			delete matrix;
+			
+			return ret;
+		} else {
+			ret.addError("all cols/vectors  but some are not cols/vecs ... so bad args");
+			delete matrix;
+		}
+	} else
+		ret.addError("bad types for matrix command");
 	
 	return ret;
 }
@@ -96,7 +220,7 @@ const ExpressionType ZeroMatrixConstructor::type = ExpressionType(ExpressionType
 
 Expression ZeroMatrixConstructor::operator()(const QList< Analitza::Expression >& args)
 {
-	FillMatrixConstructor fillMatrix;
+	MatrixConstructor fillMatrix;
 	
 	return fillMatrix(QList<Analitza::Expression>(args) << Expression(new Analitza::Cn(0)));
 }

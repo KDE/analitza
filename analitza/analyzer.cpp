@@ -154,7 +154,7 @@ Analyzer::~Analyzer()
 void Analyzer::registerBuiltinMethods()
 {
 	m_builtin.insertFunction(FillVectorConstructor::id, FillVectorConstructor::type, new FillVectorConstructor);
-	m_builtin.insertFunction(FillMatrixConstructor::id, FillMatrixConstructor::type, new FillMatrixConstructor);
+	m_builtin.insertFunction(MatrixConstructor::id, MatrixConstructor::type, new MatrixConstructor);
 	m_builtin.insertFunction(ZeroMatrixConstructor::id, ZeroMatrixConstructor::type, new ZeroMatrixConstructor);
 	m_builtin.insertFunction(IdentityMatrixConstructor::id, IdentityMatrixConstructor::type, new IdentityMatrixConstructor);
 	m_builtin.insertFunction(DiagonalMatrixConstructor::id, DiagonalMatrixConstructor::type, new DiagonalMatrixConstructor);

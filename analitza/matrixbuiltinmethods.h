@@ -34,7 +34,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-class FillMatrixConstructor: public Analitza::FunctionDefinition
+class MatrixConstructor: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);

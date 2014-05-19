@@ -57,16 +57,32 @@ void MatrixTest::testBuiltinMethods_data()
 	//TODO test neg ndexes and extra args ... eg 2*(identitymatrix(2) + testcmd(-2, 2,1))
 	
 	script.clear();
-	script << "fillvector(3, -2.3)";
+	script << "vector(3, -2.3)";
 	QTest::newRow("simple fill vector") << script << "vector { -2.3, -2.3, -2.3 }";
 	
 	script.clear();
-	script << "fillmatrix(3, 2, -15.7)";
+	script << "matrix(3, 2, -15.7)";
 	QTest::newRow("simple fill matrix") << script << "matrix { matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 } }";
 	
 	script.clear();
+	script << "matrix(2)";
+	QTest::newRow("simple fill square matrix") << script << "matrix { matrixrow { 0, 0 }, matrixrow { 0, 0 } }";
+	
+	script.clear();
+	script << "matrix(3, 2)";
+	QTest::newRow("simple matrix") << script << "matrix { matrixrow { 0, 0 }, matrixrow { 0, 0 }, matrixrow { 0, 0 } }";
+	
+	script.clear();
+	script << "matrix(vector{2,3}, vector{7, 4})";
+	QTest::newRow("matrix by vectors/columns") << script << "matrix { matrixrow { 2, 7 }, matrixrow { 3, 4 } }";
+	
+	script.clear();
+	script << "matrix(matrixrow{2,3}, matrixrow{7, 4})";
+	QTest::newRow("matrix by rows") << script << "matrix { matrixrow { 2, 3 }, matrixrow { 7, 4 } }";
+	
+	script.clear();
 	script << "A := matrix{matrixrow{2, 3, 6}, matrixrow{-5, 0, 2.3}}";
-	script << "fillmatrix(2, 3, -9) + A";
+	script << "matrix(2, 3, -9) + A";
 	QTest::newRow("fill + A") << script << "matrix { matrixrow { -7, -6, -3 }, matrixrow { -14, -9, -6.7 } }";
 	
 	script.clear();
@@ -134,7 +150,7 @@ void MatrixTest::testBuiltinMethods_data()
 	script.clear();
 	script << "v := vector{5,5,0}";
 	script << "A := matrix{matrixrow{0, -1, 2}, matrixrow{4, 0, -3.2}, matrixrow{5.8, -15, 0}}";
-	script << "B := fillmatrix(3,3, 4.5)";
+	script << "B := matrix(3,3, 4.5)";
 	script << "D := diag(v)";
 	script << "I := identitymatrix(3)";
 	script << "O := zeromatrix(3,3)";
@@ -263,37 +279,40 @@ void MatrixTest::testBuiltinMethods_data()
 	//polyfunc and read lbm body
 	
 	
-// // 	Expression exp("2*(identitymatrix(2) + testcmd(-2, 2,1))");
+// 	Expression exp("2*(identitymatrix(2) + testcmd(-2, 2,1))");
 // 	Expression exp("2*(identitymatrix(2) + testcmd(2, 2, 4,2,1))");
-// 	
-// 	if (!exp.isCorrect())
-// 	{
-// 		qDebug() << "TTTTT " << exp.error();
-// 		return ;
-// 	}
-// 	
-// 	Analitza::Analyzer a;
-// 	a.setExpression(exp);
-// 	
-// 	if (!a.isCorrect())
-// 	{
-// 		qDebug() << "TTTTT " << a.errors();
-// 		return;
-// 	}
-// 	
-// 	Expression res = a.calculate();
-// 	
-// 	if (!a.isCorrect())
-// 	{
-// 		qDebug() << "TTTTT " << a.errors();
-// 		return ;
-// 	}
-// 	
-// 	qDebug() << "TTTTT " << res.error();
-// 	qDebug() << "TTTTT " << res.toString();
-// 	qDebug() << "TTTTT " << res.error();
-// 	
-// 	qDebug() << "TTTTT ALL OK TTTTT";
+	
+	//Expression exp("matrix(0,0,3.6)");
+	Expression exp("matrix(vector{2,3}, vector{7, 4})");
+	
+	if (!exp.isCorrect())
+	{
+		qDebug() << "TTTTT " << exp.error();
+		return ;
+	}
+	
+	Analitza::Analyzer a;
+	a.setExpression(exp);
+	
+	if (!a.isCorrect())
+	{
+		qDebug() << "TTTTT " << a.errors();
+		return;
+	}
+	
+	Expression res = a.calculate();
+	
+	if (!a.isCorrect())
+	{
+		qDebug() << "TTTTT " << a.errors();
+		return ;
+	}
+	
+	qDebug() << "TTTTT " << res.error();
+	qDebug() << "TTTTT " << res.toString();
+	qDebug() << "TTTTT " << res.error();
+	
+	qDebug() << "TTTTT ALL OK TTTTT";
 	
 	
 	
