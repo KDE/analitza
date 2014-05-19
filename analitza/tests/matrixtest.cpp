@@ -61,6 +61,10 @@ void MatrixTest::testBuiltinMethods_data()
 	QTest::newRow("simple fill vector") << script << "vector { -2.3, -2.3, -2.3 }";
 	
 	script.clear();
+	script << "7*vector(34, 14.2)[23]";
+	QTest::newRow("select fill vector") << script << "99.4";
+	
+	script.clear();
 	script << "matrix(3, 2, -15.7)";
 	QTest::newRow("simple fill matrix") << script << "matrix { matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 } }";
 	
@@ -73,12 +77,21 @@ void MatrixTest::testBuiltinMethods_data()
 	QTest::newRow("simple matrix") << script << "matrix { matrixrow { 0, 0 }, matrixrow { 0, 0 }, matrixrow { 0, 0 } }";
 	
 	script.clear();
+	script << "matrix(3, 2, -9.8)[2][1]";
+	QTest::newRow("select simple matrix") << script << "-9.8";
+	
+	script.clear();
 	script << "matrix(vector{2,3}, vector{7, 4})";
 	QTest::newRow("matrix by vectors/columns") << script << "matrix { matrixrow { 2, 7 }, matrixrow { 3, 4 } }";
 	
 	script.clear();
 	script << "matrix(matrixrow{2,3}, matrixrow{7, 4})";
 	QTest::newRow("matrix by rows") << script << "matrix { matrixrow { 2, 3 }, matrixrow { 7, 4 } }";
+	
+	script.clear();
+	script << "A := matrix{matrixrow{13,6}, matrixrow{-2,5}}";
+	script << "matrix(vector{2,3}, vector{7, 4}) + A";
+	QTest::newRow("matrix by vectors/columns + A") << script << "matrix { matrixrow { 15, 13 }, matrixrow { 1, 9 } }";
 	
 	script.clear();
 	script << "A := matrix{matrixrow{2, 3, 6}, matrixrow{-5, 0, 2.3}}";
@@ -106,17 +119,29 @@ void MatrixTest::testBuiltinMethods_data()
 	QTest::newRow("0 + I") << script << "matrix { matrixrow { 1, 0, 0 }, matrixrow { 0, 1, 0 }, matrixrow { 0, 0, 1 } }";
 	
 	script.clear();
-	script << "diag(vector{5, 3.2, 6, -9})";
+	script << "diag(5, 3.2, 6, -9)";
 	QTest::newRow("simple diag") << script << "matrix { matrixrow { 5, 0, 0, 0 }, matrixrow { 0, 3.2, 0, 0 }, matrixrow { 0, 0, 6, 0 }, matrixrow { 0, 0, 0, -9 } }";
 	
 	script.clear();
-	script << "diag(vector{1, 1, 1}) - identitymatrix(3)";
+	script << "diag(vector{5, 3.2, 6, -9})";
+	QTest::newRow("simple diag by vector") << script << "matrix { matrixrow { 5, 0, 0, 0 }, matrixrow { 0, 3.2, 0, 0 }, matrixrow { 0, 0, 6, 0 }, matrixrow { 0, 0, 0, -9 } }";
+	
+	script.clear();
+	script << "diag(1, 1, 1) - identitymatrix(3)";
 	QTest::newRow("zeromatrix: diag - I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
+	
+	script.clear();
+	script << "diag(vector{1, 1, 1}) - identitymatrix(3)";
+	QTest::newRow("zeromatrix: diag by vector - I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
+	
+	script.clear();
+	script << "diag(5, 7.8, -0.6, 3.5)[3][3] + diag(5, 7.8, -0.6, 3.5)[2][3]";
+	QTest::newRow("selector diag") << script << "-0.6";
 	
 	script.clear();
 	script << "v := vector{5, 7.8, -0.6, 3.5}";
 	script << "diag(v)[3][3] + diag(v)[2][3]";
-	QTest::newRow("selector diag") << script << "-0.6";
+	QTest::newRow("selector diag by vector") << script << "-0.6";
 	
 	script.clear();
 	script << "tridiag(-2.1, 3.6, 48, 5)";
@@ -129,22 +154,22 @@ void MatrixTest::testBuiltinMethods_data()
 	
 	script.clear();
 	script << "A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -12, 1}, matrixrow{-45, 9.6, cos(pi)}}";
-	script << "getdiag(A)";
-	QTest::newRow("simple getdiag(A)") << script << "vector { -7.8, -12, -1 }";
+	script << "diag(A)";
+	QTest::newRow("simple diag(A)") << script << "vector { -7.8, -12, -1 }";
 	
 	script.clear();
 	script << "A := matrix{matrixrow{8, 2.3, 5}, matrixrow{-45, -cos(pi), 12}}";
-	script << "getdiag(A)";
+	script << "diag(A)";
 	QTest::newRow("getdiag fat") << script << "vector { 8, 1 }";
 	
 	script.clear();
 	script << "A := matrix{matrixrow{8, 2.3, 1}, matrixrow{3, 32, 2}, matrixrow{-45, 12, 3}, matrixrow{1, 0, 3}, matrixrow{-5, 1, 0}}";
-	script << "getdiag(A)";
+	script << "diag(A)";
 	QTest::newRow("getdiag skinny") << script << "vector { 8, 32, 3 }";
 	
 	script.clear();
 	script << "A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -12, 1}, matrixrow{-45, 9.6, cos(pi)}}";
-	script << "getdiag(A)[2]";
+	script << "diag(A)[2]";
 	QTest::newRow("selector getdiag") << script << "-12";
 	
 	script.clear();
@@ -167,37 +192,37 @@ void MatrixTest::testBuiltinMethods_data()
 	
 	script.clear();
 	script << square;
-	script << "getndiag(A,2)";
+	script << "diag(A,2)";
 	QTest::newRow("getndiag square +2") << script << "vector { 0, 20, 90 }";
 	
 	script.clear();
 	script << square;
-	script << "getndiag(A,-2)";
+	script << "diag(A,-2)";
 	QTest::newRow("getndiag square -2") << script << "vector { 1, -7, 3 }";
 	
 	script.clear();
 	script << square;
-	script << "getndiag(A,-3)";
+	script << "diag(A,-3)";
 	QTest::newRow("getndiag square -3") << script << "vector { 0, 4 }";
 	
 	script.clear();
 	script << square;
-	script << "getndiag(A,3)";
+	script << "diag(A,3)";
 	QTest::newRow("getndiag square +3") << script << "vector { 9, 100 }";
 	
 	script.clear();
 	script << square;
-	script << "getndiag(A,-3)";
+	script << "diag(A,-3)";
 	QTest::newRow("getndiag square -3") << script << "vector { 0, 4 }";
 	
 	script.clear();
 	script << square;
-	script << "getndiag(A,4)[1]";
+	script << "diag(A,4)[1]";
 	QTest::newRow("selector getndiag square corner +") << script << "80";
 
 	script.clear();
 	script << square;
-	script << "getndiag(A,-4)[1]";
+	script << "diag(A,-4)[1]";
 	QTest::newRow("selector getndiag square corner -") << script << "5";
 	
 //  3.6    42     0      9     80   4   15
@@ -209,27 +234,27 @@ void MatrixTest::testBuiltinMethods_data()
 	
 	script.clear();
 	script << fat;
-	script << "getndiag(A,5)";
+	script << "diag(A,5)";
 	QTest::newRow("getndiag fat +5") << script << "vector { 4, 7 }";
 	
 	script.clear();
 	script << fat;
-	script << "getndiag(A,1)";
+	script << "diag(A,1)";
 	QTest::newRow("getndiag fat +1") << script << "vector { 42, 45, 47, 48, 3 }";
 	
 	script.clear();
 	script << fat;
-	script << "getndiag(A,-1)";
+	script << "diag(A,-1)";
 	QTest::newRow("getndiag fat -1") << script << "vector { -4.1, 2.2, -2.3, -2.1 }";
 	
 	script.clear();
 	script << fat;
-	script << "getndiag(A,6)[1]";
+	script << "diag(A,6)[1]";
 	QTest::newRow("selector getndiag fat corner +") << script << "15";
 
 	script.clear();
 	script << fat;
-	script << "getndiag(A,-4)[1]";
+	script << "diag(A,-4)[1]";
 	QTest::newRow("selector getndiag fat corner -") << script << "2";
 	
 //  3.6    42
@@ -241,22 +266,22 @@ void MatrixTest::testBuiltinMethods_data()
 	
 	script.clear();
 	script << fat;
-	script << "getndiag(A,1)[1]";
+	script << "diag(A,1)[1]";
 	QTest::newRow("selector getndiag skinny corner +") << script << "42";
 	
 	script.clear();
 	script << skinny;
-	script << "getndiag(A,-1)";
+	script << "diag(A,-1)";
 	QTest::newRow("getndiag skinny -1") << script << "vector { -4.1, 2.2 }";
 	
 	script.clear();
 	script << skinny;
-	script << "getndiag(A,-3)";
+	script << "diag(A,-3)";
 	QTest::newRow("getndiag skinny -3") << script << "vector { 0, 4 }";
 	
 	script.clear();
 	script << skinny;
-	script << "getndiag(A,-4)";
+	script << "diag(A,-4)";
 	QTest::newRow("getndiag skinny -4") << script << "vector { 2 }";
 	
 // 	script.clear();
@@ -283,7 +308,7 @@ void MatrixTest::testBuiltinMethods_data()
 // 	Expression exp("2*(identitymatrix(2) + testcmd(2, 2, 4,2,1))");
 	
 	//Expression exp("matrix(0,0,3.6)");
-	Expression exp("matrix(vector{2,3}, vector{7, 4})");
+	Expression exp("diag(matrix{matrixrow{2,3}, matrixrow{4,1}})");
 	
 	if (!exp.isCorrect())
 	{
@@ -308,6 +333,7 @@ void MatrixTest::testBuiltinMethods_data()
 		return ;
 	}
 	
+	qDebug() << "TTTTT " << a.type().toString();
 	qDebug() << "TTTTT " << res.error();
 	qDebug() << "TTTTT " << res.toString();
 	qDebug() << "TTTTT " << res.error();

@@ -651,6 +651,8 @@ QString generateDependencyGraph(const Variables* v)
 void fillVector(Vector* vector, int size, double value)
 {
 	Q_ASSERT(vector);
+	Q_ASSERT(vector->size() == 0);
+	Q_ASSERT(size >= 0);
 	
 	for (int i = 0; i < size; ++i)
 		vector->appendBranch(new Cn(value));

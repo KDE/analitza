@@ -25,7 +25,7 @@ namespace Analitza {
 class Expression;
 };
 
-class FillVectorConstructor: public Analitza::FunctionDefinition
+class VectorCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -34,7 +34,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-class MatrixConstructor: public Analitza::FunctionDefinition
+class MatrixCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -43,7 +43,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-class ZeroMatrixConstructor: public Analitza::FunctionDefinition
+class ZeroMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -52,7 +52,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-class IdentityMatrixConstructor: public Analitza::FunctionDefinition
+class IdentityMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -61,7 +61,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-class DiagonalMatrixConstructor: public Analitza::FunctionDefinition
+class DiagonalMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -71,7 +71,7 @@ public:
 };
 
 //tridiag(a, b, c, n)
-class TridiagonalMatrixConstructor: public Analitza::FunctionDefinition
+class TridiagonalMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -80,7 +80,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-class GetNDiagonalOfMatrix: public Analitza::FunctionDefinition
+class IsZeroMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -89,7 +89,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-class GetDiagonalOfMatrix: public Analitza::FunctionDefinition
+class IsIdentityMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -98,25 +98,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-class IsZeroMatrix: public Analitza::FunctionDefinition
-{
-public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-
-	static const QString id;
-	static const Analitza::ExpressionType type;
-};
-
-class IsIdentityMatrix: public Analitza::FunctionDefinition
-{
-public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-
-	static const QString id;
-	static const Analitza::ExpressionType type;
-};
-
-class IsDiagonalMatrix: public Analitza::FunctionDefinition
+class IsDiagonalMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);

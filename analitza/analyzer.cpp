@@ -153,17 +153,15 @@ Analyzer::~Analyzer()
 
 void Analyzer::registerBuiltinMethods()
 {
-	m_builtin.insertFunction(FillVectorConstructor::id, FillVectorConstructor::type, new FillVectorConstructor);
-	m_builtin.insertFunction(MatrixConstructor::id, MatrixConstructor::type, new MatrixConstructor);
-	m_builtin.insertFunction(ZeroMatrixConstructor::id, ZeroMatrixConstructor::type, new ZeroMatrixConstructor);
-	m_builtin.insertFunction(IdentityMatrixConstructor::id, IdentityMatrixConstructor::type, new IdentityMatrixConstructor);
-	m_builtin.insertFunction(DiagonalMatrixConstructor::id, DiagonalMatrixConstructor::type, new DiagonalMatrixConstructor);
-	m_builtin.insertFunction(TridiagonalMatrixConstructor::id, TridiagonalMatrixConstructor::type, new TridiagonalMatrixConstructor);
-	m_builtin.insertFunction(GetNDiagonalOfMatrix::id, GetNDiagonalOfMatrix::type, new GetNDiagonalOfMatrix);
-	m_builtin.insertFunction(GetDiagonalOfMatrix::id, GetDiagonalOfMatrix::type, new GetDiagonalOfMatrix);
-	m_builtin.insertFunction(IsZeroMatrix::id, IsZeroMatrix::type, new IsZeroMatrix);
-	m_builtin.insertFunction(IsIdentityMatrix::id, IsIdentityMatrix::type, new IsIdentityMatrix);
-	m_builtin.insertFunction(IsDiagonalMatrix::id, IsDiagonalMatrix::type, new IsDiagonalMatrix);
+	m_builtin.insertFunction(VectorCommand::id, VectorCommand::type, new VectorCommand);
+	m_builtin.insertFunction(MatrixCommand::id, MatrixCommand::type, new MatrixCommand);
+	m_builtin.insertFunction(ZeroMatrixCommand::id, ZeroMatrixCommand::type, new ZeroMatrixCommand);
+	m_builtin.insertFunction(IdentityMatrixCommand::id, IdentityMatrixCommand::type, new IdentityMatrixCommand);
+	m_builtin.insertFunction(DiagonalMatrixCommand::id, DiagonalMatrixCommand::type, new DiagonalMatrixCommand);
+	m_builtin.insertFunction(TridiagonalMatrixCommand::id, TridiagonalMatrixCommand::type, new TridiagonalMatrixCommand);
+	m_builtin.insertFunction(IsZeroMatrixCommand::id, IsZeroMatrixCommand::type, new IsZeroMatrixCommand);
+	m_builtin.insertFunction(IsIdentityMatrixCommand::id, IsIdentityMatrixCommand::type, new IsIdentityMatrixCommand);
+	m_builtin.insertFunction(IsDiagonalMatrixCommand::id, IsDiagonalMatrixCommand::type, new IsDiagonalMatrixCommand);
 	
 	/// experimental
 	m_builtin.insertFunction(TestCmd::id, TestCmd::type, new TestCmd);
