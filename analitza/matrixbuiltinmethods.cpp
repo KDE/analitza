@@ -536,7 +536,7 @@ Expression IsIdentityMatrixCommand::operator()(const QList< Analitza::Expression
 	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
 }
 
-const QString IsDiagonalMatrixCommand::id = QString("isdiagonalmatrix");
+const QString IsDiagonalMatrixCommand::id = QString("isdiag");
 const ExpressionType IsDiagonalMatrixCommand::type = functionType(MatrixType, VectorType);
 
 Expression IsDiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)

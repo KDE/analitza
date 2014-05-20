@@ -296,68 +296,26 @@ void MatrixTest::testBuiltinMethods_data()
 	script << "diag(A,-4)";
 	QTest::newRow("getndiag skinny -4") << script << "vector { 2 }";
 	
-// 	script.clear();
-// 	script << skinny;
-// 	script << "isdiag(A)";
-// 	QTest::newRow("is d") << script << "false";
+	script.clear();
+	script << skinny;
+	script << "isdiag(A)";
+	QTest::newRow("is not diag") << script << "false";
 	
 	script.clear();
 	script << "iszeromatrix(zeromatrix(8,5))";
-	QTest::newRow("si es zero") << script << "true";
+	QTest::newRow("is zero matrix") << script << "true";
 	
 	script.clear();
 	script << "isidentitymatrix(identitymatrix(5))";
-	QTest::newRow("si es id") << script << "true";
+	QTest::newRow("Id is identity matrix") << script << "true";
 	
 	script.clear();
-	script << "isdiagonalmatrix(identitymatrix(4))";
-	QTest::newRow("sum") << script << "true";
-
-	//polyfunc and read lbm body
+	script << "isidentitymatrix(diag(identitymatrix(3), identitymatrix(2)))";
+	QTest::newRow("block of Id is Id matrix") << script << "true";
 	
-	
-// 	Expression exp("2*(identitymatrix(2) + testcmd(-2, 2,1))");
-// 	Expression exp("2*(identitymatrix(2) + testcmd(2, 2, 4,2,1))");
-	
-	//Expression exp("matrix(0,0,3.6)");
-	Expression exp("diag(matrix{matrixrow{2,3}, matrixrow{4,1}})");
-	
-	if (!exp.isCorrect())
-	{
-		qDebug() << "TTTTT " << exp.error();
-		return ;
-	}
-	
-	Analitza::Analyzer a;
-	a.setExpression(exp);
-	
-	if (!a.isCorrect())
-	{
-		qDebug() << "TTTTT " << a.errors();
-		return;
-	}
-	
-	Expression res = a.calculate();
-	
-	if (!a.isCorrect())
-	{
-		qDebug() << "TTTTT " << a.errors();
-		return ;
-	}
-	
-	qDebug() << "TTTTT " << a.type().toString();
-	qDebug() << "TTTTT " << res.error();
-	qDebug() << "TTTTT " << res.toString();
-	qDebug() << "TTTTT " << res.error();
-	
-	qDebug() << "TTTTT ALL OK TTTTT";
-	
-	
-	
-	
-	
-// 	qDebug() << "TTTTT " << ((Analitza::Container*)a.tree())->containerType();
-// // 	qDebug() << "TTTTT " << (((Analitza::Apply*)((Analitza::Container*)a.tree())->m_params.first())->m_params[0])->type();
+	script.clear();
+	script << "isdiag(identitymatrix(4))";
+	QTest::newRow("Id is diag matrix") << script << "true";
 }
 
 void MatrixTest::testBuiltinMethods()
