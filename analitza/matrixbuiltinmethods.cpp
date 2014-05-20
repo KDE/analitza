@@ -228,8 +228,9 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 		} else if (allcols) {
 			QString* error=0;
 			ret.setTree(Analitza::Operations::reduceUnary(Analitza::Operator::transpose, matrix, &error));
-			Q_ASSERT(error == 0);
 			delete matrix;
+			
+			Q_ASSERT(error == 0);
 			
 			return ret;
 		} else {
@@ -308,7 +309,6 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 	
 	const int nargs = args.size();
 	bool byvector = false;
-	bool tryblockdiag = false;
 	
 	switch(nargs) {
 		case 0: {
@@ -329,11 +329,8 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 				ret.setTree(diagonal);
 				
 				return ret;
-			} else if (args.first().tree()->type() == Analitza::Object::vector) {
+			} else if (args.first().tree()->type() == Analitza::Object::vector)
 				byvector = true;
-			} else if (args.first().tree()->type() == Analitza::Object::matrix) {
-				tryblockdiag = true;
-			}
 		}	break;
 		case 2: {
 			if (args.first().tree()->type() == Analitza::Object::matrix && args.last().tree()->type() == Analitza::Object::value) {
@@ -389,10 +386,72 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 	Q_ASSERT(ret.toString().isEmpty());
 	Q_ASSERT(ret.isCorrect());
 	
-	Analitza::Matrix *matrix = new Analitza::Matrix();
-	
 	const Analitza::Vector *v = byvector? static_cast<const Analitza::Vector*>(args.first().tree()) : 0;
 	const int n = byvector? v->size() : nargs;
+	
+	// first try to build block diag matrix
+	if (args.first().tree()->type() == Analitza::Object::matrix) {
+		bool failbyblockdiag = false;
+		int nrows = 0;
+		int ncols = 0;
+		
+		for (int k = 0; k < n && !failbyblockdiag; ++k)
+			if (args.at(k).tree()->type() == Analitza::Object::matrix) {
+				const Analitza::Matrix *block = static_cast<const Analitza::Matrix*>(args.at(k).tree());
+				
+				nrows += block->rowCount();
+				ncols += block->columnCount();
+			} else 
+				failbyblockdiag = true;
+		
+		if (!failbyblockdiag) {
+			Analitza::Matrix *matrix = new Analitza::Matrix();
+			QVector< QVector<const Analitza::Object*> > objmatrix(nrows);
+			
+			for (int i = 0; i < nrows; ++i)
+				objmatrix[i] = QVector<const Analitza::Object*>(ncols, 0);
+			
+			nrows = 0;
+			ncols = 0;
+		
+			for (int k = 0; k < n && !failbyblockdiag; ++k) {
+				const Analitza::Matrix *block = static_cast<const Analitza::Matrix*>(args.at(k).tree());
+				const int m = block->rowCount();
+				const int n = block->columnCount();
+				
+				for (int i = 0; i < m; ++i)
+					for (int j = 0; j < n; ++j)
+						objmatrix[i+nrows][j+ncols] = block->at(i,j);
+				
+				nrows += m;
+				ncols += n;
+			}
+			
+			for (int i = 0; i < nrows; ++i) {
+				Analitza::MatrixRow *row = new Analitza::MatrixRow(ncols);
+				
+				for (int j = 0; j < ncols; ++j) {
+					const Analitza::Object *obj = objmatrix[i][j];
+					
+					if (obj)
+						row->appendBranch(obj->copy());
+					else
+						row->appendBranch(new Analitza::Cn(0));
+				}
+				
+				matrix->appendBranch(row);
+			}
+			
+			ret.setTree(matrix);
+			
+			return ret;
+		}
+	} 
+	
+	Q_ASSERT(ret.toString().isEmpty());
+	Q_ASSERT(ret.isCorrect());
+	
+	Analitza::Matrix *matrix = new Analitza::Matrix();
 	
 	for (int row = 0; row < n; ++row) {
 		Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
@@ -407,7 +466,7 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 	}
 	
 	ret.setTree(matrix);
-	
+
 	return ret;
 }
 
@@ -484,27 +543,3 @@ Expression IsDiagonalMatrixCommand::operator()(const QList< Analitza::Expression
 {
 	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
 }
-
-/// experimental
-
-const QString TestCmd::id = QString("testcmd");
-const ExpressionType TestCmd::type =  ExpressionType(ExpressionType::Lambda)
-.addParameter(ExpressionType::Any)
-.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
-
-Expression TestCmd::operator()(const QList< Analitza::Expression >& args)
-{
-	Expression ret;
-	if (args.size() != 2)
-	{
-		ret.addError("too many args here ... i need 2");
-		
-		return ret;
-	}
-	
-	qDebug() << "INSIDE FUNC " << args.size();
-	ZeroMatrixCommand zc;
-	return zc(args);
-}
-
-

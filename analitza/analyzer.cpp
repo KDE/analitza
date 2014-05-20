@@ -162,9 +162,6 @@ void Analyzer::registerBuiltinMethods()
 	m_builtin.insertFunction(IsZeroMatrixCommand::id, IsZeroMatrixCommand::type, new IsZeroMatrixCommand);
 	m_builtin.insertFunction(IsIdentityMatrixCommand::id, IsIdentityMatrixCommand::type, new IsIdentityMatrixCommand);
 	m_builtin.insertFunction(IsDiagonalMatrixCommand::id, IsDiagonalMatrixCommand::type, new IsDiagonalMatrixCommand);
-	
-	/// experimental
-	m_builtin.insertFunction(TestCmd::id, TestCmd::type, new TestCmd);
 }
 
 void Analyzer::setExpression(const Expression & e)

@@ -55,6 +55,7 @@ void MatrixTest::testBuiltinMethods_data()
 	//TODO test empty matrix as args for commands
 	//TODO test diferent sizes like 2*(identitymatrix(2) + zeromatrix(2,1))
 	//TODO test neg ndexes and extra args ... eg 2*(identitymatrix(2) + testcmd(-2, 2,1))
+	//TODO error cases too (matrix and diag)
 	
 	script.clear();
 	script << "vector(3, -2.3)";
@@ -142,6 +143,17 @@ void MatrixTest::testBuiltinMethods_data()
 	script << "v := vector{5, 7.8, -0.6, 3.5}";
 	script << "diag(v)[3][3] + diag(v)[2][3]";
 	QTest::newRow("selector diag by vector") << script << "-0.6";
+	
+	script.clear();
+	script << "diag(matrix{matrixrow{1, 3}, matrixrow{-6, 8}}, matrix{matrixrow{5, 6}, matrixrow{14, -1.2}})";
+	QTest::newRow("simple block diagonal") << script << "matrix { matrixrow { 1, 3, 0, 0 }, matrixrow { -6, 8, 0, 0 }, matrixrow { 0, 0, 5, 6 }, matrixrow { 0, 0, 14, -1.2 } }";
+	
+	script.clear();
+	script << "I := identitymatrix(3)";
+	script << "A := matrix(2,3, -6)";
+	script << "B := 3*I";
+	script << "diag(I, A, B)";
+	QTest::newRow("block diagonal") << script << "matrix { matrixrow { 1, 0, 0, 0, 0, 0, 0, 0, 0 }, matrixrow { 0, 1, 0, 0, 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 1, 0, 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 0, -6, -6, -6, 0, 0, 0 }, matrixrow { 0, 0, 0, -6, -6, -6, 0, 0, 0 }, matrixrow { 0, 0, 0, 0, 0, 0, 3, 0, 0 }, matrixrow { 0, 0, 0, 0, 0, 0, 0, 3, 0 }, matrixrow { 0, 0, 0, 0, 0, 0, 0, 0, 3 } }";
 	
 	script.clear();
 	script << "tridiag(-2.1, 3.6, 48, 5)";
