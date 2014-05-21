@@ -160,8 +160,9 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 	Q_ASSERT(ret.isCorrect());
 	
 	if (args.first().tree()->type() == Analitza::Object::matrixrow) {
-// 		piensa aki
-// 		if (static_cast<const Analitza::MatrixRow*>(args.first().tree())->at(0)->) trye blokmatrx
+		//TODO block matrix
+// 		if (static_cast<const Analitza::MatrixRow*>(args.first().tree())->at(0)->type() == Analitza::Object::matrix) {
+// 			}
 		
 		bool allrows = true; // assumes all are rows
 		int lastsize = static_cast<const Analitza::MatrixRow*>(args.first().tree())->size();
@@ -192,7 +193,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 			
 			return ret;
 		} else {
-			ret.addError("allrows but some are not rows ... so bad args");
+			ret.addError("Every argument must be a matrixrow element");
 			delete matrix;
 		}
 	} else if (args.first().tree()->type() == Analitza::Object::vector) {
@@ -217,7 +218,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 				else {
 					allcols = false;
 					//TODO better msgs
-					ret.addError(QCoreApplication::tr("All matrixcols elements must have the same size"));
+					ret.addError(QCoreApplication::tr("All vectors must have the same size"));
 				}
 			}
 			else
@@ -237,11 +238,11 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 			
 			return ret;
 		} else {
-			ret.addError("all cols/vectors  but some are not cols/vecs ... so bad args");
+			ret.addError("Every argument must be a vector");
 			delete matrix;
 		}
 	} else 
-		ret.addError("bad types for matrix command");
+		ret.addError("bad types for matrix command"); //TODO better message
 	
 	return ret;
 }
