@@ -37,7 +37,7 @@ class ExpressionType;
 class Operations
 {
 	public:
-		typedef Cn* (*UnaryOp)(Operator::OperatorType, Object*, QString**);
+		typedef Object* (*UnaryOp)(Operator::OperatorType, Object*, QString**);
 		typedef Object * (*BinaryOp)(Operator::OperatorType op, Object *, Object *, QString** correct);
 		
 		static Object* reduce(Operator::OperatorType op, Object* oper, Object* oper1, QString** correct);
@@ -50,19 +50,19 @@ class Operations
 		static UnaryOp opsUnary[Object::custom+1];
 		static BinaryOp opsBinary[Object::custom+1][Object::custom+1];
 		
-		static Cn* reduceRealReal(Operator::OperatorType op, Cn *oper, const Cn* oper1, QString** correct);
-		static Cn* reduceUnaryReal(Operator::OperatorType op, Cn *oper, QString** correct);
+		static Object* reduceRealReal(Operator::OperatorType op, Cn *oper, const Cn* oper1, QString** correct);
+		static Object* reduceUnaryReal(Operator::OperatorType op, Cn *oper, QString** correct);
 		static Object* reduceRealNone(Operator::OperatorType op, Cn* oper, None *cntr, QString** correct);
 		static Object* reduceNoneReal(Operator::OperatorType op, None *cntr, Cn* oper, QString** correct);
 		
 		static Object* reduceRealVector(Operator::OperatorType op, Cn *oper, Vector* vector, QString** correct);
 		static Object* reduceVectorReal(Operator::OperatorType op, Vector* vector, Cn *oper, QString** correct);
 		static Object* reduceVectorVector(Operator::OperatorType op, Vector* v1, Vector* v2, QString** correct);
-		static Cn* reduceUnaryVector(Operator::OperatorType op, Vector* c, QString** correct);
+		static Object* reduceUnaryVector(Operator::OperatorType op, Vector* c, QString** correct);
 		
 		static Object* reduceRealList(Operator::OperatorType op, Cn *oper, List* vector, QString** correct);
 		static Object* reduceListList(Operator::OperatorType op, List* l1, List* l2, QString** correct);
-		static Cn* reduceUnaryList(Operator::OperatorType op, List* l, QString** correct);
+		static Object* reduceUnaryList(Operator::OperatorType op, List* l, QString** correct);
 		
 		static Object* reduceRealMatrix(Analitza::Operator::OperatorType op, Analitza::Cn* v, Analitza::Matrix* m1, QString** correct);
 		static Object* reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct);

@@ -52,7 +52,6 @@ void MatrixTest::testCorrect_data()
 	QTest::addColumn<QString>("result");
 	
 	QStringList script;
-	//TODO test diferent sizes like 2*(identitymatrix(2) + zeromatrix(2,1))
 	//TODO test neg ndexes and extra args ... eg 2*(identitymatrix(2) + testcmd(-2, 2,1))
 	//TODO error cases too (matrix and diag)
 	
@@ -366,6 +365,7 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("iszeromatrix: bad number of args") << "iszeromatrix()";
 	QTest::newRow("isdiag: bad number of args") << "isdiag(matrix{matrixrow{1}}, 2)";
 	QTest::newRow("isdiag: bad number of args2") << "isdiag()";
+	QTest::newRow("bad dimensions:2x2identitymatrix + 2x1zeromatrix") << "2*(identitymatrix(2) + zeromatrix(2,1))";
 }
 
 void MatrixTest::testIncorrect()
