@@ -302,7 +302,7 @@ Expression IdentityMatrixCommand::operator()(const QList< Analitza::Expression >
 
 const QString DiagonalMatrixCommand::id = QString("diag");
 const ExpressionType DiagonalMatrixCommand::type  = variadicFunctionType(VectorAndMatrixAlternatives);
-
+#include <iostream>
 Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
@@ -406,10 +406,9 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 		
 		if (!failbyblockdiag) {
 			Analitza::Matrix *matrix = new Analitza::Matrix();
-			QVector< QVector<const Analitza::Object*> > objmatrix(nrows);
-			
-			for (int i = 0; i < nrows; ++i)
-				objmatrix[i] = QVector<const Analitza::Object*>(ncols, 0);
+			const Analitza::Object* objmatrix[ncols][nrows];
+			//NOTE compilers with C++11 support may not be need memset and use const Analitza::Object* objmatrix[N][M] = {{0}} instead
+			memset(objmatrix, 0, nrows*ncols*sizeof(const Analitza::Object*));
 			
 			nrows = 0;
 			ncols = 0;
