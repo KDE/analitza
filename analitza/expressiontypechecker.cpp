@@ -553,7 +553,11 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 						bool valid=true;
 						QMap<QString, ExpressionType> assumptions;
 						QMap<int, ExpressionType> starToType, starToParam;
-						for(int i=0; valid && i<opt.parameters().size()-1; i++) {
+						
+						//if we have a variadic check only the return type (that is why we put 0 as args count here)
+						const int nargs = opt.parameters().first().type() == ExpressionType::Any? 0:opt.parameters().size()-1;
+						
+						for(int i=0; valid && i<nargs; i++) {
 							if(!altargs[i].canCompareTo(opt.parameters()[i])) {
 								valid=false;
 								break;

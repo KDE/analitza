@@ -66,7 +66,7 @@ static const ExpressionType variadicFunctionType(const ExpressionType &to)
 
 //END type utils
 
-static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix size must be some integer value greater or equal to zero");
+static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix dimensions must be greater than zero");
 
 const QString VectorCommand::id = QString("vector");
 const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
@@ -77,7 +77,7 @@ Expression VectorCommand::operator()(const QList< Analitza::Expression >& args)
 	
 	const Analitza::Cn *lengthobj = static_cast<const Analitza::Cn*>(args.first().tree());
 	
-	if (lengthobj->isInteger() && lengthobj->value() >= 0) {
+	if (lengthobj->isInteger() && lengthobj->value() > 0) {
 		Analitza::Vector *vector = new Analitza::Vector(lengthobj->intValue());
 		AnalitzaUtils::fillVector(vector, lengthobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
 		ret.setTree(vector);
@@ -110,7 +110,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 			if (args.at(0).tree()->type() == Analitza::Object::value) {
 				const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
 				
-				if (nobj->isInteger() && nobj->value() >= 0) {
+				if (nobj->isInteger() && nobj->value() > 0) {
 					Analitza::Matrix *matrix = new Analitza::Matrix();
 					const int n = nobj->intValue();
 					AnalitzaUtils::fillMatrix(matrix, n, n, 0);
@@ -126,7 +126,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 				const Analitza::Cn *nrowsobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
 				const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
 				
-				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() >= 0 && ncolsobj->value() >= 0) {
+				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() > 0 && ncolsobj->value() > 0) {
 					Analitza::Matrix *matrix = new Analitza::Matrix();
 					AnalitzaUtils::fillMatrix(matrix, nrowsobj->intValue(), ncolsobj->intValue(), 0);
 					ret.setTree(matrix);
@@ -143,7 +143,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 				const Analitza::Cn *nrowsobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
 				const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
 				
-				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() >= 0 && ncolsobj->value() >= 0) {
+				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() > 0 && ncolsobj->value() > 0) {
 					Analitza::Matrix *matrix = new Analitza::Matrix();
 					AnalitzaUtils::fillMatrix(matrix, nrowsobj->intValue(), ncolsobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
 					ret.setTree(matrix);
@@ -160,6 +160,9 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 	Q_ASSERT(ret.isCorrect());
 	
 	if (args.first().tree()->type() == Analitza::Object::matrixrow) {
+// 		piensa aki
+// 		if (static_cast<const Analitza::MatrixRow*>(args.first().tree())->at(0)->) trye blokmatrx
+		
 		bool allrows = true; // assumes all are rows
 		int lastsize = static_cast<const Analitza::MatrixRow*>(args.first().tree())->size();
 		Analitza::Matrix *matrix = new Analitza::Matrix();
@@ -237,7 +240,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 			ret.addError("all cols/vectors  but some are not cols/vecs ... so bad args");
 			delete matrix;
 		}
-	} else
+	} else 
 		ret.addError("bad types for matrix command");
 	
 	return ret;
@@ -249,10 +252,17 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 //BEGIN ZeroMatrixConstructor
 
 const QString ZeroMatrixCommand::id = QString("zeromatrix");
-const ExpressionType ZeroMatrixCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, MatrixType);
+const ExpressionType ZeroMatrixCommand::type = variadicFunctionType(MatrixType);
 
 Expression ZeroMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
+	if (args.size() != 2) {
+		Expression ret;
+		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(2).arg(ZeroMatrixCommand::id));
+		
+		return ret;
+	}
+	
 	MatrixCommand fillMatrix;
 	
 	return fillMatrix(args);
@@ -264,11 +274,17 @@ Expression ZeroMatrixCommand::operator()(const QList< Analitza::Expression >& ar
 //BEGIN IdentityMatrixConstructor
 
 const QString IdentityMatrixCommand::id = QString("identitymatrix");
-const ExpressionType IdentityMatrixCommand::type = functionType(ValueType, MatrixType);
+const ExpressionType IdentityMatrixCommand::type = variadicFunctionType(MatrixType);
 
 Expression IdentityMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
+	
+	if (args.size() != 1) {
+		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IdentityMatrixCommand::id));
+		
+		return ret;
+	}
 	
 	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.first().tree());
 	const int n = nobj->value();
@@ -302,7 +318,7 @@ Expression IdentityMatrixCommand::operator()(const QList< Analitza::Expression >
 
 const QString DiagonalMatrixCommand::id = QString("diag");
 const ExpressionType DiagonalMatrixCommand::type  = variadicFunctionType(VectorAndMatrixAlternatives);
-#include <iostream>
+
 Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
@@ -475,16 +491,22 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 //BEGIN TridiagonalMatrixConstructor
 
 const QString TridiagonalMatrixCommand::id = QString("tridiag");
-const ExpressionType TridiagonalMatrixCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType << ValueType << ValueType, MatrixType);
+const ExpressionType TridiagonalMatrixCommand::type = variadicFunctionType(MatrixType);
 
 Expression TridiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
-
+	
+	if (args.size() != 4) {
+		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(4).arg(TridiagonalMatrixCommand::id));
+		
+		return ret;
+	}
+	
 	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.last().tree());
 	const int n = nobj->value();
 	
-	if (nobj->isInteger() && n >= 0) {
+	if (nobj->isInteger() && n > 0) {
 		Analitza::Matrix *matrix = new Analitza::Matrix();
 		
 		for (int row = 0; row < n; ++row) {
@@ -517,10 +539,17 @@ Expression TridiagonalMatrixCommand::operator()(const QList< Analitza::Expressio
 //BEGIN IsZeroMatrix
 
 const QString IsZeroMatrixCommand::id = QString("iszeromatrix");
-const ExpressionType IsZeroMatrixCommand::type = functionType(MatrixType, VectorType);
+const ExpressionType IsZeroMatrixCommand::type = variadicFunctionType(VectorType);
 
 Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
+	if (args.size() != 1) {
+		Expression ret;
+		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IsZeroMatrixCommand::id));
+		
+		return ret;
+	}
+	
 	return Expression(new Analitza::Cn(static_cast<const Analitza::Matrix*>(args.first().tree())->isZero()));
 }
 
@@ -528,17 +557,31 @@ Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& 
 
 
 const QString IsIdentityMatrixCommand::id = QString("isidentitymatrix");
-const ExpressionType IsIdentityMatrixCommand::type = functionType(MatrixType, VectorType);
+const ExpressionType IsIdentityMatrixCommand::type = variadicFunctionType(VectorType);
 
 Expression IsIdentityMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
+	if (args.size() != 1) {
+		Expression ret;
+		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IsIdentityMatrixCommand::id));
+		
+		return ret;
+	}
+	
 	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
 }
 
 const QString IsDiagonalMatrixCommand::id = QString("isdiag");
-const ExpressionType IsDiagonalMatrixCommand::type = functionType(MatrixType, VectorType);
+const ExpressionType IsDiagonalMatrixCommand::type = variadicFunctionType(VectorType);
 
 Expression IsDiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
+	if (args.size() != 1) {
+		Expression ret;
+		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IsDiagonalMatrixCommand::id));
+		
+		return ret;
+	}
+	
 	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
 }

@@ -36,9 +36,13 @@ Q_OBJECT
 	private Q_SLOTS:
 		void initTestCase();
 		
-		///check correct calculation of matrix commands
-		void testBuiltinMethods_data();
-		void testBuiltinMethods();
+		// check correct calculation of matrix commands
+		void testCorrect_data();
+		void testCorrect();
+		
+		// check correct generation of empty matrix by using commands
+		void testIncorrect_data();
+		void testIncorrect();
 		
 		void cleanupTestCase();
 	private:

@@ -46,13 +46,12 @@ void MatrixTest::cleanupTestCase()
 	delete a;
 }
 
-void MatrixTest::testBuiltinMethods_data()
+void MatrixTest::testCorrect_data()
 {
 	QTest::addColumn<QStringList>("expression");
 	QTest::addColumn<QString>("result");
 	
 	QStringList script;
-	//TODO test empty matrix as args for commands
 	//TODO test diferent sizes like 2*(identitymatrix(2) + zeromatrix(2,1))
 	//TODO test neg ndexes and extra args ... eg 2*(identitymatrix(2) + testcmd(-2, 2,1))
 	//TODO error cases too (matrix and diag)
@@ -318,7 +317,7 @@ void MatrixTest::testBuiltinMethods_data()
 	QTest::newRow("Id is diag matrix") << script << "true";
 }
 
-void MatrixTest::testBuiltinMethods()
+void MatrixTest::testCorrect()
 {
 	QFETCH(QStringList, expression);
 	QFETCH(QString, result);
@@ -345,6 +344,45 @@ void MatrixTest::testBuiltinMethods()
 	QTextStream stream(&script);
 	a->importScript(&stream);
 	QVERIFY(a->isCorrect());
+}
+
+void MatrixTest::testIncorrect_data()
+{
+	QTest::addColumn<QString>("expression");
+	
+	QTest::newRow("matrix 0 args") << "matrix()";
+	QTest::newRow("matrix: empty matrix result") << "matrix(0, 0)";
+	QTest::newRow("matrix: fill empty matrix result") << "matrix(0, 0, sin(1))";
+	QTest::newRow("matrix: not all vectors") << "matrix(vector{1}, 3)";
+	QTest::newRow("matrix: not all matrixrow elements") << "matrix(matrixrow{1}, list{2})";
+	QTest::newRow("matrix: neg square") << "matrix(-9)";
+	QTest::newRow("zero matrix: empty matrix result") << "zeromatrix(0, 0)";
+	QTest::newRow("zero matrix: bad number of args") << "zeromatrix()";
+	QTest::newRow("zero matrix: bad dim") << "zeromatrix(23, -3.5)";
+	QTest::newRow("identity matrix: matrix result") << "identitymatrix(0)";
+	QTest::newRow("diag: 0 args") << "diag()";
+	QTest::newRow("tridiag: empty matrix result") << "tridiag(1,2,3,0)";
+	QTest::newRow("tridiag: bad number of args") << "tridiag(1,2,2)";
+	QTest::newRow("iszeromatrix: bad number of args") << "iszeromatrix()";
+	QTest::newRow("isdiag: bad number of args") << "isdiag(matrix{matrixrow{1}}, 2)";
+	QTest::newRow("isdiag: bad number of args2") << "isdiag()";
+}
+
+void MatrixTest::testIncorrect()
+{
+	QFETCH(QString, expression);
+	
+	Analitza::Analyzer a;
+	Expression exp(expression, false);
+	QVERIFY(exp.isCorrect());
+	a.setExpression(exp);
+	Expression calc = a.calculate();
+	QVERIFY(!a.isCorrect());
+	QCOMPARE(calc.toString(), QString());
+	Expression eval = a.evaluate();
+	QVERIFY(!a.isCorrect());
+	QCOMPARE(eval.toString(), QString());
+	qDebug() << "errors:" << a.errors();
 }
 
 #include "matrixtest.moc"

@@ -286,6 +286,11 @@ bool Expression::ExpressionPrivate::canAdd(const Object* where, const Object* br
 				const Matrix *matrix = static_cast<const Matrix*>(where);
 				const MatrixRow *matrixrow = static_cast<const MatrixRow*>(branch);
 				
+				if (matrixrow->size() == 0) {
+					m_err << QCoreApplication::tr("Do not want empty matrixrow elements");
+					correct=false;
+				}
+				
 				if (matrix->rowCount() != 0)
 					if (static_cast<MatrixRow*>(matrix->rows().first())->size() != matrixrow->size()) {
 						m_err << QCoreApplication::tr("All matrixrow elements must have the same size");
@@ -480,9 +485,15 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
 			break;
 		case Object::matrix:
 			ret=addElements<Matrix, MatrixRow>(new Matrix, &elem);
+			if(elem.childNodes().count()==0) {
+				m_err << QCoreApplication::tr("Do not want empty matrices");
+			}
 			break;
 		case Object::matrixrow:
 			ret=addElements<MatrixRow>(new MatrixRow, &elem);
+			if(elem.childNodes().count()==0) {
+				m_err << QCoreApplication::tr("Do not want empty matrixrow elements");
+			}
 			break;
 		case Object::apply: {
 			Apply *a=addElements<Apply>(new Apply, &elem);

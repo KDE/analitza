@@ -70,7 +70,7 @@ QVariant Matrix::accept(AbstractExpressionVisitor* exp) const
 void Matrix::appendBranch(MatrixRow* o)
 {
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o));
-	Q_ASSERT(dynamic_cast<MatrixRow*>(o)->size()!=0);
+	Q_ASSERT(dynamic_cast<MatrixRow*>(o)->size()>0);
 	Q_ASSERT(m_rows.isEmpty()?true:dynamic_cast<MatrixRow*>(o)->size() == dynamic_cast<MatrixRow*>(m_rows.last())->size()); // all rows are same size
 	
 	if (!o->hasOnlyNumbers() && m_hasOnlyNumbers)
