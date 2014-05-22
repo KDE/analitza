@@ -96,6 +96,40 @@ void MatrixTest::testCorrect_data()
 	QTest::newRow("fill + A") << script << "matrix { matrixrow { -7, -6, -3 }, matrixrow { -14, -9, -6.7 } }";
 	
 	script.clear();
+	script << "A := matrix{matrixrow{2, 3}, matrixrow{-5, 1}}";
+	script << "B := matrix{matrixrow{12, 13}, matrixrow{-15, 11}}";
+	script << "matrix(matrixrow{A, B})";
+	QTest::newRow("simple block matrix") << script << "matrix { matrixrow { 2, 3, 12, 13 }, matrixrow { -5, 1, -15, 11 } }";
+	
+	const QString blockmatrix = "matrix { matrixrow { 1, 8, 7, 6 }, matrixrow { 3, 5, 0, 2 }, matrixrow { 1, 4, 9, 3 } }";
+	
+	script.clear();
+	script << "A := matrix(vector{1,3}, vector{8,5})";
+	script << "B := matrix{matrixrow{7,6}, matrixrow{0,2}}";
+	script << "C := matrix(matrixrow{1,4})";
+	script << "D := matrix(vector{9}, vector{3})";
+	script << "matrix(matrixrow{A, B}, matrixrow{C, D})";
+	QTest::newRow("block matrix 4 blocks conf 1") << script << blockmatrix;
+	
+	script.clear();
+	script << "A := matrix{matrixrow{1,8,7}, matrixrow{3,5,0}}";
+	script << "B := matrix(vector{6,2})";
+	script << "C := matrix(matrixrow{1,4,9})";
+	script << "D := matrix(1,1,3)";
+	script << "matrix(matrixrow{A, B}, matrixrow{C, D})";
+	QTest::newRow("block matrix 4 blocks conf 2") << script << blockmatrix;
+	
+	script.clear();
+	script << "A := matrix(matrixrow{1,8})";
+	script << "B := transpose(matrix(diag(diag(7,6))))";
+	script << "C := matrix{matrixrow{3,5}}";
+	script << "D := matrix(matrixrow{0,2})";
+	script << "E := matrix(vector{1},vector{4})";
+	script << "F := matrix{matrixrow{9,3}}";
+	script << "matrix(matrixrow{A, B}, matrixrow{C, D}, matrixrow{E, F})";
+	QTest::newRow("block matrix 4 blocks conf 3") << script << blockmatrix;
+	
+	script.clear();
 	script << "zeromatrix(2,5)";
 	QTest::newRow("simple 0") << script << "matrix { matrixrow { 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 0, 0, 0 } }";
 	
@@ -196,7 +230,7 @@ void MatrixTest::testCorrect_data()
 //   1   -2.1    3.6    47    90
 //   0     -7   -2.1   3.3    42
 //   5      4      3  -2.1   3.5
-	QString square = "A := matrix{matrixrow{3.6, 48, 0, 9, 80}, matrixrow {2.1, 3.2, 49, 20, 100}, matrixrow{1, -2.1, 3.6, 47, 90}, matrixrow{0, -7, -2.1, 3.3, 42}, matrixrow{5, 4,  3, -2.1, 3.5}}";
+	const QString square = "A := matrix{matrixrow{3.6, 48, 0, 9, 80}, matrixrow {2.1, 3.2, 49, 20, 100}, matrixrow{1, -2.1, 3.6, 47, 90}, matrixrow{0, -7, -2.1, 3.3, 42}, matrixrow{5, 4,  3, -2.1, 3.5}}";
 	
 	script.clear();
 	script << square;
@@ -238,7 +272,7 @@ void MatrixTest::testCorrect_data()
 //    1   2.2   3.6     47      0   8    9
 //    0     0  -2.3    5.6     48   2    1
 //    2     4     3   -2.1    3.6   3    5
-	QString fat = "A := matrix{matrixrow{3.6, 42, 0, 9, 80, 4, 15}, matrixrow{-4.1, 7.8, 45, 0, 100, 6,7}, matrixrow{1, 2.2, 5.6, 47, 0 , 8, 9}, matrixrow{0, 0, -2.3, 3.6, 48, 2,1}, matrixrow{2, 4, 3, -2.1, 3.6, 3,5}}";
+	const QString fat = "A := matrix{matrixrow{3.6, 42, 0, 9, 80, 4, 15}, matrixrow{-4.1, 7.8, 45, 0, 100, 6,7}, matrixrow{1, 2.2, 5.6, 47, 0 , 8, 9}, matrixrow{0, 0, -2.3, 3.6, 48, 2,1}, matrixrow{2, 4, 3, -2.1, 3.6, 3,5}}";
 	
 	script.clear();
 	script << fat;
@@ -270,7 +304,7 @@ void MatrixTest::testCorrect_data()
 //    1   2.2
 //    0     1
 //    2     4
-	QString skinny = "A := matrix{matrixrow{3.6, 42}, matrixrow{-4.1, 7.8}, matrixrow{1, 2.2}, matrixrow{0, 1}, matrixrow{2, 4}}";
+	const QString skinny = "A := matrix{matrixrow{3.6, 42}, matrixrow{-4.1, 7.8}, matrixrow{1, 2.2}, matrixrow{0, 1}, matrixrow{2, 4}}";
 	
 	script.clear();
 	script << fat;
