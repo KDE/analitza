@@ -306,7 +306,7 @@ void MatrixTest::testCorrect_data()
 	QTest::newRow("Id is identity matrix") << script << "true";
 	
 	script.clear();
-	script << "isidentitymatrix(diag(identitymatrix(3), identitymatrix(2)))";
+	script << "isidentitymatrix(diag(identitymatrix(3), matrix{matrixrow{1}}, identitymatrix(2)))";
 	QTest::newRow("block of Id is Id matrix") << script << "true";
 	
 	script.clear();
@@ -358,7 +358,11 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("zero matrix: bad dim") << "zeromatrix(23, -3.5)";
 	QTest::newRow("identity matrix: matrix result") << "identitymatrix(0)";
 	QTest::newRow("diag: 0 args") << "diag()";
+	QTest::newRow("diag: bad arg, one empty matrix") << "diag(identitymatrix(0))";
 	QTest::newRow("diag: bad diag index") << "diag(matrix(4,6,3.2), -98)";
+	QTest::newRow("diag: bad diag index type") << "diag(matrix(4,6,3.2), list{-98})";
+	QTest::newRow("diag: bad block diag, empty matrix 1") << "diag(zeromatrix(0,0), matrix(2,2,1))";
+	QTest::newRow("diag: bad block diag, empty matrix 2") << "diag(matrix{matrixrow{1}}, tridiag(1,2,3,0))";
 	QTest::newRow("tridiag: empty matrix result") << "tridiag(1,2,3,0)";
 	QTest::newRow("tridiag: bad number of args") << "tridiag(1,2,2)";
 	QTest::newRow("iszeromatrix: bad number of args") << "iszeromatrix()";
@@ -372,16 +376,20 @@ void MatrixTest::testIncorrect()
 {
 	QFETCH(QString, expression);
 	
-	Analitza::Analyzer a;
 	Expression exp(expression, false);
 	QVERIFY(exp.isCorrect());
+	
+	Analitza::Analyzer a;
 	a.setExpression(exp);
+	
 	Expression calc = a.calculate();
 	QVERIFY(!a.isCorrect());
 	QCOMPARE(calc.toString(), QString());
+	
 	Expression eval = a.evaluate();
 	QVERIFY(!a.isCorrect());
 	QCOMPARE(eval.toString(), QString());
+	
 	qDebug() << "errors:" << a.errors();
 }
 
