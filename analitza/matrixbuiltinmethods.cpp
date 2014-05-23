@@ -167,23 +167,22 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 		if (static_cast<const Analitza::MatrixRow*>(args.first().tree())->at(0)->type() == Analitza::Object::matrix) {
 			const Analitza::MatrixRow *firstrow = static_cast<const Analitza::MatrixRow*>(args.first().tree());
 			
-			bool allblocks = true;
+			bool isCorrect = true; // this flag tells if is ok to build the block matrix
 			int totalnrows = 0;
 			int totalncols = 0;
-			bool allrows = true; // assumes all are rows
 			int ncolspattern[rowsize]; // basta con la priemra fila para saber el patron de columnas de cada bloque
 			
-			for (int k = 0; k < rowsize && allblocks; ++k)
+			for (int k = 0; k < rowsize && isCorrect; ++k)
 				if (firstrow->at(k)->type() == Analitza::Object::matrix) {
 					ncolspattern[k] = static_cast<const Analitza::Matrix*>(firstrow->at(k))->columnCount();
 					totalncols += ncolspattern[k];
 				}
 				else {
 					ret.addError(QCoreApplication::tr("not all are matrix i cant build a block matrix"));
-					allblocks = false;
+					isCorrect = false;
 				}
 			
-			for (int l = 0; l < nargs && allblocks; ++l) {
+			for (int l = 0; l < nargs && isCorrect; ++l) {
 				if (args.at(l).tree()->type() == Analitza::Object::matrixrow)
 				{
 					const Analitza::MatrixRow *row = static_cast<const Analitza::MatrixRow*>(args.at(l).tree());
@@ -191,7 +190,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 					if (row->size() == rowsize) {
 						const int m = static_cast<const Analitza::Matrix*>(row->at(0))->rowCount();
 						
-						for (int k = 0; k < rowsize && allblocks; ++k) {
+						for (int k = 0; k < rowsize && isCorrect; ++k) {
 							if (firstrow->at(k)->type() == Analitza::Object::matrix) {
 								const Analitza::Matrix *block = static_cast<const Analitza::Matrix*>(row->at(k));
 								
@@ -200,33 +199,33 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 // 										nrows += m;
 // 										ncols += ncolspattern[k];
 									} else  {
-										allblocks = false;
+										                              isCorrect = false;
 										ret.addError(QCoreApplication::tr("cols cada block de row debe ser igual de row a row"));
 									}
 								} else {
-									allblocks = false;
+									                           isCorrect = false;
 									ret.addError(QCoreApplication::tr("bloques rows .. altura o numrows debe ser same"));
 								}
 							} else {
 								ret.addError(QCoreApplication::tr("not all are matrix i cant build a block matrix"));//TODO arg di las pos de arg y su tipo
-								allblocks = false;
+								                        isCorrect = false;
 							}
 						}
 						
-						if (allblocks) {
+						if (isCorrect) {
 							totalnrows += m;
 						}
 					}
 					else {
-						allrows = false;
+						                  isCorrect = false;
 						ret.addError(QCoreApplication::tr("All matrixrow elements must have the same size"));
 					}
 				}
 				else
-					allrows = false;
+					isCorrect = false;
 			}
 			
-			if (allblocks) {
+			if (isCorrect) {
 				Analitza::Matrix *matrix = new Analitza::Matrix();
 				
 				QVector< QVector< const Analitza::Object* > > objmatrix(totalnrows, QVector< const Analitza::Object* >(totalncols, 0));
@@ -234,7 +233,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 				int nrows = 0;
 				
 				
-				for (int l = 0; l < nargs && allblocks; ++l) {
+				for (int l = 0; l < nargs && isCorrect; ++l) {
 					const Analitza::MatrixRow *row = static_cast<const Analitza::MatrixRow*>(args.at(l).tree());
 					const int nblocks = row->size();
 					int m = 0;
@@ -302,6 +301,119 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 			delete matrix;
 		}
 	} else if (args.first().tree()->type() == Analitza::Object::vector) {
+		const int colsize = static_cast<const Analitza::Vector*>(args.first().tree())->size();
+		
+		//TODO review messages
+		//BEGIN block matrix by vectors/cols
+		if (static_cast<const Analitza::Vector*>(args.first().tree())->at(0)->type() == Analitza::Object::matrix) {
+			const Analitza::Vector *firstcol = static_cast<const Analitza::Vector*>(args.first().tree());
+			
+			bool isCorrect = true; // this flag tells if is ok to build the block matrix
+			int totalnrows = 0;
+			int totalncols = 0;
+			int nrowspattern[colsize]; // basta con la priemra fila para saber el patron de columnas de cada bloque
+			
+			for (int k = 0; k < colsize && isCorrect; ++k)
+				if (firstcol->at(k)->type() == Analitza::Object::matrix) {
+					nrowspattern[k] = static_cast<const Analitza::Matrix*>(firstcol->at(k))->rowCount();
+					totalnrows += nrowspattern[k];
+				}
+				else {
+					ret.addError(QCoreApplication::tr("not all are matrix i cant build a block matrix"));
+					isCorrect = false;
+				}
+			
+			for (int l = 0; l < nargs && isCorrect; ++l) {
+				if (args.at(l).tree()->type() == Analitza::Object::vector)
+				{
+					const Analitza::Vector *col = static_cast<const Analitza::Vector*>(args.at(l).tree());
+					
+					if (col->size() == colsize) {
+						const int n = static_cast<const Analitza::Matrix*>(col->at(0))->columnCount();
+						
+						for (int k = 0; k < colsize && isCorrect; ++k) {
+							if (firstcol->at(k)->type() == Analitza::Object::matrix) {
+								const Analitza::Matrix *block = static_cast<const Analitza::Matrix*>(col->at(k));
+								
+								if (block->columnCount() == n) {
+									if (nrowspattern[k] == block->rowCount()) {
+// 										nrows += m;
+// 										ncols += ncolspattern[k];
+									} else  {
+										isCorrect = false;
+										ret.addError(QCoreApplication::tr("cols cada block de row debe ser igual de row a row"));
+									}
+								} else {
+									isCorrect = false;
+									ret.addError(QCoreApplication::tr("bloques rows .. altura o numrows debe ser same"));
+								}
+							} else {
+								ret.addError(QCoreApplication::tr("not all are matrix i cant build a block matrix"));//TODO arg di las pos de arg y su tipo
+								isCorrect = false;
+							}
+						}
+						
+						if (isCorrect) {
+							totalncols += n;
+						}
+					}
+					else {
+						isCorrect = false;
+						ret.addError(QCoreApplication::tr("All matrixrow elements must have the same size"));
+					}
+				}
+				else
+					isCorrect = false;
+			}
+			
+			if (isCorrect) {
+				Analitza::Matrix *matrix = new Analitza::Matrix();
+				
+				QVector< QVector< const Analitza::Object* > > objmatrix(totalnrows, QVector< const Analitza::Object* >(totalncols, 0));
+				
+				int ncols = 0;
+				
+				
+				for (int l = 0; l < nargs && isCorrect; ++l) {
+					const Analitza::Vector *col = static_cast<const Analitza::MatrixRow*>(args.at(l).tree());
+					const int nblocks = col->size();
+					int n = 0;
+					int nrows = 0;
+					for (int k = 0; k < nblocks; ++k) {
+						const Analitza::Matrix *block = static_cast<const Analitza::Matrix*>(col->at(k));
+						const int m = block->rowCount();
+						n = block->columnCount();
+						
+						for (int i = 0; i < m; ++i)
+							for (int j = 0; j < n; ++j)
+							{
+								qDebug() << "llenando ... " << i+nrows << j+ncols << block->at(i,j)->toString();
+								objmatrix[i+nrows][j+ncols] = block->at(i,j);
+							}
+						
+						 // el patron de cols se define en el primer matrixrow
+							nrows += m;
+					}
+					if (l ==0)
+						ncols += n;
+				}
+				
+				for (int i = 0; i < totalnrows; ++i) {
+					Analitza::MatrixRow *row = new Analitza::MatrixRow(totalncols);
+					
+					for (int j = 0; j < totalncols; ++j)
+						row->appendBranch(objmatrix[i][j]->copy());
+					
+					matrix->appendBranch(row);
+				}
+				
+				ret.setTree(matrix);
+			
+				return ret;
+			}
+		}
+		//END block matrix by vectors/cols
+		
 		bool allcols = true; // assumes all are columns (vectors)
 		int lastsize = static_cast<const Analitza::Vector*>(args.first().tree())->size();
 		Analitza::Matrix *matrix = new Analitza::Matrix();
@@ -586,7 +698,7 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 		}
 		
 		return ret;
-	} 
+	}
 	//END block diag matrix
 	
 	Q_ASSERT(ret.toString().isEmpty());

@@ -109,7 +109,7 @@ void MatrixTest::testCorrect_data()
 	script << "C := matrix(matrixrow{1,4})";
 	script << "D := matrix(vector{9}, vector{3})";
 	script << "matrix(matrixrow{A, B}, matrixrow{C, D})";
-	QTest::newRow("block matrix 4 blocks conf 1") << script << blockmatrix;
+	QTest::newRow("block matrix by rows, conf 1") << script << blockmatrix;
 	
 	script.clear();
 	script << "A := matrix{matrixrow{1,8,7}, matrixrow{3,5,0}}";
@@ -117,7 +117,7 @@ void MatrixTest::testCorrect_data()
 	script << "C := matrix(matrixrow{1,4,9})";
 	script << "D := matrix(1,1,3)";
 	script << "matrix(matrixrow{A, B}, matrixrow{C, D})";
-	QTest::newRow("block matrix 4 blocks conf 2") << script << blockmatrix;
+	QTest::newRow("block matrix by rows, conf 2") << script << blockmatrix;
 	
 	script.clear();
 	script << "A := matrix(matrixrow{1,8})";
@@ -127,7 +127,15 @@ void MatrixTest::testCorrect_data()
 	script << "E := matrix(vector{1},vector{4})";
 	script << "F := matrix{matrixrow{9,3}}";
 	script << "matrix(matrixrow{A, B}, matrixrow{C, D}, matrixrow{E, F})";
-	QTest::newRow("block matrix 4 blocks conf 3") << script << blockmatrix;
+	QTest::newRow("block matrix by rows, conf 3") << script << blockmatrix;
+	
+	script.clear();
+	script << "A := matrix(vector{1,3}, vector{8,5})";
+	script << "B := matrix(matrixrow{1,4})";
+	script << "C := matrix{matrixrow{7,6}, matrixrow{0,2}}";
+	script << "D := matrix(vector{9}, vector{3})";
+	script << "matrix(vector{A, B}, vector{C, D})";
+	QTest::newRow("block matrix by cols, conf 1") << script << blockmatrix;
 	
 	script.clear();
 	script << "zeromatrix(2,5)";
@@ -404,6 +412,7 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("isdiag: bad number of args2") << "isdiag()";
 	QTest::newRow("bad dimensions:2x2identitymatrix and 2x1zeromatrix") << "2*(identitymatrix(2) + zeromatrix(2,1))";
 	QTest::newRow("bad dimensions:2x2identitymatrix and -2x2matrix") << "2*(identitymatrix(2) + matrix(-2, 2,1))";
+	//TODO incorect block matrix
 }
 
 void MatrixTest::testIncorrect()
