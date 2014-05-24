@@ -109,8 +109,8 @@ void MatrixTest::testCorrect_data()
 	script << "C := matrix(matrixrow{1,4})";
 	script << "D := matrix(vector{9}, vector{3})";
 	script << "matrix(matrixrow{A, B}, matrixrow{C, D})";
-	QTest::newRow("block matrix by rows, conf 1") << script << blockmatrix;
-	
+	QTest::newRow("block matrix 4 blocks conf 1") << script << blockmatrix;
+// 
 	script.clear();
 	script << "A := matrix{matrixrow{1,8,7}, matrixrow{3,5,0}}";
 	script << "B := matrix(vector{6,2})";
