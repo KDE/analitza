@@ -110,7 +110,7 @@ void MatrixTest::testCorrect_data()
 	script << "D := matrix(vector{9}, vector{3})";
 	script << "matrix(matrixrow{A, B}, matrixrow{C, D})";
 	QTest::newRow("block matrix 4 blocks conf 1") << script << blockmatrix;
-// 
+	
 	script.clear();
 	script << "A := matrix{matrixrow{1,8,7}, matrixrow{3,5,0}}";
 	script << "B := matrix(vector{6,2})";
@@ -136,6 +136,16 @@ void MatrixTest::testCorrect_data()
 	script << "D := matrix(vector{9}, vector{3})";
 	script << "matrix(vector{A, B}, vector{C, D})";
 	QTest::newRow("block matrix by cols, conf 1") << script << blockmatrix;
+	
+	script.clear();
+	script << "A := matrix{matrixrow{1,8}}";
+	script << "B := matrix(matrixrow{3,5})";
+	script << "C := matrix(matrixrow{1,4})";
+	script << "D := matrix{matrixrow{7,6}}";
+	script << "E := matrix(matrixrow{0,2})";
+	script << "F := matrix(matrixrow{9,3})";
+	script << "matrix(vector{A, B, C}, vector{D, E, F})";
+	QTest::newRow("block matrix by cols, conf 2") << script << blockmatrix;
 	
 	script.clear();
 	script << "zeromatrix(2,5)";
@@ -395,6 +405,14 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("matrix: not all vectors") << "matrix(vector{1}, 3)";
 	QTest::newRow("matrix: not all matrixrow elements") << "matrix(matrixrow{1}, list{2})";
 	QTest::newRow("matrix: neg square") << "matrix(-9)";
+	QTest::newRow("matrix: bad block matrix size") << "matrix(vector{zeromatrix(1,2), zeromatrix(32,13)})";
+	QTest::newRow("matrix: bad block matrix args size") << "matrix(vector{zeromatrix(1,2), zeromatrix(32,13)}, vector{zeromatrix(7,13)})";
+	QTest::newRow("matrix: bad block matrix args type 1") << "matrix(vector{zeromatrix(32,13), list{23}}, vector{zeromatrix(7,13), zeromatrix(32,1)})";
+	
+	//TODO split block constructor 
+	//TODO and refine type system for variadic functios with same type as args
+// 	QTest::newRow("matrix: bad block matrix args type 2") << "matrix(vector{list{23}, zeromatrix(32,13)}, vector{zeromatrix(7,13), zeromatrix(32,1)})";
+	
 	QTest::newRow("zero matrix: empty matrix result") << "zeromatrix(0, 0)";
 	QTest::newRow("zero matrix: bad number of args") << "zeromatrix()";
 	QTest::newRow("zero matrix: bad dim") << "zeromatrix(23, -3.5)";
@@ -413,6 +431,7 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("bad dimensions:2x2identitymatrix and 2x1zeromatrix") << "2*(identitymatrix(2) + zeromatrix(2,1))";
 	QTest::newRow("bad dimensions:2x2identitymatrix and -2x2matrix") << "2*(identitymatrix(2) + matrix(-2, 2,1))";
 	//TODO incorect block matrix
+	QTest::newRow("bad") << "vector(list{23},4)";
 }
 
 void MatrixTest::testIncorrect()
@@ -420,20 +439,29 @@ void MatrixTest::testIncorrect()
 	QFETCH(QString, expression);
 	
 	Expression exp(expression, false);
-	QVERIFY(exp.isCorrect());
 	
-	Analitza::Analyzer a;
-	a.setExpression(exp);
-	
-	Expression calc = a.calculate();
-	QVERIFY(!a.isCorrect());
-	QCOMPARE(calc.toString(), QString());
-	
-	Expression eval = a.evaluate();
-	QVERIFY(!a.isCorrect());
-	QCOMPARE(eval.toString(), QString());
-	
-	qDebug() << "errors:" << a.errors();
+	if (exp.isCorrect()) {
+		Analitza::Analyzer a;
+		a.setExpression(exp);
+		
+		if (a.isCorrect()) {
+			Expression calc = a.calculate();
+			QVERIFY(!a.isCorrect());			
+			QCOMPARE(calc.toString(), QString());
+			qDebug() << "calc errors:" << a.errors();
+			
+			Expression eval = a.evaluate();
+			QVERIFY(!a.isCorrect());
+			QCOMPARE(eval.toString(), QString());
+			qDebug() << "eval errors:" << a.errors();
+		} else {
+			QVERIFY(!a.isCorrect());
+			qDebug() << "set expression errors:" << a.errors();
+		}
+	} else {
+		QVERIFY(exp.isCorrect());
+		qDebug() << "expression errors:" << exp.error();
+	}
 }
 
 #include "matrixtest.moc"

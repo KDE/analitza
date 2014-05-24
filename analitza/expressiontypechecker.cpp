@@ -535,7 +535,6 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 				QList<ExpressionType> alts=signature.type()==ExpressionType::Many ? signature.alternatives() : QList<ExpressionType>() << signature;
 				QList<ExpressionType> args=ExpressionType::lambdaFromArgs(exps);
 				bool exit=false;
-				const bool isbuiltin = m_isbuiltin[c->at(0)->toString()];
 				foreach(const ExpressionType& opt, alts) {
 					if(opt.type()!=ExpressionType::Lambda) {
 // 								addError(i18n("We can only call functions."));
@@ -544,8 +543,11 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 					
 					foreach(const ExpressionType& f, args) {
 						QList<ExpressionType> altargs=f.parameters();
+						//const bool isbuiltin = m_isbuiltin[c->at(0)->toString()];
+						const bool isbuiltin = (opt.parameters().first().type() == ExpressionType::Any);
+						
 						if(!isbuiltin && opt.parameters().size()!=altargs.size()+1) {
-							addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(opt.parameters().size()-1).arg(static_cast<Ci*>(c->m_params.first())->name()));
+							addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(opt.parameters().size()-1).arg(c->toString()));
 							exit=true;
 							break;
 						}
@@ -559,6 +561,7 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 						
 						for(int i=0; valid && i<nargs; i++) {
 							if(!altargs[i].canCompareTo(opt.parameters()[i])) {
+								addError("algo paso aqui... es un tema de tipos"+opt.parameters()[i].toString()+altargs[i].toString()); //TODO better message
 								valid=false;
 								break;
 							}
@@ -586,7 +589,7 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 					if(exit)
 						break;
 				}
-					
+				
 				if(ret.alternatives().isEmpty()) {
 // 					qDebug() << "peee" << c->toString() << signature << exps;
 					
@@ -917,7 +920,6 @@ ExpressionType ExpressionTypeChecker::typeForVar(const QString& var)
 		current.clearAssumptions();
 		current.simplifyStars();
 		m_vars[var]=current;
-		m_isbuiltin[var]=false;
 // 		qDebug() << "checked type" << var << "=" << current;
 	}
 	
@@ -948,8 +950,6 @@ void ExpressionTypeChecker::addError(const QString& err)
 void ExpressionTypeChecker::initializeVars(const QMap< QString, ExpressionType >& types)
 {
 	m_vars=types;
-	foreach (const QString &name, types.keys())
-		m_isbuiltin[name] = true;
 }
 
 QMap<QString, ExpressionType> ExpressionTypeChecker::variablesTypes() const

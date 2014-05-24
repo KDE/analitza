@@ -86,7 +86,6 @@ class ANALITZA_EXPORT ExpressionTypeChecker : public AbstractExpressionVisitor
 		Variables* m_v;
 		QMap<QString, ExpressionType> m_typeForBVar;
 		QMap<QString, ExpressionType> m_vars;
-		QMap<QString, bool> m_isbuiltin;
 		QSet<QString> m_lambdascope;
 		QStack<const Object*> m_calls;
 		QStringList m_deps;

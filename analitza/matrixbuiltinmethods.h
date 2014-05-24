@@ -34,6 +34,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
+//TODO split this class in matrix and blockmatrix ...
 class MatrixCommand: public Analitza::FunctionDefinition
 {
 public:
@@ -61,6 +62,7 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
+//TODO split this class in diag and blockdiag ...
 class DiagonalMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
