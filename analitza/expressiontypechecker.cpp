@@ -544,24 +544,41 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 					foreach(const ExpressionType& f, args) {
 						QList<ExpressionType> altargs=f.parameters();
 						//const bool isbuiltin = m_isbuiltin[c->at(0)->toString()];
-						const bool isbuiltin = (opt.parameters().first().type() == ExpressionType::Any);
+						const bool isvariadic = (opt.parameters().first().type() == ExpressionType::Any);
+						//if we have a variadic check only the return type (that is why we put 0 as args count here)
+						const int nargs = opt.parameters().first().type() == ExpressionType::Any? 0:opt.parameters().size()-1;
 						
-						if(!isbuiltin && opt.parameters().size()!=altargs.size()+1) {
+						bool valid=true;
+						
+						if (isvariadic) { // if is variadic don't check the number of args
+							Q_ASSERT(opt.parameters().size() == 2); // Any and return type
+							
+							//when use Any with contained we need to check if all args must be of the contained type
+							if (opt.parameters().first().hasContained()) {
+								for(int i=0; valid && i<altargs.size(); i++) {
+									if(!altargs[i].canReduceTo(opt.parameters().first().contained())) {
+										addError("arg types in var funct must be of same type ... "+altargs[i].toString()+" can't be reduced to "+opt.parameters().first().contained().toString()); //TODO better message
+										//algo asi como
+// 										//addError(QCoreApplication::tr("Cannot convert '%1' to '%2'").arg(o->toString()).arg(type.toString()));
+										valid=false;
+										break;
+									}
+								}
+							}
+						} else if(opt.parameters().size()!=altargs.size()+1) {
 							addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(opt.parameters().size()-1).arg(c->toString()));
 							exit=true;
 							break;
 						}
 						
-						bool valid=true;
 						QMap<QString, ExpressionType> assumptions;
 						QMap<int, ExpressionType> starToType, starToParam;
 						
-						//if we have a variadic check only the return type (that is why we put 0 as args count here)
-						const int nargs = opt.parameters().first().type() == ExpressionType::Any? 0:opt.parameters().size()-1;
-						
 						for(int i=0; valid && i<nargs; i++) {
 							if(!altargs[i].canCompareTo(opt.parameters()[i])) {
-								addError("algo paso aqui... es un tema de tipos"+opt.parameters()[i].toString()+altargs[i].toString()); //TODO better message
+								addError("algo paso aqui... es un tema de tipos distintos "+opt.parameters()[i].toString()+altargs[i].toString()); //TODO better message
+								//algo asi como
+								//addError(QCoreApplication::tr("Cannot convert '%1' to '%2'").arg(o->toString()).arg(type.toString()));
 								valid=false;
 								break;
 							}

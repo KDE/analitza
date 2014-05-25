@@ -102,7 +102,7 @@ ExpressionType::ExpressionType(ExpressionType::Type t, int any)
 ExpressionType::ExpressionType(ExpressionType::Type t, const ExpressionType& contained, int s)
     : m_type(t), m_contained(QList<ExpressionType>() << contained), m_size(s)
 {
-	Q_ASSERT(m_type==List || m_type==Vector || m_type==Matrix);
+	Q_ASSERT(m_type==List || m_type==Vector || m_type==Matrix || m_type==Any); // Any for variadic functions with same contained type
 	Q_ASSERT(m_type!=Vector || m_size!=0);
 	Q_ASSERT(m_type!=Matrix || contained.type()==Vector);
 	m_assumptions=contained.assumptions();
@@ -814,9 +814,15 @@ QString ExpressionType::objectName() const
 	return m_objectName;
 }
 
+bool ExpressionType::hasContained() const
+{
+	Q_ASSERT(m_type==Vector || m_type==List || m_type==Matrix || m_type==Any);
+	return !m_contained.isEmpty();
+}
+
 ExpressionType ExpressionType::contained() const
 {
-	Q_ASSERT(m_type==Vector || m_type==List || m_type==Matrix);
+	Q_ASSERT(m_type==Vector || m_type==List || m_type==Matrix || m_type==Any);
 	Q_ASSERT(m_contained.size()==1);
 	return m_contained.first();
 }

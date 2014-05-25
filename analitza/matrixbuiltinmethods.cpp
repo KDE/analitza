@@ -381,16 +381,19 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 //BEGIN ZeroMatrixConstructor
 
 const QString ZeroMatrixCommand::id = QString("zeromatrix");
-const ExpressionType ZeroMatrixCommand::type = variadicFunctionType(MatrixType);
+const ExpressionType ZeroMatrixCommand::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType::Value)))
+// .addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(MatrixType);
 
 Expression ZeroMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	if (args.size() != 2) {
-		Expression ret;
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(2).arg(ZeroMatrixCommand::id));
-		
-		return ret;
-	}
+// 	if (args.size() != 2) {
+// 		Expression ret;
+// 		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(2).arg(ZeroMatrixCommand::id));
+// 		
+// 		return ret;
+// 	}
 	
 	MatrixCommand fillMatrix;
 	

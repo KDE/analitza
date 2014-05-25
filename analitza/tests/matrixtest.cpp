@@ -410,7 +410,7 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("matrix: bad block matrix args type 1") << "matrix(vector{zeromatrix(32,13), list{23}}, vector{zeromatrix(7,13), zeromatrix(32,1)})";
 	
 	//TODO split block constructor 
-	//TODO and refine type system for variadic functios with same type as args
+	//TODO and refine type system for variadic functios with same type as args ... can compare can reduce check is Any and Any,Type is NOT a error 
 // 	QTest::newRow("matrix: bad block matrix args type 2") << "matrix(vector{list{23}, zeromatrix(32,13)}, vector{zeromatrix(7,13), zeromatrix(32,1)})";
 	
 	QTest::newRow("zero matrix: empty matrix result") << "zeromatrix(0, 0)";
@@ -432,6 +432,7 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("bad dimensions:2x2identitymatrix and -2x2matrix") << "2*(identitymatrix(2) + matrix(-2, 2,1))";
 	//TODO incorect block matrix
 	QTest::newRow("bad") << "vector(list{23},4)";
+	QTest::newRow("bad0") << "zeromatrix(list{3}, 31)";
 }
 
 void MatrixTest::testIncorrect()

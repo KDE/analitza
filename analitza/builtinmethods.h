@@ -69,9 +69,12 @@ class ANALITZA_EXPORT BuiltinMethods
 	public:
 		~BuiltinMethods();
 		
+		//TODO improve doc of variadic function ... and put some examples ...
 		/**
 			Adds a new function to the system identified @p id with @p type that can be called using @p f
-			For variadic function use ExpressionType::Any as first lambda parameter.
+			For variadic function use ExpressionType::Any as first lambda parameter. Also, if you use ExpressionType::Any
+			with some type as contained, then it means the all arguments of variadic function must be of the same type, equals 
+			to the contained type.
 		*/
 		void insertFunction(const QString& id, const ExpressionType& type, FunctionDefinition* f);
 		

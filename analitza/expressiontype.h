@@ -52,6 +52,7 @@ class ANALITZA_EXPORT ExpressionType
 		bool isError() const;
 		
 		Type type() const { return m_type; }
+		bool hasContained() const;
 		ExpressionType contained() const;
 		QList<ExpressionType> alternatives() const { Q_ASSERT(m_type==Many); return m_contained; }
 		
