@@ -25,6 +25,17 @@ namespace Analitza {
 class Expression;
 };
 
+//range ... mpieza por default from 1 and step is 1 ... max 3 args min 1 arg (max from 1)
+class RangeCommand: public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+	
+	static const QString id;
+	static const Analitza::ExpressionType type;
+};
+
+//TODO vector useing range like : e.g. vector(1:33) = vector{1,2,..,33}
 class VectorCommand: public Analitza::FunctionDefinition
 {
 public:

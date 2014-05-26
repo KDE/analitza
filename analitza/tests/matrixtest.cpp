@@ -430,7 +430,10 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("isdiag: bad number of args2") << "isdiag()";
 	QTest::newRow("bad dimensions:2x2identitymatrix and 2x1zeromatrix") << "2*(identitymatrix(2) + zeromatrix(2,1))";
 	QTest::newRow("bad dimensions:2x2identitymatrix and -2x2matrix") << "2*(identitymatrix(2) + matrix(-2, 2,1))";
+	
 	//TODO incorect block matrix
+	
+	//TODO better names
 	QTest::newRow("bad") << "vector(list{23},4)";
 	QTest::newRow("bad0") << "zeromatrix(list{3}, 31)";
 }
@@ -447,7 +450,8 @@ void MatrixTest::testIncorrect()
 		
 		if (a.isCorrect()) {
 			Expression calc = a.calculate();
-			QVERIFY(!a.isCorrect());			
+			qDebug() << "es" << calc.toString();
+			QVERIFY(!a.isCorrect());
 			QCOMPARE(calc.toString(), QString());
 			qDebug() << "calc errors:" << a.errors();
 			

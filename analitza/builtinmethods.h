@@ -70,6 +70,7 @@ class ANALITZA_EXPORT BuiltinMethods
 		~BuiltinMethods();
 		
 		//TODO improve doc of variadic function ... and put some examples ...
+		//TODO unit test of variadic function with ExpressionType/Checker 
 		/**
 			Adds a new function to the system identified @p id with @p type that can be called using @p f
 			For variadic function use ExpressionType::Any as first lambda parameter. Also, if you use ExpressionType::Any

@@ -68,6 +68,14 @@ static const ExpressionType variadicFunctionType(const ExpressionType &to)
 
 static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix dimensions must be greater than zero");
 
+// const QString VectorCommand::id = QString("range");
+// // const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
+// 
+// Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
+// {
+// 
+// }
+
 const QString VectorCommand::id = QString("vector");
 const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
 
