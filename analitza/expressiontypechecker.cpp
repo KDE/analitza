@@ -576,9 +576,11 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 						
 						for(int i=0; valid && i<nargs; i++) {
 							if(!altargs[i].canCompareTo(opt.parameters()[i])) {
-								addError("algo paso aqui... es un tema de tipos distintos "+opt.parameters()[i].toString()+altargs[i].toString()); //TODO better message
-								//algo asi como
-								//addError(QCoreApplication::tr("Cannot convert '%1' to '%2'").arg(o->toString()).arg(type.toString()));
+								if (isvariadic) {
+									addError("algo paso aqui... es un tema de tipos distintos "+opt.parameters()[i].toString()+altargs[i].toString()); //TODO better message
+									//algo asi como
+									//addError(QCoreApplication::tr("Cannot convert '%1' to '%2'").arg(o->toString()).arg(type.toString()));
+								}
 								valid=false;
 								break;
 							}
