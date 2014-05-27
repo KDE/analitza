@@ -28,7 +28,6 @@ set(analitza_SRCS
 	apply.cpp
 	customobject.cpp
 	matrix.cpp
-	matrixbuiltinmethods.cpp
 	
 	expressiontype.cpp
 	expressiontypechecker.cpp
@@ -41,6 +40,10 @@ set(analitza_SRCS
 	analitzautils.cpp
 	substituteexpression.cpp
 	transformation.cpp
+	
+	commands/matrixcommands.cpp
+	commands/blockmatrixcommands.cpp
+	commands/matrixqueries.cpp
 )
 
 add_library(Analitza ${analitza_SRCS})
