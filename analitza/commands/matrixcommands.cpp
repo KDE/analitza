@@ -40,8 +40,8 @@ static const ExpressionType VectorType = ExpressionType(ExpressionType::Vector, 
 static const ExpressionType MatrixType = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
 static const ExpressionTypeList VectorAndMatrixTypes = ExpressionTypeList() << VectorType << MatrixType;
 static const ExpressionType VectorAndMatrixAlternatives = ExpressionType(ExpressionType::Many, VectorAndMatrixTypes);
-static const ExpressionType IndefiniteArityType = ExpressionType(ExpressionType::Any);
-
+static const ExpressionType IndefiniteArityType = ExpressionType(ExpressionType::Any, 1);
+//ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Any, 1)),
 static const ExpressionType functionType(const ExpressionTypeList &from, const ExpressionType &to)
 {
 	ExpressionType ret(ExpressionType::Lambda);
@@ -67,35 +67,6 @@ static const ExpressionType variadicFunctionType(const ExpressionType &to)
 //END type utils
 
 static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix dimensions must be greater than zero");
-
-// const QString VectorCommand::id = QString("range");
-// // const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
-// 
-// Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
-// {
-// 
-// }
-
-const QString VectorCommand::id = QString("vector");
-const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
-
-Expression VectorCommand::operator()(const QList< Analitza::Expression >& args)
-{
-	Expression ret;
-	
-	const Analitza::Cn *lengthobj = static_cast<const Analitza::Cn*>(args.first().tree());
-	
-	if (lengthobj->isInteger() && lengthobj->value() > 0) {
-		Analitza::Vector *vector = new Analitza::Vector(lengthobj->intValue());
-		AnalitzaUtils::fillVector(vector, lengthobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
-		ret.setTree(vector);
-	}
-	else
-		ret.addError(QCoreApplication::tr("Vector size must be some integer value greater or equal to zero"));
-	
-	return ret;
-}
-
 
 //BEGIN FillMatrixConstructor
 

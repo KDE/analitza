@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef MATRIXCOMMANDS_H
-#define MATRIXCOMMANDS_H
+#ifndef VECTORCOMMANDS_H
+#define VECTORCOMMANDS_H
 
 #include "builtinmethods.h"
 
@@ -25,8 +25,9 @@ namespace Analitza {
 class Expression;
 };
 
-//TODO split this class in matrix and blockmatrix ...
-class MatrixCommand: public Analitza::FunctionDefinition
+
+//TODO vector useing range like : e.g. vector(1:33) = vector{1,2,..,33}
+class VectorCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -35,42 +36,4 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-class ZeroMatrixCommand: public Analitza::FunctionDefinition
-{
-public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-	
-	static const QString id;
-	static const Analitza::ExpressionType type;
-};
-
-class IdentityMatrixCommand: public Analitza::FunctionDefinition
-{
-public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-
-	static const QString id;
-	static const Analitza::ExpressionType type;
-};
-
-//TODO split this class in diag and blockdiag ...
-class DiagonalMatrixCommand: public Analitza::FunctionDefinition
-{
-public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-
-	static const QString id;
-	static const Analitza::ExpressionType type;
-};
-
-//tridiag(a, b, c, n)
-class TridiagonalMatrixCommand: public Analitza::FunctionDefinition
-{
-public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-
-	static const QString id;
-	static const Analitza::ExpressionType type;
-};
-
-#endif // MATRIXCOMMANDS_H
+#endif // VECTORCOMMANDS_H

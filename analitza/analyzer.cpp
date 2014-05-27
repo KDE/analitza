@@ -37,6 +37,8 @@
 #include "substituteexpression.h"
 #include "expressionstream.h"
 #include "matrix.h"
+#include "commands/listcommands.h"
+#include "commands/vectorcommands.h"
 #include "commands/matrixcommands.h"
 #include "commands/blockmatrixcommands.h"
 #include "commands/matrixqueries.h"

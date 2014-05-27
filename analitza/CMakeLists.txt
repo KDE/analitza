@@ -41,6 +41,8 @@ set(analitza_SRCS
 	substituteexpression.cpp
 	transformation.cpp
 	
+	commands/listcommands.cpp
+	commands/vectorcommands.cpp
 	commands/matrixcommands.cpp
 	commands/blockmatrixcommands.cpp
 	commands/matrixqueries.cpp
