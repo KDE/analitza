@@ -16,7 +16,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "matrixbuiltinmethods.h"
+#include "matrixcommands.h"
 
 #include <QCoreApplication>
 
@@ -696,52 +696,3 @@ Expression TridiagonalMatrixCommand::operator()(const QList< Analitza::Expressio
 
 //END TridiagonalMatrixConstructor
 
-//BEGIN IsZeroMatrix
-
-const QString IsZeroMatrixCommand::id = QString("iszeromatrix");
-const ExpressionType IsZeroMatrixCommand::type = variadicFunctionType(VectorType);
-
-Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& args)
-{
-	if (args.size() != 1) {
-		Expression ret;
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IsZeroMatrixCommand::id));
-		
-		return ret;
-	}
-	
-	return Expression(new Analitza::Cn(static_cast<const Analitza::Matrix*>(args.first().tree())->isZero()));
-}
-
-//END IsZeroMatrix
-
-
-const QString IsIdentityMatrixCommand::id = QString("isidentitymatrix");
-const ExpressionType IsIdentityMatrixCommand::type = variadicFunctionType(VectorType);
-
-Expression IsIdentityMatrixCommand::operator()(const QList< Analitza::Expression >& args)
-{
-	if (args.size() != 1) {
-		Expression ret;
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IsIdentityMatrixCommand::id));
-		
-		return ret;
-	}
-	
-	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
-}
-
-const QString IsDiagonalMatrixCommand::id = QString("isdiag");
-const ExpressionType IsDiagonalMatrixCommand::type = variadicFunctionType(VectorType);
-
-Expression IsDiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
-{
-	if (args.size() != 1) {
-		Expression ret;
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IsDiagonalMatrixCommand::id));
-		
-		return ret;
-	}
-	
-	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
-}

@@ -37,7 +37,9 @@
 #include "substituteexpression.h"
 #include "expressionstream.h"
 #include "matrix.h"
-#include "matrixbuiltinmethods.h"
+#include "commands/matrixcommands.h"
+#include "commands/blockmatrixcommands.h"
+#include "commands/matrixqueries.h"
 
 // #define SCRIPT_PROFILER
 
