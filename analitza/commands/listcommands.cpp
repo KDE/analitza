@@ -22,52 +22,52 @@
 
 #include "expression.h"
 #include "list.h"
+#include "value.h"
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
-//BEGIN type utils
-
-typedef QList<ExpressionType> ExpressionTypeList;
-
-static const ExpressionType ValueType = ExpressionType(ExpressionType::Value);
-static const ExpressionType VectorType = ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1);
-static const ExpressionType MatrixType = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
-static const ExpressionTypeList VectorAndMatrixTypes = ExpressionTypeList() << VectorType << MatrixType;
-static const ExpressionType VectorAndMatrixAlternatives = ExpressionType(ExpressionType::Many, VectorAndMatrixTypes);
-static const ExpressionType IndefiniteArityType = ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType(ExpressionType::Value)));
-
-static const ExpressionType functionType(const ExpressionTypeList &from, const ExpressionType &to)
-{
-	ExpressionType ret(ExpressionType::Lambda);
-	
-	foreach (const ExpressionType &type, from)
-		ret.addParameter(type);
-	
-	ret.addParameter(to);
-	
-	return ret;
-}
-
-static const ExpressionType functionType(const ExpressionType &from, const ExpressionType &to)
-{
-	return functionType(ExpressionTypeList() << from, to);
-}
-
-static const ExpressionType variadicFunctionType(const ExpressionType &to)
-{
-	return functionType(IndefiniteArityType, to);
-}
-
-//END type utils
-
-static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix dimensions must be greater than zero");
-
-const QString RangeCommand::id = QString("range1");
-//const ExpressionType RangeCommand::type = variadicFunctionType(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
-const ExpressionType RangeCommand::type = variadicFunctionType(VectorType);
+const QString RangeCommand::id = QString("range");
+const ExpressionType RangeCommand::type = 	ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType(ExpressionType::Value))))
+.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
 
 Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	return Expression("true");
+	Expression ret;
+	
+	const int nargs = args.size();
+	
+	double a = 1;
+	double b = 0;
+	double h = 1;
+	
+	switch(nargs) {
+		case 0: {
+			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(RangeCommand::id));
+			
+			return ret;
+		}	break;
+		case 1: {
+			b = static_cast<const Analitza::Cn*>(args.first().tree())->value();
+		}	break;
+		case 2: {
+			a = static_cast<const Analitza::Cn*>(args.first().tree())->value();
+			b = static_cast<const Analitza::Cn*>(args.last().tree())->value();
+		}	break;
+		case 3: {
+			a = static_cast<const Analitza::Cn*>(args.at(0).tree())->value();
+			b = static_cast<const Analitza::Cn*>(args.at(1).tree())->value();
+			h = static_cast<const Analitza::Cn*>(args.at(2).tree())->value();
+		}	break;
+	}
+	
+	Analitza::List *seq = new Analitza::List;
+		
+	for (double x = a; x <= b; x += h)
+		seq->appendBranch(new Analitza::Cn(x));
+	
+	ret.setTree(seq);
+	
+	return ret;
 }

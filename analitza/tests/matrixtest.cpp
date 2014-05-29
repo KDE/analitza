@@ -54,6 +54,18 @@ void MatrixTest::testCorrect_data()
 	QStringList script;
 	
 	script.clear();
+	script << "range(10)";
+	QTest::newRow("simple range") << script << "list { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }";
+	
+	script.clear();
+	script << "range(-1.5, 2)";
+	QTest::newRow("range(a,b)") << script << "list { -1.5, -0.5, 0.5, 1.5 }";
+	
+	script.clear();
+	script << "range(0, 1, 0.2)";
+	QTest::newRow("range(a,b)") << script << "list { 0, 0.2, 0.4, 0.6, 0.8, 1 }";
+	
+	script.clear();
 	script << "vector(3, -2.3)";
 	QTest::newRow("simple fill vector") << script << "vector { -2.3, -2.3, -2.3 }";
 	
@@ -436,12 +448,11 @@ void MatrixTest::testIncorrect_data()
 	//TODO better names
 	QTest::newRow("bad") << "vector(list{23},4)";
 	QTest::newRow("bad0") << "zeromatrix(list{3}, 31)";
-	QTest::newRow("badlist") << "range1(list{3}, 31, true)";
-	QTest::newRow("badlist") << "range1(list{3}, 31)";
-	QTest::newRow("badlist") << "range1(2,3,vector{3}, list{2}, 4)";
-	QTest::newRow("badlist") << "range1(2,3,9, list{2}, 4)";
-	QTest::newRow("badlist") << "range1(2,3,9, 9, vector{4})";
-	
+	QTest::newRow("badlist") << "range(list{3}, 31, true)";
+	QTest::newRow("badlist") << "range(list{3}, 31)";
+	QTest::newRow("badlist") << "range(2,3,vector{3}, list{2}, 4)";
+	QTest::newRow("badlist") << "range(2,3,9, list{2}, 4)";
+	QTest::newRow("badlist") << "range(2,3,9, 9, vector{4})";
 }
 
 void MatrixTest::testIncorrect()
