@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2014 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2014 by Percy Camilo T. Aucahuasi <percy.camilo.ta\gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -25,7 +25,39 @@ namespace Analitza {
 class Expression;
 };
 
-//range ... mpieza por default from 1 and step is 1 ... max 3 args min 1 arg (max from 1)
+/**
+ * \class RangeCommand
+ * 
+ * \brief Implements the \"range\" command.
+ * 
+ * RangeCommand constructs a list that contains a sequence.
+ * There are 3 ways to call this command:
+ * 
+ * The first way creates a sequence from 1, with increment 1, that ends in 
+ * the number b.
+ * \code range(b) \endcode 
+ * constructs 
+ * \code list { 1, 2, 3, ... , b } \endcode
+ * 
+ * The second way creates a sequence from the number a, with increment 1, that 
+ * ends in the number b.
+ * \code range(a, b) \endcode
+ * constructs 
+ * \code list { a, a+1, a+2, ... , b } \endcode
+ * 
+ * The second way creates a sequence from the number a, with 
+ * increment h (numeric value), that ends in the number b.
+ * \code range(a, b, h) \endcode
+ * constructs 
+ * \code list { a, a+h, a+h, ... , b } \endcode
+ * 
+ * The numbers can be reals too. For example:
+ * \code range(0.0, 1.0, 0.2) \endcode
+ * constructs 
+ * \code list { 0, 0.2, 0.4, 0.6, 0.8, 1 } \endcode
+ * 
+ */
+
 class RangeCommand: public Analitza::FunctionDefinition
 {
 public:

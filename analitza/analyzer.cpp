@@ -157,6 +157,7 @@ Analyzer::~Analyzer()
 
 void Analyzer::registerBuiltinMethods()
 {
+	m_builtin.insertFunction(RangeCommand::id, RangeCommand::type, new RangeCommand);
 	m_builtin.insertFunction(VectorCommand::id, VectorCommand::type, new VectorCommand);
 	m_builtin.insertFunction(MatrixCommand::id, MatrixCommand::type, new MatrixCommand);
 	m_builtin.insertFunction(ZeroMatrixCommand::id, ZeroMatrixCommand::type, new ZeroMatrixCommand);

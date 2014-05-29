@@ -36,7 +36,7 @@ using Analitza::ExpressionType;
 typedef QList<ExpressionType> ExpressionTypeList;
 
 static const ExpressionType ValueType = ExpressionType(ExpressionType::Value);
-static const ExpressionType VectorType = ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1);
+static const ExpressionType VectorType = ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any), -1);
 static const ExpressionType MatrixType = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
 static const ExpressionTypeList VectorAndMatrixTypes = ExpressionTypeList() << VectorType << MatrixType;
 static const ExpressionType VectorAndMatrixAlternatives = ExpressionType(ExpressionType::Many, VectorAndMatrixTypes);
@@ -77,7 +77,7 @@ static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix di
 // }
 
 const QString VectorCommand::id = QString("vector");
-const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
+const ExpressionType VectorCommand::type = variadicFunctionType(VectorType);
 
 Expression VectorCommand::operator()(const QList< Analitza::Expression >& args)
 {

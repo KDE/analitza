@@ -436,6 +436,9 @@ void MatrixTest::testIncorrect_data()
 	//TODO better names
 	QTest::newRow("bad") << "vector(list{23},4)";
 	QTest::newRow("bad0") << "zeromatrix(list{3}, 31)";
+	QTest::newRow("badlist") << "range1(list{3}, 31, true)";
+	QTest::newRow("badlist") << "range1(list{3}, 31)";
+	
 }
 
 void MatrixTest::testIncorrect()
@@ -450,7 +453,6 @@ void MatrixTest::testIncorrect()
 		
 		if (a.isCorrect()) {
 			Expression calc = a.calculate();
-			qDebug() << "es" << calc.toString();
 			QVERIFY(!a.isCorrect());
 			QCOMPARE(calc.toString(), QString());
 			qDebug() << "calc errors:" << a.errors();

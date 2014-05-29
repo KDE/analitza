@@ -20,13 +20,8 @@
 
 #include <QCoreApplication>
 
-#include "analitzautils.h"
 #include "expression.h"
-#include "value.h"
-#include "matrix.h"
 #include "list.h"
-#include "container.h"
-#include "operations.h"
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
@@ -40,7 +35,7 @@ static const ExpressionType VectorType = ExpressionType(ExpressionType::Vector, 
 static const ExpressionType MatrixType = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
 static const ExpressionTypeList VectorAndMatrixTypes = ExpressionTypeList() << VectorType << MatrixType;
 static const ExpressionType VectorAndMatrixAlternatives = ExpressionType(ExpressionType::Many, VectorAndMatrixTypes);
-static const ExpressionType IndefiniteArityType = ExpressionType(ExpressionType::Any);
+static const ExpressionType IndefiniteArityType = ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType(ExpressionType::Value)));
 
 static const ExpressionType functionType(const ExpressionTypeList &from, const ExpressionType &to)
 {
@@ -68,10 +63,11 @@ static const ExpressionType variadicFunctionType(const ExpressionType &to)
 
 static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix dimensions must be greater than zero");
 
-// const QString VectorCommand::id = QString("range");
-// // const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
-// 
-// Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
-// {
-// 
-// }
+const QString RangeCommand::id = QString("range1");
+//const ExpressionType RangeCommand::type = variadicFunctionType(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
+const ExpressionType RangeCommand::type = variadicFunctionType(VectorType);
+
+Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
+{
+	return Expression("true");
+}

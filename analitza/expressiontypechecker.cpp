@@ -514,7 +514,6 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 							if(error)
 								break;
 						}
-						
 					}
 					returntype.addAssumptions(type.assumptions());
 					
@@ -541,12 +540,13 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 						continue;
 					}
 					
+					const bool isvariadic = (opt.parameters().first().type() == ExpressionType::Any);
+					//if we have a variadic check only the return type (that is why we put 0 as args count here)
+					const int nargs = opt.parameters().first().type() == ExpressionType::Any? 0:opt.parameters().size()-1;
+					
 					foreach(const ExpressionType& f, args) {
 						QList<ExpressionType> altargs=f.parameters();
-						//const bool isbuiltin = m_isbuiltin[c->at(0)->toString()];
-						const bool isvariadic = (opt.parameters().first().type() == ExpressionType::Any);
-						//if we have a variadic check only the return type (that is why we put 0 as args count here)
-						const int nargs = opt.parameters().first().type() == ExpressionType::Any? 0:opt.parameters().size()-1;
+
 						
 						bool valid=true;
 						
