@@ -60,6 +60,11 @@ Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
 			b = static_cast<const Analitza::Cn*>(args.at(1).tree())->value();
 			h = static_cast<const Analitza::Cn*>(args.at(2).tree())->value();
 		}	break;
+		default:
+			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(RangeCommand::id));
+			
+			return ret;
+			break;
 	}
 	
 	Analitza::List *seq = new Analitza::List;

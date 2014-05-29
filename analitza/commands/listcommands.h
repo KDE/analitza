@@ -34,19 +34,19 @@ class Expression;
  * There are 3 ways to call this command:
  * 
  * The first way creates a sequence from 1, with increment 1, that ends in 
- * the number b.
+ * the number \"b\".
  * \code range(b) \endcode 
  * constructs 
  * \code list { 1, 2, 3, ... , b } \endcode
  * 
- * The second way creates a sequence from the number a, with increment 1, that 
- * ends in the number b.
+ * The second way creates a sequence from the number \"a\", with increment 1, that 
+ * ends in the number \"b\".
  * \code range(a, b) \endcode
  * constructs 
  * \code list { a, a+1, a+2, ... , b } \endcode
  * 
- * The second way creates a sequence from the number a, with 
- * increment h (numeric value), that ends in the number b.
+ * The second way creates a sequence from the number \"a\", with 
+ * increment \"h\" (numeric value), that ends in the number \"b\".
  * \code range(a, b, h) \endcode
  * constructs 
  * \code list { a, a+h, a+h, ... , b } \endcode

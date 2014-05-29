@@ -74,6 +74,11 @@ void MatrixTest::testCorrect_data()
 	QTest::newRow("select fill vector") << script << "99.4";
 	
 	script.clear();
+	script << "seq := range(14, 20, 2)";
+	script << "vector(seq)";
+	QTest::newRow("vector by range/seq") << script << "vector { 14, 16, 18, 20 }";
+	
+	script.clear();
 	script << "matrix(3, 2, -15.7)";
 	QTest::newRow("simple fill matrix") << script << "matrix { matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 } }";
 	
@@ -447,12 +452,14 @@ void MatrixTest::testIncorrect_data()
 	
 	//TODO better names
 	QTest::newRow("bad") << "vector(list{23},4)";
+	QTest::newRow("bad2") << "vector(4, list{23}, 44)";
 	QTest::newRow("bad0") << "zeromatrix(list{3}, 31)";
 	QTest::newRow("badlist") << "range(list{3}, 31, true)";
 	QTest::newRow("badlist") << "range(list{3}, 31)";
 	QTest::newRow("badlist") << "range(2,3,vector{3}, list{2}, 4)";
 	QTest::newRow("badlist") << "range(2,3,9, list{2}, 4)";
 	QTest::newRow("badlist") << "range(2,3,9, 9, vector{4})";
+	QTest::newRow("badlist4") << "range(2,3,9, 9, 3,4,5,5)";
 }
 
 void MatrixTest::testIncorrect()

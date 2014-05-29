@@ -22,77 +22,67 @@
 
 #include "analitzautils.h"
 #include "expression.h"
-#include "value.h"
-#include "matrix.h"
 #include "list.h"
-#include "container.h"
-#include "operations.h"
+#include "vector.h"
+#include "value.h"
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
-//BEGIN type utils
-
-typedef QList<ExpressionType> ExpressionTypeList;
-
-static const ExpressionType ValueType = ExpressionType(ExpressionType::Value);
-static const ExpressionType VectorType = ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any), -1);
-static const ExpressionType MatrixType = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
-static const ExpressionTypeList VectorAndMatrixTypes = ExpressionTypeList() << VectorType << MatrixType;
-static const ExpressionType VectorAndMatrixAlternatives = ExpressionType(ExpressionType::Many, VectorAndMatrixTypes);
-static const ExpressionType IndefiniteArityType = ExpressionType(ExpressionType::Any);
-
-static const ExpressionType functionType(const ExpressionTypeList &from, const ExpressionType &to)
-{
-	ExpressionType ret(ExpressionType::Lambda);
-	
-	foreach (const ExpressionType &type, from)
-		ret.addParameter(type);
-	
-	ret.addParameter(to);
-	
-	return ret;
-}
-
-static const ExpressionType functionType(const ExpressionType &from, const ExpressionType &to)
-{
-	return functionType(ExpressionTypeList() << from, to);
-}
-
-static const ExpressionType variadicFunctionType(const ExpressionType &to)
-{
-	return functionType(IndefiniteArityType, to);
-}
-
-//END type utils
-
-static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix dimensions must be greater than zero");
-
-// const QString VectorCommand::id = QString("range");
-// // const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
-// 
-// Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
-// {
-// 
-// }
-
 const QString VectorCommand::id = QString("vector");
-const ExpressionType VectorCommand::type = variadicFunctionType(VectorType);
+const ExpressionType VectorCommand::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any), -1));
 
 Expression VectorCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
 	
-	const Analitza::Cn *lengthobj = static_cast<const Analitza::Cn*>(args.first().tree());
+	const int nargs = args.size();
 	
-	if (lengthobj->isInteger() && lengthobj->value() > 0) {
-		Analitza::Vector *vector = new Analitza::Vector(lengthobj->intValue());
-		AnalitzaUtils::fillVector(vector, lengthobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
-		ret.setTree(vector);
+	switch(nargs) {
+		case 0: {
+			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(VectorCommand::id));
+		}	break;
+		case 1: {
+			const Analitza::Object *arg = args.first().tree();
+			
+			if (arg->type() == Analitza::Object::list) {
+				const Analitza::List *list = static_cast<const Analitza::List*>(arg);
+				const int n = list->size();
+				
+				Analitza::Vector *vector = new Analitza::Vector(n);
+				
+				for (int i = 0; i < n; ++i)
+					vector->appendBranch(list->at(i)->copy());
+				
+				ret.setTree(vector);
+			} else {
+				ret.addError(QCoreApplication::tr("Invalid parameter type for '%1', was expected a list").arg(VectorCommand::id));
+			}
+		}	break;
+		case 2: {
+			const Analitza::Object *arg = args.first().tree();
+			
+			if (arg->type() == Analitza::Object::value) {
+				const Analitza::Cn *lengthobj = static_cast<const Analitza::Cn*>(args.first().tree());
+				
+				if (lengthobj->isInteger() && lengthobj->value() > 0) {
+					Analitza::Vector *vector = new Analitza::Vector(lengthobj->intValue());
+					AnalitzaUtils::fillVector(vector, lengthobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
+					ret.setTree(vector);
+				}
+				else {
+					ret.addError(QCoreApplication::tr("Vector size must be some integer value greater to zero"));
+				}
+			} else {
+				ret.addError(QCoreApplication::tr("Vector size must be some integer value greater to zero"));
+			}
+		}	break;
+		default:
+			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(VectorCommand::id));
+			break;
 	}
-	else
-		ret.addError(QCoreApplication::tr("Vector size must be some integer value greater or equal to zero"));
 	
 	return ret;
 }
-

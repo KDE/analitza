@@ -26,7 +26,25 @@ class Expression;
 };
 
 
-//TODO vector useing range like : e.g. vector(1:33) = vector{1,2,..,33}
+/**
+ * \class VectorCommand
+ * 
+ * \brief Implements the \"vector\" command.
+ * 
+ * VectorCommand constructs a vector by 2 ways:
+ * 
+ * The first way creates a vector from a list, with the same list elements.
+ * \code vector(range(5)) \endcode 
+ * constructs 
+ * \code vector { 1, 2, 3, 4, 5 } \endcode
+ * 
+ * The second way creates a vector of size \"n\" filled with a value \"a\".
+ * \code vector(n, a) \endcode
+ * constructs 
+ * \code vector { a, a, ... , a } \endcode
+ * 
+ */
+
 class VectorCommand: public Analitza::FunctionDefinition
 {
 public:
