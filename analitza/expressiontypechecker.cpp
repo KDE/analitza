@@ -546,7 +546,6 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 					
 					foreach(const ExpressionType& f, args) {
 						QList<ExpressionType> altargs=f.parameters();
-
 						
 						bool valid=true;
 						
@@ -557,9 +556,12 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 							if (opt.parameters().first().hasContained()) {
 								for(int i=0; valid && i<altargs.size(); i++) {
 									if(!altargs[i].canReduceTo(opt.parameters().first().contained())) {
-										addError("arg types in var funct must be of same type ... "+altargs[i].toString()+" can't be reduced to "+opt.parameters().first().contained().toString()); //TODO better message
-										//algo asi como
-// 										//addError(QCoreApplication::tr("Cannot convert '%1' to '%2'").arg(o->toString()).arg(type.toString()));
+										addError(QCoreApplication::tr("Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'").
+										arg(altargs[i].toString()).
+										arg(opt.parameters().first().contained().toString()).
+										arg(i+1).
+										arg(c->toString()));
+										
 										valid=false;
 										break;
 									}
@@ -576,11 +578,13 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 						
 						for(int i=0; valid && i<nargs; i++) {
 							if(!altargs[i].canCompareTo(opt.parameters()[i])) {
-								if (isvariadic) {
-									addError("algo paso aqui... es un tema de tipos distintos "+opt.parameters()[i].toString()+altargs[i].toString()); //TODO better message
-									//algo asi como
-									//addError(QCoreApplication::tr("Cannot convert '%1' to '%2'").arg(o->toString()).arg(type.toString()));
-								}
+								if (isvariadic)
+									addError(QCoreApplication::tr("Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'").
+									arg(altargs[i].toString()).
+									arg(opt.parameters()[i].toString()).
+									arg(i+1).
+									arg(c->toString()));
+								
 								valid=false;
 								break;
 							}

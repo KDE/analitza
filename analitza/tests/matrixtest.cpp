@@ -438,6 +438,9 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("bad0") << "zeromatrix(list{3}, 31)";
 	QTest::newRow("badlist") << "range1(list{3}, 31, true)";
 	QTest::newRow("badlist") << "range1(list{3}, 31)";
+	QTest::newRow("badlist") << "range1(2,3,vector{3}, list{2}, 4)";
+	QTest::newRow("badlist") << "range1(2,3,9, list{2}, 4)";
+	QTest::newRow("badlist") << "range1(2,3,9, 9, vector{4})";
 	
 }
 
