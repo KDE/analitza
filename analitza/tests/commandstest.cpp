@@ -16,7 +16,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "matrixtest.h"
+#include "commandstest.h"
 
 #include <QtTest/QTest>
 
@@ -462,7 +462,7 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("badlist") << "range(2,3,9, list{2}, 4)";
 	QTest::newRow("badlist") << "range(2,3,9, 9, vector{4})";
 	QTest::newRow("badlist4") << "range(2,3,9, 9, 3,4,5,5)";
-	QTest::newRow("zero bad") << "iszeromatrix(matrix(-8,5))"; //TODO last test
+// 	QTest::newRow("zero bad") << "iszeromatrix(matrix(-8,5))"; //TODO last test
 }
 
 void MatrixTest::testIncorrect()
@@ -495,4 +495,4 @@ void MatrixTest::testIncorrect()
 	}
 }
 
-#include "matrixtest.moc"
+#include "commandstest.moc"
