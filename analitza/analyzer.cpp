@@ -160,9 +160,10 @@ void Analyzer::registerBuiltinMethods()
 	m_builtin.insertFunction(RangeCommand::id, RangeCommand::type, new RangeCommand);
 	m_builtin.insertFunction(VectorCommand::id, VectorCommand::type, new VectorCommand);
 	m_builtin.insertFunction(MatrixCommand::id, MatrixCommand::type, new MatrixCommand);
-	m_builtin.insertFunction(ZeroMatrixCommand::id, ZeroMatrixCommand::type, new ZeroMatrixCommand);
+	m_builtin.insertFunction(BlockMatrixCommand::id, BlockMatrixCommand::type, new BlockMatrixCommand);
 	m_builtin.insertFunction(IdentityMatrixCommand::id, IdentityMatrixCommand::type, new IdentityMatrixCommand);
 	m_builtin.insertFunction(DiagonalMatrixCommand::id, DiagonalMatrixCommand::type, new DiagonalMatrixCommand);
+	m_builtin.insertFunction(BlockDiagonalMatrixCommand::id, BlockDiagonalMatrixCommand::type, new BlockDiagonalMatrixCommand);
 	m_builtin.insertFunction(TridiagonalMatrixCommand::id, TridiagonalMatrixCommand::type, new TridiagonalMatrixCommand);
 	m_builtin.insertFunction(IsZeroMatrixCommand::id, IsZeroMatrixCommand::type, new IsZeroMatrixCommand);
 	m_builtin.insertFunction(IsIdentityMatrixCommand::id, IsIdentityMatrixCommand::type, new IsIdentityMatrixCommand);

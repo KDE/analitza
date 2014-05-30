@@ -115,7 +115,7 @@ void MatrixTest::testCorrect_data()
 	script.clear();
 	script << "A := matrix{matrixrow{2, 3}, matrixrow{-5, 1}}";
 	script << "B := matrix{matrixrow{12, 13}, matrixrow{-15, 11}}";
-	script << "matrix(matrixrow{A, B})";
+	script << "blockmatrix(matrixrow{A, B})";
 	QTest::newRow("simple block matrix") << script << "matrix { matrixrow { 2, 3, 12, 13 }, matrixrow { -5, 1, -15, 11 } }";
 	
 	const QString blockmatrix = "matrix { matrixrow { 1, 8, 7, 6 }, matrixrow { 3, 5, 0, 2 }, matrixrow { 1, 4, 9, 3 } }";
@@ -125,7 +125,7 @@ void MatrixTest::testCorrect_data()
 	script << "B := matrix{matrixrow{7,6}, matrixrow{0,2}}";
 	script << "C := matrix(matrixrow{1,4})";
 	script << "D := matrix(vector{9}, vector{3})";
-	script << "matrix(matrixrow{A, B}, matrixrow{C, D})";
+	script << "blockmatrix(matrixrow{A, B}, matrixrow{C, D})";
 	QTest::newRow("block matrix 4 blocks conf 1") << script << blockmatrix;
 	
 	script.clear();
@@ -133,7 +133,7 @@ void MatrixTest::testCorrect_data()
 	script << "B := matrix(vector{6,2})";
 	script << "C := matrix(matrixrow{1,4,9})";
 	script << "D := matrix(1,1,3)";
-	script << "matrix(matrixrow{A, B}, matrixrow{C, D})";
+	script << "blockmatrix(matrixrow{A, B}, matrixrow{C, D})";
 	QTest::newRow("block matrix by rows, conf 2") << script << blockmatrix;
 	
 	script.clear();
@@ -143,7 +143,7 @@ void MatrixTest::testCorrect_data()
 	script << "D := matrix(matrixrow{0,2})";
 	script << "E := matrix(vector{1},vector{4})";
 	script << "F := matrix{matrixrow{9,3}}";
-	script << "matrix(matrixrow{A, B}, matrixrow{C, D}, matrixrow{E, F})";
+	script << "blockmatrix(matrixrow{A, B}, matrixrow{C, D}, matrixrow{E, F})";
 	QTest::newRow("block matrix by rows, conf 3") << script << blockmatrix;
 	
 	script.clear();
@@ -151,7 +151,7 @@ void MatrixTest::testCorrect_data()
 	script << "B := matrix(matrixrow{1,4})";
 	script << "C := matrix{matrixrow{7,6}, matrixrow{0,2}}";
 	script << "D := matrix(vector{9}, vector{3})";
-	script << "matrix(vector{A, B}, vector{C, D})";
+	script << "blockmatrix(vector{A, B}, vector{C, D})";
 	QTest::newRow("block matrix by cols, conf 1") << script << blockmatrix;
 	
 	script.clear();
@@ -161,11 +161,11 @@ void MatrixTest::testCorrect_data()
 	script << "D := matrix{matrixrow{7,6}}";
 	script << "E := matrix(matrixrow{0,2})";
 	script << "F := matrix(matrixrow{9,3})";
-	script << "matrix(vector{A, B, C}, vector{D, E, F})";
+	script << "blockmatrix(vector{A, B, C}, vector{D, E, F})";
 	QTest::newRow("block matrix by cols, conf 2") << script << blockmatrix;
 	
 	script.clear();
-	script << "zeromatrix(2,5)";
+	script << "matrix(2,5)";
 	QTest::newRow("simple 0") << script << "matrix { matrixrow { 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 0, 0, 0 } }";
 	
 	script.clear();
@@ -181,7 +181,7 @@ void MatrixTest::testCorrect_data()
 	QTest::newRow("0*I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
 	
 	script.clear();
-	script << "zeromatrix(3,3) + identitymatrix(3)";
+	script << "matrix(3,3) + identitymatrix(3)";
 	QTest::newRow("0 + I") << script << "matrix { matrixrow { 1, 0, 0 }, matrixrow { 0, 1, 0 }, matrixrow { 0, 0, 1 } }";
 	
 	script.clear();
@@ -210,14 +210,14 @@ void MatrixTest::testCorrect_data()
 	QTest::newRow("selector diag by vector") << script << "-0.6";
 	
 	script.clear();
-	script << "diag(matrix{matrixrow{1, 3}, matrixrow{-6, 8}}, matrix{matrixrow{5, 6}, matrixrow{14, -1.2}})";
+	script << "blockdiag(matrix{matrixrow{1, 3}, matrixrow{-6, 8}}, matrix{matrixrow{5, 6}, matrixrow{14, -1.2}})";
 	QTest::newRow("simple block diagonal") << script << "matrix { matrixrow { 1, 3, 0, 0 }, matrixrow { -6, 8, 0, 0 }, matrixrow { 0, 0, 5, 6 }, matrixrow { 0, 0, 14, -1.2 } }";
 	
 	script.clear();
 	script << "I := identitymatrix(3)";
 	script << "A := matrix(2,3, -6)";
 	script << "B := 3*I";
-	script << "diag(I, A, B)";
+	script << "blockdiag(I, A, B)";
 	QTest::newRow("block diagonal") << script << "matrix { matrixrow { 1, 0, 0, 0, 0, 0, 0, 0, 0 }, matrixrow { 0, 1, 0, 0, 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 1, 0, 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 0, -6, -6, -6, 0, 0, 0 }, matrixrow { 0, 0, 0, -6, -6, -6, 0, 0, 0 }, matrixrow { 0, 0, 0, 0, 0, 0, 3, 0, 0 }, matrixrow { 0, 0, 0, 0, 0, 0, 0, 3, 0 }, matrixrow { 0, 0, 0, 0, 0, 0, 0, 0, 3 } }";
 	
 	script.clear();
@@ -255,7 +255,7 @@ void MatrixTest::testCorrect_data()
 	script << "B := matrix(3,3, 4.5)";
 	script << "D := diag(v)";
 	script << "I := identitymatrix(3)";
-	script << "O := zeromatrix(3,3)";
+	script << "O := matrix(3,3)";
 	script << "T := tridiag(2,1,8,3)";
 	script << "A + B + D - cos(pi)*I + O + T";
 	QTest::newRow("complex exp") << script << "matrix { matrixrow { 11.5, 11.5, 6.5 }, matrixrow { 10.5, 11.5, 9.3 }, matrixrow { 10.3, -8.5, 6.5 } }";
@@ -367,7 +367,7 @@ void MatrixTest::testCorrect_data()
 	QTest::newRow("is not diag") << script << "false";
 	
 	script.clear();
-	script << "iszeromatrix(zeromatrix(8,5))";
+	script << "iszeromatrix(matrix(8,5))";
 	QTest::newRow("is zero matrix") << script << "true";
 	
 	script.clear();
@@ -421,31 +421,33 @@ void MatrixTest::testIncorrect_data()
 	QTest::newRow("matrix: fill empty matrix result") << "matrix(0, 0, sin(1))";
 	QTest::newRow("matrix: not all vectors") << "matrix(vector{1}, 3)";
 	QTest::newRow("matrix: not all matrixrow elements") << "matrix(matrixrow{1}, list{2})";
+	QTest::newRow("matrix: not all matrixrow elements 2") << "matrix(matrixrow{1}, vector{2})";
 	QTest::newRow("matrix: neg square") << "matrix(-9)";
-	QTest::newRow("matrix: bad block matrix size") << "matrix(vector{zeromatrix(1,2), zeromatrix(32,13)})";
-	QTest::newRow("matrix: bad block matrix args size") << "matrix(vector{zeromatrix(1,2), zeromatrix(32,13)}, vector{zeromatrix(7,13)})";
-	QTest::newRow("matrix: bad block matrix args type 1") << "matrix(vector{zeromatrix(32,13), list{23}}, vector{zeromatrix(7,13), zeromatrix(32,1)})";
+	QTest::newRow("matrix: bad block matrix size") << "blockmatrix(vector{matrix(1,2), matrix(32,13)})";
+	QTest::newRow("matrix: bad block matrix args size") << "blockmatrix(vector{matrix(1,2), matrix(32,13)}, vector{matrix(7,13)})";
+	QTest::newRow("matrix: bad block matrix args type 1") << "blockmatrix(vector{matrix(32,13), list{23}}, vector{matrix(7,13), matrix(32,1)})";
 	
 	//TODO split block constructor 
 	//TODO and refine type system for variadic functios with same type as args ... can compare can reduce check is Any and Any,Type is NOT a error 
 // 	QTest::newRow("matrix: bad block matrix args type 2") << "matrix(vector{list{23}, zeromatrix(32,13)}, vector{zeromatrix(7,13), zeromatrix(32,1)})";
 	
-	QTest::newRow("zero matrix: empty matrix result") << "zeromatrix(0, 0)";
-	QTest::newRow("zero matrix: bad number of args") << "zeromatrix()";
-	QTest::newRow("zero matrix: bad dim") << "zeromatrix(23, -3.5)";
+	QTest::newRow("zero matrix: empty matrix result") << "matrix(0, 0)";
+	QTest::newRow("zero matrix: bad number of args") << "matrix()";
+	QTest::newRow("zero matrix: bad dim") << "matrix(23, -3.5)";
+	QTest::newRow("zero matrix: bad dim2") << "matrix(-23, 5)";
 	QTest::newRow("identity matrix: matrix result") << "identitymatrix(0)";
 	QTest::newRow("diag: 0 args") << "diag()";
 	QTest::newRow("diag: bad arg, one empty matrix") << "diag(identitymatrix(0))";
 	QTest::newRow("diag: bad diag index") << "diag(matrix(4,6,3.2), -98)";
 	QTest::newRow("diag: bad diag index type") << "diag(matrix(4,6,3.2), list{-98})";
-	QTest::newRow("diag: bad block diag, empty matrix 1") << "diag(zeromatrix(0,0), matrix(2,2,1))";
+	QTest::newRow("diag: bad block diag, empty matrix 1") << "diag(matrix(0,0), matrix(2,2,1))";
 	QTest::newRow("diag: bad block diag, empty matrix 2") << "diag(matrix{matrixrow{1}}, tridiag(1,2,3,0))";
 	QTest::newRow("tridiag: empty matrix result") << "tridiag(1,2,3,0)";
 	QTest::newRow("tridiag: bad number of args") << "tridiag(1,2,2)";
 	QTest::newRow("iszeromatrix: bad number of args") << "iszeromatrix()";
 	QTest::newRow("isdiag: bad number of args") << "isdiag(matrix{matrixrow{1}}, 2)";
 	QTest::newRow("isdiag: bad number of args2") << "isdiag()";
-	QTest::newRow("bad dimensions:2x2identitymatrix and 2x1zeromatrix") << "2*(identitymatrix(2) + zeromatrix(2,1))";
+	QTest::newRow("bad dimensions:2x2identitymatrix and 2x1zeromatrix") << "2*(identitymatrix(2) + matrix(2,1))";
 	QTest::newRow("bad dimensions:2x2identitymatrix and -2x2matrix") << "2*(identitymatrix(2) + matrix(-2, 2,1))";
 	
 	//TODO incorect block matrix
@@ -453,13 +455,14 @@ void MatrixTest::testIncorrect_data()
 	//TODO better names
 	QTest::newRow("bad") << "vector(list{23},4)";
 	QTest::newRow("bad2") << "vector(4, list{23}, 44)";
-	QTest::newRow("bad0") << "zeromatrix(list{3}, 31)";
+	QTest::newRow("bad0") << "matrix(list{3}, 31)";
 	QTest::newRow("badlist") << "range(list{3}, 31, true)";
 	QTest::newRow("badlist") << "range(list{3}, 31)";
 	QTest::newRow("badlist") << "range(2,3,vector{3}, list{2}, 4)";
 	QTest::newRow("badlist") << "range(2,3,9, list{2}, 4)";
 	QTest::newRow("badlist") << "range(2,3,9, 9, vector{4})";
 	QTest::newRow("badlist4") << "range(2,3,9, 9, 3,4,5,5)";
+	QTest::newRow("zero bad") << "iszeromatrix(matrix(-8,5))"; //TODO last test
 }
 
 void MatrixTest::testIncorrect()

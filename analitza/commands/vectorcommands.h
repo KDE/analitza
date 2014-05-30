@@ -33,7 +33,8 @@ class Expression;
  * 
  * VectorCommand constructs a vector by 2 ways:
  * 
- * The first way creates a vector from a list, with the same list elements.
+ * The first way creates a vector from a list, with the same list elements. 
+ * For example:
  * \code vector(range(5)) \endcode 
  * constructs 
  * \code vector { 1, 2, 3, 4, 5 } \endcode

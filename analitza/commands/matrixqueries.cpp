@@ -81,17 +81,11 @@ static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix di
 //BEGIN IsZeroMatrix
 
 const QString IsZeroMatrixCommand::id = QString("iszeromatrix");
-const ExpressionType IsZeroMatrixCommand::type = variadicFunctionType(VectorType);
+const ExpressionType IsZeroMatrixCommand::type = functionType(MatrixType, ValueType);
 
 Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	if (args.size() != 1) {
-		Expression ret;
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IsZeroMatrixCommand::id));
-		
-		return ret;
-	}
-	
+	qDebug() << "bam bam " << args.first().toString(); //TODO last test
 	return Expression(new Analitza::Cn(static_cast<const Analitza::Matrix*>(args.first().tree())->isZero()));
 }
 
@@ -99,17 +93,10 @@ Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& 
 
 
 const QString IsIdentityMatrixCommand::id = QString("isidentitymatrix");
-const ExpressionType IsIdentityMatrixCommand::type = variadicFunctionType(VectorType);
+const ExpressionType IsIdentityMatrixCommand::type = functionType(MatrixType, ValueType);
 
 Expression IsIdentityMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	if (args.size() != 1) {
-		Expression ret;
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IsIdentityMatrixCommand::id));
-		
-		return ret;
-	}
-	
 	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
 }
 

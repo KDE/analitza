@@ -25,17 +25,7 @@ namespace Analitza {
 class Expression;
 };
 
-//TODO split this class in matrix and blockmatrix ...
 class MatrixCommand: public Analitza::FunctionDefinition
-{
-public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-	
-	static const QString id;
-	static const Analitza::ExpressionType type;
-};
-
-class ZeroMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
@@ -53,7 +43,6 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-//TODO split this class in diag and blockdiag ...
 class DiagonalMatrixCommand: public Analitza::FunctionDefinition
 {
 public:

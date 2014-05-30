@@ -80,7 +80,7 @@ static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix di
 
 //BEGIN FillMatrixConstructor
 
-const QString BlockMatrixCommand::id = QString("matrix");
+const QString BlockMatrixCommand::id = QString("blockmatrix");
 const ExpressionType BlockMatrixCommand::type = variadicFunctionType(MatrixType);
 //TODO better error messages
 Expression BlockMatrixCommand::operator()(const QList< Analitza::Expression >& args)
@@ -89,65 +89,13 @@ Expression BlockMatrixCommand::operator()(const QList< Analitza::Expression >& a
 	
 	const int nargs = args.size();
 	
-	switch(nargs) {
+		switch(nargs) {
 		case 0: {
 			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(BlockMatrixCommand::id));
 			
 			return ret;
 		}	break;
-		case 1: {
-			if (args.at(0).tree()->type() == Analitza::Object::value) {
-				const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
-				
-				if (nobj->isInteger() && nobj->value() > 0) {
-					Analitza::Matrix *matrix = new Analitza::Matrix();
-					const int n = nobj->intValue();
-					AnalitzaUtils::fillMatrix(matrix, n, n, 0);
-					ret.setTree(matrix);
-				} else
-					ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
-				
-				return ret;
-			}
-		}	break;
-		case 2: {
-			if (args.at(0).tree()->type() == Analitza::Object::value && args.at(1).tree()->type() == Analitza::Object::value) {
-				const Analitza::Cn *nrowsobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
-				const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
-				
-				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() > 0 && ncolsobj->value() > 0) {
-					Analitza::Matrix *matrix = new Analitza::Matrix();
-					AnalitzaUtils::fillMatrix(matrix, nrowsobj->intValue(), ncolsobj->intValue(), 0);
-					ret.setTree(matrix);
-				} else
-					ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
-				
-				return ret;
-			}
-		}	break;
-		case 3: {
-			if (args.at(0).tree()->type() == Analitza::Object::value && 
-				args.at(1).tree()->type() == Analitza::Object::value && 
-				args.at(2).tree()->type() == Analitza::Object::value) {
-				const Analitza::Cn *nrowsobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
-				const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
-				
-				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() > 0 && ncolsobj->value() > 0) {
-					Analitza::Matrix *matrix = new Analitza::Matrix();
-					AnalitzaUtils::fillMatrix(matrix, nrowsobj->intValue(), ncolsobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
-					ret.setTree(matrix);
-				} else
-					ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
-				
-				return ret;
-			}
-		}	break;
-	}
-	
-	Q_ASSERT(nargs > 0);
-	Q_ASSERT(ret.toString().isEmpty());
-	Q_ASSERT(ret.isCorrect());
-	
+		}
 	//BEGIN commom
 	const Analitza::Object::ObjectType firstArgType = args.first().tree()->type();
 	
@@ -310,50 +258,7 @@ Expression BlockMatrixCommand::operator()(const QList< Analitza::Expression >& a
 						return ret;
 					}
 				}	break;
-				default: { // try to build a normal matrix
-					
-					
-					
-					
-					bool allrows = true; // assumes all are rows
-					Analitza::Matrix *matrix = new Analitza::Matrix();
-					
-					for (int i = 0; i < nargs && allrows; ++i) {
-						if (args.at(i).tree()->type() == firstArgType)
-						{
-							const Analitza::MatrixRow *row = static_cast<const Analitza::MatrixRow*>(args.at(i).tree());
-							
-							if (row->size() == firstVectorSize)
-								matrix->appendBranch(row->copy());
-							else {
-								allrows = false;
-								ret.addError(QCoreApplication::tr("All matrixrow elements must have the same size"));
-							}
-						}
-						else
-							allrows = false;
-					}
 				
-					if (!ret.isCorrect()) {
-						delete matrix;
-						
-						return ret;
-					} else if (allrows) {
-						if (isVector) {
-						QString* error=0;
-						ret.setTree(Analitza::Operations::reduceUnary(Analitza::Operator::transpose, matrix, &error));
-						delete matrix;
-						
-						Q_ASSERT(error == 0);
-						} else
-							ret.setTree(matrix);
-						
-						return ret;
-					} else {
-						ret.addError("Every argument must be a matrixrow element");
-						delete matrix;
-					}
-				}	break;
 			}
 		} else
 			ret.addError("we dont allow empty vector or rows"); // TODO better message
@@ -368,7 +273,7 @@ Expression BlockMatrixCommand::operator()(const QList< Analitza::Expression >& a
 
 //BEGIN DiagonalMatrixConstructor
 
-const QString BlockDiagonalMatrixCommand::id = QString("diag");
+const QString BlockDiagonalMatrixCommand::id = QString("blockdiag");
 const ExpressionType BlockDiagonalMatrixCommand::type  = variadicFunctionType(VectorAndMatrixAlternatives);
 
 Expression BlockDiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
@@ -378,86 +283,13 @@ Expression BlockDiagonalMatrixCommand::operator()(const QList< Analitza::Express
 	int nargs = args.size();
 	bool byvector = false;
 	
-	switch(nargs) {
+		switch(nargs) {
 		case 0: {
 			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(BlockDiagonalMatrixCommand::id));
 			
 			return ret;
 		}	break;
-		case 1: {
-			if (args.first().tree()->type() == Analitza::Object::matrix) {
-				const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
-				const int n = std::min(matrix->rowCount(), matrix->columnCount());
-				
-				Analitza::Vector *diagonal = new Analitza::Vector(n);
-				
-				for (int i = 0; i < n; ++i)
-					diagonal->appendBranch(matrix->at(i, i)->copy());
-				
-				ret.setTree(diagonal);
-				
-				return ret;
-			} else if (args.first().tree()->type() == Analitza::Object::vector)
-				byvector = true;
-		}	break;
-		case 2: {
-			if (args.first().tree()->type() == Analitza::Object::matrix && args.last().tree()->type() == Analitza::Object::value) {
-				const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.last().tree());
-				
-				if (nobj->isInteger()) {
-					const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
-					const int nrows = matrix->rowCount();
-					const int ncols = matrix->columnCount();
-					const int npos = nobj->value();
-					const int absnpos = std::abs(npos);
-					const int absnpos1 = absnpos + 1;
-					const bool isneg = npos < 0;
-					
-					int n = 0; // or until/to
-					int rowoffset = 0;
-					int coloffset = 0;
-					
-					if (isneg) {
-						if (absnpos1 > nrows) {
-							ret.addError("The nth diagonal index must be less than the row count");
-							return ret;
-						}
-						
-						n = std::min(nrows - absnpos, ncols);
-						rowoffset = absnpos;
-					} else { // square matrix case too
-						if (absnpos1 > ncols) {
-							ret.addError("The nth diagonal index must be less than the column count");
-							return ret;
-						}
-						
-						n = std::min(nrows, ncols - absnpos);
-						coloffset = absnpos;
-					}
-					
-					Analitza::Vector *diagonal = new Analitza::Vector(n);
-					
-					for (int i = 0; i < n; ++i)
-						diagonal->appendBranch(matrix->at(rowoffset + i, coloffset + i)->copy());
-						
-					ret.setTree(diagonal);
-				}
-				else
-					ret.addError(QCoreApplication::tr("nth diagonal index must be integer number"));
-				
-				return ret;
-			} else if (args.last().tree()->type() != Analitza::Object::value && args.last().tree()->type() != Analitza::Object::matrix) {
-				ret.addError(QCoreApplication::tr("to specifi the diag index you must use positve integer value")); //TODO better messages
-				
-				return ret;
-			}
-		}	break;
-	}
-	
-	Q_ASSERT(nargs > 0);
-	Q_ASSERT(ret.toString().isEmpty());
-	Q_ASSERT(ret.isCorrect());
-	
+		}
 	const Analitza::Vector *v = byvector? static_cast<const Analitza::Vector*>(args.first().tree()) : 0;
 	
 	if (byvector) nargs = v->size();
@@ -535,24 +367,6 @@ Expression BlockDiagonalMatrixCommand::operator()(const QList< Analitza::Express
 	}
 	//END block diag matrix
 	
-	Q_ASSERT(ret.toString().isEmpty());
-	Q_ASSERT(ret.isCorrect());
-	
-	Analitza::Matrix *matrix = new Analitza::Matrix();
-	
-	for (int i = 0; i < nargs; ++i) {
-		Analitza::MatrixRow *row = new Analitza::MatrixRow(nargs);
-		
-		for (int j = 0; j < nargs; ++j)
-			if (i == j)
-				row->appendBranch(byvector? v->at(j)->copy() : args.at(j).tree()->copy());
-			else
-				row->appendBranch(new Analitza::Cn(0));
-		
-		matrix->appendBranch(row);
-	}
-	
-	ret.setTree(matrix);
 
 	return ret;
 }
