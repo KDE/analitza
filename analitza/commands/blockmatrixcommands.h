@@ -25,7 +25,6 @@ namespace Analitza {
 class Expression;
 };
 
-//TODO split this class in matrix and blockmatrix ...
 class BlockMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
@@ -35,7 +34,6 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-//TODO split this class in diag and blockdiag ...
 class BlockDiagonalMatrixCommand: public Analitza::FunctionDefinition
 {
 public:

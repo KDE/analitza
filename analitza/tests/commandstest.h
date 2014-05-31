@@ -26,12 +26,12 @@ namespace Analitza { class Analyzer; }
 /**
 	@author Percy Camilo T. Aucahuasi
 */
-class MatrixTest : public QObject
+class CommandsTest : public QObject
 {
 Q_OBJECT
 	public:
-		MatrixTest(QObject *parent = 0);
-		~MatrixTest();
+		CommandsTest(QObject *parent = 0);
+		~CommandsTest();
 	
 	private Q_SLOTS:
 		void initTestCase();

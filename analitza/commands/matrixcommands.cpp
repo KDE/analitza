@@ -24,55 +24,20 @@
 #include "expression.h"
 #include "value.h"
 #include "matrix.h"
-#include "list.h"
-#include "container.h"
 #include "operations.h"
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
-
-//BEGIN type utils
-
-typedef QList<ExpressionType> ExpressionTypeList;
-
-static const ExpressionType ValueType = ExpressionType(ExpressionType::Value);
-static const ExpressionType VectorType = ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1);
-static const ExpressionType MatrixType = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
-static const ExpressionTypeList VectorAndMatrixTypes = ExpressionTypeList() << VectorType << MatrixType;
-static const ExpressionType VectorAndMatrixAlternatives = ExpressionType(ExpressionType::Many, VectorAndMatrixTypes);
-static const ExpressionType IndefiniteArityType = ExpressionType(ExpressionType::Any, 1);
-//ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Any, 1)),
-static const ExpressionType functionType(const ExpressionTypeList &from, const ExpressionType &to)
-{
-	ExpressionType ret(ExpressionType::Lambda);
-	
-	foreach (const ExpressionType &type, from)
-		ret.addParameter(type);
-	
-	ret.addParameter(to);
-	
-	return ret;
-}
-
-static const ExpressionType functionType(const ExpressionType &from, const ExpressionType &to)
-{
-	return functionType(ExpressionTypeList() << from, to);
-}
-
-static const ExpressionType variadicFunctionType(const ExpressionType &to)
-{
-	return functionType(IndefiniteArityType, to);
-}
-
-//END type utils
 
 static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix dimensions must be greater than zero");
 
 //BEGIN FillMatrixConstructor
 
 const QString MatrixCommand::id = QString("matrix");
-const ExpressionType MatrixCommand::type = variadicFunctionType(MatrixType);
-//TODO better error messages
+const ExpressionType MatrixCommand::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+
 Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
@@ -85,6 +50,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 			
 			return ret;
 		}	break;
+		//BEGIN matrix(m,n,v)
 		case 1: { // build square matrix filled with zeros
 			if (args.at(0).tree()->type() == Analitza::Object::value) {
 				const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
@@ -132,12 +98,14 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 				return ret;
 			}
 		}	break;
+		//END matrix(m,n,v)
 	}
 	
 	Q_ASSERT(nargs > 0);
 	Q_ASSERT(ret.toString().isEmpty());
 	Q_ASSERT(ret.isCorrect());
 	
+	//BEGIN matrix(vector{...}, ...) and matrix(matrixrow{...}, ...)
 	const Analitza::Object::ObjectType firstArgType = args.first().tree()->type();
 	
 	if (firstArgType == Analitza::Object::vector || firstArgType == Analitza::Object::matrixrow) {
@@ -181,13 +149,14 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 				} else
 					ret.setTree(matrix);
 			} else {
-				ret.addError("Every argument must be a matrixrow element");
+				ret.addError(QCoreApplication::tr("Every argument must be a matrixrow element"));
 				delete matrix;
 			}
 		} else
-			ret.addError("we dont allow empty vector or rows"); // TODO better message
+			ret.addError(QCoreApplication::tr("Do not want empty vectors/matrixrow elements"));
 	} else
-		ret.addError("to build a matrix use vector or rows as args"); // TODO better message
+		ret.addError(QCoreApplication::tr("Matrix constructor needs vectors or matrixrow elements"));
+	//END matrix(vector{...}, ...) and matrix(matrixrow{...}, ...)
 	
 	return ret;
 }
@@ -198,17 +167,13 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 //BEGIN IdentityMatrixConstructor
 
 const QString IdentityMatrixCommand::id = QString("identitymatrix");
-const ExpressionType IdentityMatrixCommand::type = variadicFunctionType(MatrixType);
+const ExpressionType IdentityMatrixCommand::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Value))
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 
 Expression IdentityMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
-	
-	if (args.size() != 1) {
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IdentityMatrixCommand::id));
-		
-		return ret;
-	}
 	
 	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.first().tree());
 	const int n = nobj->value();
@@ -241,7 +206,11 @@ Expression IdentityMatrixCommand::operator()(const QList< Analitza::Expression >
 //BEGIN DiagonalMatrixConstructor
 
 const QString DiagonalMatrixCommand::id = QString("diag");
-const ExpressionType DiagonalMatrixCommand::type  = variadicFunctionType(VectorAndMatrixAlternatives);
+const ExpressionType DiagonalMatrixCommand::type  = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Any))
+.addParameter(ExpressionType(ExpressionType::Many, QList<ExpressionType>() 
+<< ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1) 
+<< ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1)));
 
 Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
@@ -256,6 +225,7 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 			
 			return ret;
 		}	break;
+		//BEGIN diag(matrix{...}, diagindex)
 		case 1: {
 			if (args.first().tree()->type() == Analitza::Object::matrix) {
 				const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
@@ -291,7 +261,7 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 					
 					if (isneg) {
 						if (absnpos1 > nrows) {
-							ret.addError("The nth diagonal index must be less than the row count");
+							ret.addError(QCoreApplication::tr("The nth diagonal index must be less than the row count"));
 							return ret;
 						}
 						
@@ -299,7 +269,7 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 						rowoffset = absnpos;
 					} else { // square matrix case too
 						if (absnpos1 > ncols) {
-							ret.addError("The nth diagonal index must be less than the column count");
+							ret.addError(QCoreApplication::tr("The nth diagonal index must be less than the column count"));
 							return ret;
 						}
 						
@@ -319,17 +289,19 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 				
 				return ret;
 			} else if (args.last().tree()->type() != Analitza::Object::value && args.last().tree()->type() != Analitza::Object::matrix) {
-				ret.addError(QCoreApplication::tr("to specifi the diag index you must use positve integer value")); //TODO better messages
+				ret.addError(QCoreApplication::tr("nth diagonal index must be a positive integer number"));
 				
 				return ret;
 			}
 		}	break;
+		//END diag(matrix{...}, diagindex)
 	}
 	
 	Q_ASSERT(nargs > 0);
 	Q_ASSERT(ret.toString().isEmpty());
 	Q_ASSERT(ret.isCorrect());
 	
+	//BEGIN diag(a,b, ...) or diag(vector{a,b, ...})
 	const Analitza::Vector *v = byvector? static_cast<const Analitza::Vector*>(args.first().tree()) : 0;
 	
 	if (byvector) nargs = v->size();
@@ -339,76 +311,6 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 			ret.addError(QCoreApplication::tr("the arg %1 is invalid or is error").arg(k+1));
 			return ret;
 		}
-	
-							
-	//BEGIN block diag matrix
-	// first try to build block diag matrix
-	if (args.first().tree()->type() == Analitza::Object::matrix) {
-		bool failbyblockdiag = false;
-		int nrows = 0;
-		int ncols = 0;
-
-		for (int k = 0; k < nargs && !failbyblockdiag; ++k)
-			if (args.at(k).tree()->type() == Analitza::Object::matrix) {
-				const Analitza::Matrix *block = static_cast<const Analitza::Matrix*>(args.at(k).tree());
-				const int m = block->rowCount();
-				const int n = block->columnCount();
-				if (m > 0 && n > 0) {
-					nrows += m;
-					ncols += n;
-				} else {
-					ret.addError("not se quiere empty matrix/blocks"); //TODO better messages
-					failbyblockdiag = true;
-				}
-			} else {
-				ret.addError("not all are matrices/blocks can't build bok diag matrix"); //TODO better messages
-				failbyblockdiag = true;
-			}
-		
-		if (!failbyblockdiag) {
-			Analitza::Matrix *matrix = new Analitza::Matrix();
-			QVector< QVector< const Analitza::Object* > > objmatrix(nrows, QVector< const Analitza::Object* >(ncols, 0));
-			
-			nrows = 0;
-			ncols = 0;
-		
-			for (int k = 0; k < nargs; ++k) {
-				const Analitza::Matrix *block = static_cast<const Analitza::Matrix*>(args.at(k).tree());
-				const int m = block->rowCount();
-				const int n = block->columnCount();
-				
-				for (int i = 0; i < m; ++i)
-					for (int j = 0; j < n; ++j)
-						objmatrix[i+nrows][j+ncols] = block->at(i,j);
-				
-				nrows += m;
-				ncols += n;
-			}
-			
-			for (int i = 0; i < nrows; ++i) {
-				Analitza::MatrixRow *row = new Analitza::MatrixRow(ncols);
-				
-				for (int j = 0; j < ncols; ++j) {
-					const Analitza::Object *obj = objmatrix[i][j];
-					
-					if (obj)
-						row->appendBranch(obj->copy());
-					else
-						row->appendBranch(new Analitza::Cn(0));
-				}
-				
-				matrix->appendBranch(row);
-			}
-			
-			ret.setTree(matrix);
-		}
-		
-		return ret;
-	}
-	//END block diag matrix
-	
-	Q_ASSERT(ret.toString().isEmpty());
-	Q_ASSERT(ret.isCorrect());
 	
 	Analitza::Matrix *matrix = new Analitza::Matrix();
 	
@@ -425,7 +327,8 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 	}
 	
 	ret.setTree(matrix);
-
+	//END diag(a,b, ...) or diag(vector{a,b, ...})
+	
 	return ret;
 }
 
@@ -435,17 +338,16 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 //BEGIN TridiagonalMatrixConstructor
 
 const QString TridiagonalMatrixCommand::id = QString("tridiag");
-const ExpressionType TridiagonalMatrixCommand::type = variadicFunctionType(MatrixType);
+const ExpressionType TridiagonalMatrixCommand::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Value))
+.addParameter(ExpressionType(ExpressionType::Value))
+.addParameter(ExpressionType(ExpressionType::Value))
+.addParameter(ExpressionType(ExpressionType::Value))
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 
 Expression TridiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
-	
-	if (args.size() != 4) {
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(4).arg(TridiagonalMatrixCommand::id));
-		
-		return ret;
-	}
 	
 	const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.last().tree());
 	const int n = nobj->value();
@@ -479,4 +381,3 @@ Expression TridiagonalMatrixCommand::operator()(const QList< Analitza::Expressio
 }
 
 //END TridiagonalMatrixConstructor
-

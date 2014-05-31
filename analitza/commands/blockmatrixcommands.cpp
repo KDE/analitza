@@ -24,79 +24,28 @@
 #include "expression.h"
 #include "value.h"
 #include "matrix.h"
-#include "list.h"
-#include "container.h"
-#include "operations.h"
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
-//BEGIN type utils
-
-typedef QList<ExpressionType> ExpressionTypeList;
-
-static const ExpressionType ValueType = ExpressionType(ExpressionType::Value);
-static const ExpressionType VectorType = ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1);
-static const ExpressionType MatrixType = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
-static const ExpressionTypeList VectorAndMatrixTypes = ExpressionTypeList() << VectorType << MatrixType;
-static const ExpressionType VectorAndMatrixAlternatives = ExpressionType(ExpressionType::Many, VectorAndMatrixTypes);
-static const ExpressionType IndefiniteArityType = ExpressionType(ExpressionType::Any);
-
-static const ExpressionType functionType(const ExpressionTypeList &from, const ExpressionType &to)
-{
-	ExpressionType ret(ExpressionType::Lambda);
-	
-	foreach (const ExpressionType &type, from)
-		ret.addParameter(type);
-	
-	ret.addParameter(to);
-	
-	return ret;
-}
-
-static const ExpressionType functionType(const ExpressionType &from, const ExpressionType &to)
-{
-	return functionType(ExpressionTypeList() << from, to);
-}
-
-static const ExpressionType variadicFunctionType(const ExpressionType &to)
-{
-	return functionType(IndefiniteArityType, to);
-}
-
-//END type utils
-
-static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix dimensions must be greater than zero");
-
-// const QString VectorCommand::id = QString("range");
-// // const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
-// 
-// Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
-// {
-// 
-// }
-
-
-
-//BEGIN FillMatrixConstructor
-
 const QString BlockMatrixCommand::id = QString("blockmatrix");
-const ExpressionType BlockMatrixCommand::type = variadicFunctionType(MatrixType);
-//TODO better error messages
+const ExpressionType BlockMatrixCommand::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType::Vector, 
+																 ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1), -1)))
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+
 Expression BlockMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
 	
 	const int nargs = args.size();
 	
-		switch(nargs) {
-		case 0: {
-			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(BlockMatrixCommand::id));
+	if (nargs == 0) {
+		ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(BlockMatrixCommand::id));
 			
-			return ret;
-		}	break;
-		}
-	//BEGIN commom
+		return ret;
+	}
+	
 	const Analitza::Object::ObjectType firstArgType = args.first().tree()->type();
 	
 	if (firstArgType == Analitza::Object::vector || firstArgType == Analitza::Object::matrixrow) {
@@ -107,174 +56,172 @@ Expression BlockMatrixCommand::operator()(const QList< Analitza::Expression >& a
 			const int firstVectorSize = firstVector->size();
 			const Analitza::Object::ObjectType firstVectorElementType = firstVector->at(0)->type();
 			
-			switch(firstVectorElementType) {
-				case Analitza::Object::matrix: { // try to build a block matrix
-					const Analitza::Matrix *firstBlock = static_cast<const Analitza::Matrix*>(firstVector->at(0));
-					
-					bool isCorrect = true; // this flag tells if is ok to build the block matrix
-					int nrows = 0;
-					int ncols = 0;
-					int blockpattern[firstVectorSize]; // if vectors(matrixrow) this tells the row(column) pattern
-					
-					const int blocklength = isVector? firstBlock->columnCount() : firstBlock->rowCount();
-					
-					// we need to know the pattern first, this run only on first arg (first vector) 
-					for (int blockIndex = 0; blockIndex < firstVectorSize && isCorrect; ++blockIndex) {
-						if (firstVector->at(blockIndex)->type() == Analitza::Object::matrix) {
-							const Analitza::Matrix* block = static_cast<const Analitza::Matrix*>(firstVector->at(blockIndex));
+			if (firstVectorElementType == Analitza::Object::matrix) {
+				const Analitza::Matrix *firstBlock = static_cast<const Analitza::Matrix*>(firstVector->at(0));
+				
+				bool isCorrect = true; // this flag tells if is ok to build the block matrix
+				int nrows = 0;
+				int ncols = 0;
+				int blockpattern[firstVectorSize]; // if vectors(matrixrow) this tells the row(column) pattern
+				
+				const int blocklength = isVector? firstBlock->columnCount() : firstBlock->rowCount();
+				
+				// we need to know the pattern first, this run only on first arg (first vector) 
+				for (int blockIndex = 0; blockIndex < firstVectorSize && isCorrect; ++blockIndex) {
+					if (firstVector->at(blockIndex)->type() == Analitza::Object::matrix) {
+						const Analitza::Matrix* block = static_cast<const Analitza::Matrix*>(firstVector->at(blockIndex));
+						
+						if (block->rowCount() > 0 && block->columnCount() > 0) {
+							const int currentlength = isVector? block->columnCount() : block->rowCount();
 							
-							if (block->rowCount() > 0 && block->columnCount() > 0) {
-								const int currentlength = isVector? block->columnCount() : block->rowCount();
-								const int currentpattern = isVector? block->rowCount() : block->columnCount();
+							if (currentlength == blocklength) {
+								blockpattern[blockIndex] = isVector? block->rowCount() : block->columnCount();
 								
-								if (currentlength == blocklength) {
-									blockpattern[blockIndex] = isVector? block->rowCount() : block->columnCount();
-									
-									if (isVector)
-										nrows += blockpattern[blockIndex];
-									else
-										ncols += blockpattern[blockIndex];
-								} else {
-									isCorrect = false;
-									ret.addError(QCoreApplication::tr("bloques rows .. altura o numrows debe ser same"));
-								}
+								if (isVector)
+									nrows += blockpattern[blockIndex];
+								else
+									ncols += blockpattern[blockIndex];
 							} else {
 								isCorrect = false;
-								ret.addError(QCoreApplication::tr("no se aceptan bloques/matrices vacias"));
+								ret.addError(QCoreApplication::tr("Blocks must have consistent size between each and other"));
 							}
 						} else {
-							ret.addError(QCoreApplication::tr("not all are matrix i cant build a block matrix"));
 							isCorrect = false;
+							ret.addError(QCoreApplication::tr("Do not want empty blocks"));
 						}
+					} else {
+						ret.addError(QCoreApplication::tr("Blocks must be matrices"));
+						isCorrect = false;
 					}
+				}
+				
+				// check if all args are ok to build a block matrix
+				for (int argIndex = 0; argIndex < nargs && isCorrect; ++argIndex) {
+					const Analitza::Object::ObjectType currentArgType = args.at(argIndex).tree()->type();
+					const Analitza::Vector *vector = static_cast<const Analitza::Vector*>(args.at(argIndex).tree());
 					
-					// check if all args are ok to build a block matrix
-					for (int argIndex = 0; argIndex < nargs && isCorrect; ++argIndex) {
-						const Analitza::Object::ObjectType currentArgType = args.at(argIndex).tree()->type();
-						const Analitza::Vector *vector = static_cast<const Analitza::Vector*>(args.at(argIndex).tree());
-						
-						if (currentArgType == firstArgType) {
-							if (vector->size() > 0) {
-								if (vector->size() == firstVectorSize) {
-									const Analitza::Matrix *currentFirstBlock = static_cast<const Analitza::Matrix*>(vector->at(0));
-									const int blocklength = isVector? currentFirstBlock->columnCount() : currentFirstBlock->rowCount();
-									
-									for (int blockIndex = 0; blockIndex < firstVectorSize && isCorrect; ++blockIndex) {
-										if (vector->at(blockIndex)->type() == Analitza::Object::matrix) {
-											const Analitza::Matrix* block = static_cast<const Analitza::Matrix*>(vector->at(blockIndex));
+					if (currentArgType == firstArgType) {
+						if (vector->size() > 0) {
+							if (vector->size() == firstVectorSize) {
+								const Analitza::Matrix *currentFirstBlock = static_cast<const Analitza::Matrix*>(vector->at(0));
+								const int blocklength = isVector? currentFirstBlock->columnCount() : currentFirstBlock->rowCount();
+								
+								for (int blockIndex = 0; blockIndex < firstVectorSize && isCorrect; ++blockIndex) {
+									if (vector->at(blockIndex)->type() == Analitza::Object::matrix) {
+										const Analitza::Matrix* block = static_cast<const Analitza::Matrix*>(vector->at(blockIndex));
+										
+										if (block->rowCount() > 0 && block->columnCount() > 0) {
+											const int currentlength = isVector? block->columnCount() : block->rowCount();
+											const int currentpattern = isVector? block->rowCount() : block->columnCount();
 											
-											if (block->rowCount() > 0 && block->columnCount() > 0) {
-												const int currentlength = isVector? block->columnCount() : block->rowCount();
-												const int currentpattern = isVector? block->rowCount() : block->columnCount();
-												
-												if (currentlength != blocklength) {
-													isCorrect = false;
-													ret.addError(QCoreApplication::tr("cols cada block de row debe ser igual de row a row"));
-												} else if (blockpattern[blockIndex] != currentpattern) {
-													isCorrect = false;
-													ret.addError(QCoreApplication::tr("bloques rows .. altura o numrows debe ser same"));
-												}
-											} else {
+											if (currentlength != blocklength) {
 												isCorrect = false;
-												ret.addError(QCoreApplication::tr("no se aceptan bloques/matrices vacias"));
+												ret.addError(QCoreApplication::tr("Blocks must have consistent size between each and other"));
+											} else if (blockpattern[blockIndex] != currentpattern) {
+												isCorrect = false;
+												ret.addError(QCoreApplication::tr("Blocks must have consistent size between each and other"));
 											}
 										} else {
 											isCorrect = false;
-											ret.addError(QCoreApplication::tr("no se aceptan bloques/matrices vacias"));
+											ret.addError(QCoreApplication::tr("Do not want empty blocks"));
 										}
+									} else {
+										isCorrect = false;
+										ret.addError(QCoreApplication::tr("Blocks must be matrices"));
 									}
-									
-									if (isCorrect)
-										if (isVector)
-											ncols += blocklength;
-										else
-											nrows += blocklength;
-								} else {
-									isCorrect = false;
-									ret.addError(QCoreApplication::tr("all argument (vec or row) must have the same size"));
+								}
+								
+								if (isCorrect) {
+									if (isVector)
+										ncols += blocklength;
+									else
+										nrows += blocklength;
 								}
 							} else {
-								ret.addError("we dont allow empty vector or rows"); // TODO better message
 								isCorrect = false;
+								ret.addError(QCoreApplication::tr("Number of blocks must be consistent"));
 							}
 						} else {
+							ret.addError(QCoreApplication::tr("Do not want empty vectors/matrixrow elements"));
 							isCorrect = false;
-							ret.addError(QCoreApplication::tr("all argument must be of the same type: all rows or all vectors"));
 						}
+					} else {
+						isCorrect = false;
+						ret.addError(QCoreApplication::tr("Matrix constructor needs vectors or matrixrow elements"));
 					}
+				}
+				
+				if (isCorrect) {
+					Analitza::Matrix *matrix = new Analitza::Matrix();
 					
-					if (isCorrect) {
-						Analitza::Matrix *matrix = new Analitza::Matrix();
+					QVector< QVector< const Analitza::Object* > > objmatrix(nrows, QVector< const Analitza::Object* >(ncols, 0));
+					
+					int nrowsoffset = isVector? nrows : 0;
+					int ncolsoffset = isVector? 0 : ncols;
+					
+					for (int argIndex = 0; argIndex < nargs && isCorrect; ++argIndex) {
+						const Analitza::Vector *vector = static_cast<const Analitza::Vector*>(args.at(argIndex).tree());
 						
-						QVector< QVector< const Analitza::Object* > > objmatrix(nrows, QVector< const Analitza::Object* >(ncols, 0));
+						int blockpattern = 0;
 						
-						int nrowsoffset = isVector? nrows : 0;
-						int ncolsoffset = isVector? 0 : ncols;
+						if (isVector)
+							nrowsoffset = 0;
+						else
+							ncolsoffset = 0;
 						
-						for (int argIndex = 0; argIndex < nargs && isCorrect; ++argIndex) {
-							const Analitza::Vector *vector = static_cast<const Analitza::Vector*>(args.at(argIndex).tree());
+						for (int blockIndex = 0; blockIndex < firstVectorSize && isCorrect; ++blockIndex) {
+							const Analitza::Matrix* block = static_cast<const Analitza::Matrix*>(vector->at(blockIndex));
+							const int m = block->rowCount();
+							const int n = block->columnCount();
 							
-							int blockpattern = 0;
+							blockpattern = isVector? n : m;
+							
+							for (int i = 0; i < m; ++i)
+								for (int j = 0; j < n; ++j)
+									objmatrix[i+nrowsoffset][j+ncolsoffset] = block->at(i,j);
 							
 							if (isVector)
-								nrowsoffset = 0;
-							else
-								ncolsoffset = 0;
-							
-							for (int blockIndex = 0; blockIndex < firstVectorSize && isCorrect; ++blockIndex) {
-								const Analitza::Matrix* block = static_cast<const Analitza::Matrix*>(vector->at(blockIndex));
-								const int m = block->rowCount();
-								const int n = block->columnCount();
-								
-								blockpattern = isVector? n : m;
-								
-								for (int i = 0; i < m; ++i)
-									for (int j = 0; j < n; ++j)
-										objmatrix[i+nrowsoffset][j+ncolsoffset] = block->at(i,j);
-								
-								if (isVector)
-									nrowsoffset += m;
-								else if (blockIndex == 0) // el patron de cols se define en el primer matrixrow
-									ncolsoffset += n;
-							}
-							
-							if (!isVector)
-								nrowsoffset += blockpattern;
-							else if (argIndex == 0)
-								ncolsoffset += blockpattern;
+								nrowsoffset += m;
+							else if (blockIndex == 0) // el patron de cols se define en el primer matrixrow
+								ncolsoffset += n;
 						}
 						
-						for (int i = 0; i < nrows; ++i) {
-							Analitza::MatrixRow *row = new Analitza::MatrixRow(ncols);
-							
-							for (int j = 0; j < ncols; ++j)
-								row->appendBranch(objmatrix[i][j]->copy());
-							
-							matrix->appendBranch(row);
-						}
-						
-						ret.setTree(matrix);
-					
-						return ret;
+						if (!isVector)
+							nrowsoffset += blockpattern;
+						else if (argIndex == 0)
+							ncolsoffset += blockpattern;
 					}
-				}	break;
+					
+					for (int i = 0; i < nrows; ++i) {
+						Analitza::MatrixRow *row = new Analitza::MatrixRow(ncols);
+						
+						for (int j = 0; j < ncols; ++j)
+							row->appendBranch(objmatrix[i][j]->copy());
+						
+						matrix->appendBranch(row);
+					}
+					
+					ret.setTree(matrix);
 				
-			}
+					return ret;
+				}
+			} else
+				ret.addError(QCoreApplication::tr("Blocks must be matrices"));
 		} else
-			ret.addError("we dont allow empty vector or rows"); // TODO better message
+			ret.addError(QCoreApplication::tr("Do not want empty vectors/matrixrow elements"));
 	} else
-		ret.addError("to build a matrix use vector or rows as args"); // TODO better message
-	//END commom
+		ret.addError(QCoreApplication::tr("Matrix constructor needs vectors or matrixrow elements"));
 	
 	return ret;
 }
 
-//END FillMatrixConstructor
-
-//BEGIN DiagonalMatrixConstructor
 
 const QString BlockDiagonalMatrixCommand::id = QString("blockdiag");
-const ExpressionType BlockDiagonalMatrixCommand::type  = variadicFunctionType(VectorAndMatrixAlternatives);
+// const ExpressionType BlockDiagonalMatrixCommand::type  = variadicFunctionType(VectorAndMatrixAlternatives);
+const ExpressionType BlockDiagonalMatrixCommand::type  = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Any, 
+							 ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1)))
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 
 Expression BlockDiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
@@ -283,26 +230,22 @@ Expression BlockDiagonalMatrixCommand::operator()(const QList< Analitza::Express
 	int nargs = args.size();
 	bool byvector = false;
 	
-		switch(nargs) {
-		case 0: {
-			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(BlockDiagonalMatrixCommand::id));
-			
-			return ret;
-		}	break;
-		}
+	if (nargs == 0) {
+		ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(BlockDiagonalMatrixCommand::id));
+		return ret;
+	}
+	
 	const Analitza::Vector *v = byvector? static_cast<const Analitza::Vector*>(args.first().tree()) : 0;
 	
 	if (byvector) nargs = v->size();
 	
-	for (int k = 0; k < nargs; ++k)
+	for (int k = 0; k < nargs; ++k) {
 		if ((byvector? v->at(k)->type() : args.at(k).tree()->type()) == Analitza::Object::none) {
 			ret.addError(QCoreApplication::tr("the arg %1 is invalid or is error").arg(k+1));
 			return ret;
 		}
+	}
 	
-							
-	//BEGIN block diag matrix
-	// first try to build block diag matrix
 	if (args.first().tree()->type() == Analitza::Object::matrix) {
 		bool failbyblockdiag = false;
 		int nrows = 0;
@@ -317,11 +260,11 @@ Expression BlockDiagonalMatrixCommand::operator()(const QList< Analitza::Express
 					nrows += m;
 					ncols += n;
 				} else {
-					ret.addError("not se quiere empty matrix/blocks"); //TODO better messages
+					ret.addError(QCoreApplication::tr("Do not want empty blocks"));
 					failbyblockdiag = true;
 				}
 			} else {
-				ret.addError("not all are matrices/blocks can't build bok diag matrix"); //TODO better messages
+				ret.addError(QCoreApplication::tr("Blocks must be matrices"));
 				failbyblockdiag = true;
 			}
 		
@@ -365,10 +308,6 @@ Expression BlockDiagonalMatrixCommand::operator()(const QList< Analitza::Express
 		
 		return ret;
 	}
-	//END block diag matrix
 	
-
 	return ret;
 }
-
-//END DiagonalMatrixConstructor

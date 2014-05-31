@@ -25,6 +25,38 @@ namespace Analitza {
 class Expression;
 };
 
+/**
+ * \class MatrixCommand
+ * 
+ * \brief Implements the \"matrix\" command.
+ * 
+ * MatrixCommand constructs a matrix by 2 ways:
+ * 
+ * The first way creates a matrix filled with a fixed value. 
+ * For example:
+ * \code matrix(3) \endcode 
+ * constructs a square 3x3 matrix filled with zeros.
+ * 
+ * \code matrix(4,5) \endcode 
+ * constructs a 4x5 matrix filled with zeros.
+ * 
+ * \code matrix(6,7, 0.5) \endcode 
+ * constructs a 6x7 matrix filled with the value 0.5.
+ * 
+ * The second way creates a matrix by given vectors or matrixrow elements.
+ * For example:
+ * \code matrix(vector{1,3}, vector{4,5}) \endcode 
+ * constructs a matrix with two column vectors:
+ * [1 4]
+ * [3 5]
+ * 
+ * \code matrix(matrixrow{1,3}, matrixrow{4,5}) \endcode 
+ * constructs a matrix with two matrixrow elements:
+ * [1 3]
+ * [4 5]
+ *
+ */
+
 class MatrixCommand: public Analitza::FunctionDefinition
 {
 public:
@@ -33,6 +65,18 @@ public:
 	static const QString id;
 	static const Analitza::ExpressionType type;
 };
+
+/**
+ * \class IdentityMatrixCommand
+ * 
+ * \brief Implements the \"identitymatrix\" command.
+ * 
+ * IdentityMatrixCommand constructs a identitymatrix.
+ * For example:
+ * \code matrix(2) \endcode
+ * \code matrix { matrixrow { 1, 0 }, matrixrow { 1, 0 } } \endcode
+ * 
+ */
 
 class IdentityMatrixCommand: public Analitza::FunctionDefinition
 {

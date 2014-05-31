@@ -27,26 +27,26 @@
 
 using Analitza::Expression;
 
-QTEST_MAIN( MatrixTest )
+QTEST_MAIN( CommandsTest )
 
-MatrixTest::MatrixTest(QObject *parent)
+CommandsTest::CommandsTest(QObject *parent)
  : QObject(parent)
 {}
 
-MatrixTest::~MatrixTest()
+CommandsTest::~CommandsTest()
 {}
 
-void MatrixTest::initTestCase()
+void CommandsTest::initTestCase()
 {
 	a=new Analitza::Analyzer;
 }
 
-void MatrixTest::cleanupTestCase()
+void CommandsTest::cleanupTestCase()
 {
 	delete a;
 }
 
-void MatrixTest::testCorrect_data()
+void CommandsTest::testCorrect_data()
 {
 	QTest::addColumn<QStringList>("expression");
 	QTest::addColumn<QString>("result");
@@ -375,7 +375,7 @@ void MatrixTest::testCorrect_data()
 	QTest::newRow("Id is identity matrix") << script << "true";
 	
 	script.clear();
-	script << "isidentitymatrix(diag(identitymatrix(3), matrix{matrixrow{1}}, identitymatrix(2)))";
+	script << "isidentitymatrix(blockdiag(identitymatrix(3), matrix{matrixrow{1}}, identitymatrix(2)))";
 	QTest::newRow("block of Id is Id matrix") << script << "true";
 	
 	script.clear();
@@ -383,7 +383,7 @@ void MatrixTest::testCorrect_data()
 	QTest::newRow("Id is diag matrix") << script << "true";
 }
 
-void MatrixTest::testCorrect()
+void CommandsTest::testCorrect()
 {
 	QFETCH(QStringList, expression);
 	QFETCH(QString, result);
@@ -412,7 +412,7 @@ void MatrixTest::testCorrect()
 	QVERIFY(a->isCorrect());
 }
 
-void MatrixTest::testIncorrect_data()
+void CommandsTest::testIncorrect_data()
 {
 	QTest::addColumn<QString>("expression");
 	
@@ -465,7 +465,7 @@ void MatrixTest::testIncorrect_data()
 // 	QTest::newRow("zero bad") << "iszeromatrix(matrix(-8,5))"; //TODO last test
 }
 
-void MatrixTest::testIncorrect()
+void CommandsTest::testIncorrect()
 {
 	QFETCH(QString, expression);
 	

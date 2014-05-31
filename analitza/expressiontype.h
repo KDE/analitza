@@ -30,7 +30,8 @@ namespace Analitza
 class ANALITZA_EXPORT ExpressionType
 {
 	public:
-		///Just use undefined type when returning from a recursion
+		///Just use undefined type when returning from a recursion.
+		///Vector and MatrixRow are the same type.
 		enum Type { Error=0, Value, Vector, List, Lambda, Any, Many, Object, Char, Bool, Matrix };
 		QString toString() const;
 		
