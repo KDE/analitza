@@ -118,8 +118,11 @@ public:
  * The second way returns a vector of the elements on the nth diagonal of 
  * a given matrix.
  * 
- * k>0 is above the main diagonal
- * k<0 is below the main
+ * \code diag(A, n) \endcode 
+ * where n>0 means is above the main diagonal of A and n<0 is below the main 
+ * diagonal.
+ * 
+ * Examples:
  * 
  * \code diag(matrix{matrixrow{1,2}, matrixrow{3,4}}, 0) \endcode 
  * is equivalent to 

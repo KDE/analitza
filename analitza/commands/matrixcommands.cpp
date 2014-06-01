@@ -114,7 +114,6 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 		
 		if (firstVector->size() > 0) { // we will check this for all vectors later
 			const int firstVectorSize = firstVector->size();
-			const Analitza::Object::ObjectType firstVectorElementType = firstVector->at(0)->type();
 			
 			bool iscorrect = true; // assumes all are rows
 			Analitza::Matrix *matrix = new Analitza::Matrix();
