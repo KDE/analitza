@@ -345,6 +345,7 @@ const ExpressionType TridiagonalMatrixCommand::type = ExpressionType(ExpressionT
 .addParameter(ExpressionType(ExpressionType::Value))
 .addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 
+//TODO create rectangular matrices too 
 Expression TridiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;

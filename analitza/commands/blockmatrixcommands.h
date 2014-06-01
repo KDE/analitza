@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef MATRIXBUILTINMETHODS_H_3
-#define MATRIXBUILTINMETHODS_H_3
+#ifndef BLOCKMATRIXCOMMANDS_H
+#define BLOCKMATRIXCOMMANDS_H
 
 #include "builtinmethods.h"
 
@@ -44,4 +44,4 @@ public:
 };
 
 
-#endif // MATRIXBUILTINMETHODS_H
+#endif // BLOCKMATRIXCOMMANDS_H

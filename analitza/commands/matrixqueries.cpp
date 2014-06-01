@@ -24,68 +24,20 @@
 #include "expression.h"
 #include "value.h"
 #include "matrix.h"
-#include "list.h"
-#include "container.h"
-#include "operations.h"
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
-//BEGIN type utils
-
-typedef QList<ExpressionType> ExpressionTypeList;
-
-static const ExpressionType ValueType = ExpressionType(ExpressionType::Value);
-static const ExpressionType VectorType = ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1);
-static const ExpressionType MatrixType = ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1);
-static const ExpressionTypeList VectorAndMatrixTypes = ExpressionTypeList() << VectorType << MatrixType;
-static const ExpressionType VectorAndMatrixAlternatives = ExpressionType(ExpressionType::Many, VectorAndMatrixTypes);
-static const ExpressionType IndefiniteArityType = ExpressionType(ExpressionType::Any);
-
-static const ExpressionType functionType(const ExpressionTypeList &from, const ExpressionType &to)
-{
-	ExpressionType ret(ExpressionType::Lambda);
-	
-	foreach (const ExpressionType &type, from)
-		ret.addParameter(type);
-	
-	ret.addParameter(to);
-	
-	return ret;
-}
-
-static const ExpressionType functionType(const ExpressionType &from, const ExpressionType &to)
-{
-	return functionType(ExpressionTypeList() << from, to);
-}
-
-static const ExpressionType variadicFunctionType(const ExpressionType &to)
-{
-	return functionType(IndefiniteArityType, to);
-}
-
-//END type utils
-
-static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix dimensions must be greater than zero");
-
-// const QString VectorCommand::id = QString("range");
-// // const ExpressionType VectorCommand::type = functionType(ExpressionTypeList() << ValueType << ValueType, VectorType);
-// 
-// Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
-// {
-// 
-// }
-
-
-
 //BEGIN IsZeroMatrix
 
 const QString IsZeroMatrixCommand::id = QString("iszeromatrix");
-const ExpressionType IsZeroMatrixCommand::type = functionType(MatrixType, ValueType);
+const ExpressionType IsZeroMatrixCommand::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1))
+.addParameter(ExpressionType(ExpressionType::Value));
 
 Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	qDebug() << "bam bam " << args.first().toString(); //TODO last test
+// 	qDebug() << "bam bam " << args.first().toString(); //TODO last test
 	return Expression(new Analitza::Cn(static_cast<const Analitza::Matrix*>(args.first().tree())->isZero()));
 }
 
@@ -93,7 +45,7 @@ Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& 
 
 
 const QString IsIdentityMatrixCommand::id = QString("isidentitymatrix");
-const ExpressionType IsIdentityMatrixCommand::type = functionType(MatrixType, ValueType);
+const ExpressionType IsIdentityMatrixCommand::type = IsZeroMatrixCommand::type;
 
 Expression IsIdentityMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
@@ -101,16 +53,9 @@ Expression IsIdentityMatrixCommand::operator()(const QList< Analitza::Expression
 }
 
 const QString IsDiagonalMatrixCommand::id = QString("isdiag");
-const ExpressionType IsDiagonalMatrixCommand::type = variadicFunctionType(VectorType);
+const ExpressionType IsDiagonalMatrixCommand::type = IsZeroMatrixCommand::type;
 
 Expression IsDiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	if (args.size() != 1) {
-		Expression ret;
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%2'. Should have %1 parameters.").arg(1).arg(IsDiagonalMatrixCommand::id));
-		
-		return ret;
-	}
-	
 	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
 }

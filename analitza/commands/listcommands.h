@@ -31,7 +31,7 @@ class Expression;
  * \brief Implements the \"range\" command.
  * 
  * RangeCommand constructs a list that contains a sequence.
- * There are 3 ways to call this command:
+ * There are three ways to call this command:
  * 
  * The first way creates a sequence from 1, with increment 1, that ends in 
  * the number \"b\".

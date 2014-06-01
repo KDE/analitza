@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef MATRIXBUILTINMETHODS_H_2
-#define MATRIXBUILTINMETHODS_H_2
+#ifndef MATRIXQUERIES_H
+#define MATRIXQUERIES_H
 
 #include "builtinmethods.h"
 
@@ -52,4 +52,4 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
-#endif // MATRIXBUILTINMETHODS_H
+#endif // MATRIXQUERIES_H
