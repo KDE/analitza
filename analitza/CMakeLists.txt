@@ -48,6 +48,11 @@ set(analitza_SRCS
 	commands/matrixqueries.cpp
 )
 
+if(OPENGL_FOUND)
+    include_directories ( ${EIGEN3_INCLUDE_DIR} )
+    list(APPEND analitza_SRCS commands/eigencommands.cpp)
+endif()
+
 add_library(Analitza ${analitza_SRCS})
 target_link_libraries(Analitza Qt5::Core Qt5::Xml)
 target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>")

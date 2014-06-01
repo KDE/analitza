@@ -33,6 +33,12 @@ set(HAVE_OPENGL ${OPENGL_FOUND})
 
 # add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
 
+find_package(Eigen3) # find and setup Eigen3 if available
+set(HAVE_EIGEN3 ${EIGEN3_FOUND})
+if(NOT EIGEN3_FOUND)
+   message(STATUS "Cannot find Eigen3, some analitza commands will be disabled.")
+endif()
+
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
 remove_definitions(-DQT_NO_CAST_TO_ASCII)
@@ -58,6 +64,8 @@ ecm_configure_package_config_file(
   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
   PATH_VARS  INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX
 )
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config-analitza.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-analitza.h)
 
 install(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake"
