@@ -118,7 +118,7 @@ void CommandsTest::testCorrect_data()
 	script << "blockmatrix(matrixrow{A, B})";
 	QTest::newRow("simple block matrix") << script << "matrix { matrixrow { 2, 3, 12, 13 }, matrixrow { -5, 1, -15, 11 } }";
 	
-	const QString blockmatrix = "matrix { matrixrow { 1, 8, 7, 6 }, matrixrow { 3, 5, 0, 2 }, matrixrow { 1, 4, 9, 3 } }";
+	const QString resultblockmatrix = "matrix { matrixrow { 1, 8, 7, 6 }, matrixrow { 3, 5, 0, 2 }, matrixrow { 1, 4, 9, 3 } }";
 	
 	script.clear();
 	script << "A := matrix(vector{1,3}, vector{8,5})";
@@ -126,7 +126,7 @@ void CommandsTest::testCorrect_data()
 	script << "C := matrix(matrixrow{1,4})";
 	script << "D := matrix(vector{9}, vector{3})";
 	script << "blockmatrix(matrixrow{A, B}, matrixrow{C, D})";
-	QTest::newRow("block matrix 4 blocks conf 1") << script << blockmatrix;
+	QTest::newRow("block matrix 4 blocks conf 1") << script << resultblockmatrix;
 	
 	script.clear();
 	script << "A := matrix{matrixrow{1,8,7}, matrixrow{3,5,0}}";
@@ -134,7 +134,7 @@ void CommandsTest::testCorrect_data()
 	script << "C := matrix(matrixrow{1,4,9})";
 	script << "D := matrix(1,1,3)";
 	script << "blockmatrix(matrixrow{A, B}, matrixrow{C, D})";
-	QTest::newRow("block matrix by rows, conf 2") << script << blockmatrix;
+	QTest::newRow("block matrix by rows, conf 2") << script << resultblockmatrix;
 	
 	script.clear();
 	script << "A := matrix(matrixrow{1,8})";
@@ -144,7 +144,7 @@ void CommandsTest::testCorrect_data()
 	script << "E := matrix(vector{1},vector{4})";
 	script << "F := matrix{matrixrow{9,3}}";
 	script << "blockmatrix(matrixrow{A, B}, matrixrow{C, D}, matrixrow{E, F})";
-	QTest::newRow("block matrix by rows, conf 3") << script << blockmatrix;
+	QTest::newRow("block matrix by rows, conf 3") << script << resultblockmatrix;
 	
 	script.clear();
 	script << "A := matrix(vector{1,3}, vector{8,5})";
@@ -152,7 +152,7 @@ void CommandsTest::testCorrect_data()
 	script << "C := matrix{matrixrow{7,6}, matrixrow{0,2}}";
 	script << "D := matrix(vector{9}, vector{3})";
 	script << "blockmatrix(vector{A, B}, vector{C, D})";
-	QTest::newRow("block matrix by cols, conf 1") << script << blockmatrix;
+	QTest::newRow("block matrix by cols, conf 1") << script << resultblockmatrix;
 	
 	script.clear();
 	script << "A := matrix{matrixrow{1,8}}";
@@ -162,7 +162,7 @@ void CommandsTest::testCorrect_data()
 	script << "E := matrix(matrixrow{0,2})";
 	script << "F := matrix(matrixrow{9,3})";
 	script << "blockmatrix(vector{A, B, C}, vector{D, E, F})";
-	QTest::newRow("block matrix by cols, conf 2") << script << blockmatrix;
+	QTest::newRow("block matrix by cols, conf 2") << script << resultblockmatrix;
 	
 	script.clear();
 	script << "matrix(2,5)";
@@ -416,53 +416,81 @@ void CommandsTest::testIncorrect_data()
 {
 	QTest::addColumn<QString>("expression");
 	
-	QTest::newRow("matrix 0 args") << "matrix()";
+	QTest::newRow("range: bad arg type") << "range(list{3}, 31, true)";
+	QTest::newRow("range: bad arg type2") << "range(list{3}, 31)";
+	QTest::newRow("range: bad arg count") << "range(2,3,vector{3}, list{2}, 4)";
+	QTest::newRow("range: bad args1") << "range(2,3,9, list{2}, 4)";
+	QTest::newRow("range: bad args2") << "range(2,3,9, 9, vector{4})";
+	QTest::newRow("range: bad args3") << "range(2,3,9, 9, 3,4,5,5)";
+	
+	QTest::newRow("vector: bad arg type") << "vector(list{23},4)";
+	QTest::newRow("vector: bad number of args") << "vector(4, list{23}, 44)";
+	
+	QTest::newRow("matrix: 0 args") << "matrix()";
+	QTest::newRow("matrix: bad args") << "matrix(list{3}, 31)";
+	QTest::newRow("matrix: invalid parameter") << "matrix(range(list{matrix{2}}))";
 	QTest::newRow("matrix: empty matrix result") << "matrix(0, 0)";
 	QTest::newRow("matrix: fill empty matrix result") << "matrix(0, 0, sin(1))";
 	QTest::newRow("matrix: not all vectors") << "matrix(vector{1}, 3)";
 	QTest::newRow("matrix: not all matrixrow elements") << "matrix(matrixrow{1}, list{2})";
 	QTest::newRow("matrix: not all matrixrow elements 2") << "matrix(matrixrow{1}, vector{2})";
 	QTest::newRow("matrix: neg square") << "matrix(-9)";
-	QTest::newRow("matrix: bad block matrix size") << "blockmatrix(vector{matrix(1,2), matrix(32,13)})";
-	QTest::newRow("matrix: bad block matrix args size") << "blockmatrix(vector{matrix(1,2), matrix(32,13)}, vector{matrix(7,13)})";
-	QTest::newRow("matrix: bad block matrix args type 1") << "blockmatrix(vector{matrix(32,13), list{23}}, vector{matrix(7,13), matrix(32,1)})";
-	
-	//TODO split block constructor 
-	//TODO and refine type system for variadic functios with same type as args ... can compare can reduce check is Any and Any,Type is NOT a error 
-// 	QTest::newRow("matrix: bad block matrix args type 2") << "matrix(vector{list{23}, zeromatrix(32,13)}, vector{zeromatrix(7,13), zeromatrix(32,1)})";
 	
 	QTest::newRow("zero matrix: empty matrix result") << "matrix(0, 0)";
 	QTest::newRow("zero matrix: bad number of args") << "matrix()";
+	QTest::newRow("zero matrix: bad number of args") << "matrix(3,list{3},4,6)";
 	QTest::newRow("zero matrix: bad dim") << "matrix(23, -3.5)";
 	QTest::newRow("zero matrix: bad dim2") << "matrix(-23, 5)";
-	QTest::newRow("identity matrix: matrix result") << "identitymatrix(0)";
+	
+	QTest::newRow("identity matrix: bad arg") << "identitymatrix(-98)";
+	QTest::newRow("identity matrix: empty matrix result") << "identitymatrix(0)";
+	
 	QTest::newRow("diag: 0 args") << "diag()";
 	QTest::newRow("diag: bad arg, one empty matrix") << "diag(identitymatrix(0))";
+	QTest::newRow("diag: bad arg, one empty matrix2") << "diag(matrix{matrixrow{}})";
 	QTest::newRow("diag: bad diag index") << "diag(matrix(4,6,3.2), -98)";
 	QTest::newRow("diag: bad diag index type") << "diag(matrix(4,6,3.2), list{-98})";
-	QTest::newRow("diag: bad block diag, empty matrix 1") << "diag(matrix(0,0), matrix(2,2,1))";
-	QTest::newRow("diag: bad block diag, empty matrix 2") << "diag(matrix{matrixrow{1}}, tridiag(1,2,3,0))";
+	QTest::newRow("diag: invalid parameter") << "diag(matrix(-8,5))";
+	
 	QTest::newRow("tridiag: empty matrix result") << "tridiag(1,2,3,0)";
 	QTest::newRow("tridiag: bad number of args") << "tridiag(1,2,2)";
+	QTest::newRow("tridiag: bad number of args2") << "tridiag(1,2,2, 4, list{2})";
+	
 	QTest::newRow("iszeromatrix: bad number of args") << "iszeromatrix()";
+	QTest::newRow("iszeromatrix: empty matrix") << "iszeromatrix(matrix{})";
+	QTest::newRow("iszeromatrix: invalid parameter") << "iszeromatrix(matrix(-8,5))";
+	
+	QTest::newRow("isidentitymatrix: bad number of args") << "isidentitymatrix(matrix{matrixrow{1}}, 2)";
+	QTest::newRow("isidentitymatrix: bad number of args2") << "isidentitymatrix()";
+	QTest::newRow("isidentitymatrix: empty matrix") << "isidentitymatrix(matrix{})";
+	QTest::newRow("isidentitymatrix: empty matrix2") << "isidentitymatrix(matrix{matrixrow{}})";
+	QTest::newRow("isidentitymatrix: invalid parameter") << "isidentitymatrix(matrix(-8,5))";
+	QTest::newRow("isidentitymatrix: invalid parameter2") << "isidentitymatrix(matrix(list{},5))";
+	
 	QTest::newRow("isdiag: bad number of args") << "isdiag(matrix{matrixrow{1}}, 2)";
 	QTest::newRow("isdiag: bad number of args2") << "isdiag()";
+	QTest::newRow("isdiag: empty matrix") << "isdiag(matrix{})";
+	QTest::newRow("isdiag: empty matrix2") << "isdiag(matrix{matrixrow{}})";
+	QTest::newRow("isdiag: invalid parameter") << "isdiag(matrix(-8,5))";
+	
+	QTest::newRow("blockmatrix: bad block matrix size") << "blockmatrix(vector{matrix(1,2), matrix(32,13)})";
+	QTest::newRow("blockmatrix: empty matrix1") << "blockmatrix(vector{matrix{}}, vector{matrix{matrixrow{}}})";
+	QTest::newRow("blockmatrix: empty matrix2") << "blockmatrix(vector{identitymatrix(0)})";
+	QTest::newRow("blockmatrix: bad arg type") << "blockmatrix(vector{-5})";
+	QTest::newRow("blockmatrix: err arg") << "blockmatrix(vector{matrix{-98}})";
+	QTest::newRow("blockmatrix: bad block matrix args size") << "blockmatrix(vector{matrix(1,2), matrix(32,13)}, vector{matrix(7,13)})";
+	QTest::newRow("blockmatrix: bad block matrix args type 1") << "blockmatrix(vector{matrix(32,13), list{23}}, vector{matrix(7,13), matrix(32,1)})";
+	QTest::newRow("blockmatrix: bad block matrix args type 2") << "matrix(vector{list{23}, zeromatrix(32,13)}, vector{zeromatrix(7,13), zeromatrix(32,1)})";
+	
+	QTest::newRow("blockdiag: bad block diag, empty matrix 1") << "blockdiag(matrix(0,0), matrix(2,2,1))";
+	QTest::newRow("blockdiag: empty matrix1") << "blockdiag(matrix{})";
+	QTest::newRow("blockdiag: empty matrix2") << "blockdiag(identitymatrix(0))";
+	QTest::newRow("blockdiag: bad arg type") << "blockdiag(vector{-5})";
+	QTest::newRow("blockdiag: bad block diag, empty matrix 2") << "blockdiag(matrix{matrixrow{1}}, tridiag(1,2,3,0))";
+	QTest::newRow("blockdiag: invalid parameter") << "blockdiag(matrix(-8,5))";
+	
 	QTest::newRow("bad dimensions:2x2identitymatrix and 2x1zeromatrix") << "2*(identitymatrix(2) + matrix(2,1))";
 	QTest::newRow("bad dimensions:2x2identitymatrix and -2x2matrix") << "2*(identitymatrix(2) + matrix(-2, 2,1))";
-	
-	//TODO incorect block matrix
-	
-	//TODO better names
-	QTest::newRow("bad") << "vector(list{23},4)";
-	QTest::newRow("bad2") << "vector(4, list{23}, 44)";
-	QTest::newRow("bad0") << "matrix(list{3}, 31)";
-	QTest::newRow("badlist") << "range(list{3}, 31, true)";
-	QTest::newRow("badlist") << "range(list{3}, 31)";
-	QTest::newRow("badlist") << "range(2,3,vector{3}, list{2}, 4)";
-	QTest::newRow("badlist") << "range(2,3,9, list{2}, 4)";
-	QTest::newRow("badlist") << "range(2,3,9, 9, vector{4})";
-	QTest::newRow("badlist4") << "range(2,3,9, 9, 3,4,5,5)";
-// 	QTest::newRow("zero bad") << "iszeromatrix(matrix(-8,5))"; //TODO last test
 }
 
 void CommandsTest::testIncorrect()
@@ -490,7 +518,6 @@ void CommandsTest::testIncorrect()
 			qDebug() << "set expression errors:" << a.errors();
 		}
 	} else {
-		QVERIFY(exp.isCorrect());
 		qDebug() << "expression errors:" << exp.error();
 	}
 }

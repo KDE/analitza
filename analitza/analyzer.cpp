@@ -1027,7 +1027,14 @@ Object* Analyzer::calcCallFunction(Container* function, const QVector<Object*>& 
 		
 		m_runStack[top] = function;
 		for(int i=0; i<args.size(); i++) {
-			m_runStack[top+i+1] = args[i];
+			if (args[i]->type() != Object::none) {
+				m_runStack[top+i+1] = args[i];
+			} else {
+				m_err += QCoreApplication::tr("Invalid type for parameter '%1'").arg(i+1);
+				ret = new None();
+				
+				return ret;
+			}
 		}
 		m_runStackTop = top;
 		
@@ -1045,7 +1052,14 @@ Object* Analyzer::calcCallFunction(Container* function, const QVector<Object*>& 
 		QList<Expression> expargs;
 		
 		for(int i=0; i<args.size(); i++) {
-			expargs += Expression(args[i]);
+			if (args[i]->type() != Object::none) {
+				expargs += Expression(args[i]);
+			} else {
+				m_err += QCoreApplication::tr("Invalid type for parameter '%1'").arg(i+1);
+				ret = new None();
+				
+				return ret;
+			}
 		}
 #ifdef SCRIPT_PROFILER
 		profiler.push(id);

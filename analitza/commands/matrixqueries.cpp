@@ -37,7 +37,6 @@ const ExpressionType IsZeroMatrixCommand::type = ExpressionType(ExpressionType::
 
 Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
-// 	qDebug() << "bam bam " << args.first().toString(); //TODO last test
 	return Expression(new Analitza::Cn(static_cast<const Analitza::Matrix*>(args.first().tree())->isZero()));
 }
 
