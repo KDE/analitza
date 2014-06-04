@@ -48,8 +48,7 @@ set(analitza_SRCS
 	commands/matrixqueries.cpp
 )
 
-if(OPENGL_FOUND)
-    include_directories ( ${EIGEN3_INCLUDE_DIR} )
+if(EIGEN3_FOUND)
     list(APPEND analitza_SRCS commands/eigencommands.cpp)
 endif()
 

@@ -42,6 +42,7 @@
 #include "commands/matrixcommands.h"
 #include "commands/blockmatrixcommands.h"
 #include "commands/matrixqueries.h"
+#include "commands/eigencommands.h"
 
 // #define SCRIPT_PROFILER
 
@@ -168,6 +169,9 @@ void Analyzer::registerBuiltinMethods()
 	m_builtin.insertFunction(IsZeroMatrixCommand::id, IsZeroMatrixCommand::type, new IsZeroMatrixCommand);
 	m_builtin.insertFunction(IsIdentityMatrixCommand::id, IsIdentityMatrixCommand::type, new IsIdentityMatrixCommand);
 	m_builtin.insertFunction(IsDiagonalMatrixCommand::id, IsDiagonalMatrixCommand::type, new IsDiagonalMatrixCommand);
+#ifdef HAVE_EIGEN3
+	m_builtin.insertFunction(EigenTestCommand::id, EigenTestCommand::type, new EigenTestCommand);
+#endif
 }
 
 void Analyzer::setExpression(const Expression & e)

@@ -20,10 +20,19 @@
 #define EIGENCOMMANDS_H
 
 #include "builtinmethods.h"
+#include "config-analitza.h"
 
 namespace Analitza {
 class Expression;
 };
 
+class EigenTestCommand: public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+
+	static const QString id;
+	static const Analitza::ExpressionType type;
+};
 
 #endif // EIGENCOMMANDS_H

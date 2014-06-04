@@ -21,9 +21,7 @@
 #include <QtTest/QTest>
 
 #include "analyzer.h"
-#include <matrix.h>
-#include <container.h>
-#include <apply.h>
+#include "config-analitza.h"
 
 using Analitza::Expression;
 
@@ -491,6 +489,16 @@ void CommandsTest::testIncorrect_data()
 	
 	QTest::newRow("bad dimensions:2x2identitymatrix and 2x1zeromatrix") << "2*(identitymatrix(2) + matrix(2,1))";
 	QTest::newRow("bad dimensions:2x2identitymatrix and -2x2matrix") << "2*(identitymatrix(2) + matrix(-2, 2,1))";
+
+#ifdef HAVE_EIGEN3
+	QTest::newRow("bad eigen 1") << "eigentest(list{23},4)";
+	QTest::newRow("bad eigen 2") << "eigentest(list{23})";
+	QTest::newRow("bad eigen 3") << "eigentest(matrix{})";
+	QTest::newRow("bad eigen 4") << "eigentest(matrix{1}, matrix{})";
+	QTest::newRow("bad eigen 5") << "eigentest(matrix{matrixrow{1,2}}, matrix{})";
+	QTest::newRow("bad eigen 6") << "eigentest(matrix{matrixrow{1,2}}, matrix{matrixrow{list{5},6}})";
+	QTest::newRow("bad eigen 7") << "eigentest(matrix{matrixrow{1,list{2}}})";
+#endif
 }
 
 void CommandsTest::testIncorrect()
