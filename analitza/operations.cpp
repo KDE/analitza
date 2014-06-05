@@ -39,6 +39,7 @@ using namespace Analitza;
 
 Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn* oper1, QString** correct)
 {
+	Object *ret = oper;
 	int residu;
 	const double a=oper->value(), b=oper1->value();
 	
@@ -52,8 +53,10 @@ Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn
 		case Operator::divide:
 			if(Q_LIKELY(b!=0.))
 				oper->setValue(a / b);
-			else
+			else {
 				*correct=new QString(QCoreApplication::tr("Cannot divide by 0."));
+				ret=new None();
+			}
 			break;
 		case Operator::minus:
 			oper->setValue(a - b);
@@ -66,8 +69,10 @@ Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn
 		case Operator::rem:
 			if(Q_LIKELY(floor(b)!=0.))
 				oper->setValue(int(remainder(a, b)));
-			else
+			else {
 				*correct=new QString(QCoreApplication::tr("Cannot calculate the remainder on 0."));
+				ret=new None();
+			}
 			break;
 		case Operator::quotient:
 			oper->setValue(int(floor(a / b)));
@@ -76,8 +81,10 @@ Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn
 			int fb = int(floor(b));
 			if(Q_LIKELY(fb!=0))
 				oper->setValue((int(floor(a)) % fb)==0);
-			else
+			else {
 				*correct=new QString(QCoreApplication::tr("Cannot calculate the factor on 0."));
+				ret=new None();
+			}
 		}	break;
 		case Operator::min:
 			oper->setValue(a < b? a : b);
@@ -130,8 +137,10 @@ Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn
 		}	break;
 		case Operator::lcm:
 			//code by michael cane aka kiko :)
-			if(Q_UNLIKELY(floor(a)==0. || floor(b)==0.))
+			if(Q_UNLIKELY(floor(a)==0. || floor(b)==0.)) {
 				*correct=new QString(QCoreApplication::tr("Cannot calculate the lcm of 0."));
+				ret=new None();
+			}
 			else {
 				int ia=floor(a), ib=floor(b);
 				int ic=ia*ib;
@@ -152,7 +161,7 @@ Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn
 		default:
 			break;
 	}
-	return oper;
+	return ret;
 }
 
 Object* Operations::reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString** correct)
