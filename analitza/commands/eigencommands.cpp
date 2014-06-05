@@ -20,12 +20,13 @@
 
 #include <QCoreApplication>
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
+#include <Eigen/Eigenvalues>
 
 #include "expression.h"
 #include "value.h"
+#include "list.h"
 #include "matrix.h"
-#include <list.h>
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
@@ -36,6 +37,7 @@ const ExpressionType EigenTestCommand::type = ExpressionType(ExpressionType::Lam
 							 ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1)))
 .addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
 
+//TODO support endomorphisms over Rn too
 Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
@@ -49,6 +51,13 @@ Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& arg
 	}
 	
 	const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
+	
+	if (!matrix->isSquare()) {
+		ret.addError(QCoreApplication::tr("To use '%1' command the input matrix must be square").arg(EigenTestCommand::id));
+		
+		return ret;
+	}
+	
 	const int m = matrix->rowCount();
 	const int n = matrix->columnCount();
 	
@@ -133,5 +142,3 @@ Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& arg
 	
 	return ret;
 }
-
-//E

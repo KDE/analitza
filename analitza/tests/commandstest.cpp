@@ -509,6 +509,8 @@ void CommandsTest::testIncorrect_data()
 	QTest::newRow("eigenvalues: empty matrix") << "eigenvalues(matrix{matrixrow{1,2}}, matrix{})";
 	QTest::newRow("eigenvalues: invalid arg types1") << "eigenvalues(matrix{matrixrow{1,2}}, matrix{matrixrow{list{5},6}})";
 	QTest::newRow("eigenvalues: invalid arg types2") << "eigenvalues(matrix{matrixrow{1,list{2}}})";
+	QTest::newRow("eigenvalues: non square matrix") << "eigenvalues(matrix{matrixrow{1,2,3}})";
+	//TODO nan and inf cases
 #endif
 }
 
