@@ -174,7 +174,7 @@ void Analyzer::registerBuiltinMethods()
 	m_builtin.insertFunction(IsIdentityMatrixCommand::id, IsIdentityMatrixCommand::type, new IsIdentityMatrixCommand);
 	m_builtin.insertFunction(IsDiagonalMatrixCommand::id, IsDiagonalMatrixCommand::type, new IsDiagonalMatrixCommand);
 #ifdef HAVE_EIGEN3
-	m_builtin.insertFunction(EigenTestCommand::id, EigenTestCommand::type, new EigenTestCommand);
+	m_builtin.insertFunction(EigenvaluesCommand::id, EigenvaluesCommand::type, new EigenvaluesCommand);
 #endif
 }
 

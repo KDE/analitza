@@ -31,31 +31,22 @@
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
-const QString EigenTestCommand::id = QString("eigenvalues");
-const ExpressionType EigenTestCommand::type = ExpressionType(ExpressionType::Lambda)
-.addParameter(ExpressionType(ExpressionType::Any, 
-							 ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1)))
-.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
-
-//TODO support endomorphisms over Rn too
-Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& args)
+static const Eigen::MatrixXcd executeEigenSolver(const QList< Analitza::Expression >& args, bool computeEigenvectors, QStringList &errors)
 {
-	Expression ret;
-	
 	const int nargs = args.size();
 	
 	if (nargs != 1) {
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'. Should have 1 parameter").arg(EigenTestCommand::id));
+		errors.append(QCoreApplication::tr("Invalid parameter count for '%1'. Should have 1 parameter").arg(EigenvaluesCommand::id));
 		
-		return ret;
+		return Eigen::MatrixXcd();
 	}
 	
 	const Analitza::Matrix *matrix = static_cast<const Analitza::Matrix*>(args.first().tree());
 	
 	if (!matrix->isSquare()) {
-		ret.addError(QCoreApplication::tr("To use '%1' command the input matrix must be square").arg(EigenTestCommand::id));
+		errors.append(QCoreApplication::tr("To use '%1' command the input matrix must be square").arg(EigenvaluesCommand::id));
 		
-		return ret;
+		return Eigen::MatrixXcd();
 	}
 	
 	const int m = matrix->rowCount();
@@ -63,8 +54,8 @@ Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& arg
 	
 	Eigen::MatrixXd realmatrix(m, n);
 	
-	for (int i = 0; i < m; ++i)
-		for (int j = 0; j < n; ++j) 
+	for (int i = 0; i < m; ++i) {
+		for (int j = 0; j < n; ++j) {
 			if (matrix->at(i,j)->type() == Analitza::Object::value) {
 				const Analitza::Cn *entry = static_cast<const Analitza::Cn*>(matrix->at(i,j));
 				const Analitza::Cn::ValueFormat entryformat = entry->format();
@@ -74,32 +65,59 @@ Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& arg
 					entryformat == Analitza::Cn::Integer || entryformat == Analitza::Cn::Boolean) {
 						realmatrix(i,j) = entry->value();
 				} else {
-					ret.addError(QCoreApplication::tr("Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number value")
-								 .arg(i).arg(j).arg(EigenTestCommand::id));
+					errors.append(QCoreApplication::tr("Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number value")
+								 .arg(i).arg(j).arg(EigenvaluesCommand::id));
 					
-					return ret;
+					return Eigen::MatrixXcd();
 				}
 			} else {
-				ret.addError(QCoreApplication::tr("Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number value")
-				.arg(i).arg(j).arg(EigenTestCommand::id));
+				errors.append(QCoreApplication::tr("Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number value")
+				.arg(i).arg(j).arg(EigenvaluesCommand::id));
 				
-				return ret;
+				return Eigen::MatrixXcd();
 			}
+		}
+	}
 	
 	Q_ASSERT(nargs > 0);
-	Q_ASSERT(ret.toString().isEmpty());
-	Q_ASSERT(ret.isCorrect());
 	
 	Eigen::EigenSolver<Eigen::MatrixXd> eigensolver;
-	eigensolver.compute(realmatrix, /* computeEigenvectors = */ false);
+	eigensolver.compute(realmatrix, computeEigenvectors);
 	
-	const Eigen::ArrayXcd eigenvalues = eigensolver.eigenvalues();
-	const int neigenvalues = eigenvalues.size();
+	Eigen::MatrixXcd ret;
+	
+	if (computeEigenvectors)
+		ret = eigensolver.eigenvectors();
+	else
+		ret = eigensolver.eigenvalues();
+	
+	return ret;
+}
+
+const QString EigenvaluesCommand::id = QString("eigenvalues");
+const ExpressionType EigenvaluesCommand::type = ExpressionType(ExpressionType::Lambda)
+.addParameter(ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1)))
+.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
+
+//TODO support endomorphisms over Rn too
+Expression EigenvaluesCommand::operator()(const QList< Analitza::Expression >& args)
+{
+	Expression ret;
+	
+	QStringList errors;
+	const Eigen::MatrixXcd eigeninfo = executeEigenSolver(args, false, errors);
+		
+	if (!errors.isEmpty()) {
+		ret.addError(errors.first());
+		
+		return ret;
+	}
+	const int neigenvalues = eigeninfo.rows();
 	
 	Analitza::List *list = new Analitza::List;
 	
 	for (int i = 0; i < neigenvalues; ++i) {
-		const std::complex<double> eigenvalue = eigenvalues(i);
+		const std::complex<double> eigenvalue = eigeninfo(i);
 		const double realpart = eigenvalue.real();
 		const double imagpart = eigenvalue.imag();
 		
@@ -142,3 +160,17 @@ Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& arg
 	
 	return ret;
 }
+
+
+const QString EigenvectorsCommand::id = QString("eigenvectors");
+const ExpressionType EigenvectorsCommand::type = EigenvaluesCommand::type;
+
+//TODO support endomorphisms over Rn too
+//TODO
+Expression EigenvectorsCommand::operator()(const QList< Analitza::Expression >& args)
+{
+	Expression ret;
+
+	return ret;
+}
+

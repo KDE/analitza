@@ -26,7 +26,17 @@ namespace Analitza {
 class Expression;
 };
 
-class EigenTestCommand: public Analitza::FunctionDefinition
+class EigenvaluesCommand: public Analitza::FunctionDefinition
+{
+public:
+	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+
+	static const QString id;
+	static const Analitza::ExpressionType type;
+};
+
+
+class EigenvectorsCommand: public Analitza::FunctionDefinition
 {
 public:
 	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
