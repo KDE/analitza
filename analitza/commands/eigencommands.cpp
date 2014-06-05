@@ -25,11 +25,12 @@
 #include "expression.h"
 #include "value.h"
 #include "matrix.h"
+#include <list.h>
 
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
-const QString EigenTestCommand::id = QString("eigentest");
+const QString EigenTestCommand::id = QString("eigenvalues");
 const ExpressionType EigenTestCommand::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Any, 
 							 ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1)))
@@ -42,7 +43,7 @@ Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& arg
 	const int nargs = args.size();
 	
 	if (nargs != 1) {
-		ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'. Should have 1 parameter.").arg(EigenTestCommand::id));
+		ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'. Should have 1 parameter").arg(EigenTestCommand::id));
 		
 		return ret;
 	}
@@ -51,7 +52,7 @@ Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& arg
 	const int m = matrix->rowCount();
 	const int n = matrix->columnCount();
 	
-	Eigen::MatrixXd scalarmatrix(m, n);
+	Eigen::MatrixXd realmatrix(m, n);
 	
 	for (int i = 0; i < m; ++i)
 		for (int j = 0; j < n; ++j) 
@@ -62,15 +63,15 @@ Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& arg
 				//Don't allow complex numbers
 				if (entryformat == Analitza::Cn::Char || entryformat == Analitza::Cn::Real || 
 					entryformat == Analitza::Cn::Integer || entryformat == Analitza::Cn::Boolean) {
-					scalarmatrix(i,j) = entry->value();
+						realmatrix(i,j) = entry->value();
 				} else {
-					ret.addError(QCoreApplication::tr("Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number value.")
+					ret.addError(QCoreApplication::tr("Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number value")
 								 .arg(i).arg(j).arg(EigenTestCommand::id));
 					
 					return ret;
 				}
 			} else {
-				ret.addError(QCoreApplication::tr("Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number value.")
+				ret.addError(QCoreApplication::tr("Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number value")
 				.arg(i).arg(j).arg(EigenTestCommand::id));
 				
 				return ret;
@@ -81,9 +82,54 @@ Expression EigenTestCommand::operator()(const QList< Analitza::Expression >& arg
 	Q_ASSERT(ret.isCorrect());
 	
 	Eigen::EigenSolver<Eigen::MatrixXd> eigensolver;
-	eigensolver.compute(scalarmatrix, /* computeEigenvectors = */ false);
+	eigensolver.compute(realmatrix, /* computeEigenvectors = */ false);
 	
+	const Eigen::ArrayXcd eigenvalues = eigensolver.eigenvalues();
+	const int neigenvalues = eigenvalues.size();
 	
+	Analitza::List *list = new Analitza::List;
+	
+	for (int i = 0; i < neigenvalues; ++i) {
+		const std::complex<double> eigenvalue = eigenvalues(i);
+		const double realpart = eigenvalue.real();
+		const double imagpart = eigenvalue.imag();
+		
+		if (std::isnan(realpart) || std::isnan(imagpart)) {
+			ret.addError(QCoreApplication::tr("Returned eigenvalue is NaN", "NaN means Not a Number, is an invalid float number"));
+			
+			delete list;
+			
+			return ret;
+		} else if (std::isinf(realpart) || std::isinf(imagpart)) {
+			ret.addError(QCoreApplication::tr("Returned eigenvalue is too big"));
+			
+			delete list;
+			
+			return ret;
+		} else {
+			bool isonlyreal = true;
+			
+			if (std::isnormal(imagpart)) {
+				isonlyreal = false;
+			}
+			
+			Analitza::Object * eigenvalueobj = 0;
+			
+			if (isonlyreal) {
+				eigenvalueobj = new Analitza::Cn(realpart);
+			} else {
+				Analitza::Vector *complexwrapper = new Analitza::Vector(2);
+				complexwrapper->appendBranch(new Analitza::Cn(realpart));
+				complexwrapper->appendBranch(new Analitza::Cn(imagpart));
+				
+				eigenvalueobj = complexwrapper;
+			}
+			
+			list->appendBranch(eigenvalueobj);
+		}
+	}
+	
+	ret.setTree(list);
 	
 	return ret;
 }

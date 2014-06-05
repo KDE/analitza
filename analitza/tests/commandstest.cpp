@@ -379,6 +379,16 @@ void CommandsTest::testCorrect_data()
 	script.clear();
 	script << "isdiag(identitymatrix(4))";
 	QTest::newRow("Id is diag matrix") << script << "true";
+	
+#ifdef HAVE_EIGEN3
+	script.clear();
+	script << "eigenvalues(identitymatrix(4))";
+	QTest::newRow("eigenvalues: from Id") << script << "list { 1, 1, 1, 1 }";
+	
+	script.clear();
+	script << "eigenvalues(matrix(vector{3,4}, vector{-2, -1}))";
+	QTest::newRow("eigenvalues: full complex") << script << "list { vector { 1, 2 }, vector { 1, -2 } }";
+#endif
 }
 
 void CommandsTest::testCorrect()
@@ -491,13 +501,14 @@ void CommandsTest::testIncorrect_data()
 	QTest::newRow("bad dimensions:2x2identitymatrix and -2x2matrix") << "2*(identitymatrix(2) + matrix(-2, 2,1))";
 
 #ifdef HAVE_EIGEN3
-	QTest::newRow("bad eigen 1") << "eigentest(list{23},4)";
-	QTest::newRow("bad eigen 2") << "eigentest(list{23})";
-	QTest::newRow("bad eigen 3") << "eigentest(matrix{})";
-	QTest::newRow("bad eigen 4") << "eigentest(matrix{1}, matrix{})";
-	QTest::newRow("bad eigen 5") << "eigentest(matrix{matrixrow{1,2}}, matrix{})";
-	QTest::newRow("bad eigen 6") << "eigentest(matrix{matrixrow{1,2}}, matrix{matrixrow{list{5},6}})";
-	QTest::newRow("bad eigen 7") << "eigentest(matrix{matrixrow{1,list{2}}})";
+	QTest::newRow("eigenvalues: bad args type1") << "eigenvalues(list{23},4)";
+	QTest::newRow("eigenvalues: bad args type2") << "eigenvalues(list{23})";
+	QTest::newRow("eigenvalues: empty matrix2") << "eigenvalues(matrix{})";
+	QTest::newRow("eigenvalues: empty invalid matrix2") << "eigenvalues(matrix{1}, matrix{})";
+	QTest::newRow("eigenvalues: bad numbe of args") << "eigenvalues(identitymatrix(3), zeromatrix(4,5))";
+	QTest::newRow("eigenvalues: empty matrix") << "eigenvalues(matrix{matrixrow{1,2}}, matrix{})";
+	QTest::newRow("eigenvalues: invalid arg types1") << "eigenvalues(matrix{matrixrow{1,2}}, matrix{matrixrow{list{5},6}})";
+	QTest::newRow("eigenvalues: invalid arg types2") << "eigenvalues(matrix{matrixrow{1,list{2}}})";
 #endif
 }
 

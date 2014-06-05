@@ -42,7 +42,11 @@
 #include "commands/matrixcommands.h"
 #include "commands/blockmatrixcommands.h"
 #include "commands/matrixqueries.h"
+
+#include "config-analitza.h"
+#ifdef HAVE_EIGEN3
 #include "commands/eigencommands.h"
+#endif
 
 // #define SCRIPT_PROFILER
 
