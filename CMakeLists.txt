@@ -21,7 +21,7 @@ ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfigVersion.cmake")
 
-#Checking whether we can compile calgebra
+# Checking whether we can compile calgebra
 # include(CheckIncludeFiles)
 # macro_optional_find_package(Readline)
 # macro_bool_to_01(READLINE_FOUND HAVE_READLINE)
