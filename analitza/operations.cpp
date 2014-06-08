@@ -322,7 +322,7 @@ Object * Operations::reduceVectorReal(Operator::OperatorType op, Vector * v1, Cn
 Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, Vector * v2, QString** correct)
 {
 	if(v1->size()!=v2->size()) { //FIXME: unneeded? ... aucahuasi: I think is needed ...
-		*correct=new QString(QCoreApplication::tr("Cannot operate on different sized vectors."));
+		*correct=new QString(QCoreApplication::tr("Cannot operate '%1' on different sized vectors.").arg(Operator(op).name()));
 		return new None();
 	}
 	
@@ -336,6 +336,37 @@ Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, 
 	return v1;
 }
 
+Object* Operations::reduceMatrixVector(Operator::OperatorType op, Matrix* matrix, Vector* vector, QString** correct)
+{
+	Object* ret = 0;
+	
+	if (op == Operator::times) {
+		//TODO check if vector/matrix has only values as type for entries
+		const int maxk = matrix->columnCount();
+		
+		if (maxk == vector->size()) {
+			const int m = matrix->rowCount();
+			
+			Vector *newvec = new Vector(m);
+			
+			for (int i = 0; i < m; ++i) {
+				double sum = 0;
+				for (int k = 0; k < maxk; ++k)
+					sum += static_cast<const Cn*>(reduceRealReal(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->value();
+				
+				newvec->appendBranch(new Cn(sum));
+			}
+			
+			ret = newvec;
+		} else {
+			*correct=new QString(QCoreApplication::tr("Multiplication between a matrix and a vector is allowed provided that the number of columns of the matrix equals the size of the vector"));
+			ret=new None();
+		}
+	}
+	
+	return ret;
+}
+
 Object* Operations::reduceUnaryVector(Operator::OperatorType op, Vector* c, QString** correct)
 {
 	Object *ret=0;
@@ -343,6 +374,18 @@ Object* Operations::reduceUnaryVector(Operator::OperatorType op, Vector* c, QStr
 		case Operator::card:
 			ret=new Cn(c->size());
 			break;
+		case Operator::transpose: {
+			const int n = c->size();
+			
+			Matrix* mret = new Matrix;
+			MatrixRow* row = new MatrixRow(n);
+			for(int j=0; j<n; ++j) {
+				row->appendBranch(c->at(j)->copy());
+			}
+			
+			mret->appendBranch(row);
+			ret = mret;
+		}	break;
 		default:
 			//Should be dealt by typechecker. not necessary
 			*correct=new QString(QCoreApplication::tr("Could not calculate a vector's %1").arg(Operator(op).toString()));
@@ -428,6 +471,37 @@ Object* Operations::reduceCustomCustom(Operator::OperatorType op, CustomObject* 
 	return 0;
 }
 
+Object* Operations::reduceVectorMatrix(Operator::OperatorType op, Vector* vector, Matrix* matrix, QString** correct)
+{
+	Object* ret = 0;
+	
+	if (op == Operator::times) {
+		//TODO check if matrix has only values as type for entries
+		if (1 == matrix->rowCount()) {
+			const int m = vector->size();
+			const int n = matrix->columnCount();
+			
+			Matrix *newmat = new Matrix();
+			
+			for (int i = 0; i < m; ++i) {
+				MatrixRow *row = new MatrixRow(n);
+				for (int j = 0; j < n; ++j)
+					row->appendBranch(reduceRealReal(op, (Cn*)vector->at(i), (Cn*)matrix->at(0,j), correct)->copy());
+				
+				newmat->appendBranch(row);
+			}
+			
+			ret = newmat;
+		} else {
+			*correct=new QString(QCoreApplication::tr("Multiplication between a vector and a matrix is allowed provided that the matrix has only one matrixrow element"));
+			ret=new None();
+		}
+	}
+	
+	return ret;
+}
+
+
 Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct)
 {
 	Object* ret = 0;
@@ -448,12 +522,38 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 			}
 		}	break;
 		case Operator::times: {
-			//TODO feature 2
+			//TODO check if matrix has only values as type for entries
+			const int maxk = m1->columnCount();
+			if (maxk == m2->rowCount()) {
+				const int m = m1->rowCount();
+				const int n = m2->columnCount();
+				
+				Matrix *matrix = new Matrix();
+				
+				for (int i = 0; i < m; ++i) {
+					MatrixRow *row = new MatrixRow(n);
+					for (int j = 0; j < n; ++j) {
+						double sum = 0;
+						for (int k = 0; k < maxk; ++k) {
+							sum += static_cast<const Cn*>(reduceRealReal(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->value();
+						}
+						
+						row->appendBranch(new Cn(sum));
+					}
+					
+					matrix->appendBranch(row);
+				}
+				
+				ret = matrix;
+			} else {
+				*correct=new QString(QCoreApplication::tr("Multiplication of two matrices is allowed provided that the number of columns of the first matrix equals the number of rows of the second matrix"));
+				ret=new None();
+			}
 		}	break;
 		default:
 			break;
 	}
-
+	
 	return ret;
 }
 
@@ -507,6 +607,7 @@ Object* Operations::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QStr
 			}
 			ret = mret;
 		}	break;
+		//TODO power
 		default:
 			break;
 	}
@@ -563,6 +664,15 @@ QList<ExpressionType> Operations::infer(Operator::OperatorType op)
 							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
 			ret << TypeTriplet(ExpressionType(ExpressionType::Value),
 							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2),
+							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), 1),
 							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 			break;
 		case Operator::eq:
@@ -653,10 +763,10 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 			ret << TypePair(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any, 1), -1), ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any, 1), -1));
 			break;
 		case Operator::transpose:
-			ret << TypePair(ExpressionType(ExpressionType::Matrix,
-										   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
-							ExpressionType(ExpressionType::Matrix,
-										   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), -2));
+			ret << TypePair(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), -2));
+			ret << TypePair(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
+							ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), 1));
 			break;
 		case Operator::factorial:
 		case Operator::sin:
@@ -709,12 +819,12 @@ Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] =
 	{0,(Operations::BinaryOp) reduceNoneReal,0,0,0,0,0,0,(Operations::BinaryOp) reduceNoneMatrix,0,0},
 	{(Operations::BinaryOp) reduceRealNone, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,0,0},
+	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,(Operations::BinaryOp) reduceVectorMatrix,0,0},
 	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{(Operations::BinaryOp) reduceMatrixNone,0,0,0,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
+	{(Operations::BinaryOp) reduceMatrixNone,0,0, (Operations::BinaryOp) reduceMatrixVector,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
 };

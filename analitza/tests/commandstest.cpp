@@ -416,6 +416,7 @@ void CommandsTest::testIncorrect_data()
 {
 	QTest::addColumn<QString>("expression");
 	
+	QTest::newRow("range: bad input") << "range(list{3,4}-9)";
 	QTest::newRow("range: bad arg type") << "range(list{3}, 31, true)";
 	QTest::newRow("range: bad arg type2") << "range(list{3}, 31)";
 	QTest::newRow("range: bad arg count") << "range(2,3,vector{3}, list{2}, 4)";

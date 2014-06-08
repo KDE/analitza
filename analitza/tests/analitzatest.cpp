@@ -204,9 +204,19 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::newRow("matrix") << "matrix { matrixrow { 1, 2 } }" << "matrix { matrixrow { 1, 2 } }";
 	QTest::newRow("matrix+") << "matrix { matrixrow { 1, 2 } }+matrix{ matrixrow { 1, 2 } }" << "matrix { matrixrow { 2, 4 } }";
 	QTest::newRow("matrix++") << "matrix { matrixrow { 5, 6 }, matrixrow { 4, 0 }}+matrix { matrixrow { 2, 3 }, matrixrow { 4, 0 }}" << "matrix { matrixrow { 7, 9 }, matrixrow { 8, 0 } }";
+	//TODO aucahuasi: we support only matrix and vector over a scalar field (numbers), but I think we could have matrix/vector over other structures too (e.g. functions, vectors, etc.)
+	//QTest::newRow("matrix+++") << "matrix { matrixrow { vector { 1, 2 } } }+matrix { matrixrow { vector { 1.8, 2.4 } } }" << "matrix { matrixrow { vector { 2.8, 4.4 } } }";
 	QTest::newRow("matrix@") << "selector(1, matrix { matrixrow { 1, 2 } })" << "vector { 1, 2 }";
 	QTest::newRow("matrix@@") << "selector(1, selector(1, matrix { matrixrow { 1, 2 } }))" << "1";
 	QTest::newRow("scalar multiplication of matrix") << "3*matrix { matrixrow { 5, 6 }, matrixrow { 4, 0 }}" << "matrix { matrixrow { 15, 18 }, matrixrow { 12, 0 } }";
+	QTest::newRow("transpose vector") << "transpose(vector{12,45})" << "matrix { matrixrow { 12, 45 } }";
+	QTest::newRow("row x column") << "matrix { matrixrow { 1, 2 } }*matrix { matrixrow { 3 }, matrixrow { 5 } }" << "matrix { matrixrow { 13 } }";
+	QTest::newRow("column x row") << "matrix { matrixrow { 3 }, matrixrow { 5 } }*matrix { matrixrow { 1, 2 } }" << "matrix { matrixrow { 3, 6 }, matrixrow { 5, 10 } }";
+	QTest::newRow("row x vector") << "matrix { matrixrow { 1, 2 } }*vector{ 3, 5 }" << "vector { 13 }";
+	QTest::newRow("vector x row") << "vector{ 3, 5 }*matrix { matrixrow { 1, 2 } }" << "matrix { matrixrow { 3, 6 }, matrixrow { 5, 10 } }";
+	QTest::newRow("vector x transpose(vector)") << "vector{ 3, 5 }*transpose(vector{1,2})" << "matrix { matrixrow { 3, 6 }, matrixrow { 5, 10 } }";
+	QTest::newRow("matrix x vector") << "matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 }, matrixrow { 3, 4 } }*vector{ 1, 2 }" << "vector { 9, 6, 11 }";
+	QTest::newRow("matrix x matrix") << "matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 }, matrixrow { 3, 4 } }*matrix { matrixrow{3, 3, 4, 5, 6}, matrixrow{2, 4, 5, 6, 2} }" << "matrix { matrixrow { 15, 21, 27, 33, 24 }, matrixrow { 10, 14, 18, 22, 16 }, matrixrow { 17, 25, 32, 39, 26 } }";
 }
 
 void AnalitzaTest::testTrivialEvaluate()

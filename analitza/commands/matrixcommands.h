@@ -169,4 +169,6 @@ public:
 	static const Analitza::ExpressionType type;
 };
 
+//TODO random matrix (default 0,1 ... but you can set min and max vals)
+
 #endif // MATRIXCOMMANDS_H

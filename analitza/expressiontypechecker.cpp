@@ -198,33 +198,25 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
 						
 						ExpressionType first =_first .starsToType(_starToType);
 						ExpressionType second=_second.starsToType(_starToType);
+						
 // 						qDebug() << "9999999" << _first.assumptions() << first.assumptions() << starToType;
 						
 						starToType=ExpressionType::computeStars(starToType, first,  opt.parameters()[0]);
-						starToType=ExpressionType::computeStars(starToType, second, opt.parameters()[1]);
-						
 						first =first .starsToType(starToType);
+						starToType=ExpressionType::computeStars(starToType, second, opt.parameters()[1]);
 						second=second.starsToType(starToType);
-						
-						starToParam=ExpressionType::computeStars(starToParam, opt.parameters()[0], first);
-						starToParam=ExpressionType::computeStars(starToParam, opt.parameters()[1], second);
-// 						qDebug() << "XXXXXX" << starToParam;
-// 						qDebug() << "PPPPPP" << opt << first << second << "|||||" << first.assumptions() << second.assumptions();
-						
-// 						starToType=ExpressionType::computeStars(starToType, first,  opt.parameters()[0].starsToType(starToParam));
-// 						starToType=ExpressionType::computeStars(starToType, second, opt.parameters()[1].starsToType(starToParam));
-						
-// 						first =first .starsToType(starToType);
-// 						second=second.starsToType(starToType);
 						
 						QMap<QString, ExpressionType> assumptions=first.assumptions();
 						bool valid=ExpressionType::assumptionsMerge(assumptions, second.assumptions());
 						
-// 						qDebug() << "fifuuuuuuu" << first << (it-1)->toString() << 
-// 													second << it->toString() << assumptions << valid;
+// 						qDebug() << "PPPPPP" << opt << first << second << "|||||" << first.assumptions() << second.assumptions();
 						
 						valid &= !first.isError() && !second.isError();
+						starToParam=ExpressionType::computeStars(starToParam, opt.parameters()[0], first);
+// 						qDebug() << "XXXXXX1" << starToParam;
 						valid &= first .canReduceTo(opt.parameters()[0].starsToType(starToParam));
+						starToParam=ExpressionType::computeStars(starToParam, opt.parameters()[1], second);
+// 						qDebug() << "XXXXXX2" << starToParam;
 						valid &= second.canReduceTo(opt.parameters()[1].starsToType(starToParam));
 						
 // 						qDebug() << "POPOPO" << (it-1)->toString() << it->toString() << valid << first << second << starToParam;
