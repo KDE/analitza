@@ -123,7 +123,11 @@ std::complex<float> Cn::complexValue() const
 
 void Cn::setValue(std::complex<float> v)
 {
-	m_format = Complex;
-	m_imaginaryPart = v.imag();
-	m_value = v.real();
+	if(v.imag() == 0)
+		setValue(v.real());
+	else {
+		m_format = Complex;
+		m_imaginaryPart = v.imag();
+		m_value = v.real();
+	}
 }
