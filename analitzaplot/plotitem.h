@@ -67,7 +67,7 @@ public:
 
     void clearTags();
     void addTags(const QSet<QString>& tag);
-	QSet<QString> tags() const;
+    QSet<QString> tags() const;
 
 protected:
     void setModel(PlotsModel *m);

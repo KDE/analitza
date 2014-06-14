@@ -18,7 +18,7 @@
 
 #include "value.h"
 #include "operator.h"
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 
 #include <QDomElement>
 
@@ -36,9 +36,9 @@ Object* Cn::copy() const
 }
 
 
-QString Cn::visit(ExpressionWriter* e) const
+QVariant Cn::accept(AbstractExpressionVisitor* e) const
 {
-	return e->accept(this);
+	return e->visit(this);
 }
 
 bool Cn::setValue(const QDomElement& val)

@@ -1,5 +1,6 @@
 /*************************************************************************************
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
+ *  Copyright (C) 2008 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2014 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -16,78 +17,54 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+#ifndef ABSTRACTEXPRESSIONVISITOR_H
+#define ABSTRACTEXPRESSIONVISITOR_H
 
+#include "analitzaexport.h"
 
-#ifndef FUNCTIONGRAPH2_H__Q
-#define FUNCTIONGRAPH2_H__Q
+#include <QVariant>
 
-
-/*
- Indice de los nodos
-
- Capa z+
-y+
- -----
- |3|7|
- -----
- |1|5|
- ----- x+
-
- Capa z-
-y+
- -----
- |2|6|
- -----
- |0|4|
- ----- x+
-*/
-
-#include <QVector3D>
-
-struct Cube
+namespace Analitza
 {
-    Cube(const QVector3D cent = QVector3D(0,0,0), double halfe = 1) : c(cent), he(halfe) {}
-    Cube(const Cube &other) :c(other.c), he(other.he) {}
+class Object;
+class Apply;
+class Ci;
+class Cn;
+class CustomObject;
+class Container;
+class Operator;
+class Vector;
+class List;
+class Matrix;
+class MatrixRow;
 
-    QVector3D c;
-    double he;
-    
-    QVector3D center() const { return c; }
-    double halfEdge() const { return he; }
-    void setCenter(double x, double y, double z) { c = QVector3D(x,y,z); }
-    void setCenter(const QVector3D &cent) { c = cent; }
-    void setHalfEdge(double halfe) { he = halfe; }
+/**
+ * \class AbstractExpressionWriter
+ * 
+ * \ingroup AnalitzaModule
+ *
+ * \brief This interface defines the generic expression writer contract.
+ */
 
-};
-
-struct sNodo{
-    Cube cubo;
-    sNodo* nodos[8];
-};
-
-
-//TODO replace by kdtree using ANN library
-class Octree
+class ANALITZA_EXPORT AbstractExpressionVisitor
 {
-private:
-    sNodo* raiz;
-
-    //Crea los hijos con los valores adecuados en los vertices
-    void inicializar_nodos(sNodo* padre);
-
-    void borrar_rec(sNodo* nodo);
-    void crear_rec(sNodo* nodo, unsigned int nivel_actual, unsigned int nivel_max);
-public:
-    Octree(double largo_mundo);
-    Octree(Cube cubo);
-    ~Octree();
-
-    sNodo* get_raiz();
-    void crearNivel(unsigned int nivel);
-    void bajarNivel(sNodo* nodo);
-    void borrarHijos(sNodo* padre);
-
+	public:
+		virtual ~AbstractExpressionVisitor();
+		
+		virtual QVariant visit(const Operator* var) = 0;
+		virtual QVariant visit(const Ci* var) = 0;
+		virtual QVariant visit(const Cn* var) = 0;
+		virtual QVariant visit(const Container* var) = 0;
+		virtual QVariant visit(const Vector* var) = 0;
+		virtual QVariant visit(const List* l) = 0;
+		virtual QVariant visit(const Apply* a) = 0;
+		virtual QVariant visit(const CustomObject* c) = 0;
+		virtual QVariant visit(const Matrix* c) = 0;
+		virtual QVariant visit(const MatrixRow* c) = 0;
+		
+		virtual QVariant result() const = 0;
 };
+
+}
 
 #endif
-

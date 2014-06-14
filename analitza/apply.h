@@ -49,7 +49,7 @@ class ANALITZA_EXPORT Apply : public Object
 		
 		virtual Apply* copy() const;
 		virtual bool matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* found) const;
-		virtual QString visit(ExpressionWriter* exp) const;
+		virtual QVariant accept(AbstractExpressionVisitor* exp) const;
 		const Operator& firstOperator() const { return m_op; }
 		int countValues() const { return m_params.size(); }
 		

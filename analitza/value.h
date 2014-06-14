@@ -151,7 +151,7 @@ class ANALITZA_EXPORT Cn : public Object
 		/** @returns whether the value has an imaginary part */
 		bool isComplex() const { return m_format == Complex; }
 
-		virtual QString visit(ExpressionWriter*) const;
+		virtual QVariant accept(AbstractExpressionVisitor*) const;
 		virtual bool isZero() const { return m_value==0. && m_imaginaryPart==0.f; }
 
 		virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;

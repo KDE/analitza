@@ -17,7 +17,7 @@
  *************************************************************************************/
 
 #include "matrix.h"
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include "vector.h"
 
 using namespace Analitza;
@@ -57,9 +57,9 @@ bool Matrix::matches(const Object* exp, QMap< QString, const Object* >* found) c
 	return matching;
 }
 
-QString Matrix::visit(ExpressionWriter* exp) const
+QVariant Matrix::accept(AbstractExpressionVisitor* exp) const
 {
-	return exp->accept(this);
+	return exp->visit(this);
 }
 
 void Matrix::appendBranch(Object* o)
@@ -98,9 +98,9 @@ MatrixRow::MatrixRow(int size)
 	: Vector(Object::matrixrow, size)
 {}
 
-QString MatrixRow::visit(ExpressionWriter* e) const
+QVariant MatrixRow::accept(AbstractExpressionVisitor* e) const
 {
-	return e->accept(this);
+	return e->visit(this);
 }
 
 MatrixRow* MatrixRow::copy() const

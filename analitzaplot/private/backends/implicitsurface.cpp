@@ -45,7 +45,7 @@ public:
     EXAMPLES(QStringList())
 
     //Own
-    virtual ~ImplicitSurf() {}
+    virtual ~ImplicitSurf() {  }
     void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
     
     double evalScalarField(double x, double y, double z);
@@ -68,9 +68,9 @@ ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v
 
 void ImplicitSurf::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
 {
-    sLimitesEspacio spaceLimits;
+    SpaceLimits spaceLimits;
     
-    double tmpsize = 4.0;
+    double tmpsize = 6.0;
     
     spaceLimits.minX = -tmpsize;
     spaceLimits.maxX = tmpsize;
@@ -93,17 +93,29 @@ void ImplicitSurf::update(const QVector3D & oppositecorner1, const QVector3D & o
         spaceLimits.maxZ = intervalz.second;
     }
     
+    
     setupSpace(spaceLimits);
     
-    vertices.clear();
-    normals.clear();
-    indexes.clear();
-    
     buildGeometry();
+    
+//     qDebug() << "A: " << ntrigs() << nverts();
 
-    vertices << MarchingCubes::_vertices;
-    normals << MarchingCubes::_normals;
-    indexes << MarchingCubes::_indexes;
+    //TODO find a better way to avoi this loops
+    for (int i = 0; i < nverts(); ++i)
+    {
+        vertices.append(vert(i)->x);
+        vertices.append(vert(i)->y);
+        vertices.append(vert(i)->z);
+        
+        normals.append(vert(i)->nx);
+        normals.append(vert(i)->ny);
+        normals.append(vert(i)->nz);
+    }
+
+    for (int i = 0; i < ntrigs(); ++i)
+    {
+       indexes <<  trig(i)->v1  <<  trig(i)->v2 <<  trig(i)->v3;
+    }
 }
 
 REGISTER_SURFACE(ImplicitSurf)

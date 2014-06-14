@@ -19,7 +19,7 @@
 #ifndef STRINGEXPRESSIONWRITER_H
 #define STRINGEXPRESSIONWRITER_H
 
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include "operator.h"
 
 namespace Analitza
@@ -33,31 +33,31 @@ namespace Analitza
  * \brief This class represents the string expression writer.
  */
 
-class StringExpressionWriter : public ExpressionWriter
+class StringExpressionWriter : public AbstractExpressionVisitor
 {
 	public:
 		StringExpressionWriter(const Object* o);
 		
-		virtual QString accept(const Ci* var);
-		virtual QString accept(const Cn* var);
-		virtual QString accept(const Container* var);
-		virtual QString accept(const Operator* var);
-		virtual QString accept(const Vector* var);
-		virtual QString accept(const List* l);
-		virtual QString accept(const Matrix* m);
-		virtual QString accept(const MatrixRow* mr);
-		virtual QString accept(const Apply* a);
-		virtual QString accept(const CustomObject* c);
+		virtual QVariant visit(const Ci* var);
+		virtual QVariant visit(const Cn* var);
+		virtual QVariant visit(const Container* var);
+		virtual QVariant visit(const Operator* var);
+		virtual QVariant visit(const Vector* var);
+		virtual QVariant visit(const List* l);
+		virtual QVariant visit(const Matrix* m);
+		virtual QVariant visit(const MatrixRow* mr);
+		virtual QVariant visit(const Apply* a);
+		virtual QVariant visit(const CustomObject* c);
 		
-		QString result() const { return m_result; }
+		QVariant result() const { return m_result; }
 		
 		static int weight(const Analitza::Operator* op, int size, int pos);
 		static const QMap<Operator::OperatorType, QString> s_operators;
 	private:
 		template <class T>
-			static QStringList allValues(T it, const T& itEnd, ExpressionWriter* writer);
+			static QStringList allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer);
 
-		QString m_result;
+		QVariant m_result;
 };
 
 }

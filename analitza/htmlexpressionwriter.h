@@ -19,7 +19,7 @@
 #ifndef HTMLEXPRESSIONWRITER_H
 #define HTMLEXPRESSIONWRITER_H
 
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 
 namespace Analitza
 {
@@ -32,28 +32,28 @@ namespace Analitza
  * \brief This class represents the string expression writer.
  */
 
-class HtmlExpressionWriter : public ExpressionWriter
+class HtmlExpressionWriter : public AbstractExpressionVisitor
 {
 	public:
 		HtmlExpressionWriter(const Object* o);
 		
-		virtual QString accept(const Ci* var);
-		virtual QString accept(const Cn* var);
-		virtual QString accept(const Container* var);
-		virtual QString accept(const Operator* var);
-		virtual QString accept(const Vector* var);
-		virtual QString accept(const List* l);
-		virtual QString accept(const Apply* a);
-		virtual QString accept(const CustomObject* c);
-		virtual QString accept(const Matrix* c);
-		virtual QString accept(const MatrixRow* c);
+		virtual QVariant visit(const Ci* var);
+		virtual QVariant visit(const Cn* var);
+		virtual QVariant visit(const Container* var);
+		virtual QVariant visit(const Operator* var);
+		virtual QVariant visit(const Vector* var);
+		virtual QVariant visit(const List* l);
+		virtual QVariant visit(const Apply* a);
+		virtual QVariant visit(const CustomObject* c);
+		virtual QVariant visit(const Matrix* c);
+		virtual QVariant visit(const MatrixRow* c);
 		
-		QString result() const { return m_result; }
+		QVariant result() const { return m_result; }
 		
 	private:
 		template <class T>
-			static QStringList allValues(T it, const T& itEnd, ExpressionWriter* writer);
-		QString m_result;
+			static QStringList allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer);
+		QVariant m_result;
 };
 
 }

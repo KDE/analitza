@@ -108,7 +108,9 @@ class ANALITZAPLOT_EXPORT Plotter3D
         
         /** Query if the rotation is fixed by a specific direction. */
         bool isRotationFixed() const { return !m_rotFixed.isNull(); }
-        
+
+        //TODO set gridstyle, setshowrefbox
+
         /** Show a little indicator (as a hint) next to the arrow of @p axis */
         void showAxisArrowHint(CartesianAxis axis);
 
@@ -118,7 +120,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         /** Set the color of the grids of the reference plane in the 3D view */
         void setReferencePlaneColor(const QColor &color);
 
-	/**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
+        /**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
         void setUseSimpleRotation(bool simplerot) { m_simpleRotation = simplerot; }
 
         /**  Get information about the current rotarion approach: if return true then rotation is simple. */

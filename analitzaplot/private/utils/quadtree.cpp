@@ -64,32 +64,31 @@ void Square::setHalfEdge(double he)
 
 
 Quadtree::Quadtree(double largo_mundo) {
-    raiz = new QNode;
+    root = new QNode;
 
-    raiz->cubo.setCenter(largo_mundo/2,largo_mundo/2);
+    root->cubo.setCenter(largo_mundo/2,largo_mundo/2);
 
-    raiz->cubo.setHalfEdge(largo_mundo/2);
+    root->cubo.setHalfEdge(largo_mundo/2);
     for(unsigned int i=0; i<8; i++) {
-        raiz->nodos[i]=NULL;
+        root->nodos[i]=NULL;
     }
 }
 
 Quadtree::Quadtree(Square cubo) {
-    raiz = new QNode;
-    raiz->cubo = cubo;
+    root = new QNode;
+    root->cubo = cubo;
     for(unsigned int i=0; i<8; i++) {
-        raiz->nodos[i]=NULL;
+        root->nodos[i]=NULL;
     }
 }
 Quadtree::~Quadtree() {
-    borrar_rec(raiz);
+    borrar_rec(root);
 }
 
 void Quadtree::inicializar_nodos(QNode* padre)
 {
     double hhedge = padre->cubo.halfEdge()/2;
 
-    //2 a la dim
     for(unsigned int i=0; i<4; i++) {
         padre->nodos[i] = new QNode;
         padre->nodos[i]->cubo.setHalfEdge(hhedge);
@@ -128,11 +127,11 @@ void Quadtree::crear_rec(QNode* nodo, unsigned int nivel_actual, unsigned int ni
 }
 
 QNode* Quadtree::get_raiz() {
-    return raiz;
+    return root;
 }
 
 void Quadtree::crearNivel(unsigned int nivel) {
-    crear_rec(raiz,0,nivel);
+    crear_rec(root,0,nivel);
 }
 
 void Quadtree::bajarNivel(QNode* nodo) {

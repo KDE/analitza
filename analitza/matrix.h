@@ -30,7 +30,7 @@ class ANALITZA_EXPORT MatrixRow : public Vector
 {
 	public:
 		MatrixRow(int size=0);
-		virtual QString visit(ExpressionWriter* e) const;
+		virtual QVariant accept(AbstractExpressionVisitor* e) const;
 		
 		MatrixRow* copy() const;
 };
@@ -47,7 +47,7 @@ class ANALITZA_EXPORT Matrix : public Object
 		
 		virtual Object* copy() const;
 		virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;
-		virtual QString visit(ExpressionWriter* exp) const;
+		virtual QVariant accept(AbstractExpressionVisitor* exp) const;
 		const_iterator constBegin() const { return m_rows.constBegin(); }
 		const_iterator constEnd() const { return m_rows.constEnd(); }
 		iterator begin() { return m_rows.begin(); }

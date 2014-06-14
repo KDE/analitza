@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2008 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2014 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -16,9 +16,9 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 
 using namespace Analitza;
 
-ExpressionWriter::~ExpressionWriter()
+AbstractExpressionVisitor::~AbstractExpressionVisitor()
 {}

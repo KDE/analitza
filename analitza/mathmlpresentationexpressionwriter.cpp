@@ -38,7 +38,7 @@ QStringList convertElements(T it, const T& itEnd, MathMLPresentationExpressionWr
 {
 	QStringList elems;
 	for(; it!=itEnd; ++it) {
-		elems += (*it)->visit(w);
+		elems += (*it)->accept(w).toString();
 	}
 	return elems;
 }
@@ -98,7 +98,7 @@ QString root(const Apply* c, MathMLPresentationExpressionWriter* w)
 {
 	Cn two(2);
 	if(AnalitzaUtils::equalTree(c->values()[1], &two))
-		return "<msqrt>"+(*c->firstValue())->visit(w)+"</msqrt>";
+		return "<msqrt>"+(*c->firstValue())->accept(w).toString()+"</msqrt>";
 	else
 		return "<mroot>"+convertElements<Apply::const_iterator>(c->firstValue(), c->constEnd(), w).join(QString())+"</mroot>";
 }
@@ -140,9 +140,9 @@ QString function(const Apply* c, MathMLPresentationExpressionWriter* w)
 {
 	QString ret="<mrow>";
 	foreach(const Ci* bvar, c->bvarCi())
-		ret+=bvar->visit(w);
+		ret+=bvar->accept(w).toString();
 	foreach(const Object* o, c->values())
-		ret+=o->visit(w);
+		ret+=o->accept(w).toString();
 	ret+="</mrow>";
 	return ret;
 }
@@ -188,20 +188,20 @@ MathMLPresentationExpressionWriter::operatorToString
 
 MathMLPresentationExpressionWriter::MathMLPresentationExpressionWriter(const Object* o)
 {
-	m_result=o->visit(this);
+	m_result=o->accept(this);
 }
 
-QString MathMLPresentationExpressionWriter::accept(const Ci* var)
+QVariant MathMLPresentationExpressionWriter::visit(const Ci* var)
 {
-	return "<mi>"+var->name()+"</mi>";
+	return QString("<mi>"+var->name()+"</mi>");
 }
 
-QString MathMLPresentationExpressionWriter::accept(const Operator* op)
+QVariant MathMLPresentationExpressionWriter::visit(const Operator* op)
 {
 	return op->name();
 }
 
-QString MathMLPresentationExpressionWriter::accept(const Cn* val)
+QVariant MathMLPresentationExpressionWriter::visit(const Cn* val)
 {
 	if(val->isBoolean()) {
 		if(val->isTrue())
@@ -224,17 +224,17 @@ QString piecewise(const Container* c, MathMLPresentationExpressionWriter* w)
 		if(piece->containerType()==Container::piece) {
 			ret += "<mtr>"
 			"<mtd>"
-				+piece->m_params.first()->visit(w)+
+				+piece->m_params.first()->accept(w).toString()+
 			"</mtd>"
 			"<mtd>"
 				"<mtext>if </mtext>"
-				+piece->m_params.last()->visit(w)+
+				+piece->m_params.last()->accept(w).toString()+
 			"</mtd>"
 			"</mtr>";
 		} else {
 			ret += "<mtr>"
 			"<mtd>"
-				+piece->m_params.first()->visit(w)+
+				+piece->m_params.first()->accept(w).toString()+
 			"</mtd>"
 			"<mtd>"
 				"<mtext>otherwise</mtext>"
@@ -251,14 +251,14 @@ QString lambda(const Container* c, MathMLPresentationExpressionWriter* w)
 {
 	QString ret="<mrow>";
 	foreach(const Ci* bvar, c->bvarCi())
-		ret+=bvar->visit(w);
+		ret+=bvar->accept(w).toString();
 	ret+="<mo>&RightArrow;</mo>";
-	ret+=c->m_params.last()->visit(w);
+	ret+=c->m_params.last()->accept(w).toString();
 	ret+="</mrow>";
 	return ret;
 }
 
-QString MathMLPresentationExpressionWriter::accept(const Container* c)
+QVariant MathMLPresentationExpressionWriter::visit(const Container* c)
 {
 	QString ret;
 // 	objectWalker(c);
@@ -291,27 +291,27 @@ QString MathMLPresentationExpressionWriter::accept(const Container* c)
 	return ret;
 }
 
-QString MathMLPresentationExpressionWriter::accept(const Vector* var)
+QVariant MathMLPresentationExpressionWriter::visit(const Vector* var)
 {
-	return "<mrow><mo>&lt;</mo>"+convertElements(var->constBegin(), var->constEnd(), this).join("<mo>,</mo>")+"<mo>&gt;</mo></mrow>";
+	return QString("<mrow><mo>&lt;</mo>"+convertElements(var->constBegin(), var->constEnd(), this).join("<mo>,</mo>")+"<mo>&gt;</mo></mrow>");
 }
 
-QString MathMLPresentationExpressionWriter::accept(const List* var)
+QVariant MathMLPresentationExpressionWriter::visit(const List* var)
 {
-	return "<mrow><mo>[</mo>"+convertElements(var->constBegin(), var->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>";
+	return QString("<mrow><mo>[</mo>"+convertElements(var->constBegin(), var->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>");
 }
 
-QString MathMLPresentationExpressionWriter::accept(const Matrix* m)
+QVariant MathMLPresentationExpressionWriter::visit(const Matrix* m)
 {
-	return "<mrow><mo>[</mo>"+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>";
+	return QString("<mrow><mo>[</mo>"+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>");
 }
 
-QString MathMLPresentationExpressionWriter::accept(const MatrixRow* m)
+QVariant MathMLPresentationExpressionWriter::visit(const MatrixRow* m)
 {
-	return "<mrow><mo>[</mo>"+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>";
+	return QString("<mrow><mo>[</mo>"+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>");
 }
 
-QString Analitza::MathMLPresentationExpressionWriter::accept ( const Analitza::Apply* a )
+QVariant Analitza::MathMLPresentationExpressionWriter::visit(const Analitza::Apply* a)
 {
 	QString ret;
 	Operator op=a->firstOperator();
@@ -329,11 +329,11 @@ QString Analitza::MathMLPresentationExpressionWriter::accept ( const Analitza::A
 			const Object *ul=a->ulimit(), *dl=a->dlimit();
 			if(ul || dl) {
 				bvars += "<mo>=</mo>";
-				if(dl) bvars += dl->visit(this);
+				if(dl) bvars += dl->accept(this).toString();
 				bvars += "<mo>..</mo>";
-				if(ul) bvars += ul->visit(this);
+				if(ul) bvars += ul->accept(this).toString();
 			} else if(a->domain())
-				bvars += "<mo>@</mo>" + a->domain()->visit(this);
+				bvars += "<mo>@</mo>" + a->domain()->accept(this).toString();
 			bvars="<mo>:</mo>"+bvars;
 		}
 		
@@ -347,7 +347,7 @@ QString Analitza::MathMLPresentationExpressionWriter::accept ( const Analitza::A
 	return ret;
 }
 
-QString MathMLPresentationExpressionWriter::accept(const CustomObject*)
+QVariant MathMLPresentationExpressionWriter::visit(const CustomObject*)
 {
-	return "<!-- custom object -->";
+	return QString("<!-- custom object -->");
 }

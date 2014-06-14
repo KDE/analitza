@@ -31,11 +31,11 @@
 using namespace Analitza;
 
 template <class T>
-QStringList StringExpressionWriter::allValues(T it, const T& itEnd, ExpressionWriter* writer)
+QStringList StringExpressionWriter::allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer)
 {
 	QStringList elements;
 	for(; it!=itEnd; ++it)
-		elements += (*it)->visit(writer);
+		elements += (*it)->accept(writer).toString();
 	
 	return elements;
 }
@@ -63,43 +63,43 @@ const QMap<Operator::OperatorType, QString> StringExpressionWriter::s_operators=
 StringExpressionWriter::StringExpressionWriter(const Object* o)
 {
     if (o)
-        m_result=o->visit(this);
+        m_result=o->accept(this);
 }
 
-QString StringExpressionWriter::accept(const Ci* var)
+QVariant StringExpressionWriter::visit(const Ci* var)
 {
 	return var->name();
 }
 
-QString StringExpressionWriter::accept(const Operator* op)
+QVariant StringExpressionWriter::visit(const Operator* op)
 {
 	return op->name();
 }
 
-QString StringExpressionWriter::accept(const Vector* vec)
+QVariant StringExpressionWriter::visit(const Vector* vec)
 {
 	return QString("vector { %1 }").arg(allValues<Vector::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(", ")));
 }
 
-QString StringExpressionWriter::accept(const Matrix* m)
+QVariant StringExpressionWriter::visit(const Matrix* m)
 {
 	return QString("matrix { %1 }").arg(allValues(m->constBegin(), m->constEnd(), this).join(QString(", ")));
 }
 
-QString StringExpressionWriter::accept(const MatrixRow* mr)
+QVariant StringExpressionWriter::visit(const MatrixRow* mr)
 {
 	return QString("matrixrow { %1 }").arg(allValues(mr->constBegin(), mr->constEnd(), this).join(QString(", ")));
 }
 
-QString StringExpressionWriter::accept(const List* vec)
+QVariant StringExpressionWriter::visit(const List* vec)
 {
 	if(!vec->isEmpty() && vec->at(0)->type()==Object::value && static_cast<Cn*>(vec->at(0))->format()==Cn::Char)
-		return "\""+AnalitzaUtils::listToString(vec)+"\"";
+		return QString("\""+AnalitzaUtils::listToString(vec)+"\"");
 	else
 		return QString("list { %1 }").arg(allValues<List::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(", ")));
 }
 
-QString StringExpressionWriter::accept(const Cn* var)
+QVariant StringExpressionWriter::visit(const Cn* var)
 {
 	if(var->isBoolean())
 		return var->isTrue() ? "true" : "false";
@@ -140,7 +140,7 @@ int StringExpressionWriter::weight(const Operator* op, int size, int pos)
 	}
 }
 
-QString StringExpressionWriter::accept ( const Analitza::Apply* a )
+QVariant StringExpressionWriter::visit(const Analitza::Apply* a)
 {
 	Operator op=a->firstOperator();
 	QStringList ret;
@@ -151,13 +151,13 @@ QString StringExpressionWriter::accept ( const Analitza::Apply* a )
 	if(a->ulimit() || a->dlimit()) {
 		bounds += '=';
 		if(a->dlimit())
-			bounds += a->dlimit()->visit(this);
+			bounds += a->dlimit()->accept(this).toString();
 		bounds += "..";
 		if(a->ulimit())
-			bounds += a->ulimit()->visit(this);
+			bounds += a->ulimit()->accept(this).toString();
 	}
 	else if(a->domain())
-		bounds += '@'+a->domain()->visit(this);
+		bounds += '@'+a->domain()->accept(this).toString();
 	
 	int i = 0;
 	foreach(Object* o, a->m_params) {
@@ -167,11 +167,11 @@ QString StringExpressionWriter::accept ( const Analitza::Apply* a )
 				Q_ASSERT(false);
 				break;
 			case Object::variable:
-				ret << static_cast<const Ci*>(o)->visit(this);
+				ret << static_cast<const Ci*>(o)->accept(this).toString();
 				break;
 			case Object::apply: {
 				const Apply *c = (const Apply*) o;
-				QString s = c->visit(this);
+				QString s = c->accept(this).toString();
 				if(s_operators.contains(op.operatorType()) && !c->isUnary()) {
 					Operator child_op = c->firstOperator();
 					
@@ -181,7 +181,7 @@ QString StringExpressionWriter::accept ( const Analitza::Apply* a )
 				ret << s;
 			}	break;
 			default:
-				ret << o->visit(this);
+				ret << o->accept(this).toString();
 				break;
 		}
 		++i;
@@ -216,13 +216,13 @@ QString StringExpressionWriter::accept ( const Analitza::Apply* a )
 			bounding = ':'+bounding +bounds;
 		}
 			
-		toret += QString("%1(%2%3)").arg(op.visit(this)).arg(ret.join(", ")).arg(bounding);
+		toret += QString("%1(%2%3)").arg(op.accept(this).toString()).arg(ret.join(", ")).arg(bounding);
 	}
 	
 	return toret;
 }
 
-QString StringExpressionWriter::accept(const Container* var)
+QVariant StringExpressionWriter::visit(const Container* var)
 {
 	QStringList ret = allValues(var->constBegin(), var->constEnd(), this);
 	
@@ -263,7 +263,7 @@ QString StringExpressionWriter::accept(const Container* var)
 	return toret;
 }
 
-QString StringExpressionWriter::accept(const CustomObject*)
+QVariant StringExpressionWriter::visit(const CustomObject*)
 {
 	return "CustomObject";
 }

@@ -22,5 +22,5 @@
 QString Analitza::Object::toString() const
 {
 	StringExpressionWriter e(this);
-	return e.result();
+	return e.result().toString();
 }

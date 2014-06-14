@@ -19,7 +19,7 @@
 #ifndef EXPRESSIONTYPECHECKER_H
 #define EXPRESSIONTYPECHECKER_H
 
-#include "expressionwriter.h"
+#include "abstractexpressionvisitor.h"
 #include "analitzaexport.h"
 #include "expressiontype.h"
 #include <QStack>
@@ -31,25 +31,25 @@ namespace Analitza
 class Variables;
 class Expression;
 
-class ANALITZA_EXPORT ExpressionTypeChecker : public ExpressionWriter
+class ANALITZA_EXPORT ExpressionTypeChecker : public AbstractExpressionVisitor
 {
 	public:
 		ExpressionTypeChecker(Variables* v);
 		
 		ExpressionType check(const Expression& exp);
 		
-		virtual QString accept(const Operator* var);
-		virtual QString accept(const Ci* var);
-		virtual QString accept(const Cn* var);
-		virtual QString accept(const Container* var);
-		virtual QString accept(const Vector* var);
-		virtual QString accept(const List* l);
-		virtual QString accept(const Matrix* c);
-		virtual QString accept(const Analitza::MatrixRow* m);
-		virtual QString accept(const Apply* a);
-		virtual QString accept(const CustomObject* c);
+		virtual QVariant visit(const Operator* var);
+		virtual QVariant visit(const Ci* var);
+		virtual QVariant visit(const Cn* var);
+		virtual QVariant visit(const Container* var);
+		virtual QVariant visit(const Vector* var);
+		virtual QVariant visit(const List* l);
+		virtual QVariant visit(const Matrix* c);
+		virtual QVariant visit(const Analitza::MatrixRow* m);
+		virtual QVariant visit(const Apply* a);
+		virtual QVariant visit(const CustomObject* c);
 		
-		virtual QString result() const { return QString(); }
+		virtual QVariant result() const { return QVariant(); }
 		
 		QStringList dependencies() const { return m_deps; }
 		bool hasDependencies() const { return !m_deps.isEmpty(); }
@@ -70,7 +70,7 @@ class ANALITZA_EXPORT ExpressionTypeChecker : public ExpressionWriter
 			QMap<QString, ExpressionType> typeIs(T it, const T& itEnd, const ExpressionType& type);
 			
 		template <class T>
-			QString acceptListOrVector(const T* v, ExpressionType::Type t, int size);
+			QVariant visitListOrVector(const T* v, ExpressionType::Type t, int size);
 		
 		ExpressionType typeForVar(const QString& var);
 		
