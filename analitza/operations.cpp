@@ -282,6 +282,65 @@ Cn* Operations::reduceValueValue(enum Operator::OperatorType op, Cn *oper, const
 	}
 }
 
+Cn* Operations::reduceUnaryValue(Operator::OperatorType op, Cn* oper, QString** correct)
+{
+	if(KDE_ISUNLIKELY(oper->isComplex()))
+		return reduceUnaryComplex(op, oper, correct);
+	else
+		return reduceUnaryReal(op, oper, correct);
+}
+
+Cn* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* val, QString** correct)
+{
+	const complex<float> a=val->complexValue();
+
+	switch(op) {
+		case Operator::minus:
+			val->setValue(-a);
+			break;
+		case Operator::sin:
+			val->setValue(sin(a));
+			break;
+		case Operator::cos:
+			val->setValue(cos(a));
+			break;
+		case Operator::tan:
+			val->setValue(tan(a));
+			break;
+		case Operator::sinh:
+			val->setValue(sinh(a));
+			break;
+		case Operator::cosh:
+			val->setValue(cosh(a));
+			break;
+		case Operator::tanh:
+			val->setValue(tanh(a));
+			break;
+		case Operator::coth:
+			val->setValue(cosh(a)/sinh(a));
+			break;
+		case Operator::exp:
+			val->setValue(exp(a));
+			break;
+		case Operator::ln:
+			val->setValue(log(a));
+			break;
+		case Operator::log:
+			val->setValue(log10(a));
+			break;
+		case Operator::abs:
+			val->setValue(a>=0. ? a : -a);
+			break;
+			//case Object::conjugate:
+			//case Object::arg:
+			//case Object::real:
+			//case Object::imaginary:
+		default:
+			*correct=new QString(i18n("Could not calculate a value %1", Operator(op).toString()));
+	}
+	return val;
+}
+
 Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString** correct)
 {
 	const double a=val->value();
@@ -806,7 +865,7 @@ Object * Operations::reduce(Operator::OperatorType op, Object * val1, Object * v
 
 Operations::UnaryOp Operations::opsUnary[] = {
 	0,
-	(Operations::UnaryOp) Operations::reduceUnaryReal,
+	(Operations::UnaryOp) Operations::reduceUnaryValue,
 	0, //variable
 	(Operations::UnaryOp) Operations::reduceUnaryVector,
 	(Operations::UnaryOp) Operations::reduceUnaryList,

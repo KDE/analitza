@@ -106,7 +106,7 @@ QVariant StringExpressionWriter::visit(const Cn* var)
 	else if(var->isCharacter())
 		return QString(var->character());
 	else if(var->isComplex())
-		return QString::number(var->complexValue().real(), 'g', 12) + "+i*" + QString::number(var->complexValue().imag(), 'g', 12);
+		return QVariant::fromValue<QString>(QString::number(var->complexValue().real(), 'g', 12) + QLatin1String("+i*") + QString::number(var->complexValue().imag(), 'g', 12));
 	else
 		return QString::number(var->value(), 'g', 12);
 }
