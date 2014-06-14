@@ -30,6 +30,7 @@ Object* Cn::copy() const
 {
 	Cn *v = new Cn;
 	v->m_value = m_value;
+	v->m_imaginaryPart = m_imaginaryPart;
 	v->m_format = m_format;
 	return v;
 }

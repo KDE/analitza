@@ -42,6 +42,13 @@ using Analitza::Expression;
 
 QTEST_KDEMAIN_CORE( AnalitzaTest )
 
+namespace QTest {
+
+template <> char *toString(const Analitza::Cn &cn)
+{ return qstrdup(QString::fromLatin1("Cn(%1)").arg(cn.toString()).toLatin1().constData()); }
+
+}
+
 Q_DECLARE_METATYPE(Cn);
 
 AnalitzaTest::AnalitzaTest(QObject *parent)
@@ -85,9 +92,9 @@ void AnalitzaTest::testTrivialCalculate_data()
 	
 	QTest::newRow("simple piecewise") << "piecewise { pi=0? 3, pi=pi?33 }" << Cn(33.);
 	QTest::newRow("simple piecewise with otherwise") << "piecewise { pi=0? 3, ?33 }" << Cn(33.);
-	QTest::newRow("boolean and") << "and(true,false)" << Cn(0.);
-	QTest::newRow("boolean or") << "or(false,true)" << Cn(1.);
-	QTest::newRow("boolean not") << "not(false)" << Cn(1.);
+	QTest::newRow("boolean and") << "and(true,false)" << Cn(false);
+	QTest::newRow("boolean or") << "or(false,true)" << Cn(true);
+	QTest::newRow("boolean not") << "not(false)" << Cn(true);
 	QTest::newRow("lambda")  << "(x->x+2)(2)" << Cn(4.);
 	QTest::newRow("lambda2") << "(x->3*x^2)(1)" << Cn(3.);
 	QTest::newRow("lambda3") << "(x->x*sum(t:t=0..3))(2)" << Cn(12.);
@@ -100,13 +107,14 @@ void AnalitzaTest::testTrivialCalculate_data()
 
 	QTest::newRow("sum.sum") << "sum(sum(x : x=0..i) : i=0..10)" << Cn(220.);
 
-	QTest::newRow("exists") << "exists(x : x@list{true,true,false})" << Cn(1.);
-	QTest::newRow("forall") << "forall(x : x@list{true,true,false})" << Cn(0.);
+	QTest::newRow("exists") << "exists(x : x@list{true,true,false})" << Cn(true);
+	QTest::newRow("forall") << "forall(x : x@list{true,true,false})" << Cn(false);
 // 	QTest::newRow("emptysum") << "sum(x : x@list{})" << 0.;
 	
 	QTest::newRow("lambdacall") << "f:=x->f(x)" << Cn(0.);
 	QTest::newRow("cpx1") << "i" << Cn(0, 1);
-	QTest::newRow("cpx2") << "i*i" << Cn(1);
+	QTest::newRow("cpx2") << "i*i" << Cn(-1);
+	QTest::newRow("cpx3") << "2+i*i" << Cn(1);
 }
 
 void AnalitzaTest::testTrivialCalculate()
@@ -121,12 +129,12 @@ void AnalitzaTest::testTrivialCalculate()
 	
 	if(!a->isCorrect()) qDebug() << "error: " << a->errors();
 	QVERIFY(a->isCorrect());
-	QCOMPARE(a->evaluate().toReal().value(), result.value());
+	QCOMPARE(a->evaluate().toReal(), result);
 	QVERIFY(a->isCorrect());
 	Expression ee=a->calculate();
 	if(!a->isCorrect()) qDebug() << "error: " << a->errors();
 	QVERIFY(a->isCorrect());
-	QCOMPARE(ee.toReal().value(), result.value());
+	QCOMPARE(ee.toReal(), result);
 	QVERIFY(a->isCorrect());
 }
 

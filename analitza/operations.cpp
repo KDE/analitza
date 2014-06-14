@@ -228,14 +228,8 @@ Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<float
 			oper->setValue(a <= b);
 			break;
 		case Operator::_and:
-			*correct = new QString(i18n("Boolean operations on complex numbers not available"));
-			break;
 		case Operator::_or:
-			*correct = new QString(i18n("Boolean operations on complex numbers not available"));
-			break;
 		case Operator::_xor:
-			*correct = new QString(i18n("Boolean operations on complex numbers not available"));
-			break;
 		case Operator::implies:
 			*correct = new QString(i18n("Boolean operations on complex numbers not available"));
 			break;
@@ -279,10 +273,10 @@ Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<float
 
 Cn* Operations::reduceValueValue(enum Operator::OperatorType op, Cn *oper, const Cn *oper1, QString** correct)
 {
-// 	if(KDE_ISUNLIKELY(oper->isComplex() || oper1->isComplex())) {
-// 		const complex<float> a=oper->complexValue(), b=oper1->complexValue();
-// 		return reduceComplexComplex(op, oper, a, b, correct);
-	/*} else */{
+	if(KDE_ISUNLIKELY(oper->isComplex() || oper1->isComplex())) {
+		const complex<float> a=oper->complexValue(), b=oper1->complexValue();
+		return reduceComplexComplex(op, oper, a, b, correct);
+	} else {
 		const double a=oper->value(), b=oper1->value();
 		return reduceRealReal(op, oper, a, b, correct);
 	}
@@ -789,7 +783,7 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
+	{0, (Operations::BinaryOp) reduceValueValue, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,0,0},
 	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},

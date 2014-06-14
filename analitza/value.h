@@ -63,7 +63,7 @@ class ANALITZA_EXPORT Cn : public Object
 		explicit Cn(const QChar& c) : Object(Object::value), m_char(c.unicode()), m_imaginaryPart(0), m_format(Char) {}
 
 		/** Constructor. Creates a value that represents a complex. */
-		explicit Cn(float value, float imaginaryPart) : Object(Object::value), m_value(value), m_imaginaryPart(imaginaryPart), m_format(Complex) {}
+		explicit Cn(float value, float imaginaryPart) : Object(Object::value), m_value(value), m_imaginaryPart(imaginaryPart), m_format(Complex) {qDebug() << "xxxxxxxxxx" << toString();}
 
 		/**
 		 *	Extracts the number from the @p e Dom element and saves it.
@@ -104,11 +104,6 @@ class ANALITZA_EXPORT Cn : public Object
 		ValueFormat format() const { return m_format; }
 
 		/**
-		 *	Sets whether this value is boolean or not.
-		 */
-		void setBoolean(bool b) { m_format= b ? Boolean : Real; }
-
-		/**
 		 *	@return If it is a boolean value, returns if it is true or not, otherwise retuns false.
 		 */
 		bool isTrue() const { Q_ASSERT(m_format==Boolean); return m_value!=0.; }
@@ -119,12 +114,12 @@ class ANALITZA_EXPORT Cn : public Object
 		/**
 		 *	@returns whether it is an integer value or not.
 		 */
-		bool isInteger() const { return std::floor(m_value)==m_value; }
+		bool isInteger() const { return m_format&Integer && std::floor(m_value)==m_value; }
 
 		/**
 		 *	@returns whether @p d is equal than this object.
 		 */
-		bool operator==(const Cn& d) const { return m_value==d.m_value; }
+		bool operator==(const Cn& d) const { return m_value==d.m_value && d.m_imaginaryPart==m_imaginaryPart; }
 
 		/**
 		 *	@returns whether @p d is less than this object.
@@ -149,15 +144,15 @@ class ANALITZA_EXPORT Cn : public Object
 		/**
 		 *	Sets the new value to @p d.
 		 */
-		Cn operator=(double d) { m_value=d; return *this; }
+		Cn operator=(double d) { m_value=d; m_format=Real; return *this; }
 
 		QChar character() const { Q_ASSERT(m_format==Char); return QChar(m_char); }
 
 		/** @returns whether the value has an imaginary part */
-		bool isComplex() const { return m_format&Complex; }
+		bool isComplex() const { return m_format == Complex; }
 
 		virtual QString visit(ExpressionWriter*) const;
-		virtual bool isZero() const { return m_value==0.; }
+		virtual bool isZero() const { return m_value==0. && m_imaginaryPart==0.f; }
 
 		virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;
 		/*/** Sets whether it is a correct Cn.
