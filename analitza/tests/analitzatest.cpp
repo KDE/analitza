@@ -145,12 +145,16 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::addColumn<QString>("result");
 	
 	QTest::newRow("simple value") << "2" << "2";
+	QTest::newRow("complex") << "i*5" << "5*i";
 	QTest::newRow("simple complex value") << "6*(2+i)" << "12+6*i";
 	QTest::newRow("complex irreductibility") << "i" << "i";
 	QTest::newRow("from complex value") << "i*i" << "-1";
 	QTest::newRow("from power complex") << "power(i, 2)" << "-1";
 	QTest::newRow("sin complex") << "sin(i)" << "1.17520119364*i";
 	QTest::newRow("cos complex") << "cos(5-9*i)" << "1149.26926545-3885.12187972*i";
+	QTest::newRow("complex*complex") << "(5.3-9.8*i)*(-6.2+3.7*i)" << "3.4+80.37*i";
+	QTest::newRow("simple complex/complex") << "i/i" << "1";
+	QTest::newRow("complex/complex") << "(9.3-5.4*i)/(3.6-9.5*i)" << "0.82143203178+0.667667861641*i";
 	QTest::newRow("simple addition") << "2+2" << "4";
 	QTest::newRow("simple addition with var") << "2+x" << "x+2";
 	QTest::newRow("minus irreductibility") << "-x" << "-x";

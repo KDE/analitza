@@ -173,7 +173,7 @@ Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<doubl
 			oper->setValue(a*b);
 			break;
 		case Operator::divide:
-			if(KDE_ISLIKELY(b.real()!=0. && b.imag()!=0.))
+			if(KDE_ISLIKELY(b.real()!=0. || b.imag()!=0.))
 				oper->setValue(a / b);
 			else
 				*correct=new QString(i18n("Cannot divide by 0."));
