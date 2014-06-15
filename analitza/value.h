@@ -23,6 +23,7 @@
 #include "analitzaexport.h"
 
 #include <cmath>
+#include <complex>
 
 class QDomElement;
 
@@ -42,25 +43,28 @@ namespace Analitza
 class ANALITZA_EXPORT Cn : public Object
 {
 	public:
-		enum ValueFormat { Char=8, Real=7, Integer=3, Boolean=1 };
+		enum ValueFormat { Char=8, Real=7, Integer=3, Boolean=1, Complex=0x10|Real };
 		/** Copy constructor. Creates a Cn from another one. */
-		Cn(const Cn& v) : Object(v), m_value(v.value()), m_format(v.m_format) { Q_ASSERT(m_type==Object::value); }
+		Cn(const Cn& v) : Object(v), m_value(v.m_value), m_imaginaryPart(v.m_imaginaryPart), m_format(v.m_format) { Q_ASSERT(m_type==Object::value); }
 
 		/** Constructor. Creates a boolean value with @p b. */
-		explicit Cn(const double &b=0.) : Object(Object::value), m_value(b), m_format(Real) {}
+		explicit Cn(const double &b=0.) : Object(Object::value), m_value(b), m_imaginaryPart(0), m_format(Real) {}
 
 		/** Constructor. Creates an integer value with @p i. */
-		explicit Cn(int i) : Object(Object::value), m_value(i), m_format(Integer) {}
+		explicit Cn(int i) : Object(Object::value), m_value(i), m_imaginaryPart(0), m_format(Integer) {}
 
 		/** @copydoc */
-		explicit Cn(uint i) : Object(Object::value), m_value(i), m_format(Integer) {}
+		explicit Cn(uint i) : Object(Object::value), m_value(i), m_imaginaryPart(0), m_format(Integer) {}
 
 		/** Constructor. Creates a boolean value with value @p b. */
-		explicit Cn(bool b) : Object(Object::value), m_value(b?1.:0.), m_format(Boolean) {}
+		explicit Cn(bool b) : Object(Object::value), m_value(b?1.:0.), m_imaginaryPart(0), m_format(Boolean) {}
 
 		/** Constructor. Creates a value that represents a character. */
-		explicit Cn(const QChar& c) : Object(Object::value), m_char(c.unicode()), m_format(Char) {}
+		explicit Cn(const QChar& c) : Object(Object::value), m_char(c.unicode()), m_imaginaryPart(0), m_format(Char) {}
 
+		/** Constructor. Creates a value that represents a complex. */
+		explicit Cn(double value, double imaginaryPart) : Object(Object::value), m_value(value), m_imaginaryPart(imaginaryPart), m_format(Complex) {}
+		
 		/**
 		 *	Extracts the number from the @p e Dom element and saves it.
 		 */
@@ -74,6 +78,7 @@ class ANALITZA_EXPORT Cn : public Object
 		void setValue(int v);
 		void setValue(uint v);
 		void setValue(bool v);
+		void setValue(std::complex<double> v);
 
 		/**
 		 *	Returns the value.
@@ -99,11 +104,6 @@ class ANALITZA_EXPORT Cn : public Object
 		ValueFormat format() const { return m_format; }
 
 		/**
-		 *	Sets whether this value is boolean or not.
-		 */
-		void setBoolean(bool b) { m_format= b ? Boolean : Real; }
-
-		/**
 		 *	@return If it is a boolean value, returns if it is true or not, otherwise retuns false.
 		 */
 		bool isTrue() const { Q_ASSERT(m_format==Boolean); return m_value!=0.; }
@@ -114,12 +114,12 @@ class ANALITZA_EXPORT Cn : public Object
 		/**
 		 *	@returns whether it is an integer value or not.
 		 */
-		bool isInteger() const { return std::floor(m_value)==m_value; }
+		bool isInteger() const { return m_format&Integer && std::floor(m_value)==m_value; }
 
 		/**
 		 *	@returns whether @p d is equal than this object.
 		 */
-		bool operator==(const Cn& d) const { return m_value==d.m_value; }
+		bool operator==(const Cn& d) const { return m_value==d.m_value && d.m_imaginaryPart==m_imaginaryPart; }
 
 		/**
 		 *	@returns whether @p d is less than this object.
@@ -144,16 +144,21 @@ class ANALITZA_EXPORT Cn : public Object
 		/**
 		 *	Sets the new value to @p d.
 		 */
-		Cn operator=(double d) { m_value=d; return *this; }
+		Cn operator=(double d) { m_value=d; m_format=Real; return *this; }
 
 		QChar character() const { Q_ASSERT(m_format==Char); return QChar(m_char); }
 
+		/** @returns whether the value has an imaginary part */
+		bool isComplex() const { return m_format == Complex && m_imaginaryPart!=0.; }
+
 		virtual QVariant accept(AbstractExpressionVisitor*) const;
-		virtual bool isZero() const { return m_value==0.; }
+		virtual bool isZero() const { return m_value==0. && m_imaginaryPart==0.; }
 
 		virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;
 		/*/** Sets whether it is a correct Cn.
 		void setCorrect(bool b) {m_correct = b; }*/
+
+		std::complex<double> complexValue() const;
 
 		virtual Object* copy() const;
 
@@ -162,6 +167,7 @@ class ANALITZA_EXPORT Cn : public Object
 		static Cn euler();
 	private:
 		union { double m_value; ushort m_char; };
+		double m_imaginaryPart;
 		enum ValueFormat m_format;
 };
 

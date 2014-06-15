@@ -48,8 +48,10 @@ class Operations
 		static UnaryOp opsUnary[Object::custom+1];
 		static BinaryOp opsBinary[Object::custom+1][Object::custom+1];
 		
-		static Cn* reduceRealReal(Operator::OperatorType op, Cn *oper, const Cn* oper1, QString** correct);
+		static Cn* reduceValueValue(Operator::OperatorType op, Cn *oper, const Cn* oper1, QString** correct);
 		static Cn* reduceUnaryReal(Operator::OperatorType op, Cn *oper, QString** correct);
+		static Cn* reduceUnaryValue(Operator::OperatorType op, Cn *oper, QString** correct);
+		static Cn* reduceUnaryComplex(Operator::OperatorType op, Cn *oper, QString** correct);
 		
 		static Object* reduceRealVector(Operator::OperatorType op, Cn *oper, Vector* vector, QString** correct);
 		static Object* reduceVectorReal(Operator::OperatorType op, Vector* vector, Cn *oper, QString** correct);

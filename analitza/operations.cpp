@@ -36,11 +36,8 @@
 using namespace std;
 using namespace Analitza;
 
-Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const Cn *oper1, QString** correct)
+Cn* reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a, double b, QString** correct)
 {
-	int residu;
-	const double a=oper->value(), b=oper1->value();
-	
 	switch(op) {
 		case Operator::plus:
 			oper->setValue(a+b);
@@ -59,8 +56,8 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			break;
 		case Operator::power:
 			oper->setValue( b==2 ? a*a
-					: b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
-								 : pow(a, b));
+			: b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
+			: pow(a, b));
 			break;
 		case Operator::rem:
 			if(Q_LIKELY(floor(b)!=0.))
@@ -119,7 +116,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			break;
 		case Operator::gcd:  {
 			//code by michael cane aka kiko :)
-			int ia=floor(a), ib=floor(b);
+			int ia=floor(a), ib=floor(b), residu = 0;
 			while (ib > 0) {
 				residu = ia % ib;
 				ia = ib;
@@ -133,7 +130,7 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 				*correct=new QString(QCoreApplication::tr("Cannot calculate the lcm of 0."));
 			else {
 				int ia=floor(a), ib=floor(b);
-				int ic=ia*ib;
+				int ic=ia*ib, residu = 0;
 				while (ib > 0) {
 					residu = ia % ib;
 					ia = ib;
@@ -145,13 +142,211 @@ Cn* Operations::reduceRealReal(enum Operator::OperatorType op, Cn *oper, const C
 			break;
 		case Operator::root:
 			oper->setValue(			  b==2.0 ? sqrt(a)
-					  : (b>1 || b<-1) && a<0 ? pow(complex<double>(a), complex<double>(1./b)).real()
-											 : pow(a, 1.0/b));
+			: (b>1 || b<-1) && a<0 ? pow(complex<double>(a), complex<double>(1./b)).real()
+			: pow(a, 1.0/b));
 			break;
 		default:
 			break;
 	}
 	return oper;
+}
+
+static bool operator<(complex<double> a, complex<double> b)
+{ return a.real() < b.real() || (a.real() == b.real() && a.imag()<b.imag()); }
+
+static bool operator>(complex<double> a, complex<double> b)
+{ return a.real() > b.real() || (a.real() == b.real() && a.imag()>b.imag()); }
+
+static bool operator<=(complex<double> a, complex<double> b)
+{ return a.real() <= b.real() || (a.real() == b.real() && a.imag()<=b.imag()); }
+
+static bool operator>=(complex<double> a, complex<double> b)
+{ return a.real() >= b.real() || (a.real() == b.real() && a.imag()>=b.imag()); }
+
+Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<double> a, complex<double> b, QString** correct)
+{
+	switch(op) {
+		case Operator::plus:
+			oper->setValue(a+b);
+			break;
+		case Operator::times:
+			oper->setValue(a*b);
+			break;
+		case Operator::divide:
+			if(Q_LIKELY(b.real()!=0. || b.imag()!=0.))
+				oper->setValue(a / b);
+			else
+				*correct=new QString(QCoreApplication::tr("Cannot divide by 0."));
+			break;
+		case Operator::minus:
+			oper->setValue(a - b);
+			break;
+		case Operator::power:
+			oper->setValue(pow(a, b));
+			break;
+		case Operator::rem:
+			if(Q_LIKELY(floor(b.real())!=0.))
+				oper->setValue(int(remainder(a.real(), b.real())));
+			else
+				*correct=new QString(QCoreApplication::tr("Cannot calculate the remainder on 0."));
+			break;
+		case Operator::quotient:
+			oper->setValue(int(floor((a / b).real())));
+			break;
+		case Operator::factorof: {
+			int fb = int(floor(b.real()));
+			if(Q_LIKELY(fb!=0))
+				oper->setValue((int(floor(a.real())) % fb)==0);
+			else
+				*correct=new QString(QCoreApplication::tr("Cannot calculate the factor on 0."));
+		}	break;
+		case Operator::min:
+			oper->setValue(a < b ? a : b);
+			break;
+		case Operator::max:
+			oper->setValue(a > b? a : b);
+			break;
+		case Operator::gt:
+			oper->setValue(a > b);
+			break;
+		case Operator::lt:
+			oper->setValue(a < b);
+			break;
+		case Operator::eq:
+			oper->setValue(a == b);
+			break;
+		case Operator::approx:
+			oper->setValue(fabs(a.real()-b.real())+fabs(a.imag()-b.imag())<0.001);
+			break;
+		case Operator::neq:
+			oper->setValue(a != b);
+			break;
+		case Operator::geq:
+			oper->setValue(a >= b);
+			break;
+		case Operator::leq:
+			oper->setValue(a <= b);
+			break;
+		case Operator::_and:
+		case Operator::_or:
+		case Operator::_xor:
+		case Operator::implies:
+			*correct = new QString(QCoreApplication::tr("Boolean operations on complex numbers not available"));
+			break;
+		case Operator::gcd:  {
+			//code by michael cane aka kiko :)
+			int ia=floor(a.real()), ib=floor(b.real()), residu = 0;
+			while (ib > 0) {
+				residu = ia % ib;
+				ia = ib;
+				ib = residu;
+			}
+			oper->setValue(ia);
+		}	break;
+		case Operator::lcm:
+			//code by michael cane aka kiko :)
+			if(Q_UNLIKELY(floor(a.real())==0. || floor(b.real())==0.))
+				*correct=new QString(QCoreApplication::tr("Cannot calculate the lcm of 0."));
+			else {
+				int ia=floor(a.real()), ib=floor(b.real());
+				int ic=ia*ib, residu = 0;
+				while (ib > 0) {
+					residu = ia % ib;
+					ia = ib;
+					ib = residu;
+				}
+				ia=ic/ia;
+				oper->setValue(ia);
+			}
+			break;
+		case Operator::root:
+			if(b.real()!=2.0 && b.imag()==0)
+				*correct = new QString(QCoreApplication::tr("Only square root implemented for complex numbe"));
+			else
+				oper->setValue(sqrt(a));
+			break;
+		default:
+			break;
+	}
+	return oper;
+}
+
+Cn* Operations::reduceValueValue(enum Operator::OperatorType op, Cn *oper, const Cn *oper1, QString** correct)
+{
+	if(Q_UNLIKELY(oper->isComplex() || oper1->isComplex())) {
+		const complex<double> a=oper->complexValue(), b=oper1->complexValue();
+		return reduceComplexComplex(op, oper, a, b, correct);
+	} else {
+		const double a=oper->value(), b=oper1->value();
+		return reduceRealReal(op, oper, a, b, correct);
+	}
+}
+
+Cn* Operations::reduceUnaryValue(Operator::OperatorType op, Cn* oper, QString** correct)
+{
+	if(Q_UNLIKELY(oper->isComplex()))
+		return reduceUnaryComplex(op, oper, correct);
+	else
+		return reduceUnaryReal(op, oper, correct);
+}
+
+Cn* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* val, QString** correct)
+{
+	const complex<double> a=val->complexValue();
+
+	switch(op) {
+		case Operator::minus:
+			val->setValue(-a);
+			break;
+		case Operator::sin:
+			val->setValue(sin(a));
+			break;
+		case Operator::cos:
+			val->setValue(cos(a));
+			break;
+		case Operator::tan:
+			val->setValue(tan(a));
+			break;
+		case Operator::sinh:
+			val->setValue(sinh(a));
+			break;
+		case Operator::cosh:
+			val->setValue(cosh(a));
+			break;
+		case Operator::tanh:
+			val->setValue(tanh(a));
+			break;
+		case Operator::coth:
+			val->setValue(cosh(a)/sinh(a));
+			break;
+		case Operator::exp:
+			val->setValue(exp(a));
+			break;
+		case Operator::ln:
+			val->setValue(log(a));
+			break;
+		case Operator::log:
+			val->setValue(log10(a));
+			break;
+		case Operator::abs:
+			val->setValue(std::abs(a));
+			break;
+		case Operator::conjugate:
+			val->setValue(std::conj(a));
+			break;
+			case Operator::arg:
+				val->setValue(std::arg(a));
+			break;
+			case Operator::real:
+				val->setValue(a.real());
+			break;
+			case Operator::imaginary:
+				val->setValue(a.imag());
+			break;
+		default:
+            *correct=new QString(QCoreApplication::tr("Could not calculate a value %1").arg(Operator(op).toString()));
+	}
+	return val;
 }
 
 Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString** correct)
@@ -251,10 +446,6 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 		case Operator::abs:
 			val->setValue(a>=0. ? a : -a);
 			break;
-		//case Object::conjugate:
-		//case Object::arg:
-		//case Object::real:
-		//case Object::imaginary:
 		case Operator::floor:
 			val->setValue(floor(a));
 			break;
@@ -634,10 +825,10 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 		case Operator::ln:
 		case Operator::log:
 		case Operator::abs:
-		//case Object::conjugate:
-		//case Object::arg:
-		//case Object::real:
-		//case Object::imaginary:
+		case Operator::conjugate:
+		case Operator::arg:
+		case Operator::real:
+		case Operator::imaginary:
 		case Operator::floor:
 		case Operator::ceiling:
 			ret << TypePair(ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value));
@@ -655,7 +846,7 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
+	{0, (Operations::BinaryOp) reduceValueValue, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,0,0},
 	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
@@ -678,7 +869,7 @@ Object * Operations::reduce(Operator::OperatorType op, Object * val1, Object * v
 
 Operations::UnaryOp Operations::opsUnary[] = {
 	0,
-	(Operations::UnaryOp) Operations::reduceUnaryReal,
+	(Operations::UnaryOp) Operations::reduceUnaryValue,
 	0, //variable
 	(Operations::UnaryOp) Operations::reduceUnaryVector,
 	(Operations::UnaryOp) Operations::reduceUnaryList,

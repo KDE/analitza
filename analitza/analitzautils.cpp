@@ -471,6 +471,7 @@ QVariant expressionToVariant(const Analitza::Expression& res)
 			case Analitza::Cn::Char:
 				ret = val.character();
 				break;
+			case Analitza::Cn::Complex: //TODO: figure out complex numbers on QVariant
 			case Analitza::Cn::Real:
 				ret = val.value();
 				break;

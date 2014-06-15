@@ -58,6 +58,7 @@ class StringExpressionWriter : public AbstractExpressionVisitor
 			static QStringList allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer);
 
 		QVariant m_result;
+		static const double MIN_PRINTABLE_VALUE;
 };
 
 }

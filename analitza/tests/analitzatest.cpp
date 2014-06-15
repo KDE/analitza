@@ -41,6 +41,15 @@ using Analitza::Expression;
 
 QTEST_MAIN( AnalitzaTest )
 
+namespace QTest {
+
+template <> char *toString(const Analitza::Cn &cn)
+{ return qstrdup(QString::fromLatin1("Cn(%1)").arg(cn.toString()).toLatin1().constData()); }
+
+}
+
+Q_DECLARE_METATYPE(Cn);
+
 AnalitzaTest::AnalitzaTest(QObject *parent)
  : QObject(parent)
 {}
@@ -61,53 +70,57 @@ void AnalitzaTest::cleanupTestCase()
 void AnalitzaTest::testTrivialCalculate_data()
 {
 	QTest::addColumn<QString>("expression");
-	QTest::addColumn<double>("result");
+	QTest::addColumn<Cn>("result");
 
-	QTest::newRow("a value") << "2" << 2.;
-	QTest::newRow("val.e0") << "12.0e-02" << 12e-2;
-	QTest::newRow("vale") << "12e-2" << 12e-2;
-	QTest::newRow("val") << "12e2" << 12e2;
+	QTest::newRow("a value") << "2" << Cn(2.);
+	QTest::newRow("val.e0") << "12.0e-02" << Cn(12e-2);
+	QTest::newRow("vale") << "12e-2" << Cn(12e-2);
+	QTest::newRow("val") << "12e2" << Cn(12e2);
 	
-	QTest::newRow("simple addition") << "2+2" << 4.;
-	QTest::newRow("simple power") << "2**99" << pow(2., 99.);
-	QTest::newRow("simple multiplication") << "3*3" << 9.;
-	QTest::newRow("sinus") << "sin(3*3)" << sin(9.);
-	QTest::newRow("declare") << "x:=3" << 3.;
-	QTest::newRow("sum") << "sum(x : x=1..99)" << 4950.;
-	QTest::newRow("diff") << "(diff(x:x))(1)" << 1.;
-	QTest::newRow("diffz") <<"(diff(z:z))(1)" << 1.;
+	QTest::newRow("simple addition") << "2+2" << Cn(4.);
+	QTest::newRow("simple power") << "2**99" << Cn(pow(2., 99.));
+	QTest::newRow("simple multiplication") << "3*3" << Cn(9.);
+	QTest::newRow("sinus") << "sin(3*3)" << Cn(sin(9.));
+	QTest::newRow("declare") << "x:=3" << Cn(3.);
+	QTest::newRow("sum") << "sum(x : x=1..99)" << Cn(4950.);
+	QTest::newRow("diff") << "(diff(x:x))(1)" << Cn(1.);
+	QTest::newRow("diffz") <<"(diff(z:z))(1)" << Cn(1.);
 	
-	QTest::newRow("product") << "product(n : n=1..5)" << 120.;
-	QTest::newRow("factorial") << "factorial(5)" << 120.;
+	QTest::newRow("product") << "product(n : n=1..5)" << Cn(120.);
+	QTest::newRow("factorial") << "factorial(5)" << Cn(120.);
 	
-	QTest::newRow("simple piecewise") << "piecewise { pi=0? 3, pi=pi?33 }" << 33.;
-	QTest::newRow("simple piecewise with otherwise") << "piecewise { pi=0? 3, ?33 }" << 33.;
-	QTest::newRow("boolean and") << "and(true,false)" << 0.;
-	QTest::newRow("boolean or") << "or(false,true)" << 1.;
-	QTest::newRow("boolean not") << "not(false)" << 1.;
-	QTest::newRow("lambda")  << "(x->x+2)(2)" << 4.;
-	QTest::newRow("lambda2") << "(x->3*x^2)(1)" << 3.;
-	QTest::newRow("lambda3") << "(x->x*sum(t:t=0..3))(2)" << 12.;
-	QTest::newRow("imaginarypow") << "(-4)^(1/4)" << 1.;
-	QTest::newRow("imaginaryroot") << "root(-4, 4)" << 1.;
+	QTest::newRow("simple piecewise") << "piecewise { pi=0? 3, pi=pi?33 }" << Cn(33.);
+	QTest::newRow("simple piecewise with otherwise") << "piecewise { pi=0? 3, ?33 }" << Cn(33.);
+	QTest::newRow("boolean and") << "and(true,false)" << Cn(false);
+	QTest::newRow("boolean or") << "or(false,true)" << Cn(true);
+	QTest::newRow("boolean not") << "not(false)" << Cn(true);
+	QTest::newRow("lambda")  << "(x->x+2)(2)" << Cn(4.);
+	QTest::newRow("lambda2") << "(x->3*x^2)(1)" << Cn(3.);
+	QTest::newRow("lambda3") << "(x->x*sum(t:t=0..3))(2)" << Cn(12.);
+	QTest::newRow("imaginarypow") << "(-4)^(1/4)" << Cn(1.);
+	QTest::newRow("imaginaryroot") << "root(-4, 4)" << Cn(1.);
 
 	//comprehension
-	QTest::newRow("sum.2bvars") << "sum(x*y : (x, y)=1..3)" << 36.;
-	QTest::newRow("sum.list") << "sum(x : x@list{1,5,44})" << 50.;
+	QTest::newRow("sum.2bvars") << "sum(x*y : (x, y)=1..3)" << Cn(36.);
+	QTest::newRow("sum.list") << "sum(x : x@list{1,5,44})" << Cn(50.);
 
-	QTest::newRow("sum.sum") << "sum(sum(x : x=0..i) : i=0..10)" << 220.;
+	QTest::newRow("sum.sum") << "sum(sum(x : x=0..i) : i=0..10)" << Cn(220.);
 
-	QTest::newRow("exists") << "exists(x : x@list{true,true,false})" << 1.;
-	QTest::newRow("forall") << "forall(x : x@list{true,true,false})" << 0.;
+	QTest::newRow("exists") << "exists(x : x@list{true,true,false})" << Cn(true);
+	QTest::newRow("forall") << "forall(x : x@list{true,true,false})" << Cn(false);
 // 	QTest::newRow("emptysum") << "sum(x : x@list{})" << 0.;
 	
-	QTest::newRow("lambdacall") << "f:=x->f(x)" << 0.;
+	QTest::newRow("lambdacall") << "f:=x->f(x)" << Cn(0.);
+	QTest::newRow("cpx1") << "i" << Cn(0, 1);
+	QTest::newRow("cpx2") << "i*i" << Cn(-1);
+	QTest::newRow("cpx3") << "2+i*i" << Cn(1);
+	QTest::newRow("complex number") << "3+4*(5-6*i)" << Cn(23, -24);
 }
 
 void AnalitzaTest::testTrivialCalculate()
 {
 	QFETCH(QString, expression);
-	QFETCH(double, result);
+	QFETCH(Cn, result);
 	Expression e(expression, false);
 	if(!e.isCorrect()) qDebug() << "error: " << e.error();
 	QCOMPARE(e.isCorrect(), true);
@@ -116,12 +129,12 @@ void AnalitzaTest::testTrivialCalculate()
 	
 	if(!a->isCorrect()) qDebug() << "error: " << a->errors();
 	QVERIFY(a->isCorrect());
-	QCOMPARE(a->evaluate().toReal().value(), result);
+	QCOMPARE(a->evaluate().toReal(), result);
 	QVERIFY(a->isCorrect());
 	Expression ee=a->calculate();
 	if(!a->isCorrect()) qDebug() << "error: " << a->errors();
 	QVERIFY(a->isCorrect());
-	QCOMPARE(ee.toReal().value(), result);
+	QCOMPARE(ee.toReal(), result);
 	QVERIFY(a->isCorrect());
 }
 
@@ -129,8 +142,25 @@ void AnalitzaTest::testTrivialEvaluate_data()
 {
 	QTest::addColumn<QString>("expression");
 	QTest::addColumn<QString>("result");
-
+	
 	QTest::newRow("simple value") << "2" << "2";
+	QTest::newRow("complex") << "i*5" << "5*i";
+	QTest::newRow("simple complex value") << "6*(2+i)" << "12+6*i";
+	QTest::newRow("complex irreductibility") << "i" << "i";
+	QTest::newRow("from complex value") << "i*i" << "-1";
+	QTest::newRow("from power complex") << "power(i, 2)" << "-1";
+	QTest::newRow("sin complex") << "sin(i)" << "1.17520119364*i";
+	QTest::newRow("cos complex") << "cos(5-9*i)" << "1149.26926545-3885.12187972*i";
+	QTest::newRow("complex*complex") << "(5.3-9.8*i)*(-6.2+3.7*i)" << "3.4+80.37*i";
+	QTest::newRow("simple complex/complex") << "i/i" << "1";
+	QTest::newRow("complex/complex") << "(9.3-5.4*i)/(3.6-9.5*i)" << "0.82143203178+0.667667861641*i";
+	QTest::newRow("simple complex conjugate") << "conjugate(i)" << "-i";
+	QTest::newRow("complex conjugate") << "conjugate(-9.3+5.87*i)" << "-9.3-5.87*i";
+	QTest::newRow("complex arg") << "arg(i)" << "1.57079632679";
+	QTest::newRow("complex real part") << "real(45-9*i)" << "45";
+	QTest::newRow("complex imag part") << "imaginary(45-9*i)" << "-9";
+	QTest::newRow("simply complex mod") << "abs(i)" << "1";
+	QTest::newRow("complex mod") << "abs(8-9*i)" << "12.0415945788";
 	QTest::newRow("simple addition") << "2+2" << "4";
 	QTest::newRow("simple addition with var") << "2+x" << "x+2";
 	QTest::newRow("minus irreductibility") << "-x" << "-x";
@@ -301,6 +331,12 @@ void AnalitzaTest::testCorrection_data()
 	QTest::addColumn<QString>("result");
 	
 	QStringList script;
+	
+	script.clear();
+	script << "f:=y->y*y";
+	script << "f(i)";
+	QTest::newRow("from complex function") << script << "-1";
+	
 	script.clear();
 	script << "n:=2";
 	script << "n+1";
@@ -608,8 +644,8 @@ void AnalitzaTest::testSimplify_data()
 	QTest::newRow("diff") << "diff(x^2:x)" << "x->2*x";
 	QTest::newRow("sum times") << "sum(n*x : n=0..99)" << "4950*x";
 	QTest::newRow("levelout") << "-y-(x+y)" << "-2*y-x";
-	QTest::newRow("sum") << "n->sum((i+n) * i : i=0..9)" << "n->sum((i+n)*i:i=0..9)";
-	QTest::newRow("sum.sum") << "k->sum(sum(x:x=0..i):i=0..k)" << "k->sum(sum(x:x=0..i):i=0..k)";
+	QTest::newRow("sum") << "n->sum((s+n) * s : s=0..9)" << "n->sum((s+n)*s:s=0..9)";
+	QTest::newRow("sum.sum") << "k->sum(sum(x:x=0..s):s=0..k)" << "k->sum(sum(x:x=0..s):s=0..k)";
 	QTest::newRow("unrelated sum") << "sum(x : n=0..99)" << "100*x";
 	QTest::newRow("ln") << "ln(x)" << "ln(x)";
 	
