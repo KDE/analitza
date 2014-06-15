@@ -180,7 +180,7 @@ MathMLPresentationExpressionWriter::operatorToString
 			0,0,0,// arccosh, arccsc, arccsch,
 			0,0,0,0,// arcsec, arcsech, arcsinh, arctanh,
 			exp, prefixOp<&_log10>, prefixOp<&logE>,// exp, ln, log,
-// 			0,0,0,0,// // 			conjugate, arg, real, imaginary,
+			0,0,0,0,// // 			conjugate, arg, real, imaginary,
 			sum, product, diff,// sum, product, diff,
 			prefix<&cardinal>, joinOp<&scalarproduct>, selector, 0,
 			function // function

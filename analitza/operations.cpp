@@ -331,10 +331,13 @@ Cn* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* val, QString**
 		case Operator::abs:
 			val->setValue(a>=0. ? a : -a);
 			break;
-			//case Object::conjugate:
-			//case Object::arg:
-			//case Object::real:
-			//case Object::imaginary:
+		case Operator::conjugate:
+			val->setValue(complex<double>(a.real(), -a.imag()));
+			break;
+			case Operator::arg:
+			case Operator::real:
+			case Operator::imaginary:
+			break;
 		default:
 			*correct=new QString(i18n("Could not calculate a value %1", Operator(op).toString()));
 	}
@@ -438,10 +441,6 @@ Cn* Operations::reduceUnaryReal(enum Operator::OperatorType op, Cn *val, QString
 		case Operator::abs:
 			val->setValue(a>=0. ? a : -a);
 			break;
-		//case Object::conjugate:
-		//case Object::arg:
-		//case Object::real:
-		//case Object::imaginary:
 		case Operator::floor:
 			val->setValue(floor(a));
 			break;
@@ -821,10 +820,10 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 		case Operator::ln:
 		case Operator::log:
 		case Operator::abs:
-		//case Object::conjugate:
-		//case Object::arg:
-		//case Object::real:
-		//case Object::imaginary:
+		case Operator::conjugate:
+		case Operator::arg:
+		case Operator::real:
+		case Operator::imaginary:
 		case Operator::floor:
 		case Operator::ceiling:
 			ret << TypePair(ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value));

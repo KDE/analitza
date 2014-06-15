@@ -116,7 +116,7 @@ QVariant StringExpressionWriter::visit(const Cn* var)
 		else
 			realiszero = true;
 		
-		if (var->complexValue().imag() != 1) {
+		if (var->complexValue().imag() != 1 && var->complexValue().imag() != -1) {
 			if (qAbs(var->complexValue().imag()) > MIN_PRINTABLE_VALUE) {
 				if (!realiszero && var->complexValue().imag()>0.)
 					realpart += QLatin1String("+");
@@ -124,7 +124,10 @@ QVariant StringExpressionWriter::visit(const Cn* var)
 				imagpart += QLatin1String("*i");
 			}
 		} else  {
-			imagpart = QLatin1String("i");
+			if (var->complexValue().imag() == 1)
+				imagpart = QLatin1String("i");
+			else if (var->complexValue().imag() == -1)
+				imagpart = QLatin1String("-i");
 		}
 		
 		return QVariant::fromValue<QString>(realpart+imagpart);

@@ -155,6 +155,8 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::newRow("complex*complex") << "(5.3-9.8*i)*(-6.2+3.7*i)" << "3.4+80.37*i";
 	QTest::newRow("simple complex/complex") << "i/i" << "1";
 	QTest::newRow("complex/complex") << "(9.3-5.4*i)/(3.6-9.5*i)" << "0.82143203178+0.667667861641*i";
+	QTest::newRow("simple complex conjugate") << "conjugate(i)" << "-i";
+	QTest::newRow("complex conjugate") << "conjugate(-9.3+5.87*i)" << "-9.3-5.87*i";
 	QTest::newRow("simple addition") << "2+2" << "4";
 	QTest::newRow("simple addition with var") << "2+x" << "x+2";
 	QTest::newRow("minus irreductibility") << "-x" << "-x";
@@ -638,8 +640,8 @@ void AnalitzaTest::testSimplify_data()
 	QTest::newRow("diff") << "diff(x^2:x)" << "x->2*x";
 	QTest::newRow("sum times") << "sum(n*x : n=0..99)" << "4950*x";
 	QTest::newRow("levelout") << "-y-(x+y)" << "-2*y-x";
-	QTest::newRow("sum") << "n->sum((i+n) * i : i=0..9)" << "n->sum((i+n)*i:i=0..9)";
-	QTest::newRow("sum.sum") << "k->sum(sum(x:x=0..i):i=0..k)" << "k->sum(sum(x:x=0..i):i=0..k)";
+	QTest::newRow("sum") << "n->sum((s+n) * s : s=0..9)" << "n->sum((s+n)*s:s=0..9)";
+	QTest::newRow("sum.sum") << "k->sum(sum(x:x=0..s):s=0..k)" << "k->sum(sum(x:x=0..s):s=0..k)";
 	QTest::newRow("unrelated sum") << "sum(x : n=0..99)" << "100*x";
 	QTest::newRow("ln") << "ln(x)" << "ln(x)";
 	
