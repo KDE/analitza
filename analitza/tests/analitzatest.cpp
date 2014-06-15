@@ -157,6 +157,9 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::newRow("complex/complex") << "(9.3-5.4*i)/(3.6-9.5*i)" << "0.82143203178+0.667667861641*i";
 	QTest::newRow("simple complex conjugate") << "conjugate(i)" << "-i";
 	QTest::newRow("complex conjugate") << "conjugate(-9.3+5.87*i)" << "-9.3-5.87*i";
+	QTest::newRow("complex arg") << "arg(i)" << "1.57079632679";
+	QTest::newRow("complex real part") << "real(45-9*i)" << "45";
+	QTest::newRow("complex imag part") << "imaginary(45-9*i)" << "-9";
 	QTest::newRow("simple addition") << "2+2" << "4";
 	QTest::newRow("simple addition with var") << "2+x" << "x+2";
 	QTest::newRow("minus irreductibility") << "-x" << "-x";

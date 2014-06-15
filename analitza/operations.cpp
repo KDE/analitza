@@ -332,11 +332,16 @@ Cn* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* val, QString**
 			val->setValue(a>=0. ? a : -a);
 			break;
 		case Operator::conjugate:
-			val->setValue(complex<double>(a.real(), -a.imag()));
+			val->setValue(std::conj(a));
 			break;
 			case Operator::arg:
+				val->setValue(std::arg(a));
+			break;
 			case Operator::real:
+				val->setValue(a.real());
+			break;
 			case Operator::imaginary:
+				val->setValue(a.imag());
 			break;
 		default:
 			*correct=new QString(i18n("Could not calculate a value %1", Operator(op).toString()));
