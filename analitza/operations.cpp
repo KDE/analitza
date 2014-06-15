@@ -643,21 +643,24 @@ Object* Operations::reduceMatrixReal(Operator::OperatorType op, Matrix* matrix, 
 									for (i = 1; i < len; i++)
 										delete products[i];
 								} else { // else: use Exponentiation by squaring
-									//WARNING TODO fix memory leaks
-									
 									Matrix *product = Matrix::identity(base->rowCount());
 									Matrix *newbase = base->copy();
 									int n = exp;
 									
 									while (n != 0) {
 										if (n % 2 != 0) {
-											product = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, product, base, correct));
+											Matrix *oldproduct = product;
+											product = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, product, newbase, correct));
+											delete oldproduct;
 											--n;
 										}
-										
+										Matrix *oldbase = newbase;
 										newbase = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, newbase, newbase, correct));
+										delete oldbase;
 										n /= 2;
 									}
+									
+									ret = product;
 								}
 							}	break;
 						}

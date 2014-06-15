@@ -221,6 +221,7 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::newRow("matrix^1") << "power(matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 } }, 1)" << "matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 } }";
 	QTest::newRow("matrix^2") << "power(matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 } }, 2)" << "matrix { matrixrow { 15, 15 }, matrixrow { 10, 10 } }";
 	QTest::newRow("matrix^64") << "power(matrix { matrixrow { 1.63, 2.4}, matrixrow { -0.36,7.128 } }, 64)" << "matrix { matrixrow { -2.79721542669e+52, 4.14615974023e+53 }, matrixrow { -6.21923961035e+52, 9.21843939558e+53 } }";
+	QTest::newRow("matrix^6464") << "power(matrix { matrixrow { 1.0019 } }, 6464)"  << "matrix { matrixrow { 213191.74219 } }";
 }
 
 void AnalitzaTest::testTrivialEvaluate()
