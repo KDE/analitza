@@ -329,7 +329,7 @@ Cn* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* val, QString**
 			val->setValue(log10(a));
 			break;
 		case Operator::abs:
-			val->setValue(a>=0. ? a : -a);
+			val->setValue(std::abs(a));
 			break;
 		case Operator::conjugate:
 			val->setValue(std::conj(a));

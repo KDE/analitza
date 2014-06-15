@@ -160,6 +160,8 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::newRow("complex arg") << "arg(i)" << "1.57079632679";
 	QTest::newRow("complex real part") << "real(45-9*i)" << "45";
 	QTest::newRow("complex imag part") << "imaginary(45-9*i)" << "-9";
+	QTest::newRow("simply complex mod") << "abs(i)" << "1";
+	QTest::newRow("complex mod") << "abs(8-9*i)" << "12.0415945788";
 	QTest::newRow("simple addition") << "2+2" << "4";
 	QTest::newRow("simple addition with var") << "2+x" << "x+2";
 	QTest::newRow("minus irreductibility") << "-x" << "-x";
