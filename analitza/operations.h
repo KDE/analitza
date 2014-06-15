@@ -67,6 +67,7 @@ class Operations
 		static Object* reduceUnaryList(Operator::OperatorType op, List* l, QString** correct);
 		
 		static Object* reduceRealMatrix(Analitza::Operator::OperatorType op, Analitza::Cn* v, Analitza::Matrix* m1, QString** correct);
+		static Object* reduceMatrixReal(Analitza::Operator::OperatorType op, Analitza::Matrix* m1, Analitza::Cn* v, QString** correct);
 		static Object* reduceVectorMatrix(Operator::OperatorType op, Vector* vector, Matrix* matrix, QString** correct);
 		static Object* reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct);
 		static Object* reduceUnaryMatrix(Analitza::Operator::OperatorType op, Analitza::Matrix* m, QString** correct);

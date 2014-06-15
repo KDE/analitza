@@ -68,9 +68,7 @@ Expression VectorCommand::operator()(const QList< Analitza::Expression >& args)
 				const Analitza::Cn *lengthobj = static_cast<const Analitza::Cn*>(args.first().tree());
 				
 				if (lengthobj->isInteger() && lengthobj->value() > 0) {
-					Analitza::Vector *vector = new Analitza::Vector(lengthobj->intValue());
-					AnalitzaUtils::fillVector(vector, lengthobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
-					ret.setTree(vector);
+					ret.setTree(new Analitza::Vector(lengthobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value()));
 				}
 				else {
 					ret.addError(QCoreApplication::tr("Vector size must be some integer value greater to zero"));

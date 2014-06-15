@@ -20,7 +20,6 @@
 
 #include <QCoreApplication>
 
-#include "analitzautils.h"
 #include "expression.h"
 #include "value.h"
 #include "matrix.h"
@@ -42,13 +41,12 @@ Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& 
 
 //END IsZeroMatrix
 
-
 const QString IsIdentityMatrixCommand::id = QString("isidentitymatrix");
 const ExpressionType IsIdentityMatrixCommand::type = IsZeroMatrixCommand::type;
 
 Expression IsIdentityMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
+	return Expression(new Analitza::Cn(static_cast<const Analitza::Matrix*>(args.first().tree())->isIdentity()));
 }
 
 const QString IsDiagonalMatrixCommand::id = QString("isdiag");
@@ -56,5 +54,5 @@ const ExpressionType IsDiagonalMatrixCommand::type = IsZeroMatrixCommand::type;
 
 Expression IsDiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	return Expression(new Analitza::Cn(AnalitzaUtils::isIdentityMatrix(static_cast<const Analitza::Matrix*>(args.first().tree()))));
+	return Expression(new Analitza::Cn(static_cast<const Analitza::Matrix*>(args.first().tree())->isDiagonal()));
 }

@@ -129,7 +129,7 @@ void AnalitzaTest::testTrivialEvaluate_data()
 {
 	QTest::addColumn<QString>("expression");
 	QTest::addColumn<QString>("result");
-
+	
 	QTest::newRow("simple value") << "2" << "2";
 	QTest::newRow("simple addition") << "2+2" << "4";
 	QTest::newRow("simple addition with var") << "2+x" << "x+2";
@@ -217,6 +217,10 @@ void AnalitzaTest::testTrivialEvaluate_data()
 	QTest::newRow("vector x transpose(vector)") << "vector{ 3, 5 }*transpose(vector{1,2})" << "matrix { matrixrow { 3, 6 }, matrixrow { 5, 10 } }";
 	QTest::newRow("matrix x vector") << "matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 }, matrixrow { 3, 4 } }*vector{ 1, 2 }" << "vector { 9, 6, 11 }";
 	QTest::newRow("matrix x matrix") << "matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 }, matrixrow { 3, 4 } }*matrix { matrixrow{3, 3, 4, 5, 6}, matrixrow{2, 4, 5, 6, 2} }" << "matrix { matrixrow { 15, 21, 27, 33, 24 }, matrixrow { 10, 14, 18, 22, 16 }, matrixrow { 17, 25, 32, 39, 26 } }";
+	QTest::newRow("matrix^0") << "power(matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 } }, 0)" << "matrix { matrixrow { 1, 0 }, matrixrow { 0, 1 } }";
+	QTest::newRow("matrix^1") << "power(matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 } }, 1)" << "matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 } }";
+	QTest::newRow("matrix^2") << "power(matrix { matrixrow { 3, 3 }, matrixrow { 2, 2 } }, 2)" << "matrix { matrixrow { 15, 15 }, matrixrow { 10, 10 } }";
+	QTest::newRow("matrix^64") << "power(matrix { matrixrow { 1.63, 2.4}, matrixrow { -0.36,7.128 } }, 64)" << "matrix { matrixrow { -2.79721542669e+52, 4.14615974023e+53 }, matrixrow { -6.21923961035e+52, 9.21843939558e+53 } }";
 }
 
 void AnalitzaTest::testTrivialEvaluate()

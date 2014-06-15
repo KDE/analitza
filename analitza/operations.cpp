@@ -30,9 +30,9 @@
 #include "list.h"
 #include "expressiontypechecker.h"
 #include "customobject.h"
-
 #include "matrix.h"
 #include "container.h"
+#include "additionchains.h"
 
 using namespace std;
 using namespace Analitza;
@@ -339,27 +339,30 @@ Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, 
 Object* Operations::reduceMatrixVector(Operator::OperatorType op, Matrix* matrix, Vector* vector, QString** correct)
 {
 	Object* ret = 0;
-	
 	if (op == Operator::times) {
-		//TODO check if vector/matrix has only values as type for entries
-		const int maxk = matrix->columnCount();
-		
-		if (maxk == vector->size()) {
-			const int m = matrix->rowCount();
+		if (matrix->hasOnlyNumbers() && vector->hasOnlyNumbers()) {
+			const int maxk = matrix->columnCount();
 			
-			Vector *newvec = new Vector(m);
-			
-			for (int i = 0; i < m; ++i) {
-				double sum = 0;
-				for (int k = 0; k < maxk; ++k)
-					sum += static_cast<const Cn*>(reduceRealReal(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->value();
+			if (maxk == vector->size()) {
+				const int m = matrix->rowCount();
 				
-				newvec->appendBranch(new Cn(sum));
+				Vector *newvec = new Vector(m);
+				
+				for (int i = 0; i < m; ++i) {
+					double sum = 0;
+					for (int k = 0; k < maxk; ++k)
+						sum += static_cast<const Cn*>(reduceRealReal(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->value();
+					
+					newvec->appendBranch(new Cn(sum));
+				}
+				
+				ret = newvec;
+			} else {
+				*correct=new QString(QCoreApplication::tr("Multiplication between a matrix and a vector is allowed provided that the number of columns of the matrix equals the size of the vector"));
+				ret=new None();
 			}
-			
-			ret = newvec;
 		} else {
-			*correct=new QString(QCoreApplication::tr("Multiplication between a matrix and a vector is allowed provided that the number of columns of the matrix equals the size of the vector"));
+			*correct=new QString(QCoreApplication::tr("Matrix and vector entries must be numbers"));
 			ret=new None();
 		}
 	}
@@ -474,7 +477,6 @@ Object* Operations::reduceCustomCustom(Operator::OperatorType op, CustomObject* 
 Object* Operations::reduceVectorMatrix(Operator::OperatorType op, Vector* vector, Matrix* matrix, QString** correct)
 {
 	Object* ret = 0;
-	
 	if (op == Operator::times) {
 		//TODO check if matrix has only values as type for entries
 		if (1 == matrix->rowCount()) {
@@ -522,31 +524,35 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 			}
 		}	break;
 		case Operator::times: {
-			//TODO check if matrix has only values as type for entries
-			const int maxk = m1->columnCount();
-			if (maxk == m2->rowCount()) {
-				const int m = m1->rowCount();
-				const int n = m2->columnCount();
-				
-				Matrix *matrix = new Matrix();
-				
-				for (int i = 0; i < m; ++i) {
-					MatrixRow *row = new MatrixRow(n);
-					for (int j = 0; j < n; ++j) {
-						double sum = 0;
-						for (int k = 0; k < maxk; ++k) {
-							sum += static_cast<const Cn*>(reduceRealReal(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->value();
+			if (m1->hasOnlyNumbers() && m2->hasOnlyNumbers()) {
+				const int maxk = m1->columnCount();
+				if (maxk == m2->rowCount()) {
+					const int m = m1->rowCount();
+					const int n = m2->columnCount();
+					
+					Matrix *matrix = new Matrix();
+					
+					for (int i = 0; i < m; ++i) {
+						MatrixRow *row = new MatrixRow(n);
+						for (int j = 0; j < n; ++j) {
+							double sum = 0;
+							for (int k = 0; k < maxk; ++k) {
+								sum += static_cast<const Cn*>(reduceRealReal(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->value();
+							}
+							
+							row->appendBranch(new Cn(sum));
 						}
 						
-						row->appendBranch(new Cn(sum));
+						matrix->appendBranch(row);
 					}
 					
-					matrix->appendBranch(row);
+					ret = matrix;
+				} else {
+					*correct=new QString(QCoreApplication::tr("Multiplication of two matrices is allowed provided that the number of columns of the first matrix equals the number of rows of the second matrix"));
+					ret=new None();
 				}
-				
-				ret = matrix;
 			} else {
-				*correct=new QString(QCoreApplication::tr("Multiplication of two matrices is allowed provided that the number of columns of the first matrix equals the number of rows of the second matrix"));
+				*correct=new QString(QCoreApplication::tr("Matrix entries must be numbers"));
 				ret=new None();
 			}
 		}	break;
@@ -560,7 +566,6 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
 {
 	Object* ret = 0;
-// 	qDebug() << "que op: " << op;
 	switch(op) {
 		case Operator::selector: {
 			int select=v->intValue();
@@ -579,12 +584,97 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 			delete v;
 		}	break;
 		case Operator::times: {
-			Matrix *nm = new Matrix();
-// 			aqui marca el error solo 
-			for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
-				nm->appendBranch(static_cast<MatrixRow*>(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
-			ret = nm;
+			if (m1->hasOnlyNumbers()) {
+				Matrix *nm = new Matrix();
+				for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
+					nm->appendBranch(static_cast<MatrixRow*>(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
+				ret = nm;
+			} else {
+				*correct=new QString(QCoreApplication::tr("Matrix entries must be numbers"));
+				ret=new None();
+			}
 		}	break;
+		default:
+			break;
+	}
+	return ret;
+}
+
+Object* Operations::reduceMatrixReal(Operator::OperatorType op, Matrix* matrix, Cn* value, QString** correct)
+{
+	Object* ret = 0;
+	switch(op) {
+		case Operator::power: {
+			if (matrix->hasOnlyNumbers()) {
+				if (matrix->isSquare()) {
+					if (value->isInteger()) {
+						const int exp = qAbs(value->intValue());
+						
+						switch(exp) {
+							case 0: ret = Matrix::identity(matrix->rowCount()); break;
+							case 1: ret = matrix; break;
+							default: {
+								//base = value->intValue() < 0? invert(matrix) : matrix;//TODO negative exponents
+								Matrix *base = matrix;
+								
+								if (exp <= MAX_EXPONENT) { // then: use Addition-chain exponentiation
+									const int len = additionChains[exp][0];
+									int i, j, k;
+									QVector<Matrix*> products(len+1);
+									products[0] = base;
+									
+									if (exp>1)
+										products[1] = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, matrix, matrix, correct));
+									
+									//NOTE see http://rosettacode.org/wiki/Addition-chain_exponentiation#C for more details
+									for (i = 2; i <= len; i++) 
+										for (j = i - 1; j; j--) 
+											for (k = j; k >= 0; k--) 
+											{
+												if (additionChains[exp][k+1] + additionChains[exp][j+1] < additionChains[exp][i+1]) break;
+												if (additionChains[exp][k+1] + additionChains[exp][j+1] > additionChains[exp][i+1]) continue;
+												products[i] = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, products[j], products[k], correct));
+												j = 1;
+												break;
+											}
+									ret = products[len];
+									
+									//NOTE free memory (at 0 we have matrix and the last is our result, so go from 1 to len-1)
+									for (i = 1; i < len; i++)
+										delete products[i];
+								} else { // else: use Exponentiation by squaring
+									//WARNING TODO fix memory leaks
+									
+									Matrix *product = Matrix::identity(base->rowCount());
+									Matrix *newbase = base->copy();
+									int n = exp;
+									
+									while (n != 0) {
+										if (n % 2 != 0) {
+											product = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, product, base, correct));
+											--n;
+										}
+										
+										newbase = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, newbase, newbase, correct));
+										n /= 2;
+									}
+								}
+							}	break;
+						}
+					} else {
+						*correct=new QString(QCoreApplication::tr("The exponent of 'power' must be some integer number"));
+						ret=new None();
+					}
+				} else {
+					*correct=new QString(QCoreApplication::tr("Cannot compute 'power' for non square matrix"));
+					ret=new None();
+				}
+			} else {
+				*correct=new QString(QCoreApplication::tr("Matrix entries must be numbers"));
+				ret=new None();
+			}
+		}	break;
+		//TODO root
 		default:
 			break;
 	}
@@ -607,7 +697,6 @@ Object* Operations::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QStr
 			}
 			ret = mret;
 		}	break;
-		//TODO power
 		default:
 			break;
 	}
@@ -688,6 +777,11 @@ QList<ExpressionType> Operations::infer(Operator::OperatorType op)
 								ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
 			break;
 		case Operator::power:
+			ret << TypeTriplet(ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), -1),
+							   ExpressionType(ExpressionType::Value),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), -1));
+			break;
 		case Operator::rem:
 		case Operator::quotient:
 		case Operator::factorof:
@@ -824,7 +918,7 @@ Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] =
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{(Operations::BinaryOp) reduceMatrixNone,0,0, (Operations::BinaryOp) reduceMatrixVector,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
+	{(Operations::BinaryOp) reduceMatrixNone, (Operations::BinaryOp) reduceMatrixReal,0, (Operations::BinaryOp) reduceMatrixVector,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
 };
