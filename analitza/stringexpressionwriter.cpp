@@ -30,6 +30,8 @@
 
 using namespace Analitza;
 
+const double StringExpressionWriter::MIN_PRINTABLE_VALUE = 0.0000000000001; // since the precision we choose for 'G' is 12
+
 template <class T>
 QStringList StringExpressionWriter::allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer)
 {
@@ -105,8 +107,28 @@ QVariant StringExpressionWriter::visit(const Cn* var)
 		return var->isTrue() ? "true" : "false";
 	else if(var->isCharacter())
 		return QString(var->character());
-	else if(var->isComplex())
-		return QVariant::fromValue<QString>(QString::number(var->complexValue().real(), 'g', 12) + QLatin1String("+i*") + QString::number(var->complexValue().imag(), 'g', 12));
+	else if(var->isComplex()) {
+		QString realpart;
+		QString imagpart;
+		bool realiszero = false;
+		if (qAbs(var->complexValue().real()) > MIN_PRINTABLE_VALUE)
+			realpart = QString::number(var->complexValue().real(), 'g', 12);
+		else
+			realiszero = true;
+		
+		if (var->complexValue().imag() != 1) {
+			if (qAbs(var->complexValue().imag()) > MIN_PRINTABLE_VALUE) {
+				if (!realiszero && var->complexValue().imag()>0.)
+					realpart += QLatin1String("+");
+				imagpart = QString::number(var->complexValue().imag(), 'g', 12);
+				imagpart += QLatin1String("*i");
+			}
+		} else  {
+			imagpart = QLatin1String("i");
+		}
+		
+		return QVariant::fromValue<QString>(realpart+imagpart);
+	}
 	else
 		return QString::number(var->value(), 'g', 12);
 }

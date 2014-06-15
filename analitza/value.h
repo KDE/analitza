@@ -63,8 +63,8 @@ class ANALITZA_EXPORT Cn : public Object
 		explicit Cn(const QChar& c) : Object(Object::value), m_char(c.unicode()), m_imaginaryPart(0), m_format(Char) {}
 
 		/** Constructor. Creates a value that represents a complex. */
-		explicit Cn(float value, float imaginaryPart) : Object(Object::value), m_value(value), m_imaginaryPart(imaginaryPart), m_format(Complex) {qDebug() << "xxxxxxxxxx" << toString();}
-
+		explicit Cn(double value, double imaginaryPart) : Object(Object::value), m_value(value), m_imaginaryPart(imaginaryPart), m_format(Complex) {}
+		
 		/**
 		 *	Extracts the number from the @p e Dom element and saves it.
 		 */
@@ -78,7 +78,7 @@ class ANALITZA_EXPORT Cn : public Object
 		void setValue(int v);
 		void setValue(uint v);
 		void setValue(bool v);
-		void setValue(std::complex<float> v);
+		void setValue(std::complex<double> v);
 
 		/**
 		 *	Returns the value.
@@ -149,16 +149,16 @@ class ANALITZA_EXPORT Cn : public Object
 		QChar character() const { Q_ASSERT(m_format==Char); return QChar(m_char); }
 
 		/** @returns whether the value has an imaginary part */
-		bool isComplex() const { return m_format == Complex; }
+		bool isComplex() const { return m_format == Complex && m_imaginaryPart!=0.; }
 
 		virtual QVariant accept(AbstractExpressionVisitor*) const;
-		virtual bool isZero() const { return m_value==0. && m_imaginaryPart==0.f; }
+		virtual bool isZero() const { return m_value==0. && m_imaginaryPart==0.; }
 
 		virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;
 		/*/** Sets whether it is a correct Cn.
 		void setCorrect(bool b) {m_correct = b; }*/
 
-		std::complex<float> complexValue() const;
+		std::complex<double> complexValue() const;
 
 		virtual Object* copy() const;
 
@@ -167,7 +167,7 @@ class ANALITZA_EXPORT Cn : public Object
 		static Cn euler();
 	private:
 		union { double m_value; ushort m_char; };
-		float m_imaginaryPart;
+		double m_imaginaryPart;
 		enum ValueFormat m_format;
 };
 

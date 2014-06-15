@@ -115,6 +115,7 @@ void AnalitzaTest::testTrivialCalculate_data()
 	QTest::newRow("cpx1") << "i" << Cn(0, 1);
 	QTest::newRow("cpx2") << "i*i" << Cn(-1);
 	QTest::newRow("cpx3") << "2+i*i" << Cn(1);
+	QTest::newRow("complex number") << "3+4*(5-6*i)" << Cn(23, -24);
 }
 
 void AnalitzaTest::testTrivialCalculate()
@@ -142,8 +143,14 @@ void AnalitzaTest::testTrivialEvaluate_data()
 {
 	QTest::addColumn<QString>("expression");
 	QTest::addColumn<QString>("result");
-
+	
 	QTest::newRow("simple value") << "2" << "2";
+	QTest::newRow("simple complex value") << "6*(2+i)" << "12+6*i";
+	QTest::newRow("complex irreductibility") << "i" << "i";
+	QTest::newRow("from complex value") << "i*i" << "-1";
+	QTest::newRow("from power complex") << "power(i, 2)" << "-1";
+	QTest::newRow("sin complex") << "sin(i)" << "1.17520119364*i";
+	QTest::newRow("cos complex") << "cos(5-9*i)" << "1149.26926545-3885.12187972*i";
 	QTest::newRow("simple addition") << "2+2" << "4";
 	QTest::newRow("simple addition with var") << "2+x" << "x+2";
 	QTest::newRow("minus irreductibility") << "-x" << "-x";
@@ -314,6 +321,12 @@ void AnalitzaTest::testCorrection_data()
 	QTest::addColumn<QString>("result");
 	
 	QStringList script;
+	
+	script.clear();
+	script << "f:=y->y*y";
+	script << "f(i)";
+	QTest::newRow("from complex function") << script << "-1";
+	
 	script.clear();
 	script << "n:=2";
 	script << "n+1";

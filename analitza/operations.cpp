@@ -151,19 +151,19 @@ Cn* reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a, double b,
 	return oper;
 }
 
-static bool operator<(complex<float> a, complex<float> b)
+static bool operator<(complex<double> a, complex<double> b)
 { return a.real() < b.real() || (a.real() == b.real() && a.imag()<b.imag()); }
 
-static bool operator>(complex<float> a, complex<float> b)
+static bool operator>(complex<double> a, complex<double> b)
 { return a.real() > b.real() || (a.real() == b.real() && a.imag()>b.imag()); }
 
-static bool operator<=(complex<float> a, complex<float> b)
+static bool operator<=(complex<double> a, complex<double> b)
 { return a.real() <= b.real() || (a.real() == b.real() && a.imag()<=b.imag()); }
 
-static bool operator>=(complex<float> a, complex<float> b)
+static bool operator>=(complex<double> a, complex<double> b)
 { return a.real() >= b.real() || (a.real() == b.real() && a.imag()>=b.imag()); }
 
-Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<float> a, complex<float> b, QString** correct)
+Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<double> a, complex<double> b, QString** correct)
 {
 	switch(op) {
 		case Operator::plus:
@@ -274,7 +274,7 @@ Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<float
 Cn* Operations::reduceValueValue(enum Operator::OperatorType op, Cn *oper, const Cn *oper1, QString** correct)
 {
 	if(KDE_ISUNLIKELY(oper->isComplex() || oper1->isComplex())) {
-		const complex<float> a=oper->complexValue(), b=oper1->complexValue();
+		const complex<double> a=oper->complexValue(), b=oper1->complexValue();
 		return reduceComplexComplex(op, oper, a, b, correct);
 	} else {
 		const double a=oper->value(), b=oper1->value();
@@ -292,7 +292,7 @@ Cn* Operations::reduceUnaryValue(Operator::OperatorType op, Cn* oper, QString** 
 
 Cn* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* val, QString** correct)
 {
-	const complex<float> a=val->complexValue();
+	const complex<double> a=val->complexValue();
 
 	switch(op) {
 		case Operator::minus:

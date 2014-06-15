@@ -116,12 +116,12 @@ void Cn::setValue(bool v)
 	m_imaginaryPart = 0;
 }
 
-std::complex<float> Cn::complexValue() const
+std::complex<double> Cn::complexValue() const
 {
-	return std::complex<float>(m_value, m_imaginaryPart);
+	return std::complex<double>(m_value, m_imaginaryPart);
 }
 
-void Cn::setValue(std::complex<float> v)
+void Cn::setValue(std::complex<double> v)
 {
 	if(v.imag() == 0)
 		setValue(v.real());
