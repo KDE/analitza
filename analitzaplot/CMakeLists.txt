@@ -19,7 +19,6 @@ set ( analitzaplot_SRCS
     private/utils/mathutils.cpp
     private/utils/quadtree.cpp
     private/utils/marchingsquares.cpp
-    private/utils/octree.cpp
     private/utils/marchingcubes.cpp
 
     private/abstractplotitem.cpp

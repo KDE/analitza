@@ -1,869 +1,1490 @@
-/*************************************************************************************
- *  Copyright (C) 2012 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>      *
- *                                                                                   *
- *  This program is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU General Public License                      *
- *  as published by the Free Software Foundation; either version 2                   *
- *  of the License, or (at your option) any later version.                           *
- *                                                                                   *
- *  This program is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
- *  GNU General Public License for more details.                                     *
- *                                                                                   *
- *  You should have received a copy of the GNU General Public License                *
- *  along with this program; if not, write to the Free Software                      *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
- *************************************************************************************/
+// Aqsis
+// Copyright (C) 2006, Paul C. Gregory
+//
+// Contact: pgregory@aqsis.org
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+/** \file
+    \brief MarchingCubes Algorithm
+    \author Thomas Lewiner <thomas.lewiner@polytechnique.org>
+    \author Math Dept, PUC-Rio
+    \version 0.2
+    \date    12/08/2002
+*/
+
+// Minor modifications for KDE-Edu/Analitza Library: Copyright (C) 2014 by Percy Camilo T. Aucahuasi <percy.camilo.ta@gmail.com>
+
 
 #include "marchingcubes.h"
 
-#include <QDebug>
+#include <math.h>
+#include <memory.h>
+#include <float.h>
+#include <stdio.h>
 
-//
-//@percy spec/impl details
-//
-// vertex | moves from center (C)
-// 0 | (-, -, -)
-// 1 | (-, -, +)
-// 2 | (-, +, -)
-// 3 | (-, +, +)
-// 4 | (+, -, -)
-// 5 | (+, -, +)
-// 6 | (+, +, -)
-// 7 | (+, +, +)
-// Notes: moves from center means the offsets (offsetfactor x,offsetfactor y,offsetfactor z) 
-// where offsetfactor is + or - and the factor is the half-edge
-// 
-// edge | vertex from -> vertex to | axis (or paralel axis)
-// 0  | 0 -> 1 | z
-// 1  | 0 -> 2 | y
-// 2  | 0 -> 4 | x
-// 3  | 1 -> 3 | y
-// 4  | 1 -> 5 | x
-// 5  | 2 -> 3 | z
-// 6  | 2 -> 6 | x
-// 7  | 3 -> 7 | x
-// 8  | 4 -> 5 | z
-// 9  | 4 -> 6 | y
-// 10 | 5 -> 7 | y
-// 11 | 6 -> 7 | z
-// 
-// Notes: (->) means to low value from high value (in the direction of its axis)
-// see the next ref system:
-//        
-//            +Z
-//            |
-//            |
-//            |
-//            |
-//    /|      |________>+Y
-// EYE |     /
-//    \|    /
-//         /
-//        -X
-// ... and the ref cube is:
-//
-//             3
-//        1---------3
-//      4/:        /|
-//      / : 10    / |5
-//     5---------7  |
-//     |  :  C   |  |
-//    8|  0......|..2
-//     |2.    1  | /
-//     |.      11|/6
-//     4---------6
-//         9
 
-sMarching_Cube MarchingCubes::evalCube(const Cube& cubo)
+
+
+#include "lookuptable.h"
+
+// step size of the arrays of vertices and triangles
+#define ALLOC_SIZE 65536
+
+
+//_____________________________________________________________________________
+// print cube for debug
+void MarchingCubes::print_cube()
 {
-    sMarching_Cube res;
-    QVector3D punto;
-    unsigned short int val;
-
-
-    //basic data
-    res.center = cubo.center();
-    res.half_size = cubo.halfEdge();
-
-    //fill vertices
-    double x = res.center.x();
-    double y = res.center.y();
-    double z = res.center.z();
-    double hedge = res.half_size;
-    
-    
-    res.vertices[0] = evalScalarField(x-hedge, y-hedge, z-hedge);
-    res.vertices[1] = evalScalarField(x-hedge, y-hedge, z+hedge);
-    res.vertices[2] = evalScalarField(x-hedge, y+hedge, z-hedge);
-    res.vertices[3] = evalScalarField(x-hedge, y+hedge, z+hedge);
-    res.vertices[4] = evalScalarField(x+hedge, y-hedge, z-hedge);
-    res.vertices[5] = evalScalarField(x+hedge, y-hedge, z+hedge);
-    res.vertices[6] = evalScalarField(x+hedge, y+hedge, z-hedge);
-    res.vertices[7] = evalScalarField(x+hedge, y+hedge, z+hedge);
-
-    //define topology type
-    res.type = 0;
-    val=1;
-    
-    //sum each vertex based on position
-    for(unsigned int i=0;i<8;i++){
-        if(res.vertices[i] > 0){
-            res.type += val;
-        }
-        val*=2;
-    }
-    
-    return res;
+    //Aqsis::log() << warning << i_cube[0] << " " <<  i_cube[1] << " " <<  i_cube[2] << " " <<  i_cube[3] << " " <<  i_cube[4] << " " <<  i_cube[5] << " " <<  i_cube[6] << " " <<  i_cube[7]) << std::endl;
 }
 
-QList<Cube> MarchingCubes::breadthSearch(int cubos_lado){
-    Cube cubo;
-    sMarching_Cube m_cubo;
-    bool salir = false;
-    QList<Cube> cubos;
-    cubo.setHalfEdge(m_worldLength/(2*cubos_lado));
-
-    double x = 0;
-    double y = 0;
-    double z = 0;
-    
-// static const double iteration_square_val = 0.5;
-
-    for(int i=m_worldLimits.minX;i<=m_worldLimits.maxX;i++){
-//         cubo.centro.x() = (2*i+1)*cubo.medio_lado;
-        x = (2*i+1)*cubo.halfEdge();
-        
-        for(int j=m_worldLimits.minY;j<=m_worldLimits.maxY;j++){
-            y = (2*j+1)*cubo.halfEdge();
-            for(int k=m_worldLimits.minZ;k<=m_worldLimits.maxZ;k++){
-                z = (2*k+1)*cubo.halfEdge();
-                cubo.setCenter(x,y,z);
-                m_cubo = evalCube(cubo);
-                if(m_cubo.type != 0 && m_cubo.type != 255){
-                    //if is inside the cube, stop the search ...
-                    salir = true;
-                    cubos.append(cubo);
-                }
-            }
-        }
-    }
-    if(!salir && 2*cubo.halfEdge() > m_minCubeSize){
-        cubos.append(breadthSearch(cubos_lado*2));
-        //mundo.maxX*=2; mundo.maxY*=2; mundo.maxZ*=2;
-    }
-    return cubos;
-}
-
-QList<sMarching_Cube> MarchingCubes::depthSearch(Octree *arbol, sNode *nodo){
-    QList<sMarching_Cube> cubos;
-    sMarching_Cube m_cubo;
-
-    //test if surface "cut" the cube
-    m_cubo = evalCube(nodo->cube);
-
-    if(m_cubo.type != 0 && m_cubo.type != 255){
-        //if intersection
-        if(m_cubo.half_size*2 > m_minCubeSize){ 
-            //Seguir bajando
-            arbol->downLevel(nodo);
-            for(unsigned int i=0; i<8; i++){
-                cubos.append(depthSearch(arbol,nodo->nodes[i]));
-            }
-        } else {
-            //stop condition
-            cubos.append(m_cubo);
-        }
-    }
-    return cubos;
-}
-
-MarchingCubes::MarchingCubes()
+//_____________________________________________________________________________
+// Constructor
+MarchingCubes::MarchingCubes(  ) :
+        i_originalMC(false),
+        i_data      ((double*)NULL),
+        i_x_verts   (( int *)NULL),
+        i_y_verts   (( int *)NULL),
+        i_z_verts   (( int *)NULL),
+        i_nverts    (0),
+        i_ntrigs    (0),
+        i_Nverts    (0),
+        i_Ntrigs    (0),
+        i_vertices  (( Vertex *)NULL),
+        i_triangles ((Triangle*)NULL)
 {
-
 }
+//_____________________________________________________________________________
 
 void MarchingCubes::setupSpace(const SpaceLimits &spaceLimits)
 {
-    //TODO no magic numbers
-    m_minCubeSize = 0.2;
-    m_worldLength = 1;
-    m_worldLimits = spaceLimits;    
-}
+    ///
+        clean_all();
 
-MarchingCubes::~MarchingCubes()
-{
-}
+    ///
+        int x,y,z;
+    int a = 64;// para mas de 10 de radio de mundo 80 para a es un buen valor
+    x = a;
+    y=a;
+    z=a;
 
-QList<sMarching_Cube> MarchingCubes::getCubes()
-{
-    QList<sMarching_Cube> cubos;
-    QList<Cube> found = breadthSearch(m_worldLength);
+i_size_x    =(x);
+i_size_y    =(y);
+i_size_z    =(z);
 
-    foreach(const Cube& iterador, found){
-        Octree* arbol = new Octree(iterador);
-        cubos.append(depthSearch(arbol, arbol->getRoot()));
-        delete arbol;
-    }
+        xmin = spaceLimits.minX;
+        ymin = spaceLimits.minY;
+        zmin = spaceLimits.minZ;
+        xmax = spaceLimits.maxX;
+        ymax = spaceLimits.maxY;
+        zmax = spaceLimits.maxZ;
 
-    return cubos;
-}
-
-void MarchingCubes::apendTriangle(const QVector3D& a, const QVector3D& b, const QVector3D& c)
-{
-    QVector3D n = QVector3D::normal(a, b, c);
-
-    _vertices << a.x() << a.y() << a.z() <<
-                b.x() << b.y() << b.z() <<
-                c.x() << c.y() << c.z();
-                
-    _normals << n.x() << n.y() << n.z(); 
-
-    _indexes.append(_indexes.size());
-    _indexes.append(_indexes.size());
-    _indexes.append(_indexes.size());
-}
-
-QList<Edge> MarchingCubes::computeIntersections(const sMarching_Cube& cubo)
-{
-    QList<Edge> aristas;
-    Edge temp;
-    //0-1
-    if(oppositeSign(cubo.vertices[0],cubo.vertices[1])){
-        temp.cut = QVector3D(cubo.center.x()-cubo.half_size,
-                               cubo.center.y()-cubo.half_size,
-                               cubo.center.z()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[0],cubo.vertices[1]));
-        temp.vertices[0] = 0;
-        temp.vertices[1] = 1;
-        aristas.append(temp);
-    }
-    //0-2
-    if(oppositeSign(cubo.vertices[0],cubo.vertices[2])){
-        temp.cut = QVector3D(cubo.center.x()-cubo.half_size,
-                               cubo.center.y()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[0],cubo.vertices[2]),
-                               cubo.center.z()-cubo.half_size);
-        temp.vertices[0] = 0;
-        temp.vertices[1] = 2;
-        aristas.append(temp);
-    }
-    //0-4
-    if(oppositeSign(cubo.vertices[0],cubo.vertices[4])){
-        temp.cut = QVector3D(cubo.center.x()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[0],cubo.vertices[4]),
-                               cubo.center.y()-cubo.half_size,
-                               cubo.center.z()-cubo.half_size);
-        temp.vertices[0] = 0;
-        temp.vertices[1] = 4;
-        aristas.append(temp);
-    }
-    //1-3
-    if(oppositeSign(cubo.vertices[1],cubo.vertices[3])){
-        temp.cut = QVector3D(cubo.center.x()-cubo.half_size,
-                               cubo.center.y()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[1],cubo.vertices[3]),
-                               cubo.center.z()+cubo.half_size);
-        temp.vertices[0] = 1;
-        temp.vertices[1] = 3;
-        aristas.append(temp);
-    }
-    //1-5
-    if(oppositeSign(cubo.vertices[1],cubo.vertices[5])){
-        temp.cut = QVector3D(cubo.center.x()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[1],cubo.vertices[5]),
-                           cubo.center.y()-cubo.half_size,
-                           cubo.center.z()+cubo.half_size);
-        temp.vertices[0] = 1;
-        temp.vertices[1] = 5;
-        aristas.append(temp);
-    }
-    //2-3
-    if(oppositeSign(cubo.vertices[2],cubo.vertices[3])){
-        temp.cut = QVector3D(cubo.center.x()-cubo.half_size,
-                               cubo.center.y()+cubo.half_size,
-                               cubo.center.z()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[2],cubo.vertices[3]));
-        temp.vertices[0] = 2;
-        temp.vertices[1] = 3;
-        aristas.append(temp);
-    }
-    //2-6
-    if(oppositeSign(cubo.vertices[2],cubo.vertices[6])){
-        temp.cut = QVector3D(cubo.center.x()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[2],cubo.vertices[6]),
-                           cubo.center.y()+cubo.half_size,
-                           cubo.center.z()-cubo.half_size);
-        temp.vertices[0] = 2;
-        temp.vertices[1] = 6;
-        aristas.append(temp);
-    }
-    //3-7
-    if(oppositeSign(cubo.vertices[3],cubo.vertices[7])){
-        temp.cut = QVector3D(cubo.center.x()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[3],cubo.vertices[7]),
-                           cubo.center.y()+cubo.half_size,
-                           cubo.center.z()+cubo.half_size);
-        temp.vertices[0] = 3;
-        temp.vertices[1] = 7;
-        aristas.append(temp);
-    }
-    //4-5
-    if(oppositeSign(cubo.vertices[4],cubo.vertices[5])){
-        temp.cut = QVector3D(cubo.center.x()+cubo.half_size,
-                               cubo.center.y()-cubo.half_size,
-                               cubo.center.z()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[4],cubo.vertices[5]));
-        temp.vertices[0] = 4;
-        temp.vertices[1] = 5;
-        aristas.append(temp);
-    }
-    //4-6
-    if(oppositeSign(cubo.vertices[4],cubo.vertices[6])){
-        temp.cut = QVector3D(cubo.center.x()+cubo.half_size,
-                               cubo.center.y()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[4],cubo.vertices[6]),
-                               cubo.center.z()-cubo.half_size);
-        temp.vertices[0] = 4;
-        temp.vertices[1] = 6;
-        aristas.append(temp);
-    }
-    //5-7
-    if(oppositeSign(cubo.vertices[5],cubo.vertices[7])){
-        temp.cut = QVector3D(cubo.center.x()+cubo.half_size,
-                               cubo.center.y()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[5],cubo.vertices[7]),
-                               cubo.center.z()+cubo.half_size);
-        temp.vertices[0] = 5;
-        temp.vertices[1] = 7;
-        aristas.append(temp);
-    }
-    //6-7
-    if(oppositeSign(cubo.vertices[6],cubo.vertices[7])){
-        temp.cut = QVector3D(cubo.center.x()+cubo.half_size,
-                               cubo.center.y()+cubo.half_size,
-                               cubo.center.z()-cubo.half_size+2*cubo.half_size*linearInterpolation(cubo.vertices[6],cubo.vertices[7]));
-        temp.vertices[0] = 6;
-        temp.vertices[1] = 7;
-        aristas.append(temp);
-    }
-    return aristas;
-}
-
-bool MarchingCubes::oppositeSign(double a, double b){
-    return ((a > 0 && b <= 0) || (a <= 0 && b > 0));
-}
-
-double MarchingCubes::linearInterpolation(double vert_1, double vert_2){
-    //Posicion de 0 a 1
-    return qAbs(vert_1/(vert_1 - vert_2));
-}
-
-void MarchingCubes::appendTriangles(QList<QVector3D> &lista_triangulos){
-    
-    for(int i=0; i<lista_triangulos.count();i+=3){
+//     qDebug() << xmin << xmax << "|" << ymin << ymax << "|" << zmin << zmax;
         
-        if (lista_triangulos.size()-3 < i)
-            continue;
-
-        apendTriangle(lista_triangulos.at(i),lista_triangulos.at(i+1),lista_triangulos.at(i+2));
-
-    }
-
-}
-
-void MarchingCubes::computeTopologyType(const sMarching_Cube& cubo){
-    QList<Edge> aristas;
-    QList<unsigned int> vertices;
-    unsigned int it;
-
-    //Conseguir aristas y vertices
-    aristas = computeIntersections(cubo);
-    it=0;
-    for(unsigned int i=1; i<129; i*=2){
-        if((cubo.type & i) == i){
-            vertices.append(it);
-        }
-        it++;
-    }
-    if(vertices.count() > 4){
-        it=0;
-        vertices.clear();
-        for(unsigned int i=1; i<129; i*=2){
-            if((cubo.type & i) != i){
-                vertices.append(it);
-            }
-            it++;
-        }
-    }
-
-    //get type
-    switch(aristas.count()){
-    case 3:
-        //type 1
-        type01(aristas, vertices);
-        return ;
-    case 4:
-        //types 2, 5
-        if(vertices.count() == 2){
-            //type 2
-            type02(aristas);
-            return ;
-        } else {
-            //type 5
-            type05(aristas, vertices);
-            return ;
-        }
-    case 5:
-    {
-        //type 4
-        type04(aristas, vertices);
-        return ;
-    }
-    case 6:
-        //types 3, 8, 9, 10, 14
-        if(vertices.count() == 2){
-            //types 3 or 10 -> type01 can draw this cases too
-             type01(aristas, vertices); return ;
-        } else {
-            for(int i=0; i<vertices.count(); i++){
-                bool tiene_arista = false;
-                for(int j=0; j<aristas.count(); j++){
-                    if(aristas.at(j).vertices[0] == vertices.at(i) || aristas.at(j).vertices[1] == vertices.at(i)){
-                        tiene_arista = true;
-                        break;
-                    }
-                }
-                if(!tiene_arista){
-                    //Tipo 8
-                    type08(aristas, vertices, i);
-                    return ;
-                }
-            }
-            //types 9 or 14 (are the same)
-            type09(aristas,vertices);
-            return ;
-        }
-    case 7:
-        //type 11
-        {
-            type11(aristas, vertices);
-            return ;
-        }
-    case 8:
-    {
-        //types 6, 13
-        bool encontrado;
-        for(int i=0; i<vertices.count()-1; i++){
-            encontrado = true;
-            for(int j=i+1;j<vertices.count();j++){
-                if(vertices.at(j) - vertices.at(i) == 1 ||
-                   vertices.at(j) - vertices.at(i) == 2 ||
-                   vertices.at(j) - vertices.at(i) == 4 ){
-                    encontrado = false;
-                    break;
-                    
-                }
-            }
-            if(encontrado){
-                //type 6
-                type06(aristas, vertices, i);
-                return ;
-            }
-        }
-        //type 13
-        type13(aristas, vertices);
-        return ;
-    }
-    case 9:
-        //type 12 -> type01 can draw this case
-        {
-        type01(aristas, vertices);
-        return ;
-        }
-    case 12:
-        //type 7 -> type01 can draw this case
-        {
-                    type01(aristas, vertices);
-            return ;
-            
-        }
-    default: qDebug() << "Can't compute the surface type"; break;
-    }
-}
-
-void MarchingCubes::type01(QList<Edge> aristas, QList<unsigned int> vertices){
-    QList<QVector3D> triangulos;
-
-    for(int i=0; i<vertices.count(); i++){
-        for(int j=0; j<aristas.count(); j++){
-            if(aristas.at(j).vertices[0]==vertices[i] || aristas.at(j).vertices[1]==vertices[i]){
-                triangulos << aristas.at(j).cut;
-            }
-        }
-    }
-    appendTriangles(triangulos);
-}
-void MarchingCubes::type02(QList<Edge> aristas){
-    QList<QVector3D> triangulos;
-    triangulos << aristas.at(0).cut;
-    triangulos << aristas.at(1).cut;
-    triangulos << aristas.at(2).cut;
-    triangulos << aristas.at(1).cut;
-    triangulos << aristas.at(2).cut;
-    triangulos << aristas.at(3).cut;
-    appendTriangles(triangulos);
-}
-
-void MarchingCubes::type04(QList<Edge> aristas, QList<unsigned int> vertices){
-    QList<QVector3D> triangulos;
-    unsigned int encontrado, sentido, pos_arista;
-    QList< QList<unsigned int> > pos;
-
-    //find the vertex with just one cut
-    for(int i=0;i<vertices.count();i++){
-        encontrado = 0;
-        for(int j=0; j<aristas.count(); j++){
-            if(aristas.at(j).vertices[0]==vertices[i] || aristas.at(j).vertices[1]==vertices[i]){
-                encontrado++;
-                pos_arista = j;
-                if(encontrado == 2){
-                    break;
-                }
-            }
-        }
-        if(encontrado == 1){
-            //we have the singleton vertex in i, so we can get first triangle
-            sentido = aristas.at(pos_arista).vertices[1]-aristas.at(pos_arista).vertices[0];
-            for(int j=0; j<aristas.count(); j++){
-                if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-                    triangulos << aristas.at(j).cut;
-                }
-            }
-            aristas.removeAt(pos_arista);
-
-            //group by common vertex
-            for(int k=0;k<vertices.count();k++){
-                if(i==k){
-                    continue;
-                }
-                pos.append(QList<unsigned int>());
-                for(int j=0; j<aristas.count(); j++){
-                    if(aristas.at(j).vertices[0] == vertices[k] || aristas.at(j).vertices[1] == vertices[k]){
-                        pos.back().append(j);
-                    }
-                }
-            }
-
-            //first triangle
-            triangulos << aristas.at(pos.at(0).at(0)).cut;
-            triangulos << aristas.at(pos.at(0).at(1)).cut;
-            for(int j=0; j<pos.at(1).count(); j++){
-                if(aristas.at(pos.at(1).at(j)).vertices[1] - aristas.at(pos.at(1).at(j)).vertices[0] == sentido){
-                    triangulos << aristas.at(pos.at(1).at(j)).cut;
-                }
-            }
-
-            //second triangle
-            triangulos << aristas.at(pos.at(1).at(0)).cut;
-            triangulos << aristas.at(pos.at(1).at(1)).cut;
-            for(int j=0; j<pos.at(0).count(); j++){
-                if(aristas.at(pos.at(0).at(j)).vertices[1] - aristas.at(pos.at(0).at(j)).vertices[0] != sentido){
-                    triangulos << aristas.at(pos.at(0).at(j)).cut;
-                }
-            }
-            break;
-        }
-    }
-    appendTriangles(triangulos);
-}
-void MarchingCubes::type05(QList<Edge> aristas, QList<unsigned int> vertices){
-    QList<QVector3D> triangulos;
-    int vertice_arista[4];
-    //indentify each vertex with its edges (vertices are sort from low to high)
-    for(int i=0; i<vertices.count(); i++){
-        for(int j=0; j<aristas.count(); j++){
-            if(aristas.at(j).vertices[0] == vertices.at(i) || aristas.at(j).vertices[1] == vertices.at(i)){
-                vertice_arista[i] = j;
-                break;
-            }
-        }
-    }
-    //Pintar triangulos
-    triangulos << aristas.at(vertice_arista[0]).cut;
-    triangulos << aristas.at(vertice_arista[1]).cut;
-    triangulos << aristas.at(vertice_arista[2]).cut;
-    triangulos << triangulos.at(1);
-    triangulos << triangulos.at(2);
-    triangulos << aristas.at(vertice_arista[3]).cut;
-
-    appendTriangles(triangulos);
-}
-void MarchingCubes::type06(QList<Edge> aristas, QList<unsigned int> vertices, int ind_vertice_solitario){
-    //type 1 + 4
-    QList<Edge> aristas2;
-    QList<unsigned int> vertices2;
-    //generate edge2
-    for(int i=0; i<aristas.count();i++){
-        if(aristas.at(i).vertices[0] != vertices.at(ind_vertice_solitario)
-           && aristas.at(i).vertices[1] != vertices.at(ind_vertice_solitario)){
-            aristas2.append(aristas.at(i));
-            aristas.removeAt(i);
-            i--;
-        }
-    }
-    vertices2.append(vertices.at(ind_vertice_solitario));
-    vertices.removeAt(ind_vertice_solitario);
-}
-
-void MarchingCubes::type08(QList<Edge> aristas, QList<unsigned int> vertices, unsigned int ind_vertice_solitario){
-    QList<QVector3D> triangulos;
-    unsigned int ind_vert = 0, sentido;
-    QList<int> orden;
-    if(ind_vertice_solitario == 0){
-        ind_vert = 1;
-    }
-
-    //join 2 points associated with first vertex
-    for(int j=0; j<aristas.count(); j++){
-        if(aristas.at(j).vertices[0] == vertices.at(ind_vert) || aristas.at(j).vertices[1] == vertices.at(ind_vert)){
-            triangulos << aristas.at(j).cut;
-            orden.append(j);
-        }
-    }
-    //join with points associated with 2nd vertex
-    sentido = aristas.at(orden.at(0)).vertices[1] - aristas.at(orden.at(0)).vertices[0];
-    for(int j=0; j<aristas.count(); j++){
-        if(orden.at(0) == j || orden.at(1) == j){
-            continue;
-        }
-        if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-            triangulos << aristas.at(j).cut;
-            orden.append(j);
-            for(int k=0; k<vertices.count(); k++){
-                if(aristas.at(j).vertices[0] == vertices.at(k) || aristas.at(j).vertices[1] == vertices.at(k)){
-                    ind_vert = k;
-                    break;
-                }
-            }
-            break;
-        }
-    }
-    triangulos << triangulos.at(1);
-    triangulos << triangulos.at(2);
-    for(int j=0; j<aristas.count(); j++){
-        if((aristas.at(j).vertices[0] == vertices.at(ind_vert) || aristas.at(j).vertices[1] == vertices.at(ind_vert))
-            && (aristas.at(j).vertices[1] - aristas.at(j).vertices[0] != sentido)){
-            triangulos << aristas.at(j).cut;
-            orden.append(j);
-            break;
-        }
-    }
-    //2 triangles, we need 2 more ...
-    sentido = aristas.at(orden.at(1)).vertices[1] - aristas.at(orden.at(1)).vertices[0];
-    triangulos << triangulos.at(0);
-    triangulos << triangulos.at(2);
-
-    for(int j=0; j<aristas.count(); j++){
-        if(orden.at(0) == j || orden.at(1) == j || orden.at(2) == j || orden.at(3) == j){
-            continue;
-        }
-        if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-            triangulos << aristas.at(j).cut;
-            orden.append(j);
-            for(int k=0; k<vertices.count(); k++){
-                if(aristas.at(j).vertices[0] == vertices.at(k) || aristas.at(j).vertices[1] == vertices.at(k)){
-                    ind_vert = k;
-                    break;
-                }
-            }
-            break;
-        }
-    }
-    triangulos << triangulos.at(0);
-    triangulos << triangulos.at(8);
-    for(int j=0; j<aristas.count(); j++){
-        if((aristas.at(j).vertices[0] == vertices.at(ind_vert) || aristas.at(j).vertices[1] == vertices.at(ind_vert))
-            && (aristas.at(j).vertices[1] - aristas.at(j).vertices[0] != sentido)){
-            triangulos << aristas.at(j).cut;
-            orden.append(j);
-            break;
-        }
-    }
-
-    appendTriangles(triangulos);
-}
-void MarchingCubes::type09(QList<Edge> aristas, QList<unsigned int> vertices){
-    QList<QVector3D> triangulos;
-    QList<int> vertices_doble;
-    QList< QList<int> > aristas_doble;
-    bool doble;
-    unsigned int sentido, eje_compartido;
-
-    //find double vertices
-    for(int i=0; i<vertices.count(); i++){
-        doble = false;
-        for(int j=0; j<aristas.count(); j++){
-            if(aristas.at(j).vertices[0] == vertices.at(i) || aristas.at(j).vertices[1] == vertices.at(i)){
-                if(doble){
-                    vertices_doble.append(i);
-                    break;
-                } else {
-                    doble = true;
-                }
-            }
-        }
-    }
-    //find vertices of double vertices
-    aristas_doble.append(QList<int>());
-    aristas_doble.append(QList<int>());
-    for(int j=0; j<aristas.count(); j++){
-        if(aristas.at(j).vertices[0] == vertices.at(vertices_doble.at(0)) || aristas.at(j).vertices[1] == vertices.at(vertices_doble.at(0))){
-            aristas_doble.front().append(j);
-        } else if(aristas.at(j).vertices[0] == vertices.at(vertices_doble.at(1)) || aristas.at(j).vertices[1] == vertices.at(vertices_doble.at(1))){
-            aristas_doble.back().append(j);
-        }
-    }
-    //find shared axis
-    for(int i=0; i<2; i++){
-        for(int j=0; j<2; j++){
-            if(aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0] ==
-               aristas.at(aristas_doble.at(1).at(j)).vertices[1] - aristas.at(aristas_doble.at(1).at(j)).vertices[0]){
-                eje_compartido = aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0];
-                break;
-            }
-        }
-    }
-    //first triangle
-    for(int i=0; i<2; i++){
-        triangulos << aristas.at(aristas_doble.at(0).at(i)).cut;
-    }
-    for(int i=0; i<2; i++){
-        if(aristas.at(aristas_doble.at(1).at(i)).vertices[1] - aristas.at(aristas_doble.at(1).at(i)).vertices[0] == eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(1).at(i)).cut;
-            break;
-       }
-    }
-    //second triangle
-    for(int i=0; i<2; i++){
-        triangulos << aristas.at(aristas_doble.at(1).at(i)).cut;
-    }
-    for(int i=0; i<2; i++){
-        if(aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0] == eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(0).at(i)).cut;
-            break;
-       }
-    }
-    //third triangle
-    for(int i=0; i<2; i++){
-        if(aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0] == eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(0).at(i)).cut;
-            break;
-       }
-    }
-    for(int i=0; i<2; i++){
-        if(aristas.at(aristas_doble.at(1).at(i)).vertices[1] - aristas.at(aristas_doble.at(1).at(i)).vertices[0] != eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(1).at(i)).cut;
-            sentido = aristas.at(aristas_doble.at(1).at(i)).vertices[1] - aristas.at(aristas_doble.at(1).at(i)).vertices[0];
-            break;
-       }
-    }
-    for(int j=0; j<aristas.count(); j++){
-        if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-            triangulos << aristas.at(j).cut;
-        }
-    }
-    //four triangle
-    for(int i=0; i<2; i++){
-        if(aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0] != eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(0).at(i)).cut;
-            sentido = aristas.at(aristas_doble.at(0).at(i)).vertices[1] - aristas.at(aristas_doble.at(0).at(i)).vertices[0];
-            break;
-       }
-    }
-    for(int i=0; i<2; i++){
-        if(aristas.at(aristas_doble.at(1).at(i)).vertices[1] - aristas.at(aristas_doble.at(1).at(i)).vertices[0] == eje_compartido){
-            triangulos << aristas.at(aristas_doble.at(1).at(i)).cut;
-            break;
-       }
-    }
-    for(int j=0; j<aristas.count(); j++){
-        if(aristas.at(j).vertices[1] - aristas.at(j).vertices[0] == sentido){
-            triangulos << aristas.at(j).cut;
-        }
-    }
-
-    appendTriangles(triangulos);
-}
-
-void MarchingCubes::type11(QList<Edge> aristas, QList<unsigned int> vertices){
-    //type 1 + 2
-    unsigned int vert_solitario;
-    bool encontrado;
-    QList<Edge> aristas2;
-
-    //find singleton vertex
-    for(int i=0; i<vertices.count()-1; i++){
-        encontrado = true;
-        for(int j=i+1;j<vertices.count();j++){
-            if(vertices.at(j) - vertices.at(i) == 1 ||
-               vertices.at(j) - vertices.at(i) == 2 ||
-               vertices.at(j) - vertices.at(i) == 4 ){
-                //Son contiguos
-                encontrado = false;
-                break;
-            }
-        }
-        if(encontrado){
-            vert_solitario = vertices.at(i);
-            break;
-        }
-    }
-    //generate edge2
-    for(int i=0; i<aristas.count();i++){
-        if(aristas.at(i).vertices[0] != vert_solitario
-           && aristas.at(i).vertices[1] != vert_solitario){
-            aristas2.append(aristas.at(i));
-            aristas.removeAt(i);
-            i--;
-        }
-    }
-    vertices.clear();
-    vertices.append(vert_solitario);
-}
-
-void MarchingCubes::type13(QList<Edge> aristas, QList<unsigned int> vertices){
-    //type 2 + 2
-    unsigned int verts[2];
-    QList<Edge> aristas2;
-
-    //find couple of vertices
-    verts[0] = vertices.at(0);
-    for(int i=1; i<vertices.count(); i++){
-        if(vertices.at(i) - verts[0] == 1 ||
-               vertices.at(i) - verts[0] == 2 ||
-               vertices.at(i) - verts[0] == 4 ){
-            verts[1] = vertices.at(i);
-            break;
-        }
-    }
-    //generate edge2
-    for(int i=0; i<aristas.count();i++){
-        if(aristas.at(i).vertices[0] != verts[0]
-           && aristas.at(i).vertices[1] != verts[0]
-           && aristas.at(i).vertices[0] != verts[1]
-           && aristas.at(i).vertices[1] != verts[1]){
-            aristas2.append(aristas.at(i));
-            aristas.removeAt(i);
-            i--;
-        }
-    }
-}
-
-void MarchingCubes::buildGeometry()
-{
-    _vertices.clear();
-    _normals.clear();
-    _indexes.clear();
+    hx = (xmax-xmin)/i_size_x;
+    hy = (ymax-ymin)/i_size_y;
+    hz = (zmax-zmin)/i_size_z;    
     
-    QList<sMarching_Cube> cubos = getCubes();
 
-    sMarching_Cube cubo;
-    foreach(cubo, cubos) {
-        //we can change the type now ... 
-        if(cubo.type > 127){
-            cubo.type = 255 - cubo.type;
-        }
-        computeTopologyType(cubo);
-     }
+    ///
+    init_all();
+
 }
+
+
+//_____________________________________________________________________________
+// Destructor
+MarchingCubes::~MarchingCubes()
+//-----------------------------------------------------------------------------
+{
+    clean_all() ;
+}
+//_____________________________________________________________________________
+
+
+
+//_____________________________________________________________________________
+// main algorithm
+void MarchingCubes::run()
+//-----------------------------------------------------------------------------
+{
+/*
+    long int tick = clock();
+    TqDouble perclocks = 1.0/(double)CLOCKS_PER_SEC;
+*/
+//pareciara que existen mas evialuaciones, pero no es asi ... en realidad
+//teniendo este bucle ahorr evaluaciones pues eval de analitza es muy costoso
+        for( i_k = 0 ; i_k < i_size_z ; i_k++ )
+        for( i_j = 0 ; i_j < i_size_y ; i_j++ )
+            for( i_i = 0 ; i_i < i_size_x ; i_i++ )
+            {
+                set_data (evalScalarField(xmin+hx*i_i, ymin+hy*i_j, zmin+hz*i_k), i_i, i_j, i_k);
+            }
+
+    compute_intersection_points( ) ;
+
+
+            
+    for( i_k = 0 ; i_k < i_size_z-1 ; i_k++ )
+        for( i_j = 0 ; i_j < i_size_y-1 ; i_j++ )
+            for( i_i = 0 ; i_i < i_size_x-1 ; i_i++ )
+            {
+                i_lut_entry = 0 ;
+                for( int p = 0 ; p < 8 ; ++p )
+                {
+                    i_cube[p] = get_data( i_i+((p^(p>>1))&1), i_j+((p>>1)&1), i_k+((p>>2)&1) ) ;
+                    if( fabs( i_cube[p] ) < FLT_EPSILON )
+                        i_cube[p] = FLT_EPSILON ;
+                    if( i_cube[p] > 0 )
+                        i_lut_entry += 1 << p ;
+                }
+                /*
+                    if( ( i_cube[0] = get_data( i_i , i_j , i_k ) ) > 0 ) i_lut_entry +=   1 ;
+                    if( ( i_cube[1] = get_data(i_i+1, i_j , i_k ) ) > 0 ) i_lut_entry +=   2 ;
+                    if( ( i_cube[2] = get_data(i_i+1,i_j+1, i_k ) ) > 0 ) i_lut_entry +=   4 ;
+                    if( ( i_cube[3] = get_data( i_i ,i_j+1, i_k ) ) > 0 ) i_lut_entry +=   8 ;
+                    if( ( i_cube[4] = get_data( i_i , i_j ,i_k+1) ) > 0 ) i_lut_entry +=  16 ;
+                    if( ( i_cube[5] = get_data(i_i+1, i_j ,i_k+1) ) > 0 ) i_lut_entry +=  32 ;
+                    if( ( i_cube[6] = get_data(i_i+1,i_j+1,i_k+1) ) > 0 ) i_lut_entry +=  64 ;
+                    if( ( i_cube[7] = get_data(i_i ,i_j+1,i_k+1) ) > 0 ) i_lut_entry += 128 ;
+                */
+                process_cube( ) ;
+            }
+
+/*
+      Aqsis::log() << info << "the cpu tooks " << perclocks * (TqDouble) (clock() - tick ) << " secs." << std::endl;
+
+      for( i_i = 0 ; i_i < 15 ; i_i++ )
+      {
+        Aqsis::log() << info << i_N[i_i] << " cases " << i_i << std::endl;
+      }
+*/
+}
+//_____________________________________________________________________________
+
+
+
+//_____________________________________________________________________________
+// init temporary structures (must set sizes before call)
+void MarchingCubes::init_temps()
+//-----------------------------------------------------------------------------
+{
+    long int howmany = i_size_x * i_size_y * i_size_z;
+    
+ i_data    = new double[ howmany ];
+    i_x_verts = new int  [ howmany ];
+    i_y_verts = new int  [ howmany ];
+    i_z_verts = new int  [ howmany ];
+
+    while (!i_x_verts || !i_y_verts || !i_z_verts)
+    {
+        clean_temps();
+        i_size_x /= 2;
+        i_size_y /= 2;
+        i_size_z /= 2;
+        howmany = i_size_x * i_size_y * i_size_z;
+
+     i_data    = new double[ howmany ];
+        i_x_verts = new int  [ howmany ];
+        i_y_verts = new int  [ howmany ];
+        i_z_verts = new int  [ howmany ];
+
+    }
+    memset( i_x_verts, -1, howmany * sizeof( int ) ) ;
+    memset( i_y_verts, -1, howmany * sizeof( int ) ) ;
+    memset( i_z_verts, -1, howmany * sizeof( int ) ) ;
+
+    memset( i_N, 0, 15 * sizeof(int) ) ;
+}
+//_____________________________________________________________________________
+
+
+
+//_____________________________________________________________________________
+// init all structures (must set sizes before call)
+void MarchingCubes::init_all ()
+//-----------------------------------------------------------------------------
+{
+    init_temps() ;
+
+    i_nverts = i_ntrigs = 0 ;
+    i_Nverts = i_Ntrigs = ALLOC_SIZE ;
+    i_vertices  = new Vertex  [i_Nverts] ;
+    i_triangles = new Triangle[i_Ntrigs] ;
+}
+//_____________________________________________________________________________
+
+
+
+//_____________________________________________________________________________
+// clean temporary structures
+void MarchingCubes::clean_temps()
+//-----------------------------------------------------------------------------
+{
+ if (i_data)
+     delete [] i_data;
+    if (i_x_verts)
+        delete [] i_x_verts;
+    if (i_y_verts)
+        delete [] i_y_verts;
+    if (i_z_verts)
+        delete [] i_z_verts;
+
+ i_data     = (double*)NULL ;
+    i_x_verts  = (int*)NULL ;
+    i_y_verts  = (int*)NULL ;
+    i_z_verts  = (int*)NULL ;
+}
+//_____________________________________________________________________________
+
+
+
+//_____________________________________________________________________________
+// clean all structures
+void MarchingCubes::clean_all()
+//-----------------------------------------------------------------------------
+{
+    clean_temps() ;
+    delete [] i_vertices  ;
+    delete [] i_triangles ;
+    i_vertices  = (Vertex   *)NULL ;
+    i_triangles = (Triangle *)NULL ;
+    i_nverts = i_ntrigs = 0 ;
+    i_Nverts = i_Ntrigs = 0 ;
+
+    i_size_x = i_size_y = i_size_z = -1 ;
+}
+//_____________________________________________________________________________
+
+
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+
+//_____________________________________________________________________________
+// Compute the intersection points
+void MarchingCubes::compute_intersection_points( )
+//-----------------------------------------------------------------------------
+{
+    for( i_k = 0 ; i_k < i_size_z ; i_k++ )
+        for( i_j = 0 ; i_j < i_size_y ; i_j++ )
+            for( i_i = 0 ; i_i < i_size_x ; i_i++ )
+            {
+                i_cube[0] = get_data( i_i, i_j, i_k ) ;
+                if( i_i < i_size_x - 1 )
+                    i_cube[1] = get_data(i_i+1, i_j , i_k ) ;
+                else
+                    i_cube[1] = i_cube[0] ;
+
+                if( i_j < i_size_y - 1 )
+                    i_cube[3] = get_data( i_i ,i_j+1, i_k ) ;
+                else
+                    i_cube[3] = i_cube[0] ;
+
+                if( i_k < i_size_z - 1 )
+                    i_cube[4] = get_data( i_i , i_j ,i_k+1) ;
+                else
+                    i_cube[4] = i_cube[0] ;
+
+                if( fabs( i_cube[0] ) < FLT_EPSILON )
+                    i_cube[0] = FLT_EPSILON ;
+                if( fabs( i_cube[1] ) < FLT_EPSILON )
+                    i_cube[1] = FLT_EPSILON ;
+                if( fabs( i_cube[3] ) < FLT_EPSILON )
+                    i_cube[3] = FLT_EPSILON ;
+                if( fabs( i_cube[4] ) < FLT_EPSILON )
+                    i_cube[4] = FLT_EPSILON ;
+
+                if( i_cube[0] < 0 )
+                {
+                    if( i_cube[1] > 0 )
+                        set_x_vert( add_x_vertex( ), i_i,i_j,i_k ) ;
+                    if( i_cube[3] > 0 )
+                        set_y_vert( add_y_vertex( ), i_i,i_j,i_k ) ;
+                    if( i_cube[4] > 0 )
+                        set_z_vert( add_z_vertex( ), i_i,i_j,i_k ) ;
+                }
+                else
+                {
+                    if( i_cube[1] < 0 )
+                        set_x_vert( add_x_vertex( ), i_i,i_j,i_k ) ;
+                    if( i_cube[3] < 0 )
+                        set_y_vert( add_y_vertex( ), i_i,i_j,i_k ) ;
+                    if( i_cube[4] < 0 )
+                        set_z_vert( add_z_vertex( ), i_i,i_j,i_k ) ;
+                }
+            }
+}
+//_____________________________________________________________________________
+
+
+
+
+
+//_____________________________________________________________________________
+// Test a face
+// if face>0 return true if the face contains a part of the surface
+bool MarchingCubes::test_face( char face )
+//-----------------------------------------------------------------------------
+{
+    double A,B,C,D ;
+
+    switch( face )
+    {
+            case -1 :
+            case 1 :
+            A = i_cube[0] ;
+            B = i_cube[4] ;
+            C = i_cube[5] ;
+            D = i_cube[1] ;
+            break ;
+            case -2 :
+            case 2 :
+            A = i_cube[1] ;
+            B = i_cube[5] ;
+            C = i_cube[6] ;
+            D = i_cube[2] ;
+            break ;
+            case -3 :
+            case 3 :
+            A = i_cube[2] ;
+            B = i_cube[6] ;
+            C = i_cube[7] ;
+            D = i_cube[3] ;
+            break ;
+            case -4 :
+            case 4 :
+            A = i_cube[3] ;
+            B = i_cube[7] ;
+            C = i_cube[4] ;
+            D = i_cube[0] ;
+            break ;
+            case -5 :
+            case 5 :
+            A = i_cube[0] ;
+            B = i_cube[3] ;
+            C = i_cube[2] ;
+            D = i_cube[1] ;
+            break ;
+            case -6 :
+            case 6 :
+            A = i_cube[4] ;
+            B = i_cube[7] ;
+            C = i_cube[6] ;
+            D = i_cube[5] ;
+            break ;
+            default :
+//          Aqsis::log() << warning << "Invalid face code " << face << std::endl;
+            print_cube() ;
+            A = B = C = D = 0 ;
+    };
+
+    return face * A * ( A*C - B*D ) >= 0  ;  // face and A invert signs
+}
+//_____________________________________________________________________________
+
+
+
+
+
+//_____________________________________________________________________________
+// Test the interior of a cube
+// if s == 7, return true  if the interior is empty
+// if s ==-7, return false if the interior is empty
+bool MarchingCubes::test_interior( char s )
+//-----------------------------------------------------------------------------
+{
+    double t, At=0, Bt=0, Ct=0, Dt=0, a, b ;
+    char  test =  0 ;
+    char  edge = -1 ; // reference edge of the triangulation
+
+    switch( i_case )
+    {
+            case  4 :
+            case 10 :
+            a = ( i_cube[4] - i_cube[0] ) * ( i_cube[6] - i_cube[2] ) - ( i_cube[7] - i_cube[3] ) * ( i_cube[5] - i_cube[1] ) ;
+            b =  i_cube[2] * ( i_cube[4] - i_cube[0] ) + i_cube[0] * ( i_cube[6] - i_cube[2] )
+                 - i_cube[1] * ( i_cube[7] - i_cube[3] ) - i_cube[3] * ( i_cube[5] - i_cube[1] ) ;
+            t = - b / (2*a) ;
+            if( t<0 || t>1 )
+                return s>0 ;
+
+            At = i_cube[0] + ( i_cube[4] - i_cube[0] ) * t ;
+            Bt = i_cube[3] + ( i_cube[7] - i_cube[3] ) * t ;
+            Ct = i_cube[2] + ( i_cube[6] - i_cube[2] ) * t ;
+            Dt = i_cube[1] + ( i_cube[5] - i_cube[1] ) * t ;
+            break ;
+
+            case  6 :
+            case  7 :
+            case 12 :
+            case 13 :
+            switch( i_case )
+            {
+                    case  6 :
+                    edge = test6 [i_config][2] ;
+                    break ;
+                    case  7 :
+                    edge = test7 [i_config][4] ;
+                    break ;
+                    case 12 :
+                    edge = test12[i_config][3] ;
+                    break ;
+                    case 13 :
+                    edge = tiling13_5_1[i_config][i_subconfig][0] ;
+                    break ;
+            }
+            switch( edge )
+            {
+                    case  0 :
+                    t  = i_cube[0] / ( i_cube[0] - i_cube[1] ) ;
+                    At = 0 ;
+                    Bt = i_cube[3] + ( i_cube[2] - i_cube[3] ) * t ;
+                    Ct = i_cube[7] + ( i_cube[6] - i_cube[7] ) * t ;
+                    Dt = i_cube[4] + ( i_cube[5] - i_cube[4] ) * t ;
+                    break ;
+                    case  1 :
+                    t  = i_cube[1] / ( i_cube[1] - i_cube[2] ) ;
+                    At = 0 ;
+                    Bt = i_cube[0] + ( i_cube[3] - i_cube[0] ) * t ;
+                    Ct = i_cube[4] + ( i_cube[7] - i_cube[4] ) * t ;
+                    Dt = i_cube[5] + ( i_cube[6] - i_cube[5] ) * t ;
+                    break ;
+                    case  2 :
+                    t  = i_cube[2] / ( i_cube[2] - i_cube[3] ) ;
+                    At = 0 ;
+                    Bt = i_cube[1] + ( i_cube[0] - i_cube[1] ) * t ;
+                    Ct = i_cube[5] + ( i_cube[4] - i_cube[5] ) * t ;
+                    Dt = i_cube[6] + ( i_cube[7] - i_cube[6] ) * t ;
+                    break ;
+                    case  3 :
+                    t  = i_cube[3] / ( i_cube[3] - i_cube[0] ) ;
+                    At = 0 ;
+                    Bt = i_cube[2] + ( i_cube[1] - i_cube[2] ) * t ;
+                    Ct = i_cube[6] + ( i_cube[5] - i_cube[6] ) * t ;
+                    Dt = i_cube[7] + ( i_cube[4] - i_cube[7] ) * t ;
+                    break ;
+                    case  4 :
+                    t  = i_cube[4] / ( i_cube[4] - i_cube[5] ) ;
+                    At = 0 ;
+                    Bt = i_cube[7] + ( i_cube[6] - i_cube[7] ) * t ;
+                    Ct = i_cube[3] + ( i_cube[2] - i_cube[3] ) * t ;
+                    Dt = i_cube[0] + ( i_cube[1] - i_cube[0] ) * t ;
+                    break ;
+                    case  5 :
+                    t  = i_cube[5] / ( i_cube[5] - i_cube[6] ) ;
+                    At = 0 ;
+                    Bt = i_cube[4] + ( i_cube[7] - i_cube[4] ) * t ;
+                    Ct = i_cube[0] + ( i_cube[3] - i_cube[0] ) * t ;
+                    Dt = i_cube[1] + ( i_cube[2] - i_cube[1] ) * t ;
+                    break ;
+                    case  6 :
+                    t  = i_cube[6] / ( i_cube[6] - i_cube[7] ) ;
+                    At = 0 ;
+                    Bt = i_cube[5] + ( i_cube[4] - i_cube[5] ) * t ;
+                    Ct = i_cube[1] + ( i_cube[0] - i_cube[1] ) * t ;
+                    Dt = i_cube[2] + ( i_cube[3] - i_cube[2] ) * t ;
+                    break ;
+                    case  7 :
+                    t  = i_cube[7] / ( i_cube[7] - i_cube[4] ) ;
+                    At = 0 ;
+                    Bt = i_cube[6] + ( i_cube[5] - i_cube[6] ) * t ;
+                    Ct = i_cube[2] + ( i_cube[1] - i_cube[2] ) * t ;
+                    Dt = i_cube[3] + ( i_cube[0] - i_cube[3] ) * t ;
+                    break ;
+                    case  8 :
+                    t  = i_cube[0] / ( i_cube[0] - i_cube[4] ) ;
+                    At = 0 ;
+                    Bt = i_cube[3] + ( i_cube[7] - i_cube[3] ) * t ;
+                    Ct = i_cube[2] + ( i_cube[6] - i_cube[2] ) * t ;
+                    Dt = i_cube[1] + ( i_cube[5] - i_cube[1] ) * t ;
+                    break ;
+                    case  9 :
+                    t  = i_cube[1] / ( i_cube[1] - i_cube[5] ) ;
+                    At = 0 ;
+                    Bt = i_cube[0] + ( i_cube[4] - i_cube[0] ) * t ;
+                    Ct = i_cube[3] + ( i_cube[7] - i_cube[3] ) * t ;
+                    Dt = i_cube[2] + ( i_cube[6] - i_cube[2] ) * t ;
+                    break ;
+                    case 10 :
+                    t  = i_cube[2] / ( i_cube[2] - i_cube[6] ) ;
+                    At = 0 ;
+                    Bt = i_cube[1] + ( i_cube[5] - i_cube[1] ) * t ;
+                    Ct = i_cube[0] + ( i_cube[4] - i_cube[0] ) * t ;
+                    Dt = i_cube[3] + ( i_cube[7] - i_cube[3] ) * t ;
+                    break ;
+                    case 11 :
+                    t  = i_cube[3] / ( i_cube[3] - i_cube[7] ) ;
+                    At = 0 ;
+                    Bt = i_cube[2] + ( i_cube[6] - i_cube[2] ) * t ;
+                    Ct = i_cube[1] + ( i_cube[5] - i_cube[1] ) * t ;
+                    Dt = i_cube[0] + ( i_cube[4] - i_cube[0] ) * t ;
+                    break ;
+                    default :
+//                  Aqsis::log() << warning << "Invalid edge " << edge << std::endl;
+                    print_cube() ;
+                    break ;
+            }
+            break ;
+
+            default :
+//          Aqsis::log() << warning << "invalid ambiguous case " << i_case << std::endl;
+            print_cube() ;
+            break ;
+    }
+
+    if( At >= 0 )
+        test ++ ;
+    if( Bt >= 0 )
+        test += 2 ;
+    if( Ct >= 0 )
+        test += 4 ;
+    if( Dt >= 0 )
+        test += 8 ;
+    switch( test )
+    {
+            case  0 :
+            return s>0 ;
+            case  1 :
+            return s>0 ;
+            case  2 :
+            return s>0 ;
+            case  3 :
+            return s>0 ;
+            case  4 :
+            return s>0 ;
+            case  5 :
+            if( At * Ct <  Bt * Dt )
+                return s>0 ;
+            break ;
+            case  6 :
+            return s>0 ;
+            case  7 :
+            return s<0 ;
+            case  8 :
+            return s>0 ;
+            case  9 :
+            return s>0 ;
+            case 10 :
+            if( At * Ct >= Bt * Dt )
+                return s>0 ;
+            break ;
+            case 11 :
+            return s<0 ;
+            case 12 :
+            return s>0 ;
+            case 13 :
+            return s<0 ;
+            case 14 :
+            return s<0 ;
+            case 15 :
+            return s<0 ;
+    }
+
+    return s<0 ;
+}
+//_____________________________________________________________________________
+
+
+
+
+//_____________________________________________________________________________
+// Process a unit cube
+void MarchingCubes::process_cube( )
+//-----------------------------------------------------------------------------
+{
+    if( i_originalMC )
+    {
+        char nt = 0 ;
+        while( casesClassic[i_lut_entry][3*nt] != -1 )
+            nt++ ;
+        add_triangle( casesClassic[i_lut_entry], nt ) ;
+        return ;
+    }
+
+    int   v12 = -1 ;
+    i_case   = cases[i_lut_entry][0] ;
+    i_config = cases[i_lut_entry][1] ;
+    i_subconfig = 0 ;
+
+    i_N[i_case]++ ;
+
+    switch( i_case )
+    {
+            case  0 :
+            break ;
+
+            case  1 :
+            add_triangle( tiling1[i_config], 1 ) ;
+            break ;
+
+            case  2 :
+            add_triangle( tiling2[i_config], 2 ) ;
+            break ;
+
+            case  3 :
+            if( test_face( test3[i_config]) )
+                add_triangle( tiling3_2[i_config], 4 ) ; // 3.2
+            else
+                add_triangle( tiling3_1[i_config], 2 ) ; // 3.1
+            break ;
+
+            case  4 :
+            if( test_interior( test4[i_config]) )
+                add_triangle( tiling4_1[i_config], 2 ) ; // 4.1.1
+            else
+                add_triangle( tiling4_2[i_config], 6 ) ; // 4.1.2
+            break ;
+
+            case  5 :
+            add_triangle( tiling5[i_config], 3 ) ;
+            break ;
+
+            case  6 :
+            if( test_face( test6[i_config][0]) )
+                add_triangle( tiling6_2[i_config], 5 ) ; // 6.2
+            else
+            {
+                if( test_interior( test6[i_config][1]) )
+                    add_triangle( tiling6_1_1[i_config], 3 ) ; // 6.1.1
+                else
+                    add_triangle( tiling6_1_2[i_config], 7 ) ; // 6.1.2
+            }
+            break ;
+
+            case  7 :
+            if( test_face( test7[i_config][0] ) )
+                i_subconfig +=  1 ;
+            if( test_face( test7[i_config][1] ) )
+                i_subconfig +=  2 ;
+            if( test_face( test7[i_config][2] ) )
+                i_subconfig +=  4 ;
+            switch( i_subconfig )
+            {
+                    case 0 :
+                    add_triangle( tiling7_1[i_config], 3 ) ;
+                    break ;
+                    case 1 :
+                    add_triangle( tiling7_2[i_config][0], 5 ) ;
+                    break ;
+                    case 2 :
+                    add_triangle( tiling7_2[i_config][1], 5 ) ;
+                    break ;
+                    case 3 :
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling7_3[i_config][0], 9, v12 ) ;
+                    break ;
+                    case 4 :
+                    add_triangle( tiling7_2[i_config][2], 5 ) ;
+                    break ;
+                    case 5 :
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling7_3[i_config][1], 9, v12 ) ;
+                    break ;
+                    case 6 :
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling7_3[i_config][2], 9, v12 ) ;
+                    break ;
+                    case 7 :
+                    if( test_interior( test7[i_config][3]) )
+                        add_triangle( tiling7_4_2[i_config], 9 ) ;
+                    else
+                        add_triangle( tiling7_4_1[i_config], 5 ) ;
+                    break ;
+            };
+            break ;
+
+            case  8 :
+            add_triangle( tiling8[i_config], 2 ) ;
+            break ;
+
+            case  9 :
+            add_triangle( tiling9[i_config], 4 ) ;
+            break ;
+
+            case 10 :
+            if( test_face( test10[i_config][0]) )
+            {
+                if( test_face( test10[i_config][1]) )
+                    add_triangle( tiling10_1_1_[i_config], 4 ) ; // 10.1.1
+                else
+                {
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling10_2[i_config], 8, v12 ) ; // 10.2
+                }
+            }
+            else
+            {
+                if( test_face( test10[i_config][1]) )
+                {
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling10_2_[i_config], 8, v12 ) ; // 10.2
+                }
+                else
+                {
+                    if( test_interior( test10[i_config][2]) )
+                        add_triangle( tiling10_1_1[i_config], 4 ) ; // 10.1.1
+                    else
+                        add_triangle( tiling10_1_2[i_config], 8 ) ; // 10.1.2
+                }
+            }
+            break ;
+
+            case 11 :
+            add_triangle( tiling11[i_config], 4 ) ;
+            break ;
+
+            case 12 :
+            if( test_face( test12[i_config][0]) )
+            {
+                if( test_face( test12[i_config][1]) )
+                    add_triangle( tiling12_1_1_[i_config], 4 ) ; // 12.1.1
+                else
+                {
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling12_2[i_config], 8, v12 ) ; // 12.2
+                }
+            }
+            else
+            {
+                if( test_face( test12[i_config][1]) )
+                {
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling12_2_[i_config], 8, v12 ) ; // 12.2
+                }
+                else
+                {
+                    if( test_interior( test12[i_config][2]) )
+                        add_triangle( tiling12_1_1[i_config], 4 ) ; // 12.1.1
+                    else
+                        add_triangle( tiling12_1_2[i_config], 8 ) ; // 12.1.2
+                }
+            }
+            break ;
+
+            case 13 :
+            if( test_face( test13[i_config][0] ) )
+                i_subconfig +=  1 ;
+            if( test_face( test13[i_config][1] ) )
+                i_subconfig +=  2 ;
+            if( test_face( test13[i_config][2] ) )
+                i_subconfig +=  4 ;
+            if( test_face( test13[i_config][3] ) )
+                i_subconfig +=  8 ;
+            if( test_face( test13[i_config][4] ) )
+                i_subconfig += 16 ;
+            if( test_face( test13[i_config][5] ) )
+                i_subconfig += 32 ;
+            switch( subconfig13[i_subconfig] )
+            {
+                    case 0 :/* 13.1 */
+                    add_triangle( tiling13_1[i_config], 4 ) ;
+                    break ;
+
+                    case 1 :/* 13.2 */
+                    add_triangle( tiling13_2[i_config][0], 6 ) ;
+                    break ;
+                    case 2 :/* 13.2 */
+                    add_triangle( tiling13_2[i_config][1], 6 ) ;
+                    break ;
+                    case 3 :/* 13.2 */
+                    add_triangle( tiling13_2[i_config][2], 6 ) ;
+                    break ;
+                    case 4 :/* 13.2 */
+                    add_triangle( tiling13_2[i_config][3], 6 ) ;
+                    break ;
+                    case 5 :/* 13.2 */
+                    add_triangle( tiling13_2[i_config][4], 6 ) ;
+                    break ;
+                    case 6 :/* 13.2 */
+                    add_triangle( tiling13_2[i_config][5], 6 ) ;
+                    break ;
+
+                    case 7 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][0], 10, v12 ) ;
+                    break ;
+                    case 8 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][1], 10, v12 ) ;
+                    break ;
+                    case 9 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][2], 10, v12 ) ;
+                    break ;
+                    case 10 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][3], 10, v12 ) ;
+                    break ;
+                    case 11 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][4], 10, v12 ) ;
+                    break ;
+                    case 12 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][5], 10, v12 ) ;
+                    break ;
+                    case 13 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][6], 10, v12 ) ;
+                    break ;
+                    case 14 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][7], 10, v12 ) ;
+                    break ;
+                    case 15 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][8], 10, v12 ) ;
+                    break ;
+                    case 16 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][9], 10, v12 ) ;
+                    break ;
+                    case 17 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][10], 10, v12 ) ;
+                    break ;
+                    case 18 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3[i_config][11], 10, v12 ) ;
+                    break ;
+
+                    case 19 :/* 13.4 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_4[i_config][0], 12, v12 ) ;
+                    break ;
+                    case 20 :/* 13.4 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_4[i_config][1], 12, v12 ) ;
+                    break ;
+                    case 21 :/* 13.4 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_4[i_config][2], 12, v12 ) ;
+                    break ;
+                    case 22 :/* 13.4 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_4[i_config][3], 12, v12 ) ;
+                    break ;
+
+                    case 23 :/* 13.5 */
+                    i_subconfig = 0 ;
+                    if( test_interior( test13[i_config][6] ) )
+                        add_triangle( tiling13_5_1[i_config][0], 6 ) ;
+                    else
+                        add_triangle( tiling13_5_2[i_config][0], 10 ) ;
+                    break ;
+                    case 24 :/* 13.5 */
+                    i_subconfig = 1 ;
+                    if( test_interior( test13[i_config][6] ) )
+                        add_triangle( tiling13_5_1[i_config][1], 6 ) ;
+                    else
+                        add_triangle( tiling13_5_2[i_config][1], 10 ) ;
+                    break ;
+                    case 25 :/* 13.5 */
+                    i_subconfig = 2 ;
+                    if( test_interior( test13[i_config][6] ) )
+                        add_triangle( tiling13_5_1[i_config][2], 6 ) ;
+                    else
+                        add_triangle( tiling13_5_2[i_config][2], 10 ) ;
+                    break ;
+                    case 26 :/* 13.5 */
+                    i_subconfig = 3 ;
+                    if( test_interior( test13[i_config][6] ) )
+                        add_triangle( tiling13_5_1[i_config][3], 6 ) ;
+                    else
+                        add_triangle( tiling13_5_2[i_config][3], 10 ) ;
+                    break ;
+
+                    case 27 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][0], 10, v12 ) ;
+                    break ;
+                    case 28 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][1], 10, v12 ) ;
+                    break ;
+                    case 29 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][2], 10, v12 ) ;
+                    break ;
+                    case 30 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][3], 10, v12 ) ;
+                    break ;
+                    case 31 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][4], 10, v12 ) ;
+                    break ;
+                    case 32 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][5], 10, v12 ) ;
+                    break ;
+                    case 33 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][6], 10, v12 ) ;
+                    break ;
+                    case 34 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][7], 10, v12 ) ;
+                    break ;
+                    case 35 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][8], 10, v12 ) ;
+                    break ;
+                    case 36 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][9], 10, v12 ) ;
+                    break ;
+                    case 37 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][10], 10, v12 ) ;
+                    break ;
+                    case 38 :/* 13.3 */
+                    v12 = add_c_vertex() ;
+                    add_triangle( tiling13_3_[i_config][11], 10, v12 ) ;
+                    break ;
+
+                    case 39 :/* 13.2 */
+                    add_triangle( tiling13_2_[i_config][0], 6 ) ;
+                    break ;
+                    case 40 :/* 13.2 */
+                    add_triangle( tiling13_2_[i_config][1], 6 ) ;
+                    break ;
+                    case 41 :/* 13.2 */
+                    add_triangle( tiling13_2_[i_config][2], 6 ) ;
+                    break ;
+                    case 42 :/* 13.2 */
+                    add_triangle( tiling13_2_[i_config][3], 6 ) ;
+                    break ;
+                    case 43 :/* 13.2 */
+                    add_triangle( tiling13_2_[i_config][4], 6 ) ;
+                    break ;
+                    case 44 :/* 13.2 */
+                    add_triangle( tiling13_2_[i_config][5], 6 ) ;
+                    break ;
+
+                    case 45 :/* 13.1 */
+                    add_triangle( tiling13_1_[i_config], 4 ) ;
+                    break ;
+
+                    default :
+//                  Aqsis::log() << warning << "Impossible case 13 ?" << std::endl;
+                    print_cube() ;
+            }
+            break ;
+
+            case 14 :
+            add_triangle( tiling14[i_config], 4 ) ;
+            break ;
+    };
+}
+//_____________________________________________________________________________
+
+
+
+//_____________________________________________________________________________
+// Adding triangles
+void MarchingCubes::add_triangle( const int* trig, char n, int v12 )
+//-----------------------------------------------------------------------------
+{
+    int    tv[3] ;
+
+    for( register int t = 0 ; t < 3*n ; t++ )
+    {
+        register int t3 = t % 3;
+        switch( trig[t] )
+        {
+                case  0 :
+                tv[ t3 ] = get_x_vert( i_i , i_j , i_k ) ;
+                break ;
+                case  1 :
+                tv[ t3 ] = get_y_vert(i_i+1, i_j , i_k ) ;
+                break ;
+                case  2 :
+                tv[ t3 ] = get_x_vert( i_i ,i_j+1, i_k ) ;
+                break ;
+                case  3 :
+                tv[ t3 ] = get_y_vert( i_i , i_j , i_k ) ;
+                break ;
+                case  4 :
+                tv[ t3 ] = get_x_vert( i_i , i_j ,i_k+1) ;
+                break ;
+                case  5 :
+                tv[ t3 ] = get_y_vert(i_i+1, i_j ,i_k+1) ;
+                break ;
+                case  6 :
+                tv[ t3 ] = get_x_vert( i_i ,i_j+1,i_k+1) ;
+                break ;
+                case  7 :
+                tv[ t3 ] = get_y_vert( i_i , i_j ,i_k+1) ;
+                break ;
+                case  8 :
+                tv[ t3 ] = get_z_vert( i_i , i_j , i_k ) ;
+                break ;
+                case  9 :
+                tv[ t3 ] = get_z_vert(i_i+1, i_j , i_k ) ;
+                break ;
+                case 10 :
+                tv[ t3 ] = get_z_vert(i_i+1,i_j+1, i_k ) ;
+                break ;
+                case 11 :
+                tv[ t3 ] = get_z_vert( i_i ,i_j+1, i_k ) ;
+                break ;
+                case 12 :
+                tv[ t3 ] = v12 ;
+                break ;
+                default :
+                break ;
+        }
+
+        if( tv[t3] == -1 )
+        {
+//          Aqsis::log() << warning << "Invalid triangle " << i_ntrigs << std::endl;
+            print_cube() ;
+        }
+
+        if( t3 == 2 )
+        {
+            if( i_ntrigs >= i_Ntrigs )
+            {
+                Triangle *temp = i_triangles ;
+                i_triangles = new Triangle[ i_ntrigs + 1024] ;
+                memcpy( i_triangles, temp, i_Ntrigs*sizeof(Triangle) ) ;
+                delete[] temp ;
+/*
+                Aqsis::log() << warning << "allocated triangles " << i_Ntrigs << std::endl;
+*/
+                i_Ntrigs = i_ntrigs + 1024 ;
+            }
+
+            Triangle *T = i_triangles + i_ntrigs++ ;
+            T->v1    = tv[0] ;
+            T->v2    = tv[1] ;
+            T->v3    = tv[2] ;
+        }
+    }
+}
+//_____________________________________________________________________________
+
+
+
+//_____________________________________________________________________________
+// Calculating gradient
+
+double MarchingCubes::get_x_grad( const int i, const int j, const int k ) 
+//-----------------------------------------------------------------------------
+{
+    if( i > 0 )
+    {
+        if ( i < i_size_x - 1 )
+            return ( get_data( i+1, j, k ) - get_data( i-1, j, k ) ) / 2 ;
+        else
+            return get_data( i, j, k ) - get_data( i-1, j, k ) ;
+    }
+    else
+        return get_data( i+1, j, k ) - get_data( i, j, k ) ;
+}
+//-----------------------------------------------------------------------------
+
+double MarchingCubes::get_y_grad( const int i, const int j, const int k ) 
+//-----------------------------------------------------------------------------
+{
+    if( j > 0 )
+    {
+        if ( j < i_size_y - 1 )
+            return ( get_data( i, j+1, k ) - get_data( i, j-1, k ) ) / 2 ;
+        else
+            return get_data( i, j, k ) - get_data( i, j-1, k ) ;
+    }
+    else
+        return get_data( i, j+1, k ) - get_data( i, j, k ) ;
+}
+//-----------------------------------------------------------------------------
+
+double MarchingCubes::get_z_grad( const int i, const int j, const int k ) 
+//-----------------------------------------------------------------------------
+{
+    if( k > 0 )
+    {
+        if ( k < i_size_z - 1 )
+            return ( get_data( i, j, k+1 ) - get_data( i, j, k-1 ) ) / 2 ;
+        else
+            return get_data( i, j, k ) - get_data( i, j, k-1 ) ;
+    }
+    else
+        return get_data( i, j, k+1 ) - get_data( i, j, k ) ;
+}
+//_____________________________________________________________________________
+
+
+//_____________________________________________________________________________
+// Adding vertices
+
+void MarchingCubes::test_vertex_addition()
+{
+    if( i_nverts >= i_Nverts )
+    {
+        Vertex *temp = i_vertices ;
+        i_vertices = new Vertex[ i_nverts  + 1024] ;
+        memcpy( i_vertices, temp, i_Nverts*sizeof(Vertex) ) ;
+        delete[] temp ;
+/*
+        Aqsis::log() << warning << "allocated vertices " << i_Nverts << std::endl;
+*/
+        i_Nverts = i_nverts + 1024 ;
+    }
+}
+
+
+int MarchingCubes::add_x_vertex( )
+//-----------------------------------------------------------------------------
+{
+    test_vertex_addition() ;
+    Vertex *vert = i_vertices + i_nverts++ ;
+
+    double   u = ( i_cube[0] ) / ( i_cube[0] - i_cube[1] ) ;
+
+    //el mundo de analitza no es discreto, por eso los comentarios al cod original
+    //una cosa mas --- el u es el resultado de la interpolacion lineal sobre el edge
+//     vert->x      = (float)i_i+u;
+//     vert->y      = (float) i_j ;
+//     vert->z      = (float) i_k ;
+
+    vert->x      = xmin+hx*(i_i+u);
+    vert->y      = ymin+hy*i_j;
+    vert->z      = zmin+hz*i_k;
+
+    
+#ifdef COMPUTE_NORMALS
+    vert->nx = (1-u)*get_x_grad(i_i,i_j,i_k) + u*get_x_grad(i_i+1,i_j,i_k) ;
+    vert->ny = (1-u)*get_y_grad(i_i,i_j,i_k) + u*get_y_grad(i_i+1,i_j,i_k) ;
+    vert->nz = (1-u)*get_z_grad(i_i,i_j,i_k) + u*get_z_grad(i_i+1,i_j,i_k) ;
+
+    u = (float) sqrt( vert->nx * vert->nx + vert->ny * vert->ny +vert->nz * vert->nz ) ;
+    if( u > 0 )
+    {
+        vert->nx /= u ;
+        vert->ny /= u ;
+        vert->nz /= u ;
+    }
+#endif
+
+    return i_nverts-1 ;
+}
+//-----------------------------------------------------------------------------
+
+int MarchingCubes::add_y_vertex( )
+//-----------------------------------------------------------------------------
+{
+    test_vertex_addition() ;
+    Vertex *vert = i_vertices + i_nverts++ ;
+
+    double   u = ( i_cube[0] ) / ( i_cube[0] - i_cube[3] ) ;
+
+//     vert->x      = (float) i_i ;
+//     vert->y      = (float)i_j+u;
+//     vert->z      = (float) i_k ;
+
+    vert->x      = xmin+hx*i_i;
+    vert->y      = ymin+hy*(i_j+u);
+    vert->z      = zmin+hz*i_k;
+
+    
+    
+#ifdef COMPUTE_NORMALS
+    vert->nx = (1-u)*get_x_grad(i_i,i_j,i_k) + u*get_x_grad(i_i,i_j+1,i_k) ;
+    vert->ny = (1-u)*get_y_grad(i_i,i_j,i_k) + u*get_y_grad(i_i,i_j+1,i_k) ;
+    vert->nz = (1-u)*get_z_grad(i_i,i_j,i_k) + u*get_z_grad(i_i,i_j+1,i_k) ;
+
+    u = (float) sqrt( vert->nx * vert->nx + vert->ny * vert->ny +vert->nz * vert->nz ) ;
+    if( u > 0 )
+    {
+        vert->nx /= u ;
+        vert->ny /= u ;
+        vert->nz /= u ;
+    }
+#endif
+
+    return i_nverts-1 ;
+}
+//-----------------------------------------------------------------------------
+
+int MarchingCubes::add_z_vertex( )
+//-----------------------------------------------------------------------------
+{
+    test_vertex_addition() ;
+    Vertex *vert = i_vertices + i_nverts++ ;
+
+    double   u = ( i_cube[0] ) / ( i_cube[0] - i_cube[4] ) ;
+
+//     vert->x      = (float) i_i ;
+//     vert->y      = (float) i_j ;
+//     vert->z      = (float)i_k+u;
+
+    vert->x      = xmin+hx*i_i;
+    vert->y      = ymin+hy*i_j;
+    vert->z      = zmin+hz*(i_k+u);
+
+    
+#ifdef COMPUTE_NORMALS
+    vert->nx = (1-u)*get_x_grad(i_i,i_j,i_k) + u*get_x_grad(i_i,i_j,i_k+1) ;
+    vert->ny = (1-u)*get_y_grad(i_i,i_j,i_k) + u*get_y_grad(i_i,i_j,i_k+1) ;
+    vert->nz = (1-u)*get_z_grad(i_i,i_j,i_k) + u*get_z_grad(i_i,i_j,i_k+1) ;
+
+    u = (float) sqrt( vert->nx * vert->nx + vert->ny * vert->ny +vert->nz * vert->nz ) ;
+    if( u > 0 )
+    {
+        vert->nx /= u ;
+        vert->ny /= u ;
+        vert->nz /= u ;
+    }
+#endif
+
+    return i_nverts-1 ;
+}
+
+
+int MarchingCubes::add_c_vertex( )
+//-----------------------------------------------------------------------------
+{
+    test_vertex_addition() ;
+    Vertex *vert = i_vertices + i_nverts++ ;
+
+    double  u = 0 ;
+    int   vid ;
+
+    vert->x = vert->y = vert->z =  0;
+#ifdef COMPUTE_NORMALS
+        vert->nx = vert->ny = vert->nz = 0 ;
+#endif
+
+    // Computes the average of the intersection points of the cube
+    vid = get_x_vert( i_i , i_j , i_k ) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_y_vert(i_i+1, i_j , i_k ) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_x_vert( i_i ,i_j+1, i_k ) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_y_vert( i_i , i_j , i_k ) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_x_vert( i_i , i_j ,i_k+1) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_y_vert(i_i+1, i_j ,i_k+1) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_x_vert( i_i ,i_j+1,i_k+1) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_y_vert( i_i , i_j ,i_k+1) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_z_vert( i_i , i_j , i_k ) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_z_vert(i_i+1, i_j , i_k ) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_z_vert(i_i+1,i_j+1, i_k ) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+    vid = get_z_vert( i_i ,i_j+1, i_k ) ;
+    if( vid != -1 )
+    {
+        ++u ;
+        const Vertex &v = i_vertices[vid] ;
+        vert->x += v.x ;
+        vert->y += v.y ;
+        vert->z += v.z ;
+#ifdef COMPUTE_NORMALS
+        vert->nx += v.nx ;
+        vert->ny += v.ny ;
+        vert->nz += v.nz ;
+#endif
+    }
+
+    vert->x  /= u ;
+    vert->y  /= u ;
+    vert->z  /= u ;
+
+#ifdef COMPUTE_NORMALS
+    u = (float) sqrt( vert->nx * vert->nx + vert->ny * vert->ny +vert->nz * vert->nz ) ;
+    if( u > 0 )
+    {
+        vert->nx /= u ;
+        vert->ny /= u ;
+        vert->nz /= u ;
+    }
+#endif
+
+    return i_nverts-1 ;
+}
+//_____________________________________________________________________________
+
+
+
+//_____________________________________________________________________________
+//_____________________________________________________________________________
+
+
+
+
+void MarchingCubes::write(const char *fn, bool bin )
+//-----------------------------------------------------------------------------
+{
+    FILE       *fp = fopen( fn, "w" );
+    fprintf(fp, "%d %d\n", i_nverts, i_ntrigs);
+
+    int          i ;
+
+    for ( i = 0; i < i_nverts; i++ )
+        fprintf(fp, "%f %f %f\n", i_vertices[i].x, i_vertices[i].y, i_vertices[i].z);
+
+    for ( i = 0; i < i_ntrigs; i++ )
+    {
+        fprintf(fp, "%d %d %d \n", i_triangles[i].v1, i_triangles[i].v2, i_triangles[i].v3);
+    }
+
+    fclose( fp ) ;
+}
+//_____________________________________________________________________________
+

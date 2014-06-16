@@ -264,18 +264,18 @@ QString OperatorsModel::description(const Analitza::Operator& o)
 		case Operator::abs:
 			s = QCoreApplication::tr("Absolute value. abs(n)=|n|");
 			break;
-// 		case Operator::conjugate:
-// 			s = QCoreApplication::tr("Conjugate");
-// 			break;
-// 		case Operator::arg:
-// 			s = "---";//QCoreApplication::tr("Arg?");
-// 			break;
-// 		case Operator::real:
-// 			s = QCoreApplication::tr("Real");
-// 			break;
-// 		case Operator::imaginary:
-// 			s = QCoreApplication::tr("Imaginary");
-// 			break;
+		case Operator::conjugate:
+			s = QCoreApplication::tr("Conjugate");
+			break;
+		case Operator::arg:
+			s = QCoreApplication::tr("Arg");
+			break;
+		case Operator::real:
+			s = QCoreApplication::tr("Real");
+			break;
+		case Operator::imaginary:
+			s = QCoreApplication::tr("Imaginary");
+			break;
 		case Operator::floor:
 			s = QCoreApplication::tr("Floor value. floor(n)=⌊n⌋");
 			break;
@@ -511,10 +511,6 @@ QString OperatorsModel::example(const Analitza::Operator& o)
 		case Operator::ln:
 		case Operator::log:
 		case Operator::abs:
-		//case Object::conjugate:
-		//case Object::arg:
-		//case Object::real:
-		//case Object::imaginary:
 		case Operator::floor:
 		case Operator::ceiling:
 			s=QString("%1(x)").arg(o.toString());
@@ -522,10 +518,10 @@ QString OperatorsModel::example(const Analitza::Operator& o)
 		case Operator::nOfOps:
 		case Operator::none:
 		case Operator::function:
-// 		case Operator::real:
-// 		case Operator::conjugate:
-// 		case Operator::arg:
-// 		case Operator::imaginary:
+		case Operator::real:
+		case Operator::conjugate:
+		case Operator::arg:
+		case Operator::imaginary:
 			break;
 	}
 	return "x->"+s;
