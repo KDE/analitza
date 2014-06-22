@@ -99,6 +99,7 @@ const ExpressionType EigenvaluesCommand::type = ExpressionType(ExpressionType::L
 .addParameter(ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1)))
 .addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
 
+//TODO complex values as matrix entries too
 //TODO support endomorphisms over Rn too
 Expression EigenvaluesCommand::operator()(const QList< Analitza::Expression >& args)
 {
@@ -161,12 +162,68 @@ Expression EigenvaluesCommand::operator()(const QList< Analitza::Expression >& a
 const QString EigenvectorsCommand::id = QString("eigenvectors");
 const ExpressionType EigenvectorsCommand::type = EigenvaluesCommand::type;
 
+//TODO complex values as matrix entries too
 //TODO support endomorphisms over Rn too
-//TODO
 Expression EigenvectorsCommand::operator()(const QList< Analitza::Expression >& args)
 {
 	Expression ret;
-
+	
+	QStringList errors;
+	const Eigen::MatrixXcd eigeninfo = executeEigenSolver(args, true, errors);
+	
+	if (!errors.isEmpty()) {
+		ret.addError(errors.first());
+		
+		return ret;
+	}
+	const int neigenvectors = eigeninfo.cols();
+	
+	Analitza::List *list = new Analitza::List;
+	
+	for (int j = 0; j < neigenvectors; ++j) {
+		const Eigen::VectorXcd col = eigeninfo.col(j);
+		Analitza::Vector *eigenvector = new Analitza::Vector(neigenvectors);
+		
+		for (int i = 0; i < neigenvectors; ++i) {
+			const std::complex<double> eigenvalue = eigeninfo(i);
+			const double realpart = eigenvalue.real();
+			const double imagpart = eigenvalue.imag();
+			
+			if (std::isnan(realpart) || std::isnan(imagpart)) {
+				ret.addError(QCoreApplication::tr("Returned eigenvalue is NaN", "NaN means Not a Number, is an invalid float number"));
+				
+				delete list;
+				
+				return ret;
+			} else if (std::isinf(realpart) || std::isinf(imagpart)) {
+				ret.addError(QCoreApplication::tr("Returned eigenvalue is too big"));
+				
+				delete list;
+				
+				return ret;
+			} else {
+				bool isonlyreal = true;
+				
+				if (std::isnormal(imagpart)) {
+					isonlyreal = false;
+				}
+				
+				Analitza::Cn * eigenvalueobj = 0;
+				
+				if (isonlyreal) {
+					eigenvalueobj = new Analitza::Cn(realpart);
+				} else {
+					eigenvalueobj = new Analitza::Cn(realpart, imagpart);
+				}
+				
+				eigenvector->appendBranch(eigenvalueobj);
+			}
+		}
+		
+		list->appendBranch(eigenvector);
+	}
+	
+	ret.setTree(list);
+	
 	return ret;
 }
-
