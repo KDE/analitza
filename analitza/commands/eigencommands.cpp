@@ -140,16 +140,12 @@ Expression EigenvaluesCommand::operator()(const QList< Analitza::Expression >& a
 				isonlyreal = false;
 			}
 			
-			Analitza::Object * eigenvalueobj = 0;
+			Analitza::Cn * eigenvalueobj = 0;
 			
 			if (isonlyreal) {
 				eigenvalueobj = new Analitza::Cn(realpart);
 			} else {
-				Analitza::Vector *complexwrapper = new Analitza::Vector(2);
-				complexwrapper->appendBranch(new Analitza::Cn(realpart));
-				complexwrapper->appendBranch(new Analitza::Cn(imagpart));
-				
-				eigenvalueobj = complexwrapper;
+				eigenvalueobj = new Analitza::Cn(realpart, imagpart);
 			}
 			
 			list->appendBranch(eigenvalueobj);

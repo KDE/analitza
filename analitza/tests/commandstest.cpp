@@ -387,7 +387,7 @@ void CommandsTest::testCorrect_data()
 	
 	script.clear();
 	script << "eigenvalues(matrix(vector{3,4}, vector{-2, -1}))";
-	QTest::newRow("eigenvalues: full complex") << script << "list { vector { 1, 2 }, vector { 1, -2 } }";
+	QTest::newRow("eigenvalues: full complex") << script << "list { 1+2*i, 1-2*i }";
 #endif
 }
 
