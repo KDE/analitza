@@ -40,8 +40,8 @@ class TypeCheckTest : public QObject
 		void testReduction();
 		void testReduction_data();
 		
-		void testAlternatives();
-		void testAlternatives_data();
+		void testVariadic();
+		void testVariadic_data();
 	private:
 		Analitza::Variables* v;
 };
