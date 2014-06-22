@@ -30,6 +30,7 @@ Object* Cn::copy() const
 {
 	Cn *v = new Cn;
 	v->m_value = m_value;
+	v->m_imaginaryPart = m_imaginaryPart;
 	v->m_format = m_format;
 	return v;
 }
@@ -46,6 +47,7 @@ bool Cn::setValue(const QDomElement& val)
 	bool wrong=false;
 	QString tag = val.tagName();
 	m_format=Real;
+	m_imaginaryPart=0;
 	
 	if(tag == "cn"){ // a is a number
 		if(val.attribute("type", "integer") == "real") {
@@ -67,8 +69,8 @@ bool Cn::setValue(const QDomElement& val)
 			else if (val.text() == "&true;")	{ m_value=1.; m_format=Boolean; }
 			else if (val.text() == "&false;")	{ m_value=0.; m_format=Boolean; }
 			else if (val.text() == "&gamma;")	{ m_value = 0.5772156649; }
+			else if (val.text() == "&ImagniaryI;")	{ m_value=0; m_imaginaryPart=1; m_format=Complex; }
 #if 0
-			else if (val.text() == "&ImagniaryI;")	; //TODO: Not implemented 
 			else if (val.text() == "&infin;")	; //TODO: Not implemented  }
 			else if (val.text() == "&NaN;")		; //TODO: Not implemented  }*/
 #endif
@@ -90,22 +92,42 @@ void Cn::setValue(const double& v)
 {
 	m_format = Real;
 	m_value = v;
+	m_imaginaryPart = 0;
 }
 
 void Cn::setValue(int v)
 {
 	m_format = Integer;
 	m_value = v;
+	m_imaginaryPart = 0;
 }
 
 void Cn::setValue(uint v)
 {
 	m_format = Integer;
 	m_value = v;
+	m_imaginaryPart = 0;
 }
 
 void Cn::setValue(bool v)
 {
 	m_format = Boolean;
 	m_value = v;
+	m_imaginaryPart = 0;
+}
+
+std::complex<double> Cn::complexValue() const
+{
+	return std::complex<double>(m_value, m_imaginaryPart);
+}
+
+void Cn::setValue(std::complex<double> v)
+{
+	if(v.imag() == 0)
+		setValue(v.real());
+	else {
+		m_format = Complex;
+		m_imaginaryPart = v.imag();
+		m_value = v.real();
+	}
 }

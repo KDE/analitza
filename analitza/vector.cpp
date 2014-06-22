@@ -48,7 +48,7 @@ Vector::Vector(int size)
 	, m_isDiagonalRowVector(true)
 	, m_nonZeros(0)
 {
-    m_elements.reserve(size);
+	m_elements.reserve(size);
 }
 
 Vector::Vector(Object::ObjectType t, int size)
@@ -61,6 +61,21 @@ Vector::Vector(Object::ObjectType t, int size)
 	, m_nonZeros(0)
 {
 	m_elements.reserve(size);
+}
+
+Vector::Vector(int size, double value)
+	: Object(Object::vector)//, m_elements(size)
+	, m_hasOnlyNumbers(true)
+	, m_isZero(true)
+	, m_isStandardBasisVector(true)
+	, m_nonZeroTaken(false)
+	, m_isDiagonalRowVector(true)
+	, m_nonZeros(0)
+{
+	Q_ASSERT(size > 0);
+	
+	for (int i = 0; i < size; ++i)
+		appendBranch(new Cn(value));
 }
 
 Vector::~Vector()

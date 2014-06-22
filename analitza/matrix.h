@@ -43,6 +43,8 @@ class ANALITZA_EXPORT Matrix : public Object
 		typedef QList<MatrixRow*>::const_iterator const_iterator;
 		
 		Matrix();
+		/** Fills the matrix with a fixed numeric @p value, the matrix size will be @p m x @p n */
+		Matrix(int m, int n, double value);
 		virtual ~Matrix();
 		void appendBranch(MatrixRow* o);
 		
@@ -62,6 +64,11 @@ class ANALITZA_EXPORT Matrix : public Object
 		bool isSquare() const;
 		virtual bool isZero() const { return m_rows.isEmpty()? false : m_isZero; }
 		bool hasOnlyNumbers() const { return m_rows.isEmpty()? false : m_hasOnlyNumbers; }
+		bool isIdentity() const;
+		bool isDiagonal() const;
+		
+	public:
+		static Matrix* identity(int n);
 		
 	private:
 		QList<MatrixRow*> m_rows;

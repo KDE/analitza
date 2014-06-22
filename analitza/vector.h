@@ -39,6 +39,8 @@ class ANALITZA_EXPORT Vector : public Object
 		
 		Vector(const Vector& v);
 		Vector(int size);
+		/** Fills the vector with a fixed numeric @p value */
+		Vector(int size, double value);
 		virtual ~Vector();
 		
 		void appendBranch(Object* );

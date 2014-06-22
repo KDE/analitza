@@ -20,7 +20,6 @@
 
 #include <QCoreApplication>
 
-#include "analitzautils.h"
 #include "expression.h"
 #include "value.h"
 #include "matrix.h"
@@ -56,10 +55,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 				const Analitza::Cn *nobj = static_cast<const Analitza::Cn*>(args.at(0).tree());
 				
 				if (nobj->isInteger() && nobj->value() > 0) {
-					Analitza::Matrix *matrix = new Analitza::Matrix();
-					const int n = nobj->intValue();
-					AnalitzaUtils::fillMatrix(matrix, n, n, 0);
-					ret.setTree(matrix);
+					ret.setTree(new Analitza::Matrix(nobj->intValue(), nobj->intValue(), 0));
 				} else
 					ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
 				
@@ -72,9 +68,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 				const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
 				
 				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() > 0 && ncolsobj->value() > 0) {
-					Analitza::Matrix *matrix = new Analitza::Matrix();
-					AnalitzaUtils::fillMatrix(matrix, nrowsobj->intValue(), ncolsobj->intValue(), 0);
-					ret.setTree(matrix);
+					ret.setTree(new Analitza::Matrix(nrowsobj->intValue(), ncolsobj->intValue(), 0));
 				} else
 					ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
 				
@@ -89,9 +83,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 				const Analitza::Cn *ncolsobj = static_cast<const Analitza::Cn*>(args.at(1).tree());
 				
 				if (nrowsobj->isInteger() && ncolsobj->isInteger() && nrowsobj->value() > 0 && ncolsobj->value() > 0) {
-					Analitza::Matrix *matrix = new Analitza::Matrix();
-					AnalitzaUtils::fillMatrix(matrix, nrowsobj->intValue(), ncolsobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value());
-					ret.setTree(matrix);
+					ret.setTree(new Analitza::Matrix(nrowsobj->intValue(), ncolsobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())->value()));
 				} else
 					ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
 				
@@ -178,21 +170,7 @@ Expression IdentityMatrixCommand::operator()(const QList< Analitza::Expression >
 	const int n = nobj->value();
 	
 	if (nobj->isInteger() && n > 0) {
-		Analitza::Matrix *matrix = new Analitza::Matrix();
-		
-		for (int row = 0; row < n; ++row) {
-			Analitza::MatrixRow *rowobj = new Analitza::MatrixRow(n);
-			
-			for (int col= 0; col < n; ++col)
-				if (row == col)
-					rowobj->appendBranch(new Analitza::Cn(1));
-				else
-					rowobj->appendBranch(new Analitza::Cn(0));
-			
-			matrix->appendBranch(rowobj);
-		}
-		
-		ret.setTree(matrix);
+		ret.setTree(Analitza::Matrix::identity(n));
 	} else
 		ret.addError(MATRIX_SIZE_ERROR_MESSAGE);
 

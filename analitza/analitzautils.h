@@ -83,18 +83,6 @@ namespace AnalitzaUtils
 	
 	/** tells how much @p depth is being used inside @p tree */
 	int countDepth(int depth, const Analitza::Object* tree);
-	
-	/** Fills the given empty @p vector with a fixed numeric @p value */
-	void fillVector(Analitza::Vector* vector, int size, double value);
-	
-	/** Fills the given empty @p matrix with a fixed numeric @p value, the matrix size will be @p nrows x @p ncols */
-	void fillMatrix(Analitza::Matrix* matrix, int nrows, int ncols, double value);
-	
-	/** Returns whether the @p matrix, with fixed numeric entries, is identity */
-	bool isIdentityMatrix(const Analitza::Matrix* matrix);
-	
-	/** Returns whether the @p matrix, with fixed numeric entries, is a diagonal matrix */
-	bool isDiagonalMatrix(const Analitza::Matrix* matrix);
 }
 
 #endif // ANALITZAUTILS_H

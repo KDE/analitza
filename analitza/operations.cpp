@@ -30,19 +30,17 @@
 #include "list.h"
 #include "expressiontypechecker.h"
 #include "customobject.h"
-
 #include "matrix.h"
 #include "container.h"
+#include "additionchains.h"
 
 using namespace std;
 using namespace Analitza;
 
-Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn* oper1, QString** correct)
+Object* reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a, double b, QString** correct)
 {
 	Object *ret = oper;
 	int residu;
-	const double a=oper->value(), b=oper1->value();
-	
 	switch(op) {
 		case Operator::plus:
 			oper->setValue(a+b);
@@ -63,8 +61,8 @@ Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn
 			break;
 		case Operator::power:
 			oper->setValue( b==2 ? a*a
-					: b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
-								 : pow(a, b));
+			: b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
+			: pow(a, b));
 			break;
 		case Operator::rem:
 			if(Q_LIKELY(floor(b)!=0.))
@@ -127,7 +125,7 @@ Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn
 			break;
 		case Operator::gcd:  {
 			//code by michael cane aka kiko :)
-			int ia=floor(a), ib=floor(b);
+			int ia=floor(a), ib=floor(b), residu = 0;
 			while (ib > 0) {
 				residu = ia % ib;
 				ia = ib;
@@ -143,7 +141,7 @@ Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn
 			}
 			else {
 				int ia=floor(a), ib=floor(b);
-				int ic=ia*ib;
+				int ic=ia*ib, residu = 0;
 				while (ib > 0) {
 					residu = ia % ib;
 					ia = ib;
@@ -155,13 +153,211 @@ Object* Operations::reduceRealReal(Operator::OperatorType op, Cn* oper, const Cn
 			break;
 		case Operator::root:
 			oper->setValue(			  b==2.0 ? sqrt(a)
-					  : (b>1 || b<-1) && a<0 ? pow(complex<double>(a), complex<double>(1./b)).real()
-											 : pow(a, 1.0/b));
+			: (b>1 || b<-1) && a<0 ? pow(complex<double>(a), complex<double>(1./b)).real()
+			: pow(a, 1.0/b));
 			break;
 		default:
 			break;
 	}
 	return ret;
+}
+
+static bool operator<(complex<double> a, complex<double> b)
+{ return a.real() < b.real() || (a.real() == b.real() && a.imag()<b.imag()); }
+
+static bool operator>(complex<double> a, complex<double> b)
+{ return a.real() > b.real() || (a.real() == b.real() && a.imag()>b.imag()); }
+
+static bool operator<=(complex<double> a, complex<double> b)
+{ return a.real() <= b.real() || (a.real() == b.real() && a.imag()<=b.imag()); }
+
+static bool operator>=(complex<double> a, complex<double> b)
+{ return a.real() >= b.real() || (a.real() == b.real() && a.imag()>=b.imag()); }
+
+Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<double> a, complex<double> b, QString** correct)
+{
+	switch(op) {
+		case Operator::plus:
+			oper->setValue(a+b);
+			break;
+		case Operator::times:
+			oper->setValue(a*b);
+			break;
+		case Operator::divide:
+			if(Q_LIKELY(b.real()!=0. || b.imag()!=0.))
+				oper->setValue(a / b);
+			else
+				*correct=new QString(QCoreApplication::tr("Cannot divide by 0."));
+			break;
+		case Operator::minus:
+			oper->setValue(a - b);
+			break;
+		case Operator::power:
+			oper->setValue(pow(a, b));
+			break;
+		case Operator::rem:
+			if(Q_LIKELY(floor(b.real())!=0.))
+				oper->setValue(int(remainder(a.real(), b.real())));
+			else
+				*correct=new QString(QCoreApplication::tr("Cannot calculate the remainder on 0."));
+			break;
+		case Operator::quotient:
+			oper->setValue(int(floor((a / b).real())));
+			break;
+		case Operator::factorof: {
+			int fb = int(floor(b.real()));
+			if(Q_LIKELY(fb!=0))
+				oper->setValue((int(floor(a.real())) % fb)==0);
+			else
+				*correct=new QString(QCoreApplication::tr("Cannot calculate the factor on 0."));
+		}	break;
+		case Operator::min:
+			oper->setValue(a < b ? a : b);
+			break;
+		case Operator::max:
+			oper->setValue(a > b? a : b);
+			break;
+		case Operator::gt:
+			oper->setValue(a > b);
+			break;
+		case Operator::lt:
+			oper->setValue(a < b);
+			break;
+		case Operator::eq:
+			oper->setValue(a == b);
+			break;
+		case Operator::approx:
+			oper->setValue(fabs(a.real()-b.real())+fabs(a.imag()-b.imag())<0.001);
+			break;
+		case Operator::neq:
+			oper->setValue(a != b);
+			break;
+		case Operator::geq:
+			oper->setValue(a >= b);
+			break;
+		case Operator::leq:
+			oper->setValue(a <= b);
+			break;
+		case Operator::_and:
+		case Operator::_or:
+		case Operator::_xor:
+		case Operator::implies:
+			*correct = new QString(QCoreApplication::tr("Boolean operations on complex numbers not available"));
+			break;
+		case Operator::gcd:  {
+			//code by michael cane aka kiko :)
+			int ia=floor(a.real()), ib=floor(b.real()), residu = 0;
+			while (ib > 0) {
+				residu = ia % ib;
+				ia = ib;
+				ib = residu;
+			}
+			oper->setValue(ia);
+		}	break;
+		case Operator::lcm:
+			//code by michael cane aka kiko :)
+			if(Q_UNLIKELY(floor(a.real())==0. || floor(b.real())==0.))
+				*correct=new QString(QCoreApplication::tr("Cannot calculate the lcm of 0."));
+			else {
+				int ia=floor(a.real()), ib=floor(b.real());
+				int ic=ia*ib, residu = 0;
+				while (ib > 0) {
+					residu = ia % ib;
+					ia = ib;
+					ib = residu;
+				}
+				ia=ic/ia;
+				oper->setValue(ia);
+			}
+			break;
+		case Operator::root:
+			if(b.real()!=2.0 && b.imag()==0)
+				*correct = new QString(QCoreApplication::tr("Only square root implemented for complex numbe"));
+			else
+				oper->setValue(sqrt(a));
+			break;
+		default:
+			break;
+	}
+	return oper;
+}
+
+Object* Operations::reduceValueValue(enum Operator::OperatorType op, Cn *oper, const Cn *oper1, QString** correct)
+{
+	if(Q_UNLIKELY(oper->isComplex() || oper1->isComplex())) {
+		const complex<double> a=oper->complexValue(), b=oper1->complexValue();
+		return reduceComplexComplex(op, oper, a, b, correct);
+	} else {
+		const double a=oper->value(), b=oper1->value();
+		return reduceRealReal(op, oper, a, b, correct);
+	}
+}
+
+Object* Operations::reduceUnaryValue(Operator::OperatorType op, Cn* oper, QString** correct)
+{
+	if(Q_UNLIKELY(oper->isComplex()))
+		return reduceUnaryComplex(op, oper, correct);
+	else
+		return reduceUnaryReal(op, oper, correct);
+}
+
+Object* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* oper, QString** correct)
+{
+	const complex<double> a=oper->complexValue();
+
+	switch(op) {
+		case Operator::minus:
+			     oper->setValue(-a);
+			break;
+		case Operator::sin:
+			     oper->setValue(sin(a));
+			break;
+		case Operator::cos:
+			     oper->setValue(cos(a));
+			break;
+		case Operator::tan:
+			     oper->setValue(tan(a));
+			break;
+		case Operator::sinh:
+			     oper->setValue(sinh(a));
+			break;
+		case Operator::cosh:
+			     oper->setValue(cosh(a));
+			break;
+		case Operator::tanh:
+			     oper->setValue(tanh(a));
+			break;
+		case Operator::coth:
+			     oper->setValue(cosh(a)/sinh(a));
+			break;
+		case Operator::exp:
+			     oper->setValue(exp(a));
+			break;
+		case Operator::ln:
+			     oper->setValue(log(a));
+			break;
+		case Operator::log:
+			     oper->setValue(log10(a));
+			break;
+		case Operator::abs:
+			     oper->setValue(std::abs(a));
+			break;
+		case Operator::conjugate:
+			     oper->setValue(std::conj(a));
+			break;
+			case Operator::arg:
+				    oper->setValue(std::arg(a));
+			break;
+			case Operator::real:
+				    oper->setValue(a.real());
+			break;
+			case Operator::imaginary:
+				    oper->setValue(a.imag());
+			break;
+		default:
+            *correct=new QString(QCoreApplication::tr("Could not calculate a value %1").arg(Operator(op).toString()));
+	}
+	return oper;
 }
 
 Object* Operations::reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString** correct)
@@ -261,10 +457,6 @@ Object* Operations::reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString
 		case Operator::abs:
 			     oper->setValue(a>=0. ? a : -a);
 			break;
-		//case Object::conjugate:
-		//case Object::arg:
-		//case Object::real:
-		//case Object::imaginary:
 		case Operator::floor:
 			     oper->setValue(floor(a));
 			break;
@@ -331,7 +523,7 @@ Object * Operations::reduceVectorReal(Operator::OperatorType op, Vector * v1, Cn
 Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, Vector * v2, QString** correct)
 {
 	if(v1->size()!=v2->size()) { //FIXME: unneeded? ... aucahuasi: I think is needed ...
-		*correct=new QString(QCoreApplication::tr("Cannot operate on different sized vectors."));
+		*correct=new QString(QCoreApplication::tr("Cannot operate '%1' on different sized vectors.").arg(Operator(op).name()));
 		return new None();
 	}
 	
@@ -345,6 +537,40 @@ Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, 
 	return v1;
 }
 
+Object* Operations::reduceMatrixVector(Operator::OperatorType op, Matrix* matrix, Vector* vector, QString** correct)
+{
+	Object* ret = 0;
+	if (op == Operator::times) {
+		if (matrix->hasOnlyNumbers() && vector->hasOnlyNumbers()) {
+			const int maxk = matrix->columnCount();
+			
+			if (maxk == vector->size()) {
+				const int m = matrix->rowCount();
+				
+				Vector *newvec = new Vector(m);
+				
+				for (int i = 0; i < m; ++i) {
+					double sum = 0;
+					for (int k = 0; k < maxk; ++k)
+						sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->value();
+					
+					newvec->appendBranch(new Cn(sum));
+				}
+				
+				ret = newvec;
+			} else {
+				*correct=new QString(QCoreApplication::tr("Multiplication between a matrix and a vector is allowed provided that the number of columns of the matrix equals the size of the vector"));
+				ret=new None();
+			}
+		} else {
+			*correct=new QString(QCoreApplication::tr("Matrix and vector entries must be numbers"));
+			ret=new None();
+		}
+	}
+	
+	return ret;
+}
+
 Object* Operations::reduceUnaryVector(Operator::OperatorType op, Vector* c, QString** correct)
 {
 	Object *ret=0;
@@ -352,6 +578,18 @@ Object* Operations::reduceUnaryVector(Operator::OperatorType op, Vector* c, QStr
 		case Operator::card:
 			ret=new Cn(c->size());
 			break;
+		case Operator::transpose: {
+			const int n = c->size();
+			
+			Matrix* mret = new Matrix;
+			MatrixRow* row = new MatrixRow(n);
+			for(int j=0; j<n; ++j) {
+				row->appendBranch(c->at(j)->copy());
+			}
+			
+			mret->appendBranch(row);
+			ret = mret;
+		}	break;
 		default:
 			//Should be dealt by typechecker. not necessary
 			*correct=new QString(QCoreApplication::tr("Could not calculate a vector's %1").arg(Operator(op).toString()));
@@ -437,6 +675,35 @@ Object* Operations::reduceCustomCustom(Operator::OperatorType op, CustomObject* 
 	return 0;
 }
 
+Object* Operations::reduceVectorMatrix(Operator::OperatorType op, Vector* vector, Matrix* matrix, QString** correct)
+{
+	Object* ret = 0;
+	if (op == Operator::times) {
+		//TODO check if matrix has only values as type for entries
+		if (1 == matrix->rowCount()) {
+			const int m = vector->size();
+			const int n = matrix->columnCount();
+			
+			Matrix *newmat = new Matrix();
+			
+			for (int i = 0; i < m; ++i) {
+				MatrixRow *row = new MatrixRow(n);
+				for (int j = 0; j < n; ++j)
+					row->appendBranch(reduceValueValue(op, (Cn*)vector->at(i), (Cn*)matrix->at(0,j), correct)->copy());
+				
+				newmat->appendBranch(row);
+			}
+			
+			ret = newmat;
+		} else {
+			*correct=new QString(QCoreApplication::tr("Multiplication between a vector and a matrix is allowed provided that the matrix has only one matrixrow element"));
+			ret=new None();
+		}
+	}
+	
+	return ret;
+}
+
 Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct)
 {
 	Object* ret = 0;
@@ -457,19 +724,48 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 			}
 		}	break;
 		case Operator::times: {
-			//TODO feature 2
+			if (m1->hasOnlyNumbers() && m2->hasOnlyNumbers()) {
+				const int maxk = m1->columnCount();
+				if (maxk == m2->rowCount()) {
+					const int m = m1->rowCount();
+					const int n = m2->columnCount();
+					
+					Matrix *matrix = new Matrix();
+					
+					for (int i = 0; i < m; ++i) {
+						MatrixRow *row = new MatrixRow(n);
+						for (int j = 0; j < n; ++j) {
+							double sum = 0;
+							for (int k = 0; k < maxk; ++k) {
+								sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->value();
+							}
+							
+							row->appendBranch(new Cn(sum));
+						}
+						
+						matrix->appendBranch(row);
+					}
+					
+					ret = matrix;
+				} else {
+					*correct=new QString(QCoreApplication::tr("Multiplication of two matrices is allowed provided that the number of columns of the first matrix equals the number of rows of the second matrix"));
+					ret=new None();
+				}
+			} else {
+				*correct=new QString(QCoreApplication::tr("Matrix entries must be numbers"));
+				ret=new None();
+			}
 		}	break;
 		default:
 			break;
 	}
-
+	
 	return ret;
 }
 
 Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
 {
 	Object* ret = 0;
-// 	qDebug() << "que op: " << op;
 	switch(op) {
 		case Operator::selector: {
 			int select=v->intValue();
@@ -488,12 +784,100 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 			delete v;
 		}	break;
 		case Operator::times: {
-			Matrix *nm = new Matrix();
-// 			aqui marca el error solo 
-			for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
-				nm->appendBranch(static_cast<MatrixRow*>(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
-			ret = nm;
+			if (m1->hasOnlyNumbers()) {
+				Matrix *nm = new Matrix();
+				for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
+					nm->appendBranch(static_cast<MatrixRow*>(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
+				ret = nm;
+			} else {
+				*correct=new QString(QCoreApplication::tr("Matrix entries must be numbers"));
+				ret=new None();
+			}
 		}	break;
+		default:
+			break;
+	}
+	return ret;
+}
+
+Object* Operations::reduceMatrixReal(Operator::OperatorType op, Matrix* matrix, Cn* value, QString** correct)
+{
+	Object* ret = 0;
+	switch(op) {
+		case Operator::power: {
+			if (matrix->hasOnlyNumbers()) {
+				if (matrix->isSquare()) {
+					if (value->isInteger()) {
+						const int exp = qAbs(value->intValue());
+						
+						switch(exp) {
+							case 0: ret = Matrix::identity(matrix->rowCount()); break;
+							case 1: ret = matrix; break;
+							default: {
+								//base = value->intValue() < 0? invert(matrix) : matrix;//TODO negative exponents
+								Matrix *base = matrix;
+								
+								if (exp <= MAX_EXPONENT) { // then: use Addition-chain exponentiation
+									const int len = additionChains[exp][0];
+									int i, j, k;
+									QVector<Matrix*> products(len+1);
+									products[0] = base;
+									
+									if (exp>1)
+										products[1] = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, matrix, matrix, correct));
+									
+									//NOTE see http://rosettacode.org/wiki/Addition-chain_exponentiation#C for more details
+									for (i = 2; i <= len; i++) 
+										for (j = i - 1; j; j--) 
+											for (k = j; k >= 0; k--) 
+											{
+												if (additionChains[exp][k+1] + additionChains[exp][j+1] < additionChains[exp][i+1]) break;
+												if (additionChains[exp][k+1] + additionChains[exp][j+1] > additionChains[exp][i+1]) continue;
+												products[i] = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, products[j], products[k], correct));
+												j = 1;
+												break;
+											}
+									ret = products[len];
+									
+									//NOTE free memory (at 0 we have matrix and the last is our result, so go from 1 to len-1)
+									for (i = 1; i < len; i++)
+										delete products[i];
+								} else { // else: use Exponentiation by squaring
+									Matrix *product = Matrix::identity(base->rowCount());
+									Matrix *newbase = base->copy();
+									int n = exp;
+									
+									while (n != 0) {
+										if (n % 2 != 0) {
+											Matrix *oldproduct = product;
+											product = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, product, newbase, correct));
+											delete oldproduct;
+											--n;
+										}
+										Matrix *oldbase = newbase;
+										newbase = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, newbase, newbase, correct));
+										delete oldbase;
+										n /= 2;
+									}
+									
+									ret = product;
+								}
+							}	break;
+						}
+					} else {
+						*correct=new QString(QCoreApplication::tr("The exponent of 'power' must be some integer number"));
+						ret=new None();
+					}
+				} else {
+					*correct=new QString(QCoreApplication::tr("Cannot compute 'power' for non square matrix"));
+					ret=new None();
+				}
+			} else {
+				*correct=new QString(QCoreApplication::tr("Matrix entries must be numbers"));
+				ret=new None();
+			}
+		}	break;
+		//TODO root
 		default:
 			break;
 	}
@@ -573,6 +957,15 @@ QList<ExpressionType> Operations::infer(Operator::OperatorType op)
 			ret << TypeTriplet(ExpressionType(ExpressionType::Value),
 							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
 							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2),
+							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), 1),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
 			break;
 		case Operator::eq:
 		case Operator::neq:
@@ -587,6 +980,11 @@ QList<ExpressionType> Operations::infer(Operator::OperatorType op)
 								ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
 			break;
 		case Operator::power:
+			ret << TypeTriplet(ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), -1),
+							   ExpressionType(ExpressionType::Value),
+							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), -1));
+			break;
 		case Operator::rem:
 		case Operator::quotient:
 		case Operator::factorof:
@@ -662,10 +1060,10 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 			ret << TypePair(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any, 1), -1), ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any, 1), -1));
 			break;
 		case Operator::transpose:
-			ret << TypePair(ExpressionType(ExpressionType::Matrix,
-										   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
-							ExpressionType(ExpressionType::Matrix,
-										   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), -2));
+			ret << TypePair(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
+							ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), -2));
+			ret << TypePair(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
+							ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1), 1));
 			break;
 		case Operator::factorial:
 		case Operator::sin:
@@ -695,10 +1093,10 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 		case Operator::ln:
 		case Operator::log:
 		case Operator::abs:
-		//case Object::conjugate:
-		//case Object::arg:
-		//case Object::real:
-		//case Object::imaginary:
+		case Operator::conjugate:
+		case Operator::arg:
+		case Operator::real:
+		case Operator::imaginary:
 		case Operator::floor:
 		case Operator::ceiling:
 			ret << TypePair(ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value));
@@ -716,14 +1114,14 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
 	{0,(Operations::BinaryOp) reduceNoneReal,0,0,0,0,0,0,(Operations::BinaryOp) reduceNoneMatrix,0,0},
-	{(Operations::BinaryOp) reduceRealNone, (Operations::BinaryOp) reduceRealReal, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
+	{(Operations::BinaryOp) reduceRealNone, (Operations::BinaryOp) reduceValueValue, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,0,0},
+	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,(Operations::BinaryOp) reduceVectorMatrix,0,0},
 	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{(Operations::BinaryOp) reduceMatrixNone,0,0,0,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
+	{(Operations::BinaryOp) reduceMatrixNone, (Operations::BinaryOp) reduceMatrixReal,0, (Operations::BinaryOp) reduceMatrixVector,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
 };
@@ -739,7 +1137,7 @@ Object * Operations::reduce(Operator::OperatorType op, Object * val1, Object * v
 
 Operations::UnaryOp Operations::opsUnary[] = {
 	0,
-	(Operations::UnaryOp) Operations::reduceUnaryReal,
+	(Operations::UnaryOp) Operations::reduceUnaryValue,
 	0, //variable
 	(Operations::UnaryOp) Operations::reduceUnaryVector,
 	(Operations::UnaryOp) Operations::reduceUnaryList,

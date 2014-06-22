@@ -33,6 +33,8 @@
 
 using namespace Analitza;
 
+const double HtmlExpressionWriter::MIN_PRINTABLE_VALUE = 0.0000000000001; // since the precision we choose for 'G' is 12
+
 //we use the one in string*
 QMap<Operator::OperatorType, QString> initOperators();
 
@@ -84,10 +86,40 @@ QVariant HtmlExpressionWriter::visit(const List* vec)
 
 QVariant HtmlExpressionWriter::visit(const Cn* var)
 {
+	QString innerhtml;
 	if(var->isBoolean())
-		return QString("<span class='var'>"+QString(var->isTrue() ? "true" : "false")+"</span>");
+		innerhtml = var->isTrue() ? "true" : "false";
+	else if(var->isCharacter())
+		innerhtml = QString(var->character());
+	else if(var->isComplex()) {
+		QString realpart;
+		QString imagpart;
+		bool realiszero = false;
+		if (qAbs(var->complexValue().real()) > MIN_PRINTABLE_VALUE)
+			realpart = QString::number(var->complexValue().real(), 'g', 12);
+		else
+			realiszero = true;
+		
+		if (var->complexValue().imag() != 1 && var->complexValue().imag() != -1) {
+			if (qAbs(var->complexValue().imag()) > MIN_PRINTABLE_VALUE) {
+				if (!realiszero && var->complexValue().imag()>0.)
+					realpart += QLatin1String("+");
+				imagpart = QString::number(var->complexValue().imag(), 'g', 12);
+				imagpart += QLatin1String("*i");
+			}
+		} else  {
+			if (var->complexValue().imag() == 1)
+				imagpart = QLatin1String("i");
+			else if (var->complexValue().imag() == -1)
+				imagpart = QLatin1String("-i");
+		}
+		
+		innerhtml = realpart+imagpart;
+	}
 	else
-		return QString("<span class='num'>"+QString::number(var->value(), 'g', 12)+"</span>");
+		innerhtml = QString::number(var->value(), 'g', 12);
+	
+	return QString("<span class='num'>"+innerhtml+"</span>");
 }
 
 QVariant HtmlExpressionWriter::visit(const Analitza::Ci* var)

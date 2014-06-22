@@ -111,8 +111,8 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("selec") << "selector(1, fv)" << "num -> num";
 	
 	QTest::newRow("piece") << "x->piecewise { gt(x,0) ? x, ? x+1 }" << "num -> num";
-	QTest::newRow("parametric") << "t->vector{t,t^2}" << "num -> <num,2>";
-	QTest::newRow("somelist") << "t->list{t,t^2}" << "num -> [num]";
+	QTest::newRow("parametric") << "t->vector{t,t^2}" << "(num -> <num,2>) | ({num,-1x-1} -> <{num,-1x-1},2>)";
+	QTest::newRow("somelist") << "t->list{t,t^2}" << "(num -> [num]) | ({num,-1x-1} -> [{num,-1x-1}])";
 	QTest::newRow("x->piece") << "x->piecewise { gt(x,0) ? selector(1, vector{x, 1/x}),"
 									"? selector(2, vector{x, 1/x} ) }" << "num -> num";
 	QTest::newRow("div") << "v->selector(1, v)/selector(2, v)" << "(<num,-1> -> num) | (<<num,-1>,-1> -> <num,-1>) | ([num] -> num) | ([<num,-1>] -> <num,-1>) | ({num,-2x-1} -> <num,-1>)";
@@ -120,7 +120,7 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("selec_cos") << "v->cos(selector(1, v))" << "(<num,-1> -> num) | ([num] -> num)";
 	QTest::newRow("shadowed_param") << "fv->cos(fv)" << "num -> num";
 	QTest::newRow("eq") << "x->eq(1,x)" << "num -> bool";
-	QTest::newRow("list@sum") << "v->sum(i^2 : i@v)" << "([num] -> num) | (<num,-1> -> num) | ({num,-3x-2} -> num)";
+	QTest::newRow("list@sum") << "v->sum(i^2 : i@v)" << "([num] -> num) | (<num,-1> -> num) | ({num,-3x-2} -> num) | ([{num,-1x-1}] -> {num,-1x-1}) | (<{num,-1x-1},-1> -> {num,-1x-1}) | ({{num,-1x-1},-3x-2} -> {num,-1x-1})";
 	
 	QTest::newRow("bounded sum_up") << "n->sum(x : x=n..0)" << "num -> num";
 	QTest::newRow("bounded sum_down") << "n->sum(x : x=0..n)" << "num -> num";
@@ -144,7 +144,7 @@ void TypeCheckTest::testConstruction_data()
 	QTest::newRow("tail6") << "tail" << "(<a,-1> -> [a]) | ([a] -> [a])";
 	
 	QTest::newRow("pe") << "vector{x->x, x->x+2}" << "<(num -> num),2>";
-	QTest::newRow("ana") << "f:=o->vector { x->x+o, x->x*o }" << "(num -> <(num -> num),2>) | (<num,-1> -> <(<num,-1> -> <num,-1>),2>)";
+	QTest::newRow("ana") << "f:=o->vector { x->x+o, x->x*o }" << "(num -> <(num -> num),2>) | (<num,-1> -> <(<num,-1> -> <num,-1>),2>) | ({num,-1x-2} -> <({num,-1x-2} -> {num,-1x-2}),2>)";
 	QTest::newRow("pp") << "(x,f)->list{ f(x), cos(x) }" << "num -> (num -> num) -> [num]";
 	QTest::newRow("pp1") << "(x,f)->list{ cos(x), f(x) }" << "num -> (num -> num) -> [num]";
 	
@@ -302,7 +302,7 @@ class FooCommand : public Analitza::FunctionDefinition
 	}
 };
 
-void TypeCheckTest::testAlternatives()
+void TypeCheckTest::testVariadic()
 {
 	QFETCH(QString, expression);
 	QFETCH(ExpressionType, type);
@@ -312,7 +312,9 @@ void TypeCheckTest::testAlternatives()
 	
 	a.setExpression(Expression(expression));
 	
-	QCOMPARE(a.type(), type);
+	if (a.type() != type.returnValue())
+		qDebug() << a.type().toString() << type.toString();
+	QCOMPARE(a.type(), type.returnValue());
 	
 	if(!a.isCorrect())
 		qDebug() << "wrong exp:" << a.errors();
@@ -325,32 +327,16 @@ void TypeCheckTest::testAlternatives()
 	QVERIFY(result.isCorrect());
 }
 
-void TypeCheckTest::testAlternatives_data()
+void TypeCheckTest::testVariadic_data()
 {
 	QTest::addColumn<QString>("expression");
 	QTest::addColumn<ExpressionType>("type");
 	
-	ExpressionType f1type = ExpressionType(ExpressionType::Lambda)
+	ExpressionType vtype = ExpressionType(ExpressionType::Lambda)
 	.addParameter(ExpressionType(ExpressionType::Any))
 	.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
-
-	ExpressionType f2type = ExpressionType(ExpressionType::Lambda)
-	.addParameter(ExpressionType(ExpressionType::Any))
-	.addParameter(ExpressionType(ExpressionType::Any))
-	.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
-
-	ExpressionType f3type = ExpressionType(ExpressionType::Lambda)
-	.addParameter(ExpressionType(ExpressionType::Any))
-	.addParameter(ExpressionType(ExpressionType::Any))
-	.addParameter(ExpressionType(ExpressionType::Any))
-	.addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
-
-	QList<ExpressionType> alts;
-	alts << f1type << f2type;
-
-	ExpressionType mytype = ExpressionType(ExpressionType::Many, alts);
 	
-	QTest::newRow("f1type_alt_1param_ok") << "foocommand(3)" << mytype;
-	QTest::newRow("f2type_alt_2params_ok") << "foocommand(3,44)" << mytype;
-	QTest::newRow("f3type_alt_3params_ok") << "foocommand(list{5,6,2},44,vector{3,5})" << mytype;
+	QTest::newRow("f1type_alt_1param_ok") << "foocommand(3)" << vtype;
+	QTest::newRow("f2type_alt_2params_ok") << "foocommand(3,44)" << vtype;
+	QTest::newRow("f3type_alt_3params_ok") << "foocommand(list{5,6,2},44,vector{3,5})" << vtype;
 }

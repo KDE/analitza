@@ -30,6 +30,23 @@ Matrix::Matrix()
 	, m_hasOnlyNumbers(true)
 {}
 
+Matrix::Matrix(int m, int n, double value)
+	: Object(matrix)
+	, m_isZero(true)
+	, m_hasOnlyNumbers(true)
+{
+	Q_ASSERT(m > 0);
+	Q_ASSERT(n > 0);
+	
+	for (int i = 0; i < m; ++i) {
+		MatrixRow *row = new Analitza::MatrixRow(n);
+		for (int j = 0; j < n; ++j) {
+			row->appendBranch(new Analitza::Cn(value));
+		}
+		appendBranch(row);
+	}
+}
+
 Matrix::~Matrix()
 {
 	qDeleteAll(m_rows);
@@ -122,4 +139,52 @@ MatrixRow* MatrixRow::copy() const
 		m->appendBranch((*it)->copy());
 	}
 	return m;
+}
+
+Matrix* Matrix::identity(int n)
+{
+	Q_ASSERT(n>0);
+	
+	Analitza::Matrix *ret = new Analitza::Matrix();
+	
+	for (int i = 0; i < n; ++i) {
+		MatrixRow *row = new Analitza::MatrixRow(n);
+		for (int j = 0; j < n; ++j) {
+			if (i == j)
+				row->appendBranch(new Analitza::Cn(1));
+			else
+				row->appendBranch(new Analitza::Cn(0));
+		}
+		ret->appendBranch(row);
+	}
+	
+	return ret;
+}
+
+bool Matrix::isIdentity() const
+{
+	if (!hasOnlyNumbers())
+		return false;
+	
+	const int nrows = m_rows.size();
+	
+	for (int row = 0; row < nrows; ++row)
+		if (!m_rows.at(row)->isStandardBasisVector() || static_cast<const Cn*>(at(row, row))->value() != 1)
+			return false;
+	
+	return true;
+}
+
+bool Matrix::isDiagonal() const
+{
+	if (!hasOnlyNumbers())
+		return false;
+	
+	const int nrows = m_rows.size();
+	
+	for (int row = 0; row < nrows; ++row)
+		if (!m_rows.at(row)->isDiagonalRow())
+			return false;
+	
+	return true;
 }
