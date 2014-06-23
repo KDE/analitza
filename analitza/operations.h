@@ -53,8 +53,8 @@ class Operations
 		
 		static Object* reduceValueNone(Operator::OperatorType op, Cn* oper, None *cntr, QString** correct);
 		static Object* reduceNoneValue(Operator::OperatorType op, None *cntr, Cn* oper, QString** correct);
-		static Cn* reduceValueValue(Operator::OperatorType op, Cn *oper, const Cn* oper1, QString** correct);
-		static Cn* reduceUnaryValue(Operator::OperatorType op, Cn *oper, QString** correct);
+		static Object* reduceValueValue(Operator::OperatorType op, Cn *oper, const Cn* oper1, QString** correct);
+		static Object* reduceUnaryValue(Operator::OperatorType op, Cn *oper, QString** correct);
 		
 		static Object* reduceValueVector(Operator::OperatorType op, Cn *oper, Vector* vector, QString** correct);
 		static Object* reduceVectorValue(Operator::OperatorType op, Vector* vector, Cn *oper, QString** correct);
