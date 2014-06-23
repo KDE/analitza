@@ -176,7 +176,7 @@ Expression EigenvectorsCommand::operator()(const QList< Analitza::Expression >& 
 		
 		return ret;
 	}
-	const int neigenvectors = eigeninfo.cols();
+	const int neigenvectors = eigeninfo.rows();
 	
 	Analitza::List *list = new Analitza::List;
 	
@@ -185,7 +185,7 @@ Expression EigenvectorsCommand::operator()(const QList< Analitza::Expression >& 
 		Analitza::Vector *eigenvector = new Analitza::Vector(neigenvectors);
 		
 		for (int i = 0; i < neigenvectors; ++i) {
-			const std::complex<double> eigenvalue = eigeninfo(i);
+			const std::complex<double> eigenvalue = col(i);
 			const double realpart = eigenvalue.real();
 			const double imagpart = eigenvalue.imag();
 			

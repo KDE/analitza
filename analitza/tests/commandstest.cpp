@@ -388,6 +388,14 @@ void CommandsTest::testCorrect_data()
 	script.clear();
 	script << "eigenvalues(matrix(vector{3,4}, vector{-2, -1}))";
 	QTest::newRow("eigenvalues: full complex") << script << "list { 1+2*i, 1-2*i }";
+	
+	script.clear();
+	script << "eigenvectors(identitymatrix(4))";
+	QTest::newRow("eigenvectors: from Id") << script << "list { vector { 1, 0, 0, 0 }, vector { 0, 1, 0, 0 }, vector { 0, 0, 1, 0 }, vector { 0, 0, 0, 1 } }";
+	
+	script.clear();
+	script << "eigenvectors(matrix(vector{3,4}, vector{-2, -1}))";
+	QTest::newRow("complex eigenvectors") << script << "list { vector { -0.408248290464+0.408248290464*i, 0.816496580928*i }, vector { -0.408248290464-0.408248290464*i, -0.816496580928*i } }";
 #endif
 }
 
