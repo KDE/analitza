@@ -25,6 +25,8 @@
 namespace Analitza
 {
 
+class Cn;
+
 /**
  * \class Vector
  * 
@@ -40,7 +42,7 @@ class ANALITZA_EXPORT Vector : public Object
 		Vector(const Vector& v);
 		Vector(int size);
 		/** Fills the vector with a fixed numeric @p value */
-		Vector(int size, double value);
+		Vector(int size, const Cn *value);
 		virtual ~Vector();
 		
 		void appendBranch(Object* );

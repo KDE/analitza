@@ -30,18 +30,19 @@ Matrix::Matrix()
 	, m_hasOnlyNumbers(true)
 {}
 
-Matrix::Matrix(int m, int n, double value)
+Matrix::Matrix(int m, int n, const Cn* value)
 	: Object(matrix)
 	, m_isZero(true)
 	, m_hasOnlyNumbers(true)
 {
 	Q_ASSERT(m > 0);
 	Q_ASSERT(n > 0);
+	Q_ASSERT(value);
 	
 	for (int i = 0; i < m; ++i) {
 		MatrixRow *row = new Analitza::MatrixRow(n);
 		for (int j = 0; j < n; ++j) {
-			row->appendBranch(new Analitza::Cn(value));
+			row->appendBranch(value->copy());
 		}
 		appendBranch(row);
 	}
@@ -89,6 +90,9 @@ void Matrix::appendBranch(MatrixRow* o)
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o));
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o)->size()>0);
 	Q_ASSERT(m_rows.isEmpty()?true:dynamic_cast<MatrixRow*>(o)->size() == dynamic_cast<MatrixRow*>(m_rows.last())->size()); // all rows are same size
+	
+	if (!o->isZero() && m_isZero)
+		m_isZero = false;
 	
 	if (!o->hasOnlyNumbers() && m_hasOnlyNumbers)
 		m_hasOnlyNumbers = false;

@@ -37,6 +37,178 @@
 using namespace std;
 using namespace Analitza;
 
+Cn* reduceUnaryComplex(Operator::OperatorType op, Cn* val, QString** correct)
+{
+	const complex<double> a=val->complexValue();
+
+	switch(op) {
+		case Operator::minus:
+			val->setValue(-a);
+			break;
+		case Operator::sin:
+			val->setValue(sin(a));
+			break;
+		case Operator::cos:
+			val->setValue(cos(a));
+			break;
+		case Operator::tan:
+			val->setValue(tan(a));
+			break;
+		case Operator::sinh:
+			val->setValue(sinh(a));
+			break;
+		case Operator::cosh:
+			val->setValue(cosh(a));
+			break;
+		case Operator::tanh:
+			val->setValue(tanh(a));
+			break;
+		case Operator::coth:
+			val->setValue(cosh(a)/sinh(a));
+			break;
+		case Operator::exp:
+			val->setValue(exp(a));
+			break;
+		case Operator::ln:
+			val->setValue(log(a));
+			break;
+		case Operator::log:
+			val->setValue(log10(a));
+			break;
+		case Operator::abs:
+			val->setValue(std::abs(a));
+			break;
+		case Operator::conjugate:
+			val->setValue(std::conj(a));
+			break;
+			case Operator::arg:
+				val->setValue(std::arg(a));
+			break;
+			case Operator::real:
+				val->setValue(a.real());
+			break;
+			case Operator::imaginary:
+				val->setValue(a.imag());
+			break;
+		default:
+            *correct=new QString(QCoreApplication::tr("Could not calculate a value %1").arg(Operator(op).toString()));
+	}
+	return val;
+}
+
+Cn* reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString** correct)
+{
+	const double a=oper->value();
+	
+	switch(op) {
+		case Operator::minus:
+			     oper->setValue(-a);
+			break;
+		case Operator::factorial: {
+			//Use gamma from math.h?
+			uint res=1;
+			for(int i=a; i>1.; i--) {
+				res*=floor(i);
+			}
+			     oper->setValue(res);
+		}	break;
+		case Operator::sin:
+			     oper->setValue(sin(a));
+			break;
+		case Operator::cos:
+			     oper->setValue(cos(a));
+			break;
+		case Operator::tan:
+			     oper->setValue(tan(a));
+			break;
+		case Operator::sec:
+			     oper->setValue(1./cos(a));
+			break;
+		case Operator::csc:
+			     oper->setValue(1./sin(a));
+			break;
+		case Operator::cot:
+			     oper->setValue(1./tan(a));
+			break;
+		case Operator::sinh:
+			     oper->setValue(sinh(a));
+			break;
+		case Operator::cosh:
+			     oper->setValue(cosh(a));
+			break;
+		case Operator::tanh:
+			     oper->setValue(tanh(a));
+			break;
+		case Operator::sech:
+			     oper->setValue(1.0/cosh(a));
+			break;
+		case Operator::csch:
+			     oper->setValue(1.0/sinh(a));
+			break;
+		case Operator::coth:
+			     oper->setValue(cosh(a)/sinh(a));
+			break;
+		case Operator::arcsin:
+			     oper->setValue(asin(a));
+			break;
+		case Operator::arccos:
+			     oper->setValue(acos(a));
+			break;
+		case Operator::arctan:
+			     oper->setValue(atan(a));
+			break;
+		case Operator::arccot:
+			     oper->setValue(log(a+pow(a*a+1., 0.5)));
+			break;
+		case Operator::arcsinh: //see http://en.wikipedia.org/wiki/Inverse_hyperbolic_function
+			     oper->setValue(asinh(a));
+			break;
+		case Operator::arccosh:
+			     oper->setValue(acosh(a));
+			break;
+		case Operator::arccsc:
+			     oper->setValue(1/asin(a));
+			break;
+		case Operator::arccsch:
+			     oper->setValue(log(1/a+sqrt(1/(a*a)+1)));
+			break;
+		case Operator::arcsec:
+			     oper->setValue(1/(acos(a)));
+			break;
+		case Operator::arcsech:
+			     oper->setValue(log(1/a+sqrt(1/a+1)*sqrt(1/a-1)));
+			break;
+		case Operator::arctanh:
+			     oper->setValue(atanh(a));
+			break;
+		case Operator::exp:
+			     oper->setValue(exp(a));
+			break;
+		case Operator::ln:
+			     oper->setValue(log(a));
+			break;
+		case Operator::log:
+			     oper->setValue(log10(a));
+			break;
+		case Operator::abs:
+			     oper->setValue(a>=0. ? a : -a);
+			break;
+		case Operator::floor:
+			     oper->setValue(floor(a));
+			break;
+		case Operator::ceiling:
+			     oper->setValue(ceil(a));
+			break;
+		case Operator::_not:
+			     oper->setValue(!a);
+			break;
+		default:
+			*correct=new QString(QCoreApplication::tr("Could not calculate a value %1").arg(Operator(op).toString()));
+			break;
+	}
+	return oper;
+}
+
 Cn* reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a, double b, QString** correct)
 {
 	switch(op) {
@@ -291,189 +463,17 @@ Cn* Operations::reduceUnaryValue(Operator::OperatorType op, Cn* oper, QString** 
 		return reduceUnaryReal(op, oper, correct);
 }
 
-Cn* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* val, QString** correct)
-{
-	const complex<double> a=val->complexValue();
-
-	switch(op) {
-		case Operator::minus:
-			val->setValue(-a);
-			break;
-		case Operator::sin:
-			val->setValue(sin(a));
-			break;
-		case Operator::cos:
-			val->setValue(cos(a));
-			break;
-		case Operator::tan:
-			val->setValue(tan(a));
-			break;
-		case Operator::sinh:
-			val->setValue(sinh(a));
-			break;
-		case Operator::cosh:
-			val->setValue(cosh(a));
-			break;
-		case Operator::tanh:
-			val->setValue(tanh(a));
-			break;
-		case Operator::coth:
-			val->setValue(cosh(a)/sinh(a));
-			break;
-		case Operator::exp:
-			val->setValue(exp(a));
-			break;
-		case Operator::ln:
-			val->setValue(log(a));
-			break;
-		case Operator::log:
-			val->setValue(log10(a));
-			break;
-		case Operator::abs:
-			val->setValue(std::abs(a));
-			break;
-		case Operator::conjugate:
-			val->setValue(std::conj(a));
-			break;
-			case Operator::arg:
-				val->setValue(std::arg(a));
-			break;
-			case Operator::real:
-				val->setValue(a.real());
-			break;
-			case Operator::imaginary:
-				val->setValue(a.imag());
-			break;
-		default:
-            *correct=new QString(QCoreApplication::tr("Could not calculate a value %1").arg(Operator(op).toString()));
-	}
-	return val;
-}
-
-Cn* Operations::reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString** correct)
-{
-	const double a=oper->value();
-	
-	switch(op) {
-		case Operator::minus:
-			     oper->setValue(-a);
-			break;
-		case Operator::factorial: {
-			//Use gamma from math.h?
-			uint res=1;
-			for(int i=a; i>1.; i--) {
-				res*=floor(i);
-			}
-			     oper->setValue(res);
-		}	break;
-		case Operator::sin:
-			     oper->setValue(sin(a));
-			break;
-		case Operator::cos:
-			     oper->setValue(cos(a));
-			break;
-		case Operator::tan:
-			     oper->setValue(tan(a));
-			break;
-		case Operator::sec:
-			     oper->setValue(1./cos(a));
-			break;
-		case Operator::csc:
-			     oper->setValue(1./sin(a));
-			break;
-		case Operator::cot:
-			     oper->setValue(1./tan(a));
-			break;
-		case Operator::sinh:
-			     oper->setValue(sinh(a));
-			break;
-		case Operator::cosh:
-			     oper->setValue(cosh(a));
-			break;
-		case Operator::tanh:
-			     oper->setValue(tanh(a));
-			break;
-		case Operator::sech:
-			     oper->setValue(1.0/cosh(a));
-			break;
-		case Operator::csch:
-			     oper->setValue(1.0/sinh(a));
-			break;
-		case Operator::coth:
-			     oper->setValue(cosh(a)/sinh(a));
-			break;
-		case Operator::arcsin:
-			     oper->setValue(asin(a));
-			break;
-		case Operator::arccos:
-			     oper->setValue(acos(a));
-			break;
-		case Operator::arctan:
-			     oper->setValue(atan(a));
-			break;
-		case Operator::arccot:
-			     oper->setValue(log(a+pow(a*a+1., 0.5)));
-			break;
-		case Operator::arcsinh: //see http://en.wikipedia.org/wiki/Inverse_hyperbolic_function
-			     oper->setValue(asinh(a));
-			break;
-		case Operator::arccosh:
-			     oper->setValue(acosh(a));
-			break;
-		case Operator::arccsc:
-			     oper->setValue(1/asin(a));
-			break;
-		case Operator::arccsch:
-			     oper->setValue(log(1/a+sqrt(1/(a*a)+1)));
-			break;
-		case Operator::arcsec:
-			     oper->setValue(1/(acos(a)));
-			break;
-		case Operator::arcsech:
-			     oper->setValue(log(1/a+sqrt(1/a+1)*sqrt(1/a-1)));
-			break;
-		case Operator::arctanh:
-			     oper->setValue(atanh(a));
-			break;
-		case Operator::exp:
-			     oper->setValue(exp(a));
-			break;
-		case Operator::ln:
-			     oper->setValue(log(a));
-			break;
-		case Operator::log:
-			     oper->setValue(log10(a));
-			break;
-		case Operator::abs:
-			     oper->setValue(a>=0. ? a : -a);
-			break;
-		case Operator::floor:
-			     oper->setValue(floor(a));
-			break;
-		case Operator::ceiling:
-			     oper->setValue(ceil(a));
-			break;
-		case Operator::_not:
-			     oper->setValue(!a);
-			break;
-		default:
-			*correct=new QString(QCoreApplication::tr("Could not calculate a value %1").arg(Operator(op).toString()));
-			break;
-	}
-	return oper;
-}
-
-Object* Operations::reduceNoneReal(Operator::OperatorType op, None*, Cn*, QString** correct)
+Object* Operations::reduceNoneValue(Operator::OperatorType op, None*, Cn*, QString** correct)
 {
 	return errorCase(QCoreApplication::tr("Cannot calculate %1 between a value and an error type").arg(Operator(op).name()), correct);
 }
 
-Object* Operations::reduceRealNone(Operator::OperatorType op, Cn* oper, None* cntr, QString** correct)
+Object* Operations::reduceValueNone(Operator::OperatorType op, Cn* oper, None* cntr, QString** correct)
 {
-	return reduceNoneReal(op, cntr, oper, correct);
+	return reduceNoneValue(op, cntr, oper, correct);
 }
 
-Object * Operations::reduceRealVector(Operator::OperatorType op, Cn * oper, Vector * v1, QString** correct)
+Object * Operations::reduceValueVector(Operator::OperatorType op, Cn * oper, Vector * v1, QString** correct)
 {
 	switch(op) {
 		case Operator::selector: {
@@ -501,7 +501,7 @@ Object * Operations::reduceRealVector(Operator::OperatorType op, Cn * oper, Vect
 	}
 }
 
-Object * Operations::reduceVectorReal(Operator::OperatorType op, Vector * v1, Cn * oper, QString** correct)
+Object * Operations::reduceVectorValue(Operator::OperatorType op, Vector * v1, Cn * oper, QString** correct)
 {
 	for(Vector::iterator it=v1->begin(); it!=v1->end(); ++it)
 	{
@@ -540,11 +540,14 @@ Object* Operations::reduceMatrixVector(Operator::OperatorType op, Matrix* matrix
 				Vector *newvec = new Vector(m);
 				
 				for (int i = 0; i < m; ++i) {
-					double sum = 0;
+					std::complex<double> sum = 0.;
 					for (int k = 0; k < maxk; ++k)
-						sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->value();
+						sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->complexValue();
 					
-					newvec->appendBranch(new Cn(sum));
+					if (sum.imag() == 0)
+						newvec->appendBranch(new Cn(sum.real()));
+					else
+						newvec->appendBranch(new Cn(sum.real(), sum.imag()));
 				}
 				
 				ret = newvec;
@@ -628,7 +631,7 @@ Object* Operations::reduceUnaryList(Operator::OperatorType op, List* l, QString*
 	return ret;
 }
 
-Object* Operations::reduceRealList(Operator::OperatorType op, Cn* oper, List* v1, QString** correct)
+Object* Operations::reduceValueList(Operator::OperatorType op, Cn* oper, List* v1, QString** correct)
 {
 	switch(op) {
 		case Operator::selector: {
@@ -726,12 +729,15 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 					for (int i = 0; i < m; ++i) {
 						MatrixRow *row = new MatrixRow(n);
 						for (int j = 0; j < n; ++j) {
-							double sum = 0;
+							std::complex<double> sum = 0;
 							for (int k = 0; k < maxk; ++k) {
-								sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->value();
+								sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->complexValue();
 							}
 							
-							row->appendBranch(new Cn(sum));
+							if (sum.imag() == 0)
+								row->appendBranch(new Cn(sum.real()));
+							else
+								row->appendBranch(new Cn(sum.real(), sum.imag()));
 						}
 						
 						matrix->appendBranch(row);
@@ -754,7 +760,7 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 	return ret;
 }
 
-Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
+Object* Operations::reduceValueMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
 {
 	Object* ret = 0;
 	switch(op) {
@@ -778,7 +784,7 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 			if (m1->hasOnlyNumbers()) {
 				Matrix *nm = new Matrix();
 				for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
-					nm->appendBranch(static_cast<MatrixRow*>(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
+					nm->appendBranch(static_cast<MatrixRow*>(reduceValueVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
 				ret = nm;
 			} else {
 				*correct=new QString(QCoreApplication::tr("Matrix entries must be numbers"));
@@ -791,7 +797,7 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 	return ret;
 }
 
-Object* Operations::reduceMatrixReal(Operator::OperatorType op, Matrix* matrix, Cn* value, QString** correct)
+Object* Operations::reduceMatrixValue(Operator::OperatorType op, Matrix* matrix, Cn* value, QString** correct)
 {
 	Object* ret = 0;
 	switch(op) {
@@ -1104,15 +1110,15 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 }
 
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
-	{0,(Operations::BinaryOp) reduceNoneReal,0,0,0,0,0,0,(Operations::BinaryOp) reduceNoneMatrix,0,0},
-	{(Operations::BinaryOp) reduceRealNone, (Operations::BinaryOp) reduceValueValue, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
+	{0,(Operations::BinaryOp) reduceNoneValue,0,0,0,0,0,0,(Operations::BinaryOp) reduceNoneMatrix,0,0},
+	{(Operations::BinaryOp) reduceValueNone, (Operations::BinaryOp) reduceValueValue, 0, (Operations::BinaryOp) reduceValueVector, (Operations::BinaryOp) reduceValueList,0,0,0,(Operations::BinaryOp) reduceValueMatrix,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,(Operations::BinaryOp) reduceVectorMatrix,0,0},
+	{0, (Operations::BinaryOp) reduceVectorValue, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,(Operations::BinaryOp) reduceVectorMatrix,0,0},
 	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{(Operations::BinaryOp) reduceMatrixNone, (Operations::BinaryOp) reduceMatrixReal,0, (Operations::BinaryOp) reduceMatrixVector,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
+	{(Operations::BinaryOp) reduceMatrixNone, (Operations::BinaryOp) reduceMatrixValue,0, (Operations::BinaryOp) reduceMatrixVector,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
 };

@@ -63,7 +63,7 @@ Vector::Vector(Object::ObjectType t, int size)
 	m_elements.reserve(size);
 }
 
-Vector::Vector(int size, double value)
+Vector::Vector(int size, const Cn* value)
 	: Object(Object::vector)//, m_elements(size)
 	, m_hasOnlyNumbers(true)
 	, m_isZero(true)
@@ -73,9 +73,10 @@ Vector::Vector(int size, double value)
 	, m_nonZeros(0)
 {
 	Q_ASSERT(size > 0);
+	Q_ASSERT(value);
 	
 	for (int i = 0; i < size; ++i)
-		appendBranch(new Cn(value));
+		appendBranch(value->copy());
 }
 
 Vector::~Vector()
