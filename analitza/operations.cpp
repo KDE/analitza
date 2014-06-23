@@ -40,7 +40,6 @@ using namespace Analitza;
 Object* reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a, double b, QString** correct)
 {
 	Object *ret = oper;
-	int residu;
 	switch(op) {
 		case Operator::plus:
 			oper->setValue(a+b);
@@ -293,15 +292,7 @@ Object* Operations::reduceValueValue(enum Operator::OperatorType op, Cn *oper, c
 	}
 }
 
-Object* Operations::reduceUnaryValue(Operator::OperatorType op, Cn* oper, QString** correct)
-{
-	if(Q_UNLIKELY(oper->isComplex()))
-		return reduceUnaryComplex(op, oper, correct);
-	else
-		return reduceUnaryReal(op, oper, correct);
-}
-
-Object* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* oper, QString** correct)
+Cn* reduceUnaryComplex(Operator::OperatorType op, Cn* oper, QString** correct)
 {
 	const complex<double> a=oper->complexValue();
 
@@ -360,7 +351,7 @@ Object* Operations::reduceUnaryComplex(Operator::OperatorType op, Cn* oper, QStr
 	return oper;
 }
 
-Object* Operations::reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString** correct)
+Cn* reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString** correct)
 {
 	const double a=oper->value();
 	
@@ -473,17 +464,25 @@ Object* Operations::reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString
 	return oper;
 }
 
-Object* Operations::reduceNoneReal(Operator::OperatorType op, None*, Cn*, QString** correct)
+Object* Operations::reduceUnaryValue(Operator::OperatorType op, Cn* oper, QString** correct)
+{
+	if(Q_UNLIKELY(oper->isComplex()))
+		return reduceUnaryComplex(op, oper, correct);
+	else
+		return reduceUnaryReal(op, oper, correct);
+}
+
+Object* Operations::reduceNoneValue(Operator::OperatorType op, None*, Cn*, QString** correct)
 {
 	return errorCase(QCoreApplication::tr("Cannot calculate %1 between a value and an error type").arg(Operator(op).name()), correct);
 }
 
-Object* Operations::reduceRealNone(Operator::OperatorType op, Cn* oper, None* cntr, QString** correct)
+Object* Operations::reduceValueNone(Operator::OperatorType op, Cn* oper, None* cntr, QString** correct)
 {
-	return reduceNoneReal(op, cntr, oper, correct);
+	return reduceNoneValue(op, cntr, oper, correct);
 }
 
-Object * Operations::reduceRealVector(Operator::OperatorType op, Cn * oper, Vector * v1, QString** correct)
+Object * Operations::reduceValueVector(Operator::OperatorType op, Cn * oper, Vector * v1, QString** correct)
 {
 	switch(op) {
 		case Operator::selector: {
@@ -511,7 +510,7 @@ Object * Operations::reduceRealVector(Operator::OperatorType op, Cn * oper, Vect
 	}
 }
 
-Object * Operations::reduceVectorReal(Operator::OperatorType op, Vector * v1, Cn * oper, QString** correct)
+Object * Operations::reduceVectorValue(Operator::OperatorType op, Vector * v1, Cn * oper, QString** correct)
 {
 	for(Vector::iterator it=v1->begin(); it!=v1->end(); ++it)
 	{
@@ -550,11 +549,14 @@ Object* Operations::reduceMatrixVector(Operator::OperatorType op, Matrix* matrix
 				Vector *newvec = new Vector(m);
 				
 				for (int i = 0; i < m; ++i) {
-					double sum = 0;
+					std::complex<double> sum = 0.;
 					for (int k = 0; k < maxk; ++k)
-						sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->value();
+						sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->complexValue();
 					
-					newvec->appendBranch(new Cn(sum));
+					if (sum.imag() == 0)
+						newvec->appendBranch(new Cn(sum.real()));
+					else
+						newvec->appendBranch(new Cn(sum.real(), sum.imag()));
 				}
 				
 				ret = newvec;
@@ -638,7 +640,7 @@ Object* Operations::reduceUnaryList(Operator::OperatorType op, List* l, QString*
 	return ret;
 }
 
-Object* Operations::reduceRealList(Operator::OperatorType op, Cn* oper, List* v1, QString** correct)
+Object* Operations::reduceValueList(Operator::OperatorType op, Cn* oper, List* v1, QString** correct)
 {
 	switch(op) {
 		case Operator::selector: {
@@ -679,24 +681,28 @@ Object* Operations::reduceVectorMatrix(Operator::OperatorType op, Vector* vector
 {
 	Object* ret = 0;
 	if (op == Operator::times) {
-		//TODO check if matrix has only values as type for entries
-		if (1 == matrix->rowCount()) {
-			const int m = vector->size();
-			const int n = matrix->columnCount();
-			
-			Matrix *newmat = new Matrix();
-			
-			for (int i = 0; i < m; ++i) {
-				MatrixRow *row = new MatrixRow(n);
-				for (int j = 0; j < n; ++j)
-					row->appendBranch(reduceValueValue(op, (Cn*)vector->at(i), (Cn*)matrix->at(0,j), correct)->copy());
+		if (vector->hasOnlyNumbers() && matrix->hasOnlyNumbers()) {
+			if (1 == matrix->rowCount()) {
+				const int m = vector->size();
+				const int n = matrix->columnCount();
 				
-				newmat->appendBranch(row);
+				Matrix *newmat = new Matrix();
+				
+				for (int i = 0; i < m; ++i) {
+					MatrixRow *row = new MatrixRow(n);
+					for (int j = 0; j < n; ++j)
+						row->appendBranch(reduceValueValue(op, (Cn*)vector->at(i), (Cn*)matrix->at(0,j), correct)->copy());
+					
+					newmat->appendBranch(row);
+				}
+				
+				ret = newmat;
+			} else {
+				*correct=new QString(QCoreApplication::tr("Multiplication between a vector and a matrix is allowed provided that the matrix has only one matrixrow element"));
+				ret=new None();
 			}
-			
-			ret = newmat;
 		} else {
-			*correct=new QString(QCoreApplication::tr("Multiplication between a vector and a matrix is allowed provided that the matrix has only one matrixrow element"));
+			*correct=new QString(QCoreApplication::tr("Matrix and vector entries must be numbers"));
 			ret=new None();
 		}
 	}
@@ -735,12 +741,15 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 					for (int i = 0; i < m; ++i) {
 						MatrixRow *row = new MatrixRow(n);
 						for (int j = 0; j < n; ++j) {
-							double sum = 0;
+							std::complex<double> sum = 0;
 							for (int k = 0; k < maxk; ++k) {
-								sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->value();
+								sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->complexValue();
 							}
 							
-							row->appendBranch(new Cn(sum));
+							if (sum.imag() == 0)
+								row->appendBranch(new Cn(sum.real()));
+							else
+								row->appendBranch(new Cn(sum.real(), sum.imag()));
 						}
 						
 						matrix->appendBranch(row);
@@ -763,7 +772,7 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 	return ret;
 }
 
-Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
+Object* Operations::reduceValueMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
 {
 	Object* ret = 0;
 	switch(op) {
@@ -787,7 +796,7 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 			if (m1->hasOnlyNumbers()) {
 				Matrix *nm = new Matrix();
 				for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
-					nm->appendBranch(static_cast<MatrixRow*>(reduceRealVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
+					nm->appendBranch(static_cast<MatrixRow*>(reduceValueVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
 				ret = nm;
 			} else {
 				*correct=new QString(QCoreApplication::tr("Matrix entries must be numbers"));
@@ -800,7 +809,7 @@ Object* Operations::reduceRealMatrix(Operator::OperatorType op, Cn* v, Matrix* m
 	return ret;
 }
 
-Object* Operations::reduceMatrixReal(Operator::OperatorType op, Matrix* matrix, Cn* value, QString** correct)
+Object* Operations::reduceMatrixValue(Operator::OperatorType op, Matrix* matrix, Cn* value, QString** correct)
 {
 	Object* ret = 0;
 	switch(op) {
@@ -839,8 +848,8 @@ Object* Operations::reduceMatrixReal(Operator::OperatorType op, Matrix* matrix, 
 											}
 									ret = products[len];
 									
-									//NOTE free memory (at 0 we have matrix and the last is our result, so go from 1 to len-1)
-									for (i = 1; i < len; i++)
+									//NOTE free the memory, except products[len]
+									for (i = 0; i < len; i++)
 										delete products[i];
 								} else { // else: use Exponentiation by squaring
 									Matrix *product = Matrix::identity(base->rowCount());
@@ -1113,15 +1122,15 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 }
 
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
-	{0,(Operations::BinaryOp) reduceNoneReal,0,0,0,0,0,0,(Operations::BinaryOp) reduceNoneMatrix,0,0},
-	{(Operations::BinaryOp) reduceRealNone, (Operations::BinaryOp) reduceValueValue, 0, (Operations::BinaryOp) reduceRealVector, (Operations::BinaryOp) reduceRealList,0,0,0,(Operations::BinaryOp) reduceRealMatrix,0},
+	{0,(Operations::BinaryOp) reduceNoneValue,0,0,0,0,0,0,(Operations::BinaryOp) reduceNoneMatrix,0,0},
+	{(Operations::BinaryOp) reduceValueNone, (Operations::BinaryOp) reduceValueValue, 0, (Operations::BinaryOp) reduceValueVector, (Operations::BinaryOp) reduceValueList,0,0,0,(Operations::BinaryOp) reduceValueMatrix,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (Operations::BinaryOp) reduceVectorReal, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,(Operations::BinaryOp) reduceVectorMatrix,0,0},
+	{0, (Operations::BinaryOp) reduceVectorValue, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,(Operations::BinaryOp) reduceVectorMatrix,0,0},
 	{0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{(Operations::BinaryOp) reduceMatrixNone, (Operations::BinaryOp) reduceMatrixReal,0, (Operations::BinaryOp) reduceMatrixVector,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
+	{(Operations::BinaryOp) reduceMatrixNone, (Operations::BinaryOp) reduceMatrixValue,0, (Operations::BinaryOp) reduceMatrixVector,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
 };

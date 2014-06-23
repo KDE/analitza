@@ -25,6 +25,8 @@
 
 namespace Analitza {
 
+class Cn;
+
 class Vector;
 
 class ANALITZA_EXPORT MatrixRow : public Vector
@@ -44,7 +46,7 @@ class ANALITZA_EXPORT Matrix : public Object
 		
 		Matrix();
 		/** Fills the matrix with a fixed numeric @p value, the matrix size will be @p m x @p n */
-		Matrix(int m, int n, double value);
+		Matrix(int m, int n, const Cn *value);
 		virtual ~Matrix();
 		void appendBranch(MatrixRow* o);
 		
