@@ -8,9 +8,13 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES})
 
 #Checking whether we can compile calgebra
 include(CheckIncludeFiles)
+
+set(CURSES_NEED_NCURSES TRUE)
+macro_optional_find_package(Curses)
 macro_optional_find_package(Readline)
-macro_bool_to_01(READLINE_FOUND HAVE_READLINE)
+
 macro_log_feature(READLINE_FOUND "GNU Readline" "Allows KAlgebra to provide a console interface." "http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html" FALSE "" "")
+macro_log_feature(CURSES_FOUND "NCurses" "Allows KAlgebra to provide a console interface." "http://www.gnu.org/software/ncurses/" FALSE "" "")
 
 macro_optional_find_package(OpenGL)
 macro_bool_to_01(OPENGL_FOUND HAVE_OPENGL)
@@ -25,9 +29,9 @@ set(ANALITZA_LIB_SOVERSION "5")
 add_subdirectory(analitza)
 add_subdirectory(analitzaplot)
 add_subdirectory(analitzagui)
-if(HAVE_READLINE)
+if(READLINE_FOUND AND CURSES_FOUND)
 	add_subdirectory(calgebra)
-endif(HAVE_READLINE)
+endif()
 
 macro_display_feature_log()
 
