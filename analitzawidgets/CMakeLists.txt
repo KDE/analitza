@@ -23,6 +23,8 @@ target_link_libraries(AnalitzaWidgets PUBLIC Qt5::Widgets Qt5::OpenGL Analitza A
 
 set_target_properties(AnalitzaWidgets PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
+generate_export_header(AnalitzaWidgets)
+
 install(TARGETS AnalitzaWidgets EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES

@@ -73,6 +73,8 @@ endif(WIN32)
 
 set_target_properties(AnalitzaPlot PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
+generate_export_header(AnalitzaPlot EXPORT_FILE_NAME analitzaplotexport.h)
+
 install(TARGETS AnalitzaPlot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
