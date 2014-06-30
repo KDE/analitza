@@ -78,7 +78,7 @@ generate_export_header(AnalitzaPlot EXPORT_FILE_NAME analitzaplotexport.h)
 install(TARGETS AnalitzaPlot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
-    analitzaplotexport.h
+    ${CMAKE_CURRENT_BINARY_DIR}/analitzaplotexport.h
     plotitem.h
     functiongraph.h
     planecurve.h

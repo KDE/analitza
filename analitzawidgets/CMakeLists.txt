@@ -28,9 +28,9 @@ generate_export_header(AnalitzaWidgets)
 install(TARGETS AnalitzaWidgets EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/analitzawidgets_export.h
     plotsview2d.h
     expressionedit.h
-    analitzawidgets_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
 )

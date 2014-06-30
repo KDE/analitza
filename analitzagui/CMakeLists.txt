@@ -19,8 +19,8 @@ generate_export_header(AnalitzaGui EXPORT_FILE_NAME analitzaguiexport.h)
 install(TARGETS AnalitzaGui EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
+	${CMAKE_CURRENT_BINARY_DIR}/analitzaguiexport.h
 	algebrahighlighter.h
-	analitzaguiexport.h
 	operatorsmodel.h
 	variablesmodel.h
 

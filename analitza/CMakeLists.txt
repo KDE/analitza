@@ -63,8 +63,8 @@ generate_export_header(Analitza EXPORT_FILE_NAME analitzaexport.h)
 install(TARGETS Analitza EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES 
+	${CMAKE_CURRENT_BINARY_DIR}/analitzaexport.h
 	abstractlexer.h
-	analitzaexport.h
 	analyzer.h
 	analitzautils.h
 	expression.h
