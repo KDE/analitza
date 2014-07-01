@@ -14,6 +14,14 @@ ecm_add_tests(
     LINK_LIBRARIES ${testLibs}
 )
 
+if(LLVM_FOUND)
+    ecm_add_tests(
+        analitzajittest.cpp
+
+        LINK_LIBRARIES ${testLibs}
+    )
+endif(LLVM_FOUND)
+
 ecm_add_test(
     TEST_NAME matchingtest
         matchingtest.cpp ../substituteexpression.cpp ../abstractexpressiontransformer.cpp

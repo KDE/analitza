@@ -36,12 +36,20 @@ set(HAVE_OPENGL ${OPENGL_FOUND})
 find_package(Eigen3) # find and setup Eigen3 if available
 set(HAVE_EIGEN3 ${EIGEN3_FOUND})
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${EIGEN3_INCLUDE_DIR})
+find_package(LLVM)
+set(HAVE_LLVM ${LLVM_FOUND})
+
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${EIGEN3_INCLUDE_DIR} ${LLVM_INCLUDE_DIR})
 
 remove_definitions(-DQT_NO_CAST_TO_ASCII)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 remove_definitions(-DQT_NO_CAST_FROM_BYTEARRAY)
 remove_definitions(-DQT_NO_KEYWORDS)
+
+if(LLVM_FOUND)
+	add_definitions(${LLVM_CFLAGS})
+	link_directories(${LLVM_LIBRARY_DIR})
+endif(LLVM_FOUND)
 
 add_subdirectory(analitza)
 add_subdirectory(analitzaplot)

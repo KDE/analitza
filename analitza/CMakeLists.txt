@@ -49,11 +49,23 @@ set(analitza_SRCS
 )
 
 if(EIGEN3_FOUND)
-    list(APPEND analitza_SRCS commands/eigencommands.cpp)
-endif()
+	list(APPEND analitza_SRCS commands/eigencommands.cpp)
+endif(EIGEN3_FOUND)
+
+if(LLVM_FOUND)
+	list(APPEND analitza_SRCS 
+		llvmirexpressionwriter.cpp
+		jitanalyzer.cpp
+	)
+endif(LLVM_FOUND)
 
 add_library(Analitza ${analitza_SRCS})
 target_link_libraries(Analitza Qt5::Core Qt5::Xml)
+
+if(LLVM_FOUND)
+	target_link_libraries(Analitza ${LLVM_MODULE_LIBS})
+endif(LLVM_FOUND)
+
 target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>")
 
 set_target_properties(Analitza PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
