@@ -70,6 +70,8 @@ void OperatorsModelTest::testExamples()
 	QVERIFY(!sample.isEmpty());
 	QVERIFY(!example.isEmpty());
 	Expression ex(example, false);
+	if(!ex.isCorrect())
+		qDebug() << "error" << example << ex.error();
 	QCOMPARE(ex.toString(), example);
 	QVERIFY(!ex.toMathMLPresentation().isEmpty());
 	ex = ex.lambdaBody();

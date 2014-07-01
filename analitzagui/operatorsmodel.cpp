@@ -478,6 +478,18 @@ QString OperatorsModel::example(const Analitza::Operator& o)
 		case Operator::transpose:
 			s = "transpose(matrix { matrixrow { 1, 2, 3, 4, 5, 6 } })[rem(floor(x), 5)+3][1]";
 			break;
+		case Operator::real:
+			s = "real(x*i)";
+			break;
+		case Operator::conjugate:
+			s = "conjugate(x*i)";
+			break;
+		case Operator::arg:
+			s = "arg(x*i)";
+			break;
+		case Operator::imaginary:
+			s = "imaginary(x*i)";
+			break;
 		case Operator::factorial:
 		case Operator::arcsech:
 		case Operator::arcsec:
@@ -518,10 +530,6 @@ QString OperatorsModel::example(const Analitza::Operator& o)
 		case Operator::nOfOps:
 		case Operator::none:
 		case Operator::function:
-		case Operator::real:
-		case Operator::conjugate:
-		case Operator::arg:
-		case Operator::imaginary:
 			break;
 	}
 	return "x->"+s;
