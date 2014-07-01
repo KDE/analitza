@@ -62,7 +62,7 @@ Expression BlockMatrixCommand::operator()(const QList< Analitza::Expression >& a
 				bool isCorrect = true; // this flag tells if is ok to build the block matrix
 				int nrows = 0;
 				int ncols = 0;
-				int blockpattern[firstVectorSize]; // if vectors(matrixrow) this tells the row(column) pattern
+				std::vector<int> blockpattern(firstVectorSize, 0); // if vectors(matrixrow) this tells the row(column) pattern
 				
 				const int blocklength = isVector? firstBlock->columnCount() : firstBlock->rowCount();
 				
