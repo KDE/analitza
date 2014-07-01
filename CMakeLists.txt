@@ -36,8 +36,11 @@ set(HAVE_OPENGL ${OPENGL_FOUND})
 
 find_package(Eigen3) # find and setup Eigen3 if available
 set(HAVE_EIGEN3 ${EIGEN3_FOUND})
+if(EIGEN3_FOUND)
+    include_directories(${EIGEN3_INCLUDE_DIR})
+endif()
 
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${EIGEN3_INCLUDE_DIR})
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
 remove_definitions(-DQT_NO_CAST_TO_ASCII)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
