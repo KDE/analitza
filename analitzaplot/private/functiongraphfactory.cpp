@@ -131,6 +131,7 @@ bool FunctionGraphFactory::contains(const QString& id) const
 
 AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
 {
+    Q_ASSERT(builderFunctionsWithVars.contains(id));
     AbstractFunctionGraph* ret = builderFunctionsWithVars.value(id)(exp, v);
     ret->setInternalId(id);
     return ret;
