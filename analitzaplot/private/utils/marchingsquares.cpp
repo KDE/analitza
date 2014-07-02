@@ -26,8 +26,6 @@ sMarching_Square MarchingSquares::evaluar_cubo(const Square& cubo)
 {
     sMarching_Square res;
     QPointF punto;
-    unsigned short int val;
-
     res.centro = cubo.center();
     res.medio_lado = cubo.halfEdge();
 
@@ -162,15 +160,6 @@ QList<sArista2D> MarchingSquares::calcular_cortes(sMarching_Square cubo) {
 //  |0|2|
 //  -----
 
-    double x = cubo.centro.x();
-    double y = cubo.centro.y();
-    double hedge = cubo.medio_lado;
-
-    QPointF v0 = QPointF(x-hedge, y-hedge);
-    QPointF v1 = QPointF(x-hedge, y+hedge);
-    QPointF v2 = QPointF(x+hedge, y-hedge);
-    QPointF v3 = QPointF(x+hedge, y+hedge);
-
     //0-1
     if(signo_opuesto(cubo.vertices[0],cubo.vertices[1])) {
         //al primero luego sumale
@@ -241,7 +230,6 @@ void MarchingSquares::identificar_tipo(sMarching_Square cubo) {
 
     QList<sArista2D> aristas;
     QList<unsigned int> vertices;
-    unsigned int it;
 
     aristas = calcular_cortes(cubo);
 
@@ -325,8 +313,6 @@ void MarchingSquares::buildGeometry()
 void MarchingSquares::setWorld(double minx, double maxx, double miny, double maxy)
 {
     sLimitesEspacio2D _esp;
-
-    double a = 4;
 
     _esp.minX = minx;
     _esp.maxX = maxx;

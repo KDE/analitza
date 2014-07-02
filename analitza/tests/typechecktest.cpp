@@ -296,7 +296,7 @@ void TypeCheckTest::testReduction_data()
 
 class FooCommand : public Analitza::FunctionDefinition
 {
-	virtual Expression operator()(const QList< Expression >& args)
+	virtual Expression operator()(const QList< Expression >&)
 	{
 		return Expression("matrix { matrixrow { 8, 9, 0},matrixrow { 7, 5, 3},matrixrow { 1, 2, 10}}");
 	}

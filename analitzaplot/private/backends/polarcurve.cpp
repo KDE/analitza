@@ -163,7 +163,7 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     return QPair<QPointF, QString>(dp, pos);
 }
 
-QLineF FunctionPolar::tangent(const QPointF &mousepos) 
+QLineF FunctionPolar::tangent(const QPointF &/*mousepos*/)
 {
 //     //TODO review calc and this method
 // 

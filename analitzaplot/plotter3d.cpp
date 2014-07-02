@@ -554,6 +554,7 @@ void Plotter3D::addPlots(PlotItem* item)
 
     if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
     {
+        Q_UNUSED(curve);
 //         glEnable(GL_LINE_SMOOTH);
 
 //         glLineWidth(2.5);

@@ -35,7 +35,7 @@ Analitza::None* Analitza::None::copy() const
 	return new None();
 }
 
-bool Analitza::None::matches(const Analitza::Object* exp, QMap< QString, const Object* >* found) const
+bool Analitza::None::matches(const Analitza::Object* exp, QMap< QString, const Object* >* /*found*/) const
 {
 	if(Object::none!=exp->type())
 		return false;

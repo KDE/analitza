@@ -65,24 +65,26 @@ struct Plotter2D::GridInfo
 };
 
 Plotter2D::Plotter2D(const QSizeF& size)
-    : m_size(size)
-    , m_model(0)
-    , m_dirty(true)
-    , m_keepRatio(true)
-    , m_showGrid(true)
+    : m_showGrid(true)
     , m_showMinorGrid(false)
     , m_gridColor(Qt::lightGray)
     , m_backgroundColor(Qt::white)
     , m_autoGridStyle(true)
     , m_gridStyleHint(Squares)
-    , m_scaleMode(Linear)
+    , rang_x(0)
+    , rang_y(0)
+    , m_keepRatio(true)
+    , m_dirty(true)
+    , m_size(size)
+    , m_model(0)
     , m_angleMode(Radian)
+    , m_scaleMode(Linear)
     , m_showTicks(Qt::Vertical|Qt::Horizontal)
     , m_showTickLabels(Qt::Vertical|Qt::Horizontal)
     , m_showMinorTicks(false)
+    , m_showAxes(Qt::Vertical|Qt::Horizontal)
     , m_showPolarAxis(false)
     , m_showPolarAngles(false)
-    , m_showAxes(Qt::Vertical|Qt::Horizontal)
     , m_axisXLabel("x")
     , m_axisYLabel("y")
 {}
@@ -451,7 +453,6 @@ void Plotter2D::drawPolarTickLabels(QPainter* painter, const Plotter2D::GridInfo
     double h = Pi6; // pi/6, then 12 rounds
     double t = 0.0;
     
-    bool draw12 = false;
     unsigned int turns = 12; // 12 turns in [0, 2pi], since h=pi/6
     
     // if we are far from origin then sudivide angles by pi/12
@@ -467,7 +468,7 @@ void Plotter2D::drawPolarTickLabels(QPainter* painter, const Plotter2D::GridInfo
     const unsigned int drawnextyaxiscount = turns/4;
     const unsigned int halfturns = drawoverxaxiscount; // or turns/2;
     
-    for (int j = 0; j < turns; ++j, ++k, t += h) // Pi6 then 24 turns
+    for (uint j = 0; j < turns; ++j, ++k, t += h) // Pi6 then 24 turns
     {
         const QPair<unsigned int, unsigned int> frac = simplifyFraction(k, halfturns);
         
@@ -506,6 +507,7 @@ void Plotter2D::drawGridTickLabels(QPainter* painter, const GridInfo& gridinfo, 
 
 void Plotter2D::drawCircles(QPainter* painter, const GridInfo& gridinfo, GridStyle gridStyle) const
 {
+    Q_ASSERT(gridStyle == Analitza::Circles);
     painter->setRenderHint(QPainter::Antialiasing, false);
     
     const QPen textPen = QPen(QPalette().text().color());
@@ -571,7 +573,7 @@ void Plotter2D::drawCircles(QPainter* painter, const GridInfo& gridinfo, GridSty
                 dontdrawataxiscount = 17;
             }
             
-            for (int j = 1; j <= steps; ++j, ++k, t += h) 
+            for (uint j = 1; j <= steps; ++j, ++k, t += h)
             {
                 if (j % alternatesubgridcount == 0)
                     painter->setPen(gridPen);
@@ -969,11 +971,12 @@ void Plotter2D::updateScale(bool repaint)
 {
     viewport = normalizeUserViewport(userViewport);
 
-    if (repaint) 
+    if (repaint) {
         if (m_model && m_model->rowCount()>0)
             updateFunctions(QModelIndex(), 0, m_model->rowCount()-1);
         else
             forceRepaint();
+    }
 }
 
 void Plotter2D::setViewport(const QRectF& vp, bool repaint)

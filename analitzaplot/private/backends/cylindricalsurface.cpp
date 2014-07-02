@@ -93,7 +93,7 @@ Frp::Frp(const Analitza::Expression& e): AbstractSurface(e)
     setInterval("p", 0, M_PI);
 }
 
-Frp::Frp(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e)
+Frp::Frp(const Analitza::Expression& e, Analitza::Variables*): AbstractSurface(e)
 {}
 
 QVector3D Frp::fromParametricArgs(double r, double p)
@@ -107,7 +107,7 @@ QVector3D Frp::fromParametricArgs(double r, double p)
     return cylindricalToCartesian(r,p,h);
 }
 
-void Frp::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+void Frp::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
 {
     buildParametricSurface();
 }

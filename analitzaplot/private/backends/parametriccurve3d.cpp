@@ -45,7 +45,7 @@ private:
     Cn findTValueForPoint(const QPointF& p);
 };
 
-void ParametricCurve3D::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+void ParametricCurve3D::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
 {
     QPair< double, double > theInterval;
     if(hasIntervals())

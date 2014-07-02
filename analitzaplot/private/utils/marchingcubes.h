@@ -114,9 +114,9 @@ public :
 // Accessors
 
   /** accesses the number of vertices of the generated mesh */
-  const int nverts() const { return i_nverts ; }
+  int nverts() const { return i_nverts ; }
   /** accesses the number of triangles of the generated mesh */
-  const int ntrigs() const { return i_ntrigs ; }
+  int ntrigs() const { return i_ntrigs ; }
   /** accesses a specific vertex of the generated mesh */
   Vertex   * vert( const int i ) const { if( i < 0  || i >= i_nverts ) return ( Vertex *)NULL ; return i_vertices  + i ; }
   /** accesses a specific triangle of the generated mesh */
@@ -128,11 +128,11 @@ public :
   Triangle *triangles() { return i_triangles ; }
 
   /**  accesses the width  of the grid */
-  const int size_x() const { return i_size_x ; }
+  int size_x() const { return i_size_x ; }
   /**  accesses the depth  of the grid */
-  const int size_y() const { return i_size_y ; }
+  int size_y() const { return i_size_y ; }
   /**  accesses the height of the grid */
-  const int size_z() const { return i_size_z ; }
+  int size_z() const { return i_size_z ; }
 
   /**
    * changes the size of the grid
@@ -152,7 +152,7 @@ public :
    * \param j ordinate of the cube
    * \param k height of the cube
    */
-  const double get_data  ( const int i, const int j, const int k ) const { return i_data[ i + j*i_size_x + k*i_size_x*i_size_y] ; }
+  double get_data  ( const int i, const int j, const int k ) const { return i_data[ i + j*i_size_x + k*i_size_x*i_size_y] ; }
 
 //eval de analitza es muy costoso, asi que este aproach esta deprecated... es mejor el triple bucle para llenar la data
 //   const double get_data  ( const int i, const int j, const int k )  

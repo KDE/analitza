@@ -112,7 +112,7 @@ QPair<QPointF, QString> FunctionParametric::image(const QPointF &point)
 
 }
 
-QLineF FunctionParametric::tangent(const QPointF &mousepos) 
+QLineF FunctionParametric::tangent(const QPointF &/*mousepos*/)
 {
 //    if(m_deriv)
 //     {
@@ -136,10 +136,9 @@ QLineF FunctionParametric::tangent(const QPointF &mousepos)
     return QLineF();
 }
 
-Cn FunctionParametric::findTValueForPoint(const QPointF& p)
+Cn FunctionParametric::findTValueForPoint(const QPointF& /*p*/)
 {
-    //TODO esto no esta bien desde el principio no funciona bien no es robusto no funciona bien 
-    // MEJORAR el algoritmo
+    //TODO doesn't work well
     
 //     Q_ASSERT(analyzer.isCorrect() && analyzer.expression().lambdaBody().isVector());
 //     

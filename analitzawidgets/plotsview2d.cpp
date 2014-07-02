@@ -68,7 +68,6 @@ PlotsView2D::PlotsView2D(QWidget *parent)
     QColor bgcolor = palette().color(QPalette::Base);
     setBackgroundColor(bgcolor);
     
-    QColor textcolor = palette().color(QPalette::Text);
     QColor gridcolor = palette().color(QPalette::Midlight);
     setGridColor(gridcolor);
     //END

@@ -173,7 +173,7 @@ QPair<QPointF, QString> ImplicitPolar::image(const QPointF &p)
     return QPair<QPointF, QString>(dp, pos);
 }
 
-QLineF ImplicitPolar::tangent(const QPointF &mousepos) 
+QLineF ImplicitPolar::tangent(const QPointF &/*mousepos*/)
 {
 //     //TODO review calc and this method
 // 

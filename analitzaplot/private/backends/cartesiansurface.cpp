@@ -73,7 +73,7 @@ QVector3D Fxy::fromParametricArgs(double u, double v)
     return QVector3D(u,v,analyzer->calculateLambda().toReal().value());
 }
 
-void Fxy::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+void Fxy::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
 {
     buildParametricSurface();
 //     vertices.clear();
@@ -113,7 +113,7 @@ QVector3D Fxz::fromParametricArgs(double u, double v)
     return QVector3D(u,analyzer->calculateLambda().toReal().value(),v);
 }
 
-void Fxz::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+void Fxz::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
 {
     buildParametricSurface();
 }
@@ -146,7 +146,7 @@ QVector3D Fyz::fromParametricArgs(double u, double v)
     return QVector3D(u,analyzer->calculateLambda().toReal().value(),v);
 }
 
-void Fyz::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+void Fyz::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
 {
     buildParametricSurface();
 }

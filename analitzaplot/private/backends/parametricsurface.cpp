@@ -59,7 +59,7 @@ QVector3D ParamSurf::fromParametricArgs(double u, double v)
     return QVector3D(x.value(), y.value(), z.value());
 }
 
-void ParamSurf::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
+void ParamSurf::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
 {
     buildParametricSurface();
 }

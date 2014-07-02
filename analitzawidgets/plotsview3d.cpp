@@ -115,6 +115,8 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
         case ZAxis: 
             fixRotation(QVector3D(0,0,1));
             break;
+        case InvalidAxis:
+            break;
     }
 
 }

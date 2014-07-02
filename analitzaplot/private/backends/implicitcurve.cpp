@@ -102,7 +102,7 @@ void FunctionImplicit::update(const QRectF& vp)
 }
 
 //Own
-QPair<QPointF, QString> FunctionImplicit::image(const QPointF &point)
+QPair<QPointF, QString> FunctionImplicit::image(const QPointF &/*point*/)
 {
 
     return qMakePair(QPointF(), QString());
@@ -216,7 +216,7 @@ QPair<QPointF, QString> FunctionImplicit::image(const QPointF &point)
 
 }
 
-QLineF FunctionImplicit::tangent(const QPointF &mousepos)
+QLineF FunctionImplicit::tangent(const QPointF &/*mousepos*/)
 {
     return QLineF();
 }

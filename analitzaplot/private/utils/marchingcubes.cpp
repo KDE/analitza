@@ -1468,7 +1468,7 @@ int MarchingCubes::add_c_vertex( )
 
 
 
-void MarchingCubes::write(const char *fn, bool bin )
+void MarchingCubes::write(const char *fn, bool /*bin */)
 //-----------------------------------------------------------------------------
 {
     FILE       *fp = fopen( fn, "w" );
