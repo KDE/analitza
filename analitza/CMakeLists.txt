@@ -63,7 +63,7 @@ add_library(Analitza ${analitza_SRCS})
 target_link_libraries(Analitza Qt5::Core Qt5::Xml)
 
 if(LLVM_FOUND)
-	target_link_libraries(Analitza ${LLVM_MODULE_LIBS})
+	target_link_libraries(Analitza ${LLVM_MODULE_LIBS} ${LLVM_LFLAGS})
 endif(LLVM_FOUND)
 
 target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>")
