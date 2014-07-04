@@ -18,6 +18,10 @@
 
 #include "llvmirexpressionwriter.h"
 
+#include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
 #include <llvm/IR/Value.h>
 
 #include "value.h"
@@ -103,41 +107,30 @@ QVariant LLVMIRExpressionWriter::visit(const List* vec)
 		return QString("list { %1 }").arg(allValues<List::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(", ")));
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Cn* var)
+QVariant LLVMIRExpressionWriter::visit(const Cn* val)
 {
-	return QString();
-	//TODO
-// 	if(var->isBoolean())
-// 		return var->isTrue() ? "true" : "false";
-// 	else if(var->isCharacter())
-// 		return QString(var->character());
-// 	else if(var->isComplex()) {
-// 		QString realpart;
-// 		QString imagpart;
-// 		bool realiszero = false;
-// 		if (qAbs(var->complexValue().real()) > MIN_PRINTABLE_VALUE)
-// 			realpart = QString::number(var->complexValue().real(), 'g', 12);
-// 		else
-// 			realiszero = true;
-// 		
-// 		if (var->complexValue().imag() != 1 && var->complexValue().imag() != -1) {
-// 			if (qAbs(var->complexValue().imag()) > MIN_PRINTABLE_VALUE) {
-// 				if (!realiszero && var->complexValue().imag()>0.)
-// 					realpart += QLatin1String("+");
-// 				imagpart = QString::number(var->complexValue().imag(), 'g', 12);
-// 				imagpart += QLatin1String("*i");
-// 			}
-// 		} else  {
-// 			if (var->complexValue().imag() == 1)
-// 				imagpart = QLatin1String("i");
-// 			else if (var->complexValue().imag() == -1)
-// 				imagpart = QLatin1String("-i");
-// 		}
-// 		
-// 		return QVariant::fromValue<QString>(realpart+imagpart);
-// 	}
-// 	else
-// 		return QString::number(var->value(), 'g', 12);
+	llvm::Value *ret = 0;
+	
+	switch(val->format()) {
+		case Cn::Boolean: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(bool)*8, val->intValue(), false)); break;
+		case Cn::Char: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(char)*8, val->intValue(), false)); break;
+		case Cn::Integer: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(int)*8, val->intValue(), true)); break;
+		case Cn::Real: ret = llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(val->value())); break;
+		case Cn::Complex: {
+			llvm::Type *rawtypes[2] = {llvm::Type::getDoubleTy(llvm::getGlobalContext()), llvm::Type::getDoubleTy(llvm::getGlobalContext())};
+			llvm::ArrayRef<llvm::Type*> types = llvm::ArrayRef<llvm::Type*>(rawtypes, 2);
+			llvm::StructType *complextype = llvm::StructType::get(llvm::getGlobalContext(), types, true);
+			
+			std::complex<double> complexval = val->complexValue();
+			llvm::Constant *rawvalues[2] = {llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(complexval.real())),
+				llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(complexval.imag()))};
+			llvm::ArrayRef<llvm::Constant*> values = llvm::ArrayRef<llvm::Constant*>(rawvalues, 2);
+			
+			ret = llvm::ConstantStruct::get(complextype,values);
+		}	break;
+	}
+	
+	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
 int LLVMIRExpressionWriter::weight(const Operator* op, int size, int pos)
