@@ -11,6 +11,14 @@ if(IEEEFP_DIR)
     add_definitions(-DHAVE_IEEEFP_H)
 endif(IEEEFP_DIR)
 
+# MSVC and MinGW don't provide M_PI and friends in math.h,
+# unless the right #define is set:
+if(MSVC)
+    add_definitions(-D_USE_MATH_DEFINES)
+elseif(MINGW)
+    add_definitions(-D_BSD_SOURCE)
+endif()
+
 include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
