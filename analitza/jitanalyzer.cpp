@@ -17,3 +17,74 @@
  *************************************************************************************/
 
 #include "jitanalyzer.h"
+
+#include "llvmirexpressionwriter.h"
+#include "value.h"
+
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Value.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
+#include <llvm/Support/raw_os_ostream.h>
+
+static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
+
+Q_DECLARE_METATYPE(llvm::Value*); //TODO see if this goes into visitor header
+Q_DECLARE_METATYPE(llvm::Function*);
+
+using namespace Analitza;
+
+JitAnalyzer::JitAnalyzer()
+{
+m_mod = new llvm::Module("mumod", llvm::getGlobalContext());
+}
+
+JitAnalyzer::~JitAnalyzer()
+{
+delete m_mod;
+}
+
+
+llvm::Value* Analitza::JitAnalyzer::foojiteval()
+{
+	if (expression().isLambda() && isCorrect()) {
+		//TODO find better way to save/store IR functions
+		LLVMIRExpressionWriter v(expression().tree(), m_mod,runStack(), variables());
+		
+		std::string str;
+		llvm::raw_string_ostream stringwriter(str);
+		v.result().value<llvm::Value*>()->print(stringwriter);
+		
+// 		qDebug() << QString::fromStdString(str);
+		
+		if (m_jitfnscache.contains(str)) { //call jit
+			// Look up the name in the global module table.
+			llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache[str];
+			
+			std::vector<llvm::Value*> ArgsV;
+			for (int i = 0; i < runStack().size(); ++i) {
+				LLVMIRExpressionWriter vv(runStack().at(i), m_mod, runStack(), variables());
+				ArgsV.push_back(vv.result().value<llvm::Value*>());
+			}
+			
+			return Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
+		} else {
+			m_jitfnscache[str] = v.result().value<llvm::Value*>();
+			
+			// Look up the name in the global module table.
+			llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache[str];
+			
+			std::vector<llvm::Value*> ArgsV;
+			for (int i = 0; i < runStack().size(); ++i) {
+				LLVMIRExpressionWriter vv(runStack().at(i), m_mod, runStack(), variables());
+				ArgsV.push_back(vv.result().value<llvm::Value*>());
+			}
+			
+			return Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
+		}
+		
+		return m_jitfnscache[str]; //TODO
+	}
+	
+	return 0; //TODO
+}

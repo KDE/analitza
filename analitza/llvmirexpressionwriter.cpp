@@ -18,6 +18,7 @@
 
 #include "llvmirexpressionwriter.h"
 
+#include <llvm/Analysis/Verifier.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
@@ -36,18 +37,13 @@
 #include "matrix.h"
 
 Q_DECLARE_METATYPE(llvm::Value*);
+Q_DECLARE_METATYPE(llvm::Function*);
+
+//TODO better names
+static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
+static std::map<QString, llvm::Value*> NamedValues;
 
 using namespace Analitza;
-
-template <class T>
-QStringList LLVMIRExpressionWriter::allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer)
-{
-	QStringList elements;
-	for(; it!=itEnd; ++it)
-		elements += (*it)->accept(writer).toString();
-	
-	return elements;
-}
 
 QMap<Operator::OperatorType, QString> llvminitOperators()
 {
@@ -66,9 +62,9 @@ QMap<Operator::OperatorType, QString> llvminitOperators()
 	return ret;
 }
 
-const QMap<Operator::OperatorType, QString> LLVMIRExpressionWriter::s_operators=llvminitOperators();
-
-LLVMIRExpressionWriter::LLVMIRExpressionWriter(const Object* o)
+LLVMIRExpressionWriter::LLVMIRExpressionWriter(const Object* o, llvm::Module* mod, const QVector< Object* >& stack, Variables* v)
+	: m_runStack(stack)
+	, m_mod(mod)
 {
     if (o)
         m_result=o->accept(this);
@@ -76,35 +72,58 @@ LLVMIRExpressionWriter::LLVMIRExpressionWriter(const Object* o)
 
 QVariant LLVMIRExpressionWriter::visit(const Ci* var)
 {
-	return var->name();
+	//TODO chack in variables too ... since we are playing by efault with stack vars
+	return QVariant::fromValue<llvm::Value*>(NamedValues[var->name()]);
 }
 
 QVariant LLVMIRExpressionWriter::visit(const Operator* op)
 {
+// 	switch(op->operatorType()) {
+// 		case Operator::lt:
+// 		case Operator::gt:
+// 		case Operator::eq:
+// 		case Operator::neq:
+// 		case Operator::leq:
+// 		case Operator::geq:
+// 			return 1;
+// 		case Operator::plus:
+// 			return 2;
+// 		case Operator::minus:
+// 			return size==1 ? 8 : 3;
+// 		case Operator::times:
+// 			return 4;
+// 		case Operator::divide:
+// 			return 5 + (pos>0 ? 0 : 1);
+// 		case Operator::_and:
+// 		case Operator::_or:
+// 		case Operator::_xor:
+// 			return 6;
+// 		case Operator::power:
+// 			return 7 + (pos>0 ? 0 : 1);
+// 		default:
+// 			return 1000;
+// 	}
 	return op->name();
 }
 
 QVariant LLVMIRExpressionWriter::visit(const Vector* vec)
 {
-	return QString("vector { %1 }").arg(allValues<Vector::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(", ")));
+	return QString();
 }
 
 QVariant LLVMIRExpressionWriter::visit(const Matrix* m)
 {
-	return QString("matrix { %1 }").arg(allValues(m->constBegin(), m->constEnd(), this).join(QString(", ")));
+	return QString();
 }
 
 QVariant LLVMIRExpressionWriter::visit(const MatrixRow* mr)
 {
-	return QString("matrixrow { %1 }").arg(allValues(mr->constBegin(), mr->constEnd(), this).join(QString(", ")));
+	return QString();
 }
 
 QVariant LLVMIRExpressionWriter::visit(const List* vec)
 {
-	if(!vec->isEmpty() && vec->at(0)->type()==Object::value && static_cast<Cn*>(vec->at(0))->format()==Cn::Char)
-		return QString("\""+AnalitzaUtils::listToString(vec)+"\"");
-	else
-		return QString("list { %1 }").arg(allValues<List::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(", ")));
+	return QString();
 }
 
 QVariant LLVMIRExpressionWriter::visit(const Cn* val)
@@ -133,156 +152,224 @@ QVariant LLVMIRExpressionWriter::visit(const Cn* val)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-int LLVMIRExpressionWriter::weight(const Operator* op, int size, int pos)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::Apply* c)
 {
-	switch(op->operatorType()) {
-		case Operator::lt:
-		case Operator::gt:
-		case Operator::eq:
-		case Operator::neq:
-		case Operator::leq:
-		case Operator::geq:
-			return 1;
-		case Operator::plus:
-			return 2;
-		case Operator::minus:
-			return size==1 ? 8 : 3;
-		case Operator::times:
-			return 4;
-		case Operator::divide:
-			return 5 + (pos>0 ? 0 : 1);
-		case Operator::_and:
-		case Operator::_or:
-		case Operator::_xor:
-			return 6;
-		case Operator::power:
-			return 7 + (pos>0 ? 0 : 1);
-		default:
-			return 1000;
-	}
-}
-
-QVariant LLVMIRExpressionWriter::visit(const Analitza::Apply* a)
-{
-	Operator op=a->firstOperator();
-	QStringList ret;
-	QString toret;
-	QString bounds;
-	QStringList bvars=a->bvarStrings();
+	llvm::Value *ret = 0;
 	
-	if(a->ulimit() || a->dlimit()) {
-		bounds += '=';
-		if(a->dlimit())
-			bounds += a->dlimit()->accept(this).toString();
-		bounds += "..";
-		if(a->ulimit())
-			bounds += a->ulimit()->accept(this).toString();
-	}
-	else if(a->domain())
-		bounds += '@'+a->domain()->accept(this).toString();
-	
-	int i = 0;
-	foreach(Object* o, a->m_params) {
-		Object::ObjectType type=o->type();
-		switch(type) {
-			case Object::oper:
-				Q_ASSERT(false);
-				break;
-			case Object::variable:
-				ret << static_cast<const Ci*>(o)->accept(this).toString();
-				break;
-			case Object::apply: {
-				const Apply *c = (const Apply*) o;
-				QString s = c->accept(this).toString();
-				if(s_operators.contains(op.operatorType()) && !c->isUnary()) {
-					Operator child_op = c->firstOperator();
-					
-					if(child_op.operatorType() && weight(&op, c->countValues(), -1)>weight(&child_op, c->countValues(), i))
-						s=QString("(%1)").arg(s);
-				}
-				ret << s;
-			}	break;
-			default:
-				ret << o->accept(this).toString();
-				break;
-		}
-		++i;
-	}
-	
-	bool func=op.operatorType()==Operator::function;
-	if(func) {
-		QString n = ret.takeFirst();
-		if(a->m_params.first()->type()!=Object::variable)
-			n='('+n+')';
-		
-		toret += QString("%1(%2)").arg(n).arg(ret.join(", "));
-	} else if(op.operatorType()==Operator::selector) {
-		if(a->m_params.last()->isApply()) {
-			const Apply* a1=static_cast<const Apply*>(a->m_params.last());
-			if(s_operators.contains(a1->firstOperator().operatorType()))
-				ret.last()='('+ret.last()+')';
-		}
-		
-		toret += QString("%1[%2]").arg(ret.last()).arg(ret.first());
-	} else if(ret.count()>1 && s_operators.contains(op.operatorType())) {
-		toret += ret.join(s_operators.value(op.operatorType()));
-	} else if(ret.count()==1 && op.operatorType()==Operator::minus)
-		toret += '-'+ret[0];
-	else {
-		QString bounding;
-		if(!bounds.isEmpty() || !bvars.isEmpty()) {
-			if(bvars.count()!=1) bounding +='(';
-			bounding += bvars.join(", ");
-			if(bvars.count()!=1) bounding +=')';
+	//TODO just check for binary and unary operators .. exclude functions/commands (handle that the next iteration)
+	switch(c->firstOperator().operatorType()) {
+// 		case Operator::sum:
+// 			ret = sum(*c);
+// 			break;
+		case Operator::times: {
+			QVariant a = c->at(0)->accept(this);
+			QVariant b = c->at(1)->accept(this);
 			
-			bounding = ':'+bounding +bounds;
-		}
-			
-		toret += QString("%1(%2%3)").arg(op.accept(this).toString()).arg(ret.join(", ")).arg(bounding);
-	}
-	
-	return toret;
-}
-
-QVariant LLVMIRExpressionWriter::visit(const Container* var)
-{
-	QStringList ret = allValues(var->constBegin(), var->constEnd(), this);
-	
-	QString toret;
-	switch(var->containerType()) {
-		case Container::declare:
-			toret += ret.join(":=");
-			break;
-		case Container::lambda: {
-			QString last=ret.takeLast();
-			QStringList bvars = var->bvarStrings();
-			if(bvars.count()!=1) toret +='(';
-			toret += bvars.join(", ");
-			if(bvars.count()!=1) toret +=')';
-			toret += "->" + last;
+			ret = Builder.CreateFMul(a.value<llvm::Value*>(), b.value<llvm::Value*>(), "multmp");
 		}	break;
-		case Container::math:
-			toret += ret.join("; ");
-			break;
-		case Container::uplimit: //x->(n1..n2) is put at the same time
-		case Container::downlimit:
-			break;
-		case Container::bvar:
-			if(ret.count()>1) toret += '(';
-			toret += ret.join(", ");
-			if(ret.count()>1) toret += ')';
-			break;
-		case Container::piece:
-			toret += ret[1]+" ? "+ret[0];
-			break;
-		case Container::otherwise:
-			toret += "? "+ret[0];
-			break;
-		default:
-			toret += var->tagName()+" { "+ret.join(", ")+" }";
-			break;
+// 		case Operator::product:
+// 			ret = product(*c);
+// 			break;
+// 		case Operator::forall:
+// 			ret = forall(*c);
+// 			break;
+// 		case Operator::exists:
+// 			ret = exists(*c);
+// 			break;
+// 		case Operator::function:
+// 			ret = func(*c);
+// 			break;
+// 		case Operator::diff:
+// 			ret = calcDiff(c);
+// 			break;
+// 		case Operator::map:
+// 			ret = calcMap(c);
+// 			break;
+// 		case Operator::filter:
+// 			ret = calcFilter(c);
+// 			break;
+// 		default: {
+// 			int count=c->countValues();
+// 			Q_ASSERT(count>0);
+// 			Q_ASSERT(	(op.nparams()< 0 && count>1) ||
+// 						(op.nparams()>-1 && count==op.nparams()) ||
+// 						opt==Operator::minus);
+// 			
+// 			QString* error=0;
+// 			if(count>=2) {
+// 				Apply::const_iterator it = c->firstValue(), itEnd=c->constEnd();
+// 				ret = calc(*it);
+// 				++it;
+// 				bool stop=isNull(opt, ret);
+// 				for(; !stop && it!=itEnd; ++it) {
+// 					bool isValue = (*it)->type()==Object::value;
+// 					Object* v = isValue ? *it : calc(*it);
+// 					ret=Operations::reduce(opt, ret, v, &error);
+// 					if(!isValue)
+// 						delete v;
+// 					
+// 					if(Q_UNLIKELY(error)) {
+// 						m_err.append(*error);
+// 						delete error;
+// 						error=0;
+// 						break;
+// 					}
+// 					
+// 					stop=isNull(opt, ret);
+// 				}
+// 			} else {
+// 				ret=Operations::reduceUnary(opt, calc(*c->firstValue()), &error);
+// 				if(Q_UNLIKELY(error)) {
+// 					m_err.append(*error);
+// 					delete error;
+// 				}
+// 			}
+// 		}	break;
 	}
-	return toret;
+	
+	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
+}
+
+QVariant LLVMIRExpressionWriter::visit(const Container* c)
+{
+	llvm::Value *ret = 0;
+	switch(c->containerType()) {
+		case Container::piecewise: {
+// 			ExpressionType type=commonType(c->m_params);
+// 			
+// 			if(type.isError()) {
+// 				addError(QCoreApplication::tr("Could not determine the type for piecewise"));
+// 				current=type;
+// 			} else {
+// 				QList<ExpressionType> alts=type.type()==ExpressionType::Many ? type.alternatives() : QList<ExpressionType>() << type, alts2;
+// 				
+// 				for(QList< ExpressionType >::iterator it=alts.begin(), itEnd=alts.end(); it!=itEnd; ++it) {
+// 					QMap<QString, ExpressionType> assumptions=typeIs(c->constBegin(), c->constEnd(), *it);
+// 					
+// 	// 				QMap<int, ExpressionType> stars;
+// 	// 				bool b=ExpressionType::matchAssumptions(&stars, assumptions, type.assumptions());
+// 	// 				Q_ASSERT(b);
+// 	// 				type=type.starsToType(stars);
+// 					
+// // 					qDebug() << "suuuuu\n\t" << it->assumptions() << "\n\t" << assumptions;
+// 					QMap<int, ExpressionType> stars;
+// 					bool b=ExpressionType::matchAssumptions(&stars, it->assumptions(), assumptions);
+// 					b&=ExpressionType::assumptionsMerge(it->assumptions(), assumptions);
+// // 					qDebug() << "fefefe" << b << it->assumptions();
+// 					
+// 					if(b) {
+// 						alts2 += *it;
+// // 						qDebug() << "!!!" << it->assumptions() << b;
+// 					}
+// 				}
+// 				current=ExpressionType(ExpressionType::Many, alts2);
+// 			}
+		}	break;
+		case Container::piece: {
+// 			QMap<QString, ExpressionType> assumptions=typeIs(c->m_params.last(), ExpressionType(ExpressionType::Bool)); //condition check
+// 			c->m_params.first()->accept(this); //we return the body
+// 			QList<ExpressionType> alts=current.type()==ExpressionType::Many ? current.alternatives() : QList<ExpressionType>() << current, rets;
+// 			foreach(const ExpressionType& t, alts) {
+// 				QMap<int, ExpressionType> stars;
+// 				ExpressionType toadd=t;
+// 				bool b=ExpressionType::assumptionsMerge(toadd.assumptions(), assumptions);
+// 				
+// 				b&=ExpressionType::matchAssumptions(&stars, assumptions, t.assumptions());
+// 				
+// 				if(b) {
+// 					toadd=toadd.starsToType(stars);
+// 					
+// 					rets += toadd;
+// 				}
+// 			}
+// 			current=ExpressionType(ExpressionType::Many, rets);
+		}	break;
+		case Container::declare:{
+// 			Q_ASSERT(c->m_params.first()->type()==Object::variable);
+// 			Ci* var = static_cast<Ci*>(c->m_params.first());
+// 			
+// 			m_calculating.append(var->name());
+// 			c->m_params.last()->accept(this);
+// 			m_calculating.removeLast();
+// 			
+// 			current=tellTypeIdentity(var->name(), current);
+		}	break;
+		case Container::lambda: {
+			const QStringList bvars = c->bvarStrings();
+			
+			Q_ASSERT(m_runStack.size() == bvars.size());
+			
+			std::vector<llvm::Type*> tparams;
+			for (int i = 0; i < m_runStack.size(); ++i) {
+				switch(m_runStack.at(i)->type()) {
+					case Object::value: {
+						switch(((Cn*)m_runStack.at(i))->format()) {
+							case Cn::Integer://TODO get ineger bit width then decide if 32 or 64 bits
+								tparams.push_back(llvm::Type::getInt32Ty(llvm::getGlobalContext()));
+							break;
+							case Cn::Char:
+								tparams.push_back(llvm::Type::getInt8Ty(llvm::getGlobalContext()));
+							break;
+// 							case Cn::Boolean: //TODO
+// 								tparams.push_back(llvm::Type::get(llvm::getGlobalContext()));
+// 							break;
+							case Cn::Real:
+								tparams.push_back(llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+							break;
+						}
+					}	break;
+// 					case Vec, mats://TODO
+// 						type=ExpressionType::Char;
+// 						break;
+// 					default:
+// 						type=ExpressionType::Value;
+// 						break;
+				}
+			}
+			
+			//TODO we need the return type
+			llvm::FunctionType *FT = llvm::FunctionType::get(llvm::Type::getDoubleTy(llvm::getGlobalContext()), tparams, false);
+			
+			llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "mylam", m_mod);//TODO count how many lambdas we have generated i.e mylam0, mylam1 ...
+			
+			//TODO better code
+			int Idx = 0;
+			for (llvm::Function::arg_iterator AI = F->arg_begin(); Idx != bvars.size(); ++AI, ++Idx) {
+				AI->setName(bvars[Idx].toStdString());
+				NamedValues[bvars[Idx]] = AI;
+			}
+			
+			llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+			Builder.SetInsertPoint(BB);
+			Builder.CreateRet(c->m_params.last()->accept(this).value<llvm::Value*>());
+			
+// 			QVariant al = QVariant::fromValue<llvm::Value*>(F);
+			
+// 			al.value<llvm::Value*>()->dump();
+			llvm::verifyFunction(*F);
+			
+			ret = F;
+		}	break;
+		case Container::otherwise:
+		case Container::math:
+		case Container::none:
+		case Container::downlimit:
+		case Container::uplimit:
+		case Container::bvar:
+		case Container::domainofapplication: {
+			Q_ASSERT(c->constBegin()+1==c->constEnd());
+			ret = (*c->constBegin())->accept(this).value<llvm::Value*>();
+		}	break;
+	}
+	
+// 	if(current.type()==ExpressionType::Many) {
+// 		if(current.alternatives().isEmpty())
+// 			current=ExpressionType(ExpressionType::Error);
+// 		else if(current.alternatives().count()==1)
+// 			current=current.alternatives().first();
+// 	}
+	
+	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
 QVariant LLVMIRExpressionWriter::visit(const CustomObject*)

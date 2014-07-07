@@ -21,6 +21,10 @@
 #include <QtTest/QTest>
 
 #include "jitanalyzer.h"
+#include <value.h>
+#include <container.h>
+
+#include <llvm/IR/Value.h>
 
 QTEST_MAIN( AnalitzaJitTest )
 
@@ -43,12 +47,41 @@ void AnalitzaJitTest::cleanupTestCase()
 
 void AnalitzaJitTest::testCalculate_data()
 {
-
+//TODO
 }
+
+#include <llvm/Support/raw_ostream.h>
 
 void AnalitzaJitTest::testCalculate()
 {
-
+//TODO this is just a foo test
+// 	std::string str;
+// 	llvm::raw_string_ostream stringwriter(str);
+// 	a->foojiteval()->print(stringwriter);
+// 	
+// 	qDebug() << QString::fromStdString(str);
+	
+	Analitza::Cn* val = new Analitza::Cn(4.0);
+	QStack<Analitza::Object*> stack;
+	stack.push(val);
+	
+	a->setExpression(Analitza::Expression("t->98.0*t"));
+	a->setStack(stack);
+	a->foojiteval()->dump();
+	
+// 	Analitza::Analyzer aa;
+// 	aa.setExpression(Analitza::Expression("t->vector {t,t**2,t}"));
+// 	aa.calculateLambda();
+// 	qDebug() << "s0 " << aa.evaluate().toString();
+	
+// 	Analitza::Container *cc = (Analitza::Container*)(aa.expression().tree());
+// 	cc = (Analitza::Container*)(cc->m_params.first());
+// 	qDebug() << "ty " << cc->containerType();
+// 	
+// 	
+// 	
+// 	qDebug() << "s1 " << aa.calculateLambda().toString();
+	
 }
 
 #include "analitzajittest.moc"

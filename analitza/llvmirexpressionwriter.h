@@ -19,12 +19,19 @@
 #ifndef LLVMIREXPRESSIONWRITER_H
 #define LLVMIREXPRESSIONWRITER_H
 
+#include <QVector>
+
 #include "abstractexpressionvisitor.h"
-#include "operator.h"
+
+namespace llvm {
+class Module;
+}
 
 //TODO this class is just a copy of stringexpressionwriter ... it need to be modified 
 namespace Analitza
 {
+
+class Variables;
 
 /**
  * \class LLVMIRExpressionWriter
@@ -32,17 +39,20 @@ namespace Analitza
  * \ingroup AnalitzaModule
  *
  * \brief This class represents the LLVM IR expression writer.//TODO better doc
+ * this class will be used only when the expression is a valid lambda and will
+ * generate the IR code when we have a call of the lambda.
+ * 
  */
 
 class LLVMIRExpressionWriter : public AbstractExpressionVisitor
 {
 	public:
-		LLVMIRExpressionWriter(const Object* o);
+		LLVMIRExpressionWriter(const Object* o, llvm::Module *mod, const QVector<Object*>& stack, Variables* v = 0);
 		
 		virtual QVariant visit(const None* var);
 		virtual QVariant visit(const Ci* var);
 		virtual QVariant visit(const Cn* val);
-		virtual QVariant visit(const Container* var);
+		virtual QVariant visit(const Container* c);
 		virtual QVariant visit(const Operator* var);
 		virtual QVariant visit(const Vector* var);
 		virtual QVariant visit(const List* l);
@@ -52,14 +62,10 @@ class LLVMIRExpressionWriter : public AbstractExpressionVisitor
 		virtual QVariant visit(const CustomObject* c);
 		
 		QVariant result() const { return m_result; }
-		
-		static int weight(const Analitza::Operator* op, int size, int pos);
-		static const QMap<Operator::OperatorType, QString> s_operators;
 	private:
-		template <class T>
-			static QStringList allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer);
-
 		QVariant m_result;
+		QVector<Object*> m_runStack;
+		llvm::Module *m_mod;
 };
 
 }

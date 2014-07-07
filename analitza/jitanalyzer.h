@@ -21,6 +21,12 @@
 
 #include "analyzer.h"
 
+namespace llvm { 
+	class Value; 
+	class Function;
+class Module;
+};
+
 namespace Analitza
 {
 
@@ -35,6 +41,14 @@ namespace Analitza
 class ANALITZA_EXPORT JitAnalyzer : public Analyzer
 {
 //TODO
+public:
+    JitAnalyzer();
+	~JitAnalyzer();
+	llvm::Value *foojiteval();
+	
+private:
+	QMap<std::string, llvm::Value*> m_jitfnscache;
+	llvm::Module *m_mod;
 };
 
 }
