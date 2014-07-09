@@ -1,5 +1,9 @@
 project(AnalitzaCore)
 
+if(EIGEN3_FOUND)
+  include_directories(${EIGEN3_INCLUDE_DIR})
+endif(EIGEN3_FOUND)
+
 add_subdirectory(tests)
 
 set(analitza_SRCS
@@ -52,19 +56,8 @@ if(EIGEN3_FOUND)
 	list(APPEND analitza_SRCS commands/eigencommands.cpp)
 endif(EIGEN3_FOUND)
 
-if(LLVM_FOUND)
-	list(APPEND analitza_SRCS 
-		llvmirexpressionwriter.cpp
-		jitanalyzer.cpp
-	)
-endif(LLVM_FOUND)
-
 add_library(Analitza ${analitza_SRCS})
 target_link_libraries(Analitza Qt5::Core Qt5::Xml)
-
-if(LLVM_FOUND)
-	target_link_libraries(Analitza ${LLVM_MODULE_LIBS} ${LLVM_LFLAGS})
-endif(LLVM_FOUND)
 
 target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>")
 
