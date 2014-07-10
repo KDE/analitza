@@ -27,9 +27,14 @@
 #include "private/utils/mathutils.h"
 
 #include <cmath>
-#include <GL/gl.h>
 #include <QDebug>
 #include <QFile>
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
 #if defined(HAVE_IEEEFP_H)
 #include <ieeefp.h>
