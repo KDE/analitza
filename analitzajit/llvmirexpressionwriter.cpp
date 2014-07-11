@@ -43,26 +43,26 @@ Q_DECLARE_METATYPE(llvm::Function*);
 static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
 static std::map<QString, llvm::Value*> NamedValues;
 
-using namespace Analitza;
+using namespace AnalitzaJIT;
 
-QMap<Operator::OperatorType, QString> llvminitOperators()
+QMap<Analitza::Operator::OperatorType, QString> llvminitOperators()
 {
-	QMap<Operator::OperatorType, QString> ret;
-	ret.insert(Operator::plus, "+");
-	ret.insert(Operator::times, "*");
-	ret.insert(Operator::divide, "/");
-	ret.insert(Operator::eq, "=");
-	ret.insert(Operator::neq, "!=");
-	ret.insert(Operator::lt, "<");
-	ret.insert(Operator::leq, "<=");
-	ret.insert(Operator::gt, ">");
-	ret.insert(Operator::geq, ">=");
-	ret.insert(Operator::power, "^");
-	ret.insert(Operator::minus, "-");
+	QMap<Analitza::Operator::OperatorType, QString> ret;
+	ret.insert(Analitza::Operator::plus, "+");
+	ret.insert(Analitza::Operator::times, "*");
+	ret.insert(Analitza::Operator::divide, "/");
+	ret.insert(Analitza::Operator::eq, "=");
+	ret.insert(Analitza::Operator::neq, "!=");
+	ret.insert(Analitza::Operator::lt, "<");
+	ret.insert(Analitza::Operator::leq, "<=");
+	ret.insert(Analitza::Operator::gt, ">");
+	ret.insert(Analitza::Operator::geq, ">=");
+	ret.insert(Analitza::Operator::power, "^");
+	ret.insert(Analitza::Operator::minus, "-");
 	return ret;
 }
 
-LLVMIRExpressionWriter::LLVMIRExpressionWriter(const Object* o, llvm::Module* mod, const QVector< Object* >& stack, Variables* v)
+LLVMIRExpressionWriter::LLVMIRExpressionWriter(const Analitza::Object* o, llvm::Module* mod, const QVector< Analitza::Object* >& stack, Analitza::Variables* v)
 	: m_runStack(stack)
 	, m_mod(mod)
 {
@@ -70,13 +70,13 @@ LLVMIRExpressionWriter::LLVMIRExpressionWriter(const Object* o, llvm::Module* mo
         m_result=o->accept(this);
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Ci* var)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::Ci* var)
 {
 	//TODO chack in variables too ... since we are playing by efault with stack vars
 	return QVariant::fromValue<llvm::Value*>(NamedValues[var->name()]);
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Operator* op)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::Operator* op)
 {
 // 	switch(op->operatorType()) {
 // 		case Operator::lt:
@@ -106,36 +106,36 @@ QVariant LLVMIRExpressionWriter::visit(const Operator* op)
 	return op->name();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Vector* vec)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::Vector* vec)
 {
 	return QString();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Matrix* m)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::Matrix* m)
 {
 	return QString();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const MatrixRow* mr)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::MatrixRow* mr)
 {
 	return QString();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const List* vec)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::List* vec)
 {
 	return QString();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Cn* val)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::Cn* val)
 {
 	llvm::Value *ret = 0;
 	
 	switch(val->format()) {
-		case Cn::Boolean: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(bool)*8, val->intValue(), false)); break;
-		case Cn::Char: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(char)*8, val->intValue(), false)); break;
-		case Cn::Integer: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(int)*8, val->intValue(), true)); break;
-		case Cn::Real: ret = llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(val->value())); break;
-		case Cn::Complex: {
+		case Analitza::Cn::Boolean: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(bool)*8, val->intValue(), false)); break;
+		case Analitza::Cn::Char: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(char)*8, val->intValue(), false)); break;
+		case Analitza::Cn::Integer: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(int)*8, val->intValue(), true)); break;
+		case Analitza::Cn::Real: ret = llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(val->value())); break;
+		case Analitza::Cn::Complex: {
 			llvm::Type *rawtypes[2] = {llvm::Type::getDoubleTy(llvm::getGlobalContext()), llvm::Type::getDoubleTy(llvm::getGlobalContext())};
 			llvm::ArrayRef<llvm::Type*> types = llvm::ArrayRef<llvm::Type*>(rawtypes, 2);
 			llvm::StructType *complextype = llvm::StructType::get(llvm::getGlobalContext(), types, true);
@@ -161,7 +161,7 @@ QVariant LLVMIRExpressionWriter::visit(const Analitza::Apply* c)
 // 		case Operator::sum:
 // 			ret = sum(*c);
 // 			break;
-		case Operator::times: {
+		case Analitza::Operator::times: {
 			QVariant a = c->at(0)->accept(this);
 			QVariant b = c->at(1)->accept(this);
 			
@@ -230,11 +230,11 @@ QVariant LLVMIRExpressionWriter::visit(const Analitza::Apply* c)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Container* c)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::Container* c)
 {
 	llvm::Value *ret = 0;
 	switch(c->containerType()) {
-		case Container::piecewise: {
+		case Analitza::Container::piecewise: {
 // 			ExpressionType type=commonType(c->m_params);
 // 			
 // 			if(type.isError()) {
@@ -265,7 +265,7 @@ QVariant LLVMIRExpressionWriter::visit(const Container* c)
 // 				current=ExpressionType(ExpressionType::Many, alts2);
 // 			}
 		}	break;
-		case Container::piece: {
+		case Analitza::Container::piece: {
 // 			QMap<QString, ExpressionType> assumptions=typeIs(c->m_params.last(), ExpressionType(ExpressionType::Bool)); //condition check
 // 			c->m_params.first()->accept(this); //we return the body
 // 			QList<ExpressionType> alts=current.type()==ExpressionType::Many ? current.alternatives() : QList<ExpressionType>() << current, rets;
@@ -284,7 +284,7 @@ QVariant LLVMIRExpressionWriter::visit(const Container* c)
 // 			}
 // 			current=ExpressionType(ExpressionType::Many, rets);
 		}	break;
-		case Container::declare:{
+		case Analitza::Container::declare:{
 // 			Q_ASSERT(c->m_params.first()->type()==Object::variable);
 // 			Ci* var = static_cast<Ci*>(c->m_params.first());
 // 			
@@ -294,7 +294,7 @@ QVariant LLVMIRExpressionWriter::visit(const Container* c)
 // 			
 // 			current=tellTypeIdentity(var->name(), current);
 		}	break;
-		case Container::lambda: {
+		case Analitza::Container::lambda: {
 			const QStringList bvars = c->bvarStrings();
 			
 			Q_ASSERT(m_runStack.size() == bvars.size());
@@ -302,18 +302,18 @@ QVariant LLVMIRExpressionWriter::visit(const Container* c)
 			std::vector<llvm::Type*> tparams;
 			for (int i = 0; i < m_runStack.size(); ++i) {
 				switch(m_runStack.at(i)->type()) {
-					case Object::value: {
-						switch(((Cn*)m_runStack.at(i))->format()) {
-							case Cn::Integer://TODO get ineger bit width then decide if 32 or 64 bits
+					case Analitza::Object::value: {
+						switch(((Analitza::Cn*)m_runStack.at(i))->format()) {
+							case Analitza::Cn::Integer://TODO get ineger bit width then decide if 32 or 64 bits
 								tparams.push_back(llvm::Type::getInt32Ty(llvm::getGlobalContext()));
 							break;
-							case Cn::Char:
+							case Analitza::Cn::Char:
 								tparams.push_back(llvm::Type::getInt8Ty(llvm::getGlobalContext()));
 							break;
 // 							case Cn::Boolean: //TODO
 // 								tparams.push_back(llvm::Type::get(llvm::getGlobalContext()));
 // 							break;
-							case Cn::Real:
+							case Analitza::Cn::Real:
 								tparams.push_back(llvm::Type::getDoubleTy(llvm::getGlobalContext()));
 							break;
 						}
@@ -350,13 +350,13 @@ QVariant LLVMIRExpressionWriter::visit(const Container* c)
 			
 			ret = F;
 		}	break;
-		case Container::otherwise:
-		case Container::math:
-		case Container::none:
-		case Container::downlimit:
-		case Container::uplimit:
-		case Container::bvar:
-		case Container::domainofapplication: {
+		case Analitza::Container::otherwise:
+		case Analitza::Container::math:
+		case Analitza::Container::none:
+		case Analitza::Container::downlimit:
+		case Analitza::Container::uplimit:
+		case Analitza::Container::bvar:
+		case Analitza::Container::domainofapplication: {
 			Q_ASSERT(c->constBegin()+1==c->constEnd());
 			ret = (*c->constBegin())->accept(this).value<llvm::Value*>();
 		}	break;
@@ -372,12 +372,12 @@ QVariant LLVMIRExpressionWriter::visit(const Container* c)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-QVariant LLVMIRExpressionWriter::visit(const CustomObject*)
+QVariant LLVMIRExpressionWriter::visit(const Analitza::CustomObject*)
 {
 	return "CustomObject";
 }
 
-QVariant LLVMIRExpressionWriter::visit(const None* )
+QVariant LLVMIRExpressionWriter::visit(const Analitza::None* )
 {
 	return QString();
 }

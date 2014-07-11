@@ -19,7 +19,8 @@
 #ifndef JITANALYZER_H
 #define JITANALYZER_H
 
-#include "analyzer.h"
+#include "analitza/analyzer.h"
+#include "analitzajitexport.h"
 
 namespace llvm { 
 	class Value; 
@@ -27,7 +28,7 @@ namespace llvm {
 class Module;
 };
 
-namespace Analitza
+namespace AnalitzaJIT
 {
 
 /**
@@ -38,7 +39,7 @@ namespace Analitza
  * \brief Evaluates math expressions using JIT.
  */
 
-class ANALITZA_EXPORT JitAnalyzer : public Analyzer
+class ANALITZAJIT_EXPORT JitAnalyzer : public Analitza::Analyzer
 {
 //TODO
 public:

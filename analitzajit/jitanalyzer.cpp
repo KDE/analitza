@@ -32,7 +32,7 @@ static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
 Q_DECLARE_METATYPE(llvm::Value*); //TODO see if this goes into visitor header
 Q_DECLARE_METATYPE(llvm::Function*);
 
-using namespace Analitza;
+using namespace AnalitzaJIT;
 
 JitAnalyzer::JitAnalyzer()
 {
@@ -45,7 +45,7 @@ delete m_mod;
 }
 
 
-llvm::Value* Analitza::JitAnalyzer::foojiteval()
+llvm::Value* JitAnalyzer::foojiteval()
 {
 	if (expression().isLambda() && isCorrect()) {
 		//TODO find better way to save/store IR functions

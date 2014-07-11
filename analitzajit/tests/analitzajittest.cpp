@@ -37,7 +37,7 @@ AnalitzaJitTest::~AnalitzaJitTest()
 
 void AnalitzaJitTest::initTestCase()
 {
-	a=new Analitza::JitAnalyzer;
+	a=new AnalitzaJIT::JitAnalyzer;
 }
 
 void AnalitzaJitTest::cleanupTestCase()

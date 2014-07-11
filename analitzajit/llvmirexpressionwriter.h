@@ -23,15 +23,17 @@
 
 #include "abstractexpressionvisitor.h"
 
+namespace Analitza {
+class Variables;
+}
+
 namespace llvm {
 class Module;
 }
 
 //TODO this class is just a copy of stringexpressionwriter ... it need to be modified 
-namespace Analitza
+namespace AnalitzaJIT
 {
-
-class Variables;
 
 /**
  * \class LLVMIRExpressionWriter
@@ -44,27 +46,27 @@ class Variables;
  * 
  */
 
-class LLVMIRExpressionWriter : public AbstractExpressionVisitor
+class LLVMIRExpressionWriter : public Analitza::AbstractExpressionVisitor
 {
 	public:
-		LLVMIRExpressionWriter(const Object* o, llvm::Module *mod, const QVector<Object*>& stack, Variables* v = 0);
+		LLVMIRExpressionWriter(const Analitza::Object* o, llvm::Module *mod, const QVector<Analitza::Object*>& stack, Analitza::Variables* v = 0);
 		
-		virtual QVariant visit(const None* var);
-		virtual QVariant visit(const Ci* var);
-		virtual QVariant visit(const Cn* val);
-		virtual QVariant visit(const Container* c);
-		virtual QVariant visit(const Operator* var);
-		virtual QVariant visit(const Vector* var);
-		virtual QVariant visit(const List* l);
-		virtual QVariant visit(const Matrix* m);
-		virtual QVariant visit(const MatrixRow* mr);
-		virtual QVariant visit(const Apply* a);
-		virtual QVariant visit(const CustomObject* c);
+		virtual QVariant visit(const Analitza::None* var);
+		virtual QVariant visit(const Analitza::Ci* var);
+		virtual QVariant visit(const Analitza::Cn* val);
+		virtual QVariant visit(const Analitza::Container* c);
+		virtual QVariant visit(const Analitza::Operator* var);
+		virtual QVariant visit(const Analitza::Vector* var);
+		virtual QVariant visit(const Analitza::List* l);
+		virtual QVariant visit(const Analitza::Matrix* m);
+		virtual QVariant visit(const Analitza::MatrixRow* mr);
+		virtual QVariant visit(const Analitza::Apply* a);
+		virtual QVariant visit(const Analitza::CustomObject* c);
 		
 		QVariant result() const { return m_result; }
 	private:
 		QVariant m_result;
-		QVector<Object*> m_runStack;
+		QVector<Analitza::Object*> m_runStack;
 		llvm::Module *m_mod;
 };
 

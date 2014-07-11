@@ -21,7 +21,7 @@
 
 #include <QObject>
 
-namespace Analitza { class JitAnalyzer; }
+namespace AnalitzaJIT { class JitAnalyzer; }
 
 /**
 	@author Percy Camilo T. Aucahuasi
@@ -41,7 +41,7 @@ Q_OBJECT
 		
 		void cleanupTestCase();
 	private:
-		Analitza::JitAnalyzer *a;
+		AnalitzaJIT::JitAnalyzer *a;
 };
 
 #endif
