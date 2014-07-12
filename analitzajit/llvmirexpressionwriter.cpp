@@ -43,7 +43,7 @@ Q_DECLARE_METATYPE(llvm::Function*);
 static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
 static std::map<QString, llvm::Value*> NamedValues;
 
-using namespace AnalitzaJIT;
+using namespace Analitza;
 
 QMap<Analitza::Operator::OperatorType, QString> llvminitOperators()
 {

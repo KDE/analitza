@@ -32,7 +32,7 @@ class Module;
 }
 
 //TODO this class is just a copy of stringexpressionwriter ... it need to be modified 
-namespace AnalitzaJIT
+namespace Analitza
 {
 
 /**

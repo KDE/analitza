@@ -32,7 +32,7 @@ static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
 Q_DECLARE_METATYPE(llvm::Value*); //TODO see if this goes into visitor header
 Q_DECLARE_METATYPE(llvm::Function*);
 
-using namespace AnalitzaJIT;
+using namespace Analitza;
 
 JitAnalyzer::JitAnalyzer()
 {

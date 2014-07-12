@@ -28,7 +28,7 @@ namespace llvm {
 class Module;
 };
 
-namespace AnalitzaJIT
+namespace Analitza
 {
 
 /**
