@@ -8,7 +8,8 @@ include_directories(${LLVM_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(tests)
 
 set ( analitzajit_SRCS
-    llvmirexpressionwriter.cpp
+    typecompiler.cpp
+    valuecompiler.cpp
     jitanalyzer.cpp
 )
 
@@ -27,6 +28,8 @@ install(TARGETS AnalitzaJIT EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARG
 
 install(FILES
     analitzajitexport.h
+    typecompiler.h
+    valuecompiler.h
     jitanalyzer.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzajit/ COMPONENT Devel

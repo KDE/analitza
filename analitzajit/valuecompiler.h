@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef LLVMIREXPRESSIONWRITER_H
-#define LLVMIREXPRESSIONWRITER_H
+#ifndef ANALITZAJIT_VALUECOMPILER_H
+#define ANALITZAJIT_VALUECOMPILER_H
 
 #include <QVector>
 
@@ -46,10 +46,10 @@ namespace Analitza
  * 
  */
 
-class LLVMIRExpressionWriter : public Analitza::AbstractExpressionVisitor
+class TypeCompiler : public Analitza::AbstractExpressionVisitor
 {
 	public:
-		LLVMIRExpressionWriter(const Analitza::Object* o, llvm::Module *mod, const QVector<Analitza::Object*>& stack, Analitza::Variables* v = 0);
+		TypeCompiler(const Analitza::Object* o, llvm::Module *mod, const QVector<Analitza::Object*>& stack, Analitza::Variables* v = 0);
 		
 		virtual QVariant visit(const Analitza::None* var);
 		virtual QVariant visit(const Analitza::Ci* var);
@@ -71,4 +71,4 @@ class LLVMIRExpressionWriter : public Analitza::AbstractExpressionVisitor
 };
 
 }
-#endif // LLVMIREXPRESSIONWRITER_H
+#endif // ANALITZAJIT_VALUECOMPILER_H

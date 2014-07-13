@@ -16,7 +16,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "llvmirexpressionwriter.h"
+#include "valuecompiler.h"
 
 #include <llvm/Analysis/Verifier.h>
 #include <llvm/IR/DerivedTypes.h>
@@ -62,7 +62,7 @@ QMap<Analitza::Operator::OperatorType, QString> llvminitOperators()
 	return ret;
 }
 
-LLVMIRExpressionWriter::LLVMIRExpressionWriter(const Analitza::Object* o, llvm::Module* mod, const QVector< Analitza::Object* >& stack, Analitza::Variables* v)
+TypeCompiler::TypeCompiler(const Analitza::Object* o, llvm::Module* mod, const QVector< Analitza::Object* >& stack, Analitza::Variables* v)
 	: m_runStack(stack)
 	, m_mod(mod)
 {
@@ -70,13 +70,14 @@ LLVMIRExpressionWriter::LLVMIRExpressionWriter(const Analitza::Object* o, llvm::
         m_result=o->accept(this);
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::Ci* var)
+QVariant TypeCompiler::visit(const Analitza::Ci* var)
 {
 	//TODO chack in variables too ... since we are playing by efault with stack vars
+// 	NamedValues[var->name()]->dump();
 	return QVariant::fromValue<llvm::Value*>(NamedValues[var->name()]);
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::Operator* op)
+QVariant TypeCompiler::visit(const Analitza::Operator* op)
 {
 // 	switch(op->operatorType()) {
 // 		case Operator::lt:
@@ -106,27 +107,27 @@ QVariant LLVMIRExpressionWriter::visit(const Analitza::Operator* op)
 	return op->name();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::Vector* vec)
+QVariant TypeCompiler::visit(const Analitza::Vector* vec)
 {
 	return QString();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::Matrix* m)
+QVariant TypeCompiler::visit(const Analitza::Matrix* m)
 {
 	return QString();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::MatrixRow* mr)
+QVariant TypeCompiler::visit(const Analitza::MatrixRow* mr)
 {
 	return QString();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::List* vec)
+QVariant TypeCompiler::visit(const Analitza::List* vec)
 {
 	return QString();
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::Cn* val)
+QVariant TypeCompiler::visit(const Analitza::Cn* val)
 {
 	llvm::Value *ret = 0;
 	
@@ -152,7 +153,7 @@ QVariant LLVMIRExpressionWriter::visit(const Analitza::Cn* val)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::Apply* c)
+QVariant TypeCompiler::visit(const Analitza::Apply* c)
 {
 	llvm::Value *ret = 0;
 	
@@ -230,7 +231,7 @@ QVariant LLVMIRExpressionWriter::visit(const Analitza::Apply* c)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::Container* c)
+QVariant TypeCompiler::visit(const Analitza::Container* c)
 {
 	llvm::Value *ret = 0;
 	switch(c->containerType()) {
@@ -336,6 +337,7 @@ QVariant LLVMIRExpressionWriter::visit(const Analitza::Container* c)
 			int Idx = 0;
 			for (llvm::Function::arg_iterator AI = F->arg_begin(); Idx != bvars.size(); ++AI, ++Idx) {
 				AI->setName(bvars[Idx].toStdString());
+				AI->dump();
 				NamedValues[bvars[Idx]] = AI;
 			}
 			
@@ -372,12 +374,12 @@ QVariant LLVMIRExpressionWriter::visit(const Analitza::Container* c)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::CustomObject*)
+QVariant TypeCompiler::visit(const Analitza::CustomObject*)
 {
 	return "CustomObject";
 }
 
-QVariant LLVMIRExpressionWriter::visit(const Analitza::None* )
+QVariant TypeCompiler::visit(const Analitza::None* )
 {
 	return QString();
 }

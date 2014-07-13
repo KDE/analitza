@@ -16,45 +16,32 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef JITANALYZER_H
-#define JITANALYZER_H
+#ifndef ANALITZAJIT_TYPECOMPILER_H
+#define ANALITZAJIT_TYPECOMPILER_H
 
-#include "analitza/analyzer.h"
+#include "object.h"
 #include "analitzajitexport.h"
-
-namespace llvm { 
-	class Value; 
-	class Function;
-class Module;
-};
 
 namespace Analitza
 {
+class Object;
+class Container;
+class Variables;
+class Expression;
+class Apply;
+class List;
+class Operator;
+class Vector;
+class Matrix;
+}
+//TODO in the future we could have a type system based in hierarchy, so we can 
+//apply here a visitor to convert the Analitza type into a valid IR type
 
-/**
- * \class LLVMAnalyzer
- * 
- * \ingroup AnalitzaModule
- *
- * \brief Evaluates math expressions using JIT.
- */
-
-class ANALITZAJIT_EXPORT JitAnalyzer : public Analitza::Analyzer
+//TODO convert ExpressionType into a valid LLVM IR Type
+class TypeCompiler //TODO : public Analitza::AbstractExpressionTypeVisitor
 {
-//TODO
-public:
-    JitAnalyzer();
-	~JitAnalyzer();
-	llvm::Value *foojiteval();
-	
-	//convenience method where all bvars are double
-	bool setLambdaExpression(const Analitza::Expression &lambdaExpression);
-	bool setLambdaExpression(const Analitza::Expression &lambdaExpression, int a);
-	
-private:
-	QMap<std::string, llvm::Value*> m_jitfnscache;
-	llvm::Module *m_mod;
+	public:
+		TypeCompiler();
 };
 
-}
-#endif
+#endif // ANALITZAJIT_TYPECOMPILER_H

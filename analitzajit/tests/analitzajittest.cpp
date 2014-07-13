@@ -67,7 +67,7 @@ void AnalitzaJitTest::testCalculate()
 	
 	a->setExpression(Analitza::Expression("t->98.0*t"));
 	a->setStack(stack);
-	a->foojiteval()->dump();
+	a->foojiteval(); //->dump();
 	
 // 	Analitza::Analyzer aa;
 // 	aa.setExpression(Analitza::Expression("t->vector {t,t**2,t}"));

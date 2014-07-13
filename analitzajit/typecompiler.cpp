@@ -16,45 +16,19 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef JITANALYZER_H
-#define JITANALYZER_H
+#include "typecompiler.h"
 
-#include "analitza/analyzer.h"
-#include "analitzajitexport.h"
+#include "abstractexpressionvisitor.h"
+#include "vector.h"
+#include "value.h"
+#include "list.h"
+#include "variable.h"
+#include "container.h"
+#include "variables.h"
+#include "expression.h"
+#include "apply.h"
+#include <QVariant>
+#include "customobject.h"
+#include "matrix.h"
 
-namespace llvm { 
-	class Value; 
-	class Function;
-class Module;
-};
-
-namespace Analitza
-{
-
-/**
- * \class LLVMAnalyzer
- * 
- * \ingroup AnalitzaModule
- *
- * \brief Evaluates math expressions using JIT.
- */
-
-class ANALITZAJIT_EXPORT JitAnalyzer : public Analitza::Analyzer
-{
 //TODO
-public:
-    JitAnalyzer();
-	~JitAnalyzer();
-	llvm::Value *foojiteval();
-	
-	//convenience method where all bvars are double
-	bool setLambdaExpression(const Analitza::Expression &lambdaExpression);
-	bool setLambdaExpression(const Analitza::Expression &lambdaExpression, int a);
-	
-private:
-	QMap<std::string, llvm::Value*> m_jitfnscache;
-	llvm::Module *m_mod;
-};
-
-}
-#endif
