@@ -18,17 +18,27 @@
 
 #include "typecompiler.h"
 
-#include "abstractexpressionvisitor.h"
-#include "vector.h"
-#include "value.h"
-#include "list.h"
-#include "variable.h"
-#include "container.h"
-#include "variables.h"
-#include "expression.h"
-#include "apply.h"
-#include <QVariant>
-#include "customobject.h"
-#include "matrix.h"
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Type.h>
 
-//TODO
+llvm::Type* TypeCompiler::mapExpressionType(const Analitza::ExpressionType& expressionType)
+{
+	llvm::Type *ret = 0;
+	
+	switch(expressionType.type()) {
+		case Analitza::ExpressionType::Value: {
+			//TODO get ineger bit width from host then decide if 32 or 64 bits
+			//TODO handle llvm::Type::getInt32Ty(llvm::getGlobalContext())
+			ret = llvm::Type::getDoubleTy(llvm::getGlobalContext());
+		}	break;
+// 		case Analitza::ExpressionType::Bool: //TODO
+// 		case Analitza::ExpressionType::Char: {
+// 			ret = llvm::Type::getInt8Ty(llvm::getGlobalContext());
+// 		}	break;
+		//TODO case Vector, List, Lambda, Matrix
+	}
+	
+	Q_ASSERT(ret);
+	
+	return 0;
+}

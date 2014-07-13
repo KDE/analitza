@@ -49,7 +49,7 @@ llvm::Value* JitAnalyzer::foojiteval()
 {
 	if (expression().isLambda() && isCorrect()) {
 		//TODO find better way to save/store IR functions
-		TypeCompiler v(expression().tree(), m_mod,runStack(), variables());
+		ValueCompiler v(expression().tree(), m_mod,runStack(), variables());
 		
 		std::string str;
 		llvm::raw_string_ostream stringwriter(str);
@@ -63,7 +63,7 @@ llvm::Value* JitAnalyzer::foojiteval()
 			
 			std::vector<llvm::Value*> ArgsV;
 			for (int i = 0; i < runStack().size(); ++i) {
-				TypeCompiler vv(runStack().at(i), m_mod, runStack(), variables());
+				ValueCompiler vv(runStack().at(i), m_mod, runStack(), variables());
 				ArgsV.push_back(vv.result().value<llvm::Value*>());
 			}
 			
@@ -76,7 +76,7 @@ llvm::Value* JitAnalyzer::foojiteval()
 			
 			std::vector<llvm::Value*> ArgsV;
 			for (int i = 0; i < runStack().size(); ++i) {
-				TypeCompiler vv(runStack().at(i), m_mod, runStack(), variables());
+				ValueCompiler vv(runStack().at(i), m_mod, runStack(), variables());
 				ArgsV.push_back(vv.result().value<llvm::Value*>());
 			}
 			

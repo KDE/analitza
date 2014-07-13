@@ -38,7 +38,7 @@ namespace Analitza
 /**
  * \class LLVMIRExpressionWriter
  * 
- * \ingroup AnalitzaModule
+ * \ingroup AnalitzaJITModule
  *
  * \brief This class represents the LLVM IR expression writer.//TODO better doc
  * this class will be used only when the expression is a valid lambda and will
@@ -46,10 +46,10 @@ namespace Analitza
  * 
  */
 
-class TypeCompiler : public Analitza::AbstractExpressionVisitor
+class ValueCompiler : public Analitza::AbstractExpressionVisitor
 {
 	public:
-		TypeCompiler(const Analitza::Object* o, llvm::Module *mod, const QVector<Analitza::Object*>& stack, Analitza::Variables* v = 0);
+		ValueCompiler(const Analitza::Object* o, llvm::Module *mod, const QVector<Analitza::Object*>& stack, Analitza::Variables* v = 0);
 		
 		virtual QVariant visit(const Analitza::None* var);
 		virtual QVariant visit(const Analitza::Ci* var);

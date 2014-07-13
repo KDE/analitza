@@ -47,9 +47,10 @@ public:
 	~JitAnalyzer();
 	llvm::Value *foojiteval();
 	
+	//TODO better params names
+	bool setLambdaExpression(const Analitza::Expression &lambdaExpression, const QMap<int, Analitza::ExpressionType> &bvartypes);
 	//convenience method where all bvars are double
 	bool setLambdaExpression(const Analitza::Expression &lambdaExpression);
-	bool setLambdaExpression(const Analitza::Expression &lambdaExpression, int a);
 	
 private:
 	QMap<std::string, llvm::Value*> m_jitfnscache;

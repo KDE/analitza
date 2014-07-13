@@ -19,29 +19,40 @@
 #ifndef ANALITZAJIT_TYPECOMPILER_H
 #define ANALITZAJIT_TYPECOMPILER_H
 
-#include "object.h"
 #include "analitzajitexport.h"
 
-namespace Analitza
-{
-class Object;
-class Container;
-class Variables;
-class Expression;
-class Apply;
-class List;
-class Operator;
-class Vector;
-class Matrix;
-}
-//TODO in the future we could have a type system based in hierarchy, so we can 
-//apply here a visitor to convert the Analitza type into a valid IR type
+#include "analitza/expressiontype.h"
 
-//TODO convert ExpressionType into a valid LLVM IR Type
-class TypeCompiler //TODO : public Analitza::AbstractExpressionTypeVisitor
+namespace llvm
+{
+class Type;
+}
+
+//TODO better documentation
+/**
+ * \class LLVMIRExpressionWriter
+ * 
+ * \ingroup AnalitzaJITModule
+ * 
+ * \brief In the future we could have a type system based on hierarchies,
+ * so we can use here a visitor to convert the Analitza type into a valid LLVM IR type.
+ * For now, this class will take some ExpressionType and will convert it into a IR type
+ * using simple and direct methods.
+ * 
+ */
+
+class ANALITZAJIT_EXPORT TypeCompiler //TODO : public Analitza::AbstractExpressionTypeVisitor
 {
 	public:
-		TypeCompiler();
+		//TODO ExpressionType::Value is not complete, it can't discriminate/differentiate/handle complex 
+		// and int types properly, currently any Value (real, integer or complex) will be mapped into 
+		// a double by default (so for now we only support real and integer scalars)
+		// The Analitza type system needs to offer a Value type that is complete according to 
+		// basic math scalars (e.g. real, integer and complex)
+		//NOTE ... perhaps we could rename Value to Real and add entries for Int and Complex into ExpressionType.
+		static llvm::Type *mapExpressionType(const Analitza::ExpressionType &expressionType);
+		//convenience method we will use mapExpressionType over each element of expressionType
+		static std::vector<llvm::Type*> mapExpressionTypes(const QList<Analitza::ExpressionType>& expressionType);
 };
 
 #endif // ANALITZAJIT_TYPECOMPILER_H
