@@ -25,6 +25,7 @@
 #include <container.h>
 
 #include <llvm/IR/Value.h>
+#include <llvm-3.3/llvm/IR/Constants.h>
 
 QTEST_MAIN( AnalitzaJitTest )
 
@@ -65,9 +66,12 @@ void AnalitzaJitTest::testCalculate()
 	QStack<Analitza::Object*> stack;
 	stack.push(val);
 	
-	a->setExpression(Analitza::Expression("t->98.0*t"));
+	a->setLambdaExpression(Analitza::Expression("t->16*t"));
 	a->setStack(stack);
-	a->foojiteval(); //->dump();
+	
+	qDebug() << "PEPEPEPEPE " << ((llvm::ConstantFP*)(a->foojiteval()))->getValueAPF().convertToDouble();
+	
+	delete val;
 	
 // 	Analitza::Analyzer aa;
 // 	aa.setExpression(Analitza::Expression("t->vector {t,t**2,t}"));

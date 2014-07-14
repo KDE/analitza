@@ -51,8 +51,9 @@ class ANALITZAJIT_EXPORT TypeCompiler //TODO : public Analitza::AbstractExpressi
 		// basic math scalars (e.g. real, integer and complex)
 		//NOTE ... perhaps we could rename Value to Real and add entries for Int and Complex into ExpressionType.
 		static llvm::Type *mapExpressionType(const Analitza::ExpressionType &expressionType);
+		
 		//convenience method we will use mapExpressionType over each element of expressionType
-		static std::vector<llvm::Type*> mapExpressionTypes(const QList<Analitza::ExpressionType>& expressionType);
+		static std::vector<llvm::Type*> mapExpressionTypes(const QList<Analitza::ExpressionType>& expressionTypes);
 };
 
 #endif // ANALITZAJIT_TYPECOMPILER_H

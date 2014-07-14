@@ -62,8 +62,8 @@ QMap<Analitza::Operator::OperatorType, QString> llvminitOperators()
 	return ret;
 }
 
-ValueCompiler::ValueCompiler(const Analitza::Object* o, llvm::Module* mod, const QVector< Analitza::Object* >& stack, Analitza::Variables* v)
-	: m_runStack(stack)
+ValueCompiler::ValueCompiler(const Object* o, llvm::Module *mod, const QMap< QString, llvm::Type* >& bvartypes, Variables* v)
+	: m_bvartypes(bvartypes)
 	, m_mod(mod)
 {
     if (o)
@@ -132,9 +132,10 @@ QVariant ValueCompiler::visit(const Analitza::Cn* val)
 	llvm::Value *ret = 0;
 	
 	switch(val->format()) {
-		case Analitza::Cn::Boolean: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(bool)*8, val->intValue(), false)); break;
-		case Analitza::Cn::Char: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(char)*8, val->intValue(), false)); break;
-		case Analitza::Cn::Integer: ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(int)*8, val->intValue(), true)); break;
+		//TODO
+// 		case Analitza::Cn::Boolean: // ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(bool)*8, val->intValue(), false)); break;
+// 		case Analitza::Cn::Char: //ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(char)*8, val->intValue(), false)); break;
+		case Analitza::Cn::Integer: //ret = llvm::ConstantInt::get(llvm::getGlobalContext(), llvm::APInt(sizeof(int)*8, val->intValue(), true)); break;
 		case Analitza::Cn::Real: ret = llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(val->value())); break;
 		case Analitza::Cn::Complex: {
 			llvm::Type *rawtypes[2] = {llvm::Type::getDoubleTy(llvm::getGlobalContext()), llvm::Type::getDoubleTy(llvm::getGlobalContext())};
@@ -163,10 +164,13 @@ QVariant ValueCompiler::visit(const Analitza::Apply* c)
 // 			ret = sum(*c);
 // 			break;
 		case Analitza::Operator::times: {
-			QVariant a = c->at(0)->accept(this);
-			QVariant b = c->at(1)->accept(this);
+			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
+			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
 			
-			ret = Builder.CreateFMul(a.value<llvm::Value*>(), b.value<llvm::Value*>(), "multmp");
+// 			a->dump();
+// 			b->dump();
+			
+			ret = Builder.CreateFMul(a, b, "multmp");
 		}	break;
 // 		case Operator::product:
 // 			ret = product(*c);
@@ -298,35 +302,9 @@ QVariant ValueCompiler::visit(const Analitza::Container* c)
 		case Analitza::Container::lambda: {
 			const QStringList bvars = c->bvarStrings();
 			
-			Q_ASSERT(m_runStack.size() == bvars.size());
+			std::vector<llvm::Type*> tparams = m_bvartypes.values().toVector().toStdVector();
 			
-			std::vector<llvm::Type*> tparams;
-			for (int i = 0; i < m_runStack.size(); ++i) {
-				switch(m_runStack.at(i)->type()) {
-					case Analitza::Object::value: {
-						switch(((Analitza::Cn*)m_runStack.at(i))->format()) {
-							case Analitza::Cn::Integer://TODO get ineger bit width then decide if 32 or 64 bits
-								tparams.push_back(llvm::Type::getInt32Ty(llvm::getGlobalContext()));
-							break;
-							case Analitza::Cn::Char:
-								tparams.push_back(llvm::Type::getInt8Ty(llvm::getGlobalContext()));
-							break;
-// 							case Cn::Boolean: //TODO
-// 								tparams.push_back(llvm::Type::get(llvm::getGlobalContext()));
-// 							break;
-							case Analitza::Cn::Real:
-								tparams.push_back(llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-							break;
-						}
-					}	break;
-// 					case Vec, mats://TODO
-// 						type=ExpressionType::Char;
-// 						break;
-// 					default:
-// 						type=ExpressionType::Value;
-// 						break;
-				}
-			}
+// 			tparams.at(0)->dump();
 			
 			//TODO we need the return type
 			llvm::FunctionType *FT = llvm::FunctionType::get(llvm::Type::getDoubleTy(llvm::getGlobalContext()), tparams, false);
@@ -337,7 +315,7 @@ QVariant ValueCompiler::visit(const Analitza::Container* c)
 			int Idx = 0;
 			for (llvm::Function::arg_iterator AI = F->arg_begin(); Idx != bvars.size(); ++AI, ++Idx) {
 				AI->setName(bvars[Idx].toStdString());
-				AI->dump();
+// 				AI->dump();
 				NamedValues[bvars[Idx]] = AI;
 			}
 			

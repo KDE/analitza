@@ -29,6 +29,7 @@ class Variables;
 
 namespace llvm {
 class Module;
+class Type;
 }
 
 //TODO this class is just a copy of stringexpressionwriter ... it need to be modified 
@@ -49,7 +50,7 @@ namespace Analitza
 class ValueCompiler : public Analitza::AbstractExpressionVisitor
 {
 	public:
-		ValueCompiler(const Analitza::Object* o, llvm::Module *mod, const QVector<Analitza::Object*>& stack, Analitza::Variables* v = 0);
+		ValueCompiler(const Analitza::Object* o, llvm::Module *mod, const QMap<QString, llvm::Type*> &bvartypes = QMap<QString, llvm::Type*>(), Analitza::Variables* v = 0);
 		
 		virtual QVariant visit(const Analitza::None* var);
 		virtual QVariant visit(const Analitza::Ci* var);
@@ -66,7 +67,7 @@ class ValueCompiler : public Analitza::AbstractExpressionVisitor
 		QVariant result() const { return m_result; }
 	private:
 		QVariant m_result;
-		QVector<Analitza::Object*> m_runStack;
+		QMap<QString, llvm::Type*> m_bvartypes;
 		llvm::Module *m_mod;
 };
 

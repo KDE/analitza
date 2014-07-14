@@ -18,6 +18,7 @@
 
 #include "jitanalyzer.h"
 
+#include "typecompiler.h"
 #include "valuecompiler.h"
 #include "value.h"
 
@@ -44,47 +45,67 @@ JitAnalyzer::~JitAnalyzer()
 delete m_mod;
 }
 
+bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
+{
+	//TODO better code
+	setExpression(lambdaExpression);
+	const QString &fnkey = lambdaExpression.toString();
+	
+	if (expression().isLambda() && isCorrect()) {
+		if (m_jitfnscache.contains(fnkey)) {
+			return true;
+		} else {
+			//TODO find better way to save/store IR functions
+			TypeCompiler tc;
+			QMap<QString, llvm::Type*> paramtyps;
+			
+	// 		qDebug() << "fluuuu" << bvartypes.keys();
+			
+			foreach (const QString &str, bvartypes.keys()) {
+				paramtyps[str] = tc.mapExpressionType(bvartypes[str]);
+			}
+			
+			ValueCompiler v(expression().tree(), m_mod, paramtyps, variables());
+			
+	// 		std::string str;
+	// 		llvm::raw_string_ostream stringwriter(str);
+	// 		v.result().value<llvm::Value*>()->print(stringwriter);
+			
+	// 		qDebug() << QString::fromStdString(str);
+			m_jitfnscache[fnkey] = v.result().value<llvm::Value*>();
+			
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression)
+{
+	//TODO check if exp is lambda
+	QMap<QString, Analitza::ExpressionType> bvartypes;
+	
+	foreach(const QString &bvar, lambdaExpression.bvarList()) {
+		bvartypes[bvar] = ExpressionType(ExpressionType::Value);
+	}
+	
+	return setLambdaExpression(lambdaExpression, bvartypes);
+}
 
 llvm::Value* JitAnalyzer::foojiteval()
 {
-	if (expression().isLambda() && isCorrect()) {
-		//TODO find better way to save/store IR functions
-		ValueCompiler v(expression().tree(), m_mod,runStack(), variables());
-		
-		std::string str;
-		llvm::raw_string_ostream stringwriter(str);
-		v.result().value<llvm::Value*>()->print(stringwriter);
-		
-// 		qDebug() << QString::fromStdString(str);
-		
-		if (m_jitfnscache.contains(str)) { //call jit
-			// Look up the name in the global module table.
-			llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache[str];
-			
-			std::vector<llvm::Value*> ArgsV;
-			for (int i = 0; i < runStack().size(); ++i) {
-				ValueCompiler vv(runStack().at(i), m_mod, runStack(), variables());
-				ArgsV.push_back(vv.result().value<llvm::Value*>());
-			}
-			
-			return Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
-		} else {
-			m_jitfnscache[str] = v.result().value<llvm::Value*>();
-			
-			// Look up the name in the global module table.
-			llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache[str];
-			
-			std::vector<llvm::Value*> ArgsV;
-			for (int i = 0; i < runStack().size(); ++i) {
-				ValueCompiler vv(runStack().at(i), m_mod, runStack(), variables());
-				ArgsV.push_back(vv.result().value<llvm::Value*>());
-			}
-			
-			return Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
-		}
-		
-		return m_jitfnscache[str]; //TODO
-	}
+	Q_ASSERT(!m_jitfnscache.isEmpty());
+	//TODO check for non empty m_jitfnscache
 	
-	return 0; //TODO
+	std::vector<llvm::Value*> ArgsV;
+	for (int i = 0; i < runStack().size(); ++i) {
+		ValueCompiler vv(runStack().at(i), m_mod);
+		ArgsV.push_back(vv.result().value<llvm::Value*>());
+	}
+
+	// Look up the name in the global module table.
+	llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache.last();
+	
+	return Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
 }

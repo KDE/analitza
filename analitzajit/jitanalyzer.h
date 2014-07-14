@@ -48,12 +48,13 @@ public:
 	llvm::Value *foojiteval();
 	
 	//TODO better params names
-	bool setLambdaExpression(const Analitza::Expression &lambdaExpression, const QMap<int, Analitza::ExpressionType> &bvartypes);
+	bool setLambdaExpression(const Analitza::Expression &lambdaExpression, const QMap<QString, Analitza::ExpressionType> &bvartypes);
+	
 	//convenience method where all bvars are double
 	bool setLambdaExpression(const Analitza::Expression &lambdaExpression);
 	
 private:
-	QMap<std::string, llvm::Value*> m_jitfnscache;
+	QMap<QString, llvm::Value*> m_jitfnscache;
 	llvm::Module *m_mod;
 };
 

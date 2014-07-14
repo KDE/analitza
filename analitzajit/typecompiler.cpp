@@ -18,12 +18,16 @@
 
 #include "typecompiler.h"
 
+#include <QDebug>
+
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Type.h>
 
 llvm::Type* TypeCompiler::mapExpressionType(const Analitza::ExpressionType& expressionType)
 {
 	llvm::Type *ret = 0;
+	
+// 	qDebug() << "PEPEPEPEPE " << expressionType.type();
 	
 	switch(expressionType.type()) {
 		case Analitza::ExpressionType::Value: {
@@ -40,5 +44,16 @@ llvm::Type* TypeCompiler::mapExpressionType(const Analitza::ExpressionType& expr
 	
 	Q_ASSERT(ret);
 	
-	return 0;
+	return ret;
+}
+
+std::vector< llvm::Type* > TypeCompiler::mapExpressionTypes(const QList< Analitza::ExpressionType >& expressionTypes)
+{
+	const int n = expressionTypes.size();
+	std::vector< llvm::Type* > ret(n);
+	
+	for (int i = 0; i < n; ++i)
+		ret.push_back(mapExpressionType(expressionTypes.at(i)));
+	
+	return ret;
 }
