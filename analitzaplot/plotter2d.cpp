@@ -377,7 +377,7 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
                 s = (i < 0) ? "-" : "";
                 
                 if (incbig)
-                    s += computeAngleLabelByStep(std::abs<int>(i), bigstep);
+                    s += computeAngleLabelByStep(qAbs(i), bigstep);
                 else
                 {
                     const QPair<unsigned int, unsigned int> frac = simplifyFraction(qAbs(i), step);
