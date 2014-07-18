@@ -66,7 +66,7 @@ void AnalitzaJitTest::testCalculate()
 	QStack<Analitza::Object*> stack;
 	stack.push(val);
 	
-	a->setLambdaExpression(Analitza::Expression("t->16*t"));
+	a->setLambdaExpression(Analitza::Expression("t->16*t+4-23"));
 	a->setStack(stack);
 	a->foojiteval();
 // 	qDebug() << "PEPEPEPEPE " << ((llvm::ConstantFP*)(a->foojiteval()))->getValueAPF().convertToDouble();

@@ -33,7 +33,9 @@
 #include <llvm/ExecutionEngine/JIT.h>
 #include <llvm/Support/raw_os_ostream.h>
 
-static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
+//TODO avoid static
+static llvm::LLVMContext &ctx = llvm::getGlobalContext();
+static llvm::IRBuilder<> Builder(ctx);
 
 Q_DECLARE_METATYPE(llvm::Value*); //TODO see if this goes into visitor header
 Q_DECLARE_METATYPE(llvm::Function*);
@@ -43,14 +45,16 @@ using namespace Analitza;
 JitAnalyzer::JitAnalyzer()
 {
 	llvm::InitializeNativeTarget();
-m_mod = new llvm::Module("mumod", llvm::getGlobalContext());
+m_mod = new llvm::Module("mumod", ctx);
 TheExecutionEngine = llvm::EngineBuilder(m_mod).create();
 // 	qDebug() << "fluuuu" << TheExecutionEngine;
 }
 
 JitAnalyzer::~JitAnalyzer()
 {
+TheExecutionEngine->removeModule(m_mod);
 delete m_mod;
+delete TheExecutionEngine;
 }
 
 bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
@@ -121,7 +125,7 @@ llvm::Value* JitAnalyzer::foojiteval()
 	
 	std::vector<llvm::GenericValue> abc;
 	llvm::GenericValue a;
-	a.DoubleVal = 34.0;
+	a.DoubleVal = 1.0;
 	abc.push_back(a);
 	
 	

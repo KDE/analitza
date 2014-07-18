@@ -45,23 +45,6 @@ static std::map<QString, llvm::Value*> NamedValues;
 
 using namespace Analitza;
 
-QMap<Analitza::Operator::OperatorType, QString> llvminitOperators()
-{
-	QMap<Analitza::Operator::OperatorType, QString> ret;
-	ret.insert(Analitza::Operator::plus, "+");
-	ret.insert(Analitza::Operator::times, "*");
-	ret.insert(Analitza::Operator::divide, "/");
-	ret.insert(Analitza::Operator::eq, "=");
-	ret.insert(Analitza::Operator::neq, "!=");
-	ret.insert(Analitza::Operator::lt, "<");
-	ret.insert(Analitza::Operator::leq, "<=");
-	ret.insert(Analitza::Operator::gt, ">");
-	ret.insert(Analitza::Operator::geq, ">=");
-	ret.insert(Analitza::Operator::power, "^");
-	ret.insert(Analitza::Operator::minus, "-");
-	return ret;
-}
-
 ValueCompiler::ValueCompiler(const Object* o, llvm::Module *mod, const QMap< QString, llvm::Type* >& bvartypes, Variables* v)
 	: m_bvartypes(bvartypes)
 	, m_mod(mod)
@@ -104,7 +87,7 @@ QVariant ValueCompiler::visit(const Analitza::Operator* op)
 // 		default:
 // 			return 1000;
 // 	}
-	return op->name();
+	return op->name(); //TODO
 }
 
 QVariant ValueCompiler::visit(const Analitza::Vector* vec)
@@ -163,6 +146,24 @@ QVariant ValueCompiler::visit(const Analitza::Apply* c)
 // 		case Operator::sum:
 // 			ret = sum(*c);
 // 			break;
+		case Analitza::Operator::plus: {
+			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
+			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
+			
+// 			a->dump();
+// 			b->dump();
+			
+			ret = Builder.CreateFAdd(a, b, "addtmp");
+		}	break;
+		case Analitza::Operator::minus: {
+			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
+			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
+			
+// 			a->dump();
+// 			b->dump();
+			
+			ret = Builder.CreateFSub(a, b, "minustmp");
+		}	break;
 		case Analitza::Operator::times: {
 			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
