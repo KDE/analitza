@@ -26,6 +26,11 @@
 #include <llvm/IR/Value.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Function.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/ExecutionEngine/GenericValue.h>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <llvm/ExecutionEngine/JIT.h>
 #include <llvm/Support/raw_os_ostream.h>
 
 static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
@@ -37,7 +42,10 @@ using namespace Analitza;
 
 JitAnalyzer::JitAnalyzer()
 {
+	llvm::InitializeNativeTarget();
 m_mod = new llvm::Module("mumod", llvm::getGlobalContext());
+TheExecutionEngine = llvm::EngineBuilder(m_mod).create();
+// 	qDebug() << "fluuuu" << TheExecutionEngine;
 }
 
 JitAnalyzer::~JitAnalyzer()
@@ -103,9 +111,31 @@ llvm::Value* JitAnalyzer::foojiteval()
 		ValueCompiler vv(runStack().at(i), m_mod);
 		ArgsV.push_back(vv.result().value<llvm::Value*>());
 	}
-
+	
+// 	ArgsV[0]->dump();
+	
+	
 	// Look up the name in the global module table.
 	llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache.last();
+// 	llvm::CallInst *retcall = Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
 	
-	return Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
+	std::vector<llvm::GenericValue> abc;
+	llvm::GenericValue a;
+	a.DoubleVal = 34.0;
+	abc.push_back(a);
+	
+	
+
+	
+	llvm::GenericValue rr = TheExecutionEngine->runFunction(CalleeF, abc);
+	
+	qDebug() << "fluuuu" << rr.DoubleVal;
+	
+	
+	
+// 	void *FPtr = TheExecutionEngine->getPointerToFunction(CalleeF);
+// 	double (*FP)(double) = (double (*)(double))(intptr_t)FPtr;
+// 	qDebug() << "fluuuu" << FP(12);
+	
+	return CalleeF;
 }

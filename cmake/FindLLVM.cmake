@@ -96,7 +96,7 @@ if (LLVM_FOUND)
   )
 
   execute_process(
-    COMMAND ${LLVM_CONFIG_EXECUTABLE} --libs core bitreader asmparser analysis
+    COMMAND ${LLVM_CONFIG_EXECUTABLE} --libs core bitreader asmparser analysis jit target all-targets
     OUTPUT_VARIABLE LLVM_MODULE_LIBS
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )

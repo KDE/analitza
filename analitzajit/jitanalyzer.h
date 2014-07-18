@@ -25,7 +25,8 @@
 namespace llvm { 
 	class Value; 
 	class Function;
-class Module;
+	class Module;
+	class ExecutionEngine;
 };
 
 namespace Analitza
@@ -56,6 +57,7 @@ public:
 private:
 	QMap<QString, llvm::Value*> m_jitfnscache;
 	llvm::Module *m_mod;
+	llvm::ExecutionEngine *TheExecutionEngine;
 };
 
 }
