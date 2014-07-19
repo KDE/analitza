@@ -40,7 +40,9 @@ class Type;
  * using simple and direct methods.
  * 
  */
-
+//TODO Better docs
+	//In case the input arer not valid the compilation will fail and we will return 0 or null poitr
+	//in case of valid input code then it will generate IR code
 class ANALITZAJIT_EXPORT TypeCompiler //TODO : public Analitza::AbstractExpressionTypeVisitor
 {
 	public:
@@ -50,6 +52,7 @@ class ANALITZAJIT_EXPORT TypeCompiler //TODO : public Analitza::AbstractExpressi
 		// The Analitza type system needs to offer a Value type that is complete according to 
 		// basic math scalars (e.g. real, integer and complex)
 		//NOTE ... perhaps we could rename Value to Real and add entries for Int and Complex into ExpressionType.
+		//TODO change map to compile to keep consistence
 		static llvm::Type *mapExpressionType(const Analitza::ExpressionType &expressionType);
 		
 		//convenience method we will use mapExpressionType over each element of expressionType

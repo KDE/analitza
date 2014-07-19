@@ -46,7 +46,9 @@ namespace Analitza
  * generate the IR code when we have a call of the lambda.
  * 
  */
-
+//TODO Better docs
+	//In case the input arer not valid the compilation will fail and we will return 0 or null poitr
+	//in case of valid input code then it will generate IR code
 class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 {
 	public:
@@ -66,6 +68,9 @@ class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 		
 		QVariant result() const { return m_result; }
 	private:
+	
+//TODO error message that comes from llvm
+		
 		QVariant m_result;
 		QMap<QString, llvm::Type*> m_bvartypes;
 		llvm::Module *m_mod;

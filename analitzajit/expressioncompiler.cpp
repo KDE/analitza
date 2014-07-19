@@ -26,6 +26,7 @@
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Value.h>
 
+#include "operationscompiler.h"
 #include "value.h"
 #include "vector.h"
 #include "operator.h"
@@ -45,6 +46,20 @@ static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
 static std::map<QString, llvm::Value*> NamedValues;
 
 using namespace Analitza;
+
+llvm::Value* compileUnaryOperation(Operator::OperatorType op, Analitza::Object* val, QString& error)
+{
+	//TODO
+	return 0;
+// 	return OperationsCompiler::reduceUnary();
+}
+
+llvm::Value* compileBinaryOperation(Operator::OperatorType op, Analitza::Object* val1, Analitza::Object* val2, QString& error)
+{
+	//TODO
+	return 0;
+}
+
 
 ExpressionCompiler::ExpressionCompiler(const Object* o, llvm::Module *mod, const QMap< QString, llvm::Type* >& bvartypes, Variables* v)
 	: m_bvartypes(bvartypes)

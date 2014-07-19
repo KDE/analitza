@@ -39,7 +39,7 @@
 using namespace std;
 using namespace Analitza;
 
-llvm::Value * reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a, double b, QString& correct)
+llvm::Value * compileRealReal(enum Operator::OperatorType op, llvm::Value *oper, double a, double b, QString& correct)
 {
 	return 0; //TODO
 // 	Object *ret = oper;
@@ -164,7 +164,7 @@ llvm::Value * reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a,
 // 	return ret;
 }
 
-llvm::Value * reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<double> a, complex<double> b, QString& correct)
+llvm::Value * compileComplexComplex(enum Operator::OperatorType op, llvm::Value *oper, complex<double> a, complex<double> b, QString& correct)
 {
 	return 0; //TODO
 // 	switch(op) {
@@ -279,18 +279,19 @@ llvm::Value * reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, com
 // 	return oper;
 }
 
-llvm::Value * OperationsCompiler::reduceValueValue(enum Operator::OperatorType op, Cn *oper, const Cn *oper1, QString& correct)
+llvm::Value * OperationsCompiler::compileValueValueOperation(enum Operator::OperatorType op, llvm::Value *oper, const llvm::Value *oper1, QString& correct)
 {
-	if(Q_UNLIKELY(oper->isComplex() || oper1->isComplex())) {
-		const complex<double> a=oper->complexValue(), b=oper1->complexValue();
-		return reduceComplexComplex(op, oper, a, b, correct);
-	} else {
-		const double a=oper->value(), b=oper1->value();
-		return reduceRealReal(op, oper, a, b, correct);
-	}
+	return 0; //TODO
+// 	if(Q_UNLIKELY(oper->isComplex() || oper1->isComplex())) {
+// 		const complex<double> a=oper->complexValue(), b=oper1->complexValue();
+// 		return compileComplexComplex(op, oper, a, b, correct);
+// 	} else {
+// 		const double a=oper->value(), b=oper1->value();
+// 		return compileRealReal(op, oper, a, b, correct);
+// 	}
 }
 
-llvm::Value * reduceUnaryComplex(Operator::OperatorType op, Cn* oper, QString& correct)
+llvm::Value * compileUnaryComplex(Operator::OperatorType op, llvm::Value* oper, QString& correct)
 {
 	return 0; //TODO
 // 	const complex<double> a=oper->complexValue();
@@ -350,7 +351,7 @@ llvm::Value * reduceUnaryComplex(Operator::OperatorType op, Cn* oper, QString& c
 // 	return oper;
 }
 
-llvm::Value * reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString& correct)
+llvm::Value * compileUnaryReal(Operator::OperatorType op, llvm::Value* oper, QString& correct)
 {
 	return 0; //TODO
 // 	const double a=oper->value();
@@ -464,27 +465,28 @@ llvm::Value * reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString& corr
 // 	return oper;
 }
 
-llvm::Value* OperationsCompiler::reduceUnaryValue(Operator::OperatorType op, Cn* oper, QString& correct)
+llvm::Value* OperationsCompiler::compileUnaryValueOperation(Operator::OperatorType op, llvm::Value* oper, QString& correct)
 {
-	if(Q_UNLIKELY(oper->isComplex()))
-		return reduceUnaryComplex(op, oper, correct);
-	else
-		return reduceUnaryReal(op, oper, correct);
+	return 0; //TODO
+// 	if(Q_UNLIKELY(oper->isComplex()))
+// 		return compileUnaryComplex(op, oper, correct);
+// 	else
+// 		return compileUnaryReal(op, oper, correct);
 }
 
-llvm::Value* OperationsCompiler::reduceNoneValue(Operator::OperatorType op, None*, Cn*, QString& correct)
+llvm::Value* OperationsCompiler::compileNoneValueOperation(Operator::OperatorType op, llvm::Value*, llvm::Value*, QString& correct)
 {
 	return 0; //TODO
 // 	return errorCase(QCoreApplication::tr("Cannot calculate %1 between a value and an error type").arg(Operator(op).name()), correct);
 }
 
-llvm::Value* OperationsCompiler::reduceValueNone(Operator::OperatorType op, Cn* oper, None* cntr, QString& correct)
+llvm::Value* OperationsCompiler::compileValueNoneOperation(Operator::OperatorType op, llvm::Value* oper, llvm::Value* cntr, QString& correct)
 {
 	return 0; //TODO
-// 	return reduceNoneValue(op, cntr, oper, correct);
+// 	return compileNoneValue(op, cntr, oper, correct);
 }
 
-llvm::Value * OperationsCompiler::reduceValueVector(Operator::OperatorType op, Cn * oper, Vector * v1, QString& correct)
+llvm::Value * OperationsCompiler::compileValueVectorOperation(Operator::OperatorType op, llvm::Value * oper, llvm::Value * v1, QString& correct)
 {
 	return 0; //TODO
 // 	switch(op) {
@@ -504,7 +506,7 @@ llvm::Value * OperationsCompiler::reduceValueVector(Operator::OperatorType op, C
 // 			Vector *ret = v1->copy();
 // 			for(Vector::iterator it=ret->begin(); it!=ret->end(); ++it)
 // 			{
-// 				*it=reduce(op, new Cn(*oper), *it, correct);
+// 				*it=compile(op, new Cn(*oper), *it, correct);
 // 			}
 // 			
 // 			delete oper;
@@ -513,17 +515,17 @@ llvm::Value * OperationsCompiler::reduceValueVector(Operator::OperatorType op, C
 // 	}
 }
 
-llvm::Value * OperationsCompiler::reduceVectorValue(Operator::OperatorType op, Vector * v1, Cn * oper, QString& correct)
+llvm::Value * OperationsCompiler::compileVectorValueOperation(Operator::OperatorType op, llvm::Value * v1, llvm::Value * oper, QString& correct)
 {
 	return 0; //TODO
 // 	for(Vector::iterator it=v1->begin(); it!=v1->end(); ++it)
 // 	{
-// 		*it=reduce(op, *it, new Cn(*oper), correct);
+// 		*it=compile(op, *it, new Cn(*oper), correct);
 // 	}
 // 	return v1;
 }
 
-llvm::Value * OperationsCompiler::reduceVectorVector(Operator::OperatorType op, Vector * v1, Vector * v2, QString& correct)
+llvm::Value * OperationsCompiler::compileVectorVectorOperation(Operator::OperatorType op, llvm::Value * v1, llvm::Value * v2, QString& correct)
 {
 	return 0; //TODO
 // 	if(v1->size()!=v2->size()) { //FIXME: unneeded? ... aucahuasi: I think is needed ...
@@ -536,12 +538,12 @@ llvm::Value * OperationsCompiler::reduceVectorVector(Operator::OperatorType op, 
 // 	Vector::iterator it2=v2->begin();
 // 	for(Vector::iterator it1=v1->begin(); it1!=v1->end(); ++it1, ++it2)
 // 	{
-// 		*it1=reduce(op, *it1, *it2, correct);
+// 		*it1=compile(op, *it1, *it2, correct);
 // 	}
 // 	return v1;
 }
 
-llvm::Value* OperationsCompiler::reduceMatrixVector(Operator::OperatorType op, Matrix* matrix, Vector* vector, QString& correct)
+llvm::Value* OperationsCompiler::compileMatrixVectorOperation(Operator::OperatorType op, llvm::Value* matrix, llvm::Value* vector, QString& correct)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -557,7 +559,7 @@ llvm::Value* OperationsCompiler::reduceMatrixVector(Operator::OperatorType op, M
 // 				for (int i = 0; i < m; ++i) {
 // 					std::complex<double> sum = 0.;
 // 					for (int k = 0; k < maxk; ++k)
-// 						sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->complexValue();
+// 						sum += static_cast<const Cn*>(compileValueValue(op, (Cn*)matrix->at(i,k), (Cn*)vector->at(k), correct))->complexValue();
 // 					
 // 					if (sum.imag() == 0)
 // 						newvec->appendBranch(new Cn(sum.real()));
@@ -579,7 +581,7 @@ llvm::Value* OperationsCompiler::reduceMatrixVector(Operator::OperatorType op, M
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::reduceUnaryVector(Operator::OperatorType op, Vector* c, QString& correct)
+llvm::Value* OperationsCompiler::compileUnaryVectorOperation(Operator::OperatorType op, llvm::Value* c, QString& correct)
 {
 	return 0; //TODO
 // 	Object *ret=0;
@@ -609,7 +611,7 @@ llvm::Value* OperationsCompiler::reduceUnaryVector(Operator::OperatorType op, Ve
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::reduceListList(Operator::OperatorType op, List* l1, List* l2, QString& correct)
+llvm::Value* OperationsCompiler::compileListListOperation(Operator::OperatorType op, llvm::Value* l1, llvm::Value* l2, QString& correct)
 {
 	return 0; //TODO
 // 	Object* ret=0;
@@ -632,7 +634,7 @@ llvm::Value* OperationsCompiler::reduceListList(Operator::OperatorType op, List*
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::reduceUnaryList(Operator::OperatorType op, List* l, QString& correct)
+llvm::Value* OperationsCompiler::compileUnaryListOperation(Operator::OperatorType op, llvm::Value* l, QString& correct)
 {
 	return 0; //TODO
 // 	Object *ret=0;
@@ -649,7 +651,7 @@ llvm::Value* OperationsCompiler::reduceUnaryList(Operator::OperatorType op, List
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::reduceValueList(Operator::OperatorType op, Cn* oper, List* v1, QString& correct)
+llvm::Value* OperationsCompiler::compileValueListOperation(Operator::OperatorType op, llvm::Value* oper, llvm::Value* v1, QString& correct)
 {
 	return 0; //TODO
 // 	switch(op) {
@@ -672,7 +674,7 @@ llvm::Value* OperationsCompiler::reduceValueList(Operator::OperatorType op, Cn* 
 // 	return 0;
 }
 
-llvm::Value* OperationsCompiler::reduceCustomCustom(Operator::OperatorType op, CustomObject* v1, CustomObject* v2, QString &error)
+llvm::Value* OperationsCompiler::compileCustomCustomOperation(Operator::OperatorType op, llvm::Value* v1, llvm::Value* v2, QString &error)
 {
 	return 0; //TODO
 // 	switch(op) {
@@ -688,7 +690,7 @@ llvm::Value* OperationsCompiler::reduceCustomCustom(Operator::OperatorType op, C
 // 	return 0;
 }
 
-llvm::Value* OperationsCompiler::reduceVectorMatrix(Operator::OperatorType op, Vector* vector, Matrix* matrix, QString& correct)
+llvm::Value* OperationsCompiler::compileVectorMatrixOperation(Operator::OperatorType op, llvm::Value* vector, llvm::Value* matrix, QString& correct)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -703,7 +705,7 @@ llvm::Value* OperationsCompiler::reduceVectorMatrix(Operator::OperatorType op, V
 // 				for (int i = 0; i < m; ++i) {
 // 					MatrixRow *row = new MatrixRow(n);
 // 					for (int j = 0; j < n; ++j)
-// 						row->appendBranch(reduceValueValue(op, (Cn*)vector->at(i), (Cn*)matrix->at(0,j), correct)->copy());
+// 						row->appendBranch(compileValueValue(op, (Cn*)vector->at(i), (Cn*)matrix->at(0,j), correct)->copy());
 // 					
 // 					newmat->appendBranch(row);
 // 				}
@@ -722,7 +724,7 @@ llvm::Value* OperationsCompiler::reduceVectorMatrix(Operator::OperatorType op, V
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString& correct)
+llvm::Value* OperationsCompiler::compileMatrixMatrixOperation(Operator::OperatorType op, llvm::Value* m1, llvm::Value* m2, QString& correct)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -734,7 +736,7 @@ llvm::Value* OperationsCompiler::reduceMatrixMatrix(Operator::OperatorType op, M
 // 				Matrix::iterator it2=m2->begin();
 // 				for(Matrix::iterator it1=m1->begin(); it1!=m1->end(); ++it1, ++it2)
 // 				{
-// 					*it1 = static_cast<MatrixRow*>(reduceVectorVector(op, *it1, *it2, correct));
+// 					*it1 = static_cast<MatrixRow*>(compileVectorVector(op, *it1, *it2, correct));
 // 				}
 // 				ret = m1;
 // 			} else {
@@ -756,7 +758,7 @@ llvm::Value* OperationsCompiler::reduceMatrixMatrix(Operator::OperatorType op, M
 // 						for (int j = 0; j < n; ++j) {
 // 							std::complex<double> sum = 0;
 // 							for (int k = 0; k < maxk; ++k) {
-// 								sum += static_cast<const Cn*>(reduceValueValue(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->complexValue();
+// 								sum += static_cast<const Cn*>(compileValueValue(op, (Cn*)m1->at(i,k)->copy(), (Cn*)m2->at(k,j)->copy(), correct))->complexValue();
 // 							}
 // 							
 // 							if (sum.imag() == 0)
@@ -785,7 +787,7 @@ llvm::Value* OperationsCompiler::reduceMatrixMatrix(Operator::OperatorType op, M
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::reduceValueMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString& correct)
+llvm::Value* OperationsCompiler::compileValueMatrixOperation(Operator::OperatorType op, llvm::Value* v, llvm::Value* m1, QString& correct)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -810,7 +812,7 @@ llvm::Value* OperationsCompiler::reduceValueMatrix(Operator::OperatorType op, Cn
 // 			if (m1->hasOnlyNumbers()) {
 // 				Matrix *nm = new Matrix();
 // 				for(Matrix::iterator it=m1->begin(); it!=m1->end(); ++it)
-// 					nm->appendBranch(static_cast<MatrixRow*>(reduceValueVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
+// 					nm->appendBranch(static_cast<MatrixRow*>(compileValueVector(op, static_cast<Cn*>(v->copy()), static_cast<MatrixRow*>(*it), correct)));
 // 				ret = nm;
 // 			} else {
 // 				correct= QString(QCoreApplication::tr("Matrix entries must be numbers"));
@@ -823,7 +825,7 @@ llvm::Value* OperationsCompiler::reduceValueMatrix(Operator::OperatorType op, Cn
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::reduceMatrixValue(Operator::OperatorType op, Matrix* matrix, Cn* value, QString& correct)
+llvm::Value* OperationsCompiler::compileMatrixValueOperation(Operator::OperatorType op, llvm::Value* matrix, llvm::Value* value, QString& correct)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -848,7 +850,7 @@ llvm::Value* OperationsCompiler::reduceMatrixValue(Operator::OperatorType op, Ma
 // 									products[0] = base;
 // 									
 // 									if (exp>1)
-// 										products[1] = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, matrix, matrix, correct));
+// 										products[1] = static_cast<Matrix*>(compileMatrixMatrix(Operator::times, matrix, matrix, correct));
 // 									
 // 									//NOTE see http://rosettacode.org/wiki/Addition-chain_exponentiation#C for more details
 // 									for (i = 2; i <= len; i++) 
@@ -857,7 +859,7 @@ llvm::Value* OperationsCompiler::reduceMatrixValue(Operator::OperatorType op, Ma
 // 											{
 // 												if (additionChains[exp][k+1] + additionChains[exp][j+1] < additionChains[exp][i+1]) break;
 // 												if (additionChains[exp][k+1] + additionChains[exp][j+1] > additionChains[exp][i+1]) continue;
-// 												products[i] = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, products[j], products[k], correct));
+// 												products[i] = static_cast<Matrix*>(compileMatrixMatrix(Operator::times, products[j], products[k], correct));
 // 												j = 1;
 // 												break;
 // 											}
@@ -874,12 +876,12 @@ llvm::Value* OperationsCompiler::reduceMatrixValue(Operator::OperatorType op, Ma
 // 									while (n != 0) {
 // 										if (n % 2 != 0) {
 // 											Matrix *oldproduct = product;
-// 											product = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, product, newbase, correct));
+// 											product = static_cast<Matrix*>(compileMatrixMatrix(Operator::times, product, newbase, correct));
 // 											delete oldproduct;
 // 											--n;
 // 										}
 // 										Matrix *oldbase = newbase;
-// 										newbase = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, newbase, newbase, correct));
+// 										newbase = static_cast<Matrix*>(compileMatrixMatrix(Operator::times, newbase, newbase, correct));
 // 										delete oldbase;
 // 										n /= 2;
 // 									}
@@ -908,7 +910,7 @@ llvm::Value* OperationsCompiler::reduceMatrixValue(Operator::OperatorType op, Ma
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QString &error)
+llvm::Value* OperationsCompiler::compileUnaryMatrixOperation(Operator::OperatorType op, llvm::Value* m, QString &error)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -931,59 +933,61 @@ llvm::Value* OperationsCompiler::reduceUnaryMatrix(Operator::OperatorType op, Ma
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::reduceMatrixNone(Operator::OperatorType op, Matrix*, None*, QString& correct)
+llvm::Value* OperationsCompiler::compileMatrixNoneOperation(Operator::OperatorType op, llvm::Value*, llvm::Value*, QString& correct)
 {
 	return 0; //TODO
 // 	return errorCase(QCoreApplication::tr("Cannot calculate %1 between a matrix and an error type").arg(Operator(op).name()), correct);
 }
 
-llvm::Value* OperationsCompiler::reduceNoneMatrix(Operator::OperatorType op, None* cntr, Matrix* m, QString& correct)
+llvm::Value* OperationsCompiler::compileNoneMatrixOperation(Operator::OperatorType op, llvm::Value* cntr, llvm::Value* m, QString& correct)
 {
 	return 0; //TODO
-// 	return reduceMatrixNone(op, m, cntr, correct);
+// 	return compileMatrixNone(op, m, cntr, correct);
 }
 
 OperationsCompiler::BinaryOp OperationsCompiler::opsBinary[Object::custom+1][Object::custom+1] = {
-	{0,(OperationsCompiler::BinaryOp) reduceNoneValue,0,0,0,0,0,0,(OperationsCompiler::BinaryOp) reduceNoneMatrix,0,0},
-	{(OperationsCompiler::BinaryOp) reduceValueNone, (OperationsCompiler::BinaryOp) reduceValueValue, 0, (OperationsCompiler::BinaryOp) reduceValueVector, (OperationsCompiler::BinaryOp) reduceValueList,0,0,0,(OperationsCompiler::BinaryOp) reduceValueMatrix,0},
+	{0,(OperationsCompiler::BinaryOp) compileNoneValueOperation,0,0,0,0,0,0,(OperationsCompiler::BinaryOp) compileNoneMatrixOperation,0,0},
+	{(OperationsCompiler::BinaryOp) compileValueNoneOperation, (OperationsCompiler::BinaryOp) compileValueValueOperation, 0, (OperationsCompiler::BinaryOp) compileValueVectorOperation, (OperationsCompiler::BinaryOp) compileValueListOperation,0,0,0,(OperationsCompiler::BinaryOp) compileValueMatrixOperation,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0, (OperationsCompiler::BinaryOp) reduceVectorValue, 0, (OperationsCompiler::BinaryOp) reduceVectorVector, 0,0,0,0,(OperationsCompiler::BinaryOp) reduceVectorMatrix,0,0},
-	{0, 0, 0,0, (OperationsCompiler::BinaryOp) reduceListList, 0,0,0,0,0},
+	{0, (OperationsCompiler::BinaryOp) compileVectorValueOperation, 0, (OperationsCompiler::BinaryOp) compileVectorVectorOperation, 0,0,0,0,(OperationsCompiler::BinaryOp) compileVectorMatrixOperation,0,0},
+	{0, 0, 0,0, (OperationsCompiler::BinaryOp) compileListListOperation, 0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{(OperationsCompiler::BinaryOp) reduceMatrixNone, (OperationsCompiler::BinaryOp) reduceMatrixValue,0, (OperationsCompiler::BinaryOp) reduceMatrixVector,0,0,0,0, (OperationsCompiler::BinaryOp) reduceMatrixMatrix,0,0},
+	{(OperationsCompiler::BinaryOp) compileMatrixNoneOperation, (OperationsCompiler::BinaryOp) compileMatrixValueOperation,0, (OperationsCompiler::BinaryOp) compileMatrixVectorOperation,0,0,0,0, (OperationsCompiler::BinaryOp) compileMatrixMatrixOperation,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,(OperationsCompiler::BinaryOp) reduceCustomCustom}
+	{0,0,0,0,0,0,0,0,0,0,(OperationsCompiler::BinaryOp) compileCustomCustomOperation}
 };
 
-llvm::Value * OperationsCompiler::reduce(Operator::OperatorType op, Object * val1, Object * val2, QString& correct)
+llvm::Value * OperationsCompiler::compileBinaryOperation(Operator::OperatorType op, llvm::Value * val1, llvm::Value * val2, QString& correct)
 {
-	Object::ObjectType t1=val1->type(), t2=val2->type();
-	
-	BinaryOp f=opsBinary[t1][t2];
-	Q_ASSERT(f && "using reduce (for binary operator) in a wrong way");
-	return f(op, val1, val2, correct);
+	return 0; //TODO
+// 	Object::ObjectType t1=val1->type(), t2=val2->type();
+// 	
+// 	BinaryOp f=opsBinary[t1][t2];
+// 	Q_ASSERT(f && "using compile (for binary operator) in a wrong way");
+// 	return f(op, val1, val2, correct);
 }
 
 OperationsCompiler::UnaryOp OperationsCompiler::opsUnary[] = {
 	0,
-	(OperationsCompiler::UnaryOp) OperationsCompiler::reduceUnaryValue,
+	(OperationsCompiler::UnaryOp) OperationsCompiler::compileUnaryValueOperation,
 	0, //variable
-	(OperationsCompiler::UnaryOp) OperationsCompiler::reduceUnaryVector,
-	(OperationsCompiler::UnaryOp) OperationsCompiler::reduceUnaryList,
+	(OperationsCompiler::UnaryOp) OperationsCompiler::compileUnaryVectorOperation,
+	(OperationsCompiler::UnaryOp) OperationsCompiler::compileUnaryListOperation,
 	0, //apply
 	0, //oper
 	0, //container
-	(OperationsCompiler::UnaryOp) OperationsCompiler::reduceUnaryMatrix
+	(OperationsCompiler::UnaryOp) OperationsCompiler::compileUnaryMatrixOperation
 };
 
-llvm::Value * OperationsCompiler::reduceUnary(Operator::OperatorType op, Object * val, QString& correct)
+llvm::Value * OperationsCompiler::compileUnaryOperation(Operator::OperatorType op, llvm::Value * val, QString& correct)
 {
-	UnaryOp f=opsUnary[val->type()];
-	
-	Q_ASSERT(f && "using reduceUnary in a wrong way");
-	return f(op, val, correct);
+	return 0; //TODO
+// 	UnaryOp f=opsUnary[val->type()];
+// 	
+// 	Q_ASSERT(f && "using compileUnary in a wrong way");
+// 	return f(op, val, correct);
 }
 
 llvm::Value* OperationsCompiler::errorCase(const QString& error, QString& correct)
