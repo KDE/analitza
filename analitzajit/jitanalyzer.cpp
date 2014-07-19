@@ -125,7 +125,7 @@ llvm::Value* JitAnalyzer::foojiteval()
 	
 	std::vector<llvm::GenericValue> abc;
 	llvm::GenericValue a;
-	a.DoubleVal = 1.0;
+	a.DoubleVal = ((Cn*)runStack().at(0))->value();
 	abc.push_back(a);
 	
 	

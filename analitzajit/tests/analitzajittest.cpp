@@ -62,11 +62,11 @@ void AnalitzaJitTest::testCalculate()
 // 	
 // 	qDebug() << QString::fromStdString(str);
 	
-	Analitza::Cn* val = new Analitza::Cn(4.0);
+	Analitza::Cn* val = new Analitza::Cn(89);
 	QStack<Analitza::Object*> stack;
 	stack.push(val);
 	
-	a->setLambdaExpression(Analitza::Expression("t->16*t+4-23"));
+	a->setLambdaExpression(Analitza::Expression("t->sin(t)"));
 	a->setStack(stack);
 	a->foojiteval();
 // 	qDebug() << "PEPEPEPEPE " << ((llvm::ConstantFP*)(a->foojiteval()))->getValueAPF().convertToDouble();

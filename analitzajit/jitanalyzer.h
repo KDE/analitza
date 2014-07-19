@@ -48,6 +48,9 @@ public:
 	~JitAnalyzer();
 	llvm::Value *foojiteval();
 	
+	//TODO need to return a C++ type, analitzatype or llvm::type (like genericvalue)?
+	
+	//TODO WE NEED TO PASS RETURN TYPE TOO
 	//TODO better params names
 	bool setLambdaExpression(const Analitza::Expression &lambdaExpression, const QMap<QString, Analitza::ExpressionType> &bvartypes);
 	

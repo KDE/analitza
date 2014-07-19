@@ -19,6 +19,7 @@
 #include "valuecompiler.h"
 
 #include <llvm/Analysis/Verifier.h>
+#include <llvm/IR/IntrinsicInst.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
@@ -172,6 +173,21 @@ QVariant ValueCompiler::visit(const Analitza::Apply* c)
 // 			b->dump();
 			
 			ret = Builder.CreateFMul(a, b, "multmp");
+		}	break;
+		case Analitza::Operator::sin: {
+			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
+// 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
+			
+// 			a->dump();
+// 			b->dump();
+			
+			//ret = Builder.CreateFMul(a, b, "multmp");
+			
+			
+			std::vector<llvm::Type *> arg_type;
+			arg_type.push_back(llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			llvm::Function *fun = llvm::Intrinsic::getDeclaration(m_mod, llvm::Intrinsic::sin, arg_type);
+			ret = Builder.CreateCall(fun, a);
 		}	break;
 // 		case Operator::product:
 // 			ret = product(*c);
