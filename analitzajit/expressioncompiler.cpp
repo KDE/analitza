@@ -16,7 +16,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "valuecompiler.h"
+#include "expressioncompiler.h"
 
 #include <llvm/Analysis/Verifier.h>
 #include <llvm/IR/IntrinsicInst.h>
@@ -46,7 +46,7 @@ static std::map<QString, llvm::Value*> NamedValues;
 
 using namespace Analitza;
 
-ValueCompiler::ValueCompiler(const Object* o, llvm::Module *mod, const QMap< QString, llvm::Type* >& bvartypes, Variables* v)
+ExpressionCompiler::ExpressionCompiler(const Object* o, llvm::Module *mod, const QMap< QString, llvm::Type* >& bvartypes, Variables* v)
 	: m_bvartypes(bvartypes)
 	, m_mod(mod)
 {
@@ -54,14 +54,14 @@ ValueCompiler::ValueCompiler(const Object* o, llvm::Module *mod, const QMap< QSt
         m_result=o->accept(this);
 }
 
-QVariant ValueCompiler::visit(const Analitza::Ci* var)
+QVariant ExpressionCompiler::visit(const Analitza::Ci* var)
 {
 	//TODO chack in variables too ... since we are playing by efault with stack vars
 // 	NamedValues[var->name()]->dump();
 	return QVariant::fromValue<llvm::Value*>(NamedValues[var->name()]);
 }
 
-QVariant ValueCompiler::visit(const Analitza::Operator* op)
+QVariant ExpressionCompiler::visit(const Analitza::Operator* op)
 {
 // 	switch(op->operatorType()) {
 // 		case Operator::lt:
@@ -91,27 +91,27 @@ QVariant ValueCompiler::visit(const Analitza::Operator* op)
 	return op->name(); //TODO
 }
 
-QVariant ValueCompiler::visit(const Analitza::Vector* vec)
+QVariant ExpressionCompiler::visit(const Analitza::Vector* vec)
 {
 	return QString();
 }
 
-QVariant ValueCompiler::visit(const Analitza::Matrix* m)
+QVariant ExpressionCompiler::visit(const Analitza::Matrix* m)
 {
 	return QString();
 }
 
-QVariant ValueCompiler::visit(const Analitza::MatrixRow* mr)
+QVariant ExpressionCompiler::visit(const Analitza::MatrixRow* mr)
 {
 	return QString();
 }
 
-QVariant ValueCompiler::visit(const Analitza::List* vec)
+QVariant ExpressionCompiler::visit(const Analitza::List* vec)
 {
 	return QString();
 }
 
-QVariant ValueCompiler::visit(const Analitza::Cn* val)
+QVariant ExpressionCompiler::visit(const Analitza::Cn* val)
 {
 	llvm::Value *ret = 0;
 	
@@ -138,7 +138,7 @@ QVariant ValueCompiler::visit(const Analitza::Cn* val)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-QVariant ValueCompiler::visit(const Analitza::Apply* c)
+QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 {
 	llvm::Value *ret = 0;
 	
@@ -252,7 +252,7 @@ QVariant ValueCompiler::visit(const Analitza::Apply* c)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-QVariant ValueCompiler::visit(const Analitza::Container* c)
+QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 {
 	llvm::Value *ret = 0;
 	switch(c->containerType()) {
@@ -369,12 +369,12 @@ QVariant ValueCompiler::visit(const Analitza::Container* c)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-QVariant ValueCompiler::visit(const Analitza::CustomObject*)
+QVariant ExpressionCompiler::visit(const Analitza::CustomObject*)
 {
 	return "CustomObject";
 }
 
-QVariant ValueCompiler::visit(const Analitza::None* )
+QVariant ExpressionCompiler::visit(const Analitza::None* )
 {
 	return QString();
 }

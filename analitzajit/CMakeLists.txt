@@ -9,7 +9,8 @@ add_subdirectory(tests)
 
 set ( analitzajit_SRCS
     typecompiler.cpp
-    valuecompiler.cpp
+    operationscompiler.cpp
+    expressioncompiler.cpp
     jitanalyzer.cpp
 )
 
@@ -29,7 +30,8 @@ install(TARGETS AnalitzaJIT EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARG
 install(FILES
     analitzajitexport.h
     typecompiler.h
-    valuecompiler.h
+    operationscompiler.h
+    expressioncompiler.h
     jitanalyzer.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/analitzajit/ COMPONENT Devel

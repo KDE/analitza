@@ -19,7 +19,7 @@
 #include "jitanalyzer.h"
 
 #include "typecompiler.h"
-#include "valuecompiler.h"
+#include "expressioncompiler.h"
 #include "value.h"
 
 #include <llvm/IR/IRBuilder.h>
@@ -77,7 +77,7 @@ bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression, const 
 				paramtyps[str] = tc.mapExpressionType(bvartypes[str]);
 			}
 			
-			ValueCompiler v(expression().tree(), m_mod, paramtyps, variables());
+			ExpressionCompiler v(expression().tree(), m_mod, paramtyps, variables());
 			
 	// 		std::string str;
 	// 		llvm::raw_string_ostream stringwriter(str);
@@ -112,7 +112,7 @@ llvm::Value* JitAnalyzer::foojiteval()
 	
 	std::vector<llvm::Value*> ArgsV;
 	for (int i = 0; i < runStack().size(); ++i) {
-		ValueCompiler vv(runStack().at(i), m_mod);
+		ExpressionCompiler vv(runStack().at(i), m_mod);
 		ArgsV.push_back(vv.result().value<llvm::Value*>());
 	}
 	

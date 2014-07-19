@@ -47,10 +47,10 @@ namespace Analitza
  * 
  */
 
-class ValueCompiler : public Analitza::AbstractExpressionVisitor
+class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 {
 	public:
-		ValueCompiler(const Analitza::Object* o, llvm::Module *mod, const QMap<QString, llvm::Type*> &bvartypes = QMap<QString, llvm::Type*>(), Analitza::Variables* v = 0);
+		ExpressionCompiler(const Analitza::Object* o, llvm::Module *mod, const QMap<QString, llvm::Type*> &bvartypes = QMap<QString, llvm::Type*>(), Analitza::Variables* v = 0);
 		
 		virtual QVariant visit(const Analitza::None* var);
 		virtual QVariant visit(const Analitza::Ci* var);
