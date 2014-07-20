@@ -256,6 +256,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			std::vector<llvm::Type*> tparams = m_bvartypes.values().toVector().toStdVector();
 			
 // 			tparams.at(0)->dump();
+// 			tparams.at(1)->dump();
 			
 			//TODO we need the return type
 			llvm::FunctionType *FT = llvm::FunctionType::get(llvm::Type::getDoubleTy(llvm::getGlobalContext()), tparams, false);

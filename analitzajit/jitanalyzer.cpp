@@ -124,12 +124,12 @@ llvm::Value* JitAnalyzer::foojiteval()
 // 	llvm::CallInst *retcall = Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
 	
 	std::vector<llvm::GenericValue> abc;
-	llvm::GenericValue a;
-	a.DoubleVal = ((Cn*)runStack().at(0))->value();
-	abc.push_back(a);
 	
-	
-
+	foreach(Object *obj, runStack()) {
+		llvm::GenericValue a;
+		a.DoubleVal = ((Cn*)obj)->value();
+		abc.push_back(a);
+	}
 	
 	llvm::GenericValue rr = TheExecutionEngine->runFunction(CalleeF, abc);
 	
