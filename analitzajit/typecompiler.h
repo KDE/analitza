@@ -28,6 +28,13 @@ namespace llvm
 class Type;
 }
 
+//WARNING
+//NOTE  if we need use same module across compilers then we can get an error
+//Referencing function in another module!
+//also if we don't use the current block where we are inserting some instruction then we will get an error
+//Instruction does not dominate all uses! 
+//(the istructuion was not inserted into a right block context)
+
 //TODO better documentation
 /**
  * \class LLVMIRExpressionWriter

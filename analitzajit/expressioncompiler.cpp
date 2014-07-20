@@ -42,24 +42,10 @@ Q_DECLARE_METATYPE(llvm::Value*);
 Q_DECLARE_METATYPE(llvm::Function*);
 
 //TODO better names
-static llvm::IRBuilder<> Builder(llvm::getGlobalContext());
+static llvm::IRBuilder<> buildr(llvm::getGlobalContext());
 static std::map<QString, llvm::Value*> NamedValues;
 
 using namespace Analitza;
-
-llvm::Value* compileUnaryOperation(Operator::OperatorType op, Analitza::Object* val, QString& error)
-{
-	//TODO
-	return 0;
-// 	return OperationsCompiler::reduceUnary();
-}
-
-llvm::Value* compileBinaryOperation(Operator::OperatorType op, Analitza::Object* val1, Analitza::Object* val2, QString& error)
-{
-	//TODO
-	return 0;
-}
-
 
 ExpressionCompiler::ExpressionCompiler(const Object* o, llvm::Module *mod, const QMap< QString, llvm::Type* >& bvartypes, Variables* v)
 	: m_bvartypes(bvartypes)
@@ -153,116 +139,138 @@ QVariant ExpressionCompiler::visit(const Analitza::Cn* val)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
+
 QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 {
 	llvm::Value *ret = 0;
 	
-	//TODO just check for binary and unary operators .. exclude functions/commands (handle that the next iteration)
-	switch(c->firstOperator().operatorType()) {
-// 		case Operator::sum:
-// 			ret = sum(*c);
-// 			break;
-		case Analitza::Operator::plus: {
-			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
-			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
+	const Operator::OperatorType op = c->firstOperator().operatorType();
+	QString error;
+	switch(c->countValues()) {
+		case 1: {
+			Object *val = c->at(0);
+// 			qDebug() << "DUMPPPP " << apply->firstOperator().toString();
+			llvm::Value *valv =val->accept(this).value<llvm::Value*>();
+// 			valv->dump();
+// 			valv->getType()->dump();
+// 			qDebug() << "ENNNDDDD";
 			
-// 			a->dump();
-// 			b->dump();
-			
-			ret = Builder.CreateFAdd(a, b, "addtmp");
+			ret = OperationsCompiler::compileUnaryOperation(m_mod, buildr.GetInsertBlock(), op, val->type(), valv, error);
 		}	break;
-		case Analitza::Operator::minus: {
-			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
-			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
-			
-// 			a->dump();
-// 			b->dump();
-			
-			ret = Builder.CreateFSub(a, b, "minustmp");
-		}	break;
-		case Analitza::Operator::times: {
-			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
-			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
-			
-// 			a->dump();
-// 			b->dump();
-			
-			ret = Builder.CreateFMul(a, b, "multmp");
-		}	break;
-		case Analitza::Operator::sin: {
-			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
-// 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
-			
-// 			a->dump();
-// 			b->dump();
-			
-			//ret = Builder.CreateFMul(a, b, "multmp");
-			
-			
-			std::vector<llvm::Type *> arg_type;
-			arg_type.push_back(llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-			llvm::Function *fun = llvm::Intrinsic::getDeclaration(m_mod, llvm::Intrinsic::sin, arg_type);
-			ret = Builder.CreateCall(fun, a);
-		}	break;
-// 		case Operator::product:
-// 			ret = product(*c);
-// 			break;
-// 		case Operator::forall:
-// 			ret = forall(*c);
-// 			break;
-// 		case Operator::exists:
-// 			ret = exists(*c);
-// 			break;
-// 		case Operator::function:
-// 			ret = func(*c);
-// 			break;
-// 		case Operator::diff:
-// 			ret = calcDiff(c);
-// 			break;
-// 		case Operator::map:
-// 			ret = calcMap(c);
-// 			break;
-// 		case Operator::filter:
-// 			ret = calcFilter(c);
-// 			break;
-// 		default: {
-// 			int count=c->countValues();
-// 			Q_ASSERT(count>0);
-// 			Q_ASSERT(	(op.nparams()< 0 && count>1) ||
-// 						(op.nparams()>-1 && count==op.nparams()) ||
-// 						opt==Operator::minus);
-// 			
-// 			QString* error=0;
-// 			if(count>=2) {
-// 				Apply::const_iterator it = c->firstValue(), itEnd=c->constEnd();
-// 				ret = calc(*it);
-// 				++it;
-// 				bool stop=isNull(opt, ret);
-// 				for(; !stop && it!=itEnd; ++it) {
-// 					bool isValue = (*it)->type()==Object::value;
-// 					Object* v = isValue ? *it : calc(*it);
-// 					ret=Operations::reduce(opt, ret, v, &error);
-// 					if(!isValue)
-// 						delete v;
-// 					
-// 					if(Q_UNLIKELY(error)) {
-// 						m_err.append(*error);
-// 						delete error;
-// 						error=0;
-// 						break;
-// 					}
-// 					
-// 					stop=isNull(opt, ret);
-// 				}
-// 			} else {
-// 				ret=Operations::reduceUnary(opt, calc(*c->firstValue()), &error);
-// 				if(Q_UNLIKELY(error)) {
-// 					m_err.append(*error);
-// 					delete error;
-// 				}
-// 			}
-// 		}	break;
 	}
+	
+	
+// 	//TODO just check for binary and unary operators .. exclude functions/commands (handle that the next iteration)
+// 	switch(c->firstOperator().operatorType()) {
+// // 		case Operator::sum:
+// // 			ret = sum(*c);
+// // 			break;
+// 		case Analitza::Operator::plus: {
+// 			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
+// 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
+// 			
+// // 			a->dump();
+// // 			b->dump();
+// 			
+// 			ret = Builder.CreateFAdd(a, b, "addtmp");
+// 		}	break;
+// 		case Analitza::Operator::minus: {
+// 			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
+// 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
+// 			
+// // 			a->dump();
+// // 			b->dump();
+// 			
+// 			ret = Builder.CreateFSub(a, b, "minustmp");
+// 		}	break;
+// 		case Analitza::Operator::times: {
+// 			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
+// 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
+// 			
+// // 			a->dump();
+// // 			b->dump();
+// 			
+// 			ret = Builder.CreateFMul(a, b, "multmp");
+// 		}	break;
+// 		case Analitza::Operator::sin: {
+// 			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
+// // // 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
+// // 			
+// // // 			a->dump();
+// // // 			b->dump();
+// // 			
+// // 			//ret = Builder.CreateFMul(a, b, "multmp");
+// // 			
+// // 			
+// // 			std::vector<llvm::Type *> arg_type;
+// // 			arg_type.push_back(llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+// // 			llvm::Function *fun = llvm::Intrinsic::getDeclaration(m_mod, llvm::Intrinsic::sin, arg_type);
+// // 			ret = Builder.CreateCall(fun, a);
+// 			QString err;
+// 			
+// // 			llvm::Function *fun = llvm::Intrinsic::getDeclaration(m_mod, llvm::Intrinsic::sin, a->getType());
+// // 			ret = Builder.CreateCall(fun, a, "adas");
+// 			
+// 		}	break;
+// // 		case Operator::product:
+// // 			ret = product(*c);
+// // 			break;
+// // 		case Operator::forall:
+// // 			ret = forall(*c);
+// // 			break;
+// // 		case Operator::exists:
+// // 			ret = exists(*c);
+// // 			break;
+// // 		case Operator::function:
+// // 			ret = func(*c);
+// // 			break;
+// // 		case Operator::diff:
+// // 			ret = calcDiff(c);
+// // 			break;
+// // 		case Operator::map:
+// // 			ret = calcMap(c);
+// // 			break;
+// // 		case Operator::filter:
+// // 			ret = calcFilter(c);
+// // 			break;
+// // 		default: {
+// // 			int count=c->countValues();
+// // 			Q_ASSERT(count>0);
+// // 			Q_ASSERT(	(op.nparams()< 0 && count>1) ||
+// // 						(op.nparams()>-1 && count==op.nparams()) ||
+// // 						opt==Operator::minus);
+// // 			
+// // 			QString* error=0;
+// // 			if(count>=2) {
+// // 				Apply::const_iterator it = c->firstValue(), itEnd=c->constEnd();
+// // 				ret = calc(*it);
+// // 				++it;
+// // 				bool stop=isNull(opt, ret);
+// // 				for(; !stop && it!=itEnd; ++it) {
+// // 					bool isValue = (*it)->type()==Object::value;
+// // 					Object* v = isValue ? *it : calc(*it);
+// // 					ret=Operations::reduce(opt, ret, v, &error);
+// // 					if(!isValue)
+// // 						delete v;
+// // 					
+// // 					if(Q_UNLIKELY(error)) {
+// // 						m_err.append(*error);
+// // 						delete error;
+// // 						error=0;
+// // 						break;
+// // 					}
+// // 					
+// // 					stop=isNull(opt, ret);
+// // 				}
+// // 			} else {
+// // 				ret=Operations::reduceUnary(opt, calc(*c->firstValue()), &error);
+// // 				if(Q_UNLIKELY(error)) {
+// // 					m_err.append(*error);
+// // 					delete error;
+// // 				}
+// // 			}
+// // 		}	break;
+// 	}
 	
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
@@ -352,12 +360,12 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			}
 			
 			llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
-			Builder.SetInsertPoint(BB);
-			Builder.CreateRet(c->m_params.last()->accept(this).value<llvm::Value*>());
+			buildr.SetInsertPoint(BB);
+			buildr.CreateRet(c->m_params.last()->accept(this).value<llvm::Value*>());
 			
 // 			QVariant al = QVariant::fromValue<llvm::Value*>(F);
 			
-// 			al.value<llvm::Value*>()->dump();
+// 			BB->dump();
 			llvm::verifyFunction(*F);
 			
 			ret = F;

@@ -32,6 +32,10 @@ namespace llvm {
 namespace Analitza
 {
 
+//WARNING 
+//NOTE
+//JitAnalyzer manage/keeps a one and only one LLVM::Module.
+
 /**
  * \class LLVMAnalyzer
  * 

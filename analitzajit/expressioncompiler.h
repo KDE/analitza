@@ -32,6 +32,19 @@ class Module;
 class Type;
 }
 
+
+//WARNING
+//NOTE  
+//*if we need use same module across compilers then we can get an error
+//Referencing function in another module!
+//* if we don't use the current block where we are inserting some instruction then we will get an error
+//Instruction does not dominate all uses! 
+//(the istructuion was not inserted into a right block context)
+//*We must create a function inside the defined module and not create a function without a module
+//and we may need to pass the same module into all compilers to keep consistence of the module
+
+
+
 //TODO this class is just a copy of stringexpressionwriter ... it need to be modified 
 namespace Analitza
 {
