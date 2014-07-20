@@ -91,14 +91,26 @@ llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlo
 	
 			ret = buildr.CreateFMul(a, b, "multmp");
 		}	break;
-// 		case Operator::divide:
-// 			if(Q_LIKELY(b!=0.))
-// 				oper->setValue(a / b);
-// 			else {
-// 				correct= QString(QCoreApplication::tr("Cannot divide by 0."));
-// 				ret=new None();
+		case Operator::divide: {
+// 			if(Q_LIKELY(b!=0.)) {
+// 				//oper->setValue(a / b);
 // 			}
-// 			break;
+// 			else {
+// 				error= QString(QCoreApplication::tr("Cannot divide by 0."));
+// 				//ret=0;
+// 			}
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+			
+// 			a->dump();
+// 			b->dump();
+			if (currentBlock)
+				buildr.SetInsertPoint(currentBlock);
+			
+			ret = buildr.CreateFDiv(a, b, "divtmp");
+			
+			
+		}	break;
 		case Operator::power: {
 // 			oper->setValue( b==2 ? a*a
 // 			: b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
@@ -420,19 +432,33 @@ llvm::Value * compileUnaryReal(llvm::Module *module, llvm::BasicBlock *currentBl
 			
 			buildr.SetInsertPoint(currentBlock);
 			llvm::Function *fun = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::sin, a->getType());
-			return buildr.CreateCall(fun, a, "adas");
-			
-			
-			
-			
-// 			ret = Builder.CreateCall(llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::sin, oper->getType()), oper);
+			ret = buildr.CreateCall(fun, a, "adas");
 		}	break;
-// 		case Operator::cos:
-// 			     oper->setValue(cos(a));
-// 			break;
-// 		case Operator::tan:
-// 			     oper->setValue(tan(a));
-// 			break;
+		case Operator::cos: {
+			//oper->setValue(cos(a));
+// 			module->dump();
+// 			qDebug() << "PEPEPEPEPE " << module;
+// 			oper->getType()->dump();
+			
+			llvm::Value *a = oper;
+			
+			buildr.SetInsertPoint(currentBlock);
+			llvm::Function *fun = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::cos, a->getType());
+			ret = buildr.CreateCall(fun, a, "adas");
+		}	break;
+		case Operator::tan: {
+			//oper->setValue(tan(a));
+// 			module->dump();
+// 			qDebug() << "PEPEPEPEPE " << module;
+// 			oper->getType()->dump();
+			
+			llvm::Value *a = oper;
+			
+			buildr.SetInsertPoint(currentBlock);
+			llvm::Value *sinv = compileUnaryReal(module, currentBlock, Operator::sin, a, correct);
+			llvm::Value *cosv = compileUnaryReal(module, currentBlock, Operator::cos, a, correct);
+			ret = compileRealReal(module, currentBlock, Operator::divide, sinv, cosv, correct);
+		}	break;
 // 		case Operator::sec:
 // 			     oper->setValue(1./cos(a));
 // 			break;
