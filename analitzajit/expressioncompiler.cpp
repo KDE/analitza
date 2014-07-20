@@ -139,13 +139,13 @@ QVariant ExpressionCompiler::visit(const Analitza::Cn* val)
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
-
 QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 {
 	llvm::Value *ret = 0;
 	
 	const Operator::OperatorType op = c->firstOperator().operatorType();
-	QString error;
+	QString error; //TODO error management
+	
 	switch(c->countValues()) {
 		case 1: {
 			Object *val = c->at(0);
@@ -155,134 +155,33 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 // 			valv->getType()->dump();
 // 			qDebug() << "ENNNDDDD";
 			
-			ret = OperationsCompiler::compileUnaryOperation(m_mod, buildr.GetInsertBlock(), op, val->type(), valv, error);
+			//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
+			//this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
+			//currently we¿ll cast all types to double (analitza value)
+			//ret = OperationsCompiler::compileUnaryOperation(m_mod, buildr.GetInsertBlock(), op, val->type(), valv, error);
+			ret = OperationsCompiler::compileUnaryOperation(m_mod, buildr.GetInsertBlock(), op, Object::value, valv, error);
 		}	break;
 		case 2: {
 			Object *val1 = c->at(0);
-			Object *val2 = c->at(1);
-// 			qDebug() << "DUMPPPP " << apply->firstOperator().toString();
+// 			qDebug() << "obj1 " << val1->toString();
 			llvm::Value *valv1 =val1->accept(this).value<llvm::Value*>();
+// 			valv1->getType()->dump();
+			Object *val2 = c->at(1);
+// 			qDebug() << "obj2 " << val2->toString();
+// 			qDebug() << "DUMPPPP " << apply->firstOperator().toString();
 			llvm::Value *valv2 =val2->accept(this).value<llvm::Value*>();
+// 			valv2->getType()->dump();
 // 			valv->dump();
 // 			valv->getType()->dump();
 // 			qDebug() << "ENNNDDDD";
 			
-			ret = OperationsCompiler::compileBinaryOperation(m_mod, buildr.GetInsertBlock(), op, val1->type(), val2->type(), valv1, valv2, error);
+			//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
+			//this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
+			//currently we¿ll cast all types to double (analitza value)
+			//ret = OperationsCompiler::compileBinaryOperation(m_mod, buildr.GetInsertBlock(), op, val1->type(), val2->type(), valv1, valv2, error);
+			ret = OperationsCompiler::compileBinaryOperation(m_mod, buildr.GetInsertBlock(), op, Object::value, Object::value, valv1, valv2, error);
 		}	break;
 	}
-	
-	
-// 	//TODO just check for binary and unary operators .. exclude functions/commands (handle that the next iteration)
-// 	switch(c->firstOperator().operatorType()) {
-// // 		case Operator::sum:
-// // 			ret = sum(*c);
-// // 			break;
-// 		case Analitza::Operator::plus: {
-// 			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
-// 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
-// 			
-// // 			a->dump();
-// // 			b->dump();
-// 			
-// 			ret = Builder.CreateFAdd(a, b, "addtmp");
-// 		}	break;
-// 		case Analitza::Operator::minus: {
-// 			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
-// 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
-// 			
-// // 			a->dump();
-// // 			b->dump();
-// 			
-// 			ret = Builder.CreateFSub(a, b, "minustmp");
-// 		}	break;
-// 		case Analitza::Operator::times: {
-// 			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
-// 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
-// 			
-// // 			a->dump();
-// // 			b->dump();
-// 			
-// 			ret = Builder.CreateFMul(a, b, "multmp");
-// 		}	break;
-// 		case Analitza::Operator::sin: {
-// 			llvm::Value *a = c->at(0)->accept(this).value<llvm::Value*>();
-// // // 			llvm::Value *b = c->at(1)->accept(this).value<llvm::Value*>();
-// // 			
-// // // 			a->dump();
-// // // 			b->dump();
-// // 			
-// // 			//ret = Builder.CreateFMul(a, b, "multmp");
-// // 			
-// // 			
-// // 			std::vector<llvm::Type *> arg_type;
-// // 			arg_type.push_back(llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-// // 			llvm::Function *fun = llvm::Intrinsic::getDeclaration(m_mod, llvm::Intrinsic::sin, arg_type);
-// // 			ret = Builder.CreateCall(fun, a);
-// 			QString err;
-// 			
-// // 			llvm::Function *fun = llvm::Intrinsic::getDeclaration(m_mod, llvm::Intrinsic::sin, a->getType());
-// // 			ret = Builder.CreateCall(fun, a, "adas");
-// 			
-// 		}	break;
-// // 		case Operator::product:
-// // 			ret = product(*c);
-// // 			break;
-// // 		case Operator::forall:
-// // 			ret = forall(*c);
-// // 			break;
-// // 		case Operator::exists:
-// // 			ret = exists(*c);
-// // 			break;
-// // 		case Operator::function:
-// // 			ret = func(*c);
-// // 			break;
-// // 		case Operator::diff:
-// // 			ret = calcDiff(c);
-// // 			break;
-// // 		case Operator::map:
-// // 			ret = calcMap(c);
-// // 			break;
-// // 		case Operator::filter:
-// // 			ret = calcFilter(c);
-// // 			break;
-// // 		default: {
-// // 			int count=c->countValues();
-// // 			Q_ASSERT(count>0);
-// // 			Q_ASSERT(	(op.nparams()< 0 && count>1) ||
-// // 						(op.nparams()>-1 && count==op.nparams()) ||
-// // 						opt==Operator::minus);
-// // 			
-// // 			QString* error=0;
-// // 			if(count>=2) {
-// // 				Apply::const_iterator it = c->firstValue(), itEnd=c->constEnd();
-// // 				ret = calc(*it);
-// // 				++it;
-// // 				bool stop=isNull(opt, ret);
-// // 				for(; !stop && it!=itEnd; ++it) {
-// // 					bool isValue = (*it)->type()==Object::value;
-// // 					Object* v = isValue ? *it : calc(*it);
-// // 					ret=Operations::reduce(opt, ret, v, &error);
-// // 					if(!isValue)
-// // 						delete v;
-// // 					
-// // 					if(Q_UNLIKELY(error)) {
-// // 						m_err.append(*error);
-// // 						delete error;
-// // 						error=0;
-// // 						break;
-// // 					}
-// // 					
-// // 					stop=isNull(opt, ret);
-// // 				}
-// // 			} else {
-// // 				ret=Operations::reduceUnary(opt, calc(*c->firstValue()), &error);
-// // 				if(Q_UNLIKELY(error)) {
-// // 					m_err.append(*error);
-// // 					delete error;
-// // 				}
-// // 			}
-// // 		}	break;
-// 	}
 	
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }

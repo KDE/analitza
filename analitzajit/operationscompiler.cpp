@@ -40,6 +40,7 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
+#include <llvm/IR/Type.h>
 #include <llvm/IR/Value.h>
 
 static llvm::IRBuilder<> buildr(llvm::getGlobalContext());
@@ -61,12 +62,35 @@ llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlo
 // 			a->dump();
 // 			b->dump();
 			buildr.SetInsertPoint(currentBlock);
-			ret = buildr.CreateFAdd(a, b, "addtmp");
+			ret = buildr.CreateFAdd(a, b);
 			
 		}	break;
-// 		case Operator::times:
-// 			oper->setValue(a*b);
-// 			break;
+		case Operator::minus: {
+			//oper->setValue(a+b);
+			
+			
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+			
+// 			a->dump();
+// 			b->dump();
+			buildr.SetInsertPoint(currentBlock);
+			ret = buildr.CreateFSub(a, b);
+			
+		}	break;
+		case Operator::times: {
+			//oper->setValue(a*b);
+		
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+			
+// 			a->dump();
+// 			b->dump();
+			if (currentBlock)
+				buildr.SetInsertPoint(currentBlock);
+	
+			ret = buildr.CreateFMul(a, b, "multmp");
+		}	break;
 // 		case Operator::divide:
 // 			if(Q_LIKELY(b!=0.))
 // 				oper->setValue(a / b);
@@ -75,14 +99,15 @@ llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlo
 // 				ret=new None();
 // 			}
 // 			break;
-// 		case Operator::minus:
-// 			oper->setValue(a - b);
-// 			break;
-// 		case Operator::power:
+		case Operator::power: {
 // 			oper->setValue( b==2 ? a*a
 // 			: b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
 // 			: pow(a, b));
-// 			break;
+			
+			buildr.SetInsertPoint(currentBlock);
+			llvm::Function *fun = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::pow, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			return buildr.CreateCall2(fun, val1, val2, "adas");
+		}	break;
 // 		case Operator::rem:
 // 			if(Q_LIKELY(floor(b)!=0.))
 // 				oper->setValue(int(remainder(a, b)));
@@ -976,6 +1001,9 @@ llvm::Value* OperationsCompiler::compileNoneMatrixOperation(llvm::Module* module
 // 	return compileMatrixNone(op, m, cntr, correct);
 }
 
+//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
+//this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
+//currently we¿ll cast all types to double (analitza value)
 OperationsCompiler::BinaryOp OperationsCompiler::opsBinary[Object::custom+1][Object::custom+1] = {
 	{0,(OperationsCompiler::BinaryOp) compileNoneValueOperation,0,0,0,0,0,0,(OperationsCompiler::BinaryOp) compileNoneMatrixOperation,0,0},
 	{(OperationsCompiler::BinaryOp) compileValueNoneOperation, (OperationsCompiler::BinaryOp) compileValueValueOperation, 0, (OperationsCompiler::BinaryOp) compileValueVectorOperation, (OperationsCompiler::BinaryOp) compileValueListOperation,0,0,0,(OperationsCompiler::BinaryOp) compileValueMatrixOperation,0},
@@ -1008,11 +1036,15 @@ llvm::Value * OperationsCompiler::compileBinaryOperation(llvm::Module* module, l
 		//TODO complex
 	}
 	
+// 	qDebug() << "final types for binary op " << finaltype1 << finaltype2;
+	
 	BinaryOp f=opsBinary[finaltype1][finaltype2];
 	Q_ASSERT(f && "using compile (for binary operator) in a wrong way");
 	return f(module, currentBlock ,op, val1, val2, error);
 }
-
+//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
+//this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
+//currently we¿ll cast all types to double (analitza value)
 OperationsCompiler::UnaryOp OperationsCompiler::opsUnary[] = {
 	0,
 	(OperationsCompiler::UnaryOp) OperationsCompiler::compileUnaryValueOperation,

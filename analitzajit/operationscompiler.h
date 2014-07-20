@@ -56,6 +56,9 @@ class OperationsCompiler
 		static llvm::Value* compileBinaryOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object::ObjectType type1, Object::ObjectType type2, llvm::Value* val1, llvm::Value* val2, QString& error);
 		
 	private:
+		//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
+		//this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
+		//currently we¿ll cast all types to double (analitza value)
 		static UnaryOp opsUnary[Object::custom+1];
 		static BinaryOp opsBinary[Object::custom+1][Object::custom+1];
 		
