@@ -44,6 +44,8 @@ namespace Analitza
 
 //TODO this class insert a analitza operation (i.e. an llvm instruction) into a current block
 //e.g. Expression("... sin(4) ...") will insert the LLVM IR instruction sin(4) into the current block (that may be a function body)
+	
+//TODO check if we want to use 'const' for each value pointr
 class OperationsCompiler
 {
 	public:
@@ -59,7 +61,7 @@ class OperationsCompiler
 		
 		static llvm::Value* compileValueNoneOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* none, QString &error);
 		static llvm::Value* compileNoneValueOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* none, llvm::Value* val, QString &error);
-		static llvm::Value* compileValueValueOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val1, const llvm::Value* val2, QString &error);
+		static llvm::Value* compileValueValueOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString &error);
 		static llvm::Value* compileUnaryValueOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, QString &error);
 		
 		static llvm::Value* compileValueVectorOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* vec, QString &error);

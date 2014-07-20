@@ -157,6 +157,18 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 			
 			ret = OperationsCompiler::compileUnaryOperation(m_mod, buildr.GetInsertBlock(), op, val->type(), valv, error);
 		}	break;
+		case 2: {
+			Object *val1 = c->at(0);
+			Object *val2 = c->at(1);
+// 			qDebug() << "DUMPPPP " << apply->firstOperator().toString();
+			llvm::Value *valv1 =val1->accept(this).value<llvm::Value*>();
+			llvm::Value *valv2 =val2->accept(this).value<llvm::Value*>();
+// 			valv->dump();
+// 			valv->getType()->dump();
+// 			qDebug() << "ENNNDDDD";
+			
+			ret = OperationsCompiler::compileBinaryOperation(m_mod, buildr.GetInsertBlock(), op, val1->type(), val2->type(), valv1, valv2, error);
+		}	break;
 	}
 	
 	

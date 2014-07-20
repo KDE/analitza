@@ -66,7 +66,8 @@ void AnalitzaJitTest::testCalculate()
 	QStack<Analitza::Object*> stack;
 	stack.push(val);
 	
-	a->setLambdaExpression(Analitza::Expression("t->sin(t)"));
+	//a->setLambdaExpression(Analitza::Expression("t->sin(t)"));
+	a->setLambdaExpression(Analitza::Expression("t->4+5"));
 	a->setStack(stack);
 	a->foojiteval();
 // 	qDebug() << "PEPEPEPEPE " << ((llvm::ConstantFP*)(a->foojiteval()))->getValueAPF().convertToDouble();

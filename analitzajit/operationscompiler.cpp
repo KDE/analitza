@@ -47,14 +47,23 @@ static llvm::IRBuilder<> buildr(llvm::getGlobalContext());
 using namespace std;
 using namespace Analitza;
 
-llvm::Value * compileRealReal(llvm::Module *module, llvm::BasicBlock *currentBlock, enum Operator::OperatorType op, llvm::Value *oper, double a, double b, QString& correct)
+llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error)
 {
-	return 0; //TODO
-// 	Object *ret = oper;
-// 	switch(op) {
-// 		case Operator::plus:
-// 			oper->setValue(a+b);
-// 			break;
+	llvm::Value *ret = 0;
+	switch(op) {
+		case Operator::plus: {
+			//oper->setValue(a+b);
+			
+			
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+			
+// 			a->dump();
+// 			b->dump();
+			buildr.SetInsertPoint(currentBlock);
+			ret = buildr.CreateFAdd(a, b, "addtmp");
+			
+		}	break;
 // 		case Operator::times:
 // 			oper->setValue(a*b);
 // 			break;
@@ -168,8 +177,8 @@ llvm::Value * compileRealReal(llvm::Module *module, llvm::BasicBlock *currentBlo
 // 			break;
 // 		default:
 // 			break;
-// 	}
-// 	return ret;
+	}
+	return ret;
 }
 
 llvm::Value * compileComplexComplex(llvm::Module *module, llvm::BasicBlock *currentBlock, enum Operator::OperatorType op, llvm::Value *oper, complex<double> a, complex<double> b, QString& correct)
@@ -287,15 +296,15 @@ llvm::Value * compileComplexComplex(llvm::Module *module, llvm::BasicBlock *curr
 // 	return oper;
 }
 
-llvm::Value * OperationsCompiler::compileValueValueOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val1, const llvm::Value* val2, QString& error)
+llvm::Value * OperationsCompiler::compileValueValueOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error)
 {
-	return 0; //TODO
+	//TODO complex numbers case
 // 	if(Q_UNLIKELY(oper->isComplex() || oper1->isComplex())) {
 // 		const complex<double> a=oper->complexValue(), b=oper1->complexValue();
 // 		return compileComplexComplex(op, oper, a, b, correct);
 // 	} else {
 // 		const double a=oper->value(), b=oper1->value();
-// 		return compileRealReal(op, oper, a, b, correct);
+		return compileRealReal(module, currentBlock, op, val1, val2, error);
 // 	}
 }
 
@@ -983,12 +992,25 @@ OperationsCompiler::BinaryOp OperationsCompiler::opsBinary[Object::custom+1][Obj
 
 llvm::Value * OperationsCompiler::compileBinaryOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, Object::ObjectType type1, Object::ObjectType type2, llvm::Value* val1, llvm::Value* val2, QString& error)
 {
-	return 0; //TODO
-// 	Object::ObjectType t1=val1->type(), t2=val2->type();
-// 	
-// 	BinaryOp f=opsBinary[t1][t2];
-// 	Q_ASSERT(f && "using compile (for binary operator) in a wrong way");
-// 	return f(op, val1, val2, correct);
+	Object::ObjectType finaltype1 = type1;
+	
+	if (finaltype1 == Object::variable) {
+		if (val1->getType()->getTypeID() == llvm::Type::DoubleTyID)
+			         finaltype1 = Object::value;
+		//TODO complex
+	}
+	
+	Object::ObjectType finaltype2 = type2;
+	
+	if (finaltype2 == Object::variable) {
+		if (val2->getType()->getTypeID() == llvm::Type::DoubleTyID)
+			         finaltype2 = Object::value;
+		//TODO complex
+	}
+	
+	BinaryOp f=opsBinary[finaltype1][finaltype2];
+	Q_ASSERT(f && "using compile (for binary operator) in a wrong way");
+	return f(module, currentBlock ,op, val1, val2, error);
 }
 
 OperationsCompiler::UnaryOp OperationsCompiler::opsUnary[] = {
