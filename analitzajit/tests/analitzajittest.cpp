@@ -83,7 +83,9 @@ void AnalitzaJitTest::testCalculate()
 	//a->setLambdaExpression(Analitza::Expression("t->tan(0)+t"));
 	//a->setLambdaExpression(Analitza::Expression("t->tan(2.3)")); //-1.1192136
 	//a->setLambdaExpression(Analitza::Expression("(x,y)->x*x+y*y"));
-	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x+y*z"));
+	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->x+y*z"));
+	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->-9"));
+	a->setLambdaExpression(Analitza::Expression("(x,y,z)->-x+y"));
 	a->setStack(stack);
 	a->foojiteval();
 // 	qDebug() << "PEPEPEPEPE " << ((llvm::ConstantFP*)(a->foojiteval()))->getValueAPF().convertToDouble();

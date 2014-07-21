@@ -411,9 +411,15 @@ llvm::Value * compileUnaryReal(llvm::Module *module, llvm::BasicBlock *currentBl
 	llvm::Value *ret = 0;
 // 	
 	switch(op) {
-// 		case Operator::minus:
-// 			     oper->setValue(-a);
-// 			break;
+		case Operator::minus: {
+			//oper->setValue(-a);
+			
+			
+			llvm::Value *a = llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(-1.0));
+			llvm::Value *b = oper;
+			
+			ret = compileRealReal(module, currentBlock, Operator::times, a,b, correct);
+		}	break;
 // 		case Operator::factorial: {
 // 			//Use gamma from math.h?
 // 			uint res=1;
@@ -465,9 +471,19 @@ llvm::Value * compileUnaryReal(llvm::Module *module, llvm::BasicBlock *currentBl
 // 		case Operator::csc:
 // 			     oper->setValue(1./sin(a));
 // 			break;
-// 		case Operator::cot:
-// 			     oper->setValue(1./tan(a));
-// 			break;
+		case Operator::cot: {
+			//oper->setValue(cot(a));
+// 			module->dump();
+// 			qDebug() << "PEPEPEPEPE " << module;
+// 			oper->getType()->dump();
+			
+			llvm::Value *a = oper;
+			
+			buildr.SetInsertPoint(currentBlock);
+			llvm::Value *sinv = compileUnaryReal(module, currentBlock, Operator::sin, a, correct);
+			llvm::Value *cosv = compileUnaryReal(module, currentBlock, Operator::cos, a, correct);
+			ret = compileRealReal(module, currentBlock, Operator::divide, cosv, sinv, correct);
+		}	break;
 // 		case Operator::sinh:
 // 			     oper->setValue(sinh(a));
 // 			break;
@@ -540,9 +556,9 @@ llvm::Value * compileUnaryReal(llvm::Module *module, llvm::BasicBlock *currentBl
 // 		case Operator::_not:
 // 			     oper->setValue(!a);
 // 			break;
-// 		default:
-// 			correct= QString(QCoreApplication::tr("Could not calculate a value %1").arg(Operator(op).toString()));
-// 			break;
+		default:
+			correct= QString(QCoreApplication::tr("Could not calculate a value %1").arg(Operator(op).toString()));
+			break;
 	}
 	return ret;
 }
