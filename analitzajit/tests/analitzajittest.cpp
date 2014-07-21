@@ -86,6 +86,9 @@ void AnalitzaJitTest::testCalculate()
 	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->x+y*z"));
 	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->-9"));
 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->-x+y"));
+	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3"));
+	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->x->piecewise { x<0 ? -x, x=0 ? -5, x>5 ? x*x, ? x }"));
+	
 	a->setStack(stack);
 	a->foojiteval();
 // 	qDebug() << "PEPEPEPEPE " << ((llvm::ConstantFP*)(a->foojiteval()))->getValueAPF().convertToDouble();

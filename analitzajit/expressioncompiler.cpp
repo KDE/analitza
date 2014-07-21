@@ -191,6 +191,12 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 	llvm::Value *ret = 0;
 	switch(c->containerType()) {
 		case Analitza::Container::piecewise: {
+			qDebug() << "EN piecewise" << c->m_params.size();
+			
+			for (int i = 0; i <c->m_params.size();++i) {
+				c->m_params.at(i)->accept(this).value<llvm::Value*>();
+			}
+			
 // 			ExpressionType type=commonType(c->m_params);
 // 			
 // 			if(type.isError()) {
@@ -222,6 +228,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 // 			}
 		}	break;
 		case Analitza::Container::piece: {
+			qDebug() << "EN piece" << c->m_params.size() << c->m_params.at(0)->type() << c->m_params.at(1)->type();
 // 			QMap<QString, ExpressionType> assumptions=typeIs(c->m_params.last(), ExpressionType(ExpressionType::Bool)); //condition check
 // 			c->m_params.first()->accept(this); //we return the body
 // 			QList<ExpressionType> alts=current.type()==ExpressionType::Many ? current.alternatives() : QList<ExpressionType>() << current, rets;
@@ -282,7 +289,9 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			
 			ret = F;
 		}	break;
-		case Analitza::Container::otherwise:
+		case Analitza::Container::otherwise: {
+			qDebug() << "EN otherwise";
+		}	break;
 		case Analitza::Container::math:
 		case Analitza::Container::none:
 		case Analitza::Container::downlimit:

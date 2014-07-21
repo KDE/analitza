@@ -152,9 +152,20 @@ llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlo
 // 		case Operator::lt:
 // 			oper->setValue(a < b);
 // 			break;
-// 		case Operator::eq:
-// 			oper->setValue(a == b);
-// 			break;
+		case Operator::eq: {
+// 			TODO
+// 			//oper->setValue(a == b);
+// 			
+// 			llvm::Value *a = val1;
+// 			llvm::Value *b = val2;
+// 			
+// 			if (currentBlock)
+// 				buildr.SetInsertPoint(currentBlock);
+// 			
+// 			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UEQ, a, b, "cmpeq");
+// // 			ret->dump();
+// 			
+		}	break;
 // 		case Operator::approx:
 // 			oper->setValue(fabs(a-b)<0.001);
 // 			break;
@@ -413,12 +424,8 @@ llvm::Value * compileUnaryReal(llvm::Module *module, llvm::BasicBlock *currentBl
 	switch(op) {
 		case Operator::minus: {
 			//oper->setValue(-a);
-			
-			
-			llvm::Value *a = llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(-1.0));
-			llvm::Value *b = oper;
-			
-			ret = compileRealReal(module, currentBlock, Operator::times, a,b, correct);
+			buildr.SetInsertPoint(currentBlock);
+			ret = buildr.CreateFNeg(oper, "negfval");
 		}	break;
 // 		case Operator::factorial: {
 // 			//Use gamma from math.h?
