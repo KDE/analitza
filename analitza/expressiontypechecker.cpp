@@ -779,7 +779,6 @@ QVariant ExpressionTypeChecker::visit(const Container* c)
 			m_lambdascope+=bvars.toSet();
 			c->m_params.last()->accept(this);
 			m_lambdascope=aux;
-			QMap<QString, ExpressionType> assumptions=current.assumptions();
 			
 			QList<ExpressionType> alts=current.type()==ExpressionType::Many ? current.alternatives() : QList<ExpressionType>() << current;
 			ExpressionType res=ExpressionType(ExpressionType::Many);
