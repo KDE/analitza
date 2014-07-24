@@ -65,7 +65,9 @@ namespace Analitza
 class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 {
 	public:
-		ExpressionCompiler(const Analitza::Object* o, llvm::Module *mod, const QMap<QString, llvm::Type*> &bvartypes = QMap<QString, llvm::Type*>(), Analitza::Variables* v = 0);
+		//TODO we need to define if we want llvm types here or analitza::expressiontype 
+		//for this chack the return type for lambda in the container visit
+		ExpressionCompiler(const Analitza::Object* o, llvm::Module *mod, llvm::Type * rettype = 0, const QMap<QString, llvm::Type*> &bvartypes = QMap<QString, llvm::Type*>(), Analitza::Variables* v = 0);
 		
 		virtual QVariant visit(const Analitza::None* var);
 		virtual QVariant visit(const Analitza::Ci* var);
@@ -87,6 +89,7 @@ class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 		QVariant m_result;
 		QMap<QString, llvm::Type*> m_bvartypes;
 		llvm::Module *m_mod;
+    llvm::Type* m_rettype;
 };
 
 }

@@ -37,6 +37,7 @@
 #include "apply.h"
 #include "analitzautils.h"
 #include "matrix.h"
+#include <expressiontypechecker.h>
 
 Q_DECLARE_METATYPE(llvm::Value*);
 Q_DECLARE_METATYPE(llvm::Function*);
@@ -47,8 +48,9 @@ static std::map<QString, llvm::Value*> NamedValues;
 
 using namespace Analitza;
 
-ExpressionCompiler::ExpressionCompiler(const Object* o, llvm::Module *mod, const QMap< QString, llvm::Type* >& bvartypes, Variables* v)
-	: m_bvartypes(bvartypes)
+ExpressionCompiler::ExpressionCompiler(const Object* o, llvm::Module* mod, llvm::Type* rettype, const QMap< QString, llvm::Type* >& bvartypes, Variables* v)
+	: m_rettype(rettype)
+	, m_bvartypes(bvartypes)
 	, m_mod(mod)
 {
     if (o)
@@ -265,8 +267,13 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 // 			tparams.at(0)->dump();
 // 			tparams.at(1)->dump();
 			
+// 			buildr.CreateRet(rawret);
+			//BEGIN
+			
+			//END
+			
 			//TODO we need the return type
-			llvm::FunctionType *FT = llvm::FunctionType::get(llvm::Type::getDoubleTy(llvm::getGlobalContext()), tparams, false);
+			llvm::FunctionType *FT = llvm::FunctionType::get(m_rettype, tparams, false);
 			
 			llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "mylam", m_mod);//TODO count how many lambdas we have generated i.e mylam0, mylam1 ...
 			
@@ -279,6 +286,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			}
 			
 			llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
+// 			trik->moveBefore(BB);
 			buildr.SetInsertPoint(BB);
 			buildr.CreateRet(c->m_params.last()->accept(this).value<llvm::Value*>());
 			

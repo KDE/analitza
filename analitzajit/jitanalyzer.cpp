@@ -21,6 +21,7 @@
 #include "typecompiler.h"
 #include "expressioncompiler.h"
 #include "value.h"
+#include <expressiontypechecker.h>
 
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Value.h>
@@ -76,8 +77,18 @@ bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression, const 
 			foreach (const QString &str, bvartypes.keys()) {
 				paramtyps[str] = tc.mapExpressionType(bvartypes[str]);
 			}
+
+			ExpressionTypeChecker check(variables());
+			check.initializeVars(bvartypes);
 			
-			ExpressionCompiler v(expression().tree(), m_mod, paramtyps, variables());
+			ExpressionType rett = check.check(expression().lambdaBody());
+			//TODO check if rett (return type) has error ret.Errors
+			
+// 			qDebug() << "FUNT RET TYPE "<< rett.toString();
+			
+			llvm::Type *rettype = tc.mapExpressionType(rett);
+			
+			ExpressionCompiler v(expression().tree(), m_mod, rettype, paramtyps, variables());
 			
 	// 		std::string str;
 	// 		llvm::raw_string_ostream stringwriter(str);
@@ -125,15 +136,33 @@ llvm::Value* JitAnalyzer::foojiteval()
 	
 	std::vector<llvm::GenericValue> abc;
 	
-	foreach(Object *obj, runStack()) {
+	for (int i = 0; i < this->expression().bvarList().size(); ++i) {
 		llvm::GenericValue a;
-		a.DoubleVal = ((Cn*)obj)->value();
+		a.DoubleVal = ((Cn*)(runStack().at(i)))->value();
 		abc.push_back(a);
 	}
 	
 	llvm::GenericValue rr = TheExecutionEngine->runFunction(CalleeF, abc);
 	
-	qDebug() << "fluuuu" << rr.DoubleVal;
+	switch (CalleeF->getReturnType()->getTypeID()) {
+		case llvm::Type::DoubleTyID: {
+			qDebug() << "fluuuu" << rr.DoubleVal;
+		}	break;
+		case llvm::Type::IntegerTyID: {
+			llvm::IntegerType *inttype = (llvm::IntegerType *)CalleeF->getReturnType();
+			
+			switch (inttype->getBitWidth()) {
+				case 1:  { //for bool expressiontype 
+					qDebug() << "fluuuu" << rr.IntVal.getBoolValue();
+				}	break;
+// 				default: {
+// 					qDebug() << "fluuuu" << rr.IntVal.get;
+// 				}
+			}
+			
+			
+		}	break;
+	}
 	
 	
 	

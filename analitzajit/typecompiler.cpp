@@ -22,6 +22,7 @@
 
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Type.h>
+#include <llvm/IR/DerivedTypes.h>
 
 llvm::Type* TypeCompiler::mapExpressionType(const Analitza::ExpressionType& expressionType)
 {
@@ -35,7 +36,10 @@ llvm::Type* TypeCompiler::mapExpressionType(const Analitza::ExpressionType& expr
 			//TODO handle llvm::Type::getInt32Ty(llvm::getGlobalContext())
 			ret = llvm::Type::getDoubleTy(llvm::getGlobalContext());
 		}	break;
-// 		case Analitza::ExpressionType::Bool: //TODO
+		case Analitza::ExpressionType::Bool: {
+			ret = llvm::Type::getInt1Ty(llvm::getGlobalContext()); //we need just one bit for bool
+		}	break;
+		//TODO
 // 		case Analitza::ExpressionType::Char: {
 // 			ret = llvm::Type::getInt8Ty(llvm::getGlobalContext());
 // 		}	break;

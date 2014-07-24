@@ -56,9 +56,9 @@ public:
 	
 	//TODO WE NEED TO PASS RETURN TYPE TOO
 	//TODO better params names
-	bool setLambdaExpression(const Analitza::Expression &lambdaExpression, const QMap<QString, Analitza::ExpressionType> &bvartypes);
+	bool setLambdaExpression(const Analitza::Expression& lambdaExpression, const QMap< QString, Analitza::ExpressionType >& bvartypes);
 	
-	//convenience method where all bvars are double
+	//convenience method where all bvars are double and the return is double too
 	bool setLambdaExpression(const Analitza::Expression &lambdaExpression);
 	
 private:

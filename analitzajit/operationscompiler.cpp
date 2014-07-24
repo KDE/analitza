@@ -156,14 +156,14 @@ llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlo
 // 			TODO
 // 			//oper->setValue(a == b);
 // 			
-// 			llvm::Value *a = val1;
-// 			llvm::Value *b = val2;
-// 			
-// 			if (currentBlock)
-// 				buildr.SetInsertPoint(currentBlock);
-// 			
-// 			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UEQ, a, b, "cmpeq");
-// // 			ret->dump();
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+// // 			
+			if (currentBlock)
+				buildr.SetInsertPoint(currentBlock);
+// // 			
+			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UEQ, a, b, "cmpeq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
+// // // 			ret->dump();
 // 			
 		}	break;
 // 		case Operator::approx:
