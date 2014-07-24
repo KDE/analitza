@@ -146,12 +146,31 @@ llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlo
 // 		case Operator::max:
 // 			oper->setValue(a > b? a : b);
 // 			break;
-// 		case Operator::gt:
-// 			oper->setValue(a > b);
-// 			break;
-// 		case Operator::lt:
+		case Operator::gt: {
+			//oper->setValue(a > b);
+			
+// 			
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+// // 			
+			if (currentBlock)
+				buildr.SetInsertPoint(currentBlock);
+// // 			
+			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UGT , a, b, "cmpeq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
+			
+		}	break;
+		case Operator::lt: {
 // 			oper->setValue(a < b);
-// 			break;
+			
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+// // 			
+			if (currentBlock)
+				buildr.SetInsertPoint(currentBlock);
+// // 			
+			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_ULT  , a, b, "cmpeq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
+			
+		}	break;
 		case Operator::eq: {
 // 			TODO
 // 			//oper->setValue(a == b);
@@ -169,15 +188,41 @@ llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlo
 // 		case Operator::approx:
 // 			oper->setValue(fabs(a-b)<0.001);
 // 			break;
-// 		case Operator::neq:
-// 			oper->setValue(a != b);
-// 			break;
-// 		case Operator::geq:
-// 			oper->setValue(a >= b);
-// 			break;
-// 		case Operator::leq:
-// 			oper->setValue(a <= b);
-// 			break;
+		case Operator::neq: {
+			//oper->setValue(a != b);
+			
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+// // 			
+			if (currentBlock)
+				buildr.SetInsertPoint(currentBlock);
+// // 			
+			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UNE, a, b, "cmpneq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
+		}	break;
+		case Operator::geq: {
+			//oper->setValue(a >= b);
+			
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+// // 			
+			if (currentBlock)
+				buildr.SetInsertPoint(currentBlock);
+// // 			
+			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UGE , a, b, "cmpneq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
+			
+		}	break;
+		case Operator::leq: {
+			//oper->setValue(a <= b);
+			
+			llvm::Value *a = val1;
+			llvm::Value *b = val2;
+// // 			
+			if (currentBlock)
+				buildr.SetInsertPoint(currentBlock);
+// // 			
+			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_ULE  , a, b, "cmpneq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
+
+		}	break;
 // 		case Operator::_and:
 // 			oper->setValue(a && b);
 // 			break;

@@ -95,8 +95,16 @@ void AnalitzaJitTest::testCalculate()
 // 	argtipos["y"] = mt;
 	//END experimental
 	//a->setLambdaExpression(Expression("(x,y)->x+y")/*, argtipos*/);
-	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3.0000")); // true i.e 1
+// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3.0000")); // true i.e 1
 	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->x->piecewise { x<0 ? -x, x=0 ? -5, x>5 ? x*x, ? x }"));
+	
+// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3")); // x=3 => 1
+// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x!=3")); // x=3 => 0
+// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->y>3")); // y=2 => 0
+// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->y<3")); // y=2 => 1
+// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x<=3")); // x=3 => 1
+	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x>=3")); // x=3 => 1
+	
 	
 	a->setStack(stack);
 	a->foojiteval();
