@@ -29,6 +29,11 @@
 
 QTEST_MAIN( AnalitzaJitTest )
 
+static inline bool epscompare(double a, double b)
+{
+  return a==b || std::abs(a-b)<std::abs(std::min(a,b))*std::numeric_limits<double>::epsilon();
+}
+
 AnalitzaJitTest::AnalitzaJitTest(QObject *parent)
  : QObject(parent)
 {}
@@ -38,39 +43,28 @@ AnalitzaJitTest::~AnalitzaJitTest()
 
 void AnalitzaJitTest::initTestCase()
 {
+	arg1=new Analitza::Cn(0.0);
+	
 	a=new Analitza::JITAnalyzer;
+	a->setStack(QVector<Analitza::Object*>() << arg1);
 }
 
 void AnalitzaJitTest::cleanupTestCase()
 {
+	delete arg1;
 	delete a;
 }
 
-void AnalitzaJitTest::testCalculate_data()
+void AnalitzaJitTest::testCalculateUnaryRealLambda_data()
 {
-//TODO
-}
-
-#include <llvm/Support/raw_ostream.h>
-using namespace Analitza;
-void AnalitzaJitTest::testCalculate()
-{
-//TODO this is just a foo test
-// 	std::string str;
-// 	llvm::raw_string_ostream stringwriter(str);
-// 	a->foojiteval()->print(stringwriter);
-// 	
-// 	qDebug() << QString::fromStdString(str);
+	QTest::addColumn<QString>("expression");
+	QTest::addColumn<double>("arg1value");
+	QTest::addColumn<double>("resultvalue");
 	
-	Analitza::Cn* val1 = new Analitza::Cn(3);
-// 	Analitza::Cn* val2 = new Analitza::Cn(2);
-// 	Analitza::Cn* val3 = new Analitza::Cn(7);
-	QStack<Analitza::Object*> stack;
-	stack.push(val1);
-// 	stack.push(val2);
-// 	stack.push(val3);
+	QTest::newRow("sin(0)") << "t->sin(t)" << 0.0 << 0.0;
+	QTest::newRow("tan(2.3)") << "t->tan(t)" << 2.3 << -1.1192136417341325;
 	
-	//a->setLambdaExpression(Analitza::Expression("t->sin(t)"));
+	//a->setLambdaExpression(Analitza::Expression(""));
 	//a->setLambdaExpression(Analitza::Expression("t->4+5"));
 	//a->setLambdaExpression(Analitza::Expression("t->0.3-5.2"));s
 	//a->setLambdaExpression(Analitza::Expression("t->20*0.5"));
@@ -81,7 +75,6 @@ void AnalitzaJitTest::testCalculate()
 	//a->setLambdaExpression(Analitza::Expression("t->cos(0)+t"));
 	//a->setLambdaExpression(Analitza::Expression("t->t/2"));
 	//a->setLambdaExpression(Analitza::Expression("t->tan(0)+t"));
-	a->setExpression(Analitza::Expression("t->tan(2.3)")); //-1.1192136
 	//a->setLambdaExpression(Analitza::Expression("(x,y)->x*x+y*y"));
 	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->x+y*z"));
 	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->-9"));
@@ -106,28 +99,23 @@ void AnalitzaJitTest::testCalculate()
 // 	a->setLambdaExpression(Analitza::Expression("x->piecewise { 4=4? 3 }"));
 	//a->setLambdaExpression(Analitza::Expression("x->piecewise { x<0 ? -x, x=0 ? -5, x>5 ? x*x, ? x }"));
 	
+
+}
+
+void AnalitzaJitTest::testCalculateUnaryRealLambda()
+{
+	QFETCH(QString, expression);
+	QFETCH(double, arg1value);
+	QFETCH(double, resultvalue);
 	
-	a->setStack(stack);
+	arg1->setValue(arg1value);
+	
 	double result = 0;
+	
+	a->setExpression(Analitza::Expression(expression));
 	a->calculateLambda(result);
-	qDebug() << "THE RESULT: " << result;
-// 	qDebug() << "PEPEPEPEPE " << ((llvm::ConstantFP*)(a->foojiteval()))->getValueAPF().convertToDouble();
 	
-	qDeleteAll(stack);
-	
-// 	Analitza::Analyzer aa;
-// 	aa.setExpression(Analitza::Expression("t->vector {t,t**2,t}"));
-// 	aa.calculateLambda();
-// 	qDebug() << "s0 " << aa.evaluate().toString();
-	
-// 	Analitza::Container *cc = (Analitza::Container*)(aa.expression().tree());
-// 	cc = (Analitza::Container*)(cc->m_params.first());
-// 	qDebug() << "ty " << cc->containerType();
-// 	
-// 	
-// 	
-// 	qDebug() << "s1 " << aa.calculateLambda().toString();
-	
+	QVERIFY(epscompare(resultvalue, result));
 }
 
 #include "analitzajittest.moc"

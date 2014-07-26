@@ -86,10 +86,10 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		 * If result type is not the same type of the expression, then nothing will be done.
 		 */
 		void calculateLambda(double &result);
+		void calculateLambda(bool &result);
 		
 		//TODO
 		//void calculateLambda(int &result);
-		//void calculateLambda(bool &result);
 		//void calculateLambda(complex &result);
 		//void calculateLambda(vector &result);
 		//void calculateLambda(matrix &result);

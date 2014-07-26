@@ -139,17 +139,44 @@ void JITAnalyzer::calculateLambda(double &result)
 		case llvm::Type::DoubleTyID: {
 			result = rr.DoubleVal;
 		}	break;
+	}
+}
+void JITAnalyzer::calculateLambda(bool &result)
+{
+	Q_ASSERT(!m_jitfnscache.isEmpty());
+	//TODO check for non empty m_jitfnscache
+	
+	std::vector<llvm::Value*> ArgsV;
+	for (int i = 0; i < runStack().size(); ++i) {
+		ExpressionCompiler vv(runStack().at(i), m_module);
+		ArgsV.push_back(vv.result().value<llvm::Value*>());
+	}
+	
+// 	ArgsV[0]->dump();
+	
+	
+	// Look up the name in the global module table.
+	llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache.last();
+// 	llvm::CallInst *retcall = Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
+	
+	std::vector<llvm::GenericValue> abc;
+	
+	for (int i = 0; i < this->expression().bvarList().size(); ++i) {
+		llvm::GenericValue a;
+		a.DoubleVal = ((Cn*)(runStack().at(i)))->value();
+		abc.push_back(a);
+	}
+	
+	llvm::GenericValue rr = m_jitengine->runFunction(CalleeF, abc);
+	
+	switch (CalleeF->getReturnType()->getTypeID()) {
 		case llvm::Type::IntegerTyID: {
 			llvm::IntegerType *inttype = (llvm::IntegerType *)CalleeF->getReturnType();
 			
 			switch (inttype->getBitWidth()) {
 				case 1:  { //for bool expressiontype 
-					//TODO since result is double then don't do nothig and put this in method where result is bool
-// 					qDebug() << "fluuuu" << rr.IntVal.getBoolValue();
+					result = rr.IntVal.getBoolValue();
 				}	break;
-// 				default: {
-// 					qDebug() << "fluuuu" << rr.IntVal.get;
-// 				}
 			}
 		}	break;
 	}

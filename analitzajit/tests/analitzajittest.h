@@ -21,7 +21,10 @@
 
 #include <QObject>
 
-namespace Analitza { class JITAnalyzer; }
+namespace Analitza { 
+	class JITAnalyzer; 
+	class Cn;
+}
 
 /**
 	@author Percy Camilo T. Aucahuasi
@@ -35,13 +38,14 @@ Q_OBJECT
 	
 	private Q_SLOTS:
 		void initTestCase();
-		//TODO
-		void testCalculate_data();
-		void testCalculate();
+		
+		void testCalculateUnaryRealLambda_data();
+		void testCalculateUnaryRealLambda();
 		
 		void cleanupTestCase();
 	private:
 		Analitza::JITAnalyzer *a;
+		Analitza::Cn* arg1;
 };
 
 #endif
