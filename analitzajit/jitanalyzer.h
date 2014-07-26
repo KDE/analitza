@@ -46,11 +46,11 @@ namespace Analitza
  * to compile the expression again.
  */
 
-class ANALITZAJIT_EXPORT JitAnalyzer : public Analitza::Analyzer
+class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 {
 	public:
-		JitAnalyzer();
-		~JitAnalyzer();
+		JITAnalyzer();
+		~JITAnalyzer();
 		
 		/**
 		 * Sets an expression to calculate.

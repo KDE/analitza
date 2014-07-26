@@ -33,7 +33,7 @@ Q_DECLARE_METATYPE(llvm::Value*);
 
 using namespace Analitza;
 
-JitAnalyzer::JitAnalyzer()
+JITAnalyzer::JITAnalyzer()
 {
 	llvm::InitializeNativeTarget();
 	
@@ -41,7 +41,7 @@ JitAnalyzer::JitAnalyzer()
 	m_jitengine = llvm::EngineBuilder(m_module).create();
 }
 
-JitAnalyzer::~JitAnalyzer()
+JITAnalyzer::~JITAnalyzer()
 {
 	m_jitengine->removeModule(m_module);
 	
@@ -49,7 +49,7 @@ JitAnalyzer::~JitAnalyzer()
 	delete m_jitengine;
 }
 
-bool JitAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
+bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
 {
 	//TODO better code
 	Analyzer::setExpression(lambdaExpression);
@@ -95,7 +95,7 @@ bool JitAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 	return false;
 }
 
-bool JitAnalyzer::setExpression(const Expression& lambdaExpression)
+bool JITAnalyzer::setExpression(const Expression& lambdaExpression)
 {
 	//TODO check if exp is lambda
 	QMap<QString, Analitza::ExpressionType> bvartypes;
@@ -104,10 +104,10 @@ bool JitAnalyzer::setExpression(const Expression& lambdaExpression)
 		bvartypes[bvar] = ExpressionType(ExpressionType::Value);
 	}
 	
-	return JitAnalyzer::setExpression(lambdaExpression, bvartypes);
+	return JITAnalyzer::setExpression(lambdaExpression, bvartypes);
 }
 
-void JitAnalyzer::calculateLambda(double &result)
+void JITAnalyzer::calculateLambda(double &result)
 {
 	Q_ASSERT(!m_jitfnscache.isEmpty());
 	//TODO check for non empty m_jitfnscache
