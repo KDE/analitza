@@ -81,7 +81,7 @@ void AnalitzaJitTest::testCalculate()
 	//a->setLambdaExpression(Analitza::Expression("t->cos(0)+t"));
 	//a->setLambdaExpression(Analitza::Expression("t->t/2"));
 	//a->setLambdaExpression(Analitza::Expression("t->tan(0)+t"));
-// 	a->setLambdaExpression(Analitza::Expression("t->tan(2.3)")); //-1.1192136
+	a->setExpression(Analitza::Expression("t->tan(2.3)")); //-1.1192136
 	//a->setLambdaExpression(Analitza::Expression("(x,y)->x*x+y*y"));
 	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->x+y*z"));
 	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->-9"));
@@ -103,12 +103,14 @@ void AnalitzaJitTest::testCalculate()
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->y<3")); // y=2 => 1
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x<=3")); // x=3 => 1
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x>=3")); // x=3 => 1
-	a->setLambdaExpression(Analitza::Expression("x->piecewise { 4=4? 3 }"));
+// 	a->setLambdaExpression(Analitza::Expression("x->piecewise { 4=4? 3 }"));
 	//a->setLambdaExpression(Analitza::Expression("x->piecewise { x<0 ? -x, x=0 ? -5, x>5 ? x*x, ? x }"));
 	
 	
 	a->setStack(stack);
-	a->foojiteval();
+	double result = 0;
+	a->calculateLambda(result);
+	qDebug() << "THE RESULT: " << result;
 // 	qDebug() << "PEPEPEPEPE " << ((llvm::ConstantFP*)(a->foojiteval()))->getValueAPF().convertToDouble();
 	
 	qDeleteAll(stack);

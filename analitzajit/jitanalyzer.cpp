@@ -23,45 +23,36 @@
 #include "value.h"
 #include <expressiontypechecker.h>
 
-#include <llvm/IR/IRBuilder.h>
-#include <llvm/IR/Value.h>
 #include <llvm/IR/Module.h>
-#include <llvm/IR/Function.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/ExecutionEngine/GenericValue.h>
-#include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
-#include <llvm/Support/raw_os_ostream.h>
 
-//TODO avoid static
-static llvm::LLVMContext &ctx = llvm::getGlobalContext();
-static llvm::IRBuilder<> Builder(ctx);
-
-Q_DECLARE_METATYPE(llvm::Value*); //TODO see if this goes into visitor header
-Q_DECLARE_METATYPE(llvm::Function*);
+Q_DECLARE_METATYPE(llvm::Value*);
 
 using namespace Analitza;
 
 JitAnalyzer::JitAnalyzer()
 {
 	llvm::InitializeNativeTarget();
-m_mod = new llvm::Module("mumod", ctx);
-TheExecutionEngine = llvm::EngineBuilder(m_mod).create();
-// 	qDebug() << "fluuuu" << TheExecutionEngine;
+	
+	m_module = new llvm::Module("mumod", llvm::getGlobalContext());
+	m_jitengine = llvm::EngineBuilder(m_module).create();
 }
 
 JitAnalyzer::~JitAnalyzer()
 {
-TheExecutionEngine->removeModule(m_mod);
-delete m_mod;
-delete TheExecutionEngine;
+	m_jitengine->removeModule(m_module);
+	
+	delete m_module;
+	delete m_jitengine;
 }
 
-bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
+bool JitAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
 {
 	//TODO better code
-	setExpression(lambdaExpression);
+	Analyzer::setExpression(lambdaExpression);
 	const QString &fnkey = lambdaExpression.toString();
 	
 	if (expression().isLambda() && isCorrect()) {
@@ -88,7 +79,7 @@ bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression, const 
 			
 			llvm::Type *rettype = tc.mapExpressionType(rett);
 			
-			ExpressionCompiler v(expression().tree(), m_mod, rettype, paramtyps, variables());
+			ExpressionCompiler v(expression().tree(), m_module, rettype, paramtyps, variables());
 			
 	// 		std::string str;
 	// 		llvm::raw_string_ostream stringwriter(str);
@@ -104,7 +95,7 @@ bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression, const 
 	return false;
 }
 
-bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression)
+bool JitAnalyzer::setExpression(const Expression& lambdaExpression)
 {
 	//TODO check if exp is lambda
 	QMap<QString, Analitza::ExpressionType> bvartypes;
@@ -113,17 +104,17 @@ bool JitAnalyzer::setLambdaExpression(const Expression& lambdaExpression)
 		bvartypes[bvar] = ExpressionType(ExpressionType::Value);
 	}
 	
-	return setLambdaExpression(lambdaExpression, bvartypes);
+	return JitAnalyzer::setExpression(lambdaExpression, bvartypes);
 }
 
-llvm::Value* JitAnalyzer::foojiteval()
+void JitAnalyzer::calculateLambda(double &result)
 {
 	Q_ASSERT(!m_jitfnscache.isEmpty());
 	//TODO check for non empty m_jitfnscache
 	
 	std::vector<llvm::Value*> ArgsV;
 	for (int i = 0; i < runStack().size(); ++i) {
-		ExpressionCompiler vv(runStack().at(i), m_mod);
+		ExpressionCompiler vv(runStack().at(i), m_module);
 		ArgsV.push_back(vv.result().value<llvm::Value*>());
 	}
 	
@@ -142,33 +133,24 @@ llvm::Value* JitAnalyzer::foojiteval()
 		abc.push_back(a);
 	}
 	
-	llvm::GenericValue rr = TheExecutionEngine->runFunction(CalleeF, abc);
+	llvm::GenericValue rr = m_jitengine->runFunction(CalleeF, abc);
 	
 	switch (CalleeF->getReturnType()->getTypeID()) {
 		case llvm::Type::DoubleTyID: {
-			qDebug() << "fluuuu" << rr.DoubleVal;
+			result = rr.DoubleVal;
 		}	break;
 		case llvm::Type::IntegerTyID: {
 			llvm::IntegerType *inttype = (llvm::IntegerType *)CalleeF->getReturnType();
 			
 			switch (inttype->getBitWidth()) {
 				case 1:  { //for bool expressiontype 
-					qDebug() << "fluuuu" << rr.IntVal.getBoolValue();
+					//TODO since result is double then don't do nothig and put this in method where result is bool
+// 					qDebug() << "fluuuu" << rr.IntVal.getBoolValue();
 				}	break;
 // 				default: {
 // 					qDebug() << "fluuuu" << rr.IntVal.get;
 // 				}
 			}
-			
-			
 		}	break;
 	}
-	
-	
-	
-// 	void *FPtr = TheExecutionEngine->getPointerToFunction(CalleeF);
-// 	double (*FP)(double) = (double (*)(double))(intptr_t)FPtr;
-// 	qDebug() << "fluuuu" << FP(12);
-	
-	return CalleeF;
 }

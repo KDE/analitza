@@ -22,9 +22,9 @@
 #include "analitza/analyzer.h"
 #include "analitzajitexport.h"
 
+extern Analitza::Analyzer a;
 namespace llvm { 
 	class Value; 
-	class Function;
 	class Module;
 	class ExecutionEngine;
 };
@@ -32,39 +32,77 @@ namespace llvm {
 namespace Analitza
 {
 
-//WARNING 
-//NOTE
-//JitAnalyzer manage/keeps a one and only one LLVM::Module.
-
 /**
  * \class LLVMAnalyzer
  * 
  * \ingroup AnalitzaModule
  *
- * \brief Evaluates math expressions using JIT.
+ * \brief Calculates lambda expressions using Just-in-time compilation.
+ * \internal JitAnalyzer manage/keeps a one and only one LLVM::Module.
+ * 
+ * This class calculates any math expression using JIT compilation, so every 
+ * expression will be compiled into machine code before its execution. 
+ * Also, this class will cache every math expression so it will not be necessary 
+ * to compile the expression again.
  */
 
 class ANALITZAJIT_EXPORT JitAnalyzer : public Analitza::Analyzer
 {
-//TODO
-public:
-    JitAnalyzer();
-	~JitAnalyzer();
-	llvm::Value *foojiteval();
-	
-	//TODO need to return a C++ type, analitzatype or llvm::type (like genericvalue)?
-	
-	//TODO WE NEED TO PASS RETURN TYPE TOO
-	//TODO better params names
-	bool setLambdaExpression(const Analitza::Expression& lambdaExpression, const QMap< QString, Analitza::ExpressionType >& bvartypes);
-	
-	//convenience method where all bvars are double and the return is double too
-	bool setLambdaExpression(const Analitza::Expression &lambdaExpression);
-	
-private:
-	QMap<QString, llvm::Value*> m_jitfnscache;
-	llvm::Module *m_mod;
-	llvm::ExecutionEngine *TheExecutionEngine;
+	public:
+		JitAnalyzer();
+		~JitAnalyzer();
+		
+		/**
+		 * Sets an expression to calculate.
+		 * If the expression is a lambda and/or contains variables, then 
+		 * for each variable you must specify its type.
+		 * @returns Returns true if expression is ready to be calculated using JIT compilation.
+		 */ 
+		bool setExpression(const Analitza::Expression& expression, const QMap< QString, Analitza::ExpressionType >& bvartypes);
+		
+		/**
+		 * Convenience method where all variables types of the expression 
+		 * are set to be floating point types (real numbers)
+		 */
+		bool setExpression(const Analitza::Expression &expression);
+		
+		/**
+		 * TODO
+		 * Calculates the expression using JIT compilation and returns a value alone.
+		 * If result type is not the same type of the expression, then nothing will be done.
+		 */
+		//void calculate(double &result);
+		//TODO
+		//void calculate(int &result);
+		//void calculate(bool &result);
+		//void calculate(complex &result);
+		//void calculate(vector &result);
+		//void calculate(matrix &result);
+		//void calculate(list &result);
+		
+		/**
+		 * Calculates the lambda expression using JIT compilation and returns a value alone.
+		 * The parameters need to be set by passing a stack instance.
+		 * If result type is not the same type of the expression, then nothing will be done.
+		 */
+		void calculateLambda(double &result);
+		
+		//TODO
+		//void calculateLambda(int &result);
+		//void calculateLambda(bool &result);
+		//void calculateLambda(complex &result);
+		//void calculateLambda(vector &result);
+		//void calculateLambda(matrix &result);
+		//void calculateLambda(list &result);
+		
+	private:
+		//TODO pimpl idiom needs to be applied here
+		
+		llvm::Module *m_module;
+		llvm::ExecutionEngine *m_jitengine;
+		
+		//TODO better cache structure
+		QMap<QString, llvm::Value*> m_jitfnscache;
 };
 
 }
