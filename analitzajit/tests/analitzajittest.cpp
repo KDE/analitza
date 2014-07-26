@@ -63,12 +63,12 @@ void AnalitzaJitTest::testCalculate()
 // 	qDebug() << QString::fromStdString(str);
 	
 	Analitza::Cn* val1 = new Analitza::Cn(3);
-	Analitza::Cn* val2 = new Analitza::Cn(2);
-	Analitza::Cn* val3 = new Analitza::Cn(7);
+// 	Analitza::Cn* val2 = new Analitza::Cn(2);
+// 	Analitza::Cn* val3 = new Analitza::Cn(7);
 	QStack<Analitza::Object*> stack;
 	stack.push(val1);
-	stack.push(val2);
-	stack.push(val3);
+// 	stack.push(val2);
+// 	stack.push(val3);
 	
 	//a->setLambdaExpression(Analitza::Expression("t->sin(t)"));
 	//a->setLambdaExpression(Analitza::Expression("t->4+5"));
@@ -96,14 +96,15 @@ void AnalitzaJitTest::testCalculate()
 	//END experimental
 	//a->setLambdaExpression(Expression("(x,y)->x+y")/*, argtipos*/);
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3.0000")); // true i.e 1
-	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->x->piecewise { x<0 ? -x, x=0 ? -5, x>5 ? x*x, ? x }"));
 	
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3")); // x=3 => 1
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x!=3")); // x=3 => 0
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->y>3")); // y=2 => 0
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->y<3")); // y=2 => 1
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x<=3")); // x=3 => 1
-	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x>=3")); // x=3 => 1
+// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x>=3")); // x=3 => 1
+	a->setLambdaExpression(Analitza::Expression("x->piecewise { 4=4? 3 }"));
+	//a->setLambdaExpression(Analitza::Expression("x->piecewise { x<0 ? -x, x=0 ? -5, x>5 ? x*x, ? x }"));
 	
 	
 	a->setStack(stack);

@@ -195,59 +195,134 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 		case Analitza::Container::piecewise: {
 			qDebug() << "EN piecewise" << c->m_params.size();
 			
-			for (int i = 0; i <c->m_params.size();++i) {
-				c->m_params.at(i)->accept(this).value<llvm::Value*>();
+// 			llvm::BasicBlock *bbb = buildr.GetInsertBlock();
+// 			
+// 			for (int i = 0; i <c->m_params.size();++i) {
+// // 				llvm::Function *TheFunction = buildr.GetInsertBlock()->getParent();
+// // 				buildr.SetInsertPoint(buildr.GetInsertBlock());
+// // 				TheFunction->getBasicBlockList().push_back(ElseBB);
+// // 				buildr.GetInsertBlock()->getParent()->dump();
+// 				ret = c->m_params.at(i)->accept(this).value<llvm::Value*>();
+// 			}
+// 			bbb->getParent()->dump();
+			
+			//NOTE we need to order the execution
+			//From MathML documentation: It should be noted that no "order of execution" is implied 
+			//by the ordering of the piece child elements within piecewise. It is the responsibility 
+			//of the author to ensure that the subsets of the function domain defined by the second 
+			//children of the piece elements are disjoint, or that, where they overlap, the values of 
+			//the corresponding first children of the piece elements coincide. If this is not the case, 
+			//the meaning of the expression is undefined. 
+			
+			llvm::Function *TheFunction = buildr.GetInsertBlock()->getParent();
+			QList<Container*> pieces;
+			Container* otherwise = 0; //we have always one and only one otherwise
+			
+			foreach(Object *o, c->m_params) {
+				Container *p=static_cast<Container*>(o); //piecewise part
+				Q_ASSERT( o->isContainer() && (p->containerType()==Container::piece || p->containerType()==Container::otherwise) );
+				
+				if (p->containerType()==Container::piece) {
+					pieces.append(p);
+				}
+				else if (p->containerType()==Container::otherwise) {
+					otherwise = p;
+				}
 			}
 			
-// 			ExpressionType type=commonType(c->m_params);
-// 			
-// 			if(type.isError()) {
-// 				addError(QCoreApplication::tr("Could not determine the type for piecewise"));
-// 				current=type;
-// 			} else {
-// 				QList<ExpressionType> alts=type.type()==ExpressionType::Many ? type.alternatives() : QList<ExpressionType>() << type, alts2;
+			//basic idea to build IR from piecewise: if () else if else if else ... else otherwise
+			for (int i = 0; i < pieces.size()-1; ++i) {
+				Container *currpiece = pieces[i];
+				Apply *currthen = (Apply*)currpiece->m_params[0];
+				Apply *currcond = (Apply*)currpiece->m_params[1];
+				
+				Container *nextpiece = pieces[i+1];
+				Apply *nextthen = (Apply*)nextpiece->m_params[0];
+				Apply *nextcond = (Apply*)nextpiece->m_params[1];
+				
+				llvm::Value *CondV = currcond->accept(this).value<llvm::Value*>();
+				
+				llvm::BasicBlock *ThenBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "then", TheFunction);
+				llvm::BasicBlock *ElseBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "else");
+				llvm::BasicBlock *MergeBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "ifcont");
+				
+				buildr.CreateCondBr(CondV, ThenBB, ElseBB);
+				
+				llvm::Value * ThenV = currthen->accept(this).value<llvm::Value*>();
+				//TODO ASSERT IR ThenValue
+				
+// 				buildr.CreateBr(MergeBB);
+// 				ThenBB = buildr.GetInsertBlock();
 // 				
-// 				for(QList< ExpressionType >::iterator it=alts.begin(), itEnd=alts.end(); it!=itEnd; ++it) {
-// 					QMap<QString, ExpressionType> assumptions=typeIs(c->constBegin(), c->constEnd(), *it);
-// 					
-// 	// 				QMap<int, ExpressionType> stars;
-// 	// 				bool b=ExpressionType::matchAssumptions(&stars, assumptions, type.assumptions());
-// 	// 				Q_ASSERT(b);
-// 	// 				type=type.starsToType(stars);
-// 					
-// // 					qDebug() << "suuuuu\n\t" << it->assumptions() << "\n\t" << assumptions;
-// 					QMap<int, ExpressionType> stars;
-// 					bool b=ExpressionType::matchAssumptions(&stars, it->assumptions(), assumptions);
-// 					b&=ExpressionType::assumptionsMerge(it->assumptions(), assumptions);
-// // 					qDebug() << "fefefe" << b << it->assumptions();
-// 					
-// 					if(b) {
-// 						alts2 += *it;
-// // 						qDebug() << "!!!" << it->assumptions() << b;
-// 					}
-// 				}
-// 				current=ExpressionType(ExpressionType::Many, alts2);
-// 			}
+// 				TheFunction->getBasicBlockList().push_back(ElseBB);
+// 				buildr.SetInsertPoint(ElseBB);
+// 				
+// 				///
+// 				llvm::BasicBlock *ThenElseIfBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "elseif");
+// 				llvm::Value * ThenElseIfV = nextthen->accept(this).value<llvm::Value*>();
+// 				buildr.CreateCondBr(llvm::ConstantExpr::getNeg(CondV), ThenElseIfBB, ElseBB);
+// 				buildr.CreateBr(MergeBB);
+// 				ThenBB = buildr.GetInsertBlock();
+// 				
+// 				llvm::Value *ElseV = nextcond->accept(this).value<llvm::Value*>();;
+// 				buildr.CreateBr(MergeBB);
+// 				// Codegen of 'Else' can change the current block, update ElseBB for the PHI.
+// 				ElseBB = buildr.GetInsertBlock();
+// 				
+// 				TheFunction->getBasicBlockList().push_back(MergeBB);
+// 				buildr.SetInsertPoint(MergeBB);
+// 				
+// 				llvm::PHINode *PN = buildr.CreatePHI(llvm::Type::getDoubleTy(llvm::getGlobalContext()), 2, "iftmp");
+// 				PN->addIncoming(ThenV, ThenBB);
+// 				PN->addIncoming(ElseV, ElseBB);
+// 				
+// 				ret = PN;
+				
+			}
+			
 		}	break;
 		case Analitza::Container::piece: {
-			qDebug() << "EN piece" << c->m_params.size() << c->m_params.at(0)->type() << c->m_params.at(1)->type();
-// 			QMap<QString, ExpressionType> assumptions=typeIs(c->m_params.last(), ExpressionType(ExpressionType::Bool)); //condition check
-// 			c->m_params.first()->accept(this); //we return the body
-// 			QList<ExpressionType> alts=current.type()==ExpressionType::Many ? current.alternatives() : QList<ExpressionType>() << current, rets;
-// 			foreach(const ExpressionType& t, alts) {
-// 				QMap<int, ExpressionType> stars;
-// 				ExpressionType toadd=t;
-// 				bool b=ExpressionType::assumptionsMerge(toadd.assumptions(), assumptions);
-// 				
-// 				b&=ExpressionType::matchAssumptions(&stars, assumptions, t.assumptions());
-// 				
-// 				if(b) {
-// 					toadd=toadd.starsToType(stars);
-// 					
-// 					rets += toadd;
-// 				}
-// 			}
-// 			current=ExpressionType(ExpressionType::Many, rets);
+			qDebug() << "EN piece";
+
+// 			Apply *ap1 = (Apply*)c->m_params.at(0); // then part
+// 			Apply *ap2 = (Apply*)c->m_params.at(1); // condition
+// 			
+// 			llvm::Value *CondV = ap2->accept(this).value<llvm::Value*>();
+// 			
+// // 			qDebug() << "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+// // 			buildr.GetInsertBlock()->dump();
+// // 			qDebug() << "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
+// 			
+// 			llvm::Function *TheFunction = buildr.GetInsertBlock()->getParent();
+// 			llvm::BasicBlock *ThenBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "then", TheFunction);
+// 			llvm::BasicBlock *ElseBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "else");
+// 			llvm::BasicBlock *MergeBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "ifcont");
+// 			
+// 			buildr.CreateCondBr(CondV, ThenBB, ElseBB);
+// 			
+// 			llvm::Value * ThenV = ap1->accept(this).value<llvm::Value*>();
+// 			//TODO ASSERT IR ThenValue
+// 			
+// 			buildr.CreateBr(MergeBB);
+// 			ThenBB = buildr.GetInsertBlock();
+// 			
+// 			TheFunction->getBasicBlockList().push_back(ElseBB);
+// 			buildr.SetInsertPoint(ElseBB);
+// 			
+// 			llvm::Value *ElseV = llvm::ConstantInt::getFalse(llvm::getGlobalContext());
+// 			
+// 			buildr.CreateBr(MergeBB);
+// 			// Codegen of 'Else' can change the current block, update ElseBB for the PHI.
+// 			ElseBB = buildr.GetInsertBlock();
+// 			
+// 			TheFunction->getBasicBlockList().push_back(MergeBB);
+// 			buildr.SetInsertPoint(MergeBB);
+// 			
+// 			llvm::PHINode *PN = buildr.CreatePHI(llvm::Type::getDoubleTy(llvm::getGlobalContext()), 2, "iftmp");
+// 			PN->addIncoming(ThenV, ThenBB);
+// 			PN->addIncoming(ElseV, ElseBB);
+// 			
+// 			ret = PN;
 		}	break;
 		case Analitza::Container::declare:{
 // 			Q_ASSERT(c->m_params.first()->type()==Object::variable);
@@ -287,6 +362,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			
 			llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
 // 			trik->moveBefore(BB);
+// 			BB->dump();
 			buildr.SetInsertPoint(BB);
 			buildr.CreateRet(c->m_params.last()->accept(this).value<llvm::Value*>());
 			
