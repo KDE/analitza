@@ -103,6 +103,7 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		
 		//TODO better cache structure
 		QMap<QString, llvm::Value*> m_jitfnscache;
+		QString m_currentfnkey;
 };
 
 }

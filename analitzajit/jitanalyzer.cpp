@@ -53,10 +53,18 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 {
 	//TODO better code
 	Analyzer::setExpression(lambdaExpression);
-	const QString &fnkey = lambdaExpression.toString();
 	
-	if (expression().isLambda() && isCorrect()) {
-		if (m_jitfnscache.contains(fnkey)) {
+	if (isCorrect())
+		m_currentfnkey.clear();
+	
+	m_currentfnkey = lambdaExpression.toString();
+	
+	foreach(const QString &tkey, bvartypes.keys()) {
+		m_currentfnkey += "["+tkey+":"+bvartypes[tkey].toString()+"]";
+	}
+	
+	if (expression().isLambda()) {
+		if (m_jitfnscache.contains(m_currentfnkey)) {
 			return true;
 		} else {
 			//TODO find better way to save/store IR functions
@@ -81,12 +89,8 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 			
 			ExpressionCompiler v(expression().tree(), m_module, rettype, paramtyps, variables());
 			
-	// 		std::string str;
-	// 		llvm::raw_string_ostream stringwriter(str);
-	// 		v.result().value<llvm::Value*>()->print(stringwriter);
-			
-	// 		qDebug() << QString::fromStdString(str);
-			m_jitfnscache[fnkey] = v.result().value<llvm::Value*>();
+			//cache
+			m_jitfnscache[m_currentfnkey] = v.result().value<llvm::Value*>();
 			
 			return true;
 		}
@@ -110,35 +114,40 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression)
 void JITAnalyzer::calculateLambda(double &result)
 {
 	Q_ASSERT(!m_jitfnscache.isEmpty());
-	//TODO check for non empty m_jitfnscache
 	
-	std::vector<llvm::Value*> ArgsV;
-	for (int i = 0; i < runStack().size(); ++i) {
-		ExpressionCompiler vv(runStack().at(i), m_module);
-		ArgsV.push_back(vv.result().value<llvm::Value*>());
-	}
-	
-// 	ArgsV[0]->dump();
-	
-	
-	// Look up the name in the global module table.
-	llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache.last();
-// 	llvm::CallInst *retcall = Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
-	
-	std::vector<llvm::GenericValue> abc;
-	
-	for (int i = 0; i < this->expression().bvarList().size(); ++i) {
-		llvm::GenericValue a;
-		a.DoubleVal = ((Cn*)(runStack().at(i)))->value();
-		abc.push_back(a);
-	}
-	
-	llvm::GenericValue rr = m_jitengine->runFunction(CalleeF, abc);
-	
-	switch (CalleeF->getReturnType()->getTypeID()) {
-		case llvm::Type::DoubleTyID: {
-			result = rr.DoubleVal;
-		}	break;
+	if (m_jitfnscache.contains(m_currentfnkey)) {
+		//TODO check for non empty m_jitfnscache
+		
+		std::vector<llvm::Value*> ArgsV;
+		for (int i = 0; i < runStack().size(); ++i) {
+			ExpressionCompiler vv(runStack().at(i), m_module);
+			ArgsV.push_back(vv.result().value<llvm::Value*>());
+		}
+		
+	// 	ArgsV[0]->dump();
+		
+		
+		// Look up the name in the global module table.
+		llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache[m_currentfnkey];
+	// 	llvm::CallInst *retcall = Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
+		
+		std::vector<llvm::GenericValue> abc;
+		
+		for (int i = 0; i < this->expression().bvarList().size(); ++i) {
+			llvm::GenericValue a;
+			a.DoubleVal = ((Cn*)(runStack().at(i)))->value();
+			abc.push_back(a);
+		}
+		
+		llvm::GenericValue rr = m_jitengine->runFunction(CalleeF, abc);
+		
+		switch (CalleeF->getReturnType()->getTypeID()) {
+			case llvm::Type::DoubleTyID: {
+				result = rr.DoubleVal;
+			}	break;
+		}
+	} else {
+		//TODO add error
 	}
 }
 void JITAnalyzer::calculateLambda(bool &result)

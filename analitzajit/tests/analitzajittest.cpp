@@ -63,18 +63,14 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda_data()
 	
 	QTest::newRow("sin(0)") << "t->sin(t)" << 0.0 << 0.0;
 	QTest::newRow("tan(2.3)") << "t->tan(t)" << 2.3 << -1.1192136417341325;
-	
-	//a->setLambdaExpression(Analitza::Expression(""));
-	//a->setLambdaExpression(Analitza::Expression("t->4+5"));
-	//a->setLambdaExpression(Analitza::Expression("t->0.3-5.2"));s
-	//a->setLambdaExpression(Analitza::Expression("t->20*0.5"));
-	//a->setLambdaExpression(Analitza::Expression("t->20*0.5"));
-	//a->setLambdaExpression(Analitza::Expression("t->3*4*5"));
-	//a->setLambdaExpression(Analitza::Expression("t->4*5*t+0.5*6"));
-	//a->setLambdaExpression(Analitza::Expression("t->4*5*t^2+0.5*6"));
-	//a->setLambdaExpression(Analitza::Expression("t->cos(0)+t"));
-	//a->setLambdaExpression(Analitza::Expression("t->t/2"));
-	//a->setLambdaExpression(Analitza::Expression("t->tan(0)+t"));
+	QTest::newRow("4+5") << "t->4+5" << 0.0 << 9.0;
+	QTest::newRow("0.3-5.2") << "t->0.3-5.2" << 0.0 << -4.9;
+	QTest::newRow("20*0.5") << "t->20*0.5" << 0.0 << 10.0;
+	QTest::newRow("3*4*5") << "t->3*4*5" << 0.0 << 60.0;
+	QTest::newRow("lin") << "t->4*5*t+0.5*6" << 1.3 << 29.0;
+	QTest::newRow("lin and sqr") << "t->4*5*t^2+0.5*4" << 2.2 << 98.8;
+	QTest::newRow("cos const + t") << "t->cos(0)+t" << -9.0 << -8.0;
+	QTest::newRow("t/2") << "t->t/2" << 5.3 << 2.65;
 	//a->setLambdaExpression(Analitza::Expression("(x,y)->x*x+y*y"));
 	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->x+y*z"));
 	//a->setLambdaExpression(Analitza::Expression("(x,y,z)->-9"));
@@ -115,7 +111,13 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda()
 	a->setExpression(Analitza::Expression(expression));
 	a->calculateLambda(result);
 	
-	QVERIFY(epscompare(resultvalue, result));
+	bool eq = epscompare(result, resultvalue);
+	
+	if (!eq) {
+		qDebug() << "Actual: " << result;
+		qDebug() << "Expected: " << resultvalue;
+	}
+	QVERIFY(eq);
 }
 
 #include "analitzajittest.moc"
