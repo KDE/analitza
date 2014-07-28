@@ -66,6 +66,10 @@ void AnalitzaJitTest::testCalculateUnaryBooleanLambda_data()
 	QTest::newRow("2<3") << "t->t<3" << 2.0 << true;
 	QTest::newRow("3>=3") << "t->t>=3" << 3.0 << true;
 	QTest::newRow("3<=3") << "t->t<=3" << 3.0 << true;
+	QTest::newRow("test param eq") << "t->(4*t-6*t+1)=(cos(0)-30-t+power(2,2)*t)" << 6.0 << true;
+	QTest::newRow("cos(0)>0") << "t->cos(t)>0" << 0.0 << true;
+	QTest::newRow("cos(0)>=0") << "t->cos(t)>=0" << 0.0 << true;
+	QTest::newRow("cos(0)<0") << "t->cos(t)<0" << 0.0 << false;
 }
 
 void AnalitzaJitTest::testCalculateUnaryBooleanLambda()
