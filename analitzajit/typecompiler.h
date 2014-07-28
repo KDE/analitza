@@ -26,16 +26,19 @@
 namespace llvm
 {
 class Type;
-};
+}
+
+namespace Analitza
+{
 
 /**
  * \class TypeCompiler
  * 
  * \ingroup AnalitzaJITModule
  * 
- * \brief Compiles analitza type into valid LLVM type.
+ * \brief Compiles analitza type to valid LLVM type.
  * 
- * This class will convert Analitza::ExpressionType into a LLVM IR type.
+ * TypeCompiler converts Analitza::ExpressionType to a LLVM IR type.
  * 
  * \internal ExpressionType::Value is not complete: it can't discriminate/differentiate/handle 
  * complex and int types properly, currently any Value (real, integer or complex) will be mapped into 
@@ -43,7 +46,7 @@ class Type;
  * system needs to offer a Value type that is complete according to basic math 
  * scalars (e.g. real, integer and complex) perhaps we could rename Value to Real and add entries 
  * for Int and Complex into ExpressionType. Also, in the future we could have a type system based 
- * on hierarchies, so we can use here a visitor to convert the Analitza type into a valid 
+ * on hierarchies, so we can use here a visitor to convert the Analitza type to a valid 
  * LLVM IR type. Finally, not all types are implemented (e.g. matrix, list, 
  * vector and complex numbers)
  */
@@ -51,17 +54,19 @@ class Type;
 class ANALITZAJIT_EXPORT TypeCompiler //TODO : public Analitza::AbstractExpressionTypeVisitor
 {
 	public:
-		/** Returns LLVM type for a valid or supported ExpressionType, otherwise will return null. */
+		/** Returns LLVM type for a valid or supported ExpressionType, otherwise will return a null pointer. */
 		static llvm::Type *compileType(const Analitza::ExpressionType &expressionType);
 		
 		/** Convenience method that applies TypeCompiler::compileType over each element of @p expressionTypes */
 		static QVector<llvm::Type*> compileTypes(const QList<Analitza::ExpressionType>& expressionTypes);
 		
 		/** 
-		 * Sometimes user manages associations between variable names and its types, so this is a convenience method 
+		 * Sometimes the user manages associations between variable names and its types, so this is a convenience method 
 		 * that applies TypeCompiler::compileType for each variable type contained inside of @p expressionTypes
 		 */
 		static QMap<QString, llvm::Type*> compileTypes(const QMap<QString, Analitza::ExpressionType>& expressionTypes);
 };
+
+}
 
 #endif // ANALITZAJIT_TYPECOMPILER_H

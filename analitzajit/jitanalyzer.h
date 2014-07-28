@@ -109,4 +109,5 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 };
 
 }
+
 #endif // ANALITZAJIT_JITANALYZER_H

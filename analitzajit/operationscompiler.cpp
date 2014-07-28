@@ -48,77 +48,19 @@ static llvm::IRBuilder<> buildr(llvm::getGlobalContext());
 using namespace std;
 using namespace Analitza;
 
-llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error)
+llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error)
 {
 	llvm::Value *ret = 0;
-	switch(op) {
-		case Operator::plus: {
-			//oper->setValue(a+b);
-			
-			
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-			
-// 			a->dump();
-// 			b->dump();
-			buildr.SetInsertPoint(currentBlock);
-			ret = buildr.CreateFAdd(a, b);
-			
-		}	break;
-		case Operator::minus: {
-			//oper->setValue(a+b);
-			
-			
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-			
-// 			a->dump();
-// 			b->dump();
-			buildr.SetInsertPoint(currentBlock);
-			ret = buildr.CreateFSub(a, b);
-			
-		}	break;
-		case Operator::times: {
-			//oper->setValue(a*b);
-		
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-			
-// 			a->dump();
-// 			b->dump();
-			if (currentBlock)
-				buildr.SetInsertPoint(currentBlock);
+	llvm::Module *module = currentBlock->getParent()->getParent();
 	
-			ret = buildr.CreateFMul(a, b, "multmp");
-		}	break;
-		case Operator::divide: {
-// 			if(Q_LIKELY(b!=0.)) {
-// 				//oper->setValue(a / b);
-// 			}
-// 			else {
-// 				error= QString(QCoreApplication::tr("Cannot divide by 0."));
-// 				//ret=0;
-// 			}
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-			
-// 			a->dump();
-// 			b->dump();
-			if (currentBlock)
-				buildr.SetInsertPoint(currentBlock);
-			
-			ret = buildr.CreateFDiv(a, b, "divtmp");
-			
-			
-		}	break;
+	switch(op) {
+		case Operator::plus: ret = buildr.CreateFAdd(val1, val2); break;
+		case Operator::minus: ret = buildr.CreateFSub(val1, val2); break;
+		case Operator::times: ret = buildr.CreateFMul(val1, val2); break;
+		case Operator::divide: ret = buildr.CreateFDiv(val1, val2); break;
 		case Operator::power: {
-// 			oper->setValue( b==2 ? a*a
-// 			: b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
-// 			: pow(a, b));
-			
-			buildr.SetInsertPoint(currentBlock);
-			llvm::Function *fun = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::pow, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-			return buildr.CreateCall2(fun, val1, val2, "adas");
+			llvm::Function *powptr = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::pow, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			return buildr.CreateCall2(powptr, val1, val2, "adas");
 		}	break;
 // 		case Operator::rem:
 // 			if(Q_LIKELY(floor(b)!=0.))
@@ -274,7 +216,7 @@ llvm::Value * compileRealReal(llvm::Module* module, llvm::BasicBlock* currentBlo
 	return ret;
 }
 
-llvm::Value * compileComplexComplex(llvm::Module *module, llvm::BasicBlock *currentBlock, enum Operator::OperatorType op, llvm::Value *oper, complex<double> a, complex<double> b, QString& correct)
+llvm::Value * compileComplexComplex(llvm::BasicBlock *currentBlock, enum Operator::OperatorType op, llvm::Value *oper, complex<double> a, complex<double> b, QString& correct)
 {
 	return 0; //TODO
 // 	switch(op) {
@@ -389,7 +331,7 @@ llvm::Value * compileComplexComplex(llvm::Module *module, llvm::BasicBlock *curr
 // 	return oper;
 }
 
-llvm::Value * OperationsCompiler::compileValueValueOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error)
+llvm::Value * OperationsCompiler::compileValueValueOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error)
 {
 	//TODO complex numbers case
 // 	if(Q_UNLIKELY(oper->isComplex() || oper1->isComplex())) {
@@ -397,11 +339,11 @@ llvm::Value * OperationsCompiler::compileValueValueOperation(llvm::Module* modul
 // 		return compileComplexComplex(op, oper, a, b, correct);
 // 	} else {
 // 		const double a=oper->value(), b=oper1->value();
-		return compileRealReal(module, currentBlock, op, val1, val2, error);
+		return compileRealReal(currentBlock, op, val1, val2, error);
 // 	}
 }
 
-llvm::Value * compileUnaryComplex(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* oper, QString& correct)
+llvm::Value * compileUnaryComplex(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* oper, QString& correct)
 {
 	return 0; //TODO
 // 	const complex<double> a=oper->complexValue();
@@ -461,10 +403,11 @@ llvm::Value * compileUnaryComplex(llvm::Module *module, llvm::BasicBlock *curren
 // 	return oper;
 }
 
-llvm::Value * compileUnaryReal(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* oper, QString& correct)
+llvm::Value * compileUnaryReal(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* oper, QString& correct)
 {
 	//const double a=oper->value();
 	llvm::Value *ret = 0;
+	llvm::Module *module = currentBlock->getParent()->getParent();
 // 	
 	switch(op) {
 		case Operator::minus: {
@@ -513,9 +456,9 @@ llvm::Value * compileUnaryReal(llvm::Module *module, llvm::BasicBlock *currentBl
 			llvm::Value *a = oper;
 			
 			buildr.SetInsertPoint(currentBlock);
-			llvm::Value *sinv = compileUnaryReal(module, currentBlock, Operator::sin, a, correct);
-			llvm::Value *cosv = compileUnaryReal(module, currentBlock, Operator::cos, a, correct);
-			ret = compileRealReal(module, currentBlock, Operator::divide, sinv, cosv, correct);
+			llvm::Value *sinv = compileUnaryReal(currentBlock, Operator::sin, a, correct);
+			llvm::Value *cosv = compileUnaryReal(currentBlock, Operator::cos, a, correct);
+			ret = compileRealReal(currentBlock, Operator::divide, sinv, cosv, correct);
 		}	break;
 // 		case Operator::sec:
 // 			     oper->setValue(1./cos(a));
@@ -532,9 +475,9 @@ llvm::Value * compileUnaryReal(llvm::Module *module, llvm::BasicBlock *currentBl
 			llvm::Value *a = oper;
 			
 			buildr.SetInsertPoint(currentBlock);
-			llvm::Value *sinv = compileUnaryReal(module, currentBlock, Operator::sin, a, correct);
-			llvm::Value *cosv = compileUnaryReal(module, currentBlock, Operator::cos, a, correct);
-			ret = compileRealReal(module, currentBlock, Operator::divide, cosv, sinv, correct);
+			llvm::Value *sinv = compileUnaryReal(currentBlock, Operator::sin, a, correct);
+			llvm::Value *cosv = compileUnaryReal(currentBlock, Operator::cos, a, correct);
+			ret = compileRealReal(currentBlock, Operator::divide, cosv, sinv, correct);
 		}	break;
 // 		case Operator::sinh:
 // 			     oper->setValue(sinh(a));
@@ -615,28 +558,28 @@ llvm::Value * compileUnaryReal(llvm::Module *module, llvm::BasicBlock *currentBl
 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileUnaryValueOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* a, QString& error)
+llvm::Value* OperationsCompiler::compileUnaryValueOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* a, QString& error)
 {
 // 	//TODO complex case
 // 	if(Q_UNLIKELY(oper->isComplex()))
-// 		return compileUnaryComplex(module, currentBlock, op, a, error);
+// 		return compileUnaryComplex(currentBlock, op, a, error);
 // 	else
-	return compileUnaryReal(module, currentBlock, op, a, error);
+	return compileUnaryReal(currentBlock, op, a, error);
 }
 
-llvm::Value* OperationsCompiler::compileNoneValueOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* none, llvm::Value* val, QString& error)
+llvm::Value* OperationsCompiler::compileNoneValueOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* none, llvm::Value* val, QString& error)
 {
 	return 0; //TODO
 // 	return errorCase(QCoreApplication::tr("Cannot calculate %1 between a value and an error type").arg(Operator(op).name()), correct);
 }
 
-llvm::Value* OperationsCompiler::compileValueNoneOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* none, QString& error)
+llvm::Value* OperationsCompiler::compileValueNoneOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* none, QString& error)
 {
 	return 0; //TODO
 // 	return compileNoneValue(op, cntr, oper, correct);
 }
 
-llvm::Value * OperationsCompiler::compileValueVectorOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* vec, QString& error)
+llvm::Value * OperationsCompiler::compileValueVectorOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* vec, QString& error)
 {
 	return 0; //TODO
 // 	switch(op) {
@@ -665,7 +608,7 @@ llvm::Value * OperationsCompiler::compileValueVectorOperation(llvm::Module* modu
 // 	}
 }
 
-llvm::Value * OperationsCompiler::compileVectorValueOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* vec, llvm::Value* val, QString& error)
+llvm::Value * OperationsCompiler::compileVectorValueOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* vec, llvm::Value* val, QString& error)
 {
 	return 0; //TODO
 // 	for(Vector::iterator it=v1->begin(); it!=v1->end(); ++it)
@@ -675,7 +618,7 @@ llvm::Value * OperationsCompiler::compileVectorValueOperation(llvm::Module* modu
 // 	return v1;
 }
 
-llvm::Value * OperationsCompiler::compileVectorVectorOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* vec1, llvm::Value* vec2, QString& error)
+llvm::Value * OperationsCompiler::compileVectorVectorOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* vec1, llvm::Value* vec2, QString& error)
 {
 	return 0; //TODO
 // 	if(v1->size()!=v2->size()) { //FIXME: unneeded? ... aucahuasi: I think is needed ...
@@ -693,7 +636,7 @@ llvm::Value * OperationsCompiler::compileVectorVectorOperation(llvm::Module* mod
 // 	return v1;
 }
 
-llvm::Value* OperationsCompiler::compileMatrixVectorOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* matrix, llvm::Value* vector, QString& error)
+llvm::Value* OperationsCompiler::compileMatrixVectorOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* matrix, llvm::Value* vector, QString& error)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -731,7 +674,7 @@ llvm::Value* OperationsCompiler::compileMatrixVectorOperation(llvm::Module* modu
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileUnaryVectorOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* c, QString& error)
+llvm::Value* OperationsCompiler::compileUnaryVectorOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* c, QString& error)
 {
 	return 0; //TODO
 // 	Object *ret=0;
@@ -761,7 +704,7 @@ llvm::Value* OperationsCompiler::compileUnaryVectorOperation(llvm::Module* modul
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileListListOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* l1, llvm::Value* l2, QString& error)
+llvm::Value* OperationsCompiler::compileListListOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* l1, llvm::Value* l2, QString& error)
 {
 	return 0; //TODO
 // 	Object* ret=0;
@@ -784,7 +727,7 @@ llvm::Value* OperationsCompiler::compileListListOperation(llvm::Module* module, 
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileUnaryListOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value*, QString& error)
+llvm::Value* OperationsCompiler::compileUnaryListOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value*, QString& error)
 {
 	return 0; //TODO
 // 	Object *ret=0;
@@ -801,7 +744,7 @@ llvm::Value* OperationsCompiler::compileUnaryListOperation(llvm::Module* module,
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileValueListOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value*, llvm::Value*, QString& error)
+llvm::Value* OperationsCompiler::compileValueListOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value*, llvm::Value*, QString& error)
 {
 	return 0; //TODO
 // 	switch(op) {
@@ -824,7 +767,7 @@ llvm::Value* OperationsCompiler::compileValueListOperation(llvm::Module* module,
 // 	return 0;
 }
 
-llvm::Value* OperationsCompiler::compileCustomCustomOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* v1, llvm::Value* v2, QString& error)
+llvm::Value* OperationsCompiler::compileCustomCustomOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* v1, llvm::Value* v2, QString& error)
 {
 	return 0; //TODO
 // 	switch(op) {
@@ -840,7 +783,7 @@ llvm::Value* OperationsCompiler::compileCustomCustomOperation(llvm::Module* modu
 // 	return 0;
 }
 
-llvm::Value* OperationsCompiler::compileVectorMatrixOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* vector, llvm::Value* matrix, QString& error)
+llvm::Value* OperationsCompiler::compileVectorMatrixOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* vector, llvm::Value* matrix, QString& error)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -874,7 +817,7 @@ llvm::Value* OperationsCompiler::compileVectorMatrixOperation(llvm::Module* modu
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileMatrixMatrixOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* m1, llvm::Value* m2, QString& error)
+llvm::Value* OperationsCompiler::compileMatrixMatrixOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* m1, llvm::Value* m2, QString& error)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -937,7 +880,7 @@ llvm::Value* OperationsCompiler::compileMatrixMatrixOperation(llvm::Module* modu
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileValueMatrixOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* v, llvm::Value* m1, QString& error)
+llvm::Value* OperationsCompiler::compileValueMatrixOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* v, llvm::Value* m1, QString& error)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -975,7 +918,7 @@ llvm::Value* OperationsCompiler::compileValueMatrixOperation(llvm::Module* modul
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileMatrixValueOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* m1, llvm::Value* v, QString& error)
+llvm::Value* OperationsCompiler::compileMatrixValueOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* m1, llvm::Value* v, QString& error)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -1060,7 +1003,7 @@ llvm::Value* OperationsCompiler::compileMatrixValueOperation(llvm::Module* modul
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileUnaryMatrixOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* m, QString& error)
+llvm::Value* OperationsCompiler::compileUnaryMatrixOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* m, QString& error)
 {
 	return 0; //TODO
 // 	Object* ret = 0;
@@ -1083,13 +1026,13 @@ llvm::Value* OperationsCompiler::compileUnaryMatrixOperation(llvm::Module* modul
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileMatrixNoneOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* m, llvm::Value* cntr, QString& error)
+llvm::Value* OperationsCompiler::compileMatrixNoneOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* m, llvm::Value* cntr, QString& error)
 {
 	return 0; //TODO
 // 	return errorCase(QCoreApplication::tr("Cannot calculate %1 between a matrix and an error type").arg(Operator(op).name()), correct);
 }
 
-llvm::Value* OperationsCompiler::compileNoneMatrixOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* cntr, llvm::Value* m, QString& error)
+llvm::Value* OperationsCompiler::compileNoneMatrixOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* cntr, llvm::Value* m, QString& error)
 {
 	return 0; //TODO
 // 	return compileMatrixNone(op, m, cntr, correct);
@@ -1112,8 +1055,11 @@ OperationsCompiler::BinaryOp OperationsCompiler::opsBinary[Object::custom+1][Obj
 	{0,0,0,0,0,0,0,0,0,0,(OperationsCompiler::BinaryOp) compileCustomCustomOperation}
 };
 
-llvm::Value * OperationsCompiler::compileBinaryOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, Object::ObjectType type1, Object::ObjectType type2, llvm::Value* val1, llvm::Value* val2, QString& error)
+llvm::Value * OperationsCompiler::compileBinaryOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, Object::ObjectType type1, Object::ObjectType type2, llvm::Value* val1, llvm::Value* val2, QString& error)
 {
+	Q_ASSERT(currentBlock);
+	Q_ASSERT(currentBlock->getParent());
+	
 	Object::ObjectType finaltype1 = type1;
 	
 	if (finaltype1 == Object::variable) {
@@ -1134,7 +1080,10 @@ llvm::Value * OperationsCompiler::compileBinaryOperation(llvm::Module* module, l
 	
 	BinaryOp f=opsBinary[finaltype1][finaltype2];
 	Q_ASSERT(f && "using compile (for binary operator) in a wrong way");
-	return f(module, currentBlock ,op, val1, val2, error);
+	
+	buildr.SetInsertPoint(currentBlock);
+	
+	return f(currentBlock ,op, val1, val2, error);
 }
 //TODO we need to choice based on llvm::Valye::type instead of Analitza type 
 //this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
@@ -1151,8 +1100,11 @@ OperationsCompiler::UnaryOp OperationsCompiler::opsUnary[] = {
 	(OperationsCompiler::UnaryOp) OperationsCompiler::compileUnaryMatrixOperation
 };
 
-llvm::Value * OperationsCompiler::compileUnaryOperation(llvm::Module* module, llvm::BasicBlock* currentBlock, Operator::OperatorType op, Object::ObjectType type, llvm::Value* val, QString& error)
+llvm::Value * OperationsCompiler::compileUnaryOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, Object::ObjectType type, llvm::Value* val, QString& error)
 {
+	Q_ASSERT(currentBlock);
+	Q_ASSERT(currentBlock->getParent());
+	
 	Object::ObjectType finaltype = type;
 	
 	if (finaltype == Object::variable) {
@@ -1162,9 +1114,11 @@ llvm::Value * OperationsCompiler::compileUnaryOperation(llvm::Module* module, ll
 	}
 	
 	UnaryOp f=opsUnary[finaltype];
-	
 	Q_ASSERT(f && "using compileUnary in a wrong way");
-	return f(module, currentBlock, op, val, error);
+	
+	buildr.SetInsertPoint(currentBlock);
+	
+	return f(currentBlock, op, val, error);
 }
 
 llvm::Value* OperationsCompiler::errorCase(const QString& error, QString& correct)

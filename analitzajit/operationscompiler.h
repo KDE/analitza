@@ -20,40 +20,48 @@
 #define ANALITZAJIT_OPERATIONSCOMPILER_H
 
 #include "operator.h"
-#include <llvm/IR/IRBuilder.h>
+
 namespace llvm {
 class Value;
-class Module;
-}
-
-
+class BasicBlock;
+};
 
 namespace Analitza
 {
 
-//WARNING
-//NOTE  if we need use same module across compilers then we can get an error
-//Referencing function in another module!
-//also if we don't use the current block where we are inserting some instruction then we will get an error
-//Instruction does not dominate all uses! 
-//(the istructuion was not inserted into a right block context)
+/**
+ * \class OperationsCompiler
+ * 
+ * \ingroup AnalitzaJITModule
+ * 
+ * \brief Compiles analitza operation into valid LLVM instruction.
+ * 
+ * OperationsCompiler converts any Analitza operation to LLVM instruction and inserts it 
+ * into a current LLVM basic block.
+ * 
+ * Every given basic block needs to exist inside a LLVM function and every LLVM function 
+ * needs to belong the the same LLVM module.
+ * 
+ * Finally, in case the input is invalid or could not perform the compilation, then 
+ * every method will return a null pointer.
+ * 
+ * \internal Implementation details: If we don't use the use same module across compilers 
+ * and methods then we can get this error:
+ * 'Referencing function in another module!'
+ * also if we don't use the current basic block (where we are inserting the instruction) then 
+ * we will get this error:
+ * 'Instruction does not dominate all uses!'
+ * that means the instruction was not inserted into a right basic block context.
+ */
 
-	//TODO Better docs
-	//In case the input arer not valid the compilation will fail and we will return 0 or null poitr
-	//in case of valid input code then it will generate IR code
-
-//TODO this class insert a analitza operation (i.e. an llvm instruction) into a current block
-//e.g. Expression("... sin(4) ...") will insert the LLVM IR instruction sin(4) into the current block (that may be a function body)
-	
-//TODO check if we want to use 'const' for each value pointr
 class OperationsCompiler
 {
 	public:
-		typedef llvm::Value* (*UnaryOp)(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, QString& error);
-		typedef llvm::Value* (*BinaryOp)(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error);
+		typedef llvm::Value* (*UnaryOp)(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, QString& error);
+		typedef llvm::Value* (*BinaryOp)(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error);
 		
-		static llvm::Value* compileUnaryOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object::ObjectType type, llvm::Value* val, QString& error);
-		static llvm::Value* compileBinaryOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object::ObjectType type1, Object::ObjectType type2, llvm::Value* val1, llvm::Value* val2, QString& error);
+		static llvm::Value* compileUnaryOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object::ObjectType type, llvm::Value* val, QString& error);
+		static llvm::Value* compileBinaryOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object::ObjectType type1, Object::ObjectType type2, llvm::Value* val1, llvm::Value* val2, QString& error);
 		
 	private:
 		//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
@@ -62,33 +70,34 @@ class OperationsCompiler
 		static UnaryOp opsUnary[Object::custom+1];
 		static BinaryOp opsBinary[Object::custom+1][Object::custom+1];
 		
-		static llvm::Value* compileValueNoneOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* none, QString &error);
-		static llvm::Value* compileNoneValueOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* none, llvm::Value* val, QString &error);
-		static llvm::Value* compileValueValueOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString &error);
-		static llvm::Value* compileUnaryValueOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, QString &error);
+		static llvm::Value* compileValueNoneOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* none, QString &error);
+		static llvm::Value* compileNoneValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* none, llvm::Value* val, QString &error);
+		static llvm::Value* compileValueValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString &error);
+		static llvm::Value* compileUnaryValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, QString &error);
 		
-		static llvm::Value* compileValueVectorOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* vec, QString &error);
-		static llvm::Value* compileVectorValueOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* vec, llvm::Value* val, QString &error);
-		static llvm::Value* compileVectorVectorOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* vec1, llvm::Value* vec2, QString &error);
-		static llvm::Value* compileMatrixVectorOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* matrix, llvm::Value* vector, QString &error);
-		static llvm::Value* compileUnaryVectorOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* c, QString &error);
+		static llvm::Value* compileValueVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* vec, QString &error);
+		static llvm::Value* compileVectorValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* vec, llvm::Value* val, QString &error);
+		static llvm::Value* compileVectorVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* vec1, llvm::Value* vec2, QString &error);
+		static llvm::Value* compileMatrixVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* matrix, llvm::Value* vector, QString &error);
+		static llvm::Value* compileUnaryVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* c, QString &error);
 		
-		static llvm::Value* compileValueListOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* , llvm::Value* , QString &error);
-		static llvm::Value* compileListListOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* l1, llvm::Value* l2, QString &error);
-		static llvm::Value* compileUnaryListOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* , QString &error);
+		static llvm::Value* compileValueListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* , llvm::Value* , QString &error);
+		static llvm::Value* compileListListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* l1, llvm::Value* l2, QString &error);
+		static llvm::Value* compileUnaryListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* , QString &error);
 		
-		static llvm::Value* compileValueMatrixOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, llvm::Value* v, llvm::Value* m1, QString &error);
-		static llvm::Value* compileMatrixValueOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, llvm::Value* m1, llvm::Value* v, QString &error);
-		static llvm::Value* compileVectorMatrixOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* vector, llvm::Value* matrix, QString &error);
-		static llvm::Value* compileMatrixMatrixOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* m1, llvm::Value* m2, QString &error);
-		static llvm::Value* compileUnaryMatrixOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, llvm::Value* m, QString &error);
-		static llvm::Value* compileMatrixNoneOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* m, llvm::Value* cntr, QString &error);
-		static llvm::Value* compileNoneMatrixOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* cntr, llvm::Value* m, QString &error);
+		static llvm::Value* compileValueMatrixOperation(llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, llvm::Value* v, llvm::Value* m1, QString &error);
+		static llvm::Value* compileMatrixValueOperation(llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, llvm::Value* m1, llvm::Value* v, QString &error);
+		static llvm::Value* compileVectorMatrixOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* vector, llvm::Value* matrix, QString &error);
+		static llvm::Value* compileMatrixMatrixOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* m1, llvm::Value* m2, QString &error);
+		static llvm::Value* compileUnaryMatrixOperation(llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, llvm::Value* m, QString &error);
+		static llvm::Value* compileMatrixNoneOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* m, llvm::Value* cntr, QString &error);
+		static llvm::Value* compileNoneMatrixOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* cntr, llvm::Value* m, QString &error);
 		
-		static llvm::Value* compileCustomCustomOperation(llvm::Module *module, llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* v1, llvm::Value* v2, QString &error);
+		static llvm::Value* compileCustomCustomOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* v1, llvm::Value* v2, QString &error);
 		
 		static llvm::Value* errorCase(const QString& err, QString &error);
 };
 
 }
+
 #endif // ANALITZAJIT_OPERATIONSCOMPILER_H

@@ -69,6 +69,8 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda_data()
 	QTest::newRow("lin and sqr") << "t->4*5*t^2+0.5*4" << 2.2 << 98.8;
 	QTest::newRow("cos const + t") << "t->cos(0)+t" << -9.0 << -8.0;
 	QTest::newRow("t/2") << "t->t/2" << 5.3 << 2.65;
+	QTest::newRow("t+2t") << "t->t+2*t" << 2.5 << 7.5;
+	QTest::newRow("9.6+3.5") << "t->9.6+3.5" << 0.0 << 13.1;
 }
 
 void AnalitzaJitTest::testCalculateUnaryRealLambda()

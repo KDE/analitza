@@ -24,6 +24,8 @@
 #include <llvm/IR/Type.h>
 #include <llvm/IR/DerivedTypes.h>
 
+using namespace Analitza;
+
 llvm::Type* TypeCompiler::compileType(const Analitza::ExpressionType& expressionType)
 {
 	llvm::Type *ret = 0;

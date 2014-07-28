@@ -160,8 +160,8 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 			//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
 			//this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
 			//currently we¿ll cast all types to double (analitza value)
-			//ret = OperationsCompiler::compileUnaryOperation(m_mod, buildr.GetInsertBlock(), op, val->type(), valv, error);
-			ret = OperationsCompiler::compileUnaryOperation(m_mod, buildr.GetInsertBlock(), op, Object::value, valv, error);
+			//ret = OperationsCompiler::compileUnaryOperation(buildr.GetInsertBlock(), op, val->type(), valv, error);
+			ret = OperationsCompiler::compileUnaryOperation(buildr.GetInsertBlock(), op, Object::value, valv, error);
 		}	break;
 		case 2: {
 			Object *val1 = c->at(0);
@@ -180,8 +180,8 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 			//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
 			//this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
 			//currently we¿ll cast all types to double (analitza value)
-			//ret = OperationsCompiler::compileBinaryOperation(m_mod, buildr.GetInsertBlock(), op, val1->type(), val2->type(), valv1, valv2, error);
-			ret = OperationsCompiler::compileBinaryOperation(m_mod, buildr.GetInsertBlock(), op, Object::value, Object::value, valv1, valv2, error);
+			//ret = OperationsCompiler::compileBinaryOperation(buildr.GetInsertBlock(), op, val1->type(), val2->type(), valv1, valv2, error);
+			ret = OperationsCompiler::compileBinaryOperation(buildr.GetInsertBlock(), op, Object::value, Object::value, valv1, valv2, error);
 		}	break;
 	}
 	

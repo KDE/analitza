@@ -93,4 +93,5 @@ class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 };
 
 }
+
 #endif // ANALITZAJIT_VALUECOMPILER_H
