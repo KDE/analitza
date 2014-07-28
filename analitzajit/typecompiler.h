@@ -26,44 +26,42 @@
 namespace llvm
 {
 class Type;
-}
+};
 
-//WARNING
-//NOTE  if we need use same module across compilers then we can get an error
-//Referencing function in another module!
-//also if we don't use the current block where we are inserting some instruction then we will get an error
-//Instruction does not dominate all uses! 
-//(the istructuion was not inserted into a right block context)
-
-//TODO better documentation
 /**
- * \class LLVMIRExpressionWriter
+ * \class TypeCompiler
  * 
  * \ingroup AnalitzaJITModule
  * 
- * \brief In the future we could have a type system based on hierarchies,
- * so we can use here a visitor to convert the Analitza type into a valid LLVM IR type.
- * For now, this class will take some ExpressionType and will convert it into a IR type
- * using simple and direct methods.
+ * \brief Compiles analitza type into valid LLVM type.
  * 
+ * This class will convert Analitza::ExpressionType into a LLVM IR type.
+ * 
+ * \internal ExpressionType::Value is not complete: it can't discriminate/differentiate/handle 
+ * complex and int types properly, currently any Value (real, integer or complex) will be mapped into 
+ * double by default (so for now we only support real and integer scalars) The Analitza type 
+ * system needs to offer a Value type that is complete according to basic math 
+ * scalars (e.g. real, integer and complex) perhaps we could rename Value to Real and add entries 
+ * for Int and Complex into ExpressionType. Also, in the future we could have a type system based 
+ * on hierarchies, so we can use here a visitor to convert the Analitza type into a valid 
+ * LLVM IR type. Finally, not all types are implemented (e.g. matrix, list, 
+ * vector and complex numbers)
  */
-//TODO Better docs
-	//In case the input arer not valid the compilation will fail and we will return 0 or null poitr
-	//in case of valid input code then it will generate IR code
+
 class ANALITZAJIT_EXPORT TypeCompiler //TODO : public Analitza::AbstractExpressionTypeVisitor
 {
 	public:
-		//TODO ExpressionType::Value is not complete, it can't discriminate/differentiate/handle complex 
-		// and int types properly, currently any Value (real, integer or complex) will be mapped into 
-		// a double by default (so for now we only support real and integer scalars)
-		// The Analitza type system needs to offer a Value type that is complete according to 
-		// basic math scalars (e.g. real, integer and complex)
-		//NOTE ... perhaps we could rename Value to Real and add entries for Int and Complex into ExpressionType.
-		//TODO change map to compile to keep consistence
-		static llvm::Type *mapExpressionType(const Analitza::ExpressionType &expressionType);
+		/** Returns LLVM type for a valid or supported ExpressionType, otherwise will return null. */
+		static llvm::Type *compileType(const Analitza::ExpressionType &expressionType);
 		
-		//convenience method we will use mapExpressionType over each element of expressionType
-		static std::vector<llvm::Type*> mapExpressionTypes(const QList<Analitza::ExpressionType>& expressionTypes);
+		/** Convenience method that applies TypeCompiler::compileType over each element of @p expressionTypes */
+		static QVector<llvm::Type*> compileTypes(const QList<Analitza::ExpressionType>& expressionTypes);
+		
+		/** 
+		 * Sometimes user manages associations between variable names and its types, so this is a convenience method 
+		 * that applies TypeCompiler::compileType for each variable type contained inside of @p expressionTypes
+		 */
+		static QMap<QString, llvm::Type*> compileTypes(const QMap<QString, Analitza::ExpressionType>& expressionTypes);
 };
 
 #endif // ANALITZAJIT_TYPECOMPILER_H

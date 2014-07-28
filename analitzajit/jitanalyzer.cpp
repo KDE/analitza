@@ -68,15 +68,10 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 			return true;
 		} else {
 			//TODO find better way to save/store IR functions
-			TypeCompiler tc;
-			QMap<QString, llvm::Type*> paramtyps;
+			QMap<QString, llvm::Type*> paramtyps = TypeCompiler::compileTypes(bvartypes);
 			
 	// 		qDebug() << "fluuuu" << bvartypes.keys();
 			
-			foreach (const QString &str, bvartypes.keys()) {
-				paramtyps[str] = tc.mapExpressionType(bvartypes[str]);
-			}
-
 			ExpressionTypeChecker check(variables());
 			check.initializeVars(bvartypes);
 			
@@ -85,7 +80,7 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 			
 // 			qDebug() << "FUNT RET TYPE "<< rett.toString();
 			
-			llvm::Type *rettype = tc.mapExpressionType(rett);
+			llvm::Type *rettype = TypeCompiler::compileType(rett);
 			
 			ExpressionCompiler v(expression().tree(), m_module, rettype, paramtyps, variables());
 			

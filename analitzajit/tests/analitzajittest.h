@@ -42,10 +42,14 @@ Q_OBJECT
 		void testCalculateUnaryRealLambda_data();
 		void testCalculateUnaryRealLambda();
 		
+		void testCalculateBinaryRealLambda_data();
+		void testCalculateBinaryRealLambda();
+		
 		void cleanupTestCase();
 	private:
 		Analitza::JITAnalyzer *a;
 		Analitza::Cn* arg1;
+		Analitza::Cn* arg2;
 };
 
 #endif

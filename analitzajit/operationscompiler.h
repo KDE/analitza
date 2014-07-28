@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef OPERATIONSCOMPILER_H
-#define OPERATIONSCOMPILER_H
+#ifndef ANALITZAJIT_OPERATIONSCOMPILER_H
+#define ANALITZAJIT_OPERATIONSCOMPILER_H
 
 #include "operator.h"
 #include <llvm/IR/IRBuilder.h>
@@ -91,4 +91,4 @@ class OperationsCompiler
 };
 
 }
-#endif // OPERATIONSCOMPILER_H
+#endif // ANALITZAJIT_OPERATIONSCOMPILER_H

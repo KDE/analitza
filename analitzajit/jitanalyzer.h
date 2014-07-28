@@ -16,15 +16,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef JITANALYZER_H
-#define JITANALYZER_H
+#ifndef ANALITZAJIT_JITANALYZER_H
+#define ANALITZAJIT_JITANALYZER_H
 
 #include "analitza/analyzer.h"
 #include "analitzajitexport.h"
 
-extern Analitza::Analyzer a;
 namespace llvm { 
-	class Value; 
+	class Value;
 	class Module;
 	class ExecutionEngine;
 };
@@ -38,12 +37,13 @@ namespace Analitza
  * \ingroup AnalitzaModule
  *
  * \brief Calculates lambda expressions using Just-in-time compilation.
- * \internal JitAnalyzer manage/keeps a one and only one LLVM::Module.
  * 
  * This class calculates any math expression using JIT compilation, so every 
  * expression will be compiled into machine code before its execution. 
  * Also, this class will cache every math expression so it will not be necessary 
  * to compile the expression again.
+ * 
+ * \internal JITAnalyzer manage/keeps one and only one LLVM::Module.
  */
 
 class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
@@ -56,8 +56,10 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		 * Sets an expression to calculate.
 		 * If the expression is a lambda and/or contains variables, then 
 		 * for each variable you must specify its type.
+		 * Also, the expression will be cached, so next time you set the same expression 
+		 * it will not be necessary to compile it into machine code again.
 		 * @returns Returns true if expression is ready to be calculated using JIT compilation.
-		 */ 
+		 */
 		bool setExpression(const Analitza::Expression& expression, const QMap< QString, Analitza::ExpressionType >& bvartypes);
 		
 		/**
@@ -107,4 +109,4 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 };
 
 }
-#endif
+#endif // ANALITZAJIT_JITANALYZER_H

@@ -18,17 +18,15 @@
 
 #include "typecompiler.h"
 
-#include <QDebug>
+#include <QVector>
 
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/DerivedTypes.h>
 
-llvm::Type* TypeCompiler::mapExpressionType(const Analitza::ExpressionType& expressionType)
+llvm::Type* TypeCompiler::compileType(const Analitza::ExpressionType& expressionType)
 {
 	llvm::Type *ret = 0;
-	
-// 	qDebug() << "PEPEPEPEPE " << expressionType.type();
 	
 	switch(expressionType.type()) {
 		case Analitza::ExpressionType::Value: {
@@ -51,13 +49,24 @@ llvm::Type* TypeCompiler::mapExpressionType(const Analitza::ExpressionType& expr
 	return ret;
 }
 
-std::vector< llvm::Type* > TypeCompiler::mapExpressionTypes(const QList< Analitza::ExpressionType >& expressionTypes)
+QVector< llvm::Type* > TypeCompiler::compileTypes(const QList< Analitza::ExpressionType >& expressionTypes)
 {
 	const int n = expressionTypes.size();
-	std::vector< llvm::Type* > ret(n);
+	QVector< llvm::Type* > ret(n);
 	
 	for (int i = 0; i < n; ++i)
-		ret.push_back(mapExpressionType(expressionTypes.at(i)));
+		ret.append(compileType(expressionTypes.at(i)));
+	
+	return ret;
+}
+
+QMap<QString, llvm::Type*> TypeCompiler::compileTypes(const QMap<QString, Analitza::ExpressionType>& expressionTypes)
+{
+	QMap<QString, llvm::Type*> ret;
+	
+	foreach (const QString &var, expressionTypes.keys()) {
+		ret[var] = compileType(expressionTypes[var]);
+	}
 	
 	return ret;
 }
