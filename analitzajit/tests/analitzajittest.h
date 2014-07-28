@@ -39,6 +39,9 @@ Q_OBJECT
 	private Q_SLOTS:
 		void initTestCase();
 		
+		void testCalculateUnaryBooleanLambda_data();
+		void testCalculateUnaryBooleanLambda();
+		
 		void testCalculateUnaryRealLambda_data();
 		void testCalculateUnaryRealLambda();
 		

@@ -53,11 +53,42 @@ void AnalitzaJitTest::cleanupTestCase()
 	delete a;
 }
 
+void AnalitzaJitTest::testCalculateUnaryBooleanLambda_data()
+{
+	QTest::addColumn<QString>("expression");
+	QTest::addColumn<double>("arg1value");
+	QTest::addColumn<bool>("expected");
+	
+	QTest::newRow("1=2") << "t->t=2" << 1.0 << false;
+	QTest::newRow("1!=2") << "t->t!=2" << 1.0 << true;
+	QTest::newRow("-9!=2") << "t->t!=2" << -9.0 << true;
+	QTest::newRow("2>3") << "t->t>3" << 2.0 << false;
+	QTest::newRow("2<3") << "t->t<3" << 2.0 << true;
+	QTest::newRow("3>=3") << "t->t>=3" << 3.0 << true;
+	QTest::newRow("3<=3") << "t->t<=3" << 3.0 << true;
+}
+
+void AnalitzaJitTest::testCalculateUnaryBooleanLambda()
+{
+	QFETCH(QString, expression);
+	QFETCH(double, arg1value);
+	QFETCH(bool, expected);
+	
+	arg1->setValue(arg1value);
+	
+	bool result = 0;
+	
+	a->setExpression(Analitza::Expression(expression));
+	a->calculateLambda(result);
+	
+	QCOMPARE(result, expected);
+}
+
 void AnalitzaJitTest::testCalculateUnaryRealLambda_data()
 {
 	QTest::addColumn<QString>("expression");
 	QTest::addColumn<double>("arg1value");
-	QTest::addColumn<double>("resultvalue");
+	QTest::addColumn<double>("expected");
 	
 	QTest::newRow("sin(0)") << "t->sin(t)" << 0.0 << 0.0;
 	QTest::newRow("tan(2.3)") << "t->tan(t)" << 2.3 << -1.1192136417341325;
@@ -77,7 +108,7 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda()
 {
 	QFETCH(QString, expression);
 	QFETCH(double, arg1value);
-	QFETCH(double, resultvalue);
+	QFETCH(double, expected);
 	
 	arg1->setValue(arg1value);
 	
@@ -86,11 +117,11 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda()
 	a->setExpression(Analitza::Expression(expression));
 	a->calculateLambda(result);
 	
-	bool eq = epscompare(result, resultvalue);
+	bool eq = epscompare(result, expected);
 	
 	if (!eq) {
 		qDebug() << "Actual: " << result;
-		qDebug() << "Expected: " << resultvalue;
+		qDebug() << "Expected: " << expected;
 	}
 	QVERIFY(eq);
 }
@@ -100,19 +131,13 @@ void AnalitzaJitTest::testCalculateBinaryRealLambda_data()
 	QTest::addColumn<QString>("expression");
 	QTest::addColumn<double>("arg1value");
 	QTest::addColumn<double>("arg2value");
-	QTest::addColumn<double>("resultvalue");
+	QTest::addColumn<double>("expected");
 	
 	QTest::newRow("x^2+y^2") << "(x,y)->x*x+y*y" << 3.0 << 7.5 << 65.25;
 	QTest::newRow("pow(x,y)") << "(x,y)->power(x,y)" << 6.0 << 2.0 << 36.0;
 	//a->setLambdaExpression(Expression("(x,y)->x+y")/*, argtipos*/);
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3.0000")); // true i.e 1
 	
-// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3")); // x=3 => 1
-// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x!=3")); // x=3 => 0
-// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->y>3")); // y=2 => 0
-// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->y<3")); // y=2 => 1
-// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x<=3")); // x=3 => 1
-// 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x>=3")); // x=3 => 1
 // 	a->setLambdaExpression(Analitza::Expression("x->piecewise { 4=4? 3 }"));
 	//a->setLambdaExpression(Analitza::Expression("x->piecewise { x<0 ? -x, x=0 ? -5, x>5 ? x*x, ? x }"));
 }
@@ -122,7 +147,7 @@ void AnalitzaJitTest::testCalculateBinaryRealLambda()
 	QFETCH(QString, expression);
 	QFETCH(double, arg1value);
 	QFETCH(double, arg2value);
-	QFETCH(double, resultvalue);
+	QFETCH(double, expected);
 	
 	arg1->setValue(arg1value);
 	arg2->setValue(arg2value);
@@ -132,11 +157,11 @@ void AnalitzaJitTest::testCalculateBinaryRealLambda()
 	a->setExpression(Analitza::Expression(expression));
 	a->calculateLambda(result);
 	
-	bool eq = epscompare(result, resultvalue);
+	bool eq = epscompare(result, expected);
 	
 	if (!eq) {
 		qDebug() << "Actual: " << result;
-		qDebug() << "Expected: " << resultvalue;
+		qDebug() << "Expected: " << expected;
 	}
 	QVERIFY(eq);
 }

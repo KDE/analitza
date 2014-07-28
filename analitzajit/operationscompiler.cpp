@@ -132,7 +132,7 @@ llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::Operator
 // 			break;
 		case Operator::neq: {
 			//oper->setValue(a != b);
-			
+			qDebug() << "AKIIIIIIIIIIOOOO" ;
 			llvm::Value *a = val1;
 			llvm::Value *b = val2;
 // // 			
