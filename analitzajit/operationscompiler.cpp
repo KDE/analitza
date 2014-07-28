@@ -18,30 +18,20 @@
 
 #include "operationscompiler.h"
 
-#include <math.h>
-
 #include <cmath>
 #include <complex>
 #include <QCoreApplication>
 
 #include "analitza/value.h"
 #include "analitza/vector.h"
-#include "analitza/expression.h"
 #include "analitza/list.h"
-#include "analitza/expressiontypechecker.h"
 #include "analitza/customobject.h"
 #include "analitza/matrix.h"
 #include "analitza/container.h"
 #include "analitza/additionchains.h"
 
-#include <llvm/Analysis/Verifier.h>
 #include <llvm/IR/IntrinsicInst.h>
-#include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/IRBuilder.h>
-#include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Module.h>
-#include <llvm/IR/Type.h>
-#include <llvm/IR/Value.h>
 
 static llvm::IRBuilder<> buildr(llvm::getGlobalContext());
 
@@ -51,16 +41,15 @@ using namespace Analitza;
 llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error)
 {
 	llvm::Value *ret = 0;
-	llvm::Module *module = currentBlock->getParent()->getParent();
 	
 	switch(op) {
 		case Operator::plus: ret = buildr.CreateFAdd(val1, val2); break;
 		case Operator::minus: ret = buildr.CreateFSub(val1, val2); break;
 		case Operator::times: ret = buildr.CreateFMul(val1, val2); break;
-		case Operator::divide: ret = buildr.CreateFDiv(val1, val2); break;
+		case Operator::divide: ret = buildr.CreateFDiv(val1, val2); break;//TODO handle x/0 send some error
 		case Operator::power: {
-			llvm::Function *powptr = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::pow, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-			return buildr.CreateCall2(powptr, val1, val2, "adas");
+			llvm::Function *powfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::pow, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			ret = buildr.CreateCall2(powfnptr, val1, val2);
 		}	break;
 // 		case Operator::rem:
 // 			if(Q_LIKELY(floor(b)!=0.))
@@ -82,89 +71,35 @@ llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::Operator
 // 				ret=new None();
 // 			}
 // 		}	break;
-// 		case Operator::min:
-// 			oper->setValue(a < b? a : b);
-// 			break;
-// 		case Operator::max:
-// 			oper->setValue(a > b? a : b);
-// 			break;
-		case Operator::gt: {
-			//oper->setValue(a > b);
-			
-// 			
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-// // 			
-			if (currentBlock)
-				buildr.SetInsertPoint(currentBlock);
-// // 			
-			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UGT , a, b, "cmpeq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
-			
+		case Operator::min: {
+			//NOTE the idea here is to avoid use 'if', so we have this: (val1<val2)*val1 + (val1>=val2)*val2
+			llvm::Value *lessthan = compileRealReal(currentBlock, Operator::lt, val1, val2, error);
+			llvm::Value *neglessthan = buildr.CreateNot(lessthan);
+			llvm::Value *flessthan = buildr.CreateUIToFP(lessthan, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			llvm::Value *fneglessthan = buildr.CreateUIToFP(neglessthan, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			llvm::Value *a = compileRealReal(currentBlock, Operator::times, flessthan, val1, error);
+			llvm::Value *b = compileRealReal(currentBlock, Operator::times, fneglessthan, val2, error);
+			ret = compileRealReal(currentBlock, Operator::plus, a, b, error);
 		}	break;
-		case Operator::lt: {
-// 			oper->setValue(a < b);
-			
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-// // 			
-			if (currentBlock)
-				buildr.SetInsertPoint(currentBlock);
-// // 			
-			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_ULT  , a, b, "cmpeq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
-			
-		}	break;
-		case Operator::eq: {
-// 			TODO
-// 			//oper->setValue(a == b);
-// 			
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-// // 			
-			if (currentBlock)
-				buildr.SetInsertPoint(currentBlock);
-// // 			
-			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UEQ, a, b, "cmpeq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
-// // // 			ret->dump();
-// 			
+		case Operator::max: {
+			//NOTE the idea here is to avoid use 'if', so we have this: (val1>val2)*val1 + (val1<=val2)*val2
+			llvm::Value *grethan = compileRealReal(currentBlock, Operator::gt, val1, val2, error);
+			llvm::Value *neggrethan = buildr.CreateNot(grethan);
+			llvm::Value *fgrethan = buildr.CreateUIToFP(grethan, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			llvm::Value *fneggrethan = buildr.CreateUIToFP(neggrethan, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			llvm::Value *a = compileRealReal(currentBlock, Operator::times, fgrethan, val1, error);
+			llvm::Value *b = compileRealReal(currentBlock, Operator::times, fneggrethan, val2, error);
+			ret = compileRealReal(currentBlock, Operator::plus, a, b, error);
 		}	break;
 // 		case Operator::approx:
 // 			oper->setValue(fabs(a-b)<0.001);
 // 			break;
-		case Operator::neq: {
-			//oper->setValue(a != b);
-			qDebug() << "AKIIIIIIIIIIOOOO" ;
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-// // 			
-			if (currentBlock)
-				buildr.SetInsertPoint(currentBlock);
-// // 			
-			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UNE, a, b, "cmpneq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
-		}	break;
-		case Operator::geq: {
-			//oper->setValue(a >= b);
-			
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-// // 			
-			if (currentBlock)
-				buildr.SetInsertPoint(currentBlock);
-// // 			
-			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UGE , a, b, "cmpneq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
-			
-		}	break;
-		case Operator::leq: {
-			//oper->setValue(a <= b);
-			
-			llvm::Value *a = val1;
-			llvm::Value *b = val2;
-// // 			
-			if (currentBlock)
-				buildr.SetInsertPoint(currentBlock);
-// // 			
-			ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_ULE  , a, b, "cmpneq"), llvm::Type::getDoubleTy(llvm::getGlobalContext());
-
-		}	break;
+		case Operator::gt: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UGT, val1, val2); break;
+		case Operator::lt: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_ULT, val1, val2); break;
+		case Operator::eq: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UEQ, val1, val2); break;
+		case Operator::neq: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UNE, val1, val2); break;
+		case Operator::geq: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UGE, val1, val2); break;
+		case Operator::leq: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_ULE, val1, val2); break;
 // 		case Operator::_and:
 // 			oper->setValue(a && b);
 // 			break;
@@ -205,14 +140,14 @@ llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::Operator
 // 				oper->setValue(ia);
 // 			}
 // 			break;
-// 		case Operator::root:
-// 			oper->setValue(			  b==2.0 ? sqrt(a)
-// 			: (b>1 || b<-1) && a<0 ? pow(complex<double>(a), complex<double>(1./b)).real()
-// 			: pow(a, 1.0/b));
-// 			break;
-// 		default:
-// 			break;
+		case Operator::root: {
+			llvm::Value *invval2 = compileRealReal(currentBlock, Operator::divide, llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(1.0)), val2, error);
+			ret = compileRealReal(currentBlock, Operator::power, val1, invval2, error);
+		}	break;
+		default:
+			break;
 	}
+	
 	return ret;
 }
 
@@ -403,18 +338,12 @@ llvm::Value * compileUnaryComplex(llvm::BasicBlock *currentBlock, Operator::Oper
 // 	return oper;
 }
 
-llvm::Value * compileUnaryReal(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* oper, QString& correct)
+llvm::Value * compileUnaryReal(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* val, QString& correct)
 {
-	//const double a=oper->value();
 	llvm::Value *ret = 0;
-	llvm::Module *module = currentBlock->getParent()->getParent();
-// 	
+	
 	switch(op) {
-		case Operator::minus: {
-			//oper->setValue(-a);
-			buildr.SetInsertPoint(currentBlock);
-			ret = buildr.CreateFNeg(oper, "negfval");
-		}	break;
+		case Operator::minus: ret = buildr.CreateFNeg(val); break;
 // 		case Operator::factorial: {
 // 			//Use gamma from math.h?
 // 			uint res=1;
@@ -424,40 +353,16 @@ llvm::Value * compileUnaryReal(llvm::BasicBlock *currentBlock, Operator::Operato
 // 			     oper->setValue(res);
 // 		}	break;
 		case Operator::sin: {
-			//oper->setValue(sin(a));
-// 			module->dump();
-// 			qDebug() << "PEPEPEPEPE " << module;
-// 			oper->getType()->dump();
-			
-			llvm::Value *a = oper;
-			
-			buildr.SetInsertPoint(currentBlock);
-			llvm::Function *fun = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::sin, a->getType());
-			ret = buildr.CreateCall(fun, a, "adas");
+			llvm::Function *sinfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::sin, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			ret = buildr.CreateCall(sinfnptr, val);
 		}	break;
 		case Operator::cos: {
-			//oper->setValue(cos(a));
-// 			module->dump();
-// 			qDebug() << "PEPEPEPEPE " << module;
-// 			oper->getType()->dump();
-			
-			llvm::Value *a = oper;
-			
-			buildr.SetInsertPoint(currentBlock);
-			llvm::Function *fun = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::cos, a->getType());
-			ret = buildr.CreateCall(fun, a, "adas");
+			llvm::Function *cosfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::cos, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			ret = buildr.CreateCall(cosfnptr, val);
 		}	break;
 		case Operator::tan: {
-			//oper->setValue(tan(a));
-// 			module->dump();
-// 			qDebug() << "PEPEPEPEPE " << module;
-// 			oper->getType()->dump();
-			
-			llvm::Value *a = oper;
-			
-			buildr.SetInsertPoint(currentBlock);
-			llvm::Value *sinv = compileUnaryReal(currentBlock, Operator::sin, a, correct);
-			llvm::Value *cosv = compileUnaryReal(currentBlock, Operator::cos, a, correct);
+			llvm::Value *sinv = compileUnaryReal(currentBlock, Operator::sin, val, correct);
+			llvm::Value *cosv = compileUnaryReal(currentBlock, Operator::cos, val, correct);
 			ret = compileRealReal(currentBlock, Operator::divide, sinv, cosv, correct);
 		}	break;
 // 		case Operator::sec:
@@ -467,16 +372,8 @@ llvm::Value * compileUnaryReal(llvm::BasicBlock *currentBlock, Operator::Operato
 // 			     oper->setValue(1./sin(a));
 // 			break;
 		case Operator::cot: {
-			//oper->setValue(cot(a));
-// 			module->dump();
-// 			qDebug() << "PEPEPEPEPE " << module;
-// 			oper->getType()->dump();
-			
-			llvm::Value *a = oper;
-			
-			buildr.SetInsertPoint(currentBlock);
-			llvm::Value *sinv = compileUnaryReal(currentBlock, Operator::sin, a, correct);
-			llvm::Value *cosv = compileUnaryReal(currentBlock, Operator::cos, a, correct);
+			llvm::Value *sinv = compileUnaryReal(currentBlock, Operator::sin, val, correct);
+			llvm::Value *cosv = compileUnaryReal(currentBlock, Operator::cos, val, correct);
 			ret = compileRealReal(currentBlock, Operator::divide, cosv, sinv, correct);
 		}	break;
 // 		case Operator::sinh:

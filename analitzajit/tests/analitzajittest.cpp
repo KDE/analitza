@@ -106,6 +106,7 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda_data()
 	QTest::newRow("t/2") << "t->t/2" << 5.3 << 2.65;
 	QTest::newRow("t+2t") << "t->t+2*t" << 2.5 << 7.5;
 	QTest::newRow("9.6+3.5") << "t->9.6+3.5" << 0.0 << 13.1;
+	QTest::newRow("root(9,2)") << "t->root(9,t)" << 2.0 << 3.0;
 }
 
 void AnalitzaJitTest::testCalculateUnaryRealLambda()
@@ -139,6 +140,18 @@ void AnalitzaJitTest::testCalculateBinaryRealLambda_data()
 	
 	QTest::newRow("x^2+y^2") << "(x,y)->x*x+y*y" << 3.0 << 7.5 << 65.25;
 	QTest::newRow("pow(x,y)") << "(x,y)->power(x,y)" << 6.0 << 2.0 << 36.0;
+	QTest::newRow("min(x,y) 1") << "(x,y)->min(x,y)" << 6.0 << 2.0 << 2.0;
+	QTest::newRow("min(x,y) 2") << "(x,y)->min(x,y)" << 2.0 << 6.0 << 2.0;
+	QTest::newRow("min(x,y) 3") << "(x,y)->min(x,y)" << 6.0 << 6.0 << 6.0;
+	QTest::newRow("min(x,y) -1") << "(x,y)->min(x,y)" << -6.0 << 2.0 << -6.0;
+	QTest::newRow("min(x,y) -2") << "(x,y)->min(x,y)" << -2.0 << 6.0 << -2.0;
+	QTest::newRow("min(x,y) -3") << "(x,y)->min(x,y)" << -6.0 << -6.0 << -6.0;
+	QTest::newRow("max(x,y) 1") << "(x,y)->max(x,y)" << 6.0 << 2.0 << 6.0;
+	QTest::newRow("max(x,y) 2") << "(x,y)->max(x,y)" << 2.0 << 6.0 << 6.0;
+	QTest::newRow("max(x,y) 3") << "(x,y)->max(x,y)" << 6.0 << 6.0 << 6.0;
+	QTest::newRow("max(x,y) -1") << "(x,y)->max(x,y)" << -6.0 << 2.0 << 2.0;
+	QTest::newRow("max(x,y) -2") << "(x,y)->max(x,y)" << -2.0 << 6.0 << 6.0;
+	QTest::newRow("max(x,y) -3") << "(x,y)->max(x,y)" << -6.0 << -6.0 << -6.0;
 	//a->setLambdaExpression(Expression("(x,y)->x+y")/*, argtipos*/);
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3.0000")); // true i.e 1
 	
