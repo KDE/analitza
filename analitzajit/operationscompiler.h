@@ -34,9 +34,9 @@ namespace Analitza
  * 
  * \ingroup AnalitzaJITModule
  * 
- * \brief Compiles analitza operation into valid LLVM instruction.
+ * \brief Compiles analitza operation into a valid LLVM instruction.
  * 
- * OperationsCompiler converts any Analitza operation to LLVM instruction and inserts it 
+ * OperationsCompiler converts any Analitza operation into LLVM instruction and inserts it 
  * into a current LLVM basic block.
  * 
  * Every given basic block needs to exist inside a LLVM function and every LLVM function 

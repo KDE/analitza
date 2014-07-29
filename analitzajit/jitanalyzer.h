@@ -55,7 +55,7 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		/**
 		 * Sets an expression to calculate.
 		 * If the expression is a lambda and/or contains variables, then 
-		 * for each variable you must specify its type.
+		 * for each variable you must specify its type using @p bvartypes
 		 * Also, the expression will be cached, so next time you set the same expression 
 		 * it will not be necessary to compile it into machine code again.
 		 * @returns Returns true if expression is ready to be calculated using JIT compilation.

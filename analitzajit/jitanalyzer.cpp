@@ -68,24 +68,13 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 			return true;
 		} else {
 			//TODO find better way to save/store IR functions
-			QMap<QString, llvm::Type*> paramtyps = TypeCompiler::compileTypes(bvartypes);
-			
 	// 		qDebug() << "fluuuu" << bvartypes.keys();
 			
-			ExpressionTypeChecker check(variables());
-			check.initializeVars(bvartypes);
 			
-			ExpressionType rett = check.check(expression().lambdaBody());
-			//TODO check if rett (return type) has error ret.Errors
-			
-// 			qDebug() << "FUNT RET TYPE "<< rett.toString();
-			
-			llvm::Type *rettype = TypeCompiler::compileType(rett);
-			
-			ExpressionCompiler v(expression().tree(), m_module, rettype, paramtyps, variables());
+			ExpressionCompiler v(m_module, variables());
 			
 			//cache
-			m_jitfnscache[m_currentfnkey] = v.result().value<llvm::Value*>();
+			m_jitfnscache[m_currentfnkey] = v.compileExpression(expression(), bvartypes);
 			
 			return true;
 		}
@@ -115,8 +104,8 @@ void JITAnalyzer::calculateLambda(double &result)
 		
 		std::vector<llvm::Value*> ArgsV;
 		for (int i = 0; i < runStack().size(); ++i) {
-			ExpressionCompiler vv(runStack().at(i), m_module);
-			ArgsV.push_back(vv.result().value<llvm::Value*>());
+			ExpressionCompiler vv(m_module);
+			ArgsV.push_back(vv.compileExpression(runStack().at(i)));
 		}
 		
 	// 	ArgsV[0]->dump();
@@ -154,11 +143,11 @@ void JITAnalyzer::calculateLambda(bool &result)
 		
 		std::vector<llvm::Value*> ArgsV;
 		for (int i = 0; i < runStack().size(); ++i) {
-			ExpressionCompiler vv(runStack().at(i), m_module);
-			ArgsV.push_back(vv.result().value<llvm::Value*>());
+			ExpressionCompiler vv(m_module);
+			ArgsV.push_back(vv.compileExpression(runStack().at(i)));
 		}
 		
-	// 	ArgsV[0]->dump();
+// 		ArgsV[0]->dump();
 		
 		
 		// Look up the name in the global module table.

@@ -20,27 +20,20 @@
 
 #include <llvm/Analysis/Verifier.h>
 #include <llvm/IR/IntrinsicInst.h>
-#include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/IRBuilder.h>
-#include <llvm/IR/LLVMContext.h>
-#include <llvm/IR/Module.h>
-#include <llvm/IR/Value.h>
 
+#include "analitza/value.h"
+#include "analitza/matrix.h"
+#include "analitza/list.h"
+#include "analitza/variable.h"
+#include "analitza/container.h"
+#include "analitza/apply.h"
+#include "analitza/expressiontypechecker.h"
+#include "analitza/expression.h"
 #include "operationscompiler.h"
-#include "value.h"
-#include "vector.h"
-#include "operator.h"
-#include "container.h"
-#include <QStringList>
-#include "list.h"
-#include "variable.h"
-#include "apply.h"
-#include "analitzautils.h"
-#include "matrix.h"
-#include <expressiontypechecker.h>
+#include "typecompiler.h"
 
 Q_DECLARE_METATYPE(llvm::Value*);
-Q_DECLARE_METATYPE(llvm::Function*);
 
 //TODO better names
 static llvm::IRBuilder<> buildr(llvm::getGlobalContext());
@@ -48,14 +41,37 @@ static std::map<QString, llvm::Value*> NamedValues;
 
 using namespace Analitza;
 
-ExpressionCompiler::ExpressionCompiler(const Object* o, llvm::Module* mod, llvm::Type* rettype, const QMap< QString, llvm::Type* >& bvartypes, Variables* v)
-	: m_rettype(rettype)
-	, m_bvartypes(bvartypes)
-	, m_mod(mod)
+ExpressionCompiler::ExpressionCompiler(llvm::Module* module, Variables* vars)
+	: m_module(module)
+	, m_vars(vars)
 {
-    if (o)
-        m_result=o->accept(this);
+	//TODO ad variables to m_bvartypes
 }
+
+llvm::Value *ExpressionCompiler::compileExpression(Object* expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
+{
+	//NOTE we nned to copy the input here since it will be managed externally and a new instance of Expression will hold and insert
+	//the @expression into its shareddataptr
+	return compileExpression(Analitza::Expression(expression->copy()), bvartypes);
+}
+
+llvm::Value *ExpressionCompiler::compileExpression(const Analitza::Expression& expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
+{
+	m_bvartypes = TypeCompiler::compileTypes(bvartypes);
+	
+	if (expression.isLambda()) {
+		ExpressionTypeChecker check(m_vars);
+		check.initializeVars(bvartypes);
+		
+		ExpressionType rett = check.check(expression.lambdaBody());
+		//TODO check if rett (return type) has error ret.Errors
+// 		qDebug() << "FUNT RET TYPE "<< rett.toString();
+		m_rettype = TypeCompiler::compileType(rett);
+	}
+	
+	return expression.tree()->accept(this).value<llvm::Value*>();
+}
+
 
 QVariant ExpressionCompiler::visit(const Analitza::Ci* var)
 {
@@ -66,52 +82,32 @@ QVariant ExpressionCompiler::visit(const Analitza::Ci* var)
 
 QVariant ExpressionCompiler::visit(const Analitza::Operator* op)
 {
-// 	switch(op->operatorType()) {
-// 		case Operator::lt:
-// 		case Operator::gt:
-// 		case Operator::eq:
-// 		case Operator::neq:
-// 		case Operator::leq:
-// 		case Operator::geq:
-// 			return 1;
-// 		case Operator::plus:
-// 			return 2;
-// 		case Operator::minus:
-// 			return size==1 ? 8 : 3;
-// 		case Operator::times:
-// 			return 4;
-// 		case Operator::divide:
-// 			return 5 + (pos>0 ? 0 : 1);
-// 		case Operator::_and:
-// 		case Operator::_or:
-// 		case Operator::_xor:
-// 			return 6;
-// 		case Operator::power:
-// 			return 7 + (pos>0 ? 0 : 1);
-// 		default:
-// 			return 1000;
-// 	}
-	return op->name(); //TODO
+	//NOTE see visit apply implementation is there
+	return QVariant();
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::Vector* vec)
 {
-	return QString();
+	//TODO
+	return QVariant();
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::Matrix* m)
 {
-	return QString();
+	//TODO
+	return QVariant();
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::MatrixRow* mr)
 {
-	return QString();
+	//TODO
+	return QVariant();
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::List* vec)
 {
-	return QString();
+	//TODO
+	return QVariant();
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::Cn* val)
@@ -157,10 +153,6 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 // 			valv->getType()->dump();
 // 			qDebug() << "ENNNDDDD";
 			
-			//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
-			//this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
-			//currently we¿ll cast all types to double (analitza value)
-			//ret = OperationsCompiler::compileUnaryOperation(buildr.GetInsertBlock(), op, val->type(), valv, error);
 			ret = OperationsCompiler::compileUnaryOperation(buildr.GetInsertBlock(), op, Object::value, valv, error);
 		}	break;
 		case 2: {
@@ -177,10 +169,6 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 // 			valv->getType()->dump();
 // 			qDebug() << "ENNNDDDD";
 			
-			//TODO we need to choice based on llvm::Valye::type instead of Analitza type 
-			//this we could avoid use analitza::type1 for a llvm::value that is not (avoid inconsistence)
-			//currently we¿ll cast all types to double (analitza value)
-			//ret = OperationsCompiler::compileBinaryOperation(buildr.GetInsertBlock(), op, val1->type(), val2->type(), valv1, valv2, error);
 			ret = OperationsCompiler::compileBinaryOperation(buildr.GetInsertBlock(), op, Object::value, Object::value, valv1, valv2, error);
 		}	break;
 	}
@@ -350,7 +338,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			//TODO we need the return type
 			llvm::FunctionType *FT = llvm::FunctionType::get(m_rettype, tparams, false);
 			
-			llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "mylam", m_mod);//TODO count how many lambdas we have generated i.e mylam0, mylam1 ...
+			llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "mylam", m_module);//TODO count how many lambdas we have generated i.e mylam0, mylam1 ...
 			
 			//TODO better code
 			int Idx = 0;
@@ -387,22 +375,15 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 		}	break;
 	}
 	
-// 	if(current.type()==ExpressionType::Many) {
-// 		if(current.alternatives().isEmpty())
-// 			current=ExpressionType(ExpressionType::Error);
-// 		else if(current.alternatives().count()==1)
-// 			current=current.alternatives().first();
-// 	}
-	
 	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::CustomObject*)
 {
-	return "CustomObject";
+	return QVariant();//"CustomObject";
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::None* )
 {
-	return QString();
+	return QVariant();
 }

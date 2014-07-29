@@ -36,9 +36,9 @@ namespace Analitza
  * 
  * \ingroup AnalitzaJITModule
  * 
- * \brief Compiles analitza type to valid LLVM type.
+ * \brief Compiles analitza type into a valid LLVM type.
  * 
- * TypeCompiler converts Analitza::ExpressionType to a LLVM IR type.
+ * TypeCompiler converts Analitza::ExpressionType into a LLVM IR type.
  * 
  * \internal ExpressionType::Value is not complete: it can't discriminate/differentiate/handle 
  * complex and int types properly, currently any Value (real, integer or complex) will be mapped into 
@@ -54,7 +54,7 @@ namespace Analitza
 class ANALITZAJIT_EXPORT TypeCompiler //TODO : public Analitza::AbstractExpressionTypeVisitor
 {
 	public:
-		/** Returns LLVM type for a valid or supported ExpressionType, otherwise will return a null pointer. */
+		/** @returns Returns LLVM type for a valid or supported ExpressionType, otherwise will return a null pointer. */
 		static llvm::Type *compileType(const Analitza::ExpressionType &expressionType);
 		
 		/** Convenience method that applies TypeCompiler::compileType over each element of @p expressionTypes */
