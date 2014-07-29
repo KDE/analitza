@@ -113,8 +113,18 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda_data()
 	QTest::newRow("piecewise 3(1)") << "x->piecewise { x<0? -42, x=0? 0.42, x>0? 42}" << -1.0 << -42.0;
 	QTest::newRow("piecewise 3(2)") << "x->piecewise { x<0? -42, x=0? 0.42, x>0? 42}" << 1.0 << 42.0;
 	QTest::newRow("piecewise 3(3)") << "x->piecewise { x<0? -42, x=0? 0.42, x>0? 42}" << 0.0 << 0.42;
-// 	QTest::newRow("simple piecewise 2") << "x->piecewise { x<4? -5, ? 5 }" << -99.0 << -5.0;
-// 	QTest::newRow("simple piecewise 2") << "x->piecewise { x<4? -5, ? 5 }" << 99.0 << 5.0;
+	QTest::newRow("piecewise otherwise 1") << "x->piecewise { x<4? -5, ? 5 }" << -99.0 << -5.0;
+	QTest::newRow("piecewise otherwise 2") << "x->piecewise { x<4? -5, ? 5 }" << 99.0 << 5.0;
+	QTest::newRow("basic piecewise otherwise 1") << "x->piecewise { 10=11? x, 11=11? -x }" << 42.0 << -42.0;
+	QTest::newRow("basic piecewise otherwise 2") << "x->piecewise { x<0 ? x**2, ? x }" << -0.6 << 0.36;
+	QTest::newRow("piecewise otherwise 1") << "x->piecewise { x<1? 99, x>1? 22, ? 96 }" << 7.0 << 22.0;
+	QTest::newRow("piecewise otherwise 2") << "x->piecewise { x<1? 99, x>1? 22, ? 96 }" << 1.0 << 96.0;
+	QTest::newRow("piecewise otherwise 3") << "x->piecewise { x<1? 99, x>1? 22, ? 96 }" << -97.0 << 99.0;
+	QTest::newRow("long piecewise otherwise 1") << "x->piecewise { x=1? x, x=2? x*x, x=3? 3*x, x=4? 4, x=9? 81, ? 42 }" << 1.0 << 1.0;
+	QTest::newRow("long piecewise otherwise 2") << "x->piecewise { x=1? x, x=2? x*x, x=3? 3*x, x=4? 44, x=9? 81, ? 42 }" << 2.0 << 4.0;
+	QTest::newRow("long piecewise otherwise 3") << "x->piecewise { x=1? x, x=2? x*x, x=3? 2*x, x=4? 44, x=9? 81, ? 42 }" << 3.0 << 6.0;
+	QTest::newRow("long piecewise otherwise 4") << "x->piecewise { x=1? x, x=2? x*x, x=3? 2*x, x=4? 44, x=9? 81, ? 42 }" << 9.0 << 81.0;
+	QTest::newRow("long piecewise otherwise 4") << "x->piecewise { x=1? x, x=2? x*x, x=3? 2*x, x=4? 44, x=9? 81, ? 42 }" << 10.0 << 42.0;
 }
 
 void AnalitzaJitTest::testCalculateUnaryRealLambda()

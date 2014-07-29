@@ -56,7 +56,10 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 	
 	if (isCorrect())
 		m_currentfnkey.clear();
-	
+	else {
+		qDebug() << "ERRORS" << errors();
+		return false;
+	}
 	m_currentfnkey = lambdaExpression.toString();
 	
 	foreach(const QString &tkey, bvartypes.keys()) {
@@ -80,7 +83,7 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 		}
 	}
 	
-	return false;
+	return true;
 }
 
 bool JITAnalyzer::setExpression(const Expression& lambdaExpression)
@@ -88,8 +91,10 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression)
 	//TODO check if exp is lambda
 	QMap<QString, Analitza::ExpressionType> bvartypes;
 	
-	foreach(const QString &bvar, lambdaExpression.bvarList()) {
-		bvartypes[bvar] = ExpressionType(ExpressionType::Value);
+	if (lambdaExpression.isLambda()) {
+		foreach(const QString &bvar, lambdaExpression.bvarList()) {
+			bvartypes[bvar] = ExpressionType(ExpressionType::Value);
+		}
 	}
 	
 	return JITAnalyzer::setExpression(lambdaExpression, bvartypes);

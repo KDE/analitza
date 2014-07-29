@@ -75,6 +75,7 @@ llvm::Value *ExpressionCompiler::compileExpression(const Analitza::Expression& e
 
 QVariant ExpressionCompiler::visit(const Analitza::Ci* var)
 {
+	//TODO generate values for intrinsic analitza constants like e, pi, etc
 	//TODO chack in variables too ... since we are playing by efault with stack vars
 // 	NamedValues[var->name()]->dump();
 	return QVariant::fromValue<llvm::Value*>(NamedValues[var->name()]);
@@ -207,6 +208,14 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			
 			llvm::Value *elseif = llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(0.0));
 			
+			//NOTE this is key: we start with a false and we will apply OR operator over all 
+			// piece conditions, if some piece condition is true then the otherwise condition
+			// will negate it (using CreateNote) and thus we will execute only the contidion where was a true
+			// If none of piece conditions were true, then the value of finalelseCOND will be false when 
+			// we get the point of otherwise, then since otherwise negate the false, then we have true and execute
+			// the otherwise code.
+			llvm::Value *finalelseCOND = llvm::ConstantInt::getFalse(llvm::getGlobalContext());
+			
 			//basic idea to build IR from piecewise: if () else if else if else ... else otherwise
 			for (int i = 0; i < pieces.size(); ++i) {
 				Container *currpiece = pieces[i];
@@ -214,6 +223,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 				Apply *currcond = (Apply*)currpiece->m_params[1];
 				
 				llvm::Value *CondV = currcond->accept(this).value<llvm::Value*>();
+				finalelseCOND = buildr.CreateOr(finalelseCOND, CondV);
 				
 				llvm::BasicBlock *ThenBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "then", TheFunction);
 				llvm::BasicBlock *ElseBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "else");
@@ -240,13 +250,52 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 				llvm::PHINode *PN = buildr.CreatePHI(llvm::Type::getDoubleTy(llvm::getGlobalContext()), 2, "iftmp");
 				PN->addIncoming(ThenV, ThenBB);
 				PN->addIncoming(ElseV, ElseBB);
-// 				
+				
 				elseif = PN;
 			}
 			
+			//BEGIN otherwise
+			if (otherwise) {
+				Container *currpiece = otherwise;
+				Apply *currthen = (Apply*)currpiece->m_params[0];
+// 				Apply *currcond = (Apply*)currpiece->m_params[1];
+				
+				//NOTE see NOTE above for finalelseCOND
+				llvm::Value *CondV = buildr.CreateNot(finalelseCOND);
+				
+				llvm::BasicBlock *ThenBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "then", TheFunction);
+				llvm::BasicBlock *ElseBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "else");
+				llvm::BasicBlock *MergeBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "ifcont");
+				
+				buildr.CreateCondBr(CondV, ThenBB, ElseBB);
+				buildr.SetInsertPoint(ThenBB);
+				
+				llvm::Value * ThenV = currthen->accept(this).value<llvm::Value*>();
+				//TODO ASSERT IR ThenValue
+				buildr.CreateBr(MergeBB);
+				
+				TheFunction->getBasicBlockList().push_back(ElseBB);
+				buildr.SetInsertPoint(ElseBB);
+				
+				llvm::Value *ElseV = elseif;
+				buildr.CreateBr(MergeBB);
+				// Codegen of 'Else' can change the current block, update ElseBB for the PHI.
+	// 				ElseBB = buildr.GetInsertBlock();
+				
+				TheFunction->getBasicBlockList().push_back(MergeBB);
+				buildr.SetInsertPoint(MergeBB);
+				
+				llvm::PHINode *PN = buildr.CreatePHI(llvm::Type::getDoubleTy(llvm::getGlobalContext()), 2, "iftmp");
+				PN->addIncoming(ThenV, ThenBB);
+				PN->addIncoming(ElseV, ElseBB);
+				
+				elseif = PN;
+			}
+			//END otherwise
+			
 			ret = elseif;
 			
-			TheFunction->dump();
+// 			TheFunction->dump();
 			
 		}	break;
 		case Analitza::Container::piece: {
