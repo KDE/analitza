@@ -100,7 +100,7 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression)
 	return JITAnalyzer::setExpression(lambdaExpression, bvartypes);
 }
 
-void JITAnalyzer::calculateLambda(double &result)
+bool JITAnalyzer::calculateLambda(double &result)
 {
 	Q_ASSERT(!m_jitfnscache.isEmpty());
 	
@@ -134,12 +134,17 @@ void JITAnalyzer::calculateLambda(double &result)
 			case llvm::Type::DoubleTyID: {
 				result = rr.DoubleVal;
 			}	break;
+			default: return false;
 		}
 	} else {
 		//TODO add error
+		return false;
 	}
+	
+	return true;
 }
-void JITAnalyzer::calculateLambda(bool &result)
+
+bool JITAnalyzer::calculateLambda(bool &result)
 {
 	Q_ASSERT(!m_jitfnscache.isEmpty());
 	
@@ -179,8 +184,12 @@ void JITAnalyzer::calculateLambda(bool &result)
 					}	break;
 				}
 			}	break;
+					default: return false;
 		}
 	} else {
 		//TODO add error
+		return false;
 	}
+	
+	return true;
 }

@@ -83,8 +83,8 @@ void AnalitzaJitTest::testCalculateUnaryBooleanLambda()
 	bool result = 0;
 	
 	a->setExpression(Analitza::Expression(expression));
-	a->calculateLambda(result);
 	
+	QVERIFY(a->calculateLambda(result));
 	QCOMPARE(result, expected);
 }
 
@@ -138,7 +138,8 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda()
 	double result = 0;
 	
 	a->setExpression(Analitza::Expression(expression));
-	a->calculateLambda(result);
+	
+	QVERIFY(a->calculateLambda(result));
 	
 	bool eq = epscompare(result, expected);
 	
@@ -189,7 +190,8 @@ void AnalitzaJitTest::testCalculateBinaryRealLambda()
 	double result = 0;
 	
 	a->setExpression(Analitza::Expression(expression));
-	a->calculateLambda(result);
+	
+	QVERIFY(a->calculateLambda(result));
 	
 	bool eq = epscompare(result, expected);
 	

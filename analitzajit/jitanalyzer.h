@@ -73,29 +73,31 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		 * Calculates the expression using JIT compilation and returns a value alone.
 		 * If result type is not the same type of the expression, then nothing will be done.
 		 */
-		//void calculate(double &result);
+		//bool calculate(double &result);
 		//TODO
-		//void calculate(int &result);
-		//void calculate(bool &result);
-		//void calculate(complex &result);
-		//void calculate(vector &result);
-		//void calculate(matrix &result);
-		//void calculate(list &result);
+		//bool calculate(int &result);
+		//bool calculate(bool &result);
+		//bool calculate(complex &result);
+		//bool calculate(vector &result);
+		//bool calculate(matrix &result);
+		//bool calculate(list &result);
 		
 		/**
 		 * Calculates the lambda expression using JIT compilation and returns a value alone.
 		 * The parameters need to be set by passing a stack instance.
-		 * If result type is not the same type of the expression, then nothing will be done.
+		 * If result type is not the same type of the expression or there was some error, 
+		 * then nothing will be done and will return false.
+		 * @returns Returns true if calculation was successful, otherwise returns false.
 		 */
-		void calculateLambda(double &result);
-		void calculateLambda(bool &result);
+		bool calculateLambda(double &result);
+		bool calculateLambda(bool &result);
 		
 		//TODO
-		//void calculateLambda(int &result);
-		//void calculateLambda(complex &result);
-		//void calculateLambda(vector &result);
-		//void calculateLambda(matrix &result);
-		//void calculateLambda(list &result);
+		//bool calculateLambda(int &result);
+		//bool calculateLambda(complex &result);
+		//bool calculateLambda(vector &result);
+		//bool calculateLambda(matrix &result);
+		//bool calculateLambda(list &result);
 		
 	private:
 		//TODO pimpl idiom needs to be applied here
