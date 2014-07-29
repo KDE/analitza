@@ -107,6 +107,14 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda_data()
 	QTest::newRow("t+2t") << "t->t+2*t" << 2.5 << 7.5;
 	QTest::newRow("9.6+3.5") << "t->9.6+3.5" << 0.0 << 13.1;
 	QTest::newRow("root(9,2)") << "t->root(9,t)" << 2.0 << 3.0;
+	QTest::newRow("root(9,0.5)") << "t->root(9,t)" << 0.5 << 81.0;
+	QTest::newRow("piecewise 1") << "x->piecewise { x=4? 5 }" << 4.0 << 5.0;
+	QTest::newRow("piecewise 2") << "x->piecewise { x<=4? -5, x>4? 5}" << -4.0 << -5.0;
+	QTest::newRow("piecewise 3(1)") << "x->piecewise { x<0? -42, x=0? 0.42, x>0? 42}" << -1.0 << -42.0;
+	QTest::newRow("piecewise 3(2)") << "x->piecewise { x<0? -42, x=0? 0.42, x>0? 42}" << 1.0 << 42.0;
+	QTest::newRow("piecewise 3(3)") << "x->piecewise { x<0? -42, x=0? 0.42, x>0? 42}" << 0.0 << 0.42;
+// 	QTest::newRow("simple piecewise 2") << "x->piecewise { x<4? -5, ? 5 }" << -99.0 << -5.0;
+// 	QTest::newRow("simple piecewise 2") << "x->piecewise { x<4? -5, ? 5 }" << 99.0 << 5.0;
 }
 
 void AnalitzaJitTest::testCalculateUnaryRealLambda()
@@ -155,7 +163,6 @@ void AnalitzaJitTest::testCalculateBinaryRealLambda_data()
 	//a->setLambdaExpression(Expression("(x,y)->x+y")/*, argtipos*/);
 // 	a->setLambdaExpression(Analitza::Expression("(x,y,z)->x=3.0000")); // true i.e 1
 	
-// 	a->setLambdaExpression(Analitza::Expression("x->piecewise { 4=4? 3 }"));
 	//a->setLambdaExpression(Analitza::Expression("x->piecewise { x<0 ? -x, x=0 ? -5, x>5 ? x*x, ? x }"));
 }
 

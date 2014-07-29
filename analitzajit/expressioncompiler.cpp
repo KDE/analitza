@@ -181,19 +181,6 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 	llvm::Value *ret = 0;
 	switch(c->containerType()) {
 		case Analitza::Container::piecewise: {
-			qDebug() << "EN piecewise" << c->m_params.size();
-			
-// 			llvm::BasicBlock *bbb = buildr.GetInsertBlock();
-// 			
-// 			for (int i = 0; i <c->m_params.size();++i) {
-// // 				llvm::Function *TheFunction = buildr.GetInsertBlock()->getParent();
-// // 				buildr.SetInsertPoint(buildr.GetInsertBlock());
-// // 				TheFunction->getBasicBlockList().push_back(ElseBB);
-// // 				buildr.GetInsertBlock()->getParent()->dump();
-// 				ret = c->m_params.at(i)->accept(this).value<llvm::Value*>();
-// 			}
-// 			bbb->getParent()->dump();
-			
 			//NOTE we need to order the execution
 			//From MathML documentation: It should be noted that no "order of execution" is implied 
 			//by the ordering of the piece child elements within piecewise. It is the responsibility 
@@ -218,15 +205,13 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 				}
 			}
 			
+			llvm::Value *elseif = llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(0.0));
+			
 			//basic idea to build IR from piecewise: if () else if else if else ... else otherwise
-			for (int i = 0; i < pieces.size()-1; ++i) {
+			for (int i = 0; i < pieces.size(); ++i) {
 				Container *currpiece = pieces[i];
 				Apply *currthen = (Apply*)currpiece->m_params[0];
 				Apply *currcond = (Apply*)currpiece->m_params[1];
-				
-				Container *nextpiece = pieces[i+1];
-				Apply *nextthen = (Apply*)nextpiece->m_params[0];
-				Apply *nextcond = (Apply*)nextpiece->m_params[1];
 				
 				llvm::Value *CondV = currcond->accept(this).value<llvm::Value*>();
 				
@@ -235,82 +220,37 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 				llvm::BasicBlock *MergeBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "ifcont");
 				
 				buildr.CreateCondBr(CondV, ThenBB, ElseBB);
+				buildr.SetInsertPoint(ThenBB);
 				
 				llvm::Value * ThenV = currthen->accept(this).value<llvm::Value*>();
 				//TODO ASSERT IR ThenValue
+				buildr.CreateBr(MergeBB);
 				
-// 				buildr.CreateBr(MergeBB);
-// 				ThenBB = buildr.GetInsertBlock();
-// 				
-// 				TheFunction->getBasicBlockList().push_back(ElseBB);
-// 				buildr.SetInsertPoint(ElseBB);
-// 				
-// 				///
-// 				llvm::BasicBlock *ThenElseIfBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "elseif");
-// 				llvm::Value * ThenElseIfV = nextthen->accept(this).value<llvm::Value*>();
-// 				buildr.CreateCondBr(llvm::ConstantExpr::getNeg(CondV), ThenElseIfBB, ElseBB);
-// 				buildr.CreateBr(MergeBB);
-// 				ThenBB = buildr.GetInsertBlock();
-// 				
-// 				llvm::Value *ElseV = nextcond->accept(this).value<llvm::Value*>();;
-// 				buildr.CreateBr(MergeBB);
-// 				// Codegen of 'Else' can change the current block, update ElseBB for the PHI.
+				TheFunction->getBasicBlockList().push_back(ElseBB);
+				buildr.SetInsertPoint(ElseBB);
+				
+				llvm::Value *ElseV = elseif;
+				buildr.CreateBr(MergeBB);
+				// Codegen of 'Else' can change the current block, update ElseBB for the PHI.
 // 				ElseBB = buildr.GetInsertBlock();
-// 				
-// 				TheFunction->getBasicBlockList().push_back(MergeBB);
-// 				buildr.SetInsertPoint(MergeBB);
-// 				
-// 				llvm::PHINode *PN = buildr.CreatePHI(llvm::Type::getDoubleTy(llvm::getGlobalContext()), 2, "iftmp");
-// 				PN->addIncoming(ThenV, ThenBB);
-// 				PN->addIncoming(ElseV, ElseBB);
-// 				
-// 				ret = PN;
 				
+				TheFunction->getBasicBlockList().push_back(MergeBB);
+				buildr.SetInsertPoint(MergeBB);
+				
+				llvm::PHINode *PN = buildr.CreatePHI(llvm::Type::getDoubleTy(llvm::getGlobalContext()), 2, "iftmp");
+				PN->addIncoming(ThenV, ThenBB);
+				PN->addIncoming(ElseV, ElseBB);
+// 				
+				elseif = PN;
 			}
+			
+			ret = elseif;
+			
+			TheFunction->dump();
 			
 		}	break;
 		case Analitza::Container::piece: {
-			qDebug() << "EN piece";
-
-// 			Apply *ap1 = (Apply*)c->m_params.at(0); // then part
-// 			Apply *ap2 = (Apply*)c->m_params.at(1); // condition
-// 			
-// 			llvm::Value *CondV = ap2->accept(this).value<llvm::Value*>();
-// 			
-// // 			qDebug() << "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
-// // 			buildr.GetInsertBlock()->dump();
-// // 			qDebug() << "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
-// 			
-// 			llvm::Function *TheFunction = buildr.GetInsertBlock()->getParent();
-// 			llvm::BasicBlock *ThenBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "then", TheFunction);
-// 			llvm::BasicBlock *ElseBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "else");
-// 			llvm::BasicBlock *MergeBB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "ifcont");
-// 			
-// 			buildr.CreateCondBr(CondV, ThenBB, ElseBB);
-// 			
-// 			llvm::Value * ThenV = ap1->accept(this).value<llvm::Value*>();
-// 			//TODO ASSERT IR ThenValue
-// 			
-// 			buildr.CreateBr(MergeBB);
-// 			ThenBB = buildr.GetInsertBlock();
-// 			
-// 			TheFunction->getBasicBlockList().push_back(ElseBB);
-// 			buildr.SetInsertPoint(ElseBB);
-// 			
-// 			llvm::Value *ElseV = llvm::ConstantInt::getFalse(llvm::getGlobalContext());
-// 			
-// 			buildr.CreateBr(MergeBB);
-// 			// Codegen of 'Else' can change the current block, update ElseBB for the PHI.
-// 			ElseBB = buildr.GetInsertBlock();
-// 			
-// 			TheFunction->getBasicBlockList().push_back(MergeBB);
-// 			buildr.SetInsertPoint(MergeBB);
-// 			
-// 			llvm::PHINode *PN = buildr.CreatePHI(llvm::Type::getDoubleTy(llvm::getGlobalContext()), 2, "iftmp");
-// 			PN->addIncoming(ThenV, ThenBB);
-// 			PN->addIncoming(ElseV, ElseBB);
-// 			
-// 			ret = PN;
+			//NOTE implementation is in piecewise
 		}	break;
 		case Analitza::Container::declare:{
 // 			Q_ASSERT(c->m_params.first()->type()==Object::variable);
@@ -362,7 +302,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			ret = F;
 		}	break;
 		case Analitza::Container::otherwise: {
-			qDebug() << "EN otherwise";
+			//NOTE implementation is in piecewise
 		}	break;
 		case Analitza::Container::math:
 		case Analitza::Container::none:
