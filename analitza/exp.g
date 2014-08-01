@@ -12,6 +12,7 @@
 %token tLimits	".."
 %token tDiv		"/"
 %token tPow		"^"
+%token tUniPow	"²"
 %token tId		"identifier"
 %token tLambda	"->"
 %token tQm		"?"
@@ -45,6 +46,7 @@
 %left tMul tDiv
 %left uminus_prec
 %left tPow
+%left tUniPow
 %left tPipe
 
 %start Program
@@ -218,7 +220,8 @@ Declaration ::= Id tAssig Expression ;       /. case $rule_number: sym(1) = "<de
 -- primary
 Id ::=  tId; /. case $rule_number: ./
 String ::=  tString; /. case $rule_number: ./
-Number ::= tVal;
+Number ::= tVal; /. case $rule_number: ./
+UniPow ::= tUniPow;
 /.
 case $rule_number:
 	sym(1) = lexer->current.val;
@@ -331,7 +334,6 @@ case $rule_number:
 Expression ::= Expression tAdd Expression ; /. case $rule_number: sym(1) = "<apply><plus />"  +sym(1)+sym(3)+"</apply>"; break; ./
 Expression ::= Expression tSub Expression ; /. case $rule_number: sym(1) = "<apply><minus />" +sym(1)+sym(3)+"</apply>"; break; ./
 Expression ::= Expression tMul Expression ; /. case $rule_number: sym(1) = "<apply><times />" +sym(1)+sym(3)+"</apply>"; break; ./
-Expression ::= Number PrimaryExpressionExt; /. case $rule_number: sym(1) = "<apply><times />" +sym(1)+sym(2)+"</apply>"; break; ./
 Expression ::= Expression tDiv Expression ; /. case $rule_number: sym(1) = "<apply><divide />"+sym(1)+sym(3)+"</apply>"; break; ./
 Expression ::= Expression tPow Expression ; /. case $rule_number: sym(1) = "<apply><power />" +sym(1)+sym(3)+"</apply>"; break; ./
 Expression ::= Expression tEq  Expression ; /. case $rule_number: sym(1) = "<apply><eq />"    +sym(1)+sym(3)+"</apply>"; break; ./
@@ -340,6 +342,8 @@ Expression ::= Expression tGeq Expression ; /. case $rule_number: sym(1) = "<app
 Expression ::= Expression tLt  Expression ; /. case $rule_number: sym(1) = "<apply><lt />"    +sym(1)+sym(3)+"</apply>"; break; ./
 Expression ::= Expression tGt  Expression ; /. case $rule_number: sym(1) = "<apply><gt />"    +sym(1)+sym(3)+"</apply>"; break; ./
 Expression ::= Expression tNeq Expression ; /. case $rule_number: sym(1) = "<apply><neq />"   +sym(1)+sym(3)+"</apply>"; break; ./
+Expression ::= Number PrimaryExpressionExt; /. case $rule_number: sym(1) = "<apply><times />" +sym(1)+sym(2)+"</apply>"; break; ./
+Expression ::= Expression UniPow;			/. case $rule_number: sym(1) = "<apply><power />" +sym(1)+sym(2)+"</apply>"; break; ./
 
 Expression ::= Expression tQm  Expression ; /. case $rule_number: sym(1) = "<piece>"+sym(3)+sym(1)+"</piece>"; break; ./
 

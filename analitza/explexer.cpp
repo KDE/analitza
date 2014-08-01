@@ -82,13 +82,11 @@ void ExpLexer::getToken()
     } else if(a[pos].decompositionTag()==QChar::Super) {
 		QString super;
 		for(int i=pos; i<a.count() && a[i].decompositionTag()==QChar::Super; i++) {
-			ret.type = ExpressionTable::tPow;
 			super+=a[i].decomposition()[0];
-			
-			pos++;
 		}
-		m_tokens.append(TOKEN(ExpressionTable::tPow, pos, QString(), 0));
-		ret=TOKEN(ExpressionTable::tVal, oldpos, "<cn>"+super+"</cn>", pos-oldpos);
+		pos+=super.size();
+		ret.type = ExpressionTable::tUniPow;
+		ret.val = "<cn>"+super+"</cn>";
 	} else if(a[pos].isLetter()) {
 		for(; pos<a.length() && (a[pos]=='_' || a[pos].isLetter() || (a[pos].isNumber() && a[pos].decompositionTag()==QChar::NoDecomposition)); pos++){
 			ret.val += a[pos];

@@ -66,6 +66,8 @@ void ExpTest::testSimple_data()
 	QTest::newRow("times") << "1/2" << "<math><apply><divide /><cn>1</cn><cn>2</cn></apply></math>";
 	QTest::newRow("priority") << "2+3*5" << "<math><apply><plus /><cn>2</cn><apply><times />"
 											"<cn>3</cn><cn>5</cn></apply></apply></math>";
+	QTest::newRow("unicode y*x**2") << "y*x²" << "<math><apply><times /><ci>y</ci><apply><power /><ci>x</ci><cn>2</cn></apply></apply></math>"; //x**2y
+	QTest::newRow("unicode x**2*y") << "x²*y" << "<math><apply><times /><apply><power /><ci>x</ci><cn>2</cn></apply><ci>y</ci></apply></math>"; //x**2y
 	
 	QTest::newRow("function") << "func(x, y)" << "<math><apply><ci type='function'>func</ci>"
 												"<ci>x</ci><ci>y</ci></apply></math>";
@@ -145,8 +147,8 @@ void ExpTest::testExp_data()
 
 	//FIXME: Repetition not supported
 // 	QTest::newRow("simple expression") << "x+x+x+x" << fourX;
-	QTest::newRow("composed expression") << QString::fromUtf8("2²")
-			<< "<math><apply><power /><cn>2</cn><cn>2</cn></apply></math>";
+	QTest::newRow("composed expression") << QString::fromUtf8("3²")
+			<< "<math><apply><power /><cn>3</cn><cn>2</cn></apply></math>";
 	QTest::newRow("plus operator in plus() form") << "plus(x,x,x,x)" << fourX;
 	QTest::newRow("sum") << "x*sum(x : x=1..10)" << "<math><apply><times /><ci>x</ci>"
 			"<apply><sum /><bvar><ci>x</ci></bvar><uplimit><cn>10</cn></uplimit><downlimit>"
@@ -185,8 +187,8 @@ void ExpTest::testLength_data()
 	QTest::newRow("simple addition") << "2+2+2" << lengths;
 	
 	lengths.clear();
-	lengths << 1 << 0 << 1;
-	QTest::newRow("power with utf composition") << QString::fromUtf8("2²") << lengths;
+	lengths << 2 << 3;
+	QTest::newRow("power with utf composition") << QString::fromUtf8("22²²²") << lengths;
 	
 	lengths.clear();
 	lengths << 1;
