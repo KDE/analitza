@@ -46,8 +46,8 @@ public:
     NON_TERMINAL_COUNT = 22,
 
     GOTO_INDEX_OFFSET = 107,
-    GOTO_INFO_OFFSET = 435,
-    GOTO_CHECK_OFFSET = 435
+    GOTO_INFO_OFFSET = 387,
+    GOTO_CHECK_OFFSET = 387
   };
 
   static const char  *const    spell [];
