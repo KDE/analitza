@@ -58,7 +58,7 @@ class ANALITZAJIT_EXPORT TypeCompiler //TODO : public Analitza::AbstractExpressi
 		 * If @p containerAsPointer is true and @p expressionType is a container, then 
 		 * compilation will generate pointers of the contained type instead of a strict 
 		 * container type. For example, for a vector of 5 real numbers (i.e. 
-		 * @p expressionType equals to ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2)) 
+		 * @p expressionType equals to ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), 2)) 
 		 * we have this two cases:
 		 * 
 		 * If @p containerAsPointer equals to true then the compiled code is:

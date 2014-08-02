@@ -45,7 +45,7 @@ ExpressionCompiler::ExpressionCompiler(llvm::Module* module, Variables* vars)
 	: m_module(module)
 	, m_vars(vars)
 {
-	//TODO ad variables to m_bvartypes
+	//TODO add variables to m_bvartypes
 }
 
 llvm::Value *ExpressionCompiler::compileExpression(Object* expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
@@ -95,7 +95,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Vector* vec)
 {
 	const size_t n = (size_t)vec->size();
 	//TODO support othert ypes, not only doubles
-	Q_ASSERT(vec->at(0)->type() != Object::value); //remove this line when the support to other types (not only doubles) is done
+	Q_ASSERT(vec->at(0)->type() != Object::value); //remove this line when the support of other types (not only doubles) is done
 	llvm::Type *scalar_t = llvm::Type::getDoubleTy(llvm::getGlobalContext());
 	llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
 	
@@ -160,7 +160,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Cn* val)
 		}	break;
 	}
 	
-	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
+	return QVariant::fromValue(ret);
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
@@ -199,7 +199,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 		}	break;
 	}
 	
-	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
+	return QVariant::fromValue(ret);
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::Container* c)
@@ -398,15 +398,17 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 		}	break;
 	}
 	
-	return QVariant::fromValue((llvm::Value*)ret); //TODO better casting using LLVM API
+	return QVariant::fromValue(ret);
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::CustomObject*)
 {
+	//TODO
 	return QVariant();//"CustomObject";
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::None* )
 {
+	//TODO
 	return QVariant();
 }

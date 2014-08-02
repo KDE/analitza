@@ -19,14 +19,11 @@
 #include "analitzajittest.h"
 
 #include <QtTest/QTest>
-#include <QVarLengthArray>
 
 #include "analitza/value.h"
 #include "analitzajit/jitanalyzer.h"
 
 QTEST_MAIN( AnalitzaJitTest )
-
-Q_DECLARE_METATYPE(QVarLengthArray<double>);
 
 static inline bool epscompare(double a, double b)
 {

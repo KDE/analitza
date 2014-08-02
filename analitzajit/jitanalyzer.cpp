@@ -117,35 +117,50 @@ bool JITAnalyzer::calculateLambda(double &result)
 	
 	if (m_jitfnscache.contains(m_currentfnkey)) {
 		//TODO check for non empty m_jitfnscache
-		
-		std::vector<llvm::Value*> ArgsV;
-		for (int i = 0; i < runStack().size(); ++i) {
-			ExpressionCompiler vv(m_module);
-			ArgsV.push_back(vv.compileExpression(runStack().at(i)));
-		}
-		
-	// 	ArgsV[0]->dump();
-		
+		const int n = this->expression().bvarList().size();
+		const int nret = m_jitfnscache[m_currentfnkey].native_retty.size();
 		
 		// Look up the name in the global module table.
 		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
-	// 	llvm::CallInst *retcall = Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
 		
-		std::vector<llvm::GenericValue> abc;
+		//TODO
+// 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Value);
 		
-		for (int i = 0; i < this->expression().bvarList().size(); ++i) {
-			llvm::GenericValue a;
-			a.DoubleVal = ((Cn*)(runStack().at(i)))->value();
-			abc.push_back(a);
-		}
+		//NOTE this line perform the JIT compilation to native platform code
+		void *FPtr = m_jitengine->getPointerToFunction(CalleeF);
 		
-		llvm::GenericValue rr = m_jitengine->runFunction(CalleeF, abc);
-		
-		switch (CalleeF->getReturnType()->getTypeID()) {
-			case llvm::Type::DoubleTyID: {
-				result = rr.DoubleVal;
+		switch (n) {
+			case 1: {
+				typedef double (*FTY)(double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				result = FP(arg1);
+				return true;
 			}	break;
-			default: return false;
+			case 2: {
+				typedef double (*FTY)(double, double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				double arg2 = ((Cn*)(runStack().at(1)))->value();
+				result = FP(arg1, arg2);
+				return true;
+			}	break;
+			case 3: {
+				typedef double (*FTY)(double, double, double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				double arg2 = ((Cn*)(runStack().at(1)))->value();
+				double arg3 = ((Cn*)(runStack().at(1)))->value();
+				result = FP(arg1, arg2, arg3);
+				return true;
+			}	break;
+			//TODO more args
+			default: {
+				return false;
+			}
 		}
 	} else {
 		//TODO add error
@@ -161,41 +176,50 @@ bool JITAnalyzer::calculateLambda(bool &result)
 	
 	if (m_jitfnscache.contains(m_currentfnkey)) {
 		//TODO check for non empty m_jitfnscache
-		
-		std::vector<llvm::Value*> ArgsV;
-		for (int i = 0; i < runStack().size(); ++i) {
-			ExpressionCompiler vv(m_module);
-			ArgsV.push_back(vv.compileExpression(runStack().at(i)));
-		}
-		
-// 		ArgsV[0]->dump();
-		
+		const int n = this->expression().bvarList().size();
+		const int nret = m_jitfnscache[m_currentfnkey].native_retty.size();
 		
 		// Look up the name in the global module table.
 		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
-	// 	llvm::CallInst *retcall = Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
 		
-		std::vector<llvm::GenericValue> abc;
+		//TODO
+// 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Value);
 		
-		for (int i = 0; i < this->expression().bvarList().size(); ++i) {
-			llvm::GenericValue a;
-			a.DoubleVal = ((Cn*)(runStack().at(i)))->value();
-			abc.push_back(a);
-		}
+		//NOTE this line perform the JIT compilation to native platform code
+		void *FPtr = m_jitengine->getPointerToFunction(CalleeF);
 		
-		llvm::GenericValue rr = m_jitengine->runFunction(CalleeF, abc);
-		
-		switch (CalleeF->getReturnType()->getTypeID()) {
-			case llvm::Type::IntegerTyID: {
-				llvm::IntegerType *inttype = (llvm::IntegerType *)CalleeF->getReturnType();
+		switch (n) {
+			case 1: {
+				typedef bool (*FTY)(double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
 				
-				switch (inttype->getBitWidth()) {
-					case 1:  { //for bool expressiontype 
-						result = rr.IntVal.getBoolValue();
-					}	break;
-				}
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				result = FP(arg1);
+				return true;
 			}	break;
-					default: return false;
+			case 2: {
+				typedef bool (*FTY)(double, double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				double arg2 = ((Cn*)(runStack().at(1)))->value();
+				result = FP(arg1, arg2);
+				return true;
+			}	break;
+			case 3: {
+				typedef bool (*FTY)(double, double, double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				double arg2 = ((Cn*)(runStack().at(1)))->value();
+				double arg3 = ((Cn*)(runStack().at(1)))->value();
+				result = FP(arg1, arg2, arg3);
+				return true;
+			}	break;
+			//TODO more args
+			default: {
+				return false;
+			}
 		}
 	} else {
 		//TODO add error
@@ -221,6 +245,7 @@ bool JITAnalyzer::calculateLambda(QVector< double >& result)
 		//TODO
 // 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Vector);
 		
+		//NOTE this line perform the JIT compilation to native platform code
 		void *FPtr = m_jitengine->getPointerToFunction(CalleeF);
 		
 		double *vret = 0;
