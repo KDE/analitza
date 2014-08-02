@@ -33,7 +33,7 @@ static inline bool epscompare(double a, double b)
 	return a==b || std::abs(a-b)<std::abs(std::min(a,b))*std::numeric_limits<double>::epsilon();
 }
 
-static inline bool epscompare(QVarLengthArray<double> a, QVarLengthArray<double> b)
+static inline bool epscompare(QVector<double> a, QVector<double> b)
 {
 	bool ret = (a.size() == b.size());
 	
@@ -217,20 +217,21 @@ void AnalitzaJitTest::testCalculateUnaryRealVectorLambda_data()
 {
 	QTest::addColumn<QString>("expression");
 	QTest::addColumn<double>("arg1value");
-	QTest::addColumn< QVarLengthArray<double> >("expected");
+	QTest::addColumn< QVector<double> >("expected");
 	
-	QTest::newRow("simple param") << "t->vector{t*t, 7*t}" << 5.0 << (QVarLengthArray<double>() << 25.0 << 35.0);
+	QTest::newRow("simple param") << "t->vector{t*t, 7*t}" << 5.0 << (QVector<double>() << 25.0 << 35.0);
+	QTest::newRow("3D param curv") << "t->vector{cos(t), sin(t), t}" << 0.0 << (QVector<double>() << 1.0 << 0.0 << 0.0);
 }
 
 void AnalitzaJitTest::testCalculateUnaryRealVectorLambda()
 {
 	QFETCH(QString, expression);
 	QFETCH(double, arg1value);
-	QFETCH( QVarLengthArray<double> , expected );
+	QFETCH( QVector<double> , expected );
 	
 	arg1->setValue(arg1value);
 	
-	QVarLengthArray<double> result;
+	QVector<double> result;
 	
 	QVERIFY(a->setExpression(Analitza::Expression(expression)));
 	
@@ -239,8 +240,43 @@ void AnalitzaJitTest::testCalculateUnaryRealVectorLambda()
 	bool eq = epscompare(result, expected);
 	
 	if (!eq) {
-// 		qDebug() << "Actual: " << result;
-// 		qDebug() << "Expected: " << expected;
+		qDebug() << "Actual: " << result;
+		qDebug() << "Expected: " << expected;
+	}
+	QVERIFY(eq);
+}
+
+void AnalitzaJitTest::testCalculateBinaryRealVectorLambda_data()
+{
+	QTest::addColumn<QString>("expression");
+	QTest::addColumn<double>("arg1value");
+	QTest::addColumn<double>("arg2value");
+	QTest::addColumn< QVector<double> >("expected");
+	
+	QTest::newRow("two params") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 3.0 << (QVector<double>() << 10.0 << 4.0 << 21.0);
+}
+
+void AnalitzaJitTest::testCalculateBinaryRealVectorLambda()
+{
+	QFETCH(QString, expression);
+	QFETCH(double, arg1value);
+	QFETCH(double, arg2value);
+	QFETCH( QVector<double> , expected );
+	
+	arg1->setValue(arg1value);
+	arg2->setValue(arg2value);
+	
+	QVector<double> result;
+	
+	QVERIFY(a->setExpression(Analitza::Expression(expression)));
+	
+	QVERIFY(a->calculateLambda(result));
+	
+	bool eq = epscompare(result, expected);
+	
+	if (!eq) {
+		qDebug() << "Actual: " << result;
+		qDebug() << "Expected: " << expected;
 	}
 	QVERIFY(eq);
 }

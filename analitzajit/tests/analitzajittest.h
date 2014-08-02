@@ -51,6 +51,9 @@ Q_OBJECT
 		void testCalculateUnaryRealVectorLambda_data();
 		void testCalculateUnaryRealVectorLambda();
 		
+		void testCalculateBinaryRealVectorLambda_data();
+		void testCalculateBinaryRealVectorLambda();
+		
 		void cleanupTestCase();
 	private:
 		Analitza::JITAnalyzer *a;

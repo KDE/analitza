@@ -93,7 +93,7 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		 */
 		bool calculateLambda(double &result);
 		bool calculateLambda(bool &result);
-		bool calculateLambda(QVarLengthArray<double> &result);
+		bool calculateLambda(QVector<double> &result);
 		
 		//TODO
 		//bool calculateLambda(int &result);

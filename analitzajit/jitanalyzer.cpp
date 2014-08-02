@@ -205,41 +205,94 @@ bool JITAnalyzer::calculateLambda(bool &result)
 	return true;
 }
 
-bool JITAnalyzer::calculateLambda(QVarLengthArray< double >& result)
+bool JITAnalyzer::calculateLambda(QVector< double >& result)
 {
 	Q_ASSERT(!m_jitfnscache.isEmpty());
 	
 	if (m_jitfnscache.contains(m_currentfnkey)) {
 		//TODO check for non empty m_jitfnscache
 		
+		const int n = this->expression().bvarList().size();
+		const int nret = m_jitfnscache[m_currentfnkey].native_retty.size();
+		
 		// Look up the name in the global module table.
 		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
 		
-		std::vector<llvm::GenericValue> abc;
-		
-		for (int i = 0; i < this->expression().bvarList().size(); ++i) {
-			llvm::GenericValue a;
-			a.DoubleVal = ((Cn*)(runStack().at(i)))->value();
-			abc.push_back(a);
-		}
-		
-// 		CalleeF->dump();
+		//TODO
+// 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Vector);
 		
 		void *FPtr = m_jitengine->getPointerToFunction(CalleeF);
-		typedef double* (*FTY)(double);
-		FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-		qDebug() << "YEEEEEEE " << FP(9)[4];// << FP(9)[0] << FP(9)[1];
 		
-		switch (m_jitfnscache[m_currentfnkey].native_retty.type()) {
-			case ExpressionType::Vector: {
-				//TODO check size of result eq to size of genvalue
-// 				for (int i = 0; i < m_jitfnscache[m_currentfnkey].native_retty.size(); ++i) {
-// // 					result[i] = *(reinterpret_cast<double>(rr.PointerVal));
-// 					qDebug() << "CURRENT ELEMENT : " << result[i];
-// 				}
+		double *vret = 0;
+		
+		switch (n) {
+			case 1: {
+				typedef double* (*FTY)(double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				vret = FP(arg1);
+				
+			}	break;
+			case 2: {
+				typedef double* (*FTY)(double, double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				double arg2 = ((Cn*)(runStack().at(1)))->value();
+				vret = FP(arg1, arg2);
+			}	break;
+			case 3: {
+				typedef double* (*FTY)(double, double, double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				double arg2 = ((Cn*)(runStack().at(1)))->value();
+				double arg3 = ((Cn*)(runStack().at(1)))->value();
+				vret = FP(arg1, arg2, arg3);
+			}	break;
+			//TODO more args
+			default: {
+			}
+		}
+		
+		//TODO weird ... this fill garbage in vector :S ... e.g. QVector(25, 6.95321e-310) should be QVector(25,35)
+// 		for(int i = 0; i < nret; ++i) {
+// 			result.append(vret[i]);
+// 		}
+		//TODO weird behaviour: I can not use loops here ... try next time with other compiler/llvm version
+		switch (nret) {
+			case 1: {
+				const double a = vret[0];
+				result.append(a);
 				return true;
 			}	break;
-					default: return false;
+			case 2: {
+				const double a = vret[0];
+				const double b = vret[1];
+				result.append(a);
+				result.append(b);
+				
+// 				qDebug() << "GINALLL: " << result;
+				
+				return true;
+			}	break;
+			case 3: {
+				const double a = vret[0];
+				const double b = vret[1];
+				const double c = vret[2];
+				result.append(a);
+				result.append(b);
+				result.append(c);
+				
+// 				qDebug() << "GINALLL: " << result;
+				
+				return true;
+			}	break;
+			//TODO vector should be of any size ...
+			default: {
+				return false;
+			}
 		}
 	} else {
 		//TODO add error
