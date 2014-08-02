@@ -251,6 +251,9 @@ void AnalitzaJitTest::testCalculateBinaryRealVectorLambda_data()
 	QTest::addColumn< QVector<double> >("expected");
 	
 	QTest::newRow("two params") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 3.0 << (QVector<double>() << 10.0 << 4.0 << 21.0);
+	QTest::newRow("two params: cache 1") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 4.0 << (QVector<double>() << 11.0 << 3.0 << 28.0);
+	QTest::newRow("two params: cache 2") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 5.0 << (QVector<double>() << 12.0 << 2.0 << 35.0);
+	QTest::newRow("two params: cache 3") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 6.0 << (QVector<double>() << 13.0 << 1.0 << 42.0);
 }
 
 void AnalitzaJitTest::testCalculateBinaryRealVectorLambda()

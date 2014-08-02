@@ -71,6 +71,8 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 	
 	if (expression().isLambda()) {
 		if (m_jitfnscache.contains(m_currentfnkey)) {
+			
+// 			qDebug() << "Avoid compilation to LLVM IR, using cached function:" << m_currentfnkey;
 			return true;
 		} else {
 			//TODO find better way to save/store IR functions
@@ -85,6 +87,7 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 			fn.ir_function = llvm::cast<llvm::Function>(v.compileExpression(expression(), bvartypes));
 			fn.ir_retty = v.compiledType().first;
 			fn.native_retty = v.compiledType().second;
+			fn.jit_function = 0; //NOTE this is important
 			
 			m_jitfnscache[m_currentfnkey] = fn;
 			
@@ -126,8 +129,15 @@ bool JITAnalyzer::calculateLambda(double &result)
 		//TODO
 // 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Value);
 		
-		//NOTE this line perform the JIT compilation to native platform code
-		void *FPtr = m_jitengine->getPointerToFunction(CalleeF);
+		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
+		void *FPtr = 0;
+		if (m_jitfnscache[m_currentfnkey].jit_function) {
+			FPtr = m_jitfnscache[m_currentfnkey].jit_function;
+// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << m_currentfnkey;
+		} else {
+			FPtr = m_jitengine->getPointerToFunction(CalleeF);
+			m_jitfnscache[m_currentfnkey].jit_function = FPtr;
+		}
 		
 		switch (n) {
 			case 1: {
@@ -185,8 +195,15 @@ bool JITAnalyzer::calculateLambda(bool &result)
 		//TODO
 // 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Value);
 		
-		//NOTE this line perform the JIT compilation to native platform code
-		void *FPtr = m_jitengine->getPointerToFunction(CalleeF);
+		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
+		void *FPtr = 0;
+		if (m_jitfnscache[m_currentfnkey].jit_function) {
+			FPtr = m_jitfnscache[m_currentfnkey].jit_function;
+// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << m_currentfnkey;
+		} else {
+			FPtr = m_jitengine->getPointerToFunction(CalleeF);
+			m_jitfnscache[m_currentfnkey].jit_function = FPtr;
+		}
 		
 		switch (n) {
 			case 1: {
@@ -245,8 +262,15 @@ bool JITAnalyzer::calculateLambda(QVector< double >& result)
 		//TODO
 // 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Vector);
 		
-		//NOTE this line perform the JIT compilation to native platform code
-		void *FPtr = m_jitengine->getPointerToFunction(CalleeF);
+		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
+		void *FPtr = 0;
+		if (m_jitfnscache[m_currentfnkey].jit_function) {
+			FPtr = m_jitfnscache[m_currentfnkey].jit_function;
+// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << m_currentfnkey;
+		} else {
+			FPtr = m_jitengine->getPointerToFunction(CalleeF);
+			m_jitfnscache[m_currentfnkey].jit_function = FPtr;
+		}
 		
 		double *vret = 0;
 		
