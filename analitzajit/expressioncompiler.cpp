@@ -18,7 +18,7 @@
 
 #include "expressioncompiler.h"
 
-#include <llvm/Analysis/Verifier.h>
+#include <llvm/IR/Verifier.h>
 #include <llvm/IR/IntrinsicInst.h>
 #include <llvm/IR/IRBuilder.h>
 
@@ -63,15 +63,19 @@ llvm::Value *ExpressionCompiler::compileExpression(const Analitza::Expression& e
 		ExpressionTypeChecker check(m_vars);
 		check.initializeVars(bvartypes);
 		
-		ExpressionType rett = check.check(expression.lambdaBody());
-		//TODO check if rett (return type) has error ret.Errors
+		m_retexptype = check.check(expression.lambdaBody());
+		//TODO check if m_retexptype (return type) has error ret.Errors
 // 		qDebug() << "FUNT RET TYPE "<< rett.toString();
-		m_rettype = TypeCompiler::compileType(rett);
+		
+		//NOTE this is important: we need to return containers as pointer to contained 
+		// type, so we set to true the param TypeCompiler::compileType::containerAsPointer
+		// this is because C++ functions doesn't return a vector, matrix, etc but 
+		// it returns pointers to contained type instead
+		m_rettype = TypeCompiler::compileType(m_retexptype, true);
 	}
 	
 	return expression.tree()->accept(this).value<llvm::Value*>();
 }
-
 
 QVariant ExpressionCompiler::visit(const Analitza::Ci* var)
 {
@@ -89,8 +93,29 @@ QVariant ExpressionCompiler::visit(const Analitza::Operator* op)
 
 QVariant ExpressionCompiler::visit(const Analitza::Vector* vec)
 {
-	//TODO
-	return QVariant();
+	const size_t n = (size_t)vec->size();
+	//TODO support othert ypes, not only doubles
+	Q_ASSERT(vec->at(0)->type() != Object::value); //remove this line when the support to other types (not only doubles) is done
+	llvm::Type *scalar_t = llvm::Type::getDoubleTy(llvm::getGlobalContext());
+	llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
+	
+	//NOTE always we get first an undef instance, this is necessary in order to populate the array with non constant values using CreateInsertValue
+	llvm::Value *array = llvm::UndefValue::get (array_t);
+	
+	//fill the array ith elements
+	for (size_t idx = 0; idx < n; ++idx)
+	{
+		llvm::Value *elemval = vec->at(idx)->accept(this).value<llvm::Value*>();
+		array = buildr.CreateInsertValue (array, elemval, idx);
+	}
+	
+	//NOTE this would be the equivalent of "new array(N)" ...
+	llvm::Value *array_mem = buildr.CreateAlloca (array_t);
+	buildr.CreateStore (array, array_mem);
+	
+	//NOTE we need a typecast to pointer of scalar type this since C++ does not 
+	// return arrays directally, it returns pointers to the scalar type
+	return QVariant::fromValue<llvm::Value*>(buildr.CreateBitCast (array_mem, scalar_t->getPointerTo ()));
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::Matrix* m)
@@ -206,6 +231,8 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 				}
 			}
 			
+			//TODO we need to find out a way to create a value based not only on 
+			// 'double' but based on list, matrx, etc 
 			llvm::Value *elseif = llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(0.0));
 			
 			//NOTE this is key: we start with a false and we will apply OR operator over all 
@@ -293,7 +320,11 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			}
 			//END otherwise
 			
-			ret = elseif;
+// 			if (((llvm::ConstantFP*)elseif)->isNaN()) {
+// 				//TODO error: Could not find a proper choice for a condition statement.
+// 			} else {
+				ret = elseif;
+// 			}
 			
 // 			TheFunction->dump();
 			
@@ -346,7 +377,10 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 // 			QVariant al = QVariant::fromValue<llvm::Value*>(F);
 			
 // 			BB->dump();
-			llvm::verifyFunction(*F);
+			if (!llvm::verifyFunction(*F))
+			{
+// 				qDebug() << "TODO OK";
+			}
 			
 			ret = F;
 		}	break;

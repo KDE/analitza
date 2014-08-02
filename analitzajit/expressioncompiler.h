@@ -59,6 +59,8 @@ class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 		/** Convenience method that applies compileExpression over the @p expression object. */
 		llvm::Value *compileExpression(Analitza::Object *expression, const QMap< QString, Analitza::ExpressionType >& bvartypes = QMap< QString, Analitza::ExpressionType >());
 		
+		QPair<llvm::Type *, Analitza::ExpressionType> compiledType() const { return qMakePair(m_rettype, m_retexptype); }
+		
 		llvm::Module *module() const { return m_module; }
 		Analitza::Variables *variables() const { return m_vars; }
 		
@@ -81,7 +83,10 @@ class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 		//TODO manage error messages that comes from llvm
 		QMap<QString, llvm::Type*> m_bvartypes;
 		llvm::Module *m_module;
-		llvm::Type* m_rettype;
+		llvm::Type* m_rettype; //used after the user call compileExpression
+		Analitza::ExpressionType m_retexptype; //used after the user call compileExpression
+		
+		
 };
 
 }

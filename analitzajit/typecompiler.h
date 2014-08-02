@@ -54,17 +54,31 @@ namespace Analitza
 class ANALITZAJIT_EXPORT TypeCompiler //TODO : public Analitza::AbstractExpressionTypeVisitor
 {
 	public:
-		/** @returns Returns LLVM type for a valid or supported ExpressionType, otherwise will return a null pointer. */
-		static llvm::Type *compileType(const Analitza::ExpressionType &expressionType);
+		/** 
+		 * If @p containerAsPointer is true and @p expressionType is a container, then 
+		 * compilation will generate pointers of the contained type instead of a strict 
+		 * container type. For example, for a vector of 5 real numbers (i.e. 
+		 * @p expressionType equals to ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2)) 
+		 * we have this two cases:
+		 * 
+		 * If @p containerAsPointer equals to true then the compiled code is:
+		 * \code double* \endcode 
+		 * 
+		 * If @p containerAsPointer equals to false then the compiled code is:
+		 * \code [5 x double] \endcode 
+		 * 
+		/* @returns Returns LLVM type for a valid or supported ExpressionType, otherwise will return a null pointer.
+		 */
+		static llvm::Type *compileType(const Analitza::ExpressionType &expressionType, bool containerAsPointer = false);
 		
 		/** Convenience method that applies TypeCompiler::compileType over each element of @p expressionTypes */
-		static QVector<llvm::Type*> compileTypes(const QList<Analitza::ExpressionType>& expressionTypes);
+		static QVector<llvm::Type*> compileTypes(const QList<Analitza::ExpressionType>& expressionTypes, bool containerAsPointer = false);
 		
 		/** 
 		 * Sometimes the user manages associations between variable names and its types, so this is a convenience method 
 		 * that applies TypeCompiler::compileType for each variable type contained inside of @p expressionTypes
 		 */
-		static QMap<QString, llvm::Type*> compileTypes(const QMap<QString, Analitza::ExpressionType>& expressionTypes);
+		static QMap<QString, llvm::Type*> compileTypes(const QMap<QString, Analitza::ExpressionType>& expressionTypes, bool containerAsPointer = false);
 };
 
 }

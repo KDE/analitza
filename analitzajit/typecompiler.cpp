@@ -23,26 +23,34 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/DerivedTypes.h>
 
+static llvm::LLVMContext &llvmcontext = llvm::getGlobalContext();
+
 using namespace Analitza;
 
-llvm::Type* TypeCompiler::compileType(const Analitza::ExpressionType& expressionType)
+llvm::Type* TypeCompiler::compileType(const Analitza::ExpressionType& expressionType, bool containerAsPointer)
 {
 	llvm::Type *ret = 0;
 	
 	switch(expressionType.type()) {
-		case Analitza::ExpressionType::Value: {
-			//TODO get ineger bit width from host then decide if 32 or 64 bits
-			//TODO handle llvm::Type::getInt32Ty(llvm::getGlobalContext())
-			ret = llvm::Type::getDoubleTy(llvm::getGlobalContext());
+		//TODO Value: Analitza must implementa way to deal with integer and complex scalars (not only reals)
+		case Analitza::ExpressionType::Value: ret = llvm::Type::getDoubleTy(llvmcontext); break;
+		case Analitza::ExpressionType::Bool: ret = llvm::Type::getInt1Ty(llvmcontext); break;
+		case Analitza::ExpressionType::Char: ret = llvm::Type::getInt8Ty(llvmcontext); break;
+		case Analitza::ExpressionType::Vector: {
+			if (expressionType.size() > 0) {
+				//NOTE LLVM::VectorType can have issues with being platform independent ...we'll use array until that
+				//ret = llvm::VectorType::get(compileType(expressionType.contained()), expressionType.size());
+				//ret = llvm::ArrayType::get(compileType(expressionType.contained()), expressionType.size());
+				if (containerAsPointer) {
+					ret = llvm::Type::getDoubleTy(llvm::getGlobalContext())->getPointerTo();
+				} else {
+					ret = llvm::ArrayType::get(compileType(expressionType.contained()), expressionType.size());;
+				}
+			} else {
+				//TODO error user needs to specify the size of the vector
+			}
 		}	break;
-		case Analitza::ExpressionType::Bool: {
-			ret = llvm::Type::getInt1Ty(llvm::getGlobalContext()); //we need just one bit for bool
-		}	break;
-		//TODO
-// 		case Analitza::ExpressionType::Char: {
-// 			ret = llvm::Type::getInt8Ty(llvm::getGlobalContext());
-// 		}	break;
-		//TODO case Vector, List, Lambda, Matrix
+		//TODO case List, Lambda, Matrix
 	}
 	
 	Q_ASSERT(ret);
@@ -50,23 +58,23 @@ llvm::Type* TypeCompiler::compileType(const Analitza::ExpressionType& expression
 	return ret;
 }
 
-QVector< llvm::Type* > TypeCompiler::compileTypes(const QList< Analitza::ExpressionType >& expressionTypes)
+QVector< llvm::Type* > TypeCompiler::compileTypes(const QList< Analitza::ExpressionType >& expressionTypes, bool containerAsPointer)
 {
 	const int n = expressionTypes.size();
 	QVector< llvm::Type* > ret(n);
 	
 	for (int i = 0; i < n; ++i)
-		ret.append(compileType(expressionTypes.at(i)));
+		ret.append(compileType(expressionTypes.at(i), containerAsPointer));
 	
 	return ret;
 }
 
-QMap<QString, llvm::Type*> TypeCompiler::compileTypes(const QMap<QString, Analitza::ExpressionType>& expressionTypes)
+QMap<QString, llvm::Type*> TypeCompiler::compileTypes(const QMap<QString, Analitza::ExpressionType>& expressionTypes, bool containerAsPointer)
 {
 	QMap<QString, llvm::Type*> ret;
 	
 	foreach (const QString &var, expressionTypes.keys()) {
-		ret[var] = compileType(expressionTypes[var]);
+		ret[var] = compileType(expressionTypes[var], containerAsPointer);
 	}
 	
 	return ret;

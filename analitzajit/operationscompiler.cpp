@@ -33,7 +33,8 @@
 #include <llvm/IR/IntrinsicInst.h>
 #include <llvm/IR/IRBuilder.h>
 
-static llvm::IRBuilder<> buildr(llvm::getGlobalContext());
+static llvm::LLVMContext &llvmcontext = llvm::getGlobalContext();
+static llvm::IRBuilder<> irbuilder(llvmcontext);
 
 using namespace std;
 using namespace Analitza;
@@ -43,13 +44,14 @@ llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::Operator
 	llvm::Value *ret = 0;
 	
 	switch(op) {
-		case Operator::plus: ret = buildr.CreateFAdd(val1, val2); break;
-		case Operator::minus: ret = buildr.CreateFSub(val1, val2); break;
-		case Operator::times: ret = buildr.CreateFMul(val1, val2); break;
-		case Operator::divide: ret = buildr.CreateFDiv(val1, val2); break;//TODO handle x/0 send some error
+		case Operator::plus: ret = irbuilder.CreateFAdd(val1, val2); break;
+		case Operator::minus: ret = irbuilder.CreateFSub(val1, val2); break;
+// 		case Operator::times: ret = llvm::ConstantExpr::getFMul((llvm::Constant*)val1, (llvm::Constant*)val2); break;
+		case Operator::times: ret = irbuilder.CreateFMul(val1, val2); break;
+		case Operator::divide: ret = irbuilder.CreateFDiv(val1, val2); break;//TODO handle x/0 send some error
 		case Operator::power: {
-			llvm::Function *powfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::pow, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-			ret = buildr.CreateCall2(powfnptr, val1, val2);
+			llvm::Function *powfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::pow, llvm::Type::getDoubleTy(llvmcontext));
+			ret = irbuilder.CreateCall2(powfnptr, val1, val2);
 		}	break;
 // 		case Operator::rem:
 // 			if(Q_LIKELY(floor(b)!=0.))
@@ -74,9 +76,9 @@ llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::Operator
 		case Operator::min: {
 			//NOTE the idea here is to avoid use 'if', so we have this: (val1<val2)*val1 + (val1>=val2)*val2
 			llvm::Value *lessthan = compileRealReal(currentBlock, Operator::lt, val1, val2, error);
-			llvm::Value *neglessthan = buildr.CreateNot(lessthan);
-			llvm::Value *flessthan = buildr.CreateUIToFP(lessthan, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-			llvm::Value *fneglessthan = buildr.CreateUIToFP(neglessthan, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			llvm::Value *neglessthan = irbuilder.CreateNot(lessthan);
+			llvm::Value *flessthan = irbuilder.CreateUIToFP(lessthan, llvm::Type::getDoubleTy(llvmcontext));
+			llvm::Value *fneglessthan = irbuilder.CreateUIToFP(neglessthan, llvm::Type::getDoubleTy(llvmcontext));
 			llvm::Value *a = compileRealReal(currentBlock, Operator::times, flessthan, val1, error);
 			llvm::Value *b = compileRealReal(currentBlock, Operator::times, fneglessthan, val2, error);
 			ret = compileRealReal(currentBlock, Operator::plus, a, b, error);
@@ -84,9 +86,9 @@ llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::Operator
 		case Operator::max: {
 			//NOTE the idea here is to avoid use 'if', so we have this: (val1>val2)*val1 + (val1<=val2)*val2
 			llvm::Value *grethan = compileRealReal(currentBlock, Operator::gt, val1, val2, error);
-			llvm::Value *neggrethan = buildr.CreateNot(grethan);
-			llvm::Value *fgrethan = buildr.CreateUIToFP(grethan, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-			llvm::Value *fneggrethan = buildr.CreateUIToFP(neggrethan, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+			llvm::Value *neggrethan = irbuilder.CreateNot(grethan);
+			llvm::Value *fgrethan = irbuilder.CreateUIToFP(grethan, llvm::Type::getDoubleTy(llvmcontext));
+			llvm::Value *fneggrethan = irbuilder.CreateUIToFP(neggrethan, llvm::Type::getDoubleTy(llvmcontext));
 			llvm::Value *a = compileRealReal(currentBlock, Operator::times, fgrethan, val1, error);
 			llvm::Value *b = compileRealReal(currentBlock, Operator::times, fneggrethan, val2, error);
 			ret = compileRealReal(currentBlock, Operator::plus, a, b, error);
@@ -94,12 +96,12 @@ llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::Operator
 // 		case Operator::approx:
 // 			oper->setValue(fabs(a-b)<0.001);
 // 			break;
-		case Operator::gt: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UGT, val1, val2); break;
-		case Operator::lt: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_ULT, val1, val2); break;
-		case Operator::eq: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UEQ, val1, val2); break;
-		case Operator::neq: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UNE, val1, val2); break;
-		case Operator::geq: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_UGE, val1, val2); break;
-		case Operator::leq: ret = buildr.CreateFCmp(llvm::CmpInst::FCMP_ULE, val1, val2); break;
+		case Operator::gt: ret = irbuilder.CreateFCmp(llvm::CmpInst::FCMP_UGT, val1, val2); break;
+		case Operator::lt: ret = irbuilder.CreateFCmp(llvm::CmpInst::FCMP_ULT, val1, val2); break;
+		case Operator::eq: ret = irbuilder.CreateFCmp(llvm::CmpInst::FCMP_UEQ, val1, val2); break;
+		case Operator::neq: ret = irbuilder.CreateFCmp(llvm::CmpInst::FCMP_UNE, val1, val2); break;
+		case Operator::geq: ret = irbuilder.CreateFCmp(llvm::CmpInst::FCMP_UGE, val1, val2); break;
+		case Operator::leq: ret = irbuilder.CreateFCmp(llvm::CmpInst::FCMP_ULE, val1, val2); break;
 // 		case Operator::_and:
 // 			oper->setValue(a && b);
 // 			break;
@@ -141,7 +143,7 @@ llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::Operator
 // 			}
 // 			break;
 		case Operator::root: {
-			llvm::Value *invval2 = compileRealReal(currentBlock, Operator::divide, llvm::ConstantFP::get(llvm::getGlobalContext(), llvm::APFloat(1.0)), val2, error);
+			llvm::Value *invval2 = compileRealReal(currentBlock, Operator::divide, llvm::ConstantFP::get(llvmcontext, llvm::APFloat(1.0)), val2, error);
 			ret = compileRealReal(currentBlock, Operator::power, val1, invval2, error);
 		}	break;
 		default:
@@ -343,7 +345,7 @@ llvm::Value * compileUnaryReal(llvm::BasicBlock *currentBlock, Operator::Operato
 	llvm::Value *ret = 0;
 	
 	switch(op) {
-		case Operator::minus: ret = buildr.CreateFNeg(val); break;
+		case Operator::minus: ret = irbuilder.CreateFNeg(val); break;
 // 		case Operator::factorial: {
 // 			//Use gamma from math.h?
 // 			uint res=1;
@@ -353,12 +355,12 @@ llvm::Value * compileUnaryReal(llvm::BasicBlock *currentBlock, Operator::Operato
 // 			     oper->setValue(res);
 // 		}	break;
 		case Operator::sin: {
-			llvm::Function *sinfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::sin, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-			ret = buildr.CreateCall(sinfnptr, val);
+			llvm::Function *sinfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::sin, llvm::Type::getDoubleTy(llvmcontext));
+			ret = irbuilder.CreateCall(sinfnptr, val);
 		}	break;
 		case Operator::cos: {
-			llvm::Function *cosfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::cos, llvm::Type::getDoubleTy(llvm::getGlobalContext()));
-			ret = buildr.CreateCall(cosfnptr, val);
+			llvm::Function *cosfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::cos, llvm::Type::getDoubleTy(llvmcontext));
+			ret = irbuilder.CreateCall(cosfnptr, val);
 		}	break;
 		case Operator::tan: {
 			llvm::Value *sinv = compileUnaryReal(currentBlock, Operator::sin, val, correct);
@@ -978,7 +980,7 @@ llvm::Value * OperationsCompiler::compileBinaryOperation(llvm::BasicBlock* curre
 	BinaryOp f=opsBinary[finaltype1][finaltype2];
 	Q_ASSERT(f && "using compile (for binary operator) in a wrong way");
 	
-	buildr.SetInsertPoint(currentBlock);
+	irbuilder.SetInsertPoint(currentBlock);
 	
 	return f(currentBlock ,op, val1, val2, error);
 }
@@ -1013,7 +1015,7 @@ llvm::Value * OperationsCompiler::compileUnaryOperation(llvm::BasicBlock* curren
 	UnaryOp f=opsUnary[finaltype];
 	Q_ASSERT(f && "using compileUnary in a wrong way");
 	
-	buildr.SetInsertPoint(currentBlock);
+	irbuilder.SetInsertPoint(currentBlock);
 	
 	return f(currentBlock, op, val, error);
 }

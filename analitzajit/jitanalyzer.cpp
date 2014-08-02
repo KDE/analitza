@@ -25,6 +25,7 @@
 
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
+#include <llvm-3.5/llvm/IR/InstrTypes.h>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/ExecutionEngine/GenericValue.h>
 #include <llvm/ExecutionEngine/JIT.h>
@@ -39,6 +40,8 @@ JITAnalyzer::JITAnalyzer()
 	
 	m_module = new llvm::Module("mumod", llvm::getGlobalContext());
 	m_jitengine = llvm::EngineBuilder(m_module).create();
+// 	std::string ErrStr;
+// 	m_jitengine = llvm::EngineBuilder(m_module).setErrorStr(&ErrStr).setMCPU("amd64").create();
 }
 
 JITAnalyzer::~JITAnalyzer()
@@ -77,7 +80,15 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 			ExpressionCompiler v(m_module, variables());
 			
 			//cache
-			m_jitfnscache[m_currentfnkey] = v.compileExpression(expression(), bvartypes);
+			function_info fn;
+			//TODO support expression too, not only lambda expression
+			fn.ir_function = llvm::cast<llvm::Function>(v.compileExpression(expression(), bvartypes));
+			fn.ir_retty = v.compiledType().first;
+			fn.native_retty = v.compiledType().second;
+			
+			m_jitfnscache[m_currentfnkey] = fn;
+			
+// 			m_jitfnscache[m_currentfnkey]->dump();
 			
 			return true;
 		}
@@ -117,7 +128,7 @@ bool JITAnalyzer::calculateLambda(double &result)
 		
 		
 		// Look up the name in the global module table.
-		llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache[m_currentfnkey];
+		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
 	// 	llvm::CallInst *retcall = Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
 		
 		std::vector<llvm::GenericValue> abc;
@@ -161,7 +172,7 @@ bool JITAnalyzer::calculateLambda(bool &result)
 		
 		
 		// Look up the name in the global module table.
-		llvm::Function *CalleeF = (llvm::Function*)m_jitfnscache[m_currentfnkey];
+		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
 	// 	llvm::CallInst *retcall = Builder.CreateCall(CalleeF, ArgsV, "tmpvarfromcall");
 		
 		std::vector<llvm::GenericValue> abc;
@@ -183,6 +194,50 @@ bool JITAnalyzer::calculateLambda(bool &result)
 						result = rr.IntVal.getBoolValue();
 					}	break;
 				}
+			}	break;
+					default: return false;
+		}
+	} else {
+		//TODO add error
+		return false;
+	}
+	
+	return true;
+}
+
+bool JITAnalyzer::calculateLambda(QVarLengthArray< double >& result)
+{
+	Q_ASSERT(!m_jitfnscache.isEmpty());
+	
+	if (m_jitfnscache.contains(m_currentfnkey)) {
+		//TODO check for non empty m_jitfnscache
+		
+		// Look up the name in the global module table.
+		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
+		
+		std::vector<llvm::GenericValue> abc;
+		
+		for (int i = 0; i < this->expression().bvarList().size(); ++i) {
+			llvm::GenericValue a;
+			a.DoubleVal = ((Cn*)(runStack().at(i)))->value();
+			abc.push_back(a);
+		}
+		
+// 		CalleeF->dump();
+		
+		void *FPtr = m_jitengine->getPointerToFunction(CalleeF);
+		typedef double* (*FTY)(double);
+		FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+		qDebug() << "YEEEEEEE " << FP(9)[4];// << FP(9)[0] << FP(9)[1];
+		
+		switch (m_jitfnscache[m_currentfnkey].native_retty.type()) {
+			case ExpressionType::Vector: {
+				//TODO check size of result eq to size of genvalue
+// 				for (int i = 0; i < m_jitfnscache[m_currentfnkey].native_retty.size(); ++i) {
+// // 					result[i] = *(reinterpret_cast<double>(rr.PointerVal));
+// 					qDebug() << "CURRENT ELEMENT : " << result[i];
+// 				}
+				return true;
 			}	break;
 					default: return false;
 		}

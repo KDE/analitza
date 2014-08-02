@@ -20,7 +20,9 @@ target_link_libraries ( AnalitzaJIT
   Qt5::Gui
 
   Analitza
-  ${LLVM_MODULE_LIBS} ${LLVM_LFLAGS}
+  ${LLVM_SYSTEM_LIBS}
+  ${LLVM_MODULE_LIBS}
+  ${LLVM_LFLAGS}
 )
 
 set_target_properties(AnalitzaJIT PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )

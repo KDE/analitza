@@ -19,15 +19,29 @@
 #include "analitzajittest.h"
 
 #include <QtTest/QTest>
+#include <QVarLengthArray>
 
 #include "analitza/value.h"
 #include "analitzajit/jitanalyzer.h"
 
 QTEST_MAIN( AnalitzaJitTest )
 
+Q_DECLARE_METATYPE(QVarLengthArray<double>);
+
 static inline bool epscompare(double a, double b)
 {
-  return a==b || std::abs(a-b)<std::abs(std::min(a,b))*std::numeric_limits<double>::epsilon();
+	return a==b || std::abs(a-b)<std::abs(std::min(a,b))*std::numeric_limits<double>::epsilon();
+}
+
+static inline bool epscompare(QVarLengthArray<double> a, QVarLengthArray<double> b)
+{
+	bool ret = (a.size() == b.size());
+	
+	for (int i = 0; (i < a.size()) && ret; ++i) {
+		ret = epscompare(a.at(i), b.at(i));
+	}
+	
+	return ret;
 }
 
 AnalitzaJitTest::AnalitzaJitTest(QObject *parent)
@@ -82,8 +96,7 @@ void AnalitzaJitTest::testCalculateUnaryBooleanLambda()
 	
 	bool result = 0;
 	
-	a->setExpression(Analitza::Expression(expression));
-	
+	QVERIFY(a->setExpression(Analitza::Expression(expression)));
 	QVERIFY(a->calculateLambda(result));
 	QCOMPARE(result, expected);
 }
@@ -137,8 +150,7 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda()
 	
 	double result = 0;
 	
-	a->setExpression(Analitza::Expression(expression));
-	
+	QVERIFY(a->setExpression(Analitza::Expression(expression)));
 	QVERIFY(a->calculateLambda(result));
 	
 	bool eq = epscompare(result, expected);
@@ -189,8 +201,7 @@ void AnalitzaJitTest::testCalculateBinaryRealLambda()
 	
 	double result = 0;
 	
-	a->setExpression(Analitza::Expression(expression));
-	
+	QVERIFY(a->setExpression(Analitza::Expression(expression)));
 	QVERIFY(a->calculateLambda(result));
 	
 	bool eq = epscompare(result, expected);
@@ -198,6 +209,38 @@ void AnalitzaJitTest::testCalculateBinaryRealLambda()
 	if (!eq) {
 		qDebug() << "Actual: " << result;
 		qDebug() << "Expected: " << expected;
+	}
+	QVERIFY(eq);
+}
+
+void AnalitzaJitTest::testCalculateUnaryRealVectorLambda_data()
+{
+	QTest::addColumn<QString>("expression");
+	QTest::addColumn<double>("arg1value");
+	QTest::addColumn< QVarLengthArray<double> >("expected");
+	
+	QTest::newRow("simple param") << "t->vector{t*t, 7*t}" << 5.0 << (QVarLengthArray<double>() << 25.0 << 35.0);
+}
+
+void AnalitzaJitTest::testCalculateUnaryRealVectorLambda()
+{
+	QFETCH(QString, expression);
+	QFETCH(double, arg1value);
+	QFETCH( QVarLengthArray<double> , expected );
+	
+	arg1->setValue(arg1value);
+	
+	QVarLengthArray<double> result;
+	
+	QVERIFY(a->setExpression(Analitza::Expression(expression)));
+	
+	QVERIFY(a->calculateLambda(result));
+	
+	bool eq = epscompare(result, expected);
+	
+	if (!eq) {
+// 		qDebug() << "Actual: " << result;
+// 		qDebug() << "Expected: " << expected;
 	}
 	QVERIFY(eq);
 }

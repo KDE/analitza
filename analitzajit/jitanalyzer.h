@@ -26,6 +26,8 @@ namespace llvm {
 	class Value;
 	class Module;
 	class ExecutionEngine;
+	class Type;
+	class Function;
 };
 
 namespace Analitza
@@ -91,11 +93,11 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		 */
 		bool calculateLambda(double &result);
 		bool calculateLambda(bool &result);
+		bool calculateLambda(QVarLengthArray<double> &result);
 		
 		//TODO
 		//bool calculateLambda(int &result);
 		//bool calculateLambda(complex &result);
-		//bool calculateLambda(vector &result);
 		//bool calculateLambda(matrix &result);
 		//bool calculateLambda(list &result);
 		
@@ -106,7 +108,13 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		llvm::ExecutionEngine *m_jitengine;
 		
 		//TODO better cache structure
-		QMap<QString, llvm::Value*> m_jitfnscache;
+		struct function_info {
+			llvm::Function *ir_function;
+			void *jit_function;
+			llvm::Type *ir_retty;
+			Analitza::ExpressionType native_retty;
+		};
+		QMap<QString, function_info> m_jitfnscache;
 		QString m_currentfnkey;
 };
 
