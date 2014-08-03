@@ -95,7 +95,6 @@ QVariant ExpressionCompiler::visit(const Analitza::Vector* vec)
 {
 	const size_t n = (size_t)vec->size();
 	//TODO support othert ypes, not only doubles
-	Q_ASSERT(vec->at(0)->type() != Object::value); //remove this line when the support of other types (not only doubles) is done
 	llvm::Type *scalar_t = llvm::Type::getDoubleTy(llvm::getGlobalContext());
 	llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
 	
@@ -109,13 +108,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Vector* vec)
 		array = buildr.CreateInsertValue (array, elemval, idx);
 	}
 	
-	//NOTE this would be the equivalent of "new array(N)" ...
-	llvm::Value *array_mem = buildr.CreateAlloca (array_t);
-	buildr.CreateStore (array, array_mem);
-	
-	//NOTE we need a typecast to pointer of scalar type this since C++ does not 
-	// return arrays directally, it returns pointers to the scalar type
-	return QVariant::fromValue<llvm::Value*>(buildr.CreateBitCast (array_mem, scalar_t->getPointerTo ()));
+	return QVariant::fromValue<llvm::Value*>(array);
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::Matrix* m)
@@ -194,8 +187,12 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 // 			valv->dump();
 // 			valv->getType()->dump();
 // 			qDebug() << "ENNNDDDD";
+// 			qDebug() << "Tipossss: " << val1->toString() << val2->toString();
 			
-			ret = OperationsCompiler::compileBinaryOperation(buildr.GetInsertBlock(), op, Object::value, Object::value, valv1, valv2, error);
+			Object::ObjectType input1finalty = (val1->type() == Object::vector)? Object::vector: Object::value;
+			Object::ObjectType input2finalty = (val2->type() == Object::vector)? Object::vector: Object::value;
+			
+			ret = OperationsCompiler::compileBinaryOperation(buildr.GetInsertBlock(), op, input1finalty, input2finalty, valv1, valv2, error);
 		}	break;
 	}
 	
@@ -369,10 +366,28 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			}
 			
 			llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
-// 			trik->moveBefore(BB);
-// 			BB->dump();
-			buildr.SetInsertPoint(BB);
-			buildr.CreateRet(c->m_params.last()->accept(this).value<llvm::Value*>());
+			buildr.SetInsertPoint(BB); //NOTE set BB as the current block where insert operations
+			llvm::Value *returnFNTY = c->m_params.last()->accept(this).value<llvm::Value*>();
+			
+			//NOTE for containers like vector, matrix, etc, we need a typecast to pointer 
+			// of scalar type this since C++ does not return arrays directally, 
+			//it returns pointers to the scalar type, BEFORE do this we need to allocate 
+			//memory for the container
+			switch (m_retexptype.type()) {
+				case ExpressionType::Vector: {
+						//TODO support more scalars, not only reals
+						//NOTE this would be the equivalent of "new array(N)" ...
+						//returnFNTY->getType()->dump();
+						
+						llvm::Value *array_mem = buildr.CreateAlloca (returnFNTY->getType());
+						buildr.CreateStore (returnFNTY, array_mem);
+						
+						returnFNTY = buildr.CreateBitCast(array_mem, llvm::Type::getDoubleTy(llvm::getGlobalContext())->getPointerTo());
+				}	break;
+				//TODO cast matrix and list too
+			}
+			
+			buildr.CreateRet(returnFNTY);
 			
 // 			QVariant al = QVariant::fromValue<llvm::Value*>(F);
 			

@@ -126,6 +126,8 @@ bool JITAnalyzer::calculateLambda(double &result)
 		// Look up the name in the global module table.
 		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
 		
+// 		CalleeF->dump();
+		
 		//TODO
 // 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Value);
 		
@@ -258,6 +260,8 @@ bool JITAnalyzer::calculateLambda(QVector< double >& result)
 		
 		// Look up the name in the global module table.
 		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
+		
+// 		CalleeF->dump();
 		
 		//TODO
 // 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Vector);

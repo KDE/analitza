@@ -519,20 +519,52 @@ llvm::Value * OperationsCompiler::compileVectorValueOperation(llvm::BasicBlock* 
 
 llvm::Value * OperationsCompiler::compileVectorVectorOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* vec1, llvm::Value* vec2, QString& error)
 {
-	return 0; //TODO
+	//must be arrays
+// 	vec1->getType()->dump();
+// 	vec2->getType()->dump();
+	
+	//TODO port this code to llvm semantic
 // 	if(v1->size()!=v2->size()) { //FIXME: unneeded? ... aucahuasi: I think is needed ...
 // 		correct= QString(QCoreApplication::tr("Cannot operate '%1' on different sized vectors.").arg(Operator(op).name()));
 // 		return new None();
 // 	}
-// 	
-// 	if(op==Operator::scalarproduct)
-// 		op=Operator::times;
-// 	Vector::iterator it2=v2->begin();
-// 	for(Vector::iterator it1=v1->begin(); it1!=v1->end(); ++it1, ++it2)
-// 	{
-// 		*it1=compile(op, *it1, *it2, correct);
-// 	}
-// 	return v1;
+	
+	//TODO assert vec1.size == vec2.size 
+	const unsigned int n = ((llvm::ArrayType*)vec1->getType())->getNumElements();
+	
+	llvm::Type *scalar_t = llvm::Type::getDoubleTy(llvm::getGlobalContext());
+	llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
+	
+	//NOTE always we get first an undef instance, this is necessary in order to populate the array with non constant values using CreateInsertValue
+	llvm::Value *array = llvm::UndefValue::get (array_t);
+	
+	Operator::OperatorType finalop = (op==Operator::scalarproduct)? Operator::times : op;
+	
+	//fill the array ith elements
+	for (size_t idx = 0; idx < n; ++idx)
+	{
+		llvm::Value *elem1 = irbuilder.CreateExtractValue(vec1, idx);
+		llvm::Value *elem2 = irbuilder.CreateExtractValue(vec2, idx);
+		llvm::Value *elemval = compileRealReal(currentBlock, finalop, elem1, elem2, error);
+		array = irbuilder.CreateInsertValue (array, elemval, idx);
+	}
+	
+	llvm::Value *ret = array;
+	
+	if (op==Operator::scalarproduct) { //RETURN A SACLAR
+		llvm::Value *sum = llvm::ConstantFP::get(scalar_t, 0.0);
+		for (size_t idx = 0; idx < n; ++idx)
+		{
+			llvm::Value *elem = irbuilder.CreateExtractValue(array, idx);
+			sum = compileRealReal(currentBlock, Operator::plus, sum, elem, error);
+			
+		}
+		ret = sum;
+		
+		qDebug() << "WAAAAAAAAAAT" <<  ((llvm::ConstantFP*)ret)->getValueAPF().convertToDouble();
+	}
+	
+	return ret;
 }
 
 llvm::Value* OperationsCompiler::compileMatrixVectorOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* matrix, llvm::Value* vector, QString& error)
