@@ -222,6 +222,7 @@ void AnalitzaJitTest::testCalculateUnaryRealVectorLambda_data()
 	QTest::newRow("3D param curv") << "t->vector{cos(t), sin(t), t}" << 0.0 << (QVector<double>() << 1.0 << 0.0 << 0.0);
 	QTest::newRow("simple vector sum") << "t->vector{t, t*t} + vector{-t*t, -t}" << 3.0 << (QVector<double>() << -6.0 << 6.0);
 	QTest::newRow("simple vector minus") << "t->vector{t, t*t} - vector{-t*t, -t}" << 3.0 << (QVector<double>() << 12.0 << 12.0);
+	QTest::newRow("scalar x vector") << "t->-0.5*vector{power(t,4), 9-t*t+cos(0)}" << 3.0 << (QVector<double>() << -40.5 << -0.5);
 }
 
 void AnalitzaJitTest::testCalculateUnaryRealVectorLambda()

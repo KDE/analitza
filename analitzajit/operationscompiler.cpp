@@ -480,8 +480,9 @@ llvm::Value* OperationsCompiler::compileValueNoneOperation(llvm::BasicBlock* cur
 
 llvm::Value * OperationsCompiler::compileValueVectorOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val, llvm::Value* vec, QString& error)
 {
-	return 0; //TODO
-// 	switch(op) {
+	llvm::Value *ret = 0;
+	
+	switch(op) {
 // 		case Operator::selector: {
 // 			int select=oper->intValue();
 // 			delete oper;
@@ -494,17 +495,28 @@ llvm::Value * OperationsCompiler::compileValueVectorOperation(llvm::BasicBlock* 
 // 			}
 // 			return ret;
 // 		}	break;
-// 		default: {
-// 			Vector *ret = v1->copy();
-// 			for(Vector::iterator it=ret->begin(); it!=ret->end(); ++it)
-// 			{
-// 				*it=compile(op, new Cn(*oper), *it, correct);
-// 			}
-// 			
-// 			delete oper;
-// 			return ret;
-// 		}
-// 	}
+		default: {
+			const unsigned int n = ((llvm::ArrayType*)vec->getType())->getNumElements();
+			
+			llvm::Type *scalar_t = llvm::Type::getDoubleTy(llvm::getGlobalContext());
+			llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
+			
+			//NOTE always we get first an undef instance, this is necessary in order to populate the array with non constant values using CreateInsertValue
+			llvm::Value *array = llvm::UndefValue::get (array_t);
+			
+			//fill the array ith elements
+			for (size_t idx = 0; idx < n; ++idx)
+			{
+				llvm::Value *elemin = irbuilder.CreateExtractValue(vec, idx);
+				llvm::Value *elemout = compileRealReal(currentBlock, op, val, elemin, error);
+				array = irbuilder.CreateInsertValue (array, elemout, idx);
+			}
+			
+			ret = array;
+		}
+	}
+	
+	return ret;
 }
 
 llvm::Value * OperationsCompiler::compileVectorValueOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* vec, llvm::Value* val, QString& error)
@@ -605,11 +617,33 @@ llvm::Value* OperationsCompiler::compileMatrixVectorOperation(llvm::BasicBlock* 
 // 	return ret;
 }
 
-llvm::Value* OperationsCompiler::compileUnaryVectorOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* c, QString& error)
+llvm::Value* OperationsCompiler::compileUnaryVectorOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* vec, QString& error)
 {
-	return 0; //TODO
-// 	Object *ret=0;
-// 	switch(op) {
+	//TODO c = vec; ...
+	llvm::Value *ret=0;
+	switch(op) {
+		//TODO
+// 		case Operator::minus: {
+// 			//TODO assert vec1.size == vec2.size 
+// 			const unsigned int n = ((llvm::ArrayType*)vec->getType())->getNumElements();
+// 			
+// 			llvm::Type *scalar_t = llvm::Type::getDoubleTy(llvm::getGlobalContext());
+// 			llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
+// 			
+// 			//NOTE always we get first an undef instance, this is necessary in order to populate the array with non constant values using CreateInsertValue
+// 			llvm::Value *array = llvm::UndefValue::get (array_t);
+// 			
+// 			Operator::OperatorType finalop = (op==Operator::scalarproduct)? Operator::times : op;
+// 			
+// 			for (size_t idx = 0; idx < n; ++idx)
+// 			{
+// 				llvm::Value *elem = irbuilder.CreateExtractValue(vec, idx);
+// 				llvm::Value *newelem = compileUnaryReal(currentBlock, op, elem, error);
+// 				array = irbuilder.CreateInsertValue (array, newelem, idx);
+// 			}
+// 			
+// 			ret = array;
+// 		}	break;
 // 		case Operator::card:
 // 			ret=new Cn(c->size());
 // 			break;
@@ -625,14 +659,13 @@ llvm::Value* OperationsCompiler::compileUnaryVectorOperation(llvm::BasicBlock* c
 // 			mret->appendBranch(row);
 // 			ret = mret;
 // 		}	break;
-// 		default:
-// 			//Should be dealt by typechecker. not necessary
-// 			correct= QString(QCoreApplication::tr("Could not calculate a vector's %1").arg(Operator(op).toString()));
-// 			ret=new None();
-// 			break;
-// 	}
-// 	delete c;
-// 	return ret;
+		default: {
+			//Should be dealt by typechecker. not necessary
+			//correct= QString(QCoreApplication::tr("Could not calculate a vector's %1").arg(Operator(op).toString()));
+			//ret=new None();
+		}	break;
+	}
+	return ret;
 }
 
 llvm::Value* OperationsCompiler::compileListListOperation(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* l1, llvm::Value* l2, QString& error)

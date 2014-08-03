@@ -79,7 +79,7 @@ class OperationsCompiler
 		static llvm::Value* compileVectorValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* vec, llvm::Value* val, QString &error);
 		static llvm::Value* compileVectorVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* vec1, llvm::Value* vec2, QString &error);
 		static llvm::Value* compileMatrixVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* matrix, llvm::Value* vector, QString &error);
-		static llvm::Value* compileUnaryVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* c, QString &error);
+		static llvm::Value* compileUnaryVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* vec, QString &error);
 		
 		static llvm::Value* compileValueListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* , llvm::Value* , QString &error);
 		static llvm::Value* compileListListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, llvm::Value* l1, llvm::Value* l2, QString &error);
