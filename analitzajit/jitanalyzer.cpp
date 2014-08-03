@@ -354,3 +354,111 @@ bool JITAnalyzer::calculateLambda(QVector< double >& result)
 	
 	return true;
 }
+
+bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
+{
+	Q_ASSERT(!m_jitfnscache.isEmpty());
+	
+	if (m_jitfnscache.contains(m_currentfnkey)) {
+		//TODO check for non empty m_jitfnscache
+		
+		const int n = this->expression().bvarList().size();
+		const int nret = m_jitfnscache[m_currentfnkey].native_retty.size();
+		
+		// Look up the name in the global module table.
+		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
+		
+// 		CalleeF->dump();
+		
+		//TODO
+// 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Vector);
+		
+		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
+		void *FPtr = 0;
+		if (m_jitfnscache[m_currentfnkey].jit_function) {
+			FPtr = m_jitfnscache[m_currentfnkey].jit_function;
+// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << m_currentfnkey;
+		} else {
+			FPtr = m_jitengine->getPointerToFunction(CalleeF);
+			m_jitfnscache[m_currentfnkey].jit_function = FPtr;
+		}
+		
+		double *vret = 0;
+		
+		switch (n) {
+			case 1: {
+				typedef double* (*FTY)(double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				vret = FP(arg1);
+				
+			}	break;
+			case 2: {
+				typedef double* (*FTY)(double, double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				double arg2 = ((Cn*)(runStack().at(1)))->value();
+				vret = FP(arg1, arg2);
+			}	break;
+			case 3: {
+				typedef double* (*FTY)(double, double, double);
+				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+				
+				double arg1 = ((Cn*)(runStack().at(0)))->value();
+				double arg2 = ((Cn*)(runStack().at(1)))->value();
+				double arg3 = ((Cn*)(runStack().at(1)))->value();
+				vret = FP(arg1, arg2, arg3);
+			}	break;
+			//TODO more args
+			default: {
+			}
+		}
+		
+		//TODO weird ... this fill garbage in vector :S ... e.g. QVector(25, 6.95321e-310) should be QVector(25,35)
+// 		for(int i = 0; i < nret; ++i) {
+// 			result.append(vret[i]);
+// 		}
+		//TODO weird behaviour: I can not use loops here ... try next time with other compiler/llvm version
+// 		switch (nret) {
+// 			case 1: {
+// 				const double a = vret[0];
+// 				result.append(a);
+// 				return true;
+// 			}	break;
+// 			case 2: {
+// 				const double a = vret[0];
+// 				const double b = vret[1];
+// 				result.append(a);
+// 				result.append(b);
+// 				
+// // 				qDebug() << "GINALLL: " << result;
+// 				
+// 				return true;
+// 			}	break;
+// 			case 3: {
+// 				const double a = vret[0];
+// 				const double b = vret[1];
+// 				const double c = vret[2];
+// 				result.append(a);
+// 				result.append(b);
+// 				result.append(c);
+// 				
+// // 				qDebug() << "GINALLL: " << result;
+// 				
+// 				return true;
+// 			}	break;
+// 			//TODO vector should be of any size ...
+// 			default: {
+// 				return false;
+// 			}
+// 		}
+	} else {
+		//TODO add error
+		return false;
+	}
+	
+	return true;
+}
+

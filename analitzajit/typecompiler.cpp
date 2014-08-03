@@ -44,13 +44,29 @@ llvm::Type* TypeCompiler::compileType(const Analitza::ExpressionType& expression
 				if (containerAsPointer) {
 					ret = llvm::Type::getDoubleTy(llvm::getGlobalContext())->getPointerTo();
 				} else {
-					ret = llvm::ArrayType::get(compileType(expressionType.contained()), expressionType.size());;
+					ret = llvm::ArrayType::get(compileType(expressionType.contained()), expressionType.size());
 				}
 			} else {
 				//TODO error user needs to specify the size of the vector
 			}
 		}	break;
-		//TODO case List, Lambda, Matrix
+		case Analitza::ExpressionType::Matrix: {
+			if (expressionType.size() > 0) {
+				//NOTE LLVM::VectorType can have issues with being platform independent ...we'll use array until that
+				//ret = llvm::VectorType::get(compileType(expressionType.contained()), expressionType.size());
+				//ret = llvm::ArrayType::get(compileType(expressionType.contained()), expressionType.size());
+				if (containerAsPointer) {
+					ret = llvm::Type::getDoubleTy(llvm::getGlobalContext())->getPointerTo();
+					ret = ret->getPointerTo();
+				} else {
+					ret = llvm::ArrayType::get(compileType(expressionType.contained()), expressionType.contained().size());
+					ret = llvm::ArrayType::get(ret, expressionType.size());;
+				}
+			} else {
+				//TODO error user needs to specify the size of the matrix
+			}
+		}	break;
+		//TODO case List, Lambda
 	}
 	
 	Q_ASSERT(ret);

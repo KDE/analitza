@@ -286,4 +286,36 @@ void AnalitzaJitTest::testCalculateBinaryRealVectorLambda()
 	QVERIFY(eq);
 }
 
+void AnalitzaJitTest::testCalculateUnaryMatrixVectorLambda_data()
+{
+	QTest::addColumn<QString>("expression");
+	QTest::addColumn<double>("arg1value");
+	QTest::addColumn< QVector< QVector<double> > >("expected");
+	
+	QTest::newRow("simple matrix-valued function") << "t->matrix{matrixrow{t}}" << 7.0 << (QVector< QVector<double> >() << (QVector<double>() << 7.0));
+}
+
+void AnalitzaJitTest::testCalculateUnaryMatrixVectorLambda()
+{
+	QFETCH(QString, expression);
+	QFETCH(double, arg1value);
+	QFETCH( QVector< QVector<double> > , expected );
+	
+	arg1->setValue(arg1value);
+	
+	QVector< QVector<double> > result;
+	
+	QVERIFY(a->setExpression(Analitza::Expression(expression)));
+	
+	QVERIFY(a->calculateLambda(result));
+// 	
+// 	bool eq = epscompare(result, expected);
+// 	
+// 	if (!eq) {
+// 		qDebug() << "Actual: " << result;
+// 		qDebug() << "Expected: " << expected;
+// 	}
+// 	QVERIFY(eq);
+}
+
 #include "analitzajittest.moc"

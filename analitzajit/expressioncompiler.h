@@ -71,8 +71,8 @@ class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 		virtual QVariant visit(const Analitza::Container* c);
 		virtual QVariant visit(const Analitza::Operator* var);
 		virtual QVariant visit(const Analitza::Vector* var);
-		virtual QVariant visit(const Analitza::List* l);
-		virtual QVariant visit(const Analitza::Matrix* m);
+		virtual QVariant visit(const Analitza::List* list);
+		virtual QVariant visit(const Analitza::Matrix* mat);
 		virtual QVariant visit(const Analitza::MatrixRow* mr);
 		virtual QVariant visit(const Analitza::Apply* a);
 		virtual QVariant visit(const Analitza::CustomObject* c);

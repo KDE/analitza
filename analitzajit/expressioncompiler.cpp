@@ -111,19 +111,35 @@ QVariant ExpressionCompiler::visit(const Analitza::Vector* vec)
 	return QVariant::fromValue<llvm::Value*>(array);
 }
 
-QVariant ExpressionCompiler::visit(const Analitza::Matrix* m)
+QVariant ExpressionCompiler::visit(const Analitza::Matrix* mat)
 {
-	//TODO
-	return QVariant();
+	const size_t m = (size_t)mat->rowCount();
+	const size_t n = (size_t)mat->columnCount();
+	//TODO support othert ypes, not only doubles
+	llvm::Type *scalar_t = llvm::Type::getDoubleTy(llvm::getGlobalContext());
+	llvm::ArrayType *matrix_t = llvm::ArrayType::get (scalar_t, n);
+	matrix_t = llvm::ArrayType::get (matrix_t, m);
+	
+	//NOTE always we get first an undef instance, this is necessary in order to populate the array with non constant values using CreateInsertValue
+	llvm::Value *matrix = llvm::UndefValue::get (matrix_t);
+	
+	//fill the array ith elements
+// 	for (size_t idx = 0; idx < n; ++idx)
+// 	{
+// 		llvm::Value *elemval = vec->at(idx)->accept(this).value<llvm::Value*>();
+// 		matrix = buildr.CreateInsertValue (array, elemval, idx);
+// 	}
+	
+	return QVariant::fromValue<llvm::Value*>(matrix);
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::MatrixRow* mr)
 {
-	//TODO
-	return QVariant();
+	Vector* vec = (Vector*)mr;
+	return visit(vec);
 }
 
-QVariant ExpressionCompiler::visit(const Analitza::List* vec)
+QVariant ExpressionCompiler::visit(const List* list)
 {
 	//TODO
 	return QVariant();
