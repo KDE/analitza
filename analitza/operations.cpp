@@ -960,9 +960,6 @@ QList<ExpressionType> Operations::infer(Operator::OperatorType op)
 			ret << TypeTriplet(ExpressionType(ExpressionType::Value),
 							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
 							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
-			ret << TypeTriplet(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
-							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
-							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
 			ret << TypeTriplet(ExpressionType(ExpressionType::Value),
 							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1),
 							   ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
@@ -983,10 +980,9 @@ QList<ExpressionType> Operations::infer(Operator::OperatorType op)
 							   ExpressionType(ExpressionType::Bool));
 			break;
 		case Operator::scalarproduct:
-			ret << TypeTriplet(
-								ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
-								ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
-								ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));
+			ret << TypeTriplet(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
+							   ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1),
+							   ExpressionType(ExpressionType::Value));
 			break;
 		case Operator::power:
 			ret << TypeTriplet(ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value), ExpressionType(ExpressionType::Value));

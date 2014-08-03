@@ -561,7 +561,7 @@ llvm::Value * OperationsCompiler::compileVectorVectorOperation(llvm::BasicBlock*
 		}
 		ret = sum;
 		
-		qDebug() << "WAAAAAAAAAAT" <<  ((llvm::ConstantFP*)ret)->getValueAPF().convertToDouble();
+// 		qDebug() << "WAAAAAAAAAAT" <<  ((llvm::ConstantFP*)ret)->getValueAPF().convertToDouble();
 	}
 	
 	return ret;

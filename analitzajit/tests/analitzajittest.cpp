@@ -135,8 +135,8 @@ void AnalitzaJitTest::testCalculateUnaryRealLambda_data()
 	QTest::newRow("long piecewise otherwise 3") << "x->piecewise { x=1? x, x=2? x*x, x=3? 2*x, x=4? 44, x=9? 81, ? 42 }" << 3.0 << 6.0;
 	QTest::newRow("long piecewise otherwise 4") << "x->piecewise { x=1? x, x=2? x*x, x=3? 2*x, x=4? 44, x=9? 81, ? 42 }" << 9.0 << 81.0;
 	QTest::newRow("long piecewise otherwise 4") << "x->piecewise { x=1? x, x=2? x*x, x=3? 2*x, x=4? 44, x=9? 81, ? 42 }" << 10.0 << 42.0;
-// 	QTest::newRow("dot product)") << "t->scalarproduct(vector{t, 5}, vector{2*t, -t})" << 7.0 << (98.0 - 35.0);
-// 	QTest::newRow("dot product)") << "t->scalarproduct(vector{1.0, 1.0}, vector{1.0, 1.0})" << 7.0 << 2.0;
+	QTest::newRow("simple dot product)") << "t->scalarproduct(vector{1.0, 1.0}, vector{1.0, 1.0})" << 0.0 << 2.0;
+	QTest::newRow("dot product)") << "t->scalarproduct(vector{t, 5}, vector{2*t, -t})" << 7.0 << (98.0 - 35.0);
 }
 
 void AnalitzaJitTest::testCalculateUnaryRealLambda()
