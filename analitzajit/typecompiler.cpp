@@ -26,6 +26,7 @@
 static llvm::LLVMContext &llvmcontext = llvm::getGlobalContext();
 
 using namespace Analitza;
+// using namespace AnalitzaUtils;
 
 llvm::Type* TypeCompiler::compileType(const Analitza::ExpressionType& expressionType, bool containerAsPointer)
 {

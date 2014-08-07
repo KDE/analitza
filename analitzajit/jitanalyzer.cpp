@@ -34,64 +34,157 @@ Q_DECLARE_METATYPE(llvm::Value*);
 
 using namespace Analitza;
 
-JITAnalyzer::JITAnalyzer()
+//BEGIN JITAnalyzerPrivate
+
+class JITAnalyzer::JITAnalyzerPrivate
 {
-	llvm::InitializeNativeTarget();
+public:
+	JITAnalyzerPrivate()
+		: m_ownContext(true)
+		, m_context(new llvm::LLVMContext)
+	{
+		llvm::InitializeNativeTarget();
+		m_module = new llvm::Module(generateModuleID(), *m_context);
+		m_jitengine = llvm::EngineBuilder(m_module).create();
+
+	}
 	
-	m_module = new llvm::Module("mumod", llvm::getGlobalContext());
-	m_jitengine = llvm::EngineBuilder(m_module).create();
-// 	std::string ErrStr;
-// 	m_jitengine = llvm::EngineBuilder(m_module).setErrorStr(&ErrStr).setMCPU("amd64").create();
+	JITAnalyzerPrivate(llvm::LLVMContext *context)
+		: m_ownContext(false)
+		, m_context(context)
+
+	{
+		llvm::InitializeNativeTarget();
+		m_module = new llvm::Module(generateModuleID(), *m_context);
+		m_jitengine = llvm::EngineBuilder(m_module).create();
+	}
+	
+	~JITAnalyzerPrivate()
+	{
+		delete m_jitengine;
+		//delete m_module; already deleted by delete m_jitengine
+		
+		if (m_ownContext)
+			delete m_context;
+	}
+	
+	bool m_ownContext;
+	llvm::LLVMContext *m_context;
+	llvm::Module *m_module;
+	llvm::ExecutionEngine *m_jitengine;
+	
+	struct FunctionInfo
+	{
+		llvm::Function *function;
+		void *nativeFunction;
+		Analitza::ExpressionType returnType;
+	};
+	
+	QHash<QString, FunctionInfo> m_compilationCache;
+	QString m_currentCacheKey;
+	
+	const QString getCacheKey(const Expression& expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
+	{
+		QString ret = expression.toString();
+		
+		foreach(const QString &tkey, bvartypes.keys()) {
+			ret += "["+tkey+":"+bvartypes[tkey].toString()+"]";
+		}
+		
+		return ret;
+	}
+	
+private:
+	static const QString baseModuleID;
+	
+	static llvm::StringRef generateModuleID()
+	{
+		static int idSequence = 0;
+		return llvm::StringRef(QString(baseModuleID+QString::number(++idSequence)).toStdString());
+	}
+};
+
+const QString JITAnalyzer::JITAnalyzerPrivate::baseModuleID = QString("JITAnalyzerLLVMModule");
+
+//END JITAnalyzerPrivate
+
+JITAnalyzer::JITAnalyzer()
+	: Analyzer()
+	, d(new JITAnalyzerPrivate)
+{
 }
+
+
+JITAnalyzer::JITAnalyzer(Variables* v)
+	: Analyzer(v)
+	, d(new JITAnalyzerPrivate)
+{
+}
+
+JITAnalyzer::JITAnalyzer(llvm::LLVMContext* c)
+	: Analyzer()
+	, d(new JITAnalyzerPrivate(c))
+{
+}
+
+JITAnalyzer::JITAnalyzer(Variables* v, llvm::LLVMContext* c)
+	: Analyzer(v)
+	, d(new JITAnalyzerPrivate(c))
+{
+}
+
+//TODO
+// JITAnalyzer::JITAnalyzer(const Analitza::JITAnalyzer&): Analyzer(v)
+// {
+// 
+// }
 
 JITAnalyzer::~JITAnalyzer()
 {
-	m_jitengine->removeModule(m_module);
-	
-	delete m_module;
-	delete m_jitengine;
+	delete d;
 }
 
-bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
+llvm::LLVMContext* JITAnalyzer::context() const
+{
+	return d->m_context;
+}
+
+bool JITAnalyzer::setExpression(const Expression& expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
 {
 	//TODO better code
-	Analyzer::setExpression(lambdaExpression);
+	Analyzer::setExpression(expression);
 	
 	if (isCorrect())
-		m_currentfnkey.clear();
+		d->m_currentCacheKey.clear();
 	else {
 		qDebug() << "ERRORS" << errors();
 		return false;
 	}
-	m_currentfnkey = lambdaExpression.toString();
 	
-	foreach(const QString &tkey, bvartypes.keys()) {
-		m_currentfnkey += "["+tkey+":"+bvartypes[tkey].toString()+"]";
-	}
+	d->m_currentCacheKey = d->getCacheKey(expression, bvartypes);
 	
-	if (expression().isLambda()) {
-		if (m_jitfnscache.contains(m_currentfnkey)) {
+	if (expression.isLambda()) {
+		if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
 			
-// 			qDebug() << "Avoid compilation to LLVM IR, using cached function:" << m_currentfnkey;
+// 			qDebug() << "Avoid compilation to LLVM IR, using cached function:" << d->m_currentCacheKey;
 			return true;
 		} else {
 			//TODO find better way to save/store IR functions
 	// 		qDebug() << "fluuuu" << bvartypes.keys();
 			
 			
-			ExpressionCompiler v(m_module, variables());
+			ExpressionCompiler v(d->m_module, variables());
 			
 			//cache
-			function_info fn;
+			JITAnalyzerPrivate::FunctionInfo fn;
 			//TODO support expression too, not only lambda expression
-			fn.ir_function = llvm::cast<llvm::Function>(v.compileExpression(expression(), bvartypes));
-			fn.ir_retty = v.compiledType().first;
-			fn.native_retty = v.compiledType().second;
-			fn.jit_function = 0; //NOTE this is important
+			fn.function = llvm::cast<llvm::Function>(v.compileExpression(expression, bvartypes));
+			fn.returnType = v.compiledType();
+			fn.nativeFunction = 0; //NOTE this is important
 			
-			m_jitfnscache[m_currentfnkey] = fn;
+			d->m_compilationCache[d->m_currentCacheKey] = fn;
 			
-// 			m_jitfnscache[m_currentfnkey]->dump();
+// 			d->m_compilationCache[d->m_currentCacheKey]->dump();
 			
 			return true;
 		}
@@ -100,45 +193,45 @@ bool JITAnalyzer::setExpression(const Expression& lambdaExpression, const QMap< 
 	return true;
 }
 
-bool JITAnalyzer::setExpression(const Expression& lambdaExpression)
+bool JITAnalyzer::setExpression(const Expression& expression)
 {
 	//TODO check if exp is lambda
 	QMap<QString, Analitza::ExpressionType> bvartypes;
 	
-	if (lambdaExpression.isLambda()) {
-		foreach(const QString &bvar, lambdaExpression.bvarList()) {
+	if (expression.isLambda()) {
+		foreach(const QString &bvar, expression.bvarList()) {
 			bvartypes[bvar] = ExpressionType(ExpressionType::Value);
 		}
 	}
 	
-	return JITAnalyzer::setExpression(lambdaExpression, bvartypes);
+	return JITAnalyzer::setExpression(expression, bvartypes);
 }
 
 bool JITAnalyzer::calculateLambda(double &result)
 {
-	Q_ASSERT(!m_jitfnscache.isEmpty());
+	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	if (m_jitfnscache.contains(m_currentfnkey)) {
-		//TODO check for non empty m_jitfnscache
+	if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
+		//TODO check for non empty d->m_compilationCache
 		const int n = this->expression().bvarList().size();
-		const int nret = m_jitfnscache[m_currentfnkey].native_retty.size();
+		const int nret = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
 		
 		// Look up the name in the global module table.
-		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
+		llvm::Function *CalleeF = d->m_compilationCache[d->m_currentCacheKey].function;
 		
 // 		CalleeF->dump();
 		
 		//TODO
-// 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Value);
+// 		Q_ASSERT(d->m_compilationCache[d->m_currentCacheKey].returnType.type() == ExpressionType::Value);
 		
 		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
 		void *FPtr = 0;
-		if (m_jitfnscache[m_currentfnkey].jit_function) {
-			FPtr = m_jitfnscache[m_currentfnkey].jit_function;
-// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << m_currentfnkey;
+		if (d->m_compilationCache[d->m_currentCacheKey].nativeFunction) {
+			FPtr = d->m_compilationCache[d->m_currentCacheKey].nativeFunction;
+// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
 		} else {
-			FPtr = m_jitengine->getPointerToFunction(CalleeF);
-			m_jitfnscache[m_currentfnkey].jit_function = FPtr;
+			FPtr = d->m_jitengine->getPointerToFunction(CalleeF);
+			d->m_compilationCache[d->m_currentCacheKey].nativeFunction = FPtr;
 		}
 		
 		switch (n) {
@@ -184,27 +277,27 @@ bool JITAnalyzer::calculateLambda(double &result)
 
 bool JITAnalyzer::calculateLambda(bool &result)
 {
-	Q_ASSERT(!m_jitfnscache.isEmpty());
+	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	if (m_jitfnscache.contains(m_currentfnkey)) {
-		//TODO check for non empty m_jitfnscache
+	if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
+		//TODO check for non empty d->m_compilationCache
 		const int n = this->expression().bvarList().size();
-		const int nret = m_jitfnscache[m_currentfnkey].native_retty.size();
+		const int nret = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
 		
 		// Look up the name in the global module table.
-		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
+		llvm::Function *CalleeF = d->m_compilationCache[d->m_currentCacheKey].function;
 		
 		//TODO
-// 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Value);
+// 		Q_ASSERT(d->m_compilationCache[d->m_currentCacheKey].returnType.type() == ExpressionType::Value);
 		
 		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
 		void *FPtr = 0;
-		if (m_jitfnscache[m_currentfnkey].jit_function) {
-			FPtr = m_jitfnscache[m_currentfnkey].jit_function;
-// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << m_currentfnkey;
+		if (d->m_compilationCache[d->m_currentCacheKey].nativeFunction) {
+			FPtr = d->m_compilationCache[d->m_currentCacheKey].nativeFunction;
+// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
 		} else {
-			FPtr = m_jitengine->getPointerToFunction(CalleeF);
-			m_jitfnscache[m_currentfnkey].jit_function = FPtr;
+			FPtr = d->m_jitengine->getPointerToFunction(CalleeF);
+			d->m_compilationCache[d->m_currentCacheKey].nativeFunction = FPtr;
 		}
 		
 		switch (n) {
@@ -250,30 +343,30 @@ bool JITAnalyzer::calculateLambda(bool &result)
 
 bool JITAnalyzer::calculateLambda(QVector< double >& result)
 {
-	Q_ASSERT(!m_jitfnscache.isEmpty());
+	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	if (m_jitfnscache.contains(m_currentfnkey)) {
-		//TODO check for non empty m_jitfnscache
+	if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
+		//TODO check for non empty d->m_compilationCache
 		
 		const int n = this->expression().bvarList().size();
-		const int nret = m_jitfnscache[m_currentfnkey].native_retty.size();
+		const int nret = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
 		
 		// Look up the name in the global module table.
-		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
+		llvm::Function *CalleeF = d->m_compilationCache[d->m_currentCacheKey].function;
 		
 // 		CalleeF->dump();
 		
 		//TODO
-// 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Vector);
+// 		Q_ASSERT(d->m_compilationCache[d->m_currentCacheKey].returnType.type() == ExpressionType::Vector);
 		
 		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
 		void *FPtr = 0;
-		if (m_jitfnscache[m_currentfnkey].jit_function) {
-			FPtr = m_jitfnscache[m_currentfnkey].jit_function;
-// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << m_currentfnkey;
+		if (d->m_compilationCache[d->m_currentCacheKey].nativeFunction) {
+			FPtr = d->m_compilationCache[d->m_currentCacheKey].nativeFunction;
+// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
 		} else {
-			FPtr = m_jitengine->getPointerToFunction(CalleeF);
-			m_jitfnscache[m_currentfnkey].jit_function = FPtr;
+			FPtr = d->m_jitengine->getPointerToFunction(CalleeF);
+			d->m_compilationCache[d->m_currentCacheKey].nativeFunction = FPtr;
 		}
 		
 		double *vret = 0;
@@ -357,30 +450,30 @@ bool JITAnalyzer::calculateLambda(QVector< double >& result)
 
 bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 {
-	Q_ASSERT(!m_jitfnscache.isEmpty());
+	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	if (m_jitfnscache.contains(m_currentfnkey)) {
-		//TODO check for non empty m_jitfnscache
+	if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
+		//TODO check for non empty d->m_compilationCache
 		
 		const int n = this->expression().bvarList().size();
-		const int nret = m_jitfnscache[m_currentfnkey].native_retty.size();
+		const int nret = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
 		
 		// Look up the name in the global module table.
-		llvm::Function *CalleeF = m_jitfnscache[m_currentfnkey].ir_function;
+		llvm::Function *CalleeF = d->m_compilationCache[d->m_currentCacheKey].function;
 		
 // 		CalleeF->dump();
 		
 		//TODO
-// 		Q_ASSERT(m_jitfnscache[m_currentfnkey].native_retty.type() == ExpressionType::Vector);
+// 		Q_ASSERT(d->m_compilationCache[d->m_currentCacheKey].returnType.type() == ExpressionType::Vector);
 		
 		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
 		void *FPtr = 0;
-		if (m_jitfnscache[m_currentfnkey].jit_function) {
-			FPtr = m_jitfnscache[m_currentfnkey].jit_function;
-// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << m_currentfnkey;
+		if (d->m_compilationCache[d->m_currentCacheKey].nativeFunction) {
+			FPtr = d->m_compilationCache[d->m_currentCacheKey].nativeFunction;
+// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
 		} else {
-			FPtr = m_jitengine->getPointerToFunction(CalleeF);
-			m_jitfnscache[m_currentfnkey].jit_function = FPtr;
+			FPtr = d->m_jitengine->getPointerToFunction(CalleeF);
+			d->m_compilationCache[d->m_currentCacheKey].nativeFunction = FPtr;
 		}
 		
 		double *vret = 0;

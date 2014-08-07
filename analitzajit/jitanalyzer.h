@@ -22,12 +22,9 @@
 #include "analitza/analyzer.h"
 #include "analitzajitexport.h"
 
-namespace llvm { 
-	class Value;
-	class Module;
-	class ExecutionEngine;
-	class Type;
-	class Function;
+namespace llvm
+{
+class LLVMContext;
 };
 
 namespace Analitza
@@ -51,8 +48,48 @@ namespace Analitza
 class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 {
 	public:
+		/**
+		 * Constructor. Creates an empty JITAnalyzer module that manages its own 
+		 * Variables and its own LLVMContext.
+		 * Use this constructor if you do require isolation of LLVM, i.e. when 
+		 * you will use JITAnalyzer instances concurrently.
+		 */
 		JITAnalyzer();
+		
+		/**
+		 * Constructor. Creates an empty JITAnalyzer module. 
+		 * @param v: Sets a custom variables module. This module will _not_ be deleted along with JITAnalyzer.
+		 * Whit this constructor JITAnalyzer manages its own LLVMContext.
+		 * Use this constructor if you do require isolation of LLVM, i.e. when 
+		 * you will use JITAnalyzer concurrently.
+		 */ 
+		JITAnalyzer(Variables* v);
+		
+		/**
+		 * Constructor. Creates an empty JITAnalyzer module. 
+		 * @param c: Sets an extern LLVMContext. This context will _not_ be deleted along with JITAnalyzer.
+		 */ 
+		JITAnalyzer(llvm::LLVMContext *c);
+		
+		/**
+		 * Constructor. Creates an empty JITAnalyzer module. 
+		 * @param v: Sets a custom variables module. This module will _not_ be deleted along with JITAnalyzer.
+		 * @param c: Sets a custom LLVMContext reference. This context will _not_ be deleted along with JITAnalyzer.
+		 */ 
+		JITAnalyzer(Variables* v, llvm::LLVMContext *c);
+		
+		//TODO
+// 		/**
+// 		 * Copy constructor. Creates a copy of the @p other JITAnalyzer instance.
+// 		 * Inherits its Variable and LLVMContext structures. */
+// 		JITAnalyzer(const JITAnalyzer& other);
+		
+		/**
+		 * Destructor.
+		 */
 		~JITAnalyzer();
+		
+		llvm::LLVMContext *context() const;
 		
 		/**
 		 * Sets an expression to calculate.
@@ -93,7 +130,11 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		 */
 		bool calculateLambda(double &result);
 		bool calculateLambda(bool &result);
+		
+		/** Convenience method used when the @p result expression is a vector. */
 		bool calculateLambda(QVector<double> &result);
+		
+		/** Convenience method used when the @p result expression is a matrix. */
 		bool calculateLambda(QVector< QVector<double> > &result);
 		
 		//TODO
@@ -102,20 +143,8 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		//bool calculateLambda(list &result);
 		
 	private:
-		//TODO pimpl idiom needs to be applied here
-		
-		llvm::Module *m_module;
-		llvm::ExecutionEngine *m_jitengine;
-		
-		//TODO better cache structure
-		struct function_info {
-			llvm::Function *ir_function;
-			void *jit_function;
-			llvm::Type *ir_retty;
-			Analitza::ExpressionType native_retty;
-		};
-		QMap<QString, function_info> m_jitfnscache;
-		QString m_currentfnkey;
+		class JITAnalyzerPrivate;
+		JITAnalyzerPrivate* const d;
 };
 
 }

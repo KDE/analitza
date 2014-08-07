@@ -39,7 +39,7 @@ namespace Analitza
  * OperationsCompiler converts any Analitza operation into LLVM instruction and inserts it 
  * into a current LLVM basic block.
  * 
- * Every given basic block needs to exist inside a LLVM function and every LLVM function 
+ * Every basic block needs to exist inside a LLVM function and every LLVM function 
  * needs to belong the the same LLVM module.
  * 
  * Finally, in case the input is invalid or could not perform the compilation, then 
