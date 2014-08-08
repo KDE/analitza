@@ -46,13 +46,11 @@ public:
 		llvm::InitializeNativeTarget();
 		m_module = new llvm::Module(generateModuleID(), *m_context);
 		m_jitengine = llvm::EngineBuilder(m_module).create();
-
 	}
 	
 	JITAnalyzerPrivate(llvm::LLVMContext *context)
 		: m_ownContext(false)
 		, m_context(context)
-
 	{
 		llvm::InitializeNativeTarget();
 		m_module = new llvm::Module(generateModuleID(), *m_context);
@@ -452,11 +450,13 @@ bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
+	const int rows = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
+	const int cols = d->m_compilationCache[d->m_currentCacheKey].returnType.contained().size();
+		
 	if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
 		//TODO check for non empty d->m_compilationCache
 		
 		const int n = this->expression().bvarList().size();
-		const int nret = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
 		
 		// Look up the name in the global module table.
 		llvm::Function *CalleeF = d->m_compilationCache[d->m_currentCacheKey].function;
@@ -514,39 +514,37 @@ bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 // 			result.append(vret[i]);
 // 		}
 		//TODO weird behaviour: I can not use loops here ... try next time with other compiler/llvm version
-// 		switch (nret) {
-// 			case 1: {
-// 				const double a = vret[0];
-// 				result.append(a);
-// 				return true;
-// 			}	break;
-// 			case 2: {
-// 				const double a = vret[0];
-// 				const double b = vret[1];
-// 				result.append(a);
-// 				result.append(b);
-// 				
-// // 				qDebug() << "GINALLL: " << result;
-// 				
-// 				return true;
-// 			}	break;
-// 			case 3: {
-// 				const double a = vret[0];
-// 				const double b = vret[1];
-// 				const double c = vret[2];
-// 				result.append(a);
-// 				result.append(b);
-// 				result.append(c);
-// 				
-// // 				qDebug() << "GINALLL: " << result;
-// 				
-// 				return true;
-// 			}	break;
-// 			//TODO vector should be of any size ...
-// 			default: {
-// 				return false;
-// 			}
-// 		}
+		
+		if (rows == 1 && cols == 1) {
+			const double a = vret[0];
+			QVector<double> row1;
+			row1.append(a);
+			
+			result.append(row1);
+			return true;
+		}
+		
+		if (rows == 2 && cols == 2) {
+			const double a = vret[0];
+			const double b = vret[1];
+			const double c = vret[2];
+			const double d = vret[3];
+			
+			QVector<double> row1;
+			row1.append(a);
+			row1.append(b);
+			
+			QVector<double> row2;
+			row2.append(c);
+			row2.append(d);
+			
+			result.append(row1);
+			result.append(row2);
+			
+			//qDebug() << "GINALLL: " << result;
+			
+			return true;
+		}
 	} else {
 		//TODO add error
 		return false;

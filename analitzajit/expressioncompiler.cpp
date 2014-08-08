@@ -117,18 +117,25 @@ QVariant ExpressionCompiler::visit(const Analitza::Matrix* mat)
 	const size_t n = (size_t)mat->columnCount();
 	//TODO support othert ypes, not only doubles
 	llvm::Type *scalar_t = llvm::Type::getDoubleTy(llvm::getGlobalContext());
-	llvm::ArrayType *matrix_t = llvm::ArrayType::get (scalar_t, n);
-	matrix_t = llvm::ArrayType::get (matrix_t, m);
+	llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, m*n);
 	
 	//NOTE always we get first an undef instance, this is necessary in order to populate the array with non constant values using CreateInsertValue
-	llvm::Value *matrix = llvm::UndefValue::get (matrix_t);
+	llvm::Value *matrix = llvm::UndefValue::get (array_t);
+	//fill the matrix
+	size_t index = 0;
+	for (size_t idx = 0; idx < m; ++idx)
+	{
+		llvm::Value *row = mat->rows().at(idx)->accept(this).value<llvm::Value*>();
+		
+		for (size_t cidx = 0; cidx < n; ++cidx) {
+			llvm::Value *elem = buildr.CreateExtractValue(row, cidx);
+			matrix = buildr.CreateInsertValue (matrix, elem, index);
+			++index;
+		}
+	}
 	
-	//fill the array ith elements
-// 	for (size_t idx = 0; idx < n; ++idx)
-// 	{
-// 		llvm::Value *elemval = vec->at(idx)->accept(this).value<llvm::Value*>();
-// 		matrix = buildr.CreateInsertValue (array, elemval, idx);
-// 	}
+// 	qDebug() << "MATTTTTTTT : " << m << n;
+// 	matrix->dump();
 	
 	return QVariant::fromValue<llvm::Value*>(matrix);
 }
@@ -383,14 +390,18 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			
 			llvm::BasicBlock *BB = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", F);
 			buildr.SetInsertPoint(BB); //NOTE set BB as the current block where insert operations
+			
 			llvm::Value *returnFNTY = c->m_params.last()->accept(this).value<llvm::Value*>();
 			
+// 			returnFNTY->dump();
+// 			F->dump();
 			//NOTE for containers like vector, matrix, etc, we need a typecast to pointer 
 			// of scalar type this since C++ does not return arrays directally, 
 			//it returns pointers to the scalar type, BEFORE do this we need to allocate 
 			//memory for the container
 			switch (m_retexptype.type()) {
-				case ExpressionType::Vector: {
+				case ExpressionType::Vector:
+				case ExpressionType::Matrix: {
 						//TODO support more scalars, not only reals
 						//NOTE this would be the equivalent of "new array(N)" ...
 						//returnFNTY->getType()->dump();
@@ -400,7 +411,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 						
 						returnFNTY = buildr.CreateBitCast(array_mem, llvm::Type::getDoubleTy(llvm::getGlobalContext())->getPointerTo());
 				}	break;
-				//TODO cast matrix and list too
+				//TODO cast list too
 			}
 			
 			buildr.CreateRet(returnFNTY);

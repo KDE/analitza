@@ -41,6 +41,17 @@ static inline bool epscompare(QVector<double> a, QVector<double> b)
 	return ret;
 }
 
+static inline bool epscompare(QVector< QVector<double> > a, QVector< QVector<double> > b)
+{
+	bool ret = (a.size() == b.size());
+	
+	for (int i = 0; (i < a.size()) && ret; ++i) {
+		ret = epscompare(a.at(i), b.at(i));
+	}
+	
+	return ret;
+}
+
 AnalitzaJitTest::AnalitzaJitTest(QObject *parent)
  : QObject(parent)
 {}
@@ -293,6 +304,9 @@ void AnalitzaJitTest::testCalculateUnaryMatrixVectorLambda_data()
 	QTest::addColumn< QVector< QVector<double> > >("expected");
 	
 	QTest::newRow("simple matrix-valued function") << "t->matrix{matrixrow{t}}" << 7.0 << (QVector< QVector<double> >() << (QVector<double>() << 7.0));
+	QTest::newRow("2x2 matrix-valued function") << "t->matrix{matrixrow{t, t*t}, matrixrow{2*t, -t+5}}" << 7.0 << (QVector< QVector<double> >() 
+	<< (QVector<double>() << 7.0 << 49.0)
+	<< (QVector<double>() << 14.0 << -2.0));
 }
 
 void AnalitzaJitTest::testCalculateUnaryMatrixVectorLambda()
@@ -308,14 +322,14 @@ void AnalitzaJitTest::testCalculateUnaryMatrixVectorLambda()
 	QVERIFY(a->setExpression(Analitza::Expression(expression)));
 	
 	QVERIFY(a->calculateLambda(result));
-// 	
-// 	bool eq = epscompare(result, expected);
-// 	
-// 	if (!eq) {
-// 		qDebug() << "Actual: " << result;
-// 		qDebug() << "Expected: " << expected;
-// 	}
-// 	QVERIFY(eq);
+	
+	bool eq = epscompare(result, expected);
+	
+	if (!eq) {
+		qDebug() << "Actual: " << result;
+		qDebug() << "Expected: " << expected;
+	}
+	QVERIFY(eq);
 }
 
 #include "analitzajittest.moc"

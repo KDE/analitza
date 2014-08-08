@@ -87,7 +87,7 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		/**
 		 * Destructor.
 		 */
-		~JITAnalyzer();
+		virtual ~JITAnalyzer();
 		
 		llvm::LLVMContext *context() const;
 		
