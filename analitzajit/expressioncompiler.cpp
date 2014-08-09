@@ -72,6 +72,8 @@ llvm::Value *ExpressionCompiler::compileExpression(const Analitza::Expression& e
 		// this is because C++ functions doesn't return a vector, matrix, etc but 
 		// it returns pointers to contained type instead
 		m_rettype = TypeCompiler::compileType(m_retexptype, true);
+		
+// 		qDebug() << "return expression type" << m_retexptype.toString();
 	}
 	
 	return expression.tree()->accept(this).value<llvm::Value*>();
@@ -195,7 +197,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 // 			valv->getType()->dump();
 // 			qDebug() << "ENNNDDDD";
 			
-			ret = OperationsCompiler::compileUnaryOperation(buildr.GetInsertBlock(), op, Object::value, valv, error);
+			ret = OperationsCompiler::compileUnaryOperation(buildr.GetInsertBlock(), op, val, valv, error);
 		}	break;
 		case 2: {
 			Object *val1 = c->at(0);
@@ -212,10 +214,8 @@ QVariant ExpressionCompiler::visit(const Analitza::Apply* c)
 // 			qDebug() << "ENNNDDDD";
 // 			qDebug() << "Tipossss: " << val1->toString() << val2->toString();
 			
-			Object::ObjectType input1finalty = (val1->type() == Object::vector)? Object::vector: Object::value;
-			Object::ObjectType input2finalty = (val2->type() == Object::vector)? Object::vector: Object::value;
 			
-			ret = OperationsCompiler::compileBinaryOperation(buildr.GetInsertBlock(), op, input1finalty, input2finalty, valv1, valv2, error);
+			ret = OperationsCompiler::compileBinaryOperation(buildr.GetInsertBlock(), op, val1, val2, valv1, valv2, error);
 		}	break;
 	}
 	

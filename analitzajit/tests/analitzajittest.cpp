@@ -304,9 +304,8 @@ void AnalitzaJitTest::testCalculateUnaryMatrixVectorLambda_data()
 	QTest::addColumn< QVector< QVector<double> > >("expected");
 	
 	QTest::newRow("simple matrix-valued function") << "t->matrix{matrixrow{t}}" << 7.0 << (QVector< QVector<double> >() << (QVector<double>() << 7.0));
-	QTest::newRow("2x2 matrix-valued function") << "t->matrix{matrixrow{t, t*t}, matrixrow{2*t, -t+5}}" << 7.0 << (QVector< QVector<double> >() 
-	<< (QVector<double>() << 7.0 << 49.0)
-	<< (QVector<double>() << 14.0 << -2.0));
+	QTest::newRow("2x2 matrix-valued function") << "t->matrix{matrixrow{t, t*t}, matrixrow{2*t, -t+5}}" << 7.0 << (QVector< QVector<double> >() << (QVector<double>() << 7.0 << 49.0) << (QVector<double>() << 14.0 << -2.0));
+// 	QTest::newRow("matrix mult: row x col") << "t->matrix{matrixrow{t, t*t}}*matrix{matrixrow{2*t}, matrixrow{-t+5}}" << 3.0 << (QVector< QVector<double> >() << (QVector<double>() << 36.0));
 }
 
 void AnalitzaJitTest::testCalculateUnaryMatrixVectorLambda()
