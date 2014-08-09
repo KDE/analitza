@@ -28,6 +28,12 @@ class BasicBlock;
 
 namespace Analitza
 {
+class None;
+class List;
+class Cn;
+class Vector;
+class Matrix;
+class CustomObject;
 
 /**
  * \class OperationsCompiler
@@ -74,28 +80,28 @@ class OperationsCompiler
 		static UnaryOp opsUnary[Object::custom+1];
 		static BinaryOp opsBinary[Object::custom+1][Object::custom+1];
 		
-		static llvm::Value* compileValueNoneOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* val, llvm::Value* none, QString &error);
-		static llvm::Value* compileNoneValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* none, llvm::Value* val, QString &error);
-		static llvm::Value* compileValueValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* val1, llvm::Value* val2, QString &error);
-		static llvm::Value* compileUnaryValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval, llvm::Value* val, QString &error);
+		static llvm::Value* compileValueNoneOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Cn* refval1, None* refval2, llvm::Value* val, llvm::Value* none, QString &error);
+		static llvm::Value* compileNoneValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, None* refval1, Cn* refval2, llvm::Value* none, llvm::Value* val, QString &error);
+		static llvm::Value* compileValueValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Cn* refval1, Cn* refval2, llvm::Value* val1, llvm::Value* val2, QString &error);
+		static llvm::Value* compileUnaryValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Cn* refval, llvm::Value* val, QString &error);
 		
-		static llvm::Value* compileValueVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* val, llvm::Value* vec, QString &error);
-		static llvm::Value* compileVectorValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* vec, llvm::Value* val, QString &error);
-		static llvm::Value* compileVectorVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* vec1, llvm::Value* vec2, QString &error);
-		static llvm::Value* compileMatrixVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* matrix, llvm::Value* vector, QString &error);
-		static llvm::Value* compileUnaryVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval, llvm::Value* vec, QString &error);
+		static llvm::Value* compileValueVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Cn* refval1, Vector* refval2, llvm::Value* val, llvm::Value* vec, QString &error);
+		static llvm::Value* compileVectorValueOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Vector* refval1, Cn* refval2, llvm::Value* vec, llvm::Value* val, QString &error);
+		static llvm::Value* compileVectorVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Vector* refval1, Vector* refval2, llvm::Value* vec1, llvm::Value* vec2, QString &error);
+		static llvm::Value* compileMatrixVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Matrix* refval1, Vector* refval2, llvm::Value* matrix, llvm::Value* vector, QString &error);
+		static llvm::Value* compileUnaryVectorOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Vector* refval, llvm::Value* vec, QString &error);
 		
-		static llvm::Value* compileValueListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* , llvm::Value* , QString &error);
-		static llvm::Value* compileListListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* l1, llvm::Value* l2, QString &error);
-		static llvm::Value* compileUnaryListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval, llvm::Value* , QString &error);
+		static llvm::Value* compileValueListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Cn* refval1, List* refval2, llvm::Value* , llvm::Value* , QString &error);
+		static llvm::Value* compileListListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, List* refval1, List* refval2, llvm::Value* l1, llvm::Value* l2, QString &error);
+		static llvm::Value* compileUnaryListOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, List* refval, llvm::Value* , QString &error);
 		
-		static llvm::Value* compileValueMatrixOperation(llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* v, llvm::Value* m1, QString &error);
-		static llvm::Value* compileMatrixValueOperation(llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* m1, llvm::Value* v, QString &error);
-		static llvm::Value* compileVectorMatrixOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* vector, llvm::Value* matrix, QString &error);
-		static llvm::Value* compileMatrixMatrixOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* m1, llvm::Value* m2, QString &error);
-		static llvm::Value* compileUnaryMatrixOperation(llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, Object* refval, llvm::Value* m, QString &error);
-		static llvm::Value* compileMatrixNoneOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* m, llvm::Value* cntr, QString &error);
-		static llvm::Value* compileNoneMatrixOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* cntr, llvm::Value* m, QString &error);
+		static llvm::Value* compileValueMatrixOperation(llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, Cn* refval1, Matrix* refval2, llvm::Value* v, llvm::Value* m1, QString &error);
+		static llvm::Value* compileMatrixValueOperation(llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, Matrix* refval1, Cn* refval2, llvm::Value* m1, llvm::Value* v, QString &error);
+		static llvm::Value* compileVectorMatrixOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Vector* refval1, Matrix* refval2, llvm::Value* vector, llvm::Value* matrix, QString &error);
+		static llvm::Value* compileMatrixMatrixOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Matrix* refval1, Matrix* refval2, llvm::Value* m1, llvm::Value* m2, QString &error);
+		static llvm::Value* compileUnaryMatrixOperation(llvm::BasicBlock *currentBlock, Analitza::Operator::OperatorType op, Matrix* refval, llvm::Value* m, QString &error);
+		static llvm::Value* compileMatrixNoneOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Matrix* refval1, None* refval2, llvm::Value* m, llvm::Value* cntr, QString &error);
+		static llvm::Value* compileNoneMatrixOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, None* refval1, Matrix* refval2, llvm::Value* cntr, llvm::Value* m, QString &error);
 		
 		static llvm::Value* compileCustomCustomOperation(llvm::BasicBlock *currentBlock, Operator::OperatorType op, Object* refval1, Object* refval2, llvm::Value* v1, llvm::Value* v2, QString &error);
 		

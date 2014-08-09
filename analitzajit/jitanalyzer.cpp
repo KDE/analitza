@@ -541,6 +541,50 @@ bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 			result.append(row1);
 			result.append(row2);
 			
+			return true;
+		}
+		
+		if (rows == 3 && cols == 5) {
+			const double a = vret[0];
+			const double b = vret[1];
+			const double c = vret[2];
+			const double d = vret[3];
+			const double e = vret[4];
+			const double f = vret[5];
+			const double g = vret[6];
+			const double h = vret[7];
+			const double i = vret[8];
+			const double j = vret[9];
+			const double k = vret[10];
+			const double l = vret[11];
+			const double m = vret[12];
+			const double n = vret[13];
+			const double o = vret[14];
+			
+			QVector<double> row1;
+			row1.append(a);
+			row1.append(b);
+			row1.append(c);
+			row1.append(d);
+			row1.append(e);
+			
+			QVector<double> row2;
+			row2.append(f);
+			row2.append(g);
+			row2.append(h);
+			row2.append(i);
+			row2.append(j);
+			
+			QVector<double> row3;
+			row3.append(k);
+			row3.append(l);
+			row3.append(m);
+			row3.append(n);
+			row3.append(o);
+			
+			result.append(row1);
+			result.append(row2);
+			result.append(row3);
 			//qDebug() << "GINALLL: " << result;
 			
 			return true;

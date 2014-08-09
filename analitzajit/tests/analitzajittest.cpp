@@ -305,7 +305,12 @@ void AnalitzaJitTest::testCalculateUnaryMatrixVectorLambda_data()
 	
 	QTest::newRow("simple matrix-valued function") << "t->matrix{matrixrow{t}}" << 7.0 << (QVector< QVector<double> >() << (QVector<double>() << 7.0));
 	QTest::newRow("2x2 matrix-valued function") << "t->matrix{matrixrow{t, t*t}, matrixrow{2*t, -t+5}}" << 7.0 << (QVector< QVector<double> >() << (QVector<double>() << 7.0 << 49.0) << (QVector<double>() << 14.0 << -2.0));
-// 	QTest::newRow("matrix mult: row x col") << "t->matrix{matrixrow{t, t*t}}*matrix{matrixrow{2*t}, matrixrow{-t+5}}" << 3.0 << (QVector< QVector<double> >() << (QVector<double>() << 36.0));
+	QTest::newRow("matrix mult: row x col") << "t->matrix{matrixrow{t, t*t}}*matrix{matrixrow{2*t}, matrixrow{-t+5}}" << 3.0 << (QVector< QVector<double> >() << (QVector<double>() << 36.0));
+	QTest::newRow("matrix x matrix") << "t->matrix { matrixrow { t, t }, matrixrow { 2, 2 }, matrixrow { t, 4 } }*matrix { matrixrow{t, t, 4, 5, 6}, matrixrow{2, 4, 5, 6, 2} }" << 3.0 << (QVector< QVector<double> >() << 
+(QVector<double>() << 15<< 21<< 27<< 33<< 24) << 
+(QVector<double>() << 10<< 14<< 18<< 22<< 16) << 
+(QVector<double>() << 17<<  25<<  32<<  39<<  26));
+	
 }
 
 void AnalitzaJitTest::testCalculateUnaryMatrixVectorLambda()
