@@ -67,8 +67,11 @@ public:
 		pass_manager->add(new llvm::DataLayoutPass(m_module));
 		pass_manager->add (llvm::createCFGSimplificationPass());
 		pass_manager->add (llvm::createBasicAliasAnalysisPass());
+		pass_manager->add (llvm::createAggressiveDCEPass());
+		pass_manager->add (llvm::createConstantPropagationPass());
 		pass_manager->add (llvm::createPromoteMemoryToRegisterPass());
 		pass_manager->add (llvm::createInstructionCombiningPass());
+		pass_manager->add (llvm::createInstructionSimplifierPass());
 		pass_manager->add (llvm::createReassociatePass());
 		pass_manager->add (llvm::createGVNPass());
 		pass_manager->add (llvm::createCFGSimplificationPass());
@@ -195,7 +198,7 @@ bool JITAnalyzer::setExpression(const Expression& expression, const QMap< QStrin
 	if (expression.isLambda()) {
 		if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
 			
-// 			qDebug() << "Avoid compilation to LLVM IR, using cached function:" << d->m_currentCacheKey;
+// 			qDebug() << "Avoid compilation to LLVM IR and JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
 			return true;
 		} else {
 			//TODO find better way to save/store IR functions
@@ -209,11 +212,13 @@ bool JITAnalyzer::setExpression(const Expression& expression, const QMap< QStrin
 			//TODO support expression too, not only lambda expression
 			fn.function = llvm::cast<llvm::Function>(v.compileExpression(expression, bvartypes));
 			fn.returnType = v.compiledType();
-			fn.nativeFunction = 0; //NOTE this is important
+			//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
+			fn.nativeFunction = d->m_jitengine->getPointerToFunction(fn.function);
 			
 			//BEGIN optimizations
 			d->module_pass_manager->run(*d->m_module);
 			d->pass_manager->run(*fn.function);
+// 			fn.function->dump();
 			//END optimizations
 			
 			d->m_compilationCache[d->m_currentCacheKey] = fn;
@@ -245,391 +250,321 @@ bool JITAnalyzer::calculateLambda(double &result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
-		//TODO check for non empty d->m_compilationCache
-		const int n = this->expression().bvarList().size();
-		const int nret = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
-		
-		// Look up the name in the global module table.
-		llvm::Function *CalleeF = d->m_compilationCache[d->m_currentCacheKey].function;
-		
-// 		CalleeF->dump();
-		
-		//TODO
-// 		Q_ASSERT(d->m_compilationCache[d->m_currentCacheKey].returnType.type() == ExpressionType::Value);
-		
-		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
-		void *FPtr = 0;
-		if (d->m_compilationCache[d->m_currentCacheKey].nativeFunction) {
-			FPtr = d->m_compilationCache[d->m_currentCacheKey].nativeFunction;
-// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
-		} else {
-			FPtr = d->m_jitengine->getPointerToFunction(CalleeF);
-			d->m_compilationCache[d->m_currentCacheKey].nativeFunction = FPtr;
+	JITAnalyzerPrivate::FunctionInfo fi = d->m_compilationCache[d->m_currentCacheKey];
+	
+	//TODO check for non empty d->m_compilationCache
+	const int n = fi.function->getArgumentList().size();
+	const int nret = fi.returnType.size();
+	
+	void *FPtr = fi.nativeFunction;
+	
+	switch (n) {
+		case 1: {
+			typedef double (*FTY)(double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			result = FP(arg1);
+			return true;
+		}	break;
+		case 2: {
+			typedef double (*FTY)(double, double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			double arg2 = ((Cn*)(runStack().at(1)))->value();
+			result = FP(arg1, arg2);
+			return true;
+		}	break;
+		case 3: {
+			typedef double (*FTY)(double, double, double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			double arg2 = ((Cn*)(runStack().at(1)))->value();
+			double arg3 = ((Cn*)(runStack().at(1)))->value();
+			result = FP(arg1, arg2, arg3);
+			return true;
+		}	break;
+		//TODO more args
+		default: {
+			return false;
 		}
-		
-		switch (n) {
-			case 1: {
-				typedef double (*FTY)(double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				result = FP(arg1);
-				return true;
-			}	break;
-			case 2: {
-				typedef double (*FTY)(double, double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				double arg2 = ((Cn*)(runStack().at(1)))->value();
-				result = FP(arg1, arg2);
-				return true;
-			}	break;
-			case 3: {
-				typedef double (*FTY)(double, double, double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				double arg2 = ((Cn*)(runStack().at(1)))->value();
-				double arg3 = ((Cn*)(runStack().at(1)))->value();
-				result = FP(arg1, arg2, arg3);
-				return true;
-			}	break;
-			//TODO more args
-			default: {
-				return false;
-			}
-		}
-	} else {
-		//TODO add error
-		return false;
 	}
 	
-	return true;
+	return false;
 }
 
 bool JITAnalyzer::calculateLambda(bool &result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
-		//TODO check for non empty d->m_compilationCache
-		const int n = this->expression().bvarList().size();
-		const int nret = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
-		
-		// Look up the name in the global module table.
-		llvm::Function *CalleeF = d->m_compilationCache[d->m_currentCacheKey].function;
-		
-		//TODO
-// 		Q_ASSERT(d->m_compilationCache[d->m_currentCacheKey].returnType.type() == ExpressionType::Value);
-		
-		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
-		void *FPtr = 0;
-		if (d->m_compilationCache[d->m_currentCacheKey].nativeFunction) {
-			FPtr = d->m_compilationCache[d->m_currentCacheKey].nativeFunction;
-// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
-		} else {
-			FPtr = d->m_jitengine->getPointerToFunction(CalleeF);
-			d->m_compilationCache[d->m_currentCacheKey].nativeFunction = FPtr;
+	JITAnalyzerPrivate::FunctionInfo fi = d->m_compilationCache[d->m_currentCacheKey];
+	
+	//TODO check for non empty d->m_compilationCache
+	const int n = fi.function->getArgumentList().size();
+	const int nret = fi.returnType.size();
+	
+	void *FPtr =fi.nativeFunction;
+	
+	switch (n) {
+		case 1: {
+			typedef bool (*FTY)(double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			result = FP(arg1);
+			return true;
+		}	break;
+		case 2: {
+			typedef bool (*FTY)(double, double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			double arg2 = ((Cn*)(runStack().at(1)))->value();
+			result = FP(arg1, arg2);
+			return true;
+		}	break;
+		case 3: {
+			typedef bool (*FTY)(double, double, double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			double arg2 = ((Cn*)(runStack().at(1)))->value();
+			double arg3 = ((Cn*)(runStack().at(1)))->value();
+			result = FP(arg1, arg2, arg3);
+			return true;
+		}	break;
+		//TODO more args
+		default: {
+			return false;
 		}
-		
-		switch (n) {
-			case 1: {
-				typedef bool (*FTY)(double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				result = FP(arg1);
-				return true;
-			}	break;
-			case 2: {
-				typedef bool (*FTY)(double, double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				double arg2 = ((Cn*)(runStack().at(1)))->value();
-				result = FP(arg1, arg2);
-				return true;
-			}	break;
-			case 3: {
-				typedef bool (*FTY)(double, double, double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				double arg2 = ((Cn*)(runStack().at(1)))->value();
-				double arg3 = ((Cn*)(runStack().at(1)))->value();
-				result = FP(arg1, arg2, arg3);
-				return true;
-			}	break;
-			//TODO more args
-			default: {
-				return false;
-			}
-		}
-	} else {
-		//TODO add error
-		return false;
 	}
 	
-	return true;
+	return false;
 }
 
 bool JITAnalyzer::calculateLambda(QVector< double >& result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
-		//TODO check for non empty d->m_compilationCache
-		
-		const int n = this->expression().bvarList().size();
-		const int nret = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
-		
-		// Look up the name in the global module table.
-		llvm::Function *CalleeF = d->m_compilationCache[d->m_currentCacheKey].function;
-		
-// 		CalleeF->dump();
-		
-		//TODO
-// 		Q_ASSERT(d->m_compilationCache[d->m_currentCacheKey].returnType.type() == ExpressionType::Vector);
-		
-		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
-		void *FPtr = 0;
-		if (d->m_compilationCache[d->m_currentCacheKey].nativeFunction) {
-			FPtr = d->m_compilationCache[d->m_currentCacheKey].nativeFunction;
-// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
-		} else {
-			FPtr = d->m_jitengine->getPointerToFunction(CalleeF);
-			d->m_compilationCache[d->m_currentCacheKey].nativeFunction = FPtr;
+	JITAnalyzerPrivate::FunctionInfo fi = d->m_compilationCache[d->m_currentCacheKey];
+	
+	//TODO check for non empty d->m_compilationCache
+	
+	const int n = fi.function->getArgumentList().size();
+	const int nret = fi.returnType.size();
+	
+	//TODO
+// 		Q_ASSERT(fi.returnType.type() == ExpressionType::Vector);
+	
+	//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
+	void *FPtr = fi.nativeFunction;
+	
+	double *vret = 0;
+	
+	switch (n) {
+		case 1: {
+			typedef double* (*FTY)(double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			vret = FP(arg1);
+			
+		}	break;
+		case 2: {
+			typedef double* (*FTY)(double, double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			double arg2 = ((Cn*)(runStack().at(1)))->value();
+			vret = FP(arg1, arg2);
+		}	break;
+		case 3: {
+			typedef double* (*FTY)(double, double, double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			double arg2 = ((Cn*)(runStack().at(1)))->value();
+			double arg3 = ((Cn*)(runStack().at(1)))->value();
+			vret = FP(arg1, arg2, arg3);
+		}	break;
+		//TODO more args
+		default: {
 		}
-		
-		double *vret = 0;
-		
-		switch (n) {
-			case 1: {
-				typedef double* (*FTY)(double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				vret = FP(arg1);
-				
-			}	break;
-			case 2: {
-				typedef double* (*FTY)(double, double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				double arg2 = ((Cn*)(runStack().at(1)))->value();
-				vret = FP(arg1, arg2);
-			}	break;
-			case 3: {
-				typedef double* (*FTY)(double, double, double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				double arg2 = ((Cn*)(runStack().at(1)))->value();
-				double arg3 = ((Cn*)(runStack().at(1)))->value();
-				vret = FP(arg1, arg2, arg3);
-			}	break;
-			//TODO more args
-			default: {
-			}
-		}
-		
-		//TODO weird ... this fill garbage in vector :S ... e.g. QVector(25, 6.95321e-310) should be QVector(25,35)
+	}
+	
+	//TODO weird ... this fill garbage in vector :S ... e.g. QVector(25, 6.95321e-310) should be QVector(25,35)
 // 		for(int i = 0; i < nret; ++i) {
 // 			result.append(vret[i]);
 // 		}
-		//TODO weird behaviour: I can not use loops here ... try next time with other compiler/llvm version
-		switch (nret) {
-			case 1: {
-				const double a = vret[0];
-				result.append(a);
-				return true;
-			}	break;
-			case 2: {
-				const double a = vret[0];
-				const double b = vret[1];
-				result.append(a);
-				result.append(b);
-				
+	//TODO weird behaviour: I can not use loops here ... try next time with other compiler/llvm version
+	switch (nret) {
+		case 1: {
+			const double a = vret[0];
+			result.append(a);
+			return true;
+		}	break;
+		case 2: {
+			const double a = vret[0];
+			const double b = vret[1];
+			result.append(a);
+			result.append(b);
+			
 // 				qDebug() << "GINALLL: " << result;
-				
-				return true;
-			}	break;
-			case 3: {
-				const double a = vret[0];
-				const double b = vret[1];
-				const double c = vret[2];
-				result.append(a);
-				result.append(b);
-				result.append(c);
-				
+			
+			return true;
+		}	break;
+		case 3: {
+			const double a = vret[0];
+			const double b = vret[1];
+			const double c = vret[2];
+			result.append(a);
+			result.append(b);
+			result.append(c);
+			
 // 				qDebug() << "GINALLL: " << result;
-				
-				return true;
-			}	break;
-			//TODO vector should be of any size ...
-			default: {
-				return false;
-			}
+			
+			return true;
+		}	break;
+		//TODO vector should be of any size ...
+		default: {
+			return false;
 		}
-	} else {
-		//TODO add error
-		return false;
 	}
 	
-	return true;
+	return false;
 }
 
 bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	const int rows = d->m_compilationCache[d->m_currentCacheKey].returnType.size();
-	const int cols = d->m_compilationCache[d->m_currentCacheKey].returnType.contained().size();
-		
-	if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
-		//TODO check for non empty d->m_compilationCache
-		
-		const int n = this->expression().bvarList().size();
-		
-		// Look up the name in the global module table.
-		llvm::Function *CalleeF = d->m_compilationCache[d->m_currentCacheKey].function;
-		
-// 		CalleeF->dump();
-		
-		//TODO
-// 		Q_ASSERT(d->m_compilationCache[d->m_currentCacheKey].returnType.type() == ExpressionType::Vector);
-		
-		//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
-		void *FPtr = 0;
-		if (d->m_compilationCache[d->m_currentCacheKey].nativeFunction) {
-			FPtr = d->m_compilationCache[d->m_currentCacheKey].nativeFunction;
-// 			qDebug() << "Avoid JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
-		} else {
-			FPtr = d->m_jitengine->getPointerToFunction(CalleeF);
-			d->m_compilationCache[d->m_currentCacheKey].nativeFunction = FPtr;
+	JITAnalyzerPrivate::FunctionInfo fi = d->m_compilationCache[d->m_currentCacheKey];
+	
+	const int rows = fi.returnType.size();
+	const int cols = fi.returnType.contained().size();
+	
+	//TODO check for non empty d->m_compilationCache
+	
+	const int n = fi.function->getArgumentList().size();
+	
+	void *FPtr = fi.nativeFunction;
+	
+	double *vret = 0;
+	
+	switch (n) {
+		case 1: {
+			typedef double* (*FTY)(double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			vret = FP(arg1);
+			
+		}	break;
+		case 2: {
+			typedef double* (*FTY)(double, double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			double arg2 = ((Cn*)(runStack().at(1)))->value();
+			vret = FP(arg1, arg2);
+		}	break;
+		case 3: {
+			typedef double* (*FTY)(double, double, double);
+			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			double arg1 = ((Cn*)(runStack().at(0)))->value();
+			double arg2 = ((Cn*)(runStack().at(1)))->value();
+			double arg3 = ((Cn*)(runStack().at(1)))->value();
+			vret = FP(arg1, arg2, arg3);
+		}	break;
+		//TODO more args
+		default: {
 		}
-		
-		double *vret = 0;
-		
-		switch (n) {
-			case 1: {
-				typedef double* (*FTY)(double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				vret = FP(arg1);
-				
-			}	break;
-			case 2: {
-				typedef double* (*FTY)(double, double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				double arg2 = ((Cn*)(runStack().at(1)))->value();
-				vret = FP(arg1, arg2);
-			}	break;
-			case 3: {
-				typedef double* (*FTY)(double, double, double);
-				FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-				
-				double arg1 = ((Cn*)(runStack().at(0)))->value();
-				double arg2 = ((Cn*)(runStack().at(1)))->value();
-				double arg3 = ((Cn*)(runStack().at(1)))->value();
-				vret = FP(arg1, arg2, arg3);
-			}	break;
-			//TODO more args
-			default: {
-			}
-		}
-		
-		//TODO weird ... this fill garbage in vector :S ... e.g. QVector(25, 6.95321e-310) should be QVector(25,35)
+	}
+	
+	//TODO weird ... this fill garbage in vector :S ... e.g. QVector(25, 6.95321e-310) should be QVector(25,35)
 // 		for(int i = 0; i < nret; ++i) {
 // 			result.append(vret[i]);
 // 		}
-		//TODO weird behaviour: I can not use loops here ... try next time with other compiler/llvm version
+	//TODO weird behaviour: I can not use loops here ... try next time with other compiler/llvm version
+	
+	if (rows == 1 && cols == 1) {
+		const double a = vret[0];
+		QVector<double> row1;
+		row1.append(a);
 		
-		if (rows == 1 && cols == 1) {
-			const double a = vret[0];
-			QVector<double> row1;
-			row1.append(a);
-			
-			result.append(row1);
-			return true;
-		}
-		
-		if (rows == 2 && cols == 2) {
-			const double a = vret[0];
-			const double b = vret[1];
-			const double c = vret[2];
-			const double d = vret[3];
-			
-			QVector<double> row1;
-			row1.append(a);
-			row1.append(b);
-			
-			QVector<double> row2;
-			row2.append(c);
-			row2.append(d);
-			
-			result.append(row1);
-			result.append(row2);
-			
-			return true;
-		}
-		
-		if (rows == 3 && cols == 5) {
-			const double a = vret[0];
-			const double b = vret[1];
-			const double c = vret[2];
-			const double d = vret[3];
-			const double e = vret[4];
-			const double f = vret[5];
-			const double g = vret[6];
-			const double h = vret[7];
-			const double i = vret[8];
-			const double j = vret[9];
-			const double k = vret[10];
-			const double l = vret[11];
-			const double m = vret[12];
-			const double n = vret[13];
-			const double o = vret[14];
-			
-			QVector<double> row1;
-			row1.append(a);
-			row1.append(b);
-			row1.append(c);
-			row1.append(d);
-			row1.append(e);
-			
-			QVector<double> row2;
-			row2.append(f);
-			row2.append(g);
-			row2.append(h);
-			row2.append(i);
-			row2.append(j);
-			
-			QVector<double> row3;
-			row3.append(k);
-			row3.append(l);
-			row3.append(m);
-			row3.append(n);
-			row3.append(o);
-			
-			result.append(row1);
-			result.append(row2);
-			result.append(row3);
-			//qDebug() << "GINALLL: " << result;
-			
-			return true;
-		}
-	} else {
-		//TODO add error
-		return false;
+		result.append(row1);
+		return true;
 	}
 	
-	return true;
+	if (rows == 2 && cols == 2) {
+		const double a = vret[0];
+		const double b = vret[1];
+		const double c = vret[2];
+		const double d = vret[3];
+		
+		QVector<double> row1;
+		row1.append(a);
+		row1.append(b);
+		
+		QVector<double> row2;
+		row2.append(c);
+		row2.append(d);
+		
+		result.append(row1);
+		result.append(row2);
+		
+		return true;
+	}
+	
+	if (rows == 3 && cols == 5) {
+		const double a = vret[0];
+		const double b = vret[1];
+		const double c = vret[2];
+		const double d = vret[3];
+		const double e = vret[4];
+		const double f = vret[5];
+		const double g = vret[6];
+		const double h = vret[7];
+		const double i = vret[8];
+		const double j = vret[9];
+		const double k = vret[10];
+		const double l = vret[11];
+		const double m = vret[12];
+		const double n = vret[13];
+		const double o = vret[14];
+		
+		QVector<double> row1;
+		row1.append(a);
+		row1.append(b);
+		row1.append(c);
+		row1.append(d);
+		row1.append(e);
+		
+		QVector<double> row2;
+		row2.append(f);
+		row2.append(g);
+		row2.append(h);
+		row2.append(i);
+		row2.append(j);
+		
+		QVector<double> row3;
+		row3.append(k);
+		row3.append(l);
+		row3.append(m);
+		row3.append(n);
+		row3.append(o);
+		
+		result.append(row1);
+		result.append(row2);
+		result.append(row3);
+		//qDebug() << "GINALLL: " << result;
+		
+		return true;
+	}
+	
+	return false;
 }
 

@@ -23,16 +23,10 @@
 
 #include "expressiontype.h"
 
-extern Analitza::Operator op;
 namespace llvm {
 class Module;
 class Type;
 class Value;
-
-namespace legacy {
-class PassManager;
-class FunctionPassManager;
-}
 }
 
 namespace Analitza

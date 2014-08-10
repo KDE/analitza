@@ -41,6 +41,11 @@ using namespace Analitza;
 
 llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::OperatorType op, llvm::Value* val1, llvm::Value* val2, QString& error)
 {
+	//TODO see how can be used FastMath optimizations
+// 	llvm::FastMathFlags g;
+// 	g.setUnsafeAlgebra();
+// 	irbuilder.SetFastMathFlags(g);
+	
 	llvm::Value *ret = 0;
 	
 	switch(op) {
