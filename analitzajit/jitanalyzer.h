@@ -128,8 +128,8 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		 * then nothing will be done and will return false.
 		 * @returns Returns true if calculation was successful, otherwise returns false.
 		 */
-		bool calculateLambda(double &result);
 		bool calculateLambda(bool &result);
+		bool calculateLambda(double &result);
 		
 		/** Convenience method used when the @p result expression is a vector. */
 		bool calculateLambda(QVector<double> &result);
@@ -145,6 +145,9 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 	private:
 		class JITAnalyzerPrivate;
 		JITAnalyzerPrivate* const d;
+		
+		template<typename T>
+		bool calculateScalarLambda(T &result);
 };
 
 }

@@ -120,6 +120,7 @@ public:
 		llvm::Function *function;
 		void *nativeFunction;
 		Analitza::ExpressionType returnType;
+		size_t nargs; // cache the number of arguments
 	};
 	
 	QHash<QString, FunctionInfo> m_compilationCache;
@@ -224,6 +225,7 @@ bool JITAnalyzer::setExpression(const Expression& expression, const QMap< QStrin
 			d->m_currentFunctionInfo.returnType = v.compiledType();
 			//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
 			d->m_currentFunctionInfo.nativeFunction = d->m_jitengine->getPointerToFunction(d->m_currentFunctionInfo.function);
+			d->m_currentFunctionInfo.nargs = d->m_currentFunctionInfo.function->getArgumentList().size();
 			
 			//BEGIN optimizations
 			d->module_pass_manager->run(*d->m_module);
@@ -254,111 +256,29 @@ bool JITAnalyzer::setExpression(const Expression& expression)
 	return JITAnalyzer::setExpression(expression, bvartypes);
 }
 
-bool JITAnalyzer::calculateLambda(double &result)
-{
-	Q_ASSERT(!d->m_compilationCache.isEmpty());
-	
-	//TODO check for non empty d->m_compilationCache
-	const int n = d->m_currentFunctionInfo.function->getArgumentList().size();
-	const int nret = d->m_currentFunctionInfo.returnType.size();
-	
-	void *FPtr = d->m_currentFunctionInfo.nativeFunction;
-	
-	switch (n) {
-		case 1: {
-			typedef double (*FTY)(double);
-			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-			
-			double arg1 = ((Cn*)(runStack().at(0)))->value();
-			result = FP(arg1);
-			return true;
-		}	break;
-		case 2: {
-			typedef double (*FTY)(double, double);
-			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-			
-			double arg1 = ((Cn*)(runStack().at(0)))->value();
-			double arg2 = ((Cn*)(runStack().at(1)))->value();
-			result = FP(arg1, arg2);
-			return true;
-		}	break;
-		case 3: {
-			typedef double (*FTY)(double, double, double);
-			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-			
-			double arg1 = ((Cn*)(runStack().at(0)))->value();
-			double arg2 = ((Cn*)(runStack().at(1)))->value();
-			double arg3 = ((Cn*)(runStack().at(1)))->value();
-			result = FP(arg1, arg2, arg3);
-			return true;
-		}	break;
-		//TODO more args
-		default: {
-			return false;
-		}
-	}
-	
-	return false;
-}
-
 bool JITAnalyzer::calculateLambda(bool &result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
+	Q_ASSERT(d->m_currentFunctionInfo.returnType == ExpressionType(ExpressionType::Bool));
 	
-	//TODO check for non empty d->m_compilationCache
-	const int n = d->m_currentFunctionInfo.function->getArgumentList().size();
-	const int nret = d->m_currentFunctionInfo.returnType.size();
+	return calculateScalarLambda<bool>(result);
+}
+
+bool JITAnalyzer::calculateLambda(double &result)
+{
+// 	Q_ASSERT(!d->m_compilationCache.isEmpty());
+// 	Q_ASSERT(d->m_currentFunctionInfo.returnType == ExpressionType(ExpressionType::Value)); //TODO should be ExpressionType::Real
 	
-	void *FPtr =d->m_currentFunctionInfo.nativeFunction;
-	
-	switch (n) {
-		case 1: {
-			typedef bool (*FTY)(double);
-			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-			
-			double arg1 = ((Cn*)(runStack().at(0)))->value();
-			result = FP(arg1);
-			return true;
-		}	break;
-		case 2: {
-			typedef bool (*FTY)(double, double);
-			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-			
-			double arg1 = ((Cn*)(runStack().at(0)))->value();
-			double arg2 = ((Cn*)(runStack().at(1)))->value();
-			result = FP(arg1, arg2);
-			return true;
-		}	break;
-		case 3: {
-			typedef bool (*FTY)(double, double, double);
-			FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
-			
-			double arg1 = ((Cn*)(runStack().at(0)))->value();
-			double arg2 = ((Cn*)(runStack().at(1)))->value();
-			double arg3 = ((Cn*)(runStack().at(1)))->value();
-			result = FP(arg1, arg2, arg3);
-			return true;
-		}	break;
-		//TODO more args
-		default: {
-			return false;
-		}
-	}
-	
-	return false;
+	return calculateScalarLambda<double>(result);
 }
 
 bool JITAnalyzer::calculateLambda(QVector< double >& result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
-	
-	//TODO check for non empty d->m_compilationCache
+	Q_ASSERT(d->m_currentFunctionInfo.returnType == ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -1));  //TODO should be ExpressionType::Real
 	
 	const int n = d->m_currentFunctionInfo.function->getArgumentList().size();
 	const int nret = d->m_currentFunctionInfo.returnType.size();
-	
-	//TODO
-// 		Q_ASSERT(fi.returnType.type() == ExpressionType::Vector);
 	
 	//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
 	void *FPtr = d->m_currentFunctionInfo.nativeFunction;
@@ -441,6 +361,7 @@ bool JITAnalyzer::calculateLambda(QVector< double >& result)
 bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
+	//TODO assert returntype is matrix
 	
 	const int rows = d->m_currentFunctionInfo.returnType.size();
 	const int cols = d->m_currentFunctionInfo.returnType.contained().size();
@@ -568,3 +489,44 @@ bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 	return false;
 }
 
+template<typename T>
+bool JITAnalyzer::calculateScalarLambda(T& result)
+{
+	const void *FPtr = d->m_currentFunctionInfo.nativeFunction;
+	
+	switch (d->m_currentFunctionInfo.nargs) {
+		case 1: {
+			typedef T (*FTY)(double);
+			const FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			const double arg1 = ((Cn*)(runStack().at(0)))->value();
+			result = FP(arg1);
+			return true;
+		}	break;
+		case 2: {
+			typedef T (*FTY)(double, double);
+			const FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			const double arg1 = ((Cn*)(runStack().at(0)))->value();
+			const double arg2 = ((Cn*)(runStack().at(1)))->value();
+			result = FP(arg1, arg2);
+			return true;
+		}	break;
+		case 3: {
+			typedef T (*FTY)(double, double, double);
+			const FTY FP = reinterpret_cast<FTY>((intptr_t)FPtr);
+			
+			const double arg1 = ((Cn*)(runStack().at(0)))->value();
+			const double arg2 = ((Cn*)(runStack().at(1)))->value();
+			const double arg3 = ((Cn*)(runStack().at(1)))->value();
+			result = FP(arg1, arg2, arg3);
+			return true;
+		}	break;
+		//TODO more args
+		default: {
+			return false;
+		}
+	}
+	
+	return false;
+}
