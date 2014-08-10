@@ -18,9 +18,21 @@
 
 #include "expressioncompiler.h"
 
+#include <llvm/Analysis/CallGraph.h>
+#include <llvm/Analysis/Passes.h>
 #include <llvm/IR/Verifier.h>
-#include <llvm/IR/IntrinsicInst.h>
+#include <llvm/Bitcode/ReaderWriter.h>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <llvm/ExecutionEngine/JIT.h>
+#include <llvm/PassManager.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
 #include <llvm/IR/IRBuilder.h>
+#include <llvm/Support/raw_os_ostream.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/IR/DataLayout.h>
+#include <llvm/Transforms/IPO.h>
+#include <llvm/Transforms/Scalar.h>
 
 #include "analitza/value.h"
 #include "analitza/matrix.h"
@@ -45,7 +57,12 @@ ExpressionCompiler::ExpressionCompiler(llvm::Module* module, Variables* vars)
 	: m_module(module)
 	, m_vars(vars)
 {
-	//TODO add variables to m_bvartypes
+
+}
+
+ExpressionCompiler::~ExpressionCompiler()
+{
+
 }
 
 llvm::Value *ExpressionCompiler::compileExpression(Object* expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
@@ -422,7 +439,13 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			if (!llvm::verifyFunction(*F))
 			{
 // 				qDebug() << "TODO OK";
+				
+				
+
 			}
+			
+			
+			
 			
 			ret = F;
 		}	break;

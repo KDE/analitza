@@ -23,12 +23,22 @@
 #include "value.h"
 #include <expressiontypechecker.h>
 
-#include <llvm/IR/Module.h>
-#include <llvm/IR/LLVMContext.h>
-#include <llvm-3.5/llvm/IR/InstrTypes.h>
-#include <llvm/Support/TargetSelect.h>
-#include <llvm/ExecutionEngine/GenericValue.h>
+#include <llvm/Analysis/CallGraph.h>
+#include <llvm/Analysis/Passes.h>
+#include <llvm/IR/Verifier.h>
+#include <llvm/Bitcode/ReaderWriter.h>
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
+#include <llvm/PassManager.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/Support/raw_os_ostream.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/IR/DataLayout.h>
+#include <llvm/Transforms/IPO.h>
+#include <llvm/Transforms/Scalar.h>
+#include <llvm/Target/TargetJITInfo.h>
 
 Q_DECLARE_METATYPE(llvm::Value*);
 
@@ -44,8 +54,25 @@ public:
 		, m_context(new llvm::LLVMContext)
 	{
 		llvm::InitializeNativeTarget();
+		
 		m_module = new llvm::Module(generateModuleID(), *m_context);
 		m_jitengine = llvm::EngineBuilder(m_module).create();
+		m_module ->setDataLayout(m_jitengine->getDataLayout());
+		
+		//TODO add variables to m_bvartypes
+		module_pass_manager = new llvm::legacy::PassManager();
+		module_pass_manager->add (llvm::createAlwaysInlinerPass());
+		
+		pass_manager = new llvm::legacy::FunctionPassManager (m_module);
+		pass_manager->add(new llvm::DataLayoutPass(m_module));
+		pass_manager->add (llvm::createCFGSimplificationPass());
+		pass_manager->add (llvm::createBasicAliasAnalysisPass());
+		pass_manager->add (llvm::createPromoteMemoryToRegisterPass());
+		pass_manager->add (llvm::createInstructionCombiningPass());
+		pass_manager->add (llvm::createReassociatePass());
+		pass_manager->add (llvm::createGVNPass());
+		pass_manager->add (llvm::createCFGSimplificationPass());
+		pass_manager->doInitialization();
 	}
 	
 	JITAnalyzerPrivate(llvm::LLVMContext *context)
@@ -70,6 +97,10 @@ public:
 	llvm::LLVMContext *m_context;
 	llvm::Module *m_module;
 	llvm::ExecutionEngine *m_jitengine;
+	
+	//optimizations
+	llvm::legacy::PassManager *module_pass_manager;
+	llvm::legacy::FunctionPassManager *pass_manager;
 	
 	struct FunctionInfo
 	{
@@ -179,6 +210,11 @@ bool JITAnalyzer::setExpression(const Expression& expression, const QMap< QStrin
 			fn.function = llvm::cast<llvm::Function>(v.compileExpression(expression, bvartypes));
 			fn.returnType = v.compiledType();
 			fn.nativeFunction = 0; //NOTE this is important
+			
+			//BEGIN optimizations
+			d->module_pass_manager->run(*d->m_module);
+			d->pass_manager->run(*fn.function);
+			//END optimizations
 			
 			d->m_compilationCache[d->m_currentCacheKey] = fn;
 			
