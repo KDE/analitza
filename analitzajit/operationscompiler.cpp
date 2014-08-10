@@ -51,10 +51,10 @@ llvm::Value * compileRealReal(llvm::BasicBlock* currentBlock, Operator::Operator
 	switch(op) {
 		case Operator::plus: ret = irbuilder.CreateFAdd(val1, val2); break;
 		case Operator::minus: ret = irbuilder.CreateFSub(val1, val2); break;
-// 		case Operator::times: ret = llvm::ConstantExpr::getFMul((llvm::Constant*)val1, (llvm::Constant*)val2); break;
 		case Operator::times: ret = irbuilder.CreateFMul(val1, val2); break;
 		case Operator::divide: ret = irbuilder.CreateFDiv(val1, val2); break;//TODO handle x/0 send some error
 		case Operator::power: {
+			//TODO we need to move this line (to get the Intrinsic futc) into some utils module
 			llvm::Function *powfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::pow, llvm::Type::getDoubleTy(llvmcontext));
 			ret = irbuilder.CreateCall2(powfnptr, val1, val2);
 		}	break;

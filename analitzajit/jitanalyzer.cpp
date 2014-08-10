@@ -53,13 +53,41 @@ public:
 		: m_ownContext(true)
 		, m_context(new llvm::LLVMContext)
 	{
-		llvm::InitializeNativeTarget();
+		llvmInit();
 		
+		//TODO add variables to m_bvartypes
+	}
+	
+	JITAnalyzerPrivate(llvm::LLVMContext *context)
+		: m_ownContext(false)
+		, m_context(context)
+	{
+		llvmInit();
+		
+		//TODO add variables to m_bvartypes
+	}
+	
+	~JITAnalyzerPrivate()
+	{
+		delete m_jitengine;
+		//delete m_module; already deleted by delete m_jitengine
+		
+		if (m_ownContext)
+			delete m_context;
+	}
+	
+	void llvmInit()
+	{
+		llvm::InitializeNativeTarget();
 		m_module = new llvm::Module(generateModuleID(), *m_context);
 		m_jitengine = llvm::EngineBuilder(m_module).create();
 		m_module ->setDataLayout(m_jitengine->getDataLayout());
 		
-		//TODO add variables to m_bvartypes
+		setupOptimizationPasses();
+	}
+	
+	void setupOptimizationPasses()
+	{
 		module_pass_manager = new llvm::legacy::PassManager();
 		module_pass_manager->add (llvm::createAlwaysInlinerPass());
 		
@@ -76,24 +104,6 @@ public:
 		pass_manager->add (llvm::createGVNPass());
 		pass_manager->add (llvm::createCFGSimplificationPass());
 		pass_manager->doInitialization();
-	}
-	
-	JITAnalyzerPrivate(llvm::LLVMContext *context)
-		: m_ownContext(false)
-		, m_context(context)
-	{
-		llvm::InitializeNativeTarget();
-		m_module = new llvm::Module(generateModuleID(), *m_context);
-		m_jitengine = llvm::EngineBuilder(m_module).create();
-	}
-	
-	~JITAnalyzerPrivate()
-	{
-		delete m_jitengine;
-		//delete m_module; already deleted by delete m_jitengine
-		
-		if (m_ownContext)
-			delete m_context;
 	}
 	
 	bool m_ownContext;
@@ -113,7 +123,7 @@ public:
 	};
 	
 	QHash<QString, FunctionInfo> m_compilationCache;
-	QString m_currentCacheKey;
+	FunctionInfo m_currentFunctionInfo;
 	
 	const QString getCacheKey(const Expression& expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
 	{
@@ -186,44 +196,42 @@ bool JITAnalyzer::setExpression(const Expression& expression, const QMap< QStrin
 	//TODO better code
 	Analyzer::setExpression(expression);
 	
-	if (isCorrect())
-		d->m_currentCacheKey.clear();
-	else {
+	if (isCorrect()) {
+// 		d->m_currentCacheKey.clear();
+	} else {
 		qDebug() << "ERRORS" << errors();
 		return false;
 	}
 	
-	d->m_currentCacheKey = d->getCacheKey(expression, bvartypes);
+	QString cacheKey = d->getCacheKey(expression, bvartypes);
 	
+	//TODO support not only lambdas
 	if (expression.isLambda()) {
-		if (d->m_compilationCache.contains(d->m_currentCacheKey)) {
-			
+		if (d->m_compilationCache.contains(cacheKey)) {
 // 			qDebug() << "Avoid compilation to LLVM IR and JIT compilation to native platform code, using cached function:" << d->m_currentCacheKey;
+			d->m_currentFunctionInfo = d->m_compilationCache[cacheKey];
+			
 			return true;
 		} else {
 			//TODO find better way to save/store IR functions
 	// 		qDebug() << "fluuuu" << bvartypes.keys();
 			
-			
 			ExpressionCompiler v(d->m_module, variables());
 			
 			//cache
-			JITAnalyzerPrivate::FunctionInfo fn;
 			//TODO support expression too, not only lambda expression
-			fn.function = llvm::cast<llvm::Function>(v.compileExpression(expression, bvartypes));
-			fn.returnType = v.compiledType();
+			d->m_currentFunctionInfo.function = llvm::cast<llvm::Function>(v.compileExpression(expression, bvartypes));
+			d->m_currentFunctionInfo.returnType = v.compiledType();
 			//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
-			fn.nativeFunction = d->m_jitengine->getPointerToFunction(fn.function);
+			d->m_currentFunctionInfo.nativeFunction = d->m_jitengine->getPointerToFunction(d->m_currentFunctionInfo.function);
 			
 			//BEGIN optimizations
 			d->module_pass_manager->run(*d->m_module);
-			d->pass_manager->run(*fn.function);
-// 			fn.function->dump();
+			d->pass_manager->run(*d->m_currentFunctionInfo.function);
+// 			d->m_currentFunctionInfo.function->dump();
 			//END optimizations
 			
-			d->m_compilationCache[d->m_currentCacheKey] = fn;
-			
-// 			d->m_compilationCache[d->m_currentCacheKey]->dump();
+			d->m_compilationCache[cacheKey] = d->m_currentFunctionInfo;
 			
 			return true;
 		}
@@ -250,13 +258,11 @@ bool JITAnalyzer::calculateLambda(double &result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	JITAnalyzerPrivate::FunctionInfo fi = d->m_compilationCache[d->m_currentCacheKey];
-	
 	//TODO check for non empty d->m_compilationCache
-	const int n = fi.function->getArgumentList().size();
-	const int nret = fi.returnType.size();
+	const int n = d->m_currentFunctionInfo.function->getArgumentList().size();
+	const int nret = d->m_currentFunctionInfo.returnType.size();
 	
-	void *FPtr = fi.nativeFunction;
+	void *FPtr = d->m_currentFunctionInfo.nativeFunction;
 	
 	switch (n) {
 		case 1: {
@@ -299,13 +305,11 @@ bool JITAnalyzer::calculateLambda(bool &result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	JITAnalyzerPrivate::FunctionInfo fi = d->m_compilationCache[d->m_currentCacheKey];
-	
 	//TODO check for non empty d->m_compilationCache
-	const int n = fi.function->getArgumentList().size();
-	const int nret = fi.returnType.size();
+	const int n = d->m_currentFunctionInfo.function->getArgumentList().size();
+	const int nret = d->m_currentFunctionInfo.returnType.size();
 	
-	void *FPtr =fi.nativeFunction;
+	void *FPtr =d->m_currentFunctionInfo.nativeFunction;
 	
 	switch (n) {
 		case 1: {
@@ -348,18 +352,16 @@ bool JITAnalyzer::calculateLambda(QVector< double >& result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	JITAnalyzerPrivate::FunctionInfo fi = d->m_compilationCache[d->m_currentCacheKey];
-	
 	//TODO check for non empty d->m_compilationCache
 	
-	const int n = fi.function->getArgumentList().size();
-	const int nret = fi.returnType.size();
+	const int n = d->m_currentFunctionInfo.function->getArgumentList().size();
+	const int nret = d->m_currentFunctionInfo.returnType.size();
 	
 	//TODO
 // 		Q_ASSERT(fi.returnType.type() == ExpressionType::Vector);
 	
 	//NOTE llvm::ExecutionEngine::getPointerToFunction performs JIT compilation to native platform code
-	void *FPtr = fi.nativeFunction;
+	void *FPtr = d->m_currentFunctionInfo.nativeFunction;
 	
 	double *vret = 0;
 	
@@ -440,16 +442,14 @@ bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 {
 	Q_ASSERT(!d->m_compilationCache.isEmpty());
 	
-	JITAnalyzerPrivate::FunctionInfo fi = d->m_compilationCache[d->m_currentCacheKey];
-	
-	const int rows = fi.returnType.size();
-	const int cols = fi.returnType.contained().size();
+	const int rows = d->m_currentFunctionInfo.returnType.size();
+	const int cols = d->m_currentFunctionInfo.returnType.contained().size();
 	
 	//TODO check for non empty d->m_compilationCache
 	
-	const int n = fi.function->getArgumentList().size();
+	const int n = d->m_currentFunctionInfo.function->getArgumentList().size();
 	
-	void *FPtr = fi.nativeFunction;
+	void *FPtr = d->m_currentFunctionInfo.nativeFunction;
 	
 	double *vret = 0;
 	
@@ -484,7 +484,7 @@ bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 		}
 	}
 	
-	//TODO weird ... this fill garbage in vector :S ... e.g. QVector(25, 6.95321e-310) should be QVector(25,35)
+	//TODO weird ... this d->m_currentFunctionInfoll garbage in vector :S ... e.g. QVector(25, 6.95321e-310) should be QVector(25,35)
 // 		for(int i = 0; i < nret; ++i) {
 // 			result.append(vret[i]);
 // 		}
