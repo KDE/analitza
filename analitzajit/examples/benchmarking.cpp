@@ -41,15 +41,15 @@ QDebug operator<<(QDebug dbg, const QVarLengthArray<double> &a)
 using namespace std;
 using namespace Analitza;
 
-const double xmin = -0.24;
-const double xmax =  0.32;
-const double ymin = -0.24;
-const double ymax =  0.16;
-const double zmin = -0.3;
-const double zmax =  0.9;
-const double xstep = 0.0037;
-const double ystep = 0.0025;
-const double zstep = 0.009;
+double xmin = 0;
+double xmax = 0;
+double ymin = 0;
+double ymax = 0;
+double zmin = 0;
+double zmax = 0;
+double xstep = 0;
+double ystep = 0;
+double zstep = 0;
 
 Cn* arg1 = new Analitza::Cn;
 Cn* arg2 = new Analitza::Cn;
@@ -57,6 +57,45 @@ Cn* arg3 = new Analitza::Cn;
 
 Analyzer a;
 JITAnalyzer b;
+
+void useDomain1() // standard [-1,1] 
+{
+	xmin = -1.0;
+	xmax =  1.0;
+	ymin = -1.0;
+	ymax =  1.0;
+	zmin = -1.0;
+	zmax =  1.0;
+	xstep = 0.01;
+	ystep = 0.01;
+	zstep = 0.01;
+}
+
+void useDomain2() // dense near zero
+{
+	xmin = -0.24;
+	xmax =  0.32;
+	ymin = -0.24;
+	ymax =  0.16;
+	zmin = -0.3;
+	zmax =  0.9;
+	xstep = 0.0037;
+	ystep = 0.0025;
+	zstep = 0.009;
+}
+
+void useDomain3() // in the interval [-100,100]
+{
+	xmin = -89.24;
+	xmax =  65.32;
+	ymin = -74.24;
+	ymax =  35.16;
+	zmin = -98.3;
+	zmax =  36.9;
+	xstep = 0.37;
+	ystep = 0.25;
+	zstep = 0.9;
+}
 
 //BEGIN profile 1
 
@@ -72,8 +111,8 @@ void ceval_profile1()
 	QTime t;
 	t.start();
 	
-	for (double x = xmin; x <= xmax; x+=xstep) {
-		for (double y = ymin; y <= ymax; y+=ystep) {
+	for (double x = xmin; x < xmax; x+=xstep) {
+		for (double y = ymin; y < ymax; y+=ystep) {
 			double result = f_profile1(x,y);
 			#ifdef PRINT_BENCHMARKING_DATA_FLAG
 			PRINT_BENCHMARKING_DATA()
@@ -89,9 +128,9 @@ void jiteval_profile1()
 	QTime t;
 	t.start();
 	
-	for (double x = xmin; x <= xmax; x+=xstep) {
+	for (double x = xmin; x < xmax; x+=xstep) {
 		arg1->setValue(x);
-		for (double y = ymin; y <= ymax; y+=ystep) {
+		for (double y = ymin; y < ymax; y+=ystep) {
 			arg2->setValue(y);
 			double result = 0;
 			b.calculateLambda(result);
@@ -109,9 +148,9 @@ void eval_profile1()
 	QTime t;
 	t.start();
 	
-	for (double x = xmin; x <= xmax; x+=xstep) {
+	for (double x = xmin; x < xmax; x+=xstep) {
 		arg1->setValue(x);
-		for (double y = ymin; y <= ymax; y+=ystep) {
+		for (double y = ymin; y < ymax; y+=ystep) {
 			arg2->setValue(y);
 			double result = a.calculateLambda().toReal().value();
 			#ifdef PRINT_BENCHMARKING_DATA_FLAG
@@ -148,8 +187,8 @@ void ceval_profile2()
 	QTime t;
 	t.start();
 	
-	for (double x = xmin; x <= xmax; x+=xstep) {
-		for (double y = ymin; y <= ymax; y+=ystep) {
+	for (double x = xmin; x < xmax; x+=xstep) {
+		for (double y = ymin; y < ymax; y+=ystep) {
 			QVarLengthArray<double> result = f_profile2(x,y);
 			#ifdef PRINT_BENCHMARKING_DATA_FLAG
 			PRINT_BENCHMARKING_DATA()
@@ -165,9 +204,9 @@ void jiteval_profile2()
 	QTime t;
 	t.start();
 	
-	for (double x = xmin; x <= xmax; x+=xstep) {
+	for (double x = xmin; x < xmax; x+=xstep) {
 		arg1->setValue(x);
-		for (double y = ymin; y <= ymax; y+=ystep) {
+		for (double y = ymin; y < ymax; y+=ystep) {
 			arg2->setValue(y);
 			QVarLengthArray<double> result(3);
 			b.calculateLambda(result);
@@ -185,9 +224,9 @@ void eval_profile2()
 	QTime t;
 	t.start();
 	
-	for (double x = xmin; x <= xmax; x+=xstep) {
+	for (double x = xmin; x < xmax; x+=xstep) {
 		arg1->setValue(x);
-		for (double y = ymin; y <= ymax; y+=ystep) {
+		for (double y = ymin; y < ymax; y+=ystep) {
 			arg2->setValue(y);
 			const Vector* vec = static_cast<Vector*>(a.calculateLambda().tree());
 			QVarLengthArray<double> result(3);
@@ -225,9 +264,9 @@ void ceval_profile3()
 	QTime t;
 	t.start();
 	
-	for (double x = xmin; x <= xmax; x+=xstep) {
-		for (double y = ymin; y <= ymax; y+=ystep) {
-			for (double z = xmin; z <= zmax; z+=zstep) {
+	for (double x = xmin; x < xmax; x+=xstep) {
+		for (double y = ymin; y < ymax; y+=ystep) {
+			for (double z = xmin; z < zmax; z+=zstep) {
 				double result = f_profile3(x,y,z);
 				#ifdef PRINT_BENCHMARKING_DATA_FLAG
 				PRINT_BENCHMARKING_DATA()
@@ -244,11 +283,11 @@ void jiteval_profile3()
 	QTime t;
 	t.start();
 	
-	for (double x = xmin; x <= xmax; x+=xstep) {
+	for (double x = xmin; x < xmax; x+=xstep) {
 		arg1->setValue(x);
-		for (double y = ymin; y <= ymax; y+=ystep) {
+		for (double y = ymin; y < ymax; y+=ystep) {
 			arg2->setValue(y);
-			for (double z = xmin; z <= zmax; z+=zstep) {
+			for (double z = xmin; z < zmax; z+=zstep) {
 				arg3->setValue(z);
 				double result = 0;
 				b.calculateLambda(result);
@@ -267,11 +306,11 @@ void eval_profile3()
 	QTime t;
 	t.start();
 	
-	for (double x = xmin; x <= xmax; x+=xstep) {
+	for (double x = xmin; x < xmax; x+=xstep) {
 		arg1->setValue(x);
-		for (double y = ymin; y <= ymax; y+=ystep) {
+		for (double y = ymin; y < ymax; y+=ystep) {
 			arg2->setValue(y);
-			for (double z = xmin; z <= zmax; z+=zstep) {
+			for (double z = xmin; z < zmax; z+=zstep) {
 				arg3->setValue(z);
 				double result = a.calculateLambda().toReal().value();
 				b.calculateLambda(result);
@@ -296,25 +335,33 @@ void setupBenchmarking(const Expression &profile)
 	b.setStack(QVector<Analitza::Object*>() << arg1 << arg2 << arg3);
 }
 
+#define BENCHMARK_PROFILE(prfl, title) \
+	setupBenchmarking(profile##prfl); \
+	 \
+	useDomain1(); \
+	qDebug() << "==== PROFILE "+QString::number(prfl)+": "+title+" (USING DOMAIN 1) ===="; \
+	ceval_profile##prfl(); \
+	jiteval_profile##prfl(); \
+	eval_profile##prfl(); \
+	qDebug() << ""; \
+	useDomain2(); \
+	qDebug() << "==== PROFILE "+QString::number(prfl)+": "+title+" (USING DOMAIN 2) ===="; \
+	ceval_profile##prfl(); \
+	jiteval_profile##prfl(); \
+	eval_profile##prfl(); \
+	qDebug() << ""; \
+	useDomain3(); \
+	qDebug() << "==== PROFILE "+QString::number(prfl)+": "+title+" (USING DOMAIN 3) ===="; \
+	ceval_profile##prfl(); \
+	jiteval_profile##prfl(); \
+	eval_profile##prfl(); \
+	qDebug() << "\n\n\n"; \
+
 void benchmarking()
 {
-	qDebug() << "==== PROFILE 1: REAL-VALUED FUNCTION ====";
-	setupBenchmarking(profile1);
-	ceval_profile1();
-	jiteval_profile1();
-	eval_profile1();
-	
-	qDebug() << "\n==== PROFILE 2: VECTOR-VALUED FUNCTION ====";
-	setupBenchmarking(profile2);
-	ceval_profile2();
-	jiteval_profile2();
-	eval_profile2();
-	
-	qDebug() << "\n==== PROFILE 3: REAL-VALUED FUNCTION WITH PIECEWISE ====";
-	setupBenchmarking(profile3);
-	ceval_profile3();
-	jiteval_profile3();
-	eval_profile3();
+	BENCHMARK_PROFILE(1, "REAL-VALUED FUNCTION")
+	BENCHMARK_PROFILE(2, "VECTOR-VALUED FUNCTION")
+	BENCHMARK_PROFILE(3, "REAL-VALUED PIECEWISE FUNCTION")
 }
 
 void finishBenchmarking()
