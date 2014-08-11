@@ -6,6 +6,7 @@ link_directories(${LLVM_LIBRARY_DIR})
 include_directories(${LLVM_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(tests)
+add_subdirectory(examples)
 
 set ( analitzajit_SRCS
 #     analitzajitutils.cpp
@@ -32,7 +33,7 @@ install(TARGETS AnalitzaJIT EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARG
 
 install(FILES
     analitzajitexport.h
-#     analitzajitutils.h
+#     analitzajitutils.h TODO
     typecompiler.h
     operationscompiler.h
     expressioncompiler.h
