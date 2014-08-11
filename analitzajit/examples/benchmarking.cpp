@@ -38,6 +38,7 @@ QDebug operator<<(QDebug dbg, const QVarLengthArray<double> &a)
 	return dbg.space();
 }
 
+using namespace std;
 using namespace Analitza;
 
 const double xmin = -0.24;
@@ -59,7 +60,7 @@ JITAnalyzer b;
 
 //BEGIN profile 1
 
-const Expression profile1 = Expression("(x,y)->(x^2+y^2-4)*((x-1)^2+y^2-0.3)*((x+1)^2+y^2-0.3)*(x^2+(y-2)^2-0.4)*(x^2+(y+2)^2-0.4)");
+const Expression profile1 = Expression("(x,y)->(x^2+y^2-4)*((x-1)^2+y^2-0.3)*((x+1)^2+y^2-0.3)*(x^2+(y-2)^2-0.4)*(x^2+(-y+2)^2-0.4)");
 
 double f_profile1(double x, double y)
 {
@@ -126,7 +127,7 @@ void eval_profile1()
 
 //BEGIN profile 2
 
-const Expression profile2 = Expression("(u,v)->vector{(3+1.5*cos(u))*cos(v),(3+1.5*cos(u))*sin(v),1.5*sin(u)}");
+const Expression profile2 = Expression("(u,v)->vector{(3+1.5*cos(u))*cos(v),(3+1.5*cos(u))*sin(v),abs(1.5*sin(u))}");
 
 QVarLengthArray<double> f_profile2(double u, double v)
 {
@@ -303,13 +304,13 @@ void benchmarking()
 	jiteval_profile1();
 	eval_profile1();
 	
-	qDebug() << "==== PROFILE 2: VECTOR-VALUED FUNCTION ====";
+	qDebug() << "\n==== PROFILE 2: VECTOR-VALUED FUNCTION ====";
 	setupBenchmarking(profile2);
 	ceval_profile2();
 	jiteval_profile2();
 	eval_profile2();
 	
-	qDebug() << "==== PROFILE 3: REAL-VALUED FUNCTION WITH PIECEWISE ====";
+	qDebug() << "\n==== PROFILE 3: REAL-VALUED FUNCTION WITH PIECEWISE ====";
 	setupBenchmarking(profile3);
 	ceval_profile3();
 	jiteval_profile3();
