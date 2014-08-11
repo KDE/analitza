@@ -306,7 +306,7 @@ bool JITAnalyzer::calculateLambda(QVector< QVector<double> > &result)
 			
 			double arg1 = ((Cn*)(runStack().at(0)))->value();
 			double arg2 = ((Cn*)(runStack().at(1)))->value();
-			double arg3 = ((Cn*)(runStack().at(1)))->value();
+			double arg3 = ((Cn*)(runStack().at(2)))->value();
 			vret = FP(arg1, arg2, arg3);
 		}	break;
 		//TODO more args
@@ -427,7 +427,7 @@ bool JITAnalyzer::calculateScalarLambda(T& result)
 			
 			const double arg1 = ((Cn*)(runStack().at(0)))->value();
 			const double arg2 = ((Cn*)(runStack().at(1)))->value();
-			const double arg3 = ((Cn*)(runStack().at(1)))->value();
+			const double arg3 = ((Cn*)(runStack().at(2)))->value();
 			result = FP(arg1, arg2, arg3);
 			return true;
 		}	break;
@@ -470,7 +470,7 @@ bool JITAnalyzer::calculateVectorLambda(QVarLengthArray<T> &result)
 			
 			const double arg1 = ((Cn*)(runStack().at(0)))->value();
 			const double arg2 = ((Cn*)(runStack().at(1)))->value();
-			const double arg3 = ((Cn*)(runStack().at(1)))->value();
+			const double arg3 = ((Cn*)(runStack().at(2)))->value();
 			vret = FP(arg1, arg2, arg3);
 		}	break;
 		//TODO more args
