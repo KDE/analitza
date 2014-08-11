@@ -444,9 +444,11 @@ llvm::Value * compileUnaryReal(llvm::BasicBlock *currentBlock, Operator::Operato
 // 		case Operator::log:
 // 			     oper->setValue(log10(a));
 // 			break;
-// 		case Operator::abs:
-// 			     oper->setValue(a>=0. ? a : -a);
-// 			break;
+		case Operator::abs: {
+			//oper->setValue(a>=0. ? a : -a);
+			llvm::Function *absfnptr = llvm::Intrinsic::getDeclaration(currentBlock->getParent()->getParent(), llvm::Intrinsic::fabs, llvm::Type::getDoubleTy(llvmcontext));
+			ret = irbuilder.CreateCall(absfnptr, val);
+		}	break;
 // 		case Operator::floor:
 // 			     oper->setValue(floor(a));
 // 			break;

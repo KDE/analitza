@@ -23,11 +23,34 @@
 #include "analitza/value.h"
 #include "analitzajit/jitanalyzer.h"
 
+Q_DECLARE_METATYPE(QVarLengthArray<double>);
+
+QDebug operator<<(QDebug dbg, const QVarLengthArray<double> &a)
+{
+	dbg.nospace() << "(";
+	for (int i = 0; i < a.size()-1; ++i) {
+		dbg.nospace() << a.at(i) << ",";
+	}
+	dbg.nospace() << a.last() << ")";
+	return dbg.space();
+}
+
 QTEST_MAIN( AnalitzaJitTest )
 
 static inline bool epscompare(double a, double b)
 {
 	return a==b || std::abs(a-b)<std::abs(std::min(a,b))*std::numeric_limits<double>::epsilon();
+}
+
+static inline bool epscomparearray(QVarLengthArray<double> a, QVarLengthArray<double> b)
+{
+	bool ret = (a.size() == b.size());
+	
+	for (int i = 0; (i < a.size()) && ret; ++i) {
+		ret = epscompare(a.at(i), b.at(i));
+	}
+	
+	return ret;
 }
 
 static inline bool epscompare(QVector<double> a, QVector<double> b)
@@ -227,30 +250,32 @@ void AnalitzaJitTest::testCalculateUnaryRealVectorLambda_data()
 {
 	QTest::addColumn<QString>("expression");
 	QTest::addColumn<double>("arg1value");
-	QTest::addColumn< QVector<double> >("expected");
+	QTest::addColumn< QVarLengthArray<double> >("expected");
+	QTest::addColumn<int>("vectorSize");
 	
-	QTest::newRow("simple param") << "t->vector{t*t, 7*t}" << 5.0 << (QVector<double>() << 25.0 << 35.0);
-	QTest::newRow("3D param curv") << "t->vector{cos(t), sin(t), t}" << 0.0 << (QVector<double>() << 1.0 << 0.0 << 0.0);
-	QTest::newRow("simple vector sum") << "t->vector{t, t*t} + vector{-t*t, -t}" << 3.0 << (QVector<double>() << -6.0 << 6.0);
-	QTest::newRow("simple vector minus") << "t->vector{t, t*t} - vector{-t*t, -t}" << 3.0 << (QVector<double>() << 12.0 << 12.0);
-	QTest::newRow("scalar x vector") << "t->-0.5*vector{power(t,4), 9-t*t+cos(0)}" << 3.0 << (QVector<double>() << -40.5 << -0.5);
+	QTest::newRow("simple param") << "t->vector{t*t, 7*t}" << 5.0 << (QVarLengthArray<double>() << 25.0 << 35.0) << 2;
+	QTest::newRow("3D param curv") << "t->vector{cos(t), sin(t), t}" << 0.0 << (QVarLengthArray<double>() << 1.0 << 0.0 << 0.0) << 3;
+	QTest::newRow("simple vector sum") << "t->vector{t, t*t} + vector{-t*t, -t}" << 3.0 << (QVarLengthArray<double>() << -6.0 << 6.0) << 2;
+	QTest::newRow("simple vector minus") << "t->vector{t, t*t} - vector{-t*t, -t}" << 3.0 << (QVarLengthArray<double>() << 12.0 << 12.0)<< 2;
+	QTest::newRow("scalar x vector") << "t->-0.5*vector{power(t,4), 9-t*t+cos(0)}" << 3.0 << (QVarLengthArray<double>() << -40.5 << -0.5)<< 2;
 }
 
 void AnalitzaJitTest::testCalculateUnaryRealVectorLambda()
 {
 	QFETCH(QString, expression);
 	QFETCH(double, arg1value);
-	QFETCH( QVector<double> , expected );
+	QFETCH( QVarLengthArray<double> , expected );
+	QFETCH(int, vectorSize);
 	
 	arg1->setValue(arg1value);
 	
-	QVector<double> result;
+	QVarLengthArray<double> result(vectorSize);
 	
 	QVERIFY(a->setExpression(Analitza::Expression(expression)));
 	
 	QVERIFY(a->calculateLambda(result));
 	
-	bool eq = epscompare(result, expected);
+	bool eq = epscomparearray(result, expected);
 	
 	if (!eq) {
 		qDebug() << "Actual: " << result;
@@ -264,12 +289,13 @@ void AnalitzaJitTest::testCalculateBinaryRealVectorLambda_data()
 	QTest::addColumn<QString>("expression");
 	QTest::addColumn<double>("arg1value");
 	QTest::addColumn<double>("arg2value");
-	QTest::addColumn< QVector<double> >("expected");
+	QTest::addColumn< QVarLengthArray<double> >("expected");
+	QTest::addColumn<int>("vectorSize");
 	
-	QTest::newRow("two params") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 3.0 << (QVector<double>() << 10.0 << 4.0 << 21.0);
-	QTest::newRow("two params: cache 1") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 4.0 << (QVector<double>() << 11.0 << 3.0 << 28.0);
-	QTest::newRow("two params: cache 2") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 5.0 << (QVector<double>() << 12.0 << 2.0 << 35.0);
-	QTest::newRow("two params: cache 3") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 6.0 << (QVector<double>() << 13.0 << 1.0 << 42.0);
+	QTest::newRow("two params") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 3.0 << (QVarLengthArray<double>() << 10.0 << 4.0 << 21.0) << 3;
+	QTest::newRow("two params: cache 1") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 4.0 << (QVarLengthArray<double>() << 11.0 << 3.0 << 28.0) << 3;
+	QTest::newRow("two params: cache 2") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 5.0 << (QVarLengthArray<double>() << 12.0 << 2.0 << 35.0) << 3;
+	QTest::newRow("two params: cache 3") << "(u,v)->vector{u+v, u-v, u*v}" << 7.0 << 6.0 << (QVarLengthArray<double>() << 13.0 << 1.0 << 42.0) << 3;
 }
 
 void AnalitzaJitTest::testCalculateBinaryRealVectorLambda()
@@ -277,18 +303,19 @@ void AnalitzaJitTest::testCalculateBinaryRealVectorLambda()
 	QFETCH(QString, expression);
 	QFETCH(double, arg1value);
 	QFETCH(double, arg2value);
-	QFETCH( QVector<double> , expected );
+	QFETCH( QVarLengthArray<double> , expected );
+	QFETCH(int, vectorSize);
 	
 	arg1->setValue(arg1value);
 	arg2->setValue(arg2value);
 	
-	QVector<double> result;
+	QVarLengthArray<double> result(vectorSize);
 	
 	QVERIFY(a->setExpression(Analitza::Expression(expression)));
 	
 	QVERIFY(a->calculateLambda(result));
 	
-	bool eq = epscompare(result, expected);
+	bool eq = epscomparearray(result, expected);
 	
 	if (!eq) {
 		qDebug() << "Actual: " << result;

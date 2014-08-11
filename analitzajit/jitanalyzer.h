@@ -132,8 +132,9 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		bool calculateLambda(double &result);
 		
 		/** Convenience method used when the @p result expression is a vector. */
-		bool calculateLambda(QVector<double> &result);
+		bool calculateLambda(QVarLengthArray<double> &result);
 		
+		//TODO use QVarLengthArray instead ... this for speed reasons
 		/** Convenience method used when the @p result expression is a matrix. */
 		bool calculateLambda(QVector< QVector<double> > &result);
 		
@@ -148,6 +149,9 @@ class ANALITZAJIT_EXPORT JITAnalyzer : public Analitza::Analyzer
 		
 		template<typename T>
 		bool calculateScalarLambda(T &result);
+		
+		template<typename T>
+		bool calculateVectorLambda(QVarLengthArray<T> &result);
 };
 
 }
