@@ -18,21 +18,9 @@
 
 #include "expressioncompiler.h"
 
-#include <llvm/Analysis/CallGraph.h>
-#include <llvm/Analysis/Passes.h>
 #include <llvm/IR/Verifier.h>
-#include <llvm/Bitcode/ReaderWriter.h>
-#include <llvm/ExecutionEngine/ExecutionEngine.h>
-#include <llvm/ExecutionEngine/JIT.h>
-#include <llvm/PassManager.h>
-#include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/IRBuilder.h>
-#include <llvm/Support/raw_os_ostream.h>
-#include <llvm/Support/TargetSelect.h>
-#include <llvm/IR/DataLayout.h>
-#include <llvm/Transforms/IPO.h>
-#include <llvm/Transforms/Scalar.h>
 
 #include "analitza/value.h"
 #include "analitza/matrix.h"
@@ -48,21 +36,41 @@
 Q_DECLARE_METATYPE(llvm::Value*);
 
 //TODO better names
+//TODO use JITAnalyzer context
 static llvm::IRBuilder<> buildr(llvm::getGlobalContext());
 static std::map<QString, llvm::Value*> NamedValues;
 
 using namespace Analitza;
 
-ExpressionCompiler::ExpressionCompiler(llvm::Module* module, Variables* vars)
-	: m_module(module)
-	, m_vars(vars)
-{
+//BEGIN ExpressionCompilerPrivate
 
+class ExpressionCompiler::ExpressionCompilerPrivate
+{
+public:
+	ExpressionCompilerPrivate(llvm::Module *module, Variables* v)
+		: m_module(module)
+		, m_vars(v)
+	{
+		//TODO add vars to static std::map<QString, llvm::Value*> NamedValues;
+	}
+	
+	QMap<QString, llvm::Type*> m_bvartypes;
+	llvm::Module *m_module;
+	llvm::Type* m_rettype; //used after the user call compileExpression
+	Analitza::Variables *m_vars;
+	Analitza::ExpressionType m_retexptype; //used after the user call compileExpression
+	QStringList m_errors;
+};
+
+//END ExpressionCompilerPrivate
+
+ExpressionCompiler::ExpressionCompiler(llvm::Module* module, Variables* v)
+	: d(new ExpressionCompilerPrivate(module, v))
+{
 }
 
 ExpressionCompiler::~ExpressionCompiler()
 {
-
 }
 
 llvm::Value *ExpressionCompiler::compileExpression(Object* expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
@@ -74,13 +82,13 @@ llvm::Value *ExpressionCompiler::compileExpression(Object* expression, const QMa
 
 llvm::Value *ExpressionCompiler::compileExpression(const Analitza::Expression& expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
 {
-	m_bvartypes = TypeCompiler::compileTypes(bvartypes);
+	d->m_bvartypes = TypeCompiler::compileTypes(bvartypes);
 	
 	if (expression.isLambda()) {
-		ExpressionTypeChecker check(m_vars);
+		ExpressionTypeChecker check(d->m_vars);
 		check.initializeVars(bvartypes);
 		
-		m_retexptype = check.check(expression.lambdaBody());
+		d->m_retexptype = check.check(expression.lambdaBody());
 		//TODO check if m_retexptype (return type) has error ret.Errors
 // 		qDebug() << "FUNT RET TYPE "<< rett.toString();
 		
@@ -88,12 +96,27 @@ llvm::Value *ExpressionCompiler::compileExpression(const Analitza::Expression& e
 		// type, so we set to true the param TypeCompiler::compileType::containerAsPointer
 		// this is because C++ functions doesn't return a vector, matrix, etc but 
 		// it returns pointers to contained type instead
-		m_rettype = TypeCompiler::compileType(m_retexptype, true);
+		d->m_rettype = TypeCompiler::compileType(d->m_retexptype, true);
 		
 // 		qDebug() << "return expression type" << m_retexptype.toString();
 	}
 	
 	return expression.tree()->accept(this).value<llvm::Value*>();
+}
+
+Analitza::ExpressionType ExpressionCompiler::compiledType() const
+{
+	return d->m_retexptype;
+}
+
+llvm::Module *ExpressionCompiler::module() const
+{
+	return d->m_module;
+}
+
+Analitza::Variables *ExpressionCompiler::variables() const
+{
+	return d->m_vars;
 }
 
 QVariant ExpressionCompiler::visit(const Analitza::Ci* var)
@@ -382,7 +405,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 		case Analitza::Container::lambda: {
 			const QStringList bvars = c->bvarStrings();
 			
-			std::vector<llvm::Type*> tparams = m_bvartypes.values().toVector().toStdVector();
+			std::vector<llvm::Type*> tparams = d->m_bvartypes.values().toVector().toStdVector();
 			
 // 			tparams.at(0)->dump();
 // 			tparams.at(1)->dump();
@@ -393,9 +416,9 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			//END
 			
 			//TODO we need the return type
-			llvm::FunctionType *FT = llvm::FunctionType::get(m_rettype, tparams, false);
+			llvm::FunctionType *FT = llvm::FunctionType::get(d->m_rettype, tparams, false);
 			
-			llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "mylam", m_module);//TODO count how many lambdas we have generated i.e mylam0, mylam1 ...
+			llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, "mylam", d->m_module);
 			
 			//TODO better code
 			int Idx = 0;
@@ -416,7 +439,7 @@ QVariant ExpressionCompiler::visit(const Analitza::Container* c)
 			// of scalar type this since C++ does not return arrays directally, 
 			//it returns pointers to the scalar type, BEFORE do this we need to allocate 
 			//memory for the container
-			switch (m_retexptype.type()) {
+			switch (d->m_retexptype.type()) {
 				case ExpressionType::Vector:
 				case ExpressionType::Matrix: {
 						//TODO support more scalars, not only reals

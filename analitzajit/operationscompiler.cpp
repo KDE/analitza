@@ -33,6 +33,7 @@
 #include <llvm/IR/IntrinsicInst.h>
 #include <llvm/IR/IRBuilder.h>
 
+//TODO use JITAnalyzer context
 static llvm::LLVMContext &llvmcontext = llvm::getGlobalContext();
 static llvm::IRBuilder<> irbuilder(llvmcontext);
 

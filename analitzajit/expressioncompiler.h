@@ -46,7 +46,7 @@ class Expression;
 class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 {
 	public:
-		ExpressionCompiler(llvm::Module *module, Analitza::Variables* vars = 0);
+		ExpressionCompiler(llvm::Module *module, Variables* v = 0);
 		virtual ~ExpressionCompiler();
 		
 		/** 
@@ -65,10 +65,10 @@ class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 		 * This method can be used only after compileExpression has been called.
 		 * @returns Returns the last expression type that was successfully compiled.
 		 */
-		Analitza::ExpressionType compiledType() const { return m_retexptype; }
+		Analitza::ExpressionType compiledType() const;
 		
-		llvm::Module *module() const { return m_module; }
-		Analitza::Variables *variables() const { return m_vars; }
+		llvm::Module *module() const;
+		Analitza::Variables *variables() const;
 		
 	private:
 		virtual QVariant visit(const Analitza::None* var);
@@ -85,14 +85,8 @@ class ExpressionCompiler : public Analitza::AbstractExpressionVisitor
 		virtual QVariant result() const { return QVariant(); }
 		
 	private:
-		//TODO pimpl idiom here too
-		
-		Analitza::Variables *m_vars;
-		//TODO manage error messages that comes from llvm
-		QMap<QString, llvm::Type*> m_bvartypes;
-		llvm::Module *m_module;
-		llvm::Type* m_rettype; //used after the user call compileExpression
-		Analitza::ExpressionType m_retexptype; //used after the user call compileExpression
+		class ExpressionCompilerPrivate;
+		ExpressionCompilerPrivate* const d;
 };
 
 }

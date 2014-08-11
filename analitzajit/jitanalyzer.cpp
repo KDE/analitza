@@ -20,27 +20,19 @@
 
 #include "typecompiler.h"
 #include "expressioncompiler.h"
+#include "expressiontypechecker.h"
 #include "value.h"
-#include <expressiontypechecker.h>
 
-#include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
-#include <llvm/IR/Verifier.h>
-#include <llvm/Bitcode/ReaderWriter.h>
-#include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
 #include <llvm/PassManager.h>
-#include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/IRBuilder.h>
-#include <llvm/Support/raw_os_ostream.h>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/IR/DataLayout.h>
 #include <llvm/Transforms/IPO.h>
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/Target/TargetJITInfo.h>
-
-Q_DECLARE_METATYPE(llvm::Value*);
 
 using namespace Analitza;
 
@@ -194,13 +186,12 @@ llvm::LLVMContext* JITAnalyzer::context() const
 
 bool JITAnalyzer::setExpression(const Expression& expression, const QMap< QString, Analitza::ExpressionType >& bvartypes)
 {
-	//TODO better code
 	Analyzer::setExpression(expression);
 	
 	if (isCorrect()) {
 // 		d->m_currentCacheKey.clear();
 	} else {
-		qDebug() << "ERRORS" << errors();
+		//TODO make Analyzer::M_erros protected so I ca add errors qDebug() << "ERRORS" << errors();
 		return false;
 	}
 	
@@ -214,9 +205,6 @@ bool JITAnalyzer::setExpression(const Expression& expression, const QMap< QStrin
 			
 			return true;
 		} else {
-			//TODO find better way to save/store IR functions
-	// 		qDebug() << "fluuuu" << bvartypes.keys();
-			
 			ExpressionCompiler v(d->m_module, variables());
 			
 			//cache
@@ -244,7 +232,6 @@ bool JITAnalyzer::setExpression(const Expression& expression, const QMap< QStrin
 
 bool JITAnalyzer::setExpression(const Expression& expression)
 {
-	//TODO check if exp is lambda
 	QMap<QString, Analitza::ExpressionType> bvartypes;
 	
 	if (expression.isLambda()) {
