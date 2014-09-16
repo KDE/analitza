@@ -37,9 +37,9 @@ set_package_properties(Curses PROPERTIES TYPE OPTIONAL
                                          URL "http://www.gnu.org/software/ncurses/")
 find_package(OpenGL)
 set(HAVE_OPENGL ${OPENGL_FOUND})
-# macro_log_feature(OPENGL_FOUND "OpenGL" "Support for 3D graphs in Analitza" "http://opengl.org" FALSE "" "")
-
-#add_definitions (-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
+set_package_properties(OpenGL PROPERTIES TYPE OPTIONAL
+                                         PURPOSE "Support for 3D graphs in Analitza"
+                                         URL "http://opengl.org")
 
 find_package(Eigen3) # find and setup Eigen3 if available
 set(HAVE_EIGEN3 ${EIGEN3_FOUND})
@@ -64,8 +64,6 @@ if(READLINE_FOUND AND CURSES_FOUND)
 	add_subdirectory(calgebra)
 endif()
 
-# macro_display_feature_log()
-
 set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Analitza")
 ecm_configure_package_config_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/AnalitzaConfig.cmake.in"
@@ -89,3 +87,5 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h
   DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel
 )
+
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
