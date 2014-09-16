@@ -151,8 +151,12 @@ int main(int argc, char *argv[])
 	
 	for(int i=0; i<history_get_history_state()->length; i++) {
 		HIST_ENTRY *he = remove_history(i);
-// 		free(he->line);
+#ifdef HAVE_FREE_HISTORY_ENTRY
 		free_history_entry(he);
+#else
+		free(he->line);
+		free(he);
+#endif
 	}
 	qDebug("\nExit.");
 	return 0;

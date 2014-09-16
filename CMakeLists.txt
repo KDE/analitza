@@ -6,6 +6,8 @@ find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+#Checking whether we can compile calgebra
+
 set(QT_REQUIRED_VERSION 5.2)
 find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg OpenGL Test Qml Quick)
 
@@ -17,17 +19,22 @@ include(KDEInstallDirs)
 include(KDEFrameworkCompilerSettings)
 include(KDECMakeSettings)
 include(GenerateExportHeader)
+include(CheckIncludeFiles)
 
 ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfigVersion.cmake")
 
-# Checking whether we can compile calgebra
-# include(CheckIncludeFiles)
-# macro_optional_find_package(Readline)
-# macro_bool_to_01(READLINE_FOUND HAVE_READLINE)
-# macro_log_feature(READLINE_FOUND "GNU Readline" "Allows KAlgebra to provide a console interface." "http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html" FALSE "" "")
-# 
+set(CURSES_NEED_NCURSES TRUE)
+find_package(Curses)
+find_package(Readline)
+
+set_package_properties(Readline PROPERTIES TYPE OPTIONAL
+                                           PURPOSE "Allows KAlgebra to provide a console interface."
+                                           URL "http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html")
+set_package_properties(Curses PROPERTIES TYPE OPTIONAL
+                                         PURPOSE "Allows KAlgebra to provide a console interface."
+                                         URL "http://www.gnu.org/software/ncurses/")
 find_package(OpenGL)
 set(HAVE_OPENGL ${OPENGL_FOUND})
 # macro_log_feature(OPENGL_FOUND "OpenGL" "Support for 3D graphs in Analitza" "http://opengl.org" FALSE "" "")
@@ -52,9 +59,10 @@ add_subdirectory(analitzaplot)
 add_subdirectory(analitzagui)
 add_subdirectory(analitzawidgets)
 add_subdirectory(declarative)
-if(HAVE_READLINE)
+
+if(READLINE_FOUND AND CURSES_FOUND)
 	add_subdirectory(calgebra)
-endif(HAVE_READLINE)
+endif()
 
 # macro_display_feature_log()
 

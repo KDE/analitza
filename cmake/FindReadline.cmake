@@ -2,9 +2,7 @@
 if(READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
 	set(READLINE_FOUND TRUE)
 else(READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
-	FIND_PATH(READLINE_INCLUDE_DIR readline/readline.h
-		/usr/include/readline
-	)
+	FIND_PATH(READLINE_INCLUDE_DIR readline/readline.h)
 	
 	FIND_LIBRARY(READLINE_LIBRARY NAMES readline)
         include(FindPackageHandleStandardArgs)
