@@ -20,6 +20,7 @@ include(KDEFrameworkCompilerSettings)
 include(KDECMakeSettings)
 include(GenerateExportHeader)
 include(CheckIncludeFiles)
+include(CheckLibraryExists) #FindCurses seems to need that on the CI
 
 ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
