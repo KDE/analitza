@@ -800,6 +800,7 @@ void AnalitzaTest::testCrash_data()
 	QTest::newRow("wrong func") << "xsin(x)";
 	QTest::newRow("scalarprod") << "scalarproduct(vector{0}, vector{x,0})";
 	QTest::newRow("power") << "list{}**2";
+	QTest::newRow("unary-nested-error") << "-(2/0)";
 }
 
 void AnalitzaTest::testCrash()

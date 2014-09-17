@@ -752,6 +752,11 @@ Object* Analyzer::operate(const Apply* c)
 				for(; !stop && it!=itEnd; ++it) {
 					bool isValue = (*it)->type()==Object::value;
 					Object* v = isValue ? *it : calc(*it);
+					if(Q_UNLIKELY(v->isNone())) {
+						Q_ASSERT(!isValue);
+						ret = v;
+						break;
+					}
 					ret=Operations::reduce(opt, ret, v, &error);
 					if(!isValue)
 						delete v;
@@ -766,10 +771,13 @@ Object* Analyzer::operate(const Apply* c)
 					stop=isNull(opt, ret);
 				}
 			} else {
-				ret=Operations::reduceUnary(opt, calc(*c->firstValue()), &error);
-				if(Q_UNLIKELY(error)) {
-					m_err.append(*error);
-					delete error;
+				ret = calc(*c->firstValue());
+				if(Q_LIKELY(!ret->isNone())) {
+					ret=Operations::reduceUnary(opt, ret, &error);
+					if(Q_UNLIKELY(error)) {
+						m_err.append(*error);
+						delete error;
+					}
 				}
 			}
 		}	break;

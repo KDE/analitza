@@ -65,6 +65,9 @@ public:
 	/** Returns whether it is a container or not. */
 	bool isContainer() const { return m_type==container; }
 	
+	/** Returns whether it is a none object. Useful for checking for errors */
+	bool isNone() const { return m_type==none; }
+
 	/** Returns the string representation of the object. */
 	QString toString() const;
 	
