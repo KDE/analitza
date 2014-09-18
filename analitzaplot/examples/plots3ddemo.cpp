@@ -49,6 +49,8 @@ int main(int argc, char *argv[])
 	QCommandLineParser parser;
 	parser.setApplicationDescription("PlotView3DTest");
 	parser.addOption(QCommandLineOption("all-disabled", app.tr("marks all the plots as not visible")));
+	parser.addOption(QCommandLineOption("simple-rotation", app.tr("doesn't let you rotate the Z axis")));
+	parser.addHelpOption();
 	parser.process(app);
 
     QMainWindow *mainWindow = new QMainWindow();
