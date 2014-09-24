@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
 #ifdef HAVE_FREE_HISTORY_ENTRY
 		free_history_entry(he);
 #else
-		free(he->line);
+		free((void*)he->line);
 		free(he);
 #endif
 	}
