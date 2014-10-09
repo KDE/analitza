@@ -35,23 +35,13 @@ using namespace Analitza;
 
 int main(int argc, char *argv[])
 {
-//     KAboutData aboutData("PlotView3DTest",
-//                          0,
-//                          ki18n("PlotView3DTest"),
-//                          "1.0",
-//                          ki18n("PlotView3DTest"),
-//                          KAboutData::License_LGPL_V3,
-//                          ki18n("(c) 2012 Percy Camilo T. Aucahuasi"),
-//                          ki18n("PlotView3DTest"),
-//                          "http://www.kde.org");
-
-	QApplication app(argc, argv);
-	QCommandLineParser parser;
-	parser.setApplicationDescription("PlotView3DTest");
-	parser.addOption(QCommandLineOption("all-disabled", app.tr("marks all the plots as not visible")));
-	parser.addOption(QCommandLineOption("simple-rotation", app.tr("doesn't let you rotate the Z axis")));
-	parser.addHelpOption();
-	parser.process(app);
+    QApplication app(argc, argv);
+    QCommandLineParser parser;
+    parser.setApplicationDescription("PlotView3DTest");
+    parser.addOption(QCommandLineOption("all-disabled", app.tr("marks all the plots as not visible")));
+    parser.addOption(QCommandLineOption("simple-rotation", app.tr("doesn't let you rotate the Z axis")));
+    parser.addHelpOption();
+    parser.process(app);
 
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setMinimumSize(640, 480);

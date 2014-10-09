@@ -554,7 +554,7 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
 				}
 				
 				if(error) {
-// 					addError(i18n("Cannot call '%1'", c->m_params.first()->toString()));
+					addError(QCoreApplication::translate("type error message", "Cannot call '%1'").arg(c->m_params.first()->toString()));
 					current=ExpressionType(ExpressionType::Error);
 				} else
 					current=ret2;

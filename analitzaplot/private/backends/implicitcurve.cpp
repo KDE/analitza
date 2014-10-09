@@ -95,10 +95,10 @@ void FunctionImplicit::update(const QRectF& vp)
         jumps.append(points.size());
     }
 
-    if (points.size() <= 2) // y aunque/PESE a que el viewport se corta con el dominio
-    {
-//         appendError(i18nc("This function can't be represented as a curve. To draw implicit curve, the function has to satisfy the implicit function theorem.", "Implicit function undefined in the plane"));
-    }
+//     if (points.size() <= 2) // y aunque/PESE a que el viewport se corta con el dominio
+//     {
+//         appendError(QCoreApplication::translate("This function can't be represented as a curve. To draw implicit curve, the function has to satisfy the implicit function theorem.", "Implicit function undefined in the plane"));
+//     }
 }
 
 //Own

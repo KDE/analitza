@@ -107,7 +107,7 @@ void ImplicitPolar::update(const QRectF& vp)
     //TODO
 //     if (points.size() <= 2) // y aunque/PESE a que el viewport se corta con el dominio
 //     {
-//         appendError(i18nc("This function can't be represented as a curve. To draw implicit curve, the function has to satisfy the implicit function theorem.", "Implicit function undefined in the plane"));
+//         appendError(QCoreApplication::translate("This function can't be represented as a curve. To draw implicit curve, the function has to satisfy the implicit function theorem.", "Implicit function undefined in the plane"));
 //     }
 }
 
@@ -116,7 +116,7 @@ QPair<QPointF, QString> ImplicitPolar::image(const QPointF &p)
     QPointF dp=p;
     QString pos;
 //     if(p==QPointF(0., 0.))
-//         return QPair<QPointF, QString>(dp, i18n("center"));
+//         return QPair<QPointF, QString>(dp, QCoreApplication::translate("", "center"));
 //     double th=atan(p.y()/ p.x()), r=1., d, d2;
 //     if(p.x()<0.)    th += pi;
 //     else if(th<0.)  th += 2.*pi;
@@ -162,7 +162,7 @@ QPair<QPointF, QString> ImplicitPolar::image(const QPointF &p)
 //     Analitza::Expression res=analyzer->calculateLambda();
 //     
 //     if(!res.isReal())
-//        appendError(i18n("We can only draw Real results."));
+//        appendError(QCoreApplication::translate("", "We can only draw Real results."));
 //     r = res.toReal().value();
 //     
 //     

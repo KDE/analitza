@@ -106,7 +106,7 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
     QPointF dp=p;
     QString pos;
 //     if(p==QPointF(0., 0.))
-//         return QPair<QPointF, QString>(dp, i18n("center"));
+//         return QPair<QPointF, QString>(dp, QCoreApplication::translate("", "center"));
 //     double th=atan(p.y()/ p.x()), r=1., d, d2;
 //     if(p.x()<0.)    th += pi;
 //     else if(th<0.)  th += 2.*pi;
@@ -152,7 +152,7 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
 //     Analitza::Expression res=analyzer->calculateLambda();
 //     
 //     if(!res.isReal())
-//        appendError(i18n("We can only draw Real results."));
+//        appendError(QCoreApplication::translate("", "We can only draw Real results."));
 //     r = res.toReal().value();
 //     
 //     
