@@ -10,9 +10,9 @@ extractplots [OPTIONS] FILENAMES...
 
 This script extract descriptions from Analitza plots and
 writes on standard output (usually redirected to rc.cpp) the equivalent
-i18n() calls so that xgettext can parse them.
+tr() calls so that xgettext can parse them.
 
---context=name    : Give i18n calls a context name: i18nc("name", ...)
+--context=name    : Give tr() calls a context name: tr(text, "name")
 --help|?          : Display this summary
 
 EOF
@@ -37,7 +37,7 @@ sub escape_to_c($) {
 
 ###########################################################################################
 
-GetOptions ("context=s"   => \my $opt_context,       # I18N context
+GetOptions ("context=s"   => \my $opt_context,       # tr() context
             "help|?"      => \&usage );
 
 unless (@ARGV)
@@ -57,9 +57,9 @@ sub out_message {
         $text = escape_to_c($text);
         if (defined $ctxt) {
             $ctxt = escape_to_c($ctxt);
-            print qq|i18nc("$ctxt", "$text");\n|;
+            print qq|QObject::tr("$text", "$ctxt");\n|;
         } else {
-            print qq|i18n("$text");\n|;
+            print qq|QObject::tr("$text");\n|;
         }
     }
 }
