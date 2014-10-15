@@ -271,7 +271,7 @@ Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<doubl
 			break;
 		case Operator::root:
 			if(b.real()!=2.0 && b.imag()==0)
-				*correct = new QString(QCoreApplication::tr("Only square root implemented for complex numbe"));
+				*correct = new QString(QCoreApplication::tr("Only square root implemented for complex numbers"));
 			else
 				oper->setValue(sqrt(a));
 			break;
