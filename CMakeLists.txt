@@ -21,6 +21,7 @@ include(KDECMakeSettings)
 include(GenerateExportHeader)
 include(CheckIncludeFiles)
 include(CheckLibraryExists) #FindCurses seems to need that on the CI
+include(ECMPoQmTools)
 
 ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
@@ -60,6 +61,10 @@ add_subdirectory(analitzaplot)
 add_subdirectory(analitzagui)
 add_subdirectory(analitzawidgets)
 add_subdirectory(declarative)
+
+if (IS_DIRECTORY "${CMAKE_SOURCE_DIR}/po")
+    ecm_install_po_files_as_qm(po)
+endif()
 
 if(READLINE_FOUND AND CURSES_FOUND)
 	add_subdirectory(calgebra)

@@ -3,6 +3,8 @@ project(AnalitzaCore)
 add_subdirectory(tests)
 
 set(analitza_SRCS
+    ${analitza_QM_LOADER}
+
     expressionstream.cpp
 	polynomial.cpp
 	importqobjectmetatype.cpp
