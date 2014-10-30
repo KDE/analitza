@@ -27,16 +27,6 @@ ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfigVersion.cmake")
 
-set(CURSES_NEED_NCURSES TRUE)
-find_package(Curses)
-find_package(Readline)
-
-set_package_properties(Readline PROPERTIES TYPE OPTIONAL
-                                           PURPOSE "Allows KAlgebra to provide a console interface."
-                                           URL "http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html")
-set_package_properties(Curses PROPERTIES TYPE OPTIONAL
-                                         PURPOSE "Allows KAlgebra to provide a console interface."
-                                         URL "http://www.gnu.org/software/ncurses/")
 find_package(OpenGL)
 set(HAVE_OPENGL ${OPENGL_FOUND})
 set_package_properties(OpenGL PROPERTIES TYPE OPTIONAL
@@ -64,10 +54,6 @@ add_subdirectory(declarative)
 
 if (IS_DIRECTORY "${CMAKE_SOURCE_DIR}/po")
     ecm_install_po_files_as_qm(po)
-endif()
-
-if(READLINE_FOUND AND CURSES_FOUND)
-	add_subdirectory(calgebra)
 endif()
 
 set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Analitza")
