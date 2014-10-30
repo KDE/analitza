@@ -98,12 +98,12 @@ install(FILES
     plottingenums.h
     plotsfactory.h
 
-    DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
+    DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
 )
 
 if(HAVE_OPENGL)
     install(FILES
-        plotter3d.h DESTINATION ${INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
+        plotter3d.h DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
 endif(HAVE_OPENGL)
 
 add_subdirectory(data)

@@ -24,5 +24,5 @@ install(FILES
 	operatorsmodel.h
 	variablesmodel.h
 
-    DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
+    DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
 )

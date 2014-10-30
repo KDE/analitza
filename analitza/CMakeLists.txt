@@ -56,7 +56,7 @@ endif()
 
 add_library(Analitza ${analitza_SRCS})
 target_link_libraries(Analitza Qt5::Core Qt5::Xml)
-target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>")
+target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${ANALITZA_INCLUDE_INSTALL_DIR}>")
 
 set_target_properties(Analitza PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
@@ -87,5 +87,5 @@ install(FILES
 	builtinmethods.h
 	importqobjectmetatype.h
 	expressionstream.h
-	DESTINATION ${INCLUDE_INSTALL_DIR}/analitza/ COMPONENT Devel)
+	DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitza/ COMPONENT Devel)
 	

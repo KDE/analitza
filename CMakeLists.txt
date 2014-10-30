@@ -23,6 +23,8 @@ include(CheckIncludeFiles)
 include(CheckLibraryExists) #FindCurses seems to need that on the CI
 include(ECMPoQmTools)
 
+set(ANALITZA_INCLUDE_INSTALL_DIR "${INCLUDE_INSTALL_DIR}/Analitza")
+
 ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfigVersion.cmake")
@@ -77,7 +79,7 @@ install(EXPORT AnalitzaTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE Ana
 
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h
-  DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel
+  DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR} COMPONENT Devel
 )
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

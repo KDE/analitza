@@ -32,13 +32,13 @@ install(FILES
     plotsview2d.h
     expressionedit.h
 
-    DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
+    DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
 )
 
 if(HAVE_OPENGL)
     install(FILES
         plotsview3d.h
 
-        DESTINATION ${INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
+        DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
     )
 endif(HAVE_OPENGL)
