@@ -21,6 +21,7 @@
 
 #include <analitza/expression.h>
 #include <substituteexpression.h>
+#include <QSharedPointer>
 
 QTEST_MAIN( MatchingTest )
 
