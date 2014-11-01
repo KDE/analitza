@@ -101,4 +101,4 @@ void OperatorsModelTest::testExamples()
 	QVERIFY(!a.expression().toMathMLPresentation().isEmpty());
 }
 
-#include "operatorsmodeltest.moc"
+

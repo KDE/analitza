@@ -128,4 +128,4 @@ void VariablesModel::insertVariable(const QString& name, const Expression& value
 	endResetModel();
 }
 
-#include "variablesmodel.moc"
+

@@ -240,4 +240,4 @@ void ExpTest::testCorrection()
 	QCOMPARE(parser.error().isEmpty(), correct);
 }
 
-#include "exptest.moc"
+

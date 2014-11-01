@@ -224,4 +224,4 @@ void ExpressionTest::testUncorrection()
 	QVERIFY(!e->error().contains(QString()));
 }
 
-#include "expressiontest.moc"
+

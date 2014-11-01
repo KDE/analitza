@@ -480,4 +480,4 @@ bool ExpressionEdit::isCorrect() const
 	return m_correct && Analitza::Expression::isCompleteExpression(toPlainText());
 }
 
-#include "expressionedit.moc"
+

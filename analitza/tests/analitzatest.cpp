@@ -946,4 +946,4 @@ void AnalitzaTest::testOperators()
 	}
 }
 
-#include "analitzatest.moc"
+

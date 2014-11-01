@@ -138,4 +138,4 @@ void SpaceCurveTest::testIncorrect()
 //     delete m_vars->take("b");
 // }
 
-#include "spacecurvetest.moc"
+

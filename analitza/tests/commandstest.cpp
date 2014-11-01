@@ -552,4 +552,4 @@ void CommandsTest::testIncorrect()
 	}
 }
 
-#include "commandstest.moc"
+

@@ -186,4 +186,4 @@ void PlaneCurveTest::testParamIntervals()
     delete m_vars->take("b");
 }
 
-#include "planecurvetest.moc"
+

@@ -356,4 +356,4 @@ void MathMLPresentationTest::testToPresentation()
 	QCOMPARE(mmlcnt, parser.mathML());
 }
 
-#include "mathmlpresentationtest.moc"
+

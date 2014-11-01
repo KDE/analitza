@@ -132,4 +132,4 @@ void SurfaceTest::testIncorrect()
 //     delete m_vars->take("b");
 // }
 
-#include "surfacetest.moc"
+
