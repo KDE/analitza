@@ -22,7 +22,7 @@ include(GenerateExportHeader)
 include(CheckIncludeFiles)
 include(CheckLibraryExists) #FindCurses seems to need that on the CI
 include(ECMPoQmTools)
-
+ecm_create_qm_loader(analitza_QM_LOADER analitza_qt)
 set(ANALITZA_INCLUDE_INSTALL_DIR "${INCLUDE_INSTALL_DIR}/Analitza")
 
 ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
