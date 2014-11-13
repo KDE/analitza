@@ -25,7 +25,7 @@ include(ECMPoQmTools)
 ecm_create_qm_loader(analitza_QM_LOADER analitza_qt)
 set(ANALITZA_INCLUDE_INSTALL_DIR "${INCLUDE_INSTALL_DIR}/Analitza")
 
-ecm_setup_version(6.0.0 VARIABLE_PREFIX ANALITZA
+ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfigVersion.cmake")
 
