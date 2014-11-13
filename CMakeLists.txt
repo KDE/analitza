@@ -23,11 +23,11 @@ include(CheckIncludeFiles)
 include(CheckLibraryExists) #FindCurses seems to need that on the CI
 include(ECMPoQmTools)
 ecm_create_qm_loader(analitza_QM_LOADER analitza_qt)
-set(ANALITZA_INCLUDE_INSTALL_DIR "${INCLUDE_INSTALL_DIR}/Analitza")
+set(ANALITZA_INCLUDE_INSTALL_DIR "${INCLUDE_INSTALL_DIR}/Analitza5")
 
 ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
-                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfigVersion.cmake")
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/Analitza5ConfigVersion.cmake")
 
 find_package(OpenGL)
 set(HAVE_OPENGL ${OPENGL_FOUND})
@@ -58,10 +58,10 @@ if (IS_DIRECTORY "${CMAKE_SOURCE_DIR}/po")
     ecm_install_po_files_as_qm(po)
 endif()
 
-set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Analitza")
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Analitza5")
 ecm_configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/AnalitzaConfig.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake"
+  "${CMAKE_CURRENT_SOURCE_DIR}/Analitza5Config.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/Analitza5Config.cmake"
   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
   PATH_VARS  INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX
 )
@@ -69,13 +69,13 @@ ecm_configure_package_config_file(
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config-analitza.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-analitza.h)
 
 install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfig.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/AnalitzaConfigVersion.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/Analitza5Config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/Analitza5ConfigVersion.cmake"
   DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
   COMPONENT Devel
 )
 
-install(EXPORT AnalitzaTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE AnalitzaTargets.cmake NAMESPACE KF5:: )
+install(EXPORT AnalitzaTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}" FILE Analitza5Targets.cmake NAMESPACE KF5:: )
 
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h
