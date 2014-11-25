@@ -374,7 +374,7 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
                 break;
             case Trigonometric:
             {
-                s = (i < 0) ? "-" : "";
+                s = (i < 0) ? QString(QLatin1Char('-')) : QString();
                 
                 if (incbig)
                     s += computeAngleLabelByStep(qAbs(i), bigstep);
