@@ -19,6 +19,8 @@
 #include "graph2dmobile.h"
 #include <QPainter>
 #include <QEvent>
+#include <QSGSimpleTextureNode>
+#include <qquickwindow.h>
 #include <analitza/variables.h>
 #include <analitzaplot/planecurve.h>
 #include <analitzaplot/plotsmodel.h>
@@ -27,24 +29,29 @@
 using namespace Analitza;
 
 Graph2DMobile::Graph2DMobile(QQuickItem* parent)
-	: QQuickPaintedItem(parent), Plotter2D(boundingRect().size())
+	: QQuickItem(parent), Plotter2D(boundingRect().size())
 	, m_dirty(true), m_currentFunction(-1)
 {
 	setSize(QSizeF(100,100));
 	
 	defViewport = QRectF(QPointF(-12., 10.), QSizeF(24., -20.));
 	resetViewport();
+	setFlags(QQuickItem::ItemHasContents);
 }
 
-void Graph2DMobile::paint(QPainter* p)
+void Graph2DMobile::paint()
 {
+	if (!m_dirty)
+		return;
+
 // 	qDebug() << "hellooo" << boundingRect();
-	if(boundingRect().size().isEmpty())
+	QSize bounding = boundingRect().size().toSize();
+	if(bounding.isEmpty())
 		return;
 	
-	if(m_buffer.size()!=boundingRect().size()) {
-		m_buffer = QImage(boundingRect().size().toSize(), QImage::Format_ARGB32);
-		setPaintedSize(boundingRect().size().toSize());
+	if(m_buffer.size()!=bounding) {
+		m_buffer = QImage(bounding, QImage::Format_ARGB32);
+		setPaintedSize(bounding);
 	}
 	
 	Q_ASSERT(!m_buffer.isNull());
@@ -54,8 +61,6 @@ void Graph2DMobile::paint(QPainter* p)
 		drawFunctions(&m_buffer);
 		m_dirty=false;
 	}
-	
-	p->drawImage(QPoint(0,0), m_buffer);
 }
 
 void Graph2DMobile::forceRepaint()
@@ -131,4 +136,28 @@ void Graph2DMobile::setTicksShownAtAll(bool shown)
 	Qt::Orientations show = shown ? Qt::Vertical|Qt::Horizontal : Qt::Orientations(0);
 	setShowTicks(show);
 	setShowTickLabels(show);
+}
+
+void Graph2DMobile::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
+{
+	m_dirty = true;
+	QQuickItem::geometryChanged(newGeometry, oldGeometry);
+}
+
+QSGNode* Graph2DMobile::updatePaintNode(QSGNode* node, QQuickItem::UpdatePaintNodeData* /*data*/)
+{
+	if (!window()) {
+		delete node;
+		return nullptr;
+	}
+
+	QSGSimpleTextureNode *n = static_cast<QSGSimpleTextureNode *>(node);
+	if (!n) {
+		n = new QSGSimpleTextureNode();
+		n->setOwnsTexture(true);
+	}
+	paint();
+	n->setTexture(window()->createTextureFromImage(m_buffer));
+	n->setRect(boundingRect());
+	return n;
 }

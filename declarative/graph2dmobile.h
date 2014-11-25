@@ -28,7 +28,7 @@ namespace Analitza {
 class Variables;
 }
 
-class Graph2DMobile : public QQuickPaintedItem, public Analitza::Plotter2D
+class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
 {
 	Q_OBJECT
 	Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
@@ -45,7 +45,8 @@ class Graph2DMobile : public QQuickPaintedItem, public Analitza::Plotter2D
 		virtual void modelChanged();
 		virtual int currentFunction() const { return m_currentFunction; }
 		
-		virtual void paint(QPainter* painter);
+		void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) /*Q_OVERRIDE*/;
+		QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) /*Q_OVERRIDE*/;
 		
 		void setCurrentFunction(int f) { m_currentFunction = f; }
 		bool ticksShownAtAll() const { return ticksShown()!=0; }
@@ -63,6 +64,8 @@ class Graph2DMobile : public QQuickPaintedItem, public Analitza::Plotter2D
 		void removeFuncs(const QModelIndex& parent, int start, int end);
 		
 	private:
+		void paint();
+
 		bool m_dirty;
 		int m_currentFunction;
 		
