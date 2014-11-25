@@ -27,6 +27,7 @@
 #include <cmath>
 #include <QPalette>
 #include <QPainter>
+#include <qfontdatabase.h>
 #include <cmath>
 #include <QDebug>
 #include <qnumeric.h>
@@ -350,12 +351,14 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
     
     QString s;
     QPointF p;
-
-    painter->setPen(QPen(QPalette().text().color()));
     
     int from = (axis == Analitza::XAxis) ? gridinfo.nxinilabels : gridinfo.nyinilabels;
     int to = (axis == Analitza::XAxis) ? gridinfo.nxendlabels : gridinfo.nyendlabels;
     
+    painter->save();
+    QFont tickFont = QFontDatabase::systemFont(QFontDatabase::SmallestReadableFont);
+    painter->setFont(tickFont);
+    painter->setPen(QPen(QPalette().text().color()));
     for (int i = from; i <= to; ++i)
     {
         if (i == 0) continue;
@@ -395,6 +398,7 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
         else
             painter->drawText(p.x()-swidth-axisyseparation, p.y()+hfmhalf-textposcorrection, s);
     }
+    painter->restore();
 }
 
 void Plotter2D::drawPolarTickLabels(QPainter* painter, const Plotter2D::GridInfo& gridinfo) const
