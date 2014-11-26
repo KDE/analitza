@@ -24,36 +24,31 @@ Graph2DView {
 		onPinchUpdated: {
 			var currentDistance = distance(pinch.point1, pinch.point2)
 			if(currentDistance>0) {
-				var startDistance = distance(pinch.startPoint1, pinch.startPoint2)
-				
-				var theCurrentScale = startDistance/currentDistance
-				
-				var doScale = thePreviousScale/theCurrentScale
-				view.scale(doScale, view.width/2, view.height/2)
-				console.log("scale...", startDistance, theCurrentScale, doScale)
-				thePreviousScale = theCurrentScale
+				var doScale = thePreviousScale/pinch.scale
+				view.scale(doScale, pinch.center.x, pinch.center.y)
+				thePreviousScale = pinch.scale
 			}
 		}
-	}
-	
-	MouseArea {
-		id: mouse
-		anchors.fill: parent
-		property int lastX: 0
-		property int lastY: 0
-		acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-		
-		onPressed: { lastX=mouse.x; lastY=mouse.y }
-		
-		onPositionChanged: {
-			view.translate(mouse.x-lastX, mouse.y-lastY)
-			
-			lastX=mouse.x
-			lastY=mouse.y
-		}
 
-		onWheel: {
-			view.scale(wheel.angleDelta.y>0 ? 0.9 : 1.1, wheel.x, wheel.y)
+		MouseArea {
+			id: mouse
+			anchors.fill: parent
+			property int lastX: 0
+			property int lastY: 0
+			acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+
+			onPressed: { lastX=mouse.x; lastY=mouse.y }
+
+			onPositionChanged: {
+				view.translate(mouse.x-lastX, mouse.y-lastY)
+
+				lastX=mouse.x
+				lastY=mouse.y
+			}
+
+			onWheel: {
+				view.scale(wheel.angleDelta.y>0 ? 0.9 : 1.1, wheel.x, wheel.y)
+			}
 		}
 	}
 }
