@@ -154,7 +154,11 @@ QSGNode* Graph2DMobile::updatePaintNode(QSGNode* node, QQuickItem::UpdatePaintNo
 	QSGSimpleTextureNode *n = static_cast<QSGSimpleTextureNode *>(node);
 	if (!n) {
 		n = new QSGSimpleTextureNode();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
 		n->setOwnsTexture(true);
+#else
+#	warning this will leak, you really want to use Qt 5.4
+#endif
 	}
 	paint();
 	n->setTexture(window()->createTextureFromImage(m_buffer));
