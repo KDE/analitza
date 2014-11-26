@@ -403,8 +403,6 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
 
 void Plotter2D::drawPolarTickLabels(QPainter* painter, const Plotter2D::GridInfo& gridinfo) const
 {
-    QString s;
-    QPointF p;
     unsigned int k = 1;
 
     painter->setPen(m_gridColor);
@@ -476,12 +474,8 @@ void Plotter2D::drawPolarTickLabels(QPainter* painter, const Plotter2D::GridInfo
     {
         const QPair<unsigned int, unsigned int> frac = simplifyFraction(k, halfturns);
         
-        if (k != 0)
-            s = computeAngleLabelByFrac(frac.first, frac.second);
-        else
-            s = "0";
-        
-        p = QPointF(r*std::cos(t), r*std::sin(t));
+        QString s = (k != 0) ? computeAngleLabelByFrac(frac.first, frac.second) : QStringLiteral("0");
+        QPointF p(r*std::cos(t), r*std::sin(t));
         
         if (viewport.contains(p))
         {
