@@ -814,6 +814,9 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     
     int current=currentFunction();
 
+    int dpr = qMax<int>(1, qRound(qpd->logicalDpiX()/100.));
+    dpr *= dpr;
+
     for (int k = 0; k < m_model->rowCount(); ++k )
     {
         PlaneCurve* curve = dynamic_cast<PlaneCurve *>(itemAt(k));
@@ -823,8 +826,8 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
             continue;
 
         pfunc.setColor(curve->color());
-        pfunc.setWidth((k==current)+1);
-//         pfunc.setStyle(Qt::SolidLine);
+        pfunc.setWidth((k==current)+dpr);
+        pfunc.setStyle(Qt::SolidLine);
         p.setPen(pfunc);
 
         const QVector<QPointF> &vect=curve->points();
