@@ -68,7 +68,7 @@ struct Plotter2D::GridInfo
 Plotter2D::Plotter2D(const QSizeF& size)
     : m_showGrid(true)
     , m_showMinorGrid(false)
-    , m_gridColor(Qt::lightGray)
+    , m_gridColor(QColor(Qt::lightGray).lighter(120))
     , m_backgroundColor(Qt::white)
     , m_autoGridStyle(true)
     , m_gridStyleHint(Squares)
@@ -407,7 +407,7 @@ void Plotter2D::drawPolarTickLabels(QPainter* painter, const Plotter2D::GridInfo
     QPointF p;
     unsigned int k = 1;
 
-    painter->setPen(QPen(QPalette().color(QPalette::Disabled, QPalette::Text))); // polar ticks color
+    painter->setPen(m_gridColor);
     
     //TODO if minor
     const double newinc = gridinfo.inc/(gridinfo.sub5 ? 5 : 4); // inc with sub intervals
