@@ -9,7 +9,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 #Checking whether we can compile calgebra
 
 set(QT_REQUIRED_VERSION 5.2)
-find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg OpenGL Test Qml Quick)
+find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg Test Qml Quick)
 
 include(FeatureSummary)
 include(ECMSetupVersion)
@@ -30,10 +30,13 @@ ecm_setup_version(5.0.0 VARIABLE_PREFIX ANALITZA
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/Analitza5ConfigVersion.cmake")
 
 find_package(OpenGL)
-set(HAVE_OPENGL ${OPENGL_FOUND})
 set_package_properties(OpenGL PROPERTIES TYPE OPTIONAL
                                          PURPOSE "Support for 3D graphs in Analitza"
                                          URL "http://opengl.org")
+if(OPENGL_FOUND)
+    find_package(Qt5OpenGL ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE)
+endif()
+set(HAVE_OPENGL ${Qt5OpenGL_FOUND})
 
 find_package(Eigen3) # find and setup Eigen3 if available
 set(HAVE_EIGEN3 ${EIGEN3_FOUND})
