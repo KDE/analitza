@@ -17,9 +17,13 @@ if(HAVE_OPENGL)
 endif(HAVE_OPENGL)
 
 add_library(AnalitzaWidgets ${analitzaplot_SRCS})
-target_link_libraries(AnalitzaWidgets PUBLIC Qt5::Widgets Qt5::OpenGL Analitza AnalitzaPlot AnalitzaGui
+target_link_libraries(AnalitzaWidgets PUBLIC Qt5::Widgets Analitza AnalitzaPlot AnalitzaGui
                                       PRIVATE Qt5::Svg
 )
+
+if(HAVE_OPENGL)
+    target_link_libraries(AnalitzaWidgets PUBLIC Qt5::OpenGL)
+endif(HAVE_OPENGL)
 
 set_target_properties(AnalitzaWidgets PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
