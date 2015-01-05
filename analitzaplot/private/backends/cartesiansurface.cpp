@@ -49,7 +49,7 @@ class  Fxy : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxy)
-    TYPE_NAME(QT_TR_NOOP("Surface z=F(x,y)"))
+    TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Surface z=F(x,y)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -91,7 +91,7 @@ class Fxz : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fxz)
-    TYPE_NAME(QT_TR_NOOP("Surface y=F(x,z)"))
+    TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Surface y=F(x,z)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -124,7 +124,7 @@ class Fyz : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     CONSTRUCTORS(Fyz)
-    TYPE_NAME(QT_TR_NOOP("Surface x=F(y,z)"))
+    TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Surface x=F(y,z)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(

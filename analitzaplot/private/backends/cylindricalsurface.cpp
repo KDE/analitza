@@ -34,7 +34,7 @@ public:
     explicit Frp(const Analitza::Expression& e);
     Frp(const Analitza::Expression& e, Analitza::Variables* v);
     
-    TYPE_NAME(QT_TR_NOOP("Cylindrical Surface z=F(r: Radial, p: Polar)"))
+    TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Cylindrical Surface z=F(r: Radial, p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(

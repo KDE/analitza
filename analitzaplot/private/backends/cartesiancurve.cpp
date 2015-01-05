@@ -61,7 +61,7 @@ class FunctionY : public FunctionCartesian
 public:
     FunctionY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
         : FunctionCartesian(functionExpression, variables) { initDerivative(); }
-    TYPE_NAME(QT_TR_NOOP("Plane Curve F(y)"))
+    TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Plane Curve F(y)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
@@ -77,7 +77,7 @@ class FunctionX : public FunctionCartesian
 public:
     FunctionX(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
         : FunctionCartesian(functionExpression, variables) { initDerivative(); }
-    TYPE_NAME(QT_TR_NOOP("Plane Curve F(x)"))
+    TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Plane Curve F(x)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
