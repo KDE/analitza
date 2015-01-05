@@ -43,7 +43,7 @@ class FunctionImplicit : public AbstractPlaneCurve, public MarchingSquares
 {
 public:
     CONSTRUCTORS(FunctionImplicit)
-    TYPE_NAME(QT_TR_NOOP("Implicit Curve"))
+    TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Implicit Curve"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))

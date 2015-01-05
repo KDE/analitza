@@ -32,7 +32,7 @@ class ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static cla
 public:
     ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v);
 
-    TYPE_NAME(QT_TR_NOOP("Implicit Surface"))
+    TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Implicit Surface"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
