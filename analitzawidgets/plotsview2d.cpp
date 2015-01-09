@@ -351,7 +351,7 @@ void PlotsView2D::viewportChanged()
 {
     QRectF userViewport=lastUserViewport(), viewport=currentViewport();
     
-    sendStatus(QString("(%1, %2)-(%3, %4)")
+    sendStatus(QStringLiteral("(%1, %2)-(%3, %4)")
             .arg(viewport.left()).arg(viewport.top()).arg(viewport.right()).arg(viewport.bottom()));
     emit viewportChanged(userViewport);
 }

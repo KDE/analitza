@@ -304,9 +304,9 @@ const QString Plotter2D::computeAngleLabelByFrac(unsigned int n, unsigned int d)
     {
         case Radian:
         {
-            s = (n==1) ? QString("") : QString::number(n);
+            s = (n==1) ? QStringLiteral("") : QString::number(n);
             s += PiSymbol;
-            s += (d==1) ? QString("") : "/"+QString::number(d);
+            s += (d==1) ? QStringLiteral("") : "/"+QString::number(d);
         }
         break;
         case Degree: s = QString::number(radiansToDegrees(n*M_PI/d))+DegreeSymbol; break;

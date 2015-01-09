@@ -40,8 +40,8 @@ QVariant MathMLExpressionWriter::visit(const Ci* var)
 {
 	QString attrib;
 	if(var->isFunction())
-		attrib=" type='function'";
-	return QString("<ci"+attrib+'>'+var->name()+"</ci>");
+		attrib=QStringLiteral(" type='function'");
+	return QVariant::fromValue<QString>(QStringLiteral("<ci")+attrib+'>'+var->name()+QStringLiteral("</ci>"));
 }
 
 QVariant MathMLExpressionWriter::visit(const Operator* op)
@@ -49,7 +49,7 @@ QVariant MathMLExpressionWriter::visit(const Operator* op)
 	if(op->operatorType()==Operator::function)
 		return QString();
 	else
-		return QString("<%1 />").arg(op->name());
+		return QStringLiteral("<%1 />").arg(op->name());
 }
 
 QVariant MathMLExpressionWriter::visit(const Cn* val)
@@ -64,7 +64,7 @@ QVariant MathMLExpressionWriter::visit(const Cn* val)
 		if(val->format()==Cn::Real)
 			type = " type='real'";
 		
-		return QString("<cn%1>%2</cn>").arg(type).arg(val->value(), 0, 'g', 12);
+		return QStringLiteral("<cn%1>%2</cn>").arg(type).arg(val->value(), 0, 'g', 12);
 	}
 }
 
@@ -75,7 +75,7 @@ QVariant MathMLExpressionWriter::visit(const Vector* vec)
 	{
 		elements += (*it)->accept(this).toString();
 	}
-	return QString("<vector>%1</vector>").arg(elements.join(QString()));
+	return QStringLiteral("<vector>%1</vector>").arg(elements.join(QString()));
 }
 
 QVariant MathMLExpressionWriter::visit(const Matrix* m)
@@ -85,7 +85,7 @@ QVariant MathMLExpressionWriter::visit(const Matrix* m)
 	{
 		elements += (*it)->accept(this).toString();
 	}
-	return QString("<matrix>%1</matrix>").arg(elements.join(QString()));
+	return QStringLiteral("<matrix>%1</matrix>").arg(elements.join(QString()));
 }
 
 QVariant MathMLExpressionWriter::visit(const MatrixRow* mr)
@@ -95,7 +95,7 @@ QVariant MathMLExpressionWriter::visit(const MatrixRow* mr)
 	{
 		elements += (*it)->accept(this).toString();
 	}
-	return QString("<matrixrow>%1</matrixrow>").arg(elements.join(QString()));
+	return QStringLiteral("<matrixrow>%1</matrixrow>").arg(elements.join(QString()));
 }
 
 QVariant MathMLExpressionWriter::visit(const List* vec)
@@ -112,7 +112,7 @@ QVariant MathMLExpressionWriter::visit(const List* vec)
 		for(List::const_iterator it=vec->constBegin(); it!=vec->constEnd(); ++it)
 			elements += (*it)->accept(this).toString();
 		
-		return QString("<list>%1</list>").arg(elements.join(QString()));
+		return QStringLiteral("<list>%1</list>").arg(elements.join(QString()));
 	}
 }
 
@@ -122,7 +122,7 @@ QVariant MathMLExpressionWriter::visit(const Container* c)
 	foreach(const Object* o, c->m_params)
 		ret += o->accept(this).toString();
 	
-	return QString("<%1>%2</%1>").arg(c->tagName()).arg(ret);
+	return QStringLiteral("<%1>%2</%1>").arg(c->tagName()).arg(ret);
 }
 
 QVariant MathMLExpressionWriter::visit(const Apply* a)
@@ -139,7 +139,7 @@ QVariant MathMLExpressionWriter::visit(const Apply* a)
 	foreach(const Object* o, a->m_params)
 		ret += o->accept(this).toString();
 	
-	return QString("<apply>%1</apply>").arg(ret);
+	return QStringLiteral("<apply>%1</apply>").arg(ret);
 }
 
 QVariant MathMLExpressionWriter::visit(const Analitza::CustomObject*)

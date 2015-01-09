@@ -525,7 +525,7 @@ QString OperatorsModel::example(const Analitza::Operator& o)
 		case Operator::abs:
 		case Operator::floor:
 		case Operator::ceiling:
-			s=QString("%1(x)").arg(o.toString());
+			s=QStringLiteral("%1(x)").arg(o.toString());
 			break;
 		case Operator::nOfOps:
 		case Operator::none:

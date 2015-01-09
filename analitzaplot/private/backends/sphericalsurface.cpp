@@ -67,10 +67,10 @@ bool SphericalSurface::setInterval(const QString& argname, const Analitza::Expre
     if (min_val<0 || max_val < 0) // el radio es distancia por tanto es positivo, el angulo va de 0 hasta +inf
         return false; 
     
-    if (argname == QString("t") && max_val >= 2*M_PI)
+    if (argname == QStringLiteral("t") && max_val >= 2*M_PI)
         return false;
     
-    if (argname == QString("p") && max_val > M_PI)
+    if (argname == QStringLiteral("p") && max_val > M_PI)
         return false;
     
     return AbstractFunctionGraph::setInterval(argname, min, max);
@@ -82,10 +82,10 @@ bool SphericalSurface::setInterval(const QString& argname, double min, double ma
         return false; 
     
     
-    if (argname == QString("t") && max >= 2*M_PI)
+    if (argname == QStringLiteral("t") && max >= 2*M_PI)
         return false;
     
-    if (argname == QString("p") && max > M_PI)
+    if (argname == QStringLiteral("p") && max > M_PI)
         return false;
     
     return AbstractFunctionGraph::setInterval(argname, min, max);

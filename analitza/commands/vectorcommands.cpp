@@ -29,7 +29,7 @@
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
-const QString VectorCommand::id = QString("vector");
+const QString VectorCommand::id = QStringLiteral("vector");
 const ExpressionType VectorCommand::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Any))
 .addParameter(ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Any), -1));

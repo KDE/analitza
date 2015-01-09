@@ -29,7 +29,7 @@ using Analitza::ExpressionType;
 
 //BEGIN IsZeroMatrix
 
-const QString IsZeroMatrixCommand::id = QString("iszeromatrix");
+const QString IsZeroMatrixCommand::id = QStringLiteral("iszeromatrix");
 const ExpressionType IsZeroMatrixCommand::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1))
 .addParameter(ExpressionType(ExpressionType::Value));
@@ -41,7 +41,7 @@ Expression IsZeroMatrixCommand::operator()(const QList< Analitza::Expression >& 
 
 //END IsZeroMatrix
 
-const QString IsIdentityMatrixCommand::id = QString("isidentitymatrix");
+const QString IsIdentityMatrixCommand::id = QStringLiteral("isidentitymatrix");
 const ExpressionType IsIdentityMatrixCommand::type = IsZeroMatrixCommand::type;
 
 Expression IsIdentityMatrixCommand::operator()(const QList< Analitza::Expression >& args)
@@ -49,7 +49,7 @@ Expression IsIdentityMatrixCommand::operator()(const QList< Analitza::Expression
 	return Expression(new Analitza::Cn(static_cast<const Analitza::Matrix*>(args.first().tree())->isIdentity()));
 }
 
-const QString IsDiagonalMatrixCommand::id = QString("isdiag");
+const QString IsDiagonalMatrixCommand::id = QStringLiteral("isdiag");
 const ExpressionType IsDiagonalMatrixCommand::type = IsZeroMatrixCommand::type;
 
 Expression IsDiagonalMatrixCommand::operator()(const QList< Analitza::Expression >& args)

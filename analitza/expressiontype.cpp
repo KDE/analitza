@@ -147,7 +147,7 @@ QString ExpressionType::toString() const
             ret='<'+typesToString(m_contained).join("$")+','+QString::number(m_size)+'>';
             break;
         case ExpressionType::Matrix:
-            ret=QString("{%1,%2x%3}").arg(contained().contained().toString()).arg(m_size).arg(contained().size());
+            ret=QStringLiteral("{%1,%2x%3}").arg(contained().contained().toString()).arg(m_size).arg(contained().size());
             break;
         case ExpressionType::Error:
             ret="err";

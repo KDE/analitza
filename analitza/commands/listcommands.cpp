@@ -27,7 +27,7 @@
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
-const QString RangeCommand::id = QString("range");
+const QString RangeCommand::id = QStringLiteral("range");
 const ExpressionType RangeCommand::type = 	ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType::Value)))
 .addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));

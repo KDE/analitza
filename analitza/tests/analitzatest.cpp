@@ -311,7 +311,7 @@ void AnalitzaTest::testDerivativeSimple()
 	a->setExpression(a->derivative("x"));
 	a->simplify();
 	Expression deriv=a->expression();
-	QCOMPARE(deriv.toString(), QString("x->"+result));
+	QCOMPARE(deriv.toString(), QString(QStringLiteral("x->")+result));
 	if(!a->isCorrect()) qDebug() << "errors: " << a->errors();
 	QVERIFY(a->isCorrect());
 	
@@ -324,7 +324,7 @@ void AnalitzaTest::testDerivativeSimple()
 	qDeleteAll(vars);
 	
 	if(a->isCorrect()) {
-		Expression ee(QString("(x->%1)(%2)").arg(result).arg(val));
+		Expression ee(QStringLiteral("(x->%1)(%2)").arg(result).arg(val));
 		a->setExpression(ee);
 		QVERIFY(a->isCorrect());
 		
@@ -338,7 +338,7 @@ void AnalitzaTest::testDerivativeSimple()
 	QVERIFY(a->isCorrect());
 	deriv=a->evaluate();
 	
-	QCOMPARE(deriv.toString(), QString("x->"+result));
+	QCOMPARE(deriv.toString(), QString(QStringLiteral("x->")+result));
 	QVERIFY(a->isCorrect());
 }
 

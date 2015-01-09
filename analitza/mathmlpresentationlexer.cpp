@@ -75,7 +75,7 @@ void MathMLPresentationLexer::getToken()
 				break;
 			default:
 				if(m_tags.top()=="mn") {
-					TOKEN ret(ExpressionTable::tVal, 0, QString("<cn>%1</cn>").arg(m_xml.text().toString()));
+					TOKEN ret(ExpressionTable::tVal, 0, QStringLiteral("<cn>%1</cn>").arg(m_xml.text().toString()));
 					m_tokens.append(ret);
 				} else if(m_tags.top()=="mi") {
 					TOKEN ret(ExpressionTable::tId, 0, m_xml.text().toString());

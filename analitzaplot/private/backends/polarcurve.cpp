@@ -159,7 +159,7 @@ QPair<QPointF, QString> FunctionPolar::image(const QPointF &p)
 //         
 //     dp = polarToCartesian(r,th);
 //     
-//     pos = QString("r=%1 th=%2").arg(r,3,'f',2).arg(th,3,'f',2);
+//     pos = QStringLiteral("r=%1 th=%2").arg(r,3,'f',2).arg(th,3,'f',2);
     return QPair<QPointF, QString>(dp, pos);
 }
 

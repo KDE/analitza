@@ -102,7 +102,7 @@ void ExpLexer::getToken()
 		
 		Q_ASSERT(!ret.val.isEmpty());
 		
-		ret.val = QString("<cn%1>%2</cn>").arg(attrib).arg(ret.val);
+		ret.val = QStringLiteral("<cn%1>%2</cn>").arg(attrib).arg(ret.val);
 		ret.type= ExpressionTable::tVal;
 		
 		pos += m_realRx.matchedLength();

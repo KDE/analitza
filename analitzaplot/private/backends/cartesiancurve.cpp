@@ -137,7 +137,7 @@ QPair<QPointF, QString> FunctionCartesian::image(const QPointF &p)
         appendError(QCoreApplication::tr("We can only draw Real results."));
 
     dp.setY(r.toReal().value());
-    pos = QString("x=%1 y=%2").arg(dp.x(),3,'f',2).arg(dp.y(),3,'f',2);
+    pos = QStringLiteral("x=%1 y=%2").arg(dp.x(),3,'f',2).arg(dp.y(),3,'f',2);
     return QPair<QPointF, QString>(dp, pos);
 }
 

@@ -94,7 +94,7 @@ static const Eigen::MatrixXcd executeEigenSolver(const QList< Analitza::Expressi
 	return ret;
 }
 
-const QString EigenvaluesCommand::id = QString("eigenvalues");
+const QString EigenvaluesCommand::id = QStringLiteral("eigenvalues");
 const ExpressionType EigenvaluesCommand::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1)))
 .addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
@@ -159,7 +159,7 @@ Expression EigenvaluesCommand::operator()(const QList< Analitza::Expression >& a
 }
 
 
-const QString EigenvectorsCommand::id = QString("eigenvectors");
+const QString EigenvectorsCommand::id = QStringLiteral("eigenvectors");
 const ExpressionType EigenvectorsCommand::type = EigenvaluesCommand::type;
 
 //TODO complex values as matrix entries too

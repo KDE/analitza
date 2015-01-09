@@ -47,9 +47,9 @@ QVariant Ci::accept(AbstractExpressionVisitor* e) const
 QString Ci::toMathML() const
 {
 	if(m_function)
-		return QString("<ci type='function'>%1</ci>").arg(m_name);
+		return QStringLiteral("<ci type='function'>%1</ci>").arg(m_name);
 	else
-		return QString("<ci>%1</ci>").arg(m_name);
+		return QStringLiteral("<ci>%1</ci>").arg(m_name);
 }
 
 bool Ci::matches(const Object* exp, QMap<QString, const Object*>* found) const
@@ -69,5 +69,5 @@ bool Ci::matches(const Object* exp, QMap<QString, const Object*>* found) const
 
 QString Ci::toHtml() const
 {
-	return QString("<span class='%1'>%2</span>").arg(m_function ? "func" : "var").arg(m_name);
+	return QStringLiteral("<span class='%1'>%2</span>").arg(m_function ? "func" : "var").arg(m_name);
 }

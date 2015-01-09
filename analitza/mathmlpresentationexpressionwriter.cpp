@@ -46,14 +46,14 @@ QStringList convertElements(T it, const T& itEnd, MathMLPresentationExpressionWr
 template <const char **C>
 static QString joinOp(const Apply* c, MathMLPresentationExpressionWriter* w)
 {
-	QString op=QString("<mo>%1</mo>").arg(*C);
+	QString op=QStringLiteral("<mo>%1</mo>").arg(*C);
 	return convertElements<Apply::const_iterator>(c->firstValue(), c->constEnd(), w).join(op);
 }
 
 template <const char **C, const char **D>
 static QString infix(const Apply* c, MathMLPresentationExpressionWriter* w)
 {
-	QString exp=QString("<mrow><mo>%1</mo>%2<mo>%3</mo></mrow>").arg(*C)
+	QString exp=QStringLiteral("<mrow><mo>%1</mo>%2<mo>%3</mo></mrow>").arg(*C)
 		.arg(convertElements<Apply::const_iterator>(c->firstValue(), c->constEnd(), w).join(QString())).arg(*D);
 	return exp;
 }
@@ -61,7 +61,7 @@ static QString infix(const Apply* c, MathMLPresentationExpressionWriter* w)
 template <const char **C>
 static QString prefix(const Apply* c, MathMLPresentationExpressionWriter* w)
 {
-	return QString("<mo>%1</mo>").arg(*C)+convertElements(c->firstValue(), c->constEnd(), w).join(QString());
+	return QStringLiteral("<mo>%1</mo>").arg(*C)+convertElements(c->firstValue(), c->constEnd(), w).join(QString());
 }
 
 template <const char **C>
@@ -73,7 +73,7 @@ static QString prefixOp(const Apply* c, MathMLPresentationExpressionWriter* w)
 template <const char **C>
 static QString postfix(const Apply* c, MathMLPresentationExpressionWriter* w)
 {
-	return convertElements(c->firstValue(), c->constEnd(), w).join(QString())+QString("<mo>%1</mo>").arg(*C);
+	return convertElements(c->firstValue(), c->constEnd(), w).join(QString())+QStringLiteral("<mo>%1</mo>").arg(*C);
 }
 
 QString minus(const Apply* c, MathMLPresentationExpressionWriter* w)
@@ -193,7 +193,7 @@ MathMLPresentationExpressionWriter::MathMLPresentationExpressionWriter(const Obj
 
 QVariant MathMLPresentationExpressionWriter::visit(const Ci* var)
 {
-	return QString("<mi>"+var->name()+"</mi>");
+	return QVariant::fromValue<QString>(QStringLiteral("<mi>") + var->name() + QStringLiteral("</mi>"));
 }
 
 QVariant MathMLPresentationExpressionWriter::visit(const Operator* op)
@@ -209,7 +209,7 @@ QVariant MathMLPresentationExpressionWriter::visit(const Cn* val)
 		else
 			return "<mo>false</mo>";
 	} else
-		return QString("<mn>%1</mn>").arg(val->value(), 0, 'g', 12);
+		return QStringLiteral("<mn>%1</mn>").arg(val->value(), 0, 'g', 12);
 
 }
 
@@ -293,22 +293,22 @@ QVariant MathMLPresentationExpressionWriter::visit(const Container* c)
 
 QVariant MathMLPresentationExpressionWriter::visit(const Vector* var)
 {
-	return QString("<mrow><mo>&lt;</mo>"+convertElements(var->constBegin(), var->constEnd(), this).join("<mo>,</mo>")+"<mo>&gt;</mo></mrow>");
+	return QVariant::fromValue<QString>(QStringLiteral("<mrow><mo>&lt;</mo>")+convertElements(var->constBegin(), var->constEnd(), this).join("<mo>,</mo>")+"<mo>&gt;</mo></mrow>");
 }
 
 QVariant MathMLPresentationExpressionWriter::visit(const List* var)
 {
-	return QString("<mrow><mo>[</mo>"+convertElements(var->constBegin(), var->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>");
+	return QVariant::fromValue<QString>(QStringLiteral("<mrow><mo>[</mo>")+convertElements(var->constBegin(), var->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>");
 }
 
 QVariant MathMLPresentationExpressionWriter::visit(const Matrix* m)
 {
-	return QString("<mrow><mo>[</mo>"+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>");
+	return QVariant::fromValue<QString>(QStringLiteral("<mrow><mo>[</mo>")+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>");
 }
 
 QVariant MathMLPresentationExpressionWriter::visit(const MatrixRow* m)
 {
-	return QString("<mrow><mo>[</mo>"+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>");
+	return QVariant::fromValue<QString>(QStringLiteral("<mrow><mo>[</mo>")+convertElements(m->constBegin(), m->constEnd(), this).join("<mo>,</mo>")+"<mo>]</mo></mrow>");
 }
 
 QVariant Analitza::MathMLPresentationExpressionWriter::visit(const Analitza::Apply* a)
@@ -349,7 +349,7 @@ QVariant Analitza::MathMLPresentationExpressionWriter::visit(const Analitza::App
 
 QVariant MathMLPresentationExpressionWriter::visit(const CustomObject*)
 {
-	return QString("<!-- custom object -->");
+	return QStringLiteral("<!-- custom object -->");
 }
 
 QVariant MathMLPresentationExpressionWriter::visit(const None* )

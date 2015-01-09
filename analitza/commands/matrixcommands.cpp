@@ -32,7 +32,7 @@ static const QString MATRIX_SIZE_ERROR_MESSAGE = QCoreApplication::tr("Matrix di
 
 //BEGIN FillMatrixConstructor
 
-const QString MatrixCommand::id = QString("matrix");
+const QString MatrixCommand::id = QStringLiteral("matrix");
 const ExpressionType MatrixCommand::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Any))
 .addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
@@ -157,7 +157,7 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
 
 //BEGIN IdentityMatrixConstructor
 
-const QString IdentityMatrixCommand::id = QString("identitymatrix");
+const QString IdentityMatrixCommand::id = QStringLiteral("identitymatrix");
 const ExpressionType IdentityMatrixCommand::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Value))
 .addParameter(ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1));
@@ -182,7 +182,7 @@ Expression IdentityMatrixCommand::operator()(const QList< Analitza::Expression >
 
 //BEGIN DiagonalMatrixConstructor
 
-const QString DiagonalMatrixCommand::id = QString("diag");
+const QString DiagonalMatrixCommand::id = QStringLiteral("diag");
 const ExpressionType DiagonalMatrixCommand::type  = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Any))
 .addParameter(ExpressionType(ExpressionType::Many, QList<ExpressionType>() 
@@ -314,7 +314,7 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
 
 //BEGIN TridiagonalMatrixConstructor
 
-const QString TridiagonalMatrixCommand::id = QString("tridiag");
+const QString TridiagonalMatrixCommand::id = QStringLiteral("tridiag");
 const ExpressionType TridiagonalMatrixCommand::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Value))
 .addParameter(ExpressionType(ExpressionType::Value))

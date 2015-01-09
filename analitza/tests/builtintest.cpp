@@ -244,7 +244,7 @@ void BuiltInTest::testCall()
 		
 		a.setExpression(ei);
 		if(!a.isCorrect()) {
-			QCOMPARE(QString("errcomp"), output);
+			QCOMPARE(QStringLiteral("errcomp"), output);
 			return;
 		}
 		
@@ -255,5 +255,5 @@ void BuiltInTest::testCall()
 	if(a.isCorrect())
 		QCOMPARE(calc.toString(), output);
 	else
-		QCOMPARE(QString("err"), output);
+		QCOMPARE(QStringLiteral("err"), output);
 }

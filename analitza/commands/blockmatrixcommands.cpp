@@ -28,7 +28,7 @@
 using Analitza::Expression;
 using Analitza::ExpressionType;
 
-const QString BlockMatrixCommand::id = QString("blockmatrix");
+const QString BlockMatrixCommand::id = QStringLiteral("blockmatrix");
 const ExpressionType BlockMatrixCommand::type = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType::Vector, 
 																 ExpressionType(ExpressionType::Matrix, ExpressionType(ExpressionType::Vector, ExpressionType(ExpressionType::Value), -2), -1), -1)))
@@ -216,7 +216,7 @@ Expression BlockMatrixCommand::operator()(const QList< Analitza::Expression >& a
 }
 
 
-const QString BlockDiagonalMatrixCommand::id = QString("blockdiag");
+const QString BlockDiagonalMatrixCommand::id = QStringLiteral("blockdiag");
 // const ExpressionType BlockDiagonalMatrixCommand::type  = variadicFunctionType(VectorAndMatrixAlternatives);
 const ExpressionType BlockDiagonalMatrixCommand::type  = ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Any, 

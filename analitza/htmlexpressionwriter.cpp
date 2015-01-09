@@ -79,9 +79,9 @@ QVariant HtmlExpressionWriter::visit(const MatrixRow* mr)
 QVariant HtmlExpressionWriter::visit(const List* vec)
 {
 	if(!vec->isEmpty() && vec->at(0)->type()==Object::value && static_cast<Cn*>(vec->at(0))->format()==Cn::Char) {
-		return QString("<span class='string'>&quot;"+AnalitzaUtils::listToString(vec)+ "&quot;</span>");
+		return QVariant::fromValue<QString>(QStringLiteral("<span class='string'>&quot;") + AnalitzaUtils::listToString(vec) + QStringLiteral("&quot;</span>"));
 	} else
-		return QString((keyword("list ")+oper("{ ")+allValues<List::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(", ")))+oper(" }")));
+		return QVariant::fromValue<QString>(keyword("list ")+oper("{ ")+allValues<List::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(", ")))+oper(" }"));
 }
 
 QVariant HtmlExpressionWriter::visit(const Cn* var)
@@ -119,7 +119,7 @@ QVariant HtmlExpressionWriter::visit(const Cn* var)
 	else
 		innerhtml = QString::number(var->value(), 'g', 12);
 	
-	return QString("<span class='num'>"+innerhtml+"</span>");
+	return QVariant::fromValue<QString>(QStringLiteral("<span class='num'>")+innerhtml+"</span>");
 }
 
 QVariant HtmlExpressionWriter::visit(const Analitza::Ci* var)
@@ -129,7 +129,7 @@ QVariant HtmlExpressionWriter::visit(const Analitza::Ci* var)
 
 QVariant HtmlExpressionWriter::visit(const Analitza::Operator* o)
 {
-	return QString("<span class='func'>"+o->toString()+"</span>");
+	return QVariant::fromValue<QString>(QStringLiteral("<span class='func'>") + o->toString() + QStringLiteral("</span>"));
 }
 
 QVariant HtmlExpressionWriter::visit ( const Analitza::Apply* a )
@@ -265,7 +265,7 @@ QVariant HtmlExpressionWriter::visit(const Container* var)
 
 QVariant HtmlExpressionWriter::visit(const CustomObject*)
 {
-	return QString("Custom Object");
+	return QStringLiteral("Custom Object");
 }
 
 QVariant HtmlExpressionWriter::visit(const None* )
