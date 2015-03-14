@@ -62,7 +62,7 @@ set_target_properties(Analitza PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOV
 
 generate_export_header(Analitza EXPORT_FILE_NAME analitzaexport.h)
 
-install(TARGETS Analitza EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS Analitza EXPORT AnalitzaTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES 
 	${CMAKE_CURRENT_BINARY_DIR}/analitzaexport.h

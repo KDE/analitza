@@ -11,10 +11,10 @@ target_link_libraries(analitzadeclarativeplugin
 	Qt5::Core Qt5::Gui Qt5::Qml Qt5::Quick
 	Analitza AnalitzaGui AnalitzaPlot)
 
-install(TARGETS analitzadeclarativeplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/analitza)
-install(FILES qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/analitza)
+install(TARGETS analitzadeclarativeplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/analitza)
+install(FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/analitza)
 
 install( FILES
         qml/Graph2D.qml
-        DESTINATION ${QML_INSTALL_DIR}/org/kde/analitza
+        DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/analitza
 )

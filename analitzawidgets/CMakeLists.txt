@@ -29,7 +29,7 @@ set_target_properties(AnalitzaWidgets PROPERTIES VERSION ${ANALITZA_VERSION_STRI
 
 generate_export_header(AnalitzaWidgets)
 
-install(TARGETS AnalitzaWidgets EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS AnalitzaWidgets EXPORT AnalitzaTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/analitzawidgets_export.h

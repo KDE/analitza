@@ -1,2 +1,2 @@
 FILE(GLOB datafiles *.plots)
-install( FILES ${datafiles} DESTINATION  ${DATA_INSTALL_DIR}/libanalitza/plots )
+install( FILES ${datafiles} DESTINATION  ${KDE_INSTALL_DATADIR}/libanalitza/plots )

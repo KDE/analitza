@@ -83,7 +83,7 @@ set_target_properties(AnalitzaPlot PROPERTIES VERSION ${ANALITZA_VERSION_STRING}
 
 generate_export_header(AnalitzaPlot EXPORT_FILE_NAME analitzaplotexport.h)
 
-install(TARGETS AnalitzaPlot EXPORT AnalitzaTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS AnalitzaPlot EXPORT AnalitzaTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/analitzaplotexport.h

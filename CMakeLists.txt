@@ -2,7 +2,7 @@ project(Analitza)
 
 cmake_minimum_required(VERSION 2.8.12)
 
-find_package(ECM 1.3.0 REQUIRED NO_MODULE)
+find_package(ECM 1.7.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
@@ -12,6 +12,7 @@ set(QT_REQUIRED_VERSION 5.2)
 find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg Test Qml Quick)
 
 include(FeatureSummary)
+include(ECMAddAppIcon)
 include(ECMSetupVersion)
 include(ECMAddTests)
 include(ECMPackageConfigHelpers)
@@ -23,7 +24,7 @@ include(CheckIncludeFiles)
 include(CheckLibraryExists) #FindCurses seems to need that on the CI
 include(ECMPoQmTools)
 ecm_create_qm_loader(analitza_QM_LOADER analitza_qt)
-set(ANALITZA_INCLUDE_INSTALL_DIR "${INCLUDE_INSTALL_DIR}/Analitza5")
+set(ANALITZA_INCLUDE_INSTALL_DIR "${KDE_INSTALL_INCLUDEDIR}/Analitza5")
 
 ecm_setup_version(6.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
@@ -61,7 +62,7 @@ if (IS_DIRECTORY "${CMAKE_SOURCE_DIR}/po")
     ecm_install_po_files_as_qm(po)
 endif()
 
-set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Analitza5")
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Analitza5")
 ecm_configure_package_config_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/Analitza5Config.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/Analitza5Config.cmake"
