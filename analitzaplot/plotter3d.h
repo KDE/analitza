@@ -103,7 +103,7 @@ class ANALITZAPLOT_EXPORT Plotter3D
         /** Query if there is a valid axis arrow for @p x and @p y screen coordinates. */
         CartesianAxis selectAxisArrow(int x, int y);
 
-        /** Fix the rotation arround @p direction */
+        /** Fix the rotation around @p direction */
         void fixRotation(const QVector3D &direction);
 
         /** Query if the rotation is fixed by a specific direction. */

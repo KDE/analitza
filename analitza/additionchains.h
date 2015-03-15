@@ -28,7 +28,7 @@
 //   const int MAX_N = 2048;
 //   const int MAX_LEN = 15;
 //   const int MAX_COL = MAX_LEN+1;
-//   // seq len of max(1,2,...,MAX_N) is MAX_LEN but we need one aditional slot for len (length) info (at 0) so we need MAX_COL cols
+//   // seq len of max(1,2,...,MAX_N) is MAX_LEN but we need one additional slot for len (length) info (at 0) so we need MAX_COL cols
 //   int buffer[MAX_N+1] = {0};
 //   
 //   printf("static const int additionChains[%d][%d] = {\n", MAX_N+1, MAX_COL+1);

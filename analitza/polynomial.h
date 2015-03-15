@@ -58,7 +58,7 @@ class Monomial
  *
  * \brief Polynomial object.
  *
- * The important method in this class is negate, wich change the sign of the Monomial 
+ * The important method in this class is negate, which change the sign of the Monomial 
  * referenced by an index.
  *
  * \author Aleix Pol <aleixpol@kde.org>

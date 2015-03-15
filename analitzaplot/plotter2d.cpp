@@ -28,7 +28,6 @@
 #include <QPalette>
 #include <QPainter>
 #include <qfontdatabase.h>
-#include <cmath>
 #include <QDebug>
 #include <qnumeric.h>
 
@@ -103,7 +102,7 @@ void Plotter2D::setGridStyleHint(GridStyle suggestedgs)
 const QColor Plotter2D::computeSubGridColor() const
 {
     //impl. details: since any kde user can create any palette style, we need this hard/magic numbres
-    // becuase there is no way to guess, however, this code covers almost any case, 
+    // because there is no way to guess, however, this code covers almost any case, 
     // it was tested with more then 35 color styles, and all give good results.
     
     QColor col = m_gridColor;

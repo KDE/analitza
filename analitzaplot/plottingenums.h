@@ -68,7 +68,7 @@ enum PlottingFocusPolicy
 enum GridStyle
 {
     Squares = 1, // a solid quadrangular (rectangular, if keep aspect radio is off) mesh (in KmPlot is called Lines) 
-    Circles, // classic polar grid: solid circles (ellipses, if keep aspect radio is off) arround origin (in KmPlot is called Polar) 
+    Circles, // classic polar grid: solid circles (ellipses, if keep aspect radio is off) around origin (in KmPlot is called Polar) 
     Crosses, // like KmPlot: show only a cross at every node of the quadrangular mesh
     HorizontalLines, // (or rows) show only horizontal lines of the quadrangular mesh, can be used as horizontal asymptotes
     VerticalLines, // (or columns) show only vertical lines of the quadrangular mesh, can be used as vertical asymptotes

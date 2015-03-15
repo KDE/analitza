@@ -94,8 +94,8 @@ public:
  * to get the diagonal part of a matrix.
  * 
  * There are two ways to construct a diagonal matrix:
- * 
- * The first way creates the diagonal part out of the paramaters.
+ *
+ * The first way creates the diagonal part out of the parameters.
  * \code diag(1,2,3) \endcode 
  * constructs the 3x3 diagonal matrix:
  * [1 0 0]

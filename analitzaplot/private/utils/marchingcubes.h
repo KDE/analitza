@@ -178,7 +178,7 @@ public :
 
 private:
   /**
-   * selects wether the algorithm will use the enhanced topologically controlled lookup table or the original MarchingCubes
+   * selects whether the algorithm will use the enhanced topologically controlled lookup table or the original MarchingCubes
    * \param originalMC true for the original Marching Cubes
    * DEPRECATED el metodo original no tiene consistencia topologica
    */
@@ -321,8 +321,8 @@ private :
 //-----------------------------------------------------------------------------
 // Elements
 private :
-  int       i_originalMC ;   /**< selects wether the algorithm will use the enhanced topologically controlled lookup table or the original MarchingCubes */
-  int       i_N[15]      ;   /**< counts the occurence of each case for debug */
+  int       i_originalMC ;   /**< selects whether the algorithm will use the enhanced topologically controlled lookup table or the original MarchingCubes */
+  int       i_N[15]      ;   /**< counts the occurrence of each case for debug */
 
   int       i_size_x     ;  /**< width  of the grid */
   int       i_size_y     ;  /**< depth  of the grid */
