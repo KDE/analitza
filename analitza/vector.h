@@ -60,13 +60,13 @@ class ANALITZA_EXPORT Vector : public Object
 		QList<Object*> values() const { return m_elements; }
 		
 		virtual QVariant accept(AbstractExpressionVisitor* e) const;
-		virtual bool isZero() const { return m_elements.isEmpty()? false : m_isZero; }
+		virtual bool isZero() const;
 		
 		virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const;
 		Vector* copy() const;
 		bool operator==(const Vector& v) const;
 		bool hasOnlyNumbers() const { return m_elements.isEmpty()? false : m_hasOnlyNumbers; }
-		bool isStandardBasisVector() const { return m_elements.isEmpty()? false : (m_isStandardBasisVector && !isZero()); }
+		bool isStandardBasisVector() const;
 		bool isDiagonalRow() const { return m_elements.isEmpty()? false : m_isDiagonalRowVector; }
 		
 	protected:
@@ -75,8 +75,6 @@ class ANALITZA_EXPORT Vector : public Object
 	private:
 		QList<Object*> m_elements;
 		bool m_hasOnlyNumbers;
-		bool m_isZero;
-		bool m_isStandardBasisVector;
 		bool m_nonZeroTaken;
 		bool m_isDiagonalRowVector;
 		short int m_nonZeros;

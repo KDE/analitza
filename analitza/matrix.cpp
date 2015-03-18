@@ -26,13 +26,11 @@ using namespace Analitza;
 
 Matrix::Matrix()
 	: Object(matrix)
-	, m_isZero(true)
 	, m_hasOnlyNumbers(true)
 {}
 
 Matrix::Matrix(int m, int n, const Cn* value)
 	: Object(matrix)
-	, m_isZero(true)
 	, m_hasOnlyNumbers(true)
 {
 	Q_ASSERT(m > 0);
@@ -90,9 +88,6 @@ void Matrix::appendBranch(MatrixRow* o)
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o));
 	Q_ASSERT(dynamic_cast<MatrixRow*>(o)->size()>0);
 	Q_ASSERT(m_rows.isEmpty()?true:dynamic_cast<MatrixRow*>(o)->size() == dynamic_cast<MatrixRow*>(m_rows.last())->size()); // all rows are same size
-	
-	if (!o->isZero() && m_isZero)
-		m_isZero = false;
 	
 	if (!o->hasOnlyNumbers() && m_hasOnlyNumbers)
 		m_hasOnlyNumbers = false;
@@ -191,4 +186,14 @@ bool Matrix::isDiagonal() const
 			return false;
 	
 	return true;
+}
+
+bool Matrix::isZero() const
+{
+	bool zero = false;
+	foreach(const MatrixRow* o, m_rows) {
+		zero |= o->isZero();
+	}
+
+	return zero;
 }

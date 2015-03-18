@@ -28,14 +28,14 @@ using namespace Analitza;
 // static QDebug operator<<(QDebug dbg, const Object* c)
 // {
 // 	dbg.nospace() << (c ? c->toString() : "<null>");
-// 
+//
 // 	return dbg.space();
 // }
-// 
+//
 // static QDebug operator<<(QDebug dbg, const Monomial &c)
 // {
 // 	dbg.nospace() << "(" << c.first << ", " << c.second << ")";
-// 
+//
 // 	return dbg.space();
 // }
 
@@ -263,7 +263,7 @@ void Polynomial::simpScalars(bool firstValue)
 	Object *value=0;
 	if(!firstValue && m_operator==Operator::minus && !m_scalars.isEmpty())
 		m_scalars.first() = negateObject(m_scalars.first());
-	
+
 	for(QList<Object*>::const_iterator i=m_scalars.constBegin(); i!=m_scalars.constEnd(); ++i) {
 		bool d=false;
 		
