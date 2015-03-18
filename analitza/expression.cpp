@@ -830,6 +830,13 @@ Object* Expression::tree()
 	return d->m_tree;
 }
 
+Object* Expression::takeTree()
+{
+	Object* ret = d->m_tree;
+	setTree(Q_NULLPTR);
+	return ret;
+}
+
 void Expression::setTree(Object* o)
 {
 	d->m_tree=o;

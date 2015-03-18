@@ -294,6 +294,8 @@ void AnalitzaTest::testDerivativeSimple_data()
 	QTest::newRow("log") << "log(x)" << "1/(2.30258509299*x)";
 	QTest::newRow("vector") << "vector { x, x^2 }" << "vector { 1, 2*x }";
 	QTest::newRow("exp") << "exp(x**2)" << "2*x*exp(x^2)";
+	QTest::newRow("halfx") << "(1/2)*x" << "0.5";
+	QTest::newRow("halfx2") << "1/2 x" << "-2/(2*x)^2"; //TODO: could improve the simplification
 }
 
 void AnalitzaTest::testDerivativeSimple()
