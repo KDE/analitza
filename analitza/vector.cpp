@@ -27,11 +27,7 @@ using namespace Analitza;
 Vector::Vector(const Vector& v)
 	: Object(Object::vector)//, m_elements(v.m_elements.size())
 	, m_hasOnlyNumbers(true)
-	, m_isZero(true)
-	, m_isStandardBasisVector(true)
-	, m_nonZeroTaken(false)
-	, m_isDiagonalRowVector(true)
-	, m_nonZeros(0)
+	, m_nonZeroTaken(false) , m_isDiagonalRowVector(true) , m_nonZeros(0)
 {
     m_elements.reserve(v.m_elements.size());
 	foreach(const Object* o, v.m_elements) {
@@ -42,8 +38,6 @@ Vector::Vector(const Vector& v)
 Vector::Vector(int size)
 	: Object(Object::vector)//, m_elements(size)
 	, m_hasOnlyNumbers(true)
-	, m_isZero(true)
-	, m_isStandardBasisVector(true)
 	, m_nonZeroTaken(false)
 	, m_isDiagonalRowVector(true)
 	, m_nonZeros(0)
@@ -54,8 +48,6 @@ Vector::Vector(int size)
 Vector::Vector(Object::ObjectType t, int size)
 	: Object(t)
 	, m_hasOnlyNumbers(true)
-	, m_isZero(true)
-	, m_isStandardBasisVector(true)
 	, m_nonZeroTaken(false)
 	, m_isDiagonalRowVector(true)
 	, m_nonZeros(0)
@@ -66,8 +58,6 @@ Vector::Vector(Object::ObjectType t, int size)
 Vector::Vector(int size, const Cn* value)
 	: Object(Object::vector)//, m_elements(size)
 	, m_hasOnlyNumbers(true)
-	, m_isZero(true)
-	, m_isStandardBasisVector(true)
 	, m_nonZeroTaken(false)
 	, m_isDiagonalRowVector(true)
 	, m_nonZeros(0)
@@ -103,9 +93,6 @@ void Vector::appendBranch(Object* o)
 	const bool isobjzero = o->isZero();
 	
 	if (!isobjzero) {
-		if (m_isZero)
-			m_isZero = false;
-		
 		if (!m_nonZeroTaken)
 			++m_nonZeros;
 	}
@@ -116,12 +103,8 @@ void Vector::appendBranch(Object* o)
 		
 		//puse && !m_nonZeroTaken sin testing
 		if (m_nonZeros > 1 && !m_nonZeroTaken) {
-			m_isStandardBasisVector = false;
 			m_isDiagonalRowVector = false;
 			m_nonZeroTaken = true;
-		} else {
-			if (!isone && !isobjzero && m_isStandardBasisVector)
-				m_isStandardBasisVector = false;
 		}
 	}
 	
@@ -157,4 +140,32 @@ bool Vector::operator==(const Vector& v) const
 		eq = eq && AnalitzaUtils::equalTree(m_elements[i], v.m_elements[i]);
 	}
 	return eq;
+}
+
+bool Vector::isZero() const
+{
+	bool zero = false;
+	foreach(const Object* o, m_elements) {
+		zero |= o->isZero();
+	}
+	return zero;
+}
+
+bool Vector::isStandardBasisVector() const
+{
+	bool hasOne = false;
+	foreach(const Object* o, m_elements) {
+		Q_ASSERT(o->type() == Object::value);
+		Cn* v = (Cn*) o;
+		switch (v->intValue()) {
+			case 0:
+				continue;
+			case 1:
+				hasOne = true;
+				break;
+			default:
+				return false;
+		}
+	}
+	return hasOne;
 }
