@@ -22,6 +22,7 @@
 #include "value.h"
 #include "analitzautils.h"
 #include "operations.h"
+#include "analyzer.h"
 
 using namespace Analitza;
 
@@ -51,6 +52,15 @@ static Object* negateObject(Object* o)
 		a->appendBranch(o);
 		return a;
 	}
+}
+
+static Object* simpExpression(Object* o)
+{
+	Analyzer a;
+	a.setExpression(Expression(o));
+	a.simplify();
+	Expression ret = a.expression();
+	return ret.takeTree();
 }
 
 bool Monomial::isScalar(const Object* o)
@@ -267,7 +277,7 @@ void Polynomial::simpScalars(bool firstValue)
 	for(QList<Object*>::const_iterator i=m_scalars.constBegin(); i!=m_scalars.constEnd(); ++i) {
 		bool d=false;
 		
-		Object* aux = *i;
+		Object* aux = simpExpression(*i);
 		if(value) {
 			QString* err=0;
 			value=Operations::reduce(m_operator.operatorType(), value, aux, &err);

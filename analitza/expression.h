@@ -157,6 +157,12 @@ class ANALITZA_EXPORT Expression
 		 *	Returns the tree associated to this object.
 		 */
 		Object* tree();
+
+		/**
+		 *	Returns the tree associated to this object and clears the object,
+		 *	so the ownership of the tree is acquired by the caller.
+		 */
+		Object* takeTree();
 		
 		void setTree(Object* o);
 		/**
