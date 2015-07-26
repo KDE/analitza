@@ -22,7 +22,7 @@ if(HAVE_OPENGL)
 endif(HAVE_OPENGL)
 
 kde4_add_library(analitzagui SHARED ${analitzagui_SRCS})
-target_link_libraries(analitzagui ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDEUI_LIBS} ${QT_QTSVG_LIBRARY} ${QT_QTOPENGL_LIBRARY} analitza analitzaplot)
+target_link_libraries(analitzagui LINK_PRIVATE ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDEUI_LIBS} ${QT_QTSVG_LIBRARY} ${QT_QTOPENGL_LIBRARY} analitza analitzaplot)
 
 set_target_properties(analitzagui PROPERTIES VERSION ${ANALITZA_LIB_VERSION} SOVERSION ${ANALITZA_LIB_SOVERSION} )
 

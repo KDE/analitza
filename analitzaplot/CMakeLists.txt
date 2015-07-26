@@ -66,6 +66,7 @@ endif(HAVE_OPENGL)
 
 kde4_add_library( analitzaplot SHARED ${analitzaplot_SRCS} )
 target_link_libraries ( analitzaplot
+   LINK_PRIVATE
   ${QT_QTCORE_LIBRARY}
   ${QT_QTGUI_LIBRARY}
   ${KDE4_KDECORE_LIBS}
@@ -75,13 +76,14 @@ target_link_libraries ( analitzaplot
 
 if(HAVE_OPENGL)
     target_link_libraries ( analitzaplot
+     LINK_PRIVATE
         ${OPENGL_gl_LIBRARY}
         ${OPENGL_glu_LIBRARY}
     )
 endif(HAVE_OPENGL)
 
 if(WIN32)
-    target_link_libraries(analitzaplot ${GLEW_LIBRARIES})
+   target_link_libraries(analitzaplot LINK_PRIVATE ${GLEW_LIBRARIES})
 endif(WIN32)
 
 set_target_properties(analitzaplot PROPERTIES VERSION ${ANALITZA_LIB_VERSION} SOVERSION ${ANALITZA_LIB_SOVERSION} )

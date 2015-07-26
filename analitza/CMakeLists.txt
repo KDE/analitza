@@ -45,7 +45,7 @@ set(analitza_SRCS
 )
 
 kde4_add_library(analitza SHARED ${analitza_SRCS})
-target_link_libraries(analitza ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${KDE4_KDECORE_LIBS})
+target_link_libraries(analitza LINK_PRIVATE ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${KDE4_KDECORE_LIBS})
 
 set_target_properties(analitza PROPERTIES VERSION ${ANALITZA_LIB_VERSION} SOVERSION ${ANALITZA_LIB_SOVERSION} )
 
