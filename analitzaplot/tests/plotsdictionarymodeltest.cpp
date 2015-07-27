@@ -41,7 +41,7 @@ void PlotsDictionaryModelTest::testDictionaries()
 {
 	PlotsDictionaryModel m;
 	m.clear(); //we don't want the installed, we want the ones in the source directory
-	QStringList res = KGlobal::dirs()->findAllResources("data", SOURCE_DIR "/../data/plots/*.plots");
+	QStringList res = KGlobal::dirs()->findAllResources("data", KDESRCDIR "/../data/plots/*.plots"); // Qt5: port to QFINDTESTDATA
 	foreach(const QString& f, res) {
 		m.createDictionary(f);
 	}
