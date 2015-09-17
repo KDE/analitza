@@ -44,7 +44,7 @@
 using namespace std;
 using namespace Analitza;
 
-Q_DECLARE_METATYPE(PlotItem*);
+Q_DECLARE_METATYPE(PlotItem*)
 
 void qgluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
 {

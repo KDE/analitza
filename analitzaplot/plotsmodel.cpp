@@ -32,7 +32,7 @@
 
 using namespace Analitza;
 
-Q_DECLARE_METATYPE(PlotItem*);
+Q_DECLARE_METATYPE(PlotItem*)
 
 PlotsModel::PlotsModel(QObject* parent)
     : QAbstractListModel(parent)

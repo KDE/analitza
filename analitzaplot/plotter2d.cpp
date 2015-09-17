@@ -38,7 +38,7 @@
 
 using namespace Analitza;
 
-Q_DECLARE_METATYPE(PlotItem*);
+Q_DECLARE_METATYPE(PlotItem*)
 
 // #define DEBUG_GRAPH
 
