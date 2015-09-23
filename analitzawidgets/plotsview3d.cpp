@@ -140,12 +140,12 @@ void PlotsView3D::modelChanged()
     connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
     connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
 
-    updateGL();
+    update();
 }
 
 void PlotsView3D::renderGL()
 {
-    updateGL();
+    update();
 }
 
 void PlotsView3D::wheelEvent(QWheelEvent* ev)
