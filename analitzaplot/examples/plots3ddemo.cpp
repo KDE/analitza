@@ -27,6 +27,7 @@
 #include "analitzaplot/spacecurve.h"
 #include "analitzaplot/plotsmodel.h"
 #include "plotsview3d.h"
+#include "plotsview3d_es.h"
 #include <plotsfactory.h>
 #include <analitza/expression.h>
 #include <QCommandLineParser>
@@ -36,10 +37,12 @@ using namespace Analitza;
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
     QCommandLineParser parser;
     parser.setApplicationDescription("PlotView3DTest");
     parser.addOption(QCommandLineOption("all-disabled", app.tr("marks all the plots as not visible")));
     parser.addOption(QCommandLineOption("simple-rotation", app.tr("doesn't let you rotate the Z axis")));
+    parser.addOption(QCommandLineOption("experimental-view", app.tr("runs the view under development")));
     parser.addHelpOption();
     parser.process(app);
 
@@ -54,9 +57,6 @@ int main(int argc, char *argv[])
 
     QTreeView *viewsource = new QTreeView(central);
     viewsource->setModel(model);
-    
-    PlotsView3D *view3d = new PlotsView3D(central);
-    view3d->setSelectionModel(viewsource->selectionModel());
 
     //BEGIN test calls
     PlotsFactory* s = PlotsFactory::self();
@@ -74,16 +74,27 @@ int main(int argc, char *argv[])
         for(int i=0; i<model->rowCount(); i++)
             model->setData(model->index(i), false, Qt::CheckStateRole);
 
-    view3d->setUseSimpleRotation(parser.isSet("simple-rotation"));
 
     central->addWidget(viewsource);
-    central->addWidget(view3d);
-    central->setStretchFactor(1, 2);
+    if (parser.isSet("experimental-view")) {
+        PlotsView3DES *view3des = new PlotsView3DES(central);
+        view3des->setSelectionModel(viewsource->selectionModel());
+        view3des->setUseSimpleRotation(parser.isSet("simple-rotation"));
+        view3des->setModel(model);
+        central->addWidget(view3des);
+        view3des->setFocus();
+    } else {
+        PlotsView3D *view3d = new PlotsView3D(central);
+        view3d->setSelectionModel(viewsource->selectionModel());
+        view3d->setUseSimpleRotation(parser.isSet("simple-rotation"));
+        view3d->setModel(model);
+        central->addWidget(view3d);
+        view3d->setFocus();
+    }
 
+    central->setStretchFactor(1, 2);
     mainWindow->setCentralWidget(central);
     mainWindow->show();
-    view3d->setModel(model);
-    view3d->setFocus();
 
     return app.exec();
 }
