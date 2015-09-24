@@ -21,9 +21,9 @@
 
 #include <QVector3D>
 
-#define MAXAROUND 32
-#define MAXSTRIP 32
-#define MAXALONG  32
+static const int MAXAROUND = 32;
+static const int MAXSTRIP = 32;
+static const int MAXALONG = 32;
 
 using namespace Analitza;
 

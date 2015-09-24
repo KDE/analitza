@@ -41,7 +41,7 @@
 #include "lookuptable.h"
 
 // step size of the arrays of vertices and triangles
-#define ALLOC_SIZE 65536
+static const int ALLOC_SIZE = 65536;
 
 
 //_____________________________________________________________________________
