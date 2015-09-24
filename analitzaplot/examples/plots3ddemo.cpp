@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
     //BEGIN test calls
     PlotsFactory* s = PlotsFactory::self();
     model->addPlot(s->requestPlot(Analitza::Expression("t->vector{cos(t), sin(t), t}"), Dim3D).create(Qt::green, "curve"));
+    model->addPlot(s->requestPlot(Analitza::Expression("t->vector {t,t**2,t}"), Dim3D).create(Qt::green, "parametric"));
     model->addPlot(s->requestPlot(Analitza::Expression("(t,p)->2"), Dim3D).create(Qt::darkGreen, "sphere-sphcoords"));
     model->addPlot(s->requestPlot(Analitza::Expression("(r,p)->p"), Dim3D).create(Qt::magenta, "cyl"));
     model->addPlot(s->requestPlot(Analitza::Expression("piecewise{(x^2 + y^2 +z^2 < 35)?2 - (cos(x + (1+power(5,0.5))/2*y) + cos(x - (1+power(5,0.5))/2*y) + cos(y + (1+power(5,0.5))/2*z) + cos(y - (1+power(5,0.5))/2*z) + cos(z - (1+power(5,0.5))/2*x) + cos(z + (1+power(5,0.5))/2*x)),?1}=0"), Dim3D).create(QColor(40, 87, 159), "complex"));

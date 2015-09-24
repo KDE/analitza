@@ -10,6 +10,7 @@ endif(IEEEFP_DIR)
 
 set(analitzaplot_SRCS
     plotsview2d.cpp
+    plotsview3d_es.cpp
     expressionedit.cpp
 )
 if(HAVE_OPENGL)

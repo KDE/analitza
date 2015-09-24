@@ -57,6 +57,7 @@ set ( analitzaplot_SRCS
     plotsmodel.cpp
     plotsdictionarymodel.cpp
     plotter2d.cpp
+    plotter3d_es.cpp
 )
 if(OPENGL_FOUND)
     include_directories ( ${OPENGL_INCLUDE_DIR} )

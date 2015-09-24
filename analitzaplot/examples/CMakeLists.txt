@@ -8,7 +8,7 @@ target_link_libraries(plotsdictionarydemo ${testLibs})
 
 if(HAVE_OPENGL)
     add_executable(plots3ddemo plots3ddemo.cpp)
-    target_link_libraries(plots3ddemo  Qt5::OpenGL ${testLibs})
+    target_link_libraries(plots3ddemo Qt5::OpenGL ${testLibs})
 
     add_executable(export3dplotdemo export3dplotdemo.cpp)
     target_link_libraries(export3dplotdemo Qt5::OpenGL ${testLibs})
