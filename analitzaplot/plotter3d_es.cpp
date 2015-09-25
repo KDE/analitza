@@ -50,7 +50,7 @@ Plotter3DES::Plotter3DES(QAbstractItemModel* model)
     : m_model(model)
     , m_plotStyle(Solid)
     , m_plottingFocusPolicy(All)
-    , m_depth(-400)
+    , m_depth(-10)
     , m_scale(60)
     , m_currentAxisIndicator(InvalidAxis)
     , m_simpleRotation(false)
@@ -66,7 +66,6 @@ Plotter3DES::~Plotter3DES()
         m_itemGeometries.take(itemAt(i)).destroy();
     }
 
-//     glDeleteLists(m_sceneObjects.value(Axes), 1);
 //     glDeleteLists(m_sceneObjects.value(RefPlaneXY), 1);
 //     glDeleteLists(m_sceneObjects.value(XArrowAxisHint), 1);
 //     glDeleteLists(m_sceneObjects.value(YArrowAxisHint), 1);
@@ -119,7 +118,7 @@ void Plotter3DES::resetView()
 
 void Plotter3DES::resetViewPrivate(const QVector3D& rot)
 {
-    m_rot.translate(0,0,-800);
+    m_rot.translate(0,0, -20);
     m_rot.rotate(rot.x(), 1, 0, 0);
     m_rot.rotate(rot.y(), 0, 1, 0);
     m_rot.rotate(rot.z(), 0, 0, 1);
@@ -134,30 +133,6 @@ void Plotter3DES::setViewport(const QRectF& vp)
     projection.perspective(m_scale, m_viewport.width()/m_viewport.height(), 0.1, 3000);
 
     renderGL();
-}
-
-void Plotter3DES::drawCube(const QVector3D& center)
-{
-    program.setUniformValue("color", QColor(Qt::darkGreen));
-    static GLfloat const cubeVertices[] = {
-        0.f, 0.f, 0.f,      //0
-        0.f, 20.f, 0.f,     //1
-        20.f, 20.f, 0.f,    //2
-        20.f, .0f, 0.f,     //3
-        20.f, .0f, 20.f,    //4
-        0.f, 20.f, 20.f,    //5
-        20.f, 20.f, 20.f    //6
-    };
-
-    static const QVector<GLuint> idxs = {
-        0,1,2,3, 1,2,6,5
-    };
-
-    const int vertexLocation = program.attributeLocation("vertex");
-    program.enableAttributeArray(vertexLocation);
-    program.setAttributeArray(vertexLocation, cubeVertices, 3);
-    glDrawElements(GL_QUADS, idxs.size(), GL_UNSIGNED_INT, idxs.constData());
-    program.disableAttributeArray(vertexLocation);
 }
 
 void Plotter3DES::drawPlots()
@@ -187,7 +162,7 @@ void Plotter3DES::drawPlots()
     const int vertexLocation = program.attributeLocation("vertex");
     const int normalLocation = program.attributeLocation("normal");
 
-    initAxes();
+    drawAxes();
     program.enableAttributeArray(vertexLocation);
     program.enableAttributeArray(normalLocation);
     for (int i = 0; i < m_model->rowCount(); ++i)
@@ -492,10 +467,8 @@ PlotItem* Plotter3DES::itemAt(int row) const
     return plot;
 }
 
-void Plotter3DES::initAxes()
+void Plotter3DES::drawAxes()
 {
-    glEnable(GL_LINE_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -505,9 +478,9 @@ void Plotter3DES::initAxes()
     static GLfloat const axisVertices[] = {
         0.f, 0.f, 0.f,
 
-        400.f, .0f, 0.f,
-        0.f, 400.f, 0.f,
-        0.f, 0.f, 400.f
+        10.f, .0f, 0.f,
+        0.f, 10.f, 0.f,
+        0.f, 0.f, 10.f
     };
     static QVector<GLuint> const idxs = {0,1,0,2,0,3};
 
@@ -520,39 +493,39 @@ void Plotter3DES::initAxes()
 
 //     program.setUniformValue("color", XAxisArrowColor);
     static GLfloat const XArrowVertices[] = {
-        400.f,   0.f, 0.f,
+        10.f,   0.f, 0.f,
 
-        380.f,  10.f, 0.f,
-        380.f,   0.f, 10.f,
-        380.f, -10.f, 0.f,
-        380.f,   0.f, -10.f,
-        380.f,  10.f, 0.f
+        9.8f,  0.5f, 0.f,
+        9.8f,   0.f, 0.5f,
+        9.8f, -0.5f, 0.f,
+        9.8f,   0.f, -0.5f,
+        9.8f,  0.5f, 0.f
     };
     program.setAttributeArray(vertexLocation, XArrowVertices, 3);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
 //     program.setUniformValue("color", YAxisArrowColor);
     static GLfloat const YArrowVertices[] = {
-           0.f, 400.f,  0.f,
+           0.f, 10.f,  0.f,
 
-          10.f, 380.f,  0.f,
-           0.f, 380.f, 10.f,
-         -10.f, 380.f,  0.f,
-           0.f, 380.f,-10.f,
-          10.f, 380.f,  0.f
+          0.5f, 9.8f,  0.f,
+           0.f, 9.8f, 0.5f,
+         -0.5f, 9.8f,  0.f,
+           0.f, 9.8f,-0.5f,
+          0.5f, 9.8f,  0.f
     };
     program.setAttributeArray(vertexLocation, YArrowVertices, 3);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
 //     program.setUniformValue("color", ZAxisArrowColor);
     static GLfloat const ZArrowVertices[] = {
-           0.f,  0.f, 400.f,
+           0.f,  0.f, 10.f,
 
-          10.f,  0.f, 380.f,
-           0.f, 10.f, 380.f,
-         -10.f,  0.f, 380.f,
-           0.f,-10.f, 380.f,
-          10.f,  0.f, 380.f
+          0.5f,  0.f, 9.8f,
+           0.f, 0.5f, 9.8f,
+         -0.5f,  0.f, 9.8f,
+           0.f,-0.5f, 9.8f,
+          0.5f,  0.f, 9.8f
     };
     program.setAttributeArray(vertexLocation, ZArrowVertices, 3);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
@@ -560,16 +533,10 @@ void Plotter3DES::initAxes()
     program.disableAttributeArray(vertexLocation);
 }
 
-void Plotter3DES::setReferencePlaneColor(const QColor& color)
+void Plotter3DES::drawRefPlane()
 {
-    m_referencePlaneColor=color;
-    initRefPlanes();
-    renderGL();
 }
 
-void Plotter3DES::initRefPlanes()
-{
-}
 
 
 QPixmap Plotter3DES::renderPixmap() const

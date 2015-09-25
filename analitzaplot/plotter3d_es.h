@@ -112,9 +112,6 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         /** Hide the current indicator of the axis */
         void hideAxisHint();
 
-        /** Set the color of the grids of the reference plane in the 3D view */
-        void setReferencePlaneColor(const QColor &color);
-
         /**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
         void setUseSimpleRotation(bool simplerot);
 
@@ -137,8 +134,8 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
 
         PlotItem *itemAt(int row) const;
 
-        void initAxes();
-        void initRefPlanes();
+        void drawAxes();
+        void drawRefPlane();
 
         QAbstractItemModel* m_model;
 
@@ -162,8 +159,6 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
 
         QOpenGLShaderProgram program;
         QMatrix4x4 projection;
-
-        void drawCube(const QVector3D& center);
 };
 
 }
