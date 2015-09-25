@@ -504,11 +504,11 @@ void Plotter3DES::drawAxes()
     static GLfloat const XArrowVertices[] = {
         10.f,   0.f, 0.f,
 
-        9.8f,  0.5f, 0.f,
-        9.8f,   0.f, 0.5f,
-        9.8f, -0.5f, 0.f,
-        9.8f,   0.f, -0.5f,
-        9.8f,  0.5f, 0.f
+        9.8f,  0.1f, 0.f,
+        9.8f,   0.f, 0.1f,
+        9.8f, -0.1f, 0.f,
+        9.8f,   0.f, -0.1f,
+        9.8f,  0.1f, 0.f
     };
     program.setAttributeArray(vertexLocation, XArrowVertices, 3);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
@@ -517,11 +517,11 @@ void Plotter3DES::drawAxes()
     static GLfloat const YArrowVertices[] = {
            0.f, 10.f,  0.f,
 
-          0.5f, 9.8f,  0.f,
-           0.f, 9.8f, 0.5f,
-         -0.5f, 9.8f,  0.f,
-           0.f, 9.8f,-0.5f,
-          0.5f, 9.8f,  0.f
+          0.1f, 9.8f,  0.f,
+           0.f, 9.8f, 0.1f,
+         -0.1f, 9.8f,  0.f,
+           0.f, 9.8f,-0.1f,
+          0.1f, 9.8f,  0.f
     };
     program.setAttributeArray(vertexLocation, YArrowVertices, 3);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
@@ -530,11 +530,11 @@ void Plotter3DES::drawAxes()
     static GLfloat const ZArrowVertices[] = {
            0.f,  0.f, 10.f,
 
-          0.5f,  0.f, 9.8f,
-           0.f, 0.5f, 9.8f,
-         -0.5f,  0.f, 9.8f,
-           0.f,-0.5f, 9.8f,
-          0.5f,  0.f, 9.8f
+          0.1f,  0.f, 9.8f,
+           0.f, 0.1f, 9.8f,
+         -0.1f,  0.f, 9.8f,
+           0.f,-0.1f, 9.8f,
+          0.1f,  0.f, 9.8f
     };
     program.setAttributeArray(vertexLocation, ZArrowVertices, 3);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
