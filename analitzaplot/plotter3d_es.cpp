@@ -50,7 +50,7 @@ Plotter3DES::Plotter3DES(QAbstractItemModel* model)
     : m_model(model)
     , m_plotStyle(Solid)
     , m_plottingFocusPolicy(All)
-    , m_depth(-10)
+    , m_depth(-5)
     , m_scale(60)
     , m_currentAxisIndicator(InvalidAxis)
     , m_simpleRotation(false)
@@ -544,9 +544,27 @@ void Plotter3DES::drawAxes()
 
 void Plotter3DES::drawRefPlane()
 {
+    glLineWidth(1.f);
+    const int lims = 10;
+    QVector<QVector3D> vxs;
+
+    for(int x=-lims; x<=lims; ++x) {
+        vxs += { x, -lims, m_depth };
+        vxs += { x, lims, m_depth };
+    }
+
+    for(int y=-lims; y<=lims; ++y) {
+        vxs += { -lims, y, m_depth };
+        vxs += { lims, y, m_depth };
+    }
+
+    const int vertexLocation = program.attributeLocation("vertex");
+    program.enableAttributeArray(vertexLocation);
+    program.setUniformValue("color", m_referencePlaneColor);
+    program.setAttributeArray(vertexLocation, GL_FLOAT, vxs.constData(), 3);
+    glDrawArrays(GL_LINES, 0, vxs.size());
+    program.disableAttributeArray(vertexLocation);
 }
-
-
 
 QPixmap Plotter3DES::renderPixmap() const
 {
