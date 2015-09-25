@@ -171,8 +171,8 @@ void Plotter3DES::drawPlots()
     const int normalLocation = program.attributeLocation("normal");
 
     drawAxes();
+    drawRefPlane();
     program.enableAttributeArray(vertexLocation);
-    program.enableAttributeArray(normalLocation);
     for (int i = 0, c = m_model->rowCount(); i < c; ++i)
     {
         PlotItem *item = itemAt(i);
@@ -191,6 +191,7 @@ void Plotter3DES::drawPlots()
         {
             if(!m_itemGeometries.contains(item))
                 continue;
+            program.enableAttributeArray(normalLocation);
             auto it = m_itemGeometries[item];
             it.bind();
 
@@ -200,10 +201,10 @@ void Plotter3DES::drawPlots()
             program.setAttributeBuffer(normalLocation, GL_DOUBLE, offsetNormal, 3);
             glDrawElements(GL_TRIANGLES, surf->indexes().size(), GL_UNSIGNED_INT, surf->indexes().constData());
             it.release();
+            program.disableAttributeArray(normalLocation);
         }
     }
     program.disableAttributeArray(vertexLocation);
-    program.disableAttributeArray(normalLocation);
     program.release();
 }
 
