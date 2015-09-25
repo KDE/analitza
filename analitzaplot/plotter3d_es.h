@@ -158,7 +158,7 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         QColor m_referencePlaneColor;
 
         QOpenGLShaderProgram program;
-        QMatrix4x4 projection;
+        QMatrix4x4 m_projection;
 };
 
 }

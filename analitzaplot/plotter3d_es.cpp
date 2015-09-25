@@ -76,34 +76,40 @@ void Plotter3DES::initGL()
 {
     initializeOpenGLFunctions();
 
-
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_POLYGON_SMOOTH);
-    glEnable(GL_NORMALIZE);
+
     glClearColor(0, 0, 0, 1);
 //     glEnable(GL_CULL_FACE);
 
-    GLfloat ambient[] = { .0, .0, .0, 1.0 };
-    GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-    GLfloat local_view[] = { 1.0 };
-    static GLfloat position[4] = {0.0, 0.0, 1000.0, 0.0};
-
     program.addShaderFromSourceCode(QOpenGLShader::Vertex,
+        "#version 130\n" //TODO: compute version at runtime
         "attribute highp vec4 vertex;\n"
+        "attribute highp vec4 normal;\n"
+        "varying vec4 vx;\n"
+        "varying vec4 vertNormal;\n"
         "uniform highp mat4 matrix;\n"
+        "uniform highp mat4 projection;\n"
+
         "void main(void)\n"
         "{\n"
         "   gl_Position = matrix * vertex;\n"
+        "   vx = vertex;\n"
+        "   vertNormal = normalize(normal * vertex);\n"
         "}"
     );
     program.addShaderFromSourceCode(QOpenGLShader::Fragment,
+        "#version 130\n" //TODO: compute version at runtime
         "uniform mediump vec4 color;\n"
-        "uniform highp vec3 lightPos;\n"
+        "uniform highp vec4 lightPos;\n"
+
+        "in highp vec4 vx;\n"
+        "in highp vec4 vertNormal;\n"
         "void main(void)\n"
         "{\n"
-        "   gl_FragColor = color;\n"
-//         "    gl_FragColor = vec4(1,0,0,1);"
+        "   highp vec4 Lv = normalize(lightPos - vx);\n"
+        "   highp float incidence = max(dot(vertNormal, Lv), 0.5);\n"
+        "   highp vec3 col = incidence * color.rgb;\n"
+        "   gl_FragColor = vec4(col, 1.0);\n"
         "}"
     );
     program.link();
@@ -129,8 +135,8 @@ void Plotter3DES::setViewport(const QRectF& vp)
 {
     m_viewport = vp;
 
-    projection.setToIdentity();
-    projection.perspective(m_scale, m_viewport.width()/m_viewport.height(), 0.1, 3000);
+    m_projection.setToIdentity();
+    m_projection.perspective(m_scale, m_viewport.width()/m_viewport.height(), 0.1, 3000);
 
     renderGL();
 }
@@ -156,8 +162,10 @@ void Plotter3DES::drawPlots()
         }
     }
     program.bind();
-    program.setUniformValue("matrix", projection * m_rot);
-//     program.setUniformValue("lightPos", QVector4D {0.0, 0.0, 1000.0, 0.0});
+    program.setUniformValue("projection", m_projection);
+    program.setUniformValue("matrix", m_projection * m_rot);
+
+    program.setUniformValue("lightPos", QVector4D { 500.0, 500.0, 500.0, 0 });
 
     const int vertexLocation = program.attributeLocation("vertex");
     const int normalLocation = program.attributeLocation("normal");
@@ -165,7 +173,7 @@ void Plotter3DES::drawPlots()
     drawAxes();
     program.enableAttributeArray(vertexLocation);
     program.enableAttributeArray(normalLocation);
-    for (int i = 0; i < m_model->rowCount(); ++i)
+    for (int i = 0, c = m_model->rowCount(); i < c; ++i)
     {
         PlotItem *item = itemAt(i);
 
