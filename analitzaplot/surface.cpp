@@ -36,6 +36,7 @@ void Surface::update(const QVector3D & oppositecorner1, const QVector3D & opposi
     static_cast<AbstractSurface*>(backend())->update(oppositecorner1, oppositecorner2);
 }
 
+//TODO use qreal or whatever compatible with GLfloat on opengles =.=
 const QVector< double > Surface::vertices() const
 {
     Q_ASSERT(backend());

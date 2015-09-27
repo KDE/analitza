@@ -147,7 +147,7 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         //scene properties
         QMap<SceneObjectType, uint > m_sceneObjects;
         QRectF m_viewport;
-        const qreal m_depth;
+        const GLfloat m_depth;
         qreal m_scale;
         QMatrix4x4 m_rot;
         QVector3D m_rotFixed;

@@ -87,26 +87,29 @@ void Plotter3DES::initGL()
         "attribute highp vec4 normal;\n"
         "varying vec4 vx;\n"
         "varying vec4 vertNormal;\n"
+        "varying vec4 lp;\n"
         "uniform highp mat4 matrix;\n"
         "uniform highp mat4 projection;\n"
+        "uniform highp vec4 lightPos;\n"
 
         "void main(void)\n"
         "{\n"
         "   gl_Position = matrix * vertex;\n"
         "   vx = vertex;\n"
+        "   lp = lightPos * matrix;\n"
         "   vertNormal = normalize(normal * vertex);\n"
         "}"
     );
     program.addShaderFromSourceCode(QOpenGLShader::Fragment,
         "#version 130\n" //TODO: compute version at runtime
         "uniform mediump vec4 color;\n"
-        "uniform highp vec4 lightPos;\n"
 
+        "in highp vec4 lp;\n"
         "in highp vec4 vx;\n"
         "in highp vec4 vertNormal;\n"
         "void main(void)\n"
         "{\n"
-        "   highp vec4 Lv = normalize(lightPos - vx);\n"
+        "   highp vec4 Lv = normalize(lp - vx);\n"
         "   highp float incidence = max(dot(vertNormal, Lv), 0.5);\n"
         "   highp vec3 col = incidence * color.rgb;\n"
         "   gl_FragColor = vec4(col, 1.0);\n"
@@ -478,9 +481,6 @@ PlotItem* Plotter3DES::itemAt(int row) const
 
 void Plotter3DES::drawAxes()
 {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     glLineWidth(1.5f);
 
     program.setUniformValue("color", QColor(Qt::red));
