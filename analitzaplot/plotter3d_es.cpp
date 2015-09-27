@@ -548,12 +548,12 @@ void Plotter3DES::drawRefPlane()
     const int lims = 10;
     QVector<QVector3D> vxs;
 
-    for(int x=-lims; x<=lims; ++x) {
+    for(float x=-lims; x<=lims; ++x) {
         vxs += { x, -lims, m_depth };
         vxs += { x, lims, m_depth };
     }
 
-    for(int y=-lims; y<=lims; ++y) {
+    for(float y=-lims; y<=lims; ++y) {
         vxs += { -lims, y, m_depth };
         vxs += { lims, y, m_depth };
     }
