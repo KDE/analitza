@@ -198,10 +198,10 @@ void Plotter3DES::drawPlots()
             auto it = m_itemGeometries[item];
             it.bind();
 
-            const auto offsetNormal = sizeof(double)*surf->vertices().size();
+            const auto offsetNormal = 3*sizeof(float)*surf->vertices().size();
 
-            program.setAttributeBuffer(vertexLocation, GL_DOUBLE, 0, 3);
-            program.setAttributeBuffer(normalLocation, GL_DOUBLE, offsetNormal, 3);
+            program.setAttributeBuffer(vertexLocation, GL_FLOAT, 0, 3);
+            program.setAttributeBuffer(normalLocation, GL_FLOAT, offsetNormal, 3);
             glDrawElements(GL_TRIANGLES, surf->indexes().size(), GL_UNSIGNED_INT, surf->indexes().constData());
             it.release();
             program.disableAttributeArray(normalLocation);
@@ -217,6 +217,18 @@ QByteArray fromNumbers(const QVector<T>& input)
     QByteArray ret;
     foreach(qreal r, input) {
         ret += QByteArray::number(r)+QByteArrayLiteral(" ");
+    }
+    ret.chop(1);
+    return ret;
+}
+
+QByteArray fromNumbers(const QVector<QVector3D>& input)
+{
+    QByteArray ret;
+    foreach(const QVector3D& r, input) {
+        ret += QByteArray::number(r.x())+QByteArrayLiteral(" ");
+        ret += QByteArray::number(r.y())+QByteArrayLiteral(" ");
+        ret += QByteArray::number(r.z())+QByteArrayLiteral(" ");
     }
     ret.chop(1);
     return ret;
@@ -452,10 +464,10 @@ void Plotter3DES::addPlots(PlotItem* item)
         buffer.create();
         buffer.bind();
 
-        const auto offsetNormal = sizeof(double)*surf->vertices().size();
-        const auto offsetEnd = offsetNormal + sizeof(double)*surf->normals().size();
+        const auto offsetNormal = 3*sizeof(float)*surf->vertices().size();
+        const auto offsetEnd = offsetNormal + 3*sizeof(float)*surf->normals().size();
         buffer.allocate(surf->vertices().constData(), offsetEnd);
-        buffer.write(offsetNormal, surf->normals().constData(), sizeof(double)*surf->normals().size());
+        buffer.write(offsetNormal, surf->normals().constData(), 3*sizeof(float)*surf->normals().size());
 
         Q_ASSERT(buffer.isCreated());
 

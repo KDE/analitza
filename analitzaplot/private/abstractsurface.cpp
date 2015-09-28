@@ -146,11 +146,9 @@ void AbstractSurface::createFace(QVector3D *buffer)
 {
     QVector3D n = QVector3D::normal(buffer[0], buffer[1], buffer[2]);
 
-    vertices << buffer[0].x() << buffer[0].y() << buffer[0].z() <<
-                buffer[1].x() << buffer[1].y() << buffer[1].z() <<
-                buffer[2].x() << buffer[2].y() << buffer[2].z();
+    vertices << buffer[0] << buffer[1] << buffer[2];
 
-    normals << n.x() << n.y() << n.z(); 
+    normals << n;
 
     indexes.append(indexes.size());
     indexes.append(indexes.size());

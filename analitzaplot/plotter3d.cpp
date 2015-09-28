@@ -267,8 +267,8 @@ void Plotter3D::drawPlots()
             //por eso en el array buffer se ponen los datos de lops vertices y de las normales
 
             glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries.value(surf).second);
-            glVertexPointer(3, GL_DOUBLE, 0, 0);
-            glNormalPointer(GL_DOUBLE, sizeof(double)*3, 0);
+            glVertexPointer(3, GL_FLOAT, 0, 0);
+            glNormalPointer(GL_FLOAT, sizeof(float)*3, 0);
 
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries.value(surf).first);
 
@@ -304,7 +304,7 @@ void Plotter3D::drawPlots()
 }
 
 template <typename T>
-QByteArray fromNumbers(const QVector<T>& input)
+static QByteArray fromNumbers(const QVector<T>& input)
 {
     QByteArray ret;
     foreach(qreal r, input) {
@@ -314,7 +314,19 @@ QByteArray fromNumbers(const QVector<T>& input)
     return ret;
 }
 
-QVector<int> makeTriangles(const QVector<uint>& input)
+static QByteArray fromNumbers(const QVector<QVector3D>& input)
+{
+    QByteArray ret;
+    foreach(const QVector3D &r, input) {
+        ret += QByteArray::number(r.x())+QByteArrayLiteral(" ");
+        ret += QByteArray::number(r.y())+QByteArrayLiteral(" ");
+        ret += QByteArray::number(r.z())+QByteArrayLiteral(" ");
+    }
+    ret.chop(1);
+    return ret;
+}
+
+static QVector<int> makeTriangles(const QVector<uint>& input)
 {
     QVector<int> ret;
     int i = 0;
@@ -649,9 +661,9 @@ void Plotter3D::addPlots(PlotItem* item)
         //vertices & normals vbo just allows 1 buffferdata of type array_buffer
         glGenBuffers(1, &m_itemGeometries[item].second);
         glBindBuffer(GL_ARRAY_BUFFER, m_itemGeometries[item].second);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(double)*surf->vertices().size() + sizeof(double)*surf->normals().size(), 0, GL_STREAM_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(double)*surf->vertices().size(), surf->vertices().data());
-        glBufferSubData(GL_ARRAY_BUFFER, sizeof(double)*surf->vertices().size(), sizeof(double)*surf->normals().size(), surf->normals().data());
+        glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*surf->vertices().size() + 3*sizeof(float)*surf->normals().size(), 0, GL_STREAM_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, 3*sizeof(float)*surf->vertices().size(), surf->vertices().data());
+        glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*surf->vertices().size(), 3*sizeof(float)*surf->normals().size(), surf->normals().data());
         //TODO ifdef debug_Graph
         //glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
         //qDebug() << "Vertex Array in VBO: " << bufferSize << " bytes";

@@ -102,18 +102,16 @@ void ImplicitSurf::update(const QVector3D & /*oppositecorner1*/, const QVector3D
     //TODO find a better way to avoi this loops
     for (int i = 0; i < nverts(); ++i)
     {
-        vertices.append(vert(i)->x);
-        vertices.append(vert(i)->y);
-        vertices.append(vert(i)->z);
-        
-        normals.append(vert(i)->nx);
-        normals.append(vert(i)->ny);
-        normals.append(vert(i)->nz);
+        auto v = vert(i);
+
+        vertices.append(QVector3D(v->x, v->y, v->z));
+        normals.append(QVector3D(v->nx, v->ny, v->nz));
     }
 
     for (int i = 0; i < ntrigs(); ++i)
     {
-       indexes <<  trig(i)->v1  <<  trig(i)->v2 <<  trig(i)->v3;
+        auto t = trig(i);
+        indexes << t->v1 << t->v2 << t->v3;
     }
 }
 

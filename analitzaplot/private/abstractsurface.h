@@ -36,8 +36,8 @@ public:
     //Own
     virtual void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) = 0;
 
-    QVector<double> vertices;
-    QVector<double> normals;
+    QVector<QVector3D> vertices;
+    QVector<QVector3D> normals;
     QVector<unsigned int> indexes;
     
 protected:

@@ -48,9 +48,9 @@ public:
     void update(const QVector3D& oppositecorner1, const QVector3D& oppositecorner2);
 
     // Surface data
-    const QVector<double> vertices() const;
-    const QVector<double> normals() const;
-    const QVector<unsigned int> indexes() const;
+    QVector<QVector3D> vertices() const;
+    QVector<QVector3D> normals() const;
+    QVector<unsigned int> indexes() const;
 };
 
 }
