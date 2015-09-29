@@ -73,7 +73,9 @@ target_link_libraries ( AnalitzaPlot
 )
 
 if(HAVE_OPENGL)
-    target_link_libraries ( AnalitzaPlot ${OPENGL_gl_LIBRARY} )
+    target_link_libraries(AnalitzaPlot ${OPENGL_gl_LIBRARY} )
+elseif(CMAKE_SYSTEM_NAME STREQUAL Android)
+    target_link_libraries(AnalitzaPlot GLESv2)
 endif()
 
 if(WIN32)

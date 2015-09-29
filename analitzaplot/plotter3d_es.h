@@ -56,10 +56,6 @@ namespace Analitza
 class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
 {
     public:
-        static const quint8 XAxisArrowColor[];
-        static const quint8 YAxisArrowColor[];
-        static const quint8 ZAxisArrowColor[];
-
         //TODO transparency effect when select current item
 //         enum FocusEffect {};
 
@@ -68,7 +64,7 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
 
         virtual void initGL();
         virtual void setViewport(const QRectF &vp);
-        virtual void drawPlots();
+        void drawPlots();
         virtual int currentPlot() const = 0;
         virtual void modelChanged() = 0;
 
@@ -128,6 +124,10 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         void addPlots(PlotItem* item);
 
     private:
+        static const quint8 XAxisArrowColor[];
+        static const quint8 YAxisArrowColor[];
+        static const quint8 ZAxisArrowColor[];
+
         void resetViewPrivate(const QVector3D& rot);
 
         enum SceneObjectType {Axes, RefPlaneXY, XArrowAxisHint, YArrowAxisHint, ZArrowAxisHint};

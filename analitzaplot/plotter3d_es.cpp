@@ -373,9 +373,9 @@ void Plotter3DES::setUseSimpleRotation(bool simplerot)
 
 void Plotter3DES::rotate(int dx, int dy)
 {
-    qreal ax = -dy;
-    qreal ay = -dx;
-    double angle = sqrt(ax*ax + ay*ay)/(m_viewport.width() + 1)*360.0;
+    const qreal ax = -dy;
+    const qreal ay = -dx;
+    const double angle = sqrt(ax*ax + ay*ay)/(m_viewport.width() + 1)*360.0;
 
     if (m_simpleRotation) {
         m_rot.setToIdentity();
@@ -385,23 +385,25 @@ void Plotter3DES::rotate(int dx, int dy)
         m_rot.rotate(angle, m_rotFixed.normalized());
         renderGL();
     } else {
-        GLfloat matrix[16] = {0}; // model view matrix from current OpenGL state
+//         TODO: figure out how to do this on an opengl es compatible way
 
-        glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
-
-        QMatrix4x4 matrix4(matrix, 4, 4);
-        bool couldInvert;
-        matrix4 = matrix4.inverted(&couldInvert);
-
-        if (couldInvert) {
-            QVector3D rot(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay,
-                          matrix4.row(0).y()*ax + matrix4.row(1).y()*ay,
-                          matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
-
-            m_rot.rotate(rot.length(), rot.normalized());
-
-            renderGL();
-        }
+//         GLfloat matrix[16] = {0}; // model view matrix from current OpenGL state
+//
+//         glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+//
+//         QMatrix4x4 matrix4(matrix, 4, 4);
+//         bool couldInvert;
+//         matrix4 = matrix4.inverted(&couldInvert);
+//
+//         if (couldInvert) {
+//             QVector3D rot(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay,
+//                           matrix4.row(0).y()*ax + matrix4.row(1).y()*ay,
+//                           matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
+//
+//             m_rot.rotate(rot.length(), rot.normalized());
+//
+//             renderGL();
+//         }
     }
 }
 

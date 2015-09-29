@@ -31,7 +31,7 @@ namespace Analitza {
 class ExpressionWrapper : public QObject
 {
 	Q_OBJECT
-	Q_PROPERTY(QString expression READ toString WRITE setText);
+	Q_PROPERTY(QString expression READ toString WRITE setText)
 	public:
 		ExpressionWrapper(QObject* parent=0);
 		explicit ExpressionWrapper(const Analitza::Expression & e, QObject* parent = 0);

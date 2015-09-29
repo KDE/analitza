@@ -25,7 +25,7 @@
 
 #include <QVariant>
 
-Q_DECLARE_METATYPE(ExpressionWrapper*);
+Q_DECLARE_METATYPE(ExpressionWrapper*)
 
 ExpressionWrapper::ExpressionWrapper(QObject* parent)
 	: QObject(parent)
