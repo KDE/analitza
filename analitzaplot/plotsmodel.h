@@ -22,11 +22,13 @@
 
 #include <QAbstractListModel>
 
+#include "plottingenums.h"
 #include "analitzaplot/analitzaplotexport.h"
 
 namespace Analitza
 {
 class PlotItem;
+class Variables;
 
 /**
  * \class PlotsModel
@@ -70,6 +72,11 @@ public:
     Q_SCRIPTABLE void clear();
 
     void setResolution(int res);
+
+    /**
+     * Helper method to help easily add elements to the model
+     */
+    QStringList addFunction(const QString& expression, Analitza::Dimension dim, Analitza::Variables* vars);
 
 protected:
     void emitChanged(PlotItem* it);

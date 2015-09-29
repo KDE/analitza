@@ -102,35 +102,15 @@ void Graph2DMobile::translate(qreal x, qreal y)
 	moveViewport(QPoint(x,y));
 }
 
-QColor randomFunctionColor() { return QColor::fromHsv(qrand()%255, 255, 225); }
-
 QStringList Graph2DMobile::addFunction(const QString& expression, Analitza::Variables* vars)
 {
-	Analitza::Expression e(expression, Analitza::Expression::isMathML(expression));
 	PlotsModel* plotsmodel = qobject_cast<PlotsModel*>(model());
 	if(!plotsmodel)
 		qWarning() << "only can add plots to a PlotsModel instance";
-	QString fname;
-	do {
-		fname = plotsmodel->freeId();
-	} while(vars && vars->contains(fname));
-	QColor fcolor = randomFunctionColor();
 	
-	QStringList err;
-	PlotBuilder req = PlotsFactory::self()->requestPlot(e, Dim2D, vars);
-	if(req.canDraw()) {
-		PlaneCurve* it = static_cast<PlaneCurve*>(req.create(fcolor, fname));
-		
-		if(it->isCorrect())
-			plotsmodel->addPlot(it);
-		else {
-			err = it->errors();
-			delete it;
-		}
-	}
-	
-	return err;
+	return plotsmodel->addFunction(expression, Dim2D, vars);
 }
+
 void Graph2DMobile::setTicksShownAtAll(bool shown)
 {
 	Qt::Orientations show = shown ? Qt::Vertical|Qt::Horizontal : Qt::Orientations(0);

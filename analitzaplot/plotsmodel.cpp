@@ -23,12 +23,13 @@
 #include "plotitem.h"
 
 #include "analitza/analitzautils.h"
+#include <analitza/variables.h>
+#include <analitzaplot/functiongraph.h>
 
 #include <QDebug>
 #include <QIcon>
 #include <QPixmap>
 #include <QCoreApplication>
-#include <analitzaplot/functiongraph.h>
 
 using namespace Analitza;
 
@@ -257,3 +258,30 @@ void PlotsModel::setResolution(int res)
     }
 }
 
+static QColor randomFunctionColor() { return QColor::fromHsv(qrand()%255, 255, 225); }
+
+QStringList PlotsModel::addFunction(const QString& expression, Dimension dim, Analitza::Variables* vars)
+{
+	Analitza::Expression e(expression, Analitza::Expression::isMathML(expression));
+
+	QString fname;
+	do {
+		fname = freeId();
+	} while(vars && vars->contains(fname));
+	QColor fcolor = randomFunctionColor();
+
+	QStringList err;
+	PlotBuilder req = PlotsFactory::self()->requestPlot(e, dim, vars);
+	if(req.canDraw()) {
+		auto it = req.create(fcolor, fname);
+
+		if(it->isCorrect())
+			addPlot(it);
+		else {
+			err = it->errors();
+			delete it;
+		}
+	}
+
+	return err;
+}
