@@ -1,5 +1,5 @@
 /*************************************************************************************
- *  Copyright (C) 2012 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2015 by Aleix Pol <aleixpol@kde.org>                               *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -16,22 +16,46 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#include "analitzadeclarativeplugin.h"
-#include "analitzawrapper.h"
-#include <analitzaplot/plotsmodel.h>
-#include <analitzagui/variablesmodel.h>
-#include <analitza/variables.h>
-#include <graph2dmobile.h>
-#include <graph3ditem.h>
-#include <QQuickItem>
+#ifndef GRAPH3DITEM_H
+#define GRAPH3DITEM_H
 
-void AnalitzaDeclarativePlugin::registerTypes(const char* uri)
+#include <QQuickFramebufferObject>
+#include "plotter3d_es.h"
+
+class Graph3DItem;
+
+class Plotter3DRenderer : public QObject, public Analitza::Plotter3DES
 {
-    qmlRegisterType<AnalitzaWrapper>(uri, 1, 0, "Analitza");
-    qmlRegisterType<ExpressionWrapper>(uri, 1, 0, "Expression");
-	qmlRegisterType<Graph2DMobile>(uri, 1, 0, "Graph2DView");
-	qmlRegisterType<Graph3DItem>(uri, 1, 1, "Graph3DView");
-    qmlRegisterType<Analitza::PlotsModel>(uri, 1, 0, "PlotsModel");
-    qmlRegisterType<Analitza::VariablesModel>(uri, 1, 0, "VariablesModel");
-    qmlRegisterInterface<Analitza::Variables*>("Analitza::Variables");
-}
+public:
+    Plotter3DRenderer(Graph3DItem* item);
+
+    int currentPlot() const override { return 0; }
+    void modelChanged() override {}
+    void renderGL() override;
+
+private:
+    const Graph3DItem* m_item;
+};
+
+class Graph3DItem : public QQuickFramebufferObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
+    public:
+        Graph3DItem(QQuickItem* parent = Q_NULLPTR);
+        ~Graph3DItem();
+
+        QAbstractItemModel* model() const;
+        void setModel(QAbstractItemModel* model);
+
+        QQuickFramebufferObject::Renderer * createRenderer() const override;
+
+        Q_SCRIPTABLE QStringList addFunction(const QString& expression, Analitza::Variables* vars=0);
+        Q_SCRIPTABLE void rotate(qreal x, qreal y);
+        Q_SCRIPTABLE void scale(qreal s);
+
+    private:
+        Plotter3DRenderer *m_plotter;
+};
+
+#endif

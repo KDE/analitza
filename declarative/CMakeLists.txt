@@ -5,7 +5,7 @@ include_directories(
         ${CMAKE_BINARY_DIR}
 )
 
-add_library(analitzadeclarativeplugin SHARED analitzadeclarativeplugin.cpp graph2dmobile.cpp analitzawrapper.cpp)
+add_library(analitzadeclarativeplugin SHARED analitzadeclarativeplugin.cpp graph2dmobile.cpp graph3ditem analitzawrapper.cpp)
 
 target_link_libraries(analitzadeclarativeplugin
 	Qt5::Core Qt5::Gui Qt5::Qml Qt5::Quick
