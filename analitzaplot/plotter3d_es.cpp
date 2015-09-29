@@ -153,17 +153,6 @@ void Plotter3DES::drawPlots()
         return;
     }
 
-    if (m_itemGeometries.isEmpty())
-    {
-        // don't call any function that calls updateGL or we'll go into an infinite recursion
-        for (int i = 0; i < m_model->rowCount(); ++i) {
-            PlotItem* item = itemAt(i);
-
-#pragma message("this should not happen at render time")
-            if (item && item->isVisible())
-                addPlots(item);
-        }
-    }
     program.bind();
     program.setUniformValue("projection", m_projection);
     program.setUniformValue("matrix", m_projection * m_rot);
@@ -294,22 +283,6 @@ void Plotter3DES::updatePlots(const QModelIndex & parent, int s, int e)
     Q_ASSERT(!parent.isValid());
     Q_UNUSED(parent);
 
-    if (m_model->rowCount() == 0)
-    {
-        for(int i=s; i<=e; i++) {
-            PlotItem *item = itemAt(i);
-
-            if (item && item->spaceDimension() == Dim3D && item->isVisible()) {
-                addPlots(item);
-            }
-        }
-
-        renderGL();
-
-        return ;
-    }
-
-
     for(int i=s; i<=e; i++) {
         PlotItem *item = itemAt(i);
 
@@ -325,15 +298,12 @@ void Plotter3DES::updatePlots(const QModelIndex & parent, int s, int e)
         }
     }
 
-    if (m_model->rowCount() != m_itemGeometries.size())
+    const int count = m_model->rowCount();
+    if (count <= e)
     {
-        //if the user delete a item from the model
-//         if (m_model->rowCount() > m_itemGeometries.size())
+        for (int i = e; i < count; ++i)
         {
-            for (int i = 0; i < m_itemGeometries.size(); ++i)
-            {
-                m_itemGeometries.remove(itemAt(i));
-            }
+            m_itemGeometries.remove(itemAt(i));
         }
     }
 
@@ -342,7 +312,7 @@ void Plotter3DES::updatePlots(const QModelIndex & parent, int s, int e)
 
 void Plotter3DES::setModel(QAbstractItemModel* f)
 {
-    m_model=f;
+    m_model = f;
 
     modelChanged();
 }
