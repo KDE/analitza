@@ -40,6 +40,8 @@ Graph3DItem::Graph3DItem(QQuickItem* parent)
     //FIXME
     m_plotter->setUseSimpleRotation(true);
     setModel(new PlotsModel(this));
+
+    setMirrorVertically(true);
 }
 
 Graph3DItem::~Graph3DItem()

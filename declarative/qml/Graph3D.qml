@@ -22,8 +22,6 @@ import QtQuick.Layouts 1.1
 import org.kde.analitza 1.1
 
 Graph3DView {
-    mirrorVertically: true
-
     MouseArea {
         id: mouse
         anchors.fill: parent
