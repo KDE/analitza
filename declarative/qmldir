@@ -3,3 +3,4 @@ module org.kde.analitza
 plugin analitzadeclarativeplugin
 
 Graph2D 1.0 Graph2D.qml
+Graph3D 1.1 Graph3D.qml

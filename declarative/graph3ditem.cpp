@@ -38,8 +38,8 @@ Graph3DItem::Graph3DItem(QQuickItem* parent)
     , m_plotter(new Plotter3DRenderer(this))
 {
     //FIXME
-    m_plotter->setModel(new PlotsModel(this));
     m_plotter->setUseSimpleRotation(true);
+    setModel(new PlotsModel(this));
 }
 
 Graph3DItem::~Graph3DItem()
@@ -51,6 +51,7 @@ QStringList Graph3DItem::addFunction(const QString& expression, Analitza::Variab
 	if(!plotsmodel)
 		qWarning() << "only can add plots to a PlotsModel instance";
 
+    qDebug() << "add!";
 	return plotsmodel->addFunction(expression, Dim3D, vars);
 }
 
@@ -61,7 +62,17 @@ QAbstractItemModel* Graph3DItem::model() const
 
 void Graph3DItem::setModel(QAbstractItemModel* model)
 {
+    disconnect(m_plotter->model(), 0, this, 0);
+
     m_plotter->setModel(model);
+
+    connect(model, &QAbstractItemModel::dataChanged, m_plotter, [this](const QModelIndex& start, const QModelIndex& end)
+        { m_plotter->updatePlots(QModelIndex(), start.row(), end.row()); }
+    );
+
+    auto updateCount = [this](const QModelIndex &parent, int start, int end) { m_plotter->updatePlots(parent, start, end); };
+    connect(model, &QAbstractItemModel::rowsInserted, this, updateCount);
+    connect(model, &QAbstractItemModel::rowsAboutToBeRemoved, this, updateCount);
 }
 
 void Graph3DItem::rotate(qreal x, qreal y)

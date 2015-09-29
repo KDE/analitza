@@ -23,4 +23,25 @@ import org.kde.analitza 1.1
 
 Graph3DView {
     mirrorVertically: true
+
+    MouseArea {
+        id: mouse
+        anchors.fill: parent
+        property int lastX: 0
+        property int lastY: 0
+        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+
+        onPressed: { lastX=mouse.x; lastY=mouse.y }
+
+        onPositionChanged: {
+            view.rotate(mouse.x-lastX, mouse.y-lastY)
+
+            lastX=mouse.x
+            lastY=mouse.y
+        }
+
+        onWheel: {
+            view.scale(wheel.angleDelta.y>0 ? 0.9 : 1.1, wheel.x, wheel.y)
+        }
+    }
 }

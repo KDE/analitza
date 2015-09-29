@@ -16,5 +16,6 @@ install(FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/analitza)
 
 install( FILES
         qml/Graph2D.qml
+        qml/Graph3D.qml
         DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/analitza
 )
