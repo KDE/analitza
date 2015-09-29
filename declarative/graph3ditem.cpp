@@ -41,7 +41,9 @@ Graph3DItem::Graph3DItem(QQuickItem* parent)
     m_plotter->setUseSimpleRotation(true);
     setModel(new PlotsModel(this));
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
     setMirrorVertically(true);
+#endif
 }
 
 Graph3DItem::~Graph3DItem()
