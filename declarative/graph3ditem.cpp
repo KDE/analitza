@@ -55,7 +55,6 @@ QStringList Graph3DItem::addFunction(const QString& expression, Analitza::Variab
 	if(!plotsmodel)
 		qWarning() << "only can add plots to a PlotsModel instance";
 
-    qDebug() << "add!";
 	return plotsmodel->addFunction(expression, Dim3D, vars);
 }
 
