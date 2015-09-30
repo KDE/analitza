@@ -46,6 +46,25 @@ const GLubyte Plotter3DES::XAxisArrowColor[] = {250 -1 , 1, 1};
 const GLubyte Plotter3DES::YAxisArrowColor[] = {1, 255 - 1, 1};
 const GLubyte Plotter3DES::ZAxisArrowColor[] = {1, 1, 255 - 1};
 
+static QOpenGLBuffer createSurfaceBuffer(Surface* surf)
+{
+    Q_ASSERT(QOpenGLContext::currentContext());
+
+    QOpenGLBuffer buffer(QOpenGLBuffer::VertexBuffer);
+    buffer.create();
+    buffer.bind();
+
+    const auto offsetNormal = 3*sizeof(float)*surf->vertices().size();
+    const auto offsetEnd = offsetNormal + 3*sizeof(float)*surf->normals().size();
+    buffer.allocate(surf->vertices().constData(), offsetEnd);
+    buffer.write(offsetNormal, surf->normals().constData(), 3*sizeof(float)*surf->normals().size());
+
+    Q_ASSERT(buffer.isCreated());
+    buffer.release();
+
+    return buffer;
+}
+
 Plotter3DES::Plotter3DES(QAbstractItemModel* model)
     : m_model(model)
     , m_plotStyle(Solid)
@@ -181,10 +200,16 @@ void Plotter3DES::drawPlots()
         }
         else if (Surface *surf = dynamic_cast<Surface*>(item))
         {
-            if(!m_itemGeometries.contains(item))
-                continue;
+            QOpenGLBuffer it;
+            if(!m_itemGeometries.contains(surf)) {
+                m_itemGeometries[surf] = it = createSurfaceBuffer(surf);
+            } else {
+                it = m_itemGeometries[surf];
+            }
+
+            Q_ASSERT(it.isCreated());
+
             program.enableAttributeArray(normalLocation);
-            auto it = m_itemGeometries[item];
             it.bind();
 
             const auto offsetNormal = 3*sizeof(float)*surf->vertices().size();
@@ -289,7 +314,7 @@ void Plotter3DES::updatePlots(const QModelIndex & parent, int s, int e)
         if (!item)
             return;
 
-        m_itemGeometries[item].destroy();
+        m_itemGeometries.take(item).destroy();
 
         if (item->isVisible()) {
             //         addFuncs(QModelIndex(), s.row(), s.row());
@@ -303,7 +328,7 @@ void Plotter3DES::updatePlots(const QModelIndex & parent, int s, int e)
     {
         for (int i = e; i < count; ++i)
         {
-            m_itemGeometries.remove(itemAt(i));
+            m_itemGeometries.take(itemAt(i)).destroy();
         }
     }
 
@@ -323,7 +348,7 @@ void Plotter3DES::setPlottingFocusPolicy(PlottingFocusPolicy fp)
 
     for (int i = 0; i < m_itemGeometries.size(); ++i)
     {
-        m_itemGeometries[itemAt(i)].destroy();
+        m_itemGeometries.take(itemAt(i)).destroy();
     }
 
     updatePlots(QModelIndex(), 0, m_model->rowCount()-1);
@@ -423,7 +448,6 @@ void Plotter3DES::addPlots(PlotItem* item)
     {
         if (curve->points().isEmpty())
             curve->update(QVector3D(), QVector3D());
-        Q_UNUSED(curve);
     }
     else if (Surface* surf = dynamic_cast<Surface*>(item))
     {
@@ -431,20 +455,6 @@ void Plotter3DES::addPlots(PlotItem* item)
             surf->update(QVector3D(), QVector3D());
 
         Q_ASSERT(!surf->indexes().isEmpty());
-
-        QOpenGLBuffer buffer(QOpenGLBuffer::VertexBuffer);
-        buffer.create();
-        buffer.bind();
-
-        const auto offsetNormal = 3*sizeof(float)*surf->vertices().size();
-        const auto offsetEnd = offsetNormal + 3*sizeof(float)*surf->normals().size();
-        buffer.allocate(surf->vertices().constData(), offsetEnd);
-        buffer.write(offsetNormal, surf->normals().constData(), 3*sizeof(float)*surf->normals().size());
-
-        Q_ASSERT(buffer.isCreated());
-
-        m_itemGeometries[item] = buffer;
-        buffer.release();
     }
 }
 
