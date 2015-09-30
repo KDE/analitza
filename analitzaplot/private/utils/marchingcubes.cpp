@@ -338,7 +338,7 @@ void MarchingCubes::compute_intersection_points( )
 //_____________________________________________________________________________
 // Test a face
 // if face>0 return true if the face contains a part of the surface
-bool MarchingCubes::test_face( char face )
+bool MarchingCubes::test_face( int face )
 //-----------------------------------------------------------------------------
 {
     double A,B,C,D ;
@@ -405,7 +405,7 @@ bool MarchingCubes::test_face( char face )
 // Test the interior of a cube
 // if s == 7, return true  if the interior is empty
 // if s ==-7, return false if the interior is empty
-bool MarchingCubes::test_interior( char s )
+bool MarchingCubes::test_interior( int s )
 //-----------------------------------------------------------------------------
 {
     double t, At=0, Bt=0, Ct=0, Dt=0, a, b ;

@@ -216,9 +216,9 @@ private :
   /** tesselates one cube */
   void process_cube ()             ;
   /** tests if the components of the tesselation of the cube should be connected by the interior of an ambiguous face */
-  bool test_face    ( char face ) ;
+  bool test_face    ( int face ) ;
   /** tests if the components of the tesselation of the cube should be connected through the interior of the cube */
-  bool test_interior( char s )    ;
+  bool test_interior( int s )    ;
 
 
 //-----------------------------------------------------------------------------
