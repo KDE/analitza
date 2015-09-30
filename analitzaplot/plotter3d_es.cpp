@@ -95,11 +95,6 @@ void Plotter3DES::initGL()
 {
     initializeOpenGLFunctions();
 
-    glEnable(GL_DEPTH_TEST);
-
-    glClearColor(0, 0, 0, 1);
-//     glEnable(GL_CULL_FACE);
-
     //TODO: provide GLSL version
     program.addShaderFromSourceCode(QOpenGLShader::Vertex,
         "attribute highp vec4 vertex;\n"
@@ -164,6 +159,10 @@ void Plotter3DES::setViewport(const QRectF& vp)
 
 void Plotter3DES::drawPlots()
 {
+    glClearColor(0, 0, 0, 1);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(true);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if(!m_model)

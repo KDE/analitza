@@ -33,6 +33,8 @@ public:
     void modelChanged() override {}
     void renderGL() override;
 
+    QQuickWindow* window() const;
+
 private:
     const Graph3DItem* m_item;
 };

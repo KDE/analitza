@@ -20,6 +20,7 @@
 #include <QQuickWindow>
 #include <QOpenGLFramebufferObject>
 #include <analitzaplot/plotsmodel.h>
+#include <QThread>
 
 using namespace Analitza;
 
@@ -30,7 +31,13 @@ Plotter3DRenderer::Plotter3DRenderer(Graph3DItem* item)
 
 void Plotter3DRenderer::renderGL()
 {
+    Q_ASSERT(QThread::currentThread() == m_item->thread());
     m_item->window()->update();
+}
+
+QQuickWindow* Plotter3DRenderer::window() const
+{
+    return m_item->window();
 }
 
 Graph3DItem::Graph3DItem(QQuickItem* parent)
@@ -100,6 +107,14 @@ public:
 
     void render() {
         m_plotter->drawPlots();
+        m_plotter->window()->resetOpenGLState();
+    }
+
+    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size)
+    {
+        QOpenGLFramebufferObjectFormat format;
+        format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+        return new QOpenGLFramebufferObject(size, format);
     }
 
 private:
