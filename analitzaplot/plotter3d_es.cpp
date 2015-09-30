@@ -100,8 +100,8 @@ void Plotter3DES::initGL()
     glClearColor(0, 0, 0, 1);
 //     glEnable(GL_CULL_FACE);
 
+    //TODO: provide GLSL version
     program.addShaderFromSourceCode(QOpenGLShader::Vertex,
-        "#version 130\n" //TODO: compute version at runtime
         "attribute highp vec4 vertex;\n"
         "attribute highp vec4 normal;\n"
         "varying vec4 vx;\n"
@@ -120,12 +120,11 @@ void Plotter3DES::initGL()
         "}"
     );
     program.addShaderFromSourceCode(QOpenGLShader::Fragment,
-        "#version 130\n" //TODO: compute version at runtime
         "uniform mediump vec4 color;\n"
 
-        "in highp vec4 lp;\n"
-        "in highp vec4 vx;\n"
-        "in highp vec4 vertNormal;\n"
+        "varying highp vec4 lp;\n"
+        "varying highp vec4 vx;\n"
+        "varying highp vec4 vertNormal;\n"
         "void main(void)\n"
         "{\n"
         "   highp vec4 Lv = normalize(lp - vx);\n"
