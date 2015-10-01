@@ -99,33 +99,21 @@ void Plotter3DES::initGL()
     program.addShaderFromSourceCode(QOpenGLShader::Vertex,
         "attribute highp vec4 vertex;\n"
         "attribute highp vec4 normal;\n"
-        "varying vec4 vx;\n"
-        "varying vec4 vertNormal;\n"
-        "varying vec4 lp;\n"
         "uniform highp mat4 matrix;\n"
-        "uniform highp mat4 projection;\n"
-        "uniform highp vec4 lightPos;\n"
 
         "void main(void)\n"
         "{\n"
         "   gl_Position = matrix * vertex;\n"
-        "   vx = vertex;\n"
-        "   lp = lightPos * matrix;\n"
-        "   vertNormal = normalize(normal * vertex);\n"
         "}"
     );
     program.addShaderFromSourceCode(QOpenGLShader::Fragment,
         "uniform mediump vec4 color;\n"
 
-        "varying highp vec4 lp;\n"
-        "varying highp vec4 vx;\n"
-        "varying highp vec4 vertNormal;\n"
         "void main(void)\n"
         "{\n"
-        "   highp vec4 Lv = normalize(lp - vx);\n"
-        "   highp float incidence = max(dot(vertNormal, Lv), 0.5);\n"
-        "   highp vec3 col = incidence * color.rgb;\n"
-        "   gl_FragColor = vec4(col, 1.0);\n"
+        "   float w = 10.*gl_FragCoord.w;\n"
+        "   highp vec4 zvec = vec4(w, w, w, 1.0);"
+        "   gl_FragColor = mix(color, zvec, vec4(.5,.5,.5,1.));\n"
         "}"
     );
     program.link();
@@ -171,10 +159,7 @@ void Plotter3DES::drawPlots()
     }
 
     program.bind();
-    program.setUniformValue("projection", m_projection);
     program.setUniformValue("matrix", m_projection * m_rot);
-
-    program.setUniformValue("lightPos", QVector4D { 500.0, 500.0, 500.0, 0 });
 
     const int vertexLocation = program.attributeLocation("vertex");
     const int normalLocation = program.attributeLocation("normal");
