@@ -96,6 +96,11 @@ void Graph3DItem::scale(qreal s)
     m_plotter->scale(s);
 }
 
+void Graph3DItem::resetView()
+{
+    m_plotter->resetView();
+}
+
 class Plotter3DFboRenderer : public QQuickFramebufferObject::Renderer
 {
 public:
