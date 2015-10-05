@@ -36,7 +36,7 @@ public:
     QQuickWindow* window() const;
 
 private:
-    const Graph3DItem* m_item;
+    Graph3DItem * m_item;
 };
 
 class Graph3DItem : public QQuickFramebufferObject

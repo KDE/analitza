@@ -344,8 +344,8 @@ void Plotter3DES::setPlottingFocusPolicy(PlottingFocusPolicy fp)
 void Plotter3DES::scale(qreal factor)
 {
     m_scale = qBound(1., factor*m_scale, 140.);
+
     setViewport(m_viewport);
-    renderGL();
 }
 
 void Plotter3DES::setUseSimpleRotation(bool simplerot)

@@ -32,7 +32,7 @@ Plotter3DRenderer::Plotter3DRenderer(Graph3DItem* item)
 void Plotter3DRenderer::renderGL()
 {
     Q_ASSERT(QThread::currentThread() == m_item->thread());
-    m_item->window()->update();
+    m_item->update();
 }
 
 QQuickWindow* Plotter3DRenderer::window() const
@@ -88,7 +88,6 @@ void Graph3DItem::setModel(QAbstractItemModel* model)
 void Graph3DItem::rotate(qreal x, qreal y)
 {
     m_plotter->rotate(x, y);
-    update();
 }
 
 void Graph3DItem::scale(qreal s)
