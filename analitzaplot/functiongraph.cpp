@@ -44,12 +44,12 @@ QString FunctionGraph::typeName() const
 
 QString FunctionGraph::display() const
 {
-	return m_display;
+    return m_display;
 }
 
 void FunctionGraph::setDisplay(const QString& display)
 {
-	m_display = display;
+    m_display = display;
 }
 
 const Analitza::Expression& FunctionGraph::expression() const

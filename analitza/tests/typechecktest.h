@@ -25,25 +25,25 @@
 
 class TypeCheckTest : public QObject
 {
-	Q_OBJECT
-	public:
-		TypeCheckTest(QObject* parent = 0);
-		~TypeCheckTest();
-		
-	private Q_SLOTS:
-		void testConstruction();
-		void testConstruction_data();
-		
-		void testUncorrection();
-		void testUncorrection_data();
-		
-		void testReduction();
-		void testReduction_data();
-		
-		void testVariadic();
-		void testVariadic_data();
-	private:
-		Analitza::Variables* v;
+    Q_OBJECT
+    public:
+        TypeCheckTest(QObject* parent = 0);
+        ~TypeCheckTest();
+        
+    private Q_SLOTS:
+        void testConstruction();
+        void testConstruction_data();
+        
+        void testUncorrection();
+        void testUncorrection_data();
+        
+        void testReduction();
+        void testReduction_data();
+        
+        void testVariadic();
+        void testVariadic_data();
+    private:
+        Analitza::Variables* v;
 };
 
 #endif // TYPECHECKTEST_H

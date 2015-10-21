@@ -28,15 +28,15 @@
 
 class ANALITZA_EXPORT MathMLPresentationLexer : public AbstractLexer
 {
-	public:
-		
-		MathMLPresentationLexer(const QString &source);
-		
-	private:
-		void getToken();
-		QXmlStreamReader m_xml;
-		QStack<QString> m_tags;
-		QMap<QString, TOKEN> m_tokenTags;
+    public:
+        
+        MathMLPresentationLexer(const QString &source);
+        
+    private:
+        void getToken();
+        QXmlStreamReader m_xml;
+        QStack<QString> m_tags;
+        QMap<QString, TOKEN> m_tokenTags;
 };
 
 #endif

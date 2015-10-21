@@ -61,21 +61,21 @@ void PlotItem::setName(const QString& newName)
 
 void PlotItem::setVisible(bool v)
 {
-	m_graphVisible = v;
-	emitDataChanged();
+    m_graphVisible = v;
+    emitDataChanged();
 }
 
 void PlotItem::addTags(const QSet<QString>& tag)
 {
-	m_tags += tag;
+    m_tags += tag;
 }
 
 void PlotItem::clearTags()
 {
-	m_tags.clear();
+    m_tags.clear();
 }
 
 QSet<QString> PlotItem::tags() const
 {
-	return m_tags;
+    return m_tags;
 }

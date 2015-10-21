@@ -22,29 +22,29 @@
 #include <QObject>
 
 /**
-	@author Aleix Pol
+    @author Aleix Pol
 */
 
 class MathMLPresentationTest : public QObject
 {
 Q_OBJECT
-	public:
-		MathMLPresentationTest(QObject *parent = 0);
-		~MathMLPresentationTest();
-	
-	private Q_SLOTS:
-		void initTestCase();
-		
-		void testSimple_data();
-		void testSimple();
-		
-		void testConversion();
-		void testConversion_data();
-		
-		void testToPresentation();
-		void testToPresentation_data();
-		
-		void cleanupTestCase();
+    public:
+        MathMLPresentationTest(QObject *parent = 0);
+        ~MathMLPresentationTest();
+    
+    private Q_SLOTS:
+        void initTestCase();
+        
+        void testSimple_data();
+        void testSimple();
+        
+        void testConversion();
+        void testConversion_data();
+        
+        void testToPresentation();
+        void testToPresentation_data();
+        
+        void cleanupTestCase();
 };
 
 #endif

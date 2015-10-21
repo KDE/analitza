@@ -23,98 +23,98 @@
 
 QHash<QChar, int> initializeOperators()
 {
-	QHash<QChar, int> operators;
-	operators['+']=ExpressionTable::tAdd;
-	operators['-']=ExpressionTable::tSub;
-	operators['*']=ExpressionTable::tMul;
-	operators['/']=ExpressionTable::tDiv;
-	operators['^']=ExpressionTable::tPow;
-	operators['(']=ExpressionTable::tLpr;
-	operators[')']=ExpressionTable::tRpr;
-	operators[',']=ExpressionTable::tComa;
-	operators['{']=ExpressionTable::tLcb;
-	operators['}']=ExpressionTable::tRcb;
-	operators['[']=ExpressionTable::tLsp;
-	operators[']']=ExpressionTable::tRsp;
-	operators['?']=ExpressionTable::tQm;
-	operators[':']=ExpressionTable::tColon;
-	operators['=']=ExpressionTable::tEq;
-	operators['<']=ExpressionTable::tLt;
-	operators['>']=ExpressionTable::tGt;
-	operators['@']=ExpressionTable::tAt;
-	operators['|']=ExpressionTable::tPipe;
-	return operators;
+    QHash<QChar, int> operators;
+    operators['+']=ExpressionTable::tAdd;
+    operators['-']=ExpressionTable::tSub;
+    operators['*']=ExpressionTable::tMul;
+    operators['/']=ExpressionTable::tDiv;
+    operators['^']=ExpressionTable::tPow;
+    operators['(']=ExpressionTable::tLpr;
+    operators[')']=ExpressionTable::tRpr;
+    operators[',']=ExpressionTable::tComa;
+    operators['{']=ExpressionTable::tLcb;
+    operators['}']=ExpressionTable::tRcb;
+    operators['[']=ExpressionTable::tLsp;
+    operators[']']=ExpressionTable::tRsp;
+    operators['?']=ExpressionTable::tQm;
+    operators[':']=ExpressionTable::tColon;
+    operators['=']=ExpressionTable::tEq;
+    operators['<']=ExpressionTable::tLt;
+    operators['>']=ExpressionTable::tGt;
+    operators['@']=ExpressionTable::tAt;
+    operators['|']=ExpressionTable::tPipe;
+    return operators;
 }
 
 QHash<QString, int> initializeLongOperators()
 {
-	QHash<QString, int> longOperators;
-	longOperators["->"]=ExpressionTable::tLambda;
-	longOperators[":="]=ExpressionTable::tAssig;
-	longOperators[".."]=ExpressionTable::tLimits;
-	longOperators["**"]=ExpressionTable::tPow;
-	longOperators["<="]=ExpressionTable::tLeq;
-	longOperators[">="]=ExpressionTable::tGeq;
-	longOperators["!="]=ExpressionTable::tNeq;
-	return longOperators;
+    QHash<QString, int> longOperators;
+    longOperators["->"]=ExpressionTable::tLambda;
+    longOperators[":="]=ExpressionTable::tAssig;
+    longOperators[".."]=ExpressionTable::tLimits;
+    longOperators["**"]=ExpressionTable::tPow;
+    longOperators["<="]=ExpressionTable::tLeq;
+    longOperators[">="]=ExpressionTable::tGeq;
+    longOperators["!="]=ExpressionTable::tNeq;
+    return longOperators;
 }
 
 QHash<QChar, int> AbstractLexer::m_operators=initializeOperators();
 QHash<QString, int> AbstractLexer::m_longOperators=initializeLongOperators();
 
 AbstractLexer::AbstractLexer(const QString &source)
-	: current(-1, 0), m_source(source), m_lines(0), m_openPr(0), m_openCb(0)
+    : current(-1, 0), m_source(source), m_lines(0), m_openPr(0), m_openCb(0)
 {}
 
 AbstractLexer::~AbstractLexer() {}
 
 void AbstractLexer::printQueue(const QQueue<TOKEN>& q) const
 {
-	QStringList res;
-	foreach(const TOKEN& t, q)
-	{
-		if(m_longOperators.values().contains(t.type))  res += m_longOperators.key(t.type);
-		else if(m_operators.values().contains(t.type)) res += m_operators.key(t.type);
-		else res+= (t.val + ';' + QString::number(t.type) + error());
-	}
-	qDebug() << q.count() << ":::" << "(" << res.join("|") << ")";
+    QStringList res;
+    foreach(const TOKEN& t, q)
+    {
+        if(m_longOperators.values().contains(t.type))  res += m_longOperators.key(t.type);
+        else if(m_operators.values().contains(t.type)) res += m_operators.key(t.type);
+        else res+= (t.val + ';' + QString::number(t.type) + error());
+    }
+    qDebug() << q.count() << ":::" << "(" << res.join("|") << ")";
 }
 
 int AbstractLexer::lex()
 {
-	if(m_tokens.isEmpty())
-		getToken();
-	
-// 	printQueue(m_tokens);
-	
-	Q_ASSERT(!m_tokens.isEmpty());
-	current=m_tokens.takeFirst();
-	
-	switch(current.type) {
-		case ExpressionTable::tLpr:
-			m_openPr++;
-			break;
-		case ExpressionTable::tRpr:
-			m_openPr--;
-			break;
-		case ExpressionTable::tLcb:
-			m_openCb++;
-			break;
-		case ExpressionTable::tRcb:
-			m_openCb--;
-			break;
-		default:
-			break;
-	}
-	
-	return current.type;
+    if(m_tokens.isEmpty())
+        getToken();
+    
+//     printQueue(m_tokens);
+    
+    Q_ASSERT(!m_tokens.isEmpty());
+    current=m_tokens.takeFirst();
+    
+    switch(current.type) {
+        case ExpressionTable::tLpr:
+            m_openPr++;
+            break;
+        case ExpressionTable::tRpr:
+            m_openPr--;
+            break;
+        case ExpressionTable::tLcb:
+            m_openCb++;
+            break;
+        case ExpressionTable::tRcb:
+            m_openCb--;
+            break;
+        default:
+            break;
+    }
+    
+    return current.type;
 }
 
 bool AbstractLexer::isCompleteExpression(bool justempty)
 {
-	bool anycodetoken=false;
-	for(int current=lex(); current>0 && !(justempty && anycodetoken); current=lex()) {
-		anycodetoken |= current!=ExpressionTable::tComment;
-	}
-	return anycodetoken && isCompletelyRead();
+    bool anycodetoken=false;
+    for(int current=lex(); current>0 && !(justempty && anycodetoken); current=lex()) {
+        anycodetoken |= current!=ExpressionTable::tComment;
+    }
+    return anycodetoken && isCompletelyRead();
 }

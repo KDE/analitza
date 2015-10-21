@@ -23,72 +23,72 @@
 #include "analitzaguiexport.h"
 
 /**
- *	The AlgebraHighlighter class is used to highlight the ExpressionEdit text.
- *	@author <aleixpol@kde.org>  
+ *    The AlgebraHighlighter class is used to highlight the ExpressionEdit text.
+ *    @author <aleixpol@kde.org>  
  */
 
 namespace Analitza { class Analyzer; }
 
 class ANALITZAGUI_EXPORT AlgebraHighlighter : public QSyntaxHighlighter
 {
-	public:
-		/** Defines the format status that could be used. */
-		typedef enum {
-			Expression,	/**< String expression format. */
-			MathML,		/**< MathML format. */
-			Autodetect	/**< Try to guess which format is being used. */
-		} Mode;
-		
-		/** Constructor. Creates an AlgebraHighlighter from a QTextDocument @p doc. */
-		explicit AlgebraHighlighter(QTextDocument *doc, const Analitza::Analyzer* na=0);
-		//int highlightParagraph(const QString &text, int endStateOfLastPara);
-		
-		/** Returns the currently highlight mode. */
-		Mode mode() { return m_mode; }
-		
-		/** Sets the highlight mode. */
-		void setMode(const Mode& newMode){ m_mode=newMode; rehighlight(); }
-		
-		/** 
-		 *	Returns whether something wrong has been found. It is an uncomplete way
-		 *	to know if it is correct because doesn't do any recursive check, but could be useful.
-		 * @returns whether it is a lexically correct expression.
-		 */
-		bool isCorrect() const { return m_correct; }
-		
-		/** Sets the cursor position. */
-		void setPos(uint p) { m_pos=p; }
-		
-		/** Sets the corresponding Analitza class. */
-		void setAnalitza(const Analitza::Analyzer* na) { a = na; }
-		
-		///@returns the name of the function that's being edited, if any
-		QString editingName() const;
-		
-		///@returns the number of the parameter that's being edited
-		int editingParameter() const;
-		bool editingBounds() const;
-	private:
-		void highlightBlock(const QString &text);
-		
-		enum MMLtokEnum { //For mathml highlighting
-			gt,	
-			lt,
-			tag,
-			value
-		};
-		
-		bool m_correct;
-		int antnum;
-		Mode m_mode;
-		uint m_pos;
-		int m_editingParameter;
-		QString m_editingName;
-		bool m_editingBounds;
-		QString m_aName;
-		
-		QTextCharFormat bold;
-		const Analitza::Analyzer* a;
+    public:
+        /** Defines the format status that could be used. */
+        typedef enum {
+            Expression,    /**< String expression format. */
+            MathML,        /**< MathML format. */
+            Autodetect    /**< Try to guess which format is being used. */
+        } Mode;
+        
+        /** Constructor. Creates an AlgebraHighlighter from a QTextDocument @p doc. */
+        explicit AlgebraHighlighter(QTextDocument *doc, const Analitza::Analyzer* na=0);
+        //int highlightParagraph(const QString &text, int endStateOfLastPara);
+        
+        /** Returns the currently highlight mode. */
+        Mode mode() { return m_mode; }
+        
+        /** Sets the highlight mode. */
+        void setMode(const Mode& newMode){ m_mode=newMode; rehighlight(); }
+        
+        /** 
+         *    Returns whether something wrong has been found. It is an uncomplete way
+         *    to know if it is correct because doesn't do any recursive check, but could be useful.
+         * @returns whether it is a lexically correct expression.
+         */
+        bool isCorrect() const { return m_correct; }
+        
+        /** Sets the cursor position. */
+        void setPos(uint p) { m_pos=p; }
+        
+        /** Sets the corresponding Analitza class. */
+        void setAnalitza(const Analitza::Analyzer* na) { a = na; }
+        
+        ///@returns the name of the function that's being edited, if any
+        QString editingName() const;
+        
+        ///@returns the number of the parameter that's being edited
+        int editingParameter() const;
+        bool editingBounds() const;
+    private:
+        void highlightBlock(const QString &text);
+        
+        enum MMLtokEnum { //For mathml highlighting
+            gt,    
+            lt,
+            tag,
+            value
+        };
+        
+        bool m_correct;
+        int antnum;
+        Mode m_mode;
+        uint m_pos;
+        int m_editingParameter;
+        QString m_editingName;
+        bool m_editingBounds;
+        QString m_aName;
+        
+        QTextCharFormat bold;
+        const Analitza::Analyzer* a;
 };
 
 #endif

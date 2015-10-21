@@ -60,12 +60,12 @@ QStringList FunctionGraphFactory::examples(const QString& id) const
 
 QStringList FunctionGraphFactory::examples(Dimension dim) const
 {
-	QStringList ret;
-	QStringList ids = spaceDimensions.keys(dim);
-	foreach(const QString& id, ids) {
-		ret += examplesFunctions[id]();
-	}
-	return ret;
+    QStringList ret;
+    QStringList ids = spaceDimensions.keys(dim);
+    foreach(const QString& id, ids) {
+        ret += examplesFunctions[id]();
+    }
+    return ret;
 }
 
 FunctionGraphFactory* FunctionGraphFactory::self()

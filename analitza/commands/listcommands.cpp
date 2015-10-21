@@ -28,51 +28,51 @@ using Analitza::Expression;
 using Analitza::ExpressionType;
 
 const QString RangeCommand::id = QStringLiteral("range");
-const ExpressionType RangeCommand::type = 	ExpressionType(ExpressionType::Lambda)
+const ExpressionType RangeCommand::type =     ExpressionType(ExpressionType::Lambda)
 .addParameter(ExpressionType(ExpressionType::Any, ExpressionType(ExpressionType::Value)))
 .addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
 
 Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	Expression ret;
-	
-	const int nargs = args.size();
-	
-	double a = 1;
-	double b = 0;
-	double h = 1;
-	
-	switch(nargs) {
-		case 0: {
-			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(RangeCommand::id));
-			
-			return ret;
-		}	break;
-		case 1: {
-			b = static_cast<const Analitza::Cn*>(args.first().tree())->value();
-		}	break;
-		case 2: {
-			a = static_cast<const Analitza::Cn*>(args.first().tree())->value();
-			b = static_cast<const Analitza::Cn*>(args.last().tree())->value();
-		}	break;
-		case 3: {
-			a = static_cast<const Analitza::Cn*>(args.at(0).tree())->value();
-			b = static_cast<const Analitza::Cn*>(args.at(1).tree())->value();
-			h = static_cast<const Analitza::Cn*>(args.at(2).tree())->value();
-		}	break;
-		default:
-			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(RangeCommand::id));
-			
-			return ret;
-			break;
-	}
-	
-	Analitza::List *seq = new Analitza::List;
-		
-	for (double x = a; x <= b; x += h)
-		seq->appendBranch(new Analitza::Cn(x));
-	
-	ret.setTree(seq);
-	
-	return ret;
+    Expression ret;
+    
+    const int nargs = args.size();
+    
+    double a = 1;
+    double b = 0;
+    double h = 1;
+    
+    switch(nargs) {
+        case 0: {
+            ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(RangeCommand::id));
+            
+            return ret;
+        }    break;
+        case 1: {
+            b = static_cast<const Analitza::Cn*>(args.first().tree())->value();
+        }    break;
+        case 2: {
+            a = static_cast<const Analitza::Cn*>(args.first().tree())->value();
+            b = static_cast<const Analitza::Cn*>(args.last().tree())->value();
+        }    break;
+        case 3: {
+            a = static_cast<const Analitza::Cn*>(args.at(0).tree())->value();
+            b = static_cast<const Analitza::Cn*>(args.at(1).tree())->value();
+            h = static_cast<const Analitza::Cn*>(args.at(2).tree())->value();
+        }    break;
+        default:
+            ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(RangeCommand::id));
+            
+            return ret;
+            break;
+    }
+    
+    Analitza::List *seq = new Analitza::List;
+        
+    for (double x = a; x <= b; x += h)
+        seq->appendBranch(new Analitza::Cn(x));
+    
+    ret.setTree(seq);
+    
+    return ret;
 }

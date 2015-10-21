@@ -58,10 +58,10 @@ class Expression;
 class MatrixCommand: public Analitza::FunctionDefinition
 {
 public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-	
-	static const QString id;
-	static const Analitza::ExpressionType type;
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    
+    static const QString id;
+    static const Analitza::ExpressionType type;
 };
 
 /**
@@ -79,10 +79,10 @@ public:
 class IdentityMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
 
-	static const QString id;
-	static const Analitza::ExpressionType type;
+    static const QString id;
+    static const Analitza::ExpressionType type;
 };
 
 /**
@@ -141,10 +141,10 @@ public:
 class DiagonalMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
 
-	static const QString id;
-	static const Analitza::ExpressionType type;
+    static const QString id;
+    static const Analitza::ExpressionType type;
 };
 
 /**
@@ -163,10 +163,10 @@ public:
 class TridiagonalMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
 
-	static const QString id;
-	static const Analitza::ExpressionType type;
+    static const QString id;
+    static const Analitza::ExpressionType type;
 };
 
 //TODO random matrix (default 0,1 ... but you can set min and max vals)

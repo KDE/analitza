@@ -33,17 +33,17 @@ class Object;
 
 class AbstractExpressionTransformer
 {
-	public:
-		virtual ~AbstractExpressionTransformer();
-		
-		virtual Object* walk(const Object* o);
-		virtual Object* walkApply(const Apply* o);
-		virtual Object* walkVariable(const Ci* o);
-		virtual Object* walkList(const List* o);
-		virtual Object* walkVector(const Vector* o);
-		virtual Object* walkMatrix(const Matrix* o);
-		virtual Object* walkMatrixRow(const MatrixRow* o);
-		virtual Object* walkContainer(const Container* o);
+    public:
+        virtual ~AbstractExpressionTransformer();
+        
+        virtual Object* walk(const Object* o);
+        virtual Object* walkApply(const Apply* o);
+        virtual Object* walkVariable(const Ci* o);
+        virtual Object* walkList(const List* o);
+        virtual Object* walkVector(const Vector* o);
+        virtual Object* walkMatrix(const Matrix* o);
+        virtual Object* walkMatrixRow(const MatrixRow* o);
+        virtual Object* walkContainer(const Container* o);
 };
 
 }

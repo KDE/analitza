@@ -29,20 +29,20 @@ class Expression;
 class EigenvaluesCommand: public Analitza::FunctionDefinition
 {
 public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
 
-	static const QString id;
-	static const Analitza::ExpressionType type;
+    static const QString id;
+    static const Analitza::ExpressionType type;
 };
 
 
 class EigenvectorsCommand: public Analitza::FunctionDefinition
 {
 public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
 
-	static const QString id;
-	static const Analitza::ExpressionType type;
+    static const QString id;
+    static const Analitza::ExpressionType type;
 };
 
 #endif // EIGENCOMMANDS_H

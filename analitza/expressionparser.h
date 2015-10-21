@@ -30,31 +30,31 @@ class AbstractLexer;
 
 class ANALITZA_EXPORT ExpressionParser : protected ExpressionTable
 {
-	public:
-		ExpressionParser();
-		~ExpressionParser();
+    public:
+        ExpressionParser();
+        ~ExpressionParser();
 
-		bool parse(AbstractLexer *lexer);
+        bool parse(AbstractLexer *lexer);
 
-		bool isCorrect() const { return m_err.isEmpty(); }
-		int errorLineNumber() const { return m_errorLineNumber; }
-		QStringList error() const { return m_err; }
-		QString mathML() const { return m_exp; }
-		QStringList comments() const { return m_comments; }
+        bool isCorrect() const { return m_err.isEmpty(); }
+        int errorLineNumber() const { return m_errorLineNumber; }
+        QStringList error() const { return m_err; }
+        QString mathML() const { return m_exp; }
+        QStringList comments() const { return m_comments; }
 
-	private:
-		void reallocateStack();
+    private:
+        void reallocateStack();
 
-		inline QString &sym(int index)
-		{ return m_symStack[m_tos + index - 1]; }
+        inline QString &sym(int index)
+        { return m_symStack[m_tos + index - 1]; }
 
-		int m_tos;
-		QVector<int> m_stateStack;
-		QVector<QString> m_symStack;
-		int m_errorLineNumber;
-		QStringList m_err;
-		QString m_exp;
-		QStringList m_comments;
+        int m_tos;
+        QVector<int> m_stateStack;
+        QVector<QString> m_symStack;
+        int m_errorLineNumber;
+        QStringList m_err;
+        QString m_exp;
+        QStringList m_comments;
 };
 
 #endif

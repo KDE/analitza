@@ -22,24 +22,24 @@
 using namespace Analitza;
 
 PointerFunctionDefinition::PointerFunctionDefinition(func call)
-	: m_function(call)
+    : m_function(call)
 {}
 
 Expression PointerFunctionDefinition::operator()(const QList< Expression >& args)
 {
-	return m_function(args);
+    return m_function(args);
 }
 
 BuiltinMethods::~BuiltinMethods()
 {
-	qDeleteAll(m_functions);
+    qDeleteAll(m_functions);
 }
 
 void BuiltinMethods::insertFunction(const QString& id, const ExpressionType& type, FunctionDefinition* f)
 {
-	if(m_types.contains(id))
-		qDebug() << "Replacing a builtin function called: " << id;
-	
-	m_types.insert(id, type);
-	m_functions.insert(id, f);
+    if(m_types.contains(id))
+        qDebug() << "Replacing a builtin function called: " << id;
+    
+    m_types.insert(id, type);
+    m_functions.insert(id, f);
 }

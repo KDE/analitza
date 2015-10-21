@@ -49,22 +49,22 @@ class MatrixRow;
 
 class ANALITZA_EXPORT AbstractExpressionVisitor
 {
-	public:
-		virtual ~AbstractExpressionVisitor();
-		
-		virtual QVariant visit(const None* var) = 0;
-		virtual QVariant visit(const Operator* var) = 0;
-		virtual QVariant visit(const Ci* var) = 0;
-		virtual QVariant visit(const Cn* var) = 0;
-		virtual QVariant visit(const Container* var) = 0;
-		virtual QVariant visit(const Vector* var) = 0;
-		virtual QVariant visit(const List* l) = 0;
-		virtual QVariant visit(const Apply* a) = 0;
-		virtual QVariant visit(const CustomObject* c) = 0;
-		virtual QVariant visit(const Matrix* c) = 0;
-		virtual QVariant visit(const MatrixRow* c) = 0;
-		
-		virtual QVariant result() const = 0;
+    public:
+        virtual ~AbstractExpressionVisitor();
+        
+        virtual QVariant visit(const None* var) = 0;
+        virtual QVariant visit(const Operator* var) = 0;
+        virtual QVariant visit(const Ci* var) = 0;
+        virtual QVariant visit(const Cn* var) = 0;
+        virtual QVariant visit(const Container* var) = 0;
+        virtual QVariant visit(const Vector* var) = 0;
+        virtual QVariant visit(const List* l) = 0;
+        virtual QVariant visit(const Apply* a) = 0;
+        virtual QVariant visit(const CustomObject* c) = 0;
+        virtual QVariant visit(const Matrix* c) = 0;
+        virtual QVariant visit(const MatrixRow* c) = 0;
+        
+        virtual QVariant result() const = 0;
 };
 
 }

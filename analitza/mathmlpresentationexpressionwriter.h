@@ -36,27 +36,27 @@ namespace Analitza
 
 class MathMLPresentationExpressionWriter : public AbstractExpressionVisitor
 {
-	public:
-		typedef QString (*operatorToString)(const Apply* o, MathMLPresentationExpressionWriter* w);
-		MathMLPresentationExpressionWriter(const Object* o);
-		
-		virtual QVariant visit(const None* var);
-		virtual QVariant visit(const Ci* var);
-		virtual QVariant visit(const Cn* var);
-		virtual QVariant visit(const Container* var);
-		virtual QVariant visit(const Operator* var);
-		virtual QVariant visit(const Vector* var);
-		virtual QVariant visit(const List* l);
-		virtual QVariant visit(const Matrix* m);
-		virtual QVariant visit(const MatrixRow* c);
-		virtual QVariant visit(const Apply* a);
-		virtual QVariant visit(const CustomObject* c);
-		
-		QVariant result() const { return m_result; }
-		
-	private:
-		QVariant m_result;
-		static operatorToString m_operatorToPresentation[Operator::nOfOps];
+    public:
+        typedef QString (*operatorToString)(const Apply* o, MathMLPresentationExpressionWriter* w);
+        MathMLPresentationExpressionWriter(const Object* o);
+        
+        virtual QVariant visit(const None* var);
+        virtual QVariant visit(const Ci* var);
+        virtual QVariant visit(const Cn* var);
+        virtual QVariant visit(const Container* var);
+        virtual QVariant visit(const Operator* var);
+        virtual QVariant visit(const Vector* var);
+        virtual QVariant visit(const List* l);
+        virtual QVariant visit(const Matrix* m);
+        virtual QVariant visit(const MatrixRow* c);
+        virtual QVariant visit(const Apply* a);
+        virtual QVariant visit(const CustomObject* c);
+        
+        QVariant result() const { return m_result; }
+        
+    private:
+        QVariant m_result;
+        static operatorToString m_operatorToPresentation[Operator::nOfOps];
 };
 
 }

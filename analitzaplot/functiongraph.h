@@ -84,7 +84,7 @@ public:
     void setResolution(int points);
     
 protected:
-	FunctionGraph(AbstractFunctionGraph* g);
+    FunctionGraph(AbstractFunctionGraph* g);
     AbstractFunctionGraph *backend() const { return m_functionGraph; }
 
 private:

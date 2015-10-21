@@ -22,56 +22,56 @@
 #include <QObject>
 
 /**
-	@author 
+    @author 
 */
 namespace Analitza { class Analyzer; }
 
 class AnalitzaTest : public QObject
 {
 Q_OBJECT
-	public:
-		AnalitzaTest(QObject *parent = 0);
-		~AnalitzaTest();
-	
-	private Q_SLOTS:
-		void initTestCase();
-		void testTrivialCalculate_data();
-		void testTrivialCalculate();
-		void testTrivialEvaluate_data();
-		void testTrivialEvaluate();
-		void testSimplify_data();
-		void testSimplify();
-		void testDerivativeSimple_data();
-		void testDerivativeSimple();
-		
-		void testVector_data();
-		void testVector();
-		
-		void testCrash_data();
-		void testCrash();
-		
-		///We check that it is correct
-		void testCorrection_data();
-		void testCorrection();
-		
-		void testEvaluate_data();
-		void testEvaluate();
-		
-		///We check that it is not correct
-		void testUncorrection_data();
-		void testUncorrection();
-		
-		///We check that it is not correct because of type
-		void testTypeUncorrection_data();
-		void testTypeUncorrection();
-		
-		void cleanupTestCase();
-	private:
-		
-		void testOperators_data(); //I don't like this test
-		void testOperators();
-		
-		Analitza::Analyzer *a;
+    public:
+        AnalitzaTest(QObject *parent = 0);
+        ~AnalitzaTest();
+    
+    private Q_SLOTS:
+        void initTestCase();
+        void testTrivialCalculate_data();
+        void testTrivialCalculate();
+        void testTrivialEvaluate_data();
+        void testTrivialEvaluate();
+        void testSimplify_data();
+        void testSimplify();
+        void testDerivativeSimple_data();
+        void testDerivativeSimple();
+        
+        void testVector_data();
+        void testVector();
+        
+        void testCrash_data();
+        void testCrash();
+        
+        ///We check that it is correct
+        void testCorrection_data();
+        void testCorrection();
+        
+        void testEvaluate_data();
+        void testEvaluate();
+        
+        ///We check that it is not correct
+        void testUncorrection_data();
+        void testUncorrection();
+        
+        ///We check that it is not correct because of type
+        void testTypeUncorrection_data();
+        void testTypeUncorrection();
+        
+        void cleanupTestCase();
+    private:
+        
+        void testOperators_data(); //I don't like this test
+        void testOperators();
+        
+        Analitza::Analyzer *a;
 };
 
 #endif

@@ -26,124 +26,124 @@ using namespace Analitza;
 
 ExpressionType toExpressionType(QVariant::Type t, const QString& type_name)
 {
-	switch(t)
-	{
-		case QVariant::Int:
-		case QVariant::Double:
-			return ExpressionType(ExpressionType::Value);
-		case QVariant::String:
-			return ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Char));
-		default:
-			return ExpressionType(type_name);
-	}
+    switch(t)
+    {
+        case QVariant::Int:
+        case QVariant::Double:
+            return ExpressionType(ExpressionType::Value);
+        case QVariant::String:
+            return ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Char));
+        default:
+            return ExpressionType(type_name);
+    }
 }
 
 class QObjectGet : public Analitza::FunctionDefinition
 {
-	public:
-		QObjectGet(const QByteArray& name) : m_name(name) {}
-	
-		virtual Expression operator()(const QList< Expression >& args)
-		{
-			QObject* o=args.first().customObjectValue().value<QObject*>();
-			QVariant v=o->property(m_name);
-			
-			return AnalitzaUtils::variantToExpression(v);
-		}
-		
-		ExpressionType type(const QByteArray& name, const QMetaProperty& prop) const
-		{
-			ExpressionType typeGet(ExpressionType::Lambda);
-			typeGet.addParameter(ExpressionType(name))
-				.addParameter(toExpressionType(prop.type(), prop.typeName()));
-			
-			return typeGet;
-		}
-		
-	private:
-		QByteArray m_name;
+    public:
+        QObjectGet(const QByteArray& name) : m_name(name) {}
+    
+        virtual Expression operator()(const QList< Expression >& args)
+        {
+            QObject* o=args.first().customObjectValue().value<QObject*>();
+            QVariant v=o->property(m_name);
+            
+            return AnalitzaUtils::variantToExpression(v);
+        }
+        
+        ExpressionType type(const QByteArray& name, const QMetaProperty& prop) const
+        {
+            ExpressionType typeGet(ExpressionType::Lambda);
+            typeGet.addParameter(ExpressionType(name))
+                .addParameter(toExpressionType(prop.type(), prop.typeName()));
+            
+            return typeGet;
+        }
+        
+    private:
+        QByteArray m_name;
 };
 
 class QObjectSet : public Analitza::FunctionDefinition
 {
-	public:
-		QObjectSet(const QByteArray& name) : m_name(name) {}
-	
-		virtual Expression operator()(const QList< Expression >& args)
-		{
-			QObject* o=args.first().customObjectValue().value<QObject*>();
-			QVariant value=AnalitzaUtils::expressionToVariant(args.last());
-			
-			return Expression(Cn(o->setProperty(m_name, value)));
-		}
-		
-		ExpressionType type(const QByteArray& name, const QMetaProperty& prop) const
-		{
-			ExpressionType typeSet(ExpressionType::Lambda);
-			typeSet.addParameter(ExpressionType(name))
-				.addParameter(toExpressionType(prop.type(), prop.typeName()))
-				.addParameter(ExpressionType(ExpressionType::Bool));
-			
-			return typeSet;
-		}
-		
-	private:
-		QByteArray m_name;
+    public:
+        QObjectSet(const QByteArray& name) : m_name(name) {}
+    
+        virtual Expression operator()(const QList< Expression >& args)
+        {
+            QObject* o=args.first().customObjectValue().value<QObject*>();
+            QVariant value=AnalitzaUtils::expressionToVariant(args.last());
+            
+            return Expression(Cn(o->setProperty(m_name, value)));
+        }
+        
+        ExpressionType type(const QByteArray& name, const QMetaProperty& prop) const
+        {
+            ExpressionType typeSet(ExpressionType::Lambda);
+            typeSet.addParameter(ExpressionType(name))
+                .addParameter(toExpressionType(prop.type(), prop.typeName()))
+                .addParameter(ExpressionType(ExpressionType::Bool));
+            
+            return typeSet;
+        }
+        
+    private:
+        QByteArray m_name;
 };
 
 class QObjectCastToParent : public Analitza::FunctionDefinition
 {
-	public:
-		QObjectCastToParent(const QByteArray& name, const QByteArray& nameParent)
-			: m_name(name), m_nameParent(nameParent) {}
-		
-		virtual Expression operator()(const QList< Expression >& args)
-		{
-			QObject* o=args.first().customObjectValue().value<QObject*>();
-			return Expression::constructCustomObject(qVariantFromValue<QObject*>(o), 0);
-		}
-		
-		ExpressionType type() const
-		{
-			ExpressionType typeCast(ExpressionType::Lambda);
-			typeCast.addParameter(ExpressionType(m_name))
-				.addParameter(ExpressionType(m_nameParent));
-			
-			return typeCast;
-		}
-	private:
-		QByteArray m_name;
-		QByteArray m_nameParent;
+    public:
+        QObjectCastToParent(const QByteArray& name, const QByteArray& nameParent)
+            : m_name(name), m_nameParent(nameParent) {}
+        
+        virtual Expression operator()(const QList< Expression >& args)
+        {
+            QObject* o=args.first().customObjectValue().value<QObject*>();
+            return Expression::constructCustomObject(qVariantFromValue<QObject*>(o), 0);
+        }
+        
+        ExpressionType type() const
+        {
+            ExpressionType typeCast(ExpressionType::Lambda);
+            typeCast.addParameter(ExpressionType(m_name))
+                .addParameter(ExpressionType(m_nameParent));
+            
+            return typeCast;
+        }
+    private:
+        QByteArray m_name;
+        QByteArray m_nameParent;
 };
 
 ImportQMetaObject::ImportQMetaObject(Analitza::Analyzer* a)
-	: m_a(a)
+    : m_a(a)
 {}
 
 void ImportQMetaObject::import(const QMetaObject& t)
 {
-	Analitza::BuiltinMethods* b=m_a->builtinMethods();
-	QByteArray classname(t.className());
-	classname.replace("::", "_");
+    Analitza::BuiltinMethods* b=m_a->builtinMethods();
+    QByteArray classname(t.className());
+    classname.replace("::", "_");
     
-	for(int p=0; p<t.propertyCount(); p++) {
-		QMetaProperty prop=t.property(p);
-		QByteArray name(prop.name());
-		
-		if(prop.isReadable()) {
-			QObjectGet* getter=new QObjectGet(name);
-			b->insertFunction(QString(classname+'_'+name), getter->type(classname, prop), getter);
-		}
-		
-		if(prop.isWritable()) {
-			QObjectSet* setter=new QObjectSet(name);
-			b->insertFunction(QString(classname+"_set_"+name), setter->type(classname, prop), setter);
-		}
-	}
-	
-	if(t.superClass()) {
-		QObjectCastToParent *cast = new QObjectCastToParent(t.className(), t.superClass()->className());
-		b->insertFunction(classname+QStringLiteral("_toParent"), cast->type(), cast);
-	}
+    for(int p=0; p<t.propertyCount(); p++) {
+        QMetaProperty prop=t.property(p);
+        QByteArray name(prop.name());
+        
+        if(prop.isReadable()) {
+            QObjectGet* getter=new QObjectGet(name);
+            b->insertFunction(QString(classname+'_'+name), getter->type(classname, prop), getter);
+        }
+        
+        if(prop.isWritable()) {
+            QObjectSet* setter=new QObjectSet(name);
+            b->insertFunction(QString(classname+"_set_"+name), setter->type(classname, prop), setter);
+        }
+    }
+    
+    if(t.superClass()) {
+        QObjectCastToParent *cast = new QObjectCastToParent(t.className(), t.superClass()->className());
+        b->insertFunction(classname+QStringLiteral("_toParent"), cast->type(), cast);
+    }
 }
 

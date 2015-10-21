@@ -33,43 +33,43 @@ namespace Analitza
 
 class ANALITZA_EXPORT Ci : public Object
 {
-	public:
-		/** Constructor. Creates a variable with a @p b name */
-		explicit Ci(const QString& b);
-		
-		~Ci();
-		
-		/** Returns the variable name */
-		QString name() const { return m_name; }
-		
-		/** Returns whether @p var name is equal to this variable one. */
-		bool operator==(const Ci& var) const { return var.m_name==m_name; }
-		
-		/** Sets whether it is a function. */
-		void setFunction(bool f) { m_function=f; }
-		
-		/** Returns whether it is a variable that has to be a function */
-		bool isFunction() const { return m_function; }
-		
-		/** Returns the MathML representation of the variable */
-		QString toMathML() const;
-		
-		/** Returns the HTML representation of the variable */
-		QString toHtml() const;
-		
-		virtual QVariant accept(AbstractExpressionVisitor*) const;
-		virtual bool matches(const Object* pattern, QMap<QString, const Object*>* found) const;
-		Ci* copy() const;
-		
-		void setBVarDepth(int depth) { m_depth = depth; }
-		int depth() const { return m_depth; }
-		
-		void setName(const QString& newName) { m_name = newName; }
-		
-	private:
-		QString m_name;
-		bool m_function;
-		int m_depth;
+    public:
+        /** Constructor. Creates a variable with a @p b name */
+        explicit Ci(const QString& b);
+        
+        ~Ci();
+        
+        /** Returns the variable name */
+        QString name() const { return m_name; }
+        
+        /** Returns whether @p var name is equal to this variable one. */
+        bool operator==(const Ci& var) const { return var.m_name==m_name; }
+        
+        /** Sets whether it is a function. */
+        void setFunction(bool f) { m_function=f; }
+        
+        /** Returns whether it is a variable that has to be a function */
+        bool isFunction() const { return m_function; }
+        
+        /** Returns the MathML representation of the variable */
+        QString toMathML() const;
+        
+        /** Returns the HTML representation of the variable */
+        QString toHtml() const;
+        
+        virtual QVariant accept(AbstractExpressionVisitor*) const;
+        virtual bool matches(const Object* pattern, QMap<QString, const Object*>* found) const;
+        Ci* copy() const;
+        
+        void setBVarDepth(int depth) { m_depth = depth; }
+        int depth() const { return m_depth; }
+        
+        void setName(const QString& newName) { m_name = newName; }
+        
+    private:
+        QString m_name;
+        bool m_function;
+        int m_depth;
 };
 
 }

@@ -26,16 +26,16 @@
 
 class ANALITZA_EXPORT ExpLexer : public AbstractLexer
 {
-	public:
-		
-		ExpLexer(const QString &source);
-		
-		static QString escape(const QString& str);
-		
-	private:
-		int m_pos;
-		void getToken();
-		QRegExp m_realRx;
+    public:
+        
+        ExpLexer(const QString &source);
+        
+        static QString escape(const QString& str);
+        
+    private:
+        int m_pos;
+        void getToken();
+        QRegExp m_realRx;
 };
 
 #endif

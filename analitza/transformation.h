@@ -28,16 +28,16 @@ class Object;
 
 class Transformation
 {
-	public:
-		typedef bool (*treeCheck)(const Object* o);
-		Transformation(const Object* first, const Object* second);
-		Transformation(const Object* first, const Object* second, const QMap<QString, treeCheck>& conditions);
-		
-		Object* applyTransformation(const Object* input) const;
-		static const Object* parse(const QString& exp);
-	private:
-		QSharedPointer<const Object> first, second;
-		QMap<QString, treeCheck> conditions;
+    public:
+        typedef bool (*treeCheck)(const Object* o);
+        Transformation(const Object* first, const Object* second);
+        Transformation(const Object* first, const Object* second, const QMap<QString, treeCheck>& conditions);
+        
+        Object* applyTransformation(const Object* input) const;
+        static const Object* parse(const QString& exp);
+    private:
+        QSharedPointer<const Object> first, second;
+        QMap<QString, treeCheck> conditions;
 };
 
 }

@@ -23,9 +23,9 @@
 using namespace Analitza;
 
 Ci::Ci(const QString& b)
-	: Object(variable), m_name(b), m_function(false), m_depth(-1)
+    : Object(variable), m_name(b), m_function(false), m_depth(-1)
 {
-	Q_ASSERT(!b.isEmpty());
+    Q_ASSERT(!b.isEmpty());
 }
 
 Ci::~Ci()
@@ -33,41 +33,41 @@ Ci::~Ci()
 
 Ci* Ci::copy() const
 {
-	Ci *c = new Ci(m_name);
-	c->m_function = m_function;
-	c->m_depth = m_depth;
-	return c;
+    Ci *c = new Ci(m_name);
+    c->m_function = m_function;
+    c->m_depth = m_depth;
+    return c;
 }
 
 QVariant Ci::accept(AbstractExpressionVisitor* e) const
 {
-	return e->visit(this);
+    return e->visit(this);
 }
 
 QString Ci::toMathML() const
 {
-	if(m_function)
-		return QStringLiteral("<ci type='function'>%1</ci>").arg(m_name);
-	else
-		return QStringLiteral("<ci>%1</ci>").arg(m_name);
+    if(m_function)
+        return QStringLiteral("<ci type='function'>%1</ci>").arg(m_name);
+    else
+        return QStringLiteral("<ci>%1</ci>").arg(m_name);
 }
 
 bool Ci::matches(const Object* exp, QMap<QString, const Object*>* found) const
 {
-	bool ret=false;
-	const Object* v=found->value(m_name);
-	if(v) {
-		ret=AnalitzaUtils::equalTree(exp, v);
-	} else {
-		Q_ASSERT(!found->contains(m_name));
-		found->insert(m_name, exp);
-		ret=true;
-	}
-// 	qDebug() << "maaatch" << toString() << exp->toString() << ret;
-	return ret;
+    bool ret=false;
+    const Object* v=found->value(m_name);
+    if(v) {
+        ret=AnalitzaUtils::equalTree(exp, v);
+    } else {
+        Q_ASSERT(!found->contains(m_name));
+        found->insert(m_name, exp);
+        ret=true;
+    }
+//     qDebug() << "maaatch" << toString() << exp->toString() << ret;
+    return ret;
 }
 
 QString Ci::toHtml() const
 {
-	return QStringLiteral("<span class='%1'>%2</span>").arg(m_function ? "func" : "var").arg(m_name);
+    return QStringLiteral("<span class='%1'>%2</span>").arg(m_function ? "func" : "var").arg(m_name);
 }

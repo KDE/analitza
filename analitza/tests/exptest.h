@@ -22,35 +22,35 @@
 #include <QObject>
 
 /**
-	@author Aleix Pol
+    @author Aleix Pol
 */
 
 class ExpTest : public QObject
 {
 Q_OBJECT
-	public:
-		ExpTest(QObject *parent = 0);
-		~ExpTest();
-	
-	private Q_SLOTS:
-		void initTestCase();
-		
-		void testSimple_data();
-		void testSimple();
-		
-		/** We check that the conversion to MathML is correct*/
-		void testExp();
-		void testExp_data();
-		
-		/** We check if expressions are correct as expected. */
-		void testCorrection();
-		void testCorrection_data();
-		
-		/** We check the token lengths*/
-		void testLength();
-		void testLength_data();
-		
-		void cleanupTestCase();
+    public:
+        ExpTest(QObject *parent = 0);
+        ~ExpTest();
+    
+    private Q_SLOTS:
+        void initTestCase();
+        
+        void testSimple_data();
+        void testSimple();
+        
+        /** We check that the conversion to MathML is correct*/
+        void testExp();
+        void testExp_data();
+        
+        /** We check if expressions are correct as expected. */
+        void testCorrection();
+        void testCorrection_data();
+        
+        /** We check the token lengths*/
+        void testLength();
+        void testLength_data();
+        
+        void cleanupTestCase();
 };
 
 #endif

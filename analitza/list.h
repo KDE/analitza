@@ -33,38 +33,38 @@ namespace Analitza
 
 class ANALITZA_EXPORT List : public Object
 {
-	public:
-		typedef QList<Object*>::iterator iterator;
-		typedef QList<Object*>::const_iterator const_iterator;
-		
-		List(const List& v);
-		List();
-		virtual ~List();
-		
-		void appendBranch(Object* );
-		int size() const { return m_elements.size(); }
-		
-		iterator erase(const iterator& it) { return m_elements.erase(it); }
-		
-		iterator begin() { return m_elements.begin(); }
-		iterator end() { return m_elements.end(); }
-		const_iterator constBegin() const { return m_elements.constBegin(); }
-		const_iterator constEnd() const { return m_elements.constEnd(); }
-		
-		Object* at(int i) const { return m_elements.at(i); }
-		void setAt(int i, Object* o) { m_elements[i]=o; }
-		QList<Object*> values() const { return m_elements; }
-		
-		virtual QVariant accept(AbstractExpressionVisitor* e) const;
-		virtual bool isZero() const;
-		
-		virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const;
-		virtual List* copy() const;
-		bool operator==(const List& v) const;
-		bool isEmpty() const { return m_elements.isEmpty(); }
-		
-	private:
-		QList<Object*> m_elements;
+    public:
+        typedef QList<Object*>::iterator iterator;
+        typedef QList<Object*>::const_iterator const_iterator;
+        
+        List(const List& v);
+        List();
+        virtual ~List();
+        
+        void appendBranch(Object* );
+        int size() const { return m_elements.size(); }
+        
+        iterator erase(const iterator& it) { return m_elements.erase(it); }
+        
+        iterator begin() { return m_elements.begin(); }
+        iterator end() { return m_elements.end(); }
+        const_iterator constBegin() const { return m_elements.constBegin(); }
+        const_iterator constEnd() const { return m_elements.constEnd(); }
+        
+        Object* at(int i) const { return m_elements.at(i); }
+        void setAt(int i, Object* o) { m_elements[i]=o; }
+        QList<Object*> values() const { return m_elements; }
+        
+        virtual QVariant accept(AbstractExpressionVisitor* e) const;
+        virtual bool isZero() const;
+        
+        virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const;
+        virtual List* copy() const;
+        bool operator==(const List& v) const;
+        bool isEmpty() const { return m_elements.isEmpty(); }
+        
+    private:
+        QList<Object*> m_elements;
 };
 
 }

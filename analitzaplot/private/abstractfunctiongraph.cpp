@@ -175,7 +175,7 @@ bool AbstractFunctionGraph::setInterval(const QString &argname, double min, doub
 
 Analitza::Cn* AbstractFunctionGraph::arg(const QString& argname)
 {
-	return m_argumentValues[argname];
+    return m_argumentValues[argname];
 }
 
 bool AbstractFunctionGraph::hasIntervals() const

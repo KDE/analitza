@@ -242,10 +242,10 @@ QPair<QPointF, QString> FunctionX::image(const QPointF& p)
     Analitza::Expression r=analyzer->calculateLambda();
 
     if(!r.isReal())
-		appendError(QCoreApplication::tr("We can only draw Real results."));
+        appendError(QCoreApplication::tr("We can only draw Real results."));
     
     dp.setX(r.toReal().value());
-	return QPair<QPointF, QString>(dp, QCoreApplication::tr("x=%1 y=%2").arg(dp.x()).arg(dp.y()));
+    return QPair<QPointF, QString>(dp, QCoreApplication::tr("x=%1 y=%2").arg(dp.x()).arg(dp.y()));
 }
 
 void FunctionX::update(const QRectF& viewport)

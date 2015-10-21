@@ -54,7 +54,7 @@ void PlotsDictionaryModel::createDictionary(const QString& file)
             QStandardItem* item = new QStandardItem;
             item->setText(expression.name());
             if(!comments.isEmpty())
-				item->setToolTip(QCoreApplication::translate("dictionary", comments.first().trimmed().toUtf8())); //see Messages.sh for more info
+                item->setToolTip(QCoreApplication::translate("dictionary", comments.first().trimmed().toUtf8())); //see Messages.sh for more info
             item->setData(expression.toString(), ExpressionRole);
             item->setData(file, FileRole);
             appendRow(item);
@@ -66,13 +66,13 @@ void PlotsDictionaryModel::createDictionary(const QString& file)
 void PlotsDictionaryModel::createAllDictionaries()
 {
 //     QStringList res = KGlobal::dirs()->findAllResources("data", "libanalitza/plots/*.plots");
-	QStringList res = QStandardPaths::locateAll(QStandardPaths::DataLocation, "libanalitza/plots");
-	foreach(const QString& dir, res) {
-		QDir d(dir);
-		foreach(const QString& f, d.entryList(QStringList("*.plots"))) {
-			createDictionary(f);
-		}
-	}
+    QStringList res = QStandardPaths::locateAll(QStandardPaths::DataLocation, "libanalitza/plots");
+    foreach(const QString& dir, res) {
+        QDir d(dir);
+        foreach(const QString& f, d.entryList(QStringList("*.plots"))) {
+            createDictionary(f);
+        }
+    }
 }
 
 PlotsModel* PlotsDictionaryModel::plotModel()

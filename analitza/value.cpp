@@ -28,55 +28,55 @@ using namespace Analitza;
 
 Object* Cn::copy() const
 {
-	Cn *v = new Cn;
-	v->m_value = m_value;
-	v->m_imaginaryPart = m_imaginaryPart;
-	v->m_format = m_format;
-	return v;
+    Cn *v = new Cn;
+    v->m_value = m_value;
+    v->m_imaginaryPart = m_imaginaryPart;
+    v->m_format = m_format;
+    return v;
 }
 
 
 QVariant Cn::accept(AbstractExpressionVisitor* e) const
 {
-	return e->visit(this);
+    return e->visit(this);
 }
 
 bool Cn::setValue(const QDomElement& val)
 {
-// 	this->m_vformat=whatValueFormat(val);
-	bool wrong=false;
-	QString tag = val.tagName();
-	m_format=Real;
-	m_imaginaryPart=0;
-	
-	if(tag == "cn"){ // a is a number
-		if(val.attribute("type", "integer") == "real") {
-			m_value= val.text().trimmed().toDouble(&wrong); //TODO: Base on double not implemented
-		} else if(val.attribute("type", "integer") == "integer"){
-			int base = val.attribute("base", "10").toInt(NULL, 10);
-			m_value= val.text().trimmed().toInt(&wrong, base);
-			m_format=Integer;
-		}
+//     this->m_vformat=whatValueFormat(val);
+    bool wrong=false;
+    QString tag = val.tagName();
+    m_format=Real;
+    m_imaginaryPart=0;
+    
+    if(tag == "cn"){ // a is a number
+        if(val.attribute("type", "integer") == "real") {
+            m_value= val.text().trimmed().toDouble(&wrong); //TODO: Base on double not implemented
+        } else if(val.attribute("type", "integer") == "integer"){
+            int base = val.attribute("base", "10").toInt(NULL, 10);
+            m_value= val.text().trimmed().toInt(&wrong, base);
+            m_format=Integer;
+        }
 #if 0
-		else if(val.attribute("type") == "e-notation")	{ /*TODO: Not implemented */ }
-		else if(val.attribute("type") == "rational")		{ /*TODO: Not implemented */ }
-		else if(val.attribute("type") == "complex-cartesian")	{ /*TODO: Not implemented */ }
-		else if(val.attribute("type") == "complex-polar")	{ /*TODO: Not implemented */ }
+        else if(val.attribute("type") == "e-notation")    { /*TODO: Not implemented */ }
+        else if(val.attribute("type") == "rational")        { /*TODO: Not implemented */ }
+        else if(val.attribute("type") == "complex-cartesian")    { /*TODO: Not implemented */ }
+        else if(val.attribute("type") == "complex-polar")    { /*TODO: Not implemented */ }
 #endif
-		else if(val.attribute("type") == "constant"){
-			if(val.text() == "&pi;")			{ m_value = pi().m_value; }
-			else if (val.text() == "&ee;" || val.text() == "&ExponentialE;"){ m_value = e().m_value; }
-			else if (val.text() == "&true;")	{ m_value=1.; m_format=Boolean; }
-			else if (val.text() == "&false;")	{ m_value=0.; m_format=Boolean; }
-			else if (val.text() == "&gamma;")	{ m_value = 0.5772156649; }
-			else if (val.text() == "&ImagniaryI;")	{ m_value=0; m_imaginaryPart=1; m_format=Complex; }
+        else if(val.attribute("type") == "constant"){
+            if(val.text() == "&pi;")            { m_value = pi().m_value; }
+            else if (val.text() == "&ee;" || val.text() == "&ExponentialE;"){ m_value = e().m_value; }
+            else if (val.text() == "&true;")    { m_value=1.; m_format=Boolean; }
+            else if (val.text() == "&false;")    { m_value=0.; m_format=Boolean; }
+            else if (val.text() == "&gamma;")    { m_value = 0.5772156649; }
+            else if (val.text() == "&ImagniaryI;")    { m_value=0; m_imaginaryPart=1; m_format=Complex; }
 #if 0
-			else if (val.text() == "&infin;")	; //TODO: Not implemented  }
-			else if (val.text() == "&NaN;")		; //TODO: Not implemented  }*/
+            else if (val.text() == "&infin;")    ; //TODO: Not implemented  }
+            else if (val.text() == "&NaN;")        ; //TODO: Not implemented  }*/
 #endif
-		}
-	}
-	return wrong;
+        }
+    }
+    return wrong;
 }
 
 Cn Cn::pi() { return Cn(3.1415926535897932384626433); }
@@ -85,49 +85,49 @@ Cn Cn::euler() { return Cn(0.5772156649); }
 
 bool Cn::matches(const Object* exp, QMap< QString, const Object* >*) const
 {
-	return exp->type()==type() && *static_cast<const Cn*>(exp)==*this;
+    return exp->type()==type() && *static_cast<const Cn*>(exp)==*this;
 }
 
 void Cn::setValue(const double& v)
 {
-	m_format = Real;
-	m_value = v;
-	m_imaginaryPart = 0;
+    m_format = Real;
+    m_value = v;
+    m_imaginaryPart = 0;
 }
 
 void Cn::setValue(int v)
 {
-	m_format = Integer;
-	m_value = v;
-	m_imaginaryPart = 0;
+    m_format = Integer;
+    m_value = v;
+    m_imaginaryPart = 0;
 }
 
 void Cn::setValue(uint v)
 {
-	m_format = Integer;
-	m_value = v;
-	m_imaginaryPart = 0;
+    m_format = Integer;
+    m_value = v;
+    m_imaginaryPart = 0;
 }
 
 void Cn::setValue(bool v)
 {
-	m_format = Boolean;
-	m_value = v;
-	m_imaginaryPart = 0;
+    m_format = Boolean;
+    m_value = v;
+    m_imaginaryPart = 0;
 }
 
 std::complex<double> Cn::complexValue() const
 {
-	return std::complex<double>(m_value, m_imaginaryPart);
+    return std::complex<double>(m_value, m_imaginaryPart);
 }
 
 void Cn::setValue(std::complex<double> v)
 {
-	if(v.imag() == 0)
-		setValue(v.real());
-	else {
-		m_format = Complex;
-		m_imaginaryPart = v.imag();
-		m_value = v.real();
-	}
+    if(v.imag() == 0)
+        setValue(v.real());
+    else {
+        m_format = Complex;
+        m_imaginaryPart = v.imag();
+        m_value = v.real();
+    }
 }

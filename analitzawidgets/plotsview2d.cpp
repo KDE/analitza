@@ -218,7 +218,7 @@ void PlotsView2D::mouseReleaseEvent(QMouseEvent *e)
             
             setViewport(r);
         } else
-			sendStatus(QCoreApplication::tr("Selected viewport too small"));
+            sendStatus(QCoreApplication::tr("Selected viewport too small"));
     }
     
     mode = None;
@@ -240,7 +240,7 @@ void PlotsView2D::mouseMoveEvent(QMouseEvent *e)
     } else if(e->buttons()==0) {
         if(img.second.isEmpty()) {
             mark = fromWidget(e->pos());
-			sendStatus(QCoreApplication::tr("x=%1 y=%2").arg(mark.x()).arg(mark.y()));
+            sendStatus(QCoreApplication::tr("x=%1 y=%2").arg(mark.x()).arg(mark.y()));
         } else
             sendStatus(img.second);
     }

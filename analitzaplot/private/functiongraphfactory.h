@@ -70,7 +70,7 @@ public:
     CoordinateSystem coordinateSystem(const QString& id) const;
     QString iconName(const QString& id) const;
     QStringList examples(const QString& id) const;
-	QStringList examples(Dimension dim) const;
+    QStringList examples(Dimension dim) const;
     
     static FunctionGraphFactory* self();
 

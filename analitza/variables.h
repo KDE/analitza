@@ -41,50 +41,50 @@ class Object;
 
 class ANALITZA_EXPORT Variables : public QHash<QString, Object*>
 {
-	public:
-		/** 
-		*	Creates an empty variable hash table with the usual constants
-		*/
-		Variables();
-		
-		/**
-		*	Copy constructor, copies the old one, a bit heavy, be careful.
-		*/
-		Variables(const Variables& v);
-		
-		/** Destroys the object */
-		~Variables();
-		
-		/**
-		*	Modifies the value of the variable called @p name,
-		*	and if didn't exist, a @p name variable is created with an @p o value.
-		*/
-		void modify(const QString& name, const Object* o);
-		
-		/**
-		*	Modifies the value of the variable called @p name,
-		*	and if didn't exist, a @p name variable is created with an @p e expression.
-		*/
-		void modify(const QString& name, const Expression& o);
-		
-		/**
-		*	The same as the last one but having @p d as a value for @p name.
-		*/
-		Cn* modify(const QString& name, const double& d);
-		
-		/**
-		*	The @p orig named variable will be called @p dest , then @p orig will be removed.
-		*/
-		void rename(const QString& orig, const QString& dest);
-		
-		/**
-		 * Adds again the initial constants
-		 */
-		void initializeConstants();
-		
-		/** @returns the expression contained by the @p name identifier. */
-		Expression valueExpression(const QString& name) const;
-		 
+    public:
+        /** 
+        *    Creates an empty variable hash table with the usual constants
+        */
+        Variables();
+        
+        /**
+        *    Copy constructor, copies the old one, a bit heavy, be careful.
+        */
+        Variables(const Variables& v);
+        
+        /** Destroys the object */
+        ~Variables();
+        
+        /**
+        *    Modifies the value of the variable called @p name,
+        *    and if didn't exist, a @p name variable is created with an @p o value.
+        */
+        void modify(const QString& name, const Object* o);
+        
+        /**
+        *    Modifies the value of the variable called @p name,
+        *    and if didn't exist, a @p name variable is created with an @p e expression.
+        */
+        void modify(const QString& name, const Expression& o);
+        
+        /**
+        *    The same as the last one but having @p d as a value for @p name.
+        */
+        Cn* modify(const QString& name, const double& d);
+        
+        /**
+        *    The @p orig named variable will be called @p dest , then @p orig will be removed.
+        */
+        void rename(const QString& orig, const QString& dest);
+        
+        /**
+         * Adds again the initial constants
+         */
+        void initializeConstants();
+        
+        /** @returns the expression contained by the @p name identifier. */
+        Expression valueExpression(const QString& name) const;
+         
 };
 
 }

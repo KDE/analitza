@@ -30,47 +30,47 @@ class Variables;
 
 class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
 {
-	Q_OBJECT
-	Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
-	Q_PROPERTY(QRectF viewport READ lastViewport WRITE setViewport)
+    Q_OBJECT
+    Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
+    Q_PROPERTY(QRectF viewport READ lastViewport WRITE setViewport)
     Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
-	Q_PROPERTY(bool keepAspectRatio READ keepAspectRatio WRITE setKeepAspectRatio)
-	Q_PROPERTY(bool currentFunction READ currentFunction WRITE setCurrentFunction)
-	Q_PROPERTY(bool ticksShown READ ticksShownAtAll WRITE setTicksShownAtAll)
-	public:
-		Graph2DMobile(QQuickItem* parent = 0);
-		
-		virtual void forceRepaint();
-		virtual void viewportChanged() {}
-		virtual void modelChanged();
-		virtual int currentFunction() const { return m_currentFunction; }
-		
-		void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) /*Q_OVERRIDE*/;
-		QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) /*Q_OVERRIDE*/;
-		
-		void setCurrentFunction(int f) { m_currentFunction = f; }
-		bool ticksShownAtAll() const { return ticksShown()!=0; }
-		void setTicksShownAtAll(bool shown);
-		
-	public Q_SLOTS:
-		void translate(qreal x, qreal y);
-		void scale(qreal s, int x, int y);
-		void resetViewport();
-		QStringList addFunction(const QString& expression, Analitza::Variables* vars=0);
-		
-	private Q_SLOTS:
-		void updateFuncs(const QModelIndex& start, const QModelIndex& end);
-		void addFuncs(const QModelIndex& parent, int start, int end);
-		void removeFuncs(const QModelIndex& parent, int start, int end);
-		
-	private:
-		void paint();
+    Q_PROPERTY(bool keepAspectRatio READ keepAspectRatio WRITE setKeepAspectRatio)
+    Q_PROPERTY(bool currentFunction READ currentFunction WRITE setCurrentFunction)
+    Q_PROPERTY(bool ticksShown READ ticksShownAtAll WRITE setTicksShownAtAll)
+    public:
+        Graph2DMobile(QQuickItem* parent = 0);
+        
+        virtual void forceRepaint();
+        virtual void viewportChanged() {}
+        virtual void modelChanged();
+        virtual int currentFunction() const { return m_currentFunction; }
+        
+        void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) /*Q_OVERRIDE*/;
+        QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) /*Q_OVERRIDE*/;
+        
+        void setCurrentFunction(int f) { m_currentFunction = f; }
+        bool ticksShownAtAll() const { return ticksShown()!=0; }
+        void setTicksShownAtAll(bool shown);
+        
+    public Q_SLOTS:
+        void translate(qreal x, qreal y);
+        void scale(qreal s, int x, int y);
+        void resetViewport();
+        QStringList addFunction(const QString& expression, Analitza::Variables* vars=0);
+        
+    private Q_SLOTS:
+        void updateFuncs(const QModelIndex& start, const QModelIndex& end);
+        void addFuncs(const QModelIndex& parent, int start, int end);
+        void removeFuncs(const QModelIndex& parent, int start, int end);
+        
+    private:
+        void paint();
 
-		bool m_dirty;
-		int m_currentFunction;
-		
-		QImage m_buffer;
-		QRectF defViewport;
+        bool m_dirty;
+        int m_currentFunction;
+        
+        QImage m_buffer;
+        QRectF defViewport;
 };
 
 #endif // GRAPH2DMOBILE_H

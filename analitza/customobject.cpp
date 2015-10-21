@@ -22,43 +22,43 @@
 using namespace Analitza;
 
 CustomObject::CustomObject(const QVariant& v, CustomObject::destructor f, int* r)
-	: Object(Object::custom), m_destructor(f), m_refcount(r), m_value(v)
+    : Object(Object::custom), m_destructor(f), m_refcount(r), m_value(v)
 {}
 
 CustomObject::CustomObject(const QVariant& v, CustomObject::destructor f)
-	: Object(Object::custom), m_destructor(f), m_refcount(new int(1)), m_value(v)
+    : Object(Object::custom), m_destructor(f), m_refcount(new int(1)), m_value(v)
 {}
 
 CustomObject::~CustomObject()
 {
-	(*m_refcount)--;
-	if(*m_refcount==0) {
-		delete m_refcount;
-		
-		if(m_destructor)
-			m_destructor(m_value);
-	}
+    (*m_refcount)--;
+    if(*m_refcount==0) {
+        delete m_refcount;
+        
+        if(m_destructor)
+            m_destructor(m_value);
+    }
 }
 
 Object* CustomObject::copy() const
 {
-	(*m_refcount)++;
-	return new CustomObject(m_value, m_destructor, m_refcount);
+    (*m_refcount)++;
+    return new CustomObject(m_value, m_destructor, m_refcount);
 }
 
 bool CustomObject::matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* ) const
 {
-	bool ret = exp->type()==type();
-	ret &= *this==*static_cast<const CustomObject*>(exp);
-	return ret;
+    bool ret = exp->type()==type();
+    ret &= *this==*static_cast<const CustomObject*>(exp);
+    return ret;
 }
 
 bool CustomObject::operator==(const CustomObject& obj) const
 {
-	return this==&obj || obj.m_value == m_value;
+    return this==&obj || obj.m_value == m_value;
 }
 
 QVariant CustomObject::accept(AbstractExpressionVisitor* exp) const
 {
-	return exp->visit(this);
+    return exp->visit(this);
 }

@@ -61,10 +61,10 @@ class Expression;
 class RangeCommand: public Analitza::FunctionDefinition
 {
 public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-	
-	static const QString id;
-	static const Analitza::ExpressionType type;
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    
+    static const QString id;
+    static const Analitza::ExpressionType type;
 };
 
 #endif // LISTCOMMANDS_H

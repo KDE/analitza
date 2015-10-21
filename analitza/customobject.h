@@ -38,24 +38,24 @@ namespace Analitza
 
 class ANALITZA_EXPORT CustomObject : public Object
 {
-	public:
-		typedef void (*destructor)(const QVariant& v);
-		explicit CustomObject(const QVariant& v, destructor f);
-		virtual ~CustomObject();
-		
-		virtual Object* copy() const;
-		virtual bool matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* found) const;
-		virtual QVariant accept(AbstractExpressionVisitor* exp) const;
-		
-		bool operator==(const CustomObject& obj) const;
-		QVariant value() const { return m_value; }
-		
-	private:
-		explicit CustomObject(const QVariant& v, destructor f, int* r);
-		destructor m_destructor;
-		int* m_refcount;
-		QVariant m_value;
-		
+    public:
+        typedef void (*destructor)(const QVariant& v);
+        explicit CustomObject(const QVariant& v, destructor f);
+        virtual ~CustomObject();
+        
+        virtual Object* copy() const;
+        virtual bool matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* found) const;
+        virtual QVariant accept(AbstractExpressionVisitor* exp) const;
+        
+        bool operator==(const CustomObject& obj) const;
+        QVariant value() const { return m_value; }
+        
+    private:
+        explicit CustomObject(const QVariant& v, destructor f, int* r);
+        destructor m_destructor;
+        int* m_refcount;
+        QVariant m_value;
+        
 };
 
 }

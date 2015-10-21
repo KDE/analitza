@@ -23,26 +23,26 @@
 #include "../operatorsmodel.h"
 
 /**
-	@author Aleix Pol
+    @author Aleix Pol
 */
 
 class OperatorsModelTest : public QObject
 {
-	Q_OBJECT
-	public:
-		OperatorsModelTest(QObject *parent = 0);
-		~OperatorsModelTest();
-	
-	private Q_SLOTS:
-		void initTestCase();
-		
-		void testExamples_data();
-		void testExamples();
-		
-		void cleanupTestCase();
-		
-	private:
-		OperatorsModel m;
+    Q_OBJECT
+    public:
+        OperatorsModelTest(QObject *parent = 0);
+        ~OperatorsModelTest();
+    
+    private Q_SLOTS:
+        void initTestCase();
+        
+        void testExamples_data();
+        void testExamples();
+        
+        void cleanupTestCase();
+        
+    private:
+        OperatorsModel m;
 };
 
 #endif

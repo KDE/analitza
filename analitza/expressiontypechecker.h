@@ -33,62 +33,62 @@ class Expression;
 
 class ANALITZA_EXPORT ExpressionTypeChecker : public AbstractExpressionVisitor
 {
-	public:
-		ExpressionTypeChecker(Variables* v);
-		
-		ExpressionType check(const Expression& exp);
-		
-		virtual QVariant visit(const None* var);
-		virtual QVariant visit(const Operator* var);
-		virtual QVariant visit(const Ci* var);
-		virtual QVariant visit(const Cn* var);
-		virtual QVariant visit(const Container* var);
-		virtual QVariant visit(const Vector* var);
-		virtual QVariant visit(const List* l);
-		virtual QVariant visit(const Matrix* c);
-		virtual QVariant visit(const Analitza::MatrixRow* m);
-		virtual QVariant visit(const Apply* a);
-		virtual QVariant visit(const CustomObject* c);
-		
-		virtual QVariant result() const { return QVariant(); }
-		
-		QStringList dependencies() const { return m_deps; }
-		bool hasDependencies() const { return !m_deps.isEmpty(); }
-		bool isCorrect() const { return m_err.isEmpty() && !current.isError(); }
-		QStringList errors() const;
-		
-		void initializeVars(const QMap<QString, ExpressionType>& types);
-		QMap<QString, ExpressionType> variablesTypes() const;
-		
-	private:
-		ExpressionType tellTypeIdentity(const QString& name, const ExpressionType& type);
-		ExpressionType solve(const Operator* o, const QVector<Object*>& parameters);
-		bool inferType(const ExpressionType& c, const ExpressionType& targetType, QMap<QString, ExpressionType>* assumptions);
-		QList<ExpressionType> computePairs(const QList<ExpressionType>& options, const ExpressionType& param);
-		
-		QMap<QString, ExpressionType> typeIs(const Object* o, const ExpressionType& type);
-		template <class T>
-			QMap<QString, ExpressionType> typeIs(T it, const T& itEnd, const ExpressionType& type);
-			
-		template <class T>
-			QVariant visitListOrVector(const T* v, ExpressionType::Type t, int size);
-		
-		ExpressionType typeForVar(const QString& var);
-		
-		void addError(const QString& err);
-		ExpressionType commonType(const QList<Object*>& values);
-		bool isVariableDefined(const QString& id) const;
-		
-		uint m_stars;
-		QList<QStringList> m_err;
-		QStringList m_calculating;
-		ExpressionType current;
-		Variables* m_v;
-		QMap<QString, ExpressionType> m_typeForBVar;
-		QMap<QString, ExpressionType> m_vars;
-		QSet<QString> m_lambdascope;
-		QStack<const Object*> m_calls;
-		QStringList m_deps;
+    public:
+        ExpressionTypeChecker(Variables* v);
+        
+        ExpressionType check(const Expression& exp);
+        
+        virtual QVariant visit(const None* var);
+        virtual QVariant visit(const Operator* var);
+        virtual QVariant visit(const Ci* var);
+        virtual QVariant visit(const Cn* var);
+        virtual QVariant visit(const Container* var);
+        virtual QVariant visit(const Vector* var);
+        virtual QVariant visit(const List* l);
+        virtual QVariant visit(const Matrix* c);
+        virtual QVariant visit(const Analitza::MatrixRow* m);
+        virtual QVariant visit(const Apply* a);
+        virtual QVariant visit(const CustomObject* c);
+        
+        virtual QVariant result() const { return QVariant(); }
+        
+        QStringList dependencies() const { return m_deps; }
+        bool hasDependencies() const { return !m_deps.isEmpty(); }
+        bool isCorrect() const { return m_err.isEmpty() && !current.isError(); }
+        QStringList errors() const;
+        
+        void initializeVars(const QMap<QString, ExpressionType>& types);
+        QMap<QString, ExpressionType> variablesTypes() const;
+        
+    private:
+        ExpressionType tellTypeIdentity(const QString& name, const ExpressionType& type);
+        ExpressionType solve(const Operator* o, const QVector<Object*>& parameters);
+        bool inferType(const ExpressionType& c, const ExpressionType& targetType, QMap<QString, ExpressionType>* assumptions);
+        QList<ExpressionType> computePairs(const QList<ExpressionType>& options, const ExpressionType& param);
+        
+        QMap<QString, ExpressionType> typeIs(const Object* o, const ExpressionType& type);
+        template <class T>
+            QMap<QString, ExpressionType> typeIs(T it, const T& itEnd, const ExpressionType& type);
+            
+        template <class T>
+            QVariant visitListOrVector(const T* v, ExpressionType::Type t, int size);
+        
+        ExpressionType typeForVar(const QString& var);
+        
+        void addError(const QString& err);
+        ExpressionType commonType(const QList<Object*>& values);
+        bool isVariableDefined(const QString& id) const;
+        
+        uint m_stars;
+        QList<QStringList> m_err;
+        QStringList m_calculating;
+        ExpressionType current;
+        Variables* m_v;
+        QMap<QString, ExpressionType> m_typeForBVar;
+        QMap<QString, ExpressionType> m_vars;
+        QSet<QString> m_lambdascope;
+        QStack<const Object*> m_calls;
+        QStringList m_deps;
 };
 
 }

@@ -25,13 +25,13 @@
 
 class MatchingTest : public QObject
 {
-	Q_OBJECT
-	private Q_SLOTS:
-		void testCompareTrees_data();
-		void testCompareTrees();
-		
-		void testSubstitutions_data();
-		void testSubstitutions();
+    Q_OBJECT
+    private Q_SLOTS:
+        void testCompareTrees_data();
+        void testCompareTrees();
+        
+        void testSubstitutions_data();
+        void testSubstitutions();
 };
 
 #endif // MATCHINGTEST_H

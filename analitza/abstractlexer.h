@@ -27,39 +27,39 @@
 
 class ANALITZA_EXPORT AbstractLexer
 {
-	public:
-		struct TOKEN
-		{
-			TOKEN(int _type=-1, uint _pos=0, const QString& _val=QString(), unsigned char _len=0) :
-				type(_type), val(_val), len(_len), pos(_pos) {}
-			
-			int type;
-			QString val;
-			unsigned char len;
-			uint pos;
-		};
-		
-		AbstractLexer(const QString &source);
-		virtual ~AbstractLexer();
-		int lex();
-		int lineNumber() const { return m_lines; }
-		bool isCompletelyRead() const { return m_openPr==0 && m_openCb==0; }
-		
-		TOKEN current;
-		QString error() const { return m_err; }
-		bool isCompleteExpression(bool justempty=false);
-		
-	protected:
-		QString m_err;
-		QString m_source;
-		
-		int m_lines;
-		int m_openPr, m_openCb;
-		QQueue<TOKEN> m_tokens;
-		static QHash<QChar, int> m_operators;
-		static QHash<QString, int> m_longOperators;
-		virtual void getToken()=0;
-		void printQueue(const QQueue<TOKEN>& q) const;
+    public:
+        struct TOKEN
+        {
+            TOKEN(int _type=-1, uint _pos=0, const QString& _val=QString(), unsigned char _len=0) :
+                type(_type), val(_val), len(_len), pos(_pos) {}
+            
+            int type;
+            QString val;
+            unsigned char len;
+            uint pos;
+        };
+        
+        AbstractLexer(const QString &source);
+        virtual ~AbstractLexer();
+        int lex();
+        int lineNumber() const { return m_lines; }
+        bool isCompletelyRead() const { return m_openPr==0 && m_openCb==0; }
+        
+        TOKEN current;
+        QString error() const { return m_err; }
+        bool isCompleteExpression(bool justempty=false);
+        
+    protected:
+        QString m_err;
+        QString m_source;
+        
+        int m_lines;
+        int m_openPr, m_openCb;
+        QQueue<TOKEN> m_tokens;
+        static QHash<QChar, int> m_operators;
+        static QHash<QString, int> m_longOperators;
+        virtual void getToken()=0;
+        void printQueue(const QQueue<TOKEN>& q) const;
 };
 
 #endif

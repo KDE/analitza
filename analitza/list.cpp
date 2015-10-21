@@ -24,71 +24,71 @@
 using namespace Analitza;
 
 List::List(const List& v)
-	: Object(Object::list)
+    : Object(Object::list)
 {
-	foreach(const Object* o, v.m_elements)
-	{
-		m_elements.append(o->copy());
-	}
+    foreach(const Object* o, v.m_elements)
+    {
+        m_elements.append(o->copy());
+    }
 }
 
 List::List()
-	: Object(Object::list)
+    : Object(Object::list)
 {}
 
 List::~List()
 {
-	qDeleteAll(m_elements);
+    qDeleteAll(m_elements);
 }
 
 List* List::copy() const
 {
-	List *v=new List;
-	foreach(const Object* o, m_elements)
-		v->m_elements.append(o->copy());
-	
-	return v;
+    List *v=new List;
+    foreach(const Object* o, m_elements)
+        v->m_elements.append(o->copy());
+    
+    return v;
 }
 
 void List::appendBranch(Object* o)
 {
-	Q_ASSERT(o);
-	m_elements.append(o);
+    Q_ASSERT(o);
+    m_elements.append(o);
 }
 
 QVariant List::accept(AbstractExpressionVisitor* e) const
 {
-	return e->visit(this);
+    return e->visit(this);
 }
 
 bool List::isZero() const
 {
-	return m_elements.isEmpty();
+    return m_elements.isEmpty();
 }
 
 bool List::matches(const Object* exp, QMap< QString, const Object* >* found) const
 {
-	if(Object::vector!=exp->type())
-		return false;
-	const List* c=(const List*) exp;
-	if(m_elements.count()!=c->m_elements.count())
-		return false;
-	
-	bool matching=true;
-	List::const_iterator it, it2, itEnd=m_elements.constEnd();
-	for(it=m_elements.constBegin(), it2=c->m_elements.constBegin(); matching && it!=itEnd; ++it, ++it2)
-	{
-		matching &= (*it)->matches(*it2, found);
-	}
-	return matching;
+    if(Object::vector!=exp->type())
+        return false;
+    const List* c=(const List*) exp;
+    if(m_elements.count()!=c->m_elements.count())
+        return false;
+    
+    bool matching=true;
+    List::const_iterator it, it2, itEnd=m_elements.constEnd();
+    for(it=m_elements.constBegin(), it2=c->m_elements.constBegin(); matching && it!=itEnd; ++it, ++it2)
+    {
+        matching &= (*it)->matches(*it2, found);
+    }
+    return matching;
 }
 
 bool List::operator==(const List& v) const
 {
-	bool eq=v.size()==size();
-	
-	for(int i=0; eq && i<m_elements.count(); ++i) {
-		eq = eq && AnalitzaUtils::equalTree(m_elements[i], v.m_elements[i]);
-	}
-	return eq;
+    bool eq=v.size()==size();
+    
+    for(int i=0; eq && i<m_elements.count(); ++i) {
+        eq = eq && AnalitzaUtils::equalTree(m_elements[i], v.m_elements[i]);
+    }
+    return eq;
 }

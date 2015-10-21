@@ -29,86 +29,86 @@ using namespace Analitza;
 Q_GLOBAL_STATIC(PlotsFactory, factoryInstance)
 
 PlotsFactory::PlotsFactory()
-	: m_vars(new Variables)
+    : m_vars(new Variables)
 {}
 
 PlotsFactory::~PlotsFactory()
 {
-	delete m_vars;
+    delete m_vars;
 }
 
 PlotsFactory* PlotsFactory::self()
 {
-	return factoryInstance;
+    return factoryInstance;
 }
 
 PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimension dim, Variables* vars) const
 {
-	QStringList errs;
-	
-	if(!testexp.isCorrect() || testexp.toString().isEmpty()) {
-		errs << QCoreApplication::tr("The expression is not correct");
-		PlotBuilder b;
-		b.m_errors = errs;
-		return b;
-	}
-	
-	Analitza::Expression exp(testexp);
-	if(exp.isDeclaration())
-		exp = exp.declarationValue();
-	
-	if(exp.isEquation())
-		exp = exp.equationToFunction();
-	
-	Analitza::Analyzer a(vars ? vars : m_vars);
-	a.setExpression(exp);
-	a.setExpression(a.dependenciesToLambda());
-	
-	QString id;
-	if(a.isCorrect()) {
-		QString expectedid = FunctionGraphFactory::self()->trait(a.expression(), a.type(), dim);
-		if(FunctionGraphFactory::self()->contains(expectedid)) {
-			id = expectedid;
-		} else
-			errs << QCoreApplication::tr("Function type not recognized");
-	} else {
-		errs << a.errors();
-	}
-	
-	Q_ASSERT(!errs.isEmpty() || !id.isEmpty());
-	
-	PlotBuilder b;
-	b.m_errors = errs;
-	b.m_id = id;
-	b.m_expression = a.expression();
-	b.m_display = testexp.toString();
-	b.m_vars = vars;
-	return b;
+    QStringList errs;
+    
+    if(!testexp.isCorrect() || testexp.toString().isEmpty()) {
+        errs << QCoreApplication::tr("The expression is not correct");
+        PlotBuilder b;
+        b.m_errors = errs;
+        return b;
+    }
+    
+    Analitza::Expression exp(testexp);
+    if(exp.isDeclaration())
+        exp = exp.declarationValue();
+    
+    if(exp.isEquation())
+        exp = exp.equationToFunction();
+    
+    Analitza::Analyzer a(vars ? vars : m_vars);
+    a.setExpression(exp);
+    a.setExpression(a.dependenciesToLambda());
+    
+    QString id;
+    if(a.isCorrect()) {
+        QString expectedid = FunctionGraphFactory::self()->trait(a.expression(), a.type(), dim);
+        if(FunctionGraphFactory::self()->contains(expectedid)) {
+            id = expectedid;
+        } else
+            errs << QCoreApplication::tr("Function type not recognized");
+    } else {
+        errs << a.errors();
+    }
+    
+    Q_ASSERT(!errs.isEmpty() || !id.isEmpty());
+    
+    PlotBuilder b;
+    b.m_errors = errs;
+    b.m_id = id;
+    b.m_expression = a.expression();
+    b.m_display = testexp.toString();
+    b.m_vars = vars;
+    return b;
 }
 
 QStringList PlotsFactory::examples(Dimensions s) const
 {
-	QStringList examples;
-	if(s & Dim1D) examples += FunctionGraphFactory::self()->examples(Dim1D);
-	if(s & Dim2D) examples += FunctionGraphFactory::self()->examples(Dim2D);
-	if(s & Dim3D) examples += FunctionGraphFactory::self()->examples(Dim3D);
-	return examples;
+    QStringList examples;
+    if(s & Dim1D) examples += FunctionGraphFactory::self()->examples(Dim1D);
+    if(s & Dim2D) examples += FunctionGraphFactory::self()->examples(Dim2D);
+    if(s & Dim3D) examples += FunctionGraphFactory::self()->examples(Dim3D);
+    return examples;
 }
 
 //------------------------------------------ PlotBuilder
 
 bool PlotBuilder::canDraw() const
 {
-	return m_errors.isEmpty() && !m_id.isEmpty();
+    return m_errors.isEmpty() && !m_id.isEmpty();
 }
 
 FunctionGraph* PlotBuilder::create(const QColor& color, const QString& name) const
 {
-	FunctionGraph* it = FunctionGraphFactory::self()->buildItem(m_id, m_expression, m_vars);
-	it->setColor(color);
-	it->setName(name);
-	it->setDisplay(m_display);
-	return it;
+    FunctionGraph* it = FunctionGraphFactory::self()->buildItem(m_id, m_expression, m_vars);
+    it->setColor(color);
+    it->setName(name);
+    it->setDisplay(m_display);
+    return it;
 }
 
 Analitza::Expression PlotBuilder::expression() const
@@ -118,5 +118,5 @@ Analitza::Expression PlotBuilder::expression() const
 
 QString PlotBuilder::display() const
 {
-	return m_display;
+    return m_display;
 }

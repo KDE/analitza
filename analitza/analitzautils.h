@@ -47,42 +47,42 @@ class Matrix;
 
 namespace AnalitzaUtils
 {
-	
-	/** Convenience function */
-	void ANALITZA_EXPORT objectWalker(const Analitza::Expression& o, const QByteArray& prefix=QByteArray());
-	
-	/** Creates a QVariant out of an Expression @p res */
-	QVariant ANALITZA_EXPORT expressionToVariant(const Analitza::Expression& res);
-	
-	/** Creates an expression out of a QVariant @p v, it will assert if it's not the correct type. */
-	Analitza::Expression ANALITZA_EXPORT variantToExpression(const QVariant& v);
-	
-	QString ANALITZA_EXPORT generateDependencyGraph(const Analitza::Variables* v);
-	
-	bool hasTheVar(const QSet<QString>& vars, const Analitza::Object * o);
-	bool hasTheVar(const QSet<QString>& vars, const Analitza::Apply * a);
-	bool hasTheVar(const QSet<QString>& vars, const Analitza::Container * c);
-	
-	bool isLambda(const Analitza::Object* o);
-	ANALITZA_EXPORT QStringList dependencies(const Analitza::Object* o, const QStringList& scope);
-	
-	/** Returns whether there is any variable in the @p o tree.
-			@p bvars tells the already defined variables (which won't return true). */
-	bool hasVars(const Analitza::Object* o,
-					const QStringList& bvars=QStringList());
-	
-	/** Returns whether @p o1 is equal to @p o2. */
-	bool equalTree(const Analitza::Object * o1, const Analitza::Object * o2);
-	
-	/** Prints an expression tree from a node @p o. @p prefix will be the start of every item line */
-	void objectWalker(const Analitza::Object* o, const QByteArray& prefix=QByteArray());
-	
-	QString listToString(const Analitza::List* list);
-	
-	Analitza::Object* replaceDepth(int depth, Analitza::Object* tree, Analitza::Object* towhat);
-	
-	/** tells how much @p depth is being used inside @p tree */
-	int countDepth(int depth, const Analitza::Object* tree);
+    
+    /** Convenience function */
+    void ANALITZA_EXPORT objectWalker(const Analitza::Expression& o, const QByteArray& prefix=QByteArray());
+    
+    /** Creates a QVariant out of an Expression @p res */
+    QVariant ANALITZA_EXPORT expressionToVariant(const Analitza::Expression& res);
+    
+    /** Creates an expression out of a QVariant @p v, it will assert if it's not the correct type. */
+    Analitza::Expression ANALITZA_EXPORT variantToExpression(const QVariant& v);
+    
+    QString ANALITZA_EXPORT generateDependencyGraph(const Analitza::Variables* v);
+    
+    bool hasTheVar(const QSet<QString>& vars, const Analitza::Object * o);
+    bool hasTheVar(const QSet<QString>& vars, const Analitza::Apply * a);
+    bool hasTheVar(const QSet<QString>& vars, const Analitza::Container * c);
+    
+    bool isLambda(const Analitza::Object* o);
+    ANALITZA_EXPORT QStringList dependencies(const Analitza::Object* o, const QStringList& scope);
+    
+    /** Returns whether there is any variable in the @p o tree.
+            @p bvars tells the already defined variables (which won't return true). */
+    bool hasVars(const Analitza::Object* o,
+                    const QStringList& bvars=QStringList());
+    
+    /** Returns whether @p o1 is equal to @p o2. */
+    bool equalTree(const Analitza::Object * o1, const Analitza::Object * o2);
+    
+    /** Prints an expression tree from a node @p o. @p prefix will be the start of every item line */
+    void objectWalker(const Analitza::Object* o, const QByteArray& prefix=QByteArray());
+    
+    QString listToString(const Analitza::List* list);
+    
+    Analitza::Object* replaceDepth(int depth, Analitza::Object* tree, Analitza::Object* towhat);
+    
+    /** tells how much @p depth is being used inside @p tree */
+    int countDepth(int depth, const Analitza::Object* tree);
 }
 
 #endif // ANALITZAUTILS_H

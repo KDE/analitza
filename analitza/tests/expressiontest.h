@@ -22,39 +22,39 @@
 #include <QObject>
 
 /**
-	@author Aleix Pol
+    @author Aleix Pol
 */
 namespace Analitza { class Expression; }
 
 class ExpressionTest : public QObject
 {
 Q_OBJECT
-	public:
-		ExpressionTest(QObject *parent = 0);
-		~ExpressionTest();
-	
-	private Q_SLOTS:
-		void initTestCase();
-		
-		/**
-		* We switch it to mathml and then switch back to expression
-		* and we check that receive the same.
-		*/
-		void testConversion();
-		void testConversion_data();
-		
-		/** We check that the same tree is equal to another equal tree. */
-		void testCopy();
-		void testCopy_data();
-		
-		/** We check that some expressions are correct or not.*/
-		void testUncorrection();
-		void testUncorrection_data();
-		
-		void cleanupTestCase();
-		
-	private:
-		Analitza::Expression *e;
+    public:
+        ExpressionTest(QObject *parent = 0);
+        ~ExpressionTest();
+    
+    private Q_SLOTS:
+        void initTestCase();
+        
+        /**
+        * We switch it to mathml and then switch back to expression
+        * and we check that receive the same.
+        */
+        void testConversion();
+        void testConversion_data();
+        
+        /** We check that the same tree is equal to another equal tree. */
+        void testCopy();
+        void testCopy_data();
+        
+        /** We check that some expressions are correct or not.*/
+        void testUncorrection();
+        void testUncorrection_data();
+        
+        void cleanupTestCase();
+        
+    private:
+        Analitza::Expression *e;
 };
 
 #endif

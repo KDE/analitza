@@ -26,52 +26,52 @@
 using namespace Analitza;
 
 Transformation::Transformation(const Object* first, const Object* second, const QMap< QString, Transformation::treeCheck >& conditions)
-	: first(first), second(second)
-	, conditions(conditions)
+    : first(first), second(second)
+    , conditions(conditions)
 {}
 
 Transformation::Transformation(const Object* first, const Object* second)
-	: first(first), second(second)
+    : first(first), second(second)
 {}
 
 Analitza::Object* Transformation::applyTransformation(const Analitza::Object* input) const {
-	QMap<QString, const Object*> matchedValues;
-	bool match = first->matches(input, &matchedValues);
-	
-// 	qDebug() << "beeeeee" << input->toString() << first->toString() << match;
-	if(match) {
-		bool satisfied=true;
-		for(QMap<QString, treeCheck>::const_iterator it=conditions.constBegin(), itEnd=conditions.constEnd(); satisfied && it!=itEnd; ++it) {
-			Q_ASSERT(matchedValues.contains(it.key()));
-			const Object* value = matchedValues.value(it.key());
-			
-			satisfied = it.value()(value);
-		}
-		
-		if(satisfied) {
-// 			qDebug() << "match!" << first->toString() << input->toString();
-			SubstituteExpression exp;
-			Object* obj=exp.run(second.data(), matchedValues);
-			return obj;
-		}
-	}
-	return 0;
+    QMap<QString, const Object*> matchedValues;
+    bool match = first->matches(input, &matchedValues);
+    
+//     qDebug() << "beeeeee" << input->toString() << first->toString() << match;
+    if(match) {
+        bool satisfied=true;
+        for(QMap<QString, treeCheck>::const_iterator it=conditions.constBegin(), itEnd=conditions.constEnd(); satisfied && it!=itEnd; ++it) {
+            Q_ASSERT(matchedValues.contains(it.key()));
+            const Object* value = matchedValues.value(it.key());
+            
+            satisfied = it.value()(value);
+        }
+        
+        if(satisfied) {
+//             qDebug() << "match!" << first->toString() << input->toString();
+            SubstituteExpression exp;
+            Object* obj=exp.run(second.data(), matchedValues);
+            return obj;
+        }
+    }
+    return 0;
 }
 
 const Object* Transformation::parse(const QString& exp)
 {
-	Expression e(exp);
-// 	if(!e.isCorrect()) qDebug() << "lelele" << exp << e.error();
-	Q_ASSERT(e.isCorrect());
-	Object* tree = e.tree();
-	e.setTree(0);
-	
-	//We remove the math node
-	Container* root = static_cast<Container*>(tree);
-	
-	Q_ASSERT(root->m_params.size()==1);
-	tree=root->m_params.takeFirst();
-	delete root;
-	
-	return tree;
+    Expression e(exp);
+//     if(!e.isCorrect()) qDebug() << "lelele" << exp << e.error();
+    Q_ASSERT(e.isCorrect());
+    Object* tree = e.tree();
+    e.setTree(0);
+    
+    //We remove the math node
+    Container* root = static_cast<Container*>(tree);
+    
+    Q_ASSERT(root->m_params.size()==1);
+    tree=root->m_params.takeFirst();
+    delete root;
+    
+    return tree;
 }

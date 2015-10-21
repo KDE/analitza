@@ -39,445 +39,445 @@ using namespace Analitza;
 
 class HelpTip : public QLabel
 {
-	public:
-		HelpTip(QWidget* parent)
-			: QLabel(parent, Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool | Qt::X11BypassWindowManagerHint)
-		{
-			setFrameShape(QFrame::Box);
-			setFocusPolicy(Qt::NoFocus);
-			setAutoFillBackground(false);
-			
-			QPalette p=palette();
-			p.setColor(backgroundRole(), p.color(QPalette::Active, QPalette::ToolTipBase));
-			p.setColor(foregroundRole(), p.color(QPalette::Active, QPalette::ToolTipText));
-			setPalette(p);
-		}
-		
-		void mousePressEvent(QMouseEvent*)
-		{
-			hide();
-		}
+    public:
+        HelpTip(QWidget* parent)
+            : QLabel(parent, Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool | Qt::X11BypassWindowManagerHint)
+        {
+            setFrameShape(QFrame::Box);
+            setFocusPolicy(Qt::NoFocus);
+            setAutoFillBackground(false);
+            
+            QPalette p=palette();
+            p.setColor(backgroundRole(), p.color(QPalette::Active, QPalette::ToolTipBase));
+            p.setColor(foregroundRole(), p.color(QPalette::Active, QPalette::ToolTipText));
+            setPalette(p);
+        }
+        
+        void mousePressEvent(QMouseEvent*)
+        {
+            hide();
+        }
 };
 
 ExpressionEdit::ExpressionEdit(QWidget *parent, AlgebraHighlighter::Mode inimode)
-	: QPlainTextEdit(parent), m_histPos(0), a(0), m_correct(true), m_ans("ans")
+    : QPlainTextEdit(parent), m_histPos(0), a(0), m_correct(true), m_ans("ans")
 {
-	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	this->setTabChangesFocus(true);
-	m_history.append(QString());
-	
-	m_helptip = new HelpTip(this);
-	m_helptip->hide();
-	m_hideHelpTip = new QTimer(this);
-	m_hideHelpTip->setInterval(500);
-	connect(m_hideHelpTip, SIGNAL(timeout()), m_helptip, SLOT(hide()));
-	
-	m_highlight= new AlgebraHighlighter(this->document(), a);
-	
-	m_completer = new QCompleter(this);
-	m_completer->setWidget(this);
-	m_completer->setCompletionColumn(0);
-	m_completer->setCompletionRole(Qt::DisplayRole);
-	QTreeView* completionView = new QTreeView;
-	m_completer->setPopup(completionView);
-	completionView->setRootIsDecorated(false);
-	completionView->header()->hide();
-// 	completionView->resizeColumnToContents(1);
-	completionView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	completionView->setMinimumWidth(300);
-	m_ops = new OperatorsModel(m_completer);
-	m_completer->setModel(m_ops);
-	
-	updateCompleter();
-	
-	completionView->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-	completionView->showColumn(0);
-	completionView->showColumn(1);
-	completionView->hideColumn(2);
-	completionView->hideColumn(3);
-	
-	connect(this, SIGNAL(returnPressed()), this, SLOT(returnP()));
-	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorMov()));
-	connect(this, SIGNAL(signalHelper(QString)), this, SLOT(helper(QString)));
-	connect(m_completer, SIGNAL(activated(QString)), this, SLOT(completed(QString)));
-// 	connect(m_completer, SIGNAL(activated(QModelIndex)), this, SLOT(completed(QModelIndex)));
-	
-	setMode(inimode);
-	m_lineHeight = QFontMetrics(currentCharFormat().font()).height();
-	setFixedHeight(m_lineHeight+15);
-	
-	setInputMethodHints(Qt::ImhNoAutoUppercase);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    this->setTabChangesFocus(true);
+    m_history.append(QString());
+    
+    m_helptip = new HelpTip(this);
+    m_helptip->hide();
+    m_hideHelpTip = new QTimer(this);
+    m_hideHelpTip->setInterval(500);
+    connect(m_hideHelpTip, SIGNAL(timeout()), m_helptip, SLOT(hide()));
+    
+    m_highlight= new AlgebraHighlighter(this->document(), a);
+    
+    m_completer = new QCompleter(this);
+    m_completer->setWidget(this);
+    m_completer->setCompletionColumn(0);
+    m_completer->setCompletionRole(Qt::DisplayRole);
+    QTreeView* completionView = new QTreeView;
+    m_completer->setPopup(completionView);
+    completionView->setRootIsDecorated(false);
+    completionView->header()->hide();
+//     completionView->resizeColumnToContents(1);
+    completionView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    completionView->setMinimumWidth(300);
+    m_ops = new OperatorsModel(m_completer);
+    m_completer->setModel(m_ops);
+    
+    updateCompleter();
+    
+    completionView->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    completionView->showColumn(0);
+    completionView->showColumn(1);
+    completionView->hideColumn(2);
+    completionView->hideColumn(3);
+    
+    connect(this, SIGNAL(returnPressed()), this, SLOT(returnP()));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorMov()));
+    connect(this, SIGNAL(signalHelper(QString)), this, SLOT(helper(QString)));
+    connect(m_completer, SIGNAL(activated(QString)), this, SLOT(completed(QString)));
+//     connect(m_completer, SIGNAL(activated(QModelIndex)), this, SLOT(completed(QModelIndex)));
+    
+    setMode(inimode);
+    m_lineHeight = QFontMetrics(currentCharFormat().font()).height();
+    setFixedHeight(m_lineHeight+15);
+    
+    setInputMethodHints(Qt::ImhNoAutoUppercase);
 }
 
 ExpressionEdit::~ExpressionEdit()
 {
-	delete m_highlight;
+    delete m_highlight;
 }
 
 void ExpressionEdit::setExpression(const Analitza::Expression& e)
 {
-	if(!e.isCorrect())
-		clear();
-	else if(isMathML())
-		setText(e.toMathML());
-	else
-		setText(e.toString());
-	
-	setCorrect(true);
+    if(!e.isCorrect())
+        clear();
+    else if(isMathML())
+        setText(e.toMathML());
+    else
+        setText(e.toString());
+    
+    setCorrect(true);
 }
 
 void ExpressionEdit::updateCompleter()
 {
-	m_ops->updateInformation();
+    m_ops->updateInformation();
 }
  
 void ExpressionEdit::completed(const QString& newText)
 {
-	int c = newText.length() - lastWord(textCursor().selectionStart()).length();
-	QString toInsert=newText.right(c);
-	if(Analitza::Expression::whatType(newText) == Analitza::Object::oper && !isMathML())
-		toInsert += '(';
-	insertPlainText(toInsert);
+    int c = newText.length() - lastWord(textCursor().selectionStart()).length();
+    QString toInsert=newText.right(c);
+    if(Analitza::Expression::whatType(newText) == Analitza::Object::oper && !isMathML())
+        toInsert += '(';
+    insertPlainText(toInsert);
 }
 
 bool ExpressionEdit::isMathML() const
 {
-	switch(m_highlight->mode()) {
-		case AlgebraHighlighter::MathML:
-			return true;
-		case AlgebraHighlighter::Expression:
-			return false;
-		default:
-			return Analitza::Expression::isMathML(this->toPlainText());
-	}
+    switch(m_highlight->mode()) {
+        case AlgebraHighlighter::MathML:
+            return true;
+        case AlgebraHighlighter::Expression:
+            return false;
+        default:
+            return Analitza::Expression::isMathML(this->toPlainText());
+    }
 }
 
 void ExpressionEdit::setMode(AlgebraHighlighter::Mode en)
 {
-	bool correct=true;
-	if(!text().isEmpty()) {
-		if(isMathML() && en==AlgebraHighlighter::Expression) { //We convert it into MathML
-			Analitza::Expression e(toPlainText(), true);
-			correct=e.isCorrect();
-			if(correct) setPlainText(e.toString());
-		} else if(!isMathML() && en==AlgebraHighlighter::MathML) {
-			Analitza::Expression e(toPlainText(), false);
-			correct=e.isCorrect();
-			if(correct) setPlainText(e.toMathML());
-		}
-	}
-	if(correct)
-		m_highlight->setMode(en);
-	
-	setCorrect(correct);
+    bool correct=true;
+    if(!text().isEmpty()) {
+        if(isMathML() && en==AlgebraHighlighter::Expression) { //We convert it into MathML
+            Analitza::Expression e(toPlainText(), true);
+            correct=e.isCorrect();
+            if(correct) setPlainText(e.toString());
+        } else if(!isMathML() && en==AlgebraHighlighter::MathML) {
+            Analitza::Expression e(toPlainText(), false);
+            correct=e.isCorrect();
+            if(correct) setPlainText(e.toMathML());
+        }
+    }
+    if(correct)
+        m_highlight->setMode(en);
+    
+    setCorrect(correct);
 }
 
 void ExpressionEdit::returnP()
 {
-// 	removenl();
-	if(!this->toPlainText().isEmpty()) {
-		m_history.last() = this->toPlainText();
-		m_history.append(QString());
-		m_histPos=m_history.count()-1;
-	}
+//     removenl();
+    if(!this->toPlainText().isEmpty()) {
+        m_history.last() = this->toPlainText();
+        m_history.append(QString());
+        m_histPos=m_history.count()-1;
+    }
 }
 
 void ExpressionEdit::keyPressEvent(QKeyEvent * e)
 {
-	bool ch=false;
-	QAbstractItemView* completionView = m_completer->popup();
-	
-	switch(e->key()){
-		case Qt::Key_F2:
-			simplify();
-			break;
-		case Qt::Key_F3:
-			setMode(isMathML() ? AlgebraHighlighter::Expression : AlgebraHighlighter::MathML);
-			break;
-		case Qt::Key_Escape:
-			if(!completionView->isVisible())
-				selectAll();
-			
-			completionView->hide();
-			m_helptip->hide();
-			break;
-		case Qt::Key_Return:
-		case Qt::Key_Enter:
-			if(completionView->isVisible() && !completionView->selectionModel()->selectedRows().isEmpty()) 
-				completed(m_completer->currentCompletion());
-			else if(returnPress())
-					QPlainTextEdit::keyPressEvent(e);
-			completionView->hide();
-			break;
-		case Qt::Key_Up:
-			if(!completionView->isVisible()) {
-				m_histPos--;
-				ch=true;
-			}
-			break;
-		case Qt::Key_Down:
-			if(!completionView->isVisible()) {
-				m_histPos++;
-				ch=true;
-			}
-			break;
-		case Qt::Key_Left:
-		case Qt::Key_Right:
-			m_highlight->rehighlight();
-			QPlainTextEdit::keyPressEvent(e);
-			break;
-		case Qt::Key_Plus:
-		case Qt::Key_Asterisk:
-		case Qt::Key_Slash:
-			if(this->toPlainText().length() == (this->textCursor().position()-this->textCursor().anchor())) {
-				this->setPlainText(m_ans);
-				QTextCursor tc = this->textCursor();
-				tc.setPosition(m_ans.length());
-				this->setTextCursor(tc);
-			}
-			QPlainTextEdit::keyPressEvent(e);
-			break;
-		case Qt::Key_Alt:
-			QPlainTextEdit::keyPressEvent(e);
-			break;
-		default:
-			QPlainTextEdit::keyPressEvent(e);
-			m_history.last() = this->toPlainText();
-			QString last = lastWord(textCursor().selectionStart());
-			if(!last.isEmpty()) {
-				m_completer->setCompletionPrefix(last);
-				m_completer->complete();
-			} else {
-				completionView->hide();
-			}
-			break;
-	}
-	
-	if(ch) {
-		if(m_histPos<0)
-			m_histPos=0;
-		if(m_histPos>=m_history.count())
-			m_histPos=m_history.count()-1;
-		this->setPlainText(m_history[m_histPos]);
-	}
-	
-	if(m_completer->completionCount()==1 && m_completer->completionPrefix()==m_completer->currentCompletion()) {
-		completionView->hide();
-	}
-	
-	int lineCount=toPlainText().count('\n')+1;
-	setFixedHeight(m_lineHeight*lineCount+15);
-	setCorrect(m_highlight->isCorrect());
+    bool ch=false;
+    QAbstractItemView* completionView = m_completer->popup();
+    
+    switch(e->key()){
+        case Qt::Key_F2:
+            simplify();
+            break;
+        case Qt::Key_F3:
+            setMode(isMathML() ? AlgebraHighlighter::Expression : AlgebraHighlighter::MathML);
+            break;
+        case Qt::Key_Escape:
+            if(!completionView->isVisible())
+                selectAll();
+            
+            completionView->hide();
+            m_helptip->hide();
+            break;
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            if(completionView->isVisible() && !completionView->selectionModel()->selectedRows().isEmpty()) 
+                completed(m_completer->currentCompletion());
+            else if(returnPress())
+                    QPlainTextEdit::keyPressEvent(e);
+            completionView->hide();
+            break;
+        case Qt::Key_Up:
+            if(!completionView->isVisible()) {
+                m_histPos--;
+                ch=true;
+            }
+            break;
+        case Qt::Key_Down:
+            if(!completionView->isVisible()) {
+                m_histPos++;
+                ch=true;
+            }
+            break;
+        case Qt::Key_Left:
+        case Qt::Key_Right:
+            m_highlight->rehighlight();
+            QPlainTextEdit::keyPressEvent(e);
+            break;
+        case Qt::Key_Plus:
+        case Qt::Key_Asterisk:
+        case Qt::Key_Slash:
+            if(this->toPlainText().length() == (this->textCursor().position()-this->textCursor().anchor())) {
+                this->setPlainText(m_ans);
+                QTextCursor tc = this->textCursor();
+                tc.setPosition(m_ans.length());
+                this->setTextCursor(tc);
+            }
+            QPlainTextEdit::keyPressEvent(e);
+            break;
+        case Qt::Key_Alt:
+            QPlainTextEdit::keyPressEvent(e);
+            break;
+        default:
+            QPlainTextEdit::keyPressEvent(e);
+            m_history.last() = this->toPlainText();
+            QString last = lastWord(textCursor().selectionStart());
+            if(!last.isEmpty()) {
+                m_completer->setCompletionPrefix(last);
+                m_completer->complete();
+            } else {
+                completionView->hide();
+            }
+            break;
+    }
+    
+    if(ch) {
+        if(m_histPos<0)
+            m_histPos=0;
+        if(m_histPos>=m_history.count())
+            m_histPos=m_history.count()-1;
+        this->setPlainText(m_history[m_histPos]);
+    }
+    
+    if(m_completer->completionCount()==1 && m_completer->completionPrefix()==m_completer->currentCompletion()) {
+        completionView->hide();
+    }
+    
+    int lineCount=toPlainText().count('\n')+1;
+    setFixedHeight(m_lineHeight*lineCount+15);
+    setCorrect(m_highlight->isCorrect());
 }
 
 QString ExpressionEdit::lastWord(int pos)
 {
-	QString exp=text();
-	int act=pos-1;
-	for(; act>=0 && exp[act].isLetter(); act--) {}
-	
-	return exp.mid(act+1, pos-act-1);
+    QString exp=text();
+    int act=pos-1;
+    for(; act>=0 && exp[act].isLetter(); act--) {}
+    
+    return exp.mid(act+1, pos-act-1);
 }
 
 void ExpressionEdit::cursorMov()
 {
-	int pos=this->textCursor().position();
-	m_highlight->setPos(pos);
-	if(text().isEmpty())
-		setCorrect(true);
-	
-	QString help = helpShow(m_highlight->editingName(),
-							m_highlight->editingParameter(),
-							m_highlight->editingBounds(),
-							a ? a->variables() : 0);
-	
-	if(help.isEmpty()) {
-		if(isCorrect()) {
-			QTimer::singleShot(500, this, SLOT(showSimplified()));
-		}
-	} else
-		helper(help);
+    int pos=this->textCursor().position();
+    m_highlight->setPos(pos);
+    if(text().isEmpty())
+        setCorrect(true);
+    
+    QString help = helpShow(m_highlight->editingName(),
+                            m_highlight->editingParameter(),
+                            m_highlight->editingBounds(),
+                            a ? a->variables() : 0);
+    
+    if(help.isEmpty()) {
+        if(isCorrect()) {
+            QTimer::singleShot(500, this, SLOT(showSimplified()));
+        }
+    } else
+        helper(help);
 }
 
 
 void ExpressionEdit::showSimplified()
 {
-	Analitza::Analyzer a;
-	a.setExpression(expression());
-	QString help;
-	if(a.isCorrect()) {
-		a.simplify();
-		help=QCoreApplication::tr("Result: %1").arg(a.expression().toString());
-	}
-	helper(help);
+    Analitza::Analyzer a;
+    a.setExpression(expression());
+    QString help;
+    if(a.isCorrect()) {
+        a.simplify();
+        help=QCoreApplication::tr("Result: %1").arg(a.expression().toString());
+    }
+    helper(help);
 }
 
 
 QString ExpressionEdit::helpShow(const QString& funcname, int param, bool bounds, const Analitza::Variables* v) const
 {
-	QString ret;
-	QModelIndex idx = m_ops->indexForOperatorName(funcname);
-	
-	if(idx.isValid())
-		ret = m_ops->parameterHelp(idx, param, bounds);
-	else if(v && v->contains(funcname)) { //if it is a function defined by the user
-		Analitza::Expression val=v->valueExpression(funcname);
-		if(val.isLambda())
-			ret = m_ops->standardFunctionCallHelp(funcname, param, val.bvarList().size(), false, false);
-	}
-	return ret;
+    QString ret;
+    QModelIndex idx = m_ops->indexForOperatorName(funcname);
+    
+    if(idx.isValid())
+        ret = m_ops->parameterHelp(idx, param, bounds);
+    else if(v && v->contains(funcname)) { //if it is a function defined by the user
+        Analitza::Expression val=v->valueExpression(funcname);
+        if(val.isLambda())
+            ret = m_ops->standardFunctionCallHelp(funcname, param, val.bvarList().size(), false, false);
+    }
+    return ret;
 }
 
 void ExpressionEdit::removenl()
 {
-	this->setPlainText(this->toPlainText().remove('\n'));
+    this->setPlainText(this->toPlainText().remove('\n'));
 }
 
 void ExpressionEdit::helper(const QString& msg)
 {
-	QPoint pos = mapToGlobal( QPoint( cursorRect().left(), height() ) );
-	
-	if(msg.isEmpty()) {
-		if(!m_hideHelpTip->isActive())
-			m_hideHelpTip->start();
-	} else {
-		helper(msg, pos-QPoint(0, 50));
-		m_hideHelpTip->stop();
-	}
+    QPoint pos = mapToGlobal( QPoint( cursorRect().left(), height() ) );
+    
+    if(msg.isEmpty()) {
+        if(!m_hideHelpTip->isActive())
+            m_hideHelpTip->start();
+    } else {
+        helper(msg, pos-QPoint(0, 50));
+        m_hideHelpTip->stop();
+    }
 }
 
 void ExpressionEdit::helper(const QString& msg, const QPoint& p)
 {
-	if(isVisible()){
-		m_helptip->setText(msg);
-		m_helptip->resize(m_helptip->sizeHint());
-		if(!m_helptip->isVisible()) {
-			m_helptip->move(p);
-			
-			m_helptip->show();
-			m_helptip->raise();
-		} else {
-			QPropertyAnimation* anim = new QPropertyAnimation(m_helptip, "pos", this);
-			anim->setEndValue(p);
-			anim->start(QAbstractAnimation::DeleteWhenStopped);
-		}
-		setFocus();
-	}
+    if(isVisible()){
+        m_helptip->setText(msg);
+        m_helptip->resize(m_helptip->sizeHint());
+        if(!m_helptip->isVisible()) {
+            m_helptip->move(p);
+            
+            m_helptip->show();
+            m_helptip->raise();
+        } else {
+            QPropertyAnimation* anim = new QPropertyAnimation(m_helptip, "pos", this);
+            anim->setEndValue(p);
+            anim->start(QAbstractAnimation::DeleteWhenStopped);
+        }
+        setFocus();
+    }
 }
 
 void ExpressionEdit::setCorrect(bool correct)
 {
-	QPalette p=qApp->palette();
-	QColor c;
-	m_correct=correct;
-	
-	if(m_correct && !isMathML())
-		c = p.base().color();
-	else if(m_correct)
-		c = QColor(255,255,200);
-	else //if mathml
-		c = QColor(255,222,222);
-	
-	p.setColor(QPalette::Active, QPalette::Base, c);
-	setPalette(p);
+    QPalette p=qApp->palette();
+    QColor c;
+    m_correct=correct;
+    
+    if(m_correct && !isMathML())
+        c = p.base().color();
+    else if(m_correct)
+        c = QColor(255,255,200);
+    else //if mathml
+        c = QColor(255,222,222);
+    
+    p.setColor(QPalette::Active, QPalette::Base, c);
+    setPalette(p);
 }
 
 void ExpressionEdit::focusInEvent ( QFocusEvent * event )
 {
-	QPlainTextEdit::focusInEvent(event);
-	switch(event->reason()) {
-		case Qt::OtherFocusReason:
-		case Qt::TabFocusReason:
-			this->selectAll();
-		default:
-			break;
-	}
+    QPlainTextEdit::focusInEvent(event);
+    switch(event->reason()) {
+        case Qt::OtherFocusReason:
+        case Qt::TabFocusReason:
+            this->selectAll();
+        default:
+            break;
+    }
 }
 
 void ExpressionEdit::focusOutEvent ( QFocusEvent * event)
 {
-	m_helptip->hide();
-	
-	QPlainTextEdit::focusOutEvent(event);
+    m_helptip->hide();
+    
+    QPlainTextEdit::focusOutEvent(event);
 }
 
 void ExpressionEdit::simplify()
 {
-	Analitza::Analyzer a;
-	a.setExpression(expression());
-	if(a.isCorrect()) {
-		a.simplify();
-		setExpression(a.expression());
-	}
-	selectAll();
+    Analitza::Analyzer a;
+    a.setExpression(expression());
+    if(a.isCorrect()) {
+        a.simplify();
+        setExpression(a.expression());
+    }
+    selectAll();
 }
 
 void ExpressionEdit::contextMenuEvent(QContextMenuEvent * e)
 {
-	QScopedPointer<QMenu> popup(createStandardContextMenu());
-	popup->addSeparator();
-	if(isMathML())
-		popup->addAction(QCoreApplication::tr("To Expression"), this, SLOT(toExpression()));
-	else
-		popup->addAction(QCoreApplication::tr("To MathML"), this, SLOT(toMathML()));
-	
-	popup->addAction(QCoreApplication::tr("Simplify"), this, SLOT(simplify()));
-	
-	QMenu* examples=popup->addMenu(QCoreApplication::tr("Examples"));
-	examples->setEnabled(!m_examples.isEmpty());
-	foreach(const QString &example, m_examples) {
-		QAction* ac=examples->addAction(example);
-		ac->setData(example);
-	}
-	connect(examples, SIGNAL(triggered(QAction*)), SLOT(setActionText(QAction*)));
-	
-	popup->exec(e->globalPos());
+    QScopedPointer<QMenu> popup(createStandardContextMenu());
+    popup->addSeparator();
+    if(isMathML())
+        popup->addAction(QCoreApplication::tr("To Expression"), this, SLOT(toExpression()));
+    else
+        popup->addAction(QCoreApplication::tr("To MathML"), this, SLOT(toMathML()));
+    
+    popup->addAction(QCoreApplication::tr("Simplify"), this, SLOT(simplify()));
+    
+    QMenu* examples=popup->addMenu(QCoreApplication::tr("Examples"));
+    examples->setEnabled(!m_examples.isEmpty());
+    foreach(const QString &example, m_examples) {
+        QAction* ac=examples->addAction(example);
+        ac->setData(example);
+    }
+    connect(examples, SIGNAL(triggered(QAction*)), SLOT(setActionText(QAction*)));
+    
+    popup->exec(e->globalPos());
 
 }
 
 void ExpressionEdit::setActionText(QAction* text)
 {
-	setPlainText(text->data().toString());
+    setPlainText(text->data().toString());
 }
 
 void ExpressionEdit::setAnalitza(Analitza::Analyzer * in)
 {
-	m_highlight->setAnalitza(in);
-	a=in;
-	m_ops->setVariables(a->variables());
-	updateCompleter();
+    m_highlight->setAnalitza(in);
+    a=in;
+    m_ops->setVariables(a->variables());
+    updateCompleter();
 }
 
 bool ExpressionEdit::returnPress()
 {
-	bool haveToPress=false;
-	if(isMathML()) {
-		emit returnPressed();
-	} else {
-		bool complete = Analitza::Expression::isCompleteExpression(toPlainText());
-		haveToPress = !complete;
-		setCorrect(complete);
-		if(complete)
-			emit returnPressed();
-	}
-	m_helptip->hide();
-	return haveToPress;
+    bool haveToPress=false;
+    if(isMathML()) {
+        emit returnPressed();
+    } else {
+        bool complete = Analitza::Expression::isCompleteExpression(toPlainText());
+        haveToPress = !complete;
+        setCorrect(complete);
+        if(complete)
+            emit returnPressed();
+    }
+    m_helptip->hide();
+    return haveToPress;
 }
 
 void ExpressionEdit::insertText(const QString& text)
 {
-	QTextCursor tc=textCursor();
-	tc.insertText(text);
+    QTextCursor tc=textCursor();
+    tc.insertText(text);
 }
 
 Analitza::Expression ExpressionEdit::expression() const
 {
-	return Analitza::Expression(text(), isMathML());
+    return Analitza::Expression(text(), isMathML());
 }
 
 bool ExpressionEdit::isCorrect() const
 {
-	return m_correct && Analitza::Expression::isCompleteExpression(toPlainText());
+    return m_correct && Analitza::Expression::isCompleteExpression(toPlainText());
 }
 
 

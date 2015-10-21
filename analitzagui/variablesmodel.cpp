@@ -27,105 +27,105 @@
 using namespace Analitza;
 
 VariablesModel::VariablesModel(Variables* v, QObject *parent)
-	: QAbstractTableModel(parent), m_vars(v), m_editable(true)
+    : QAbstractTableModel(parent), m_vars(v), m_editable(true)
 {}
 
 VariablesModel::VariablesModel(QObject* parent)
-	: QAbstractTableModel(parent), m_vars(0), m_editable(true)
+    : QAbstractTableModel(parent), m_vars(0), m_editable(true)
 {}
 
 void VariablesModel::setVariables(Variables* v)
 {
-	m_vars=v;
+    m_vars=v;
 }
 
 QVariant VariablesModel::data(const QModelIndex & index, int role) const
 {
-	QVariant ret;
-	if(role==Qt::DisplayRole) {
-		switch(index.column()) {
-			case 0:
-				ret=m_vars->keys()[index.row()];
-				break;
-			case 1:
-				return data(index.sibling(index.row(), 0), Qt::ToolTipRole);
-		}
-	} else if(role==Qt::ToolTipRole && index.column()==0) {
-		QString key = m_vars->keys()[index.row()];
-		if(m_vars->value(key)->type()==Object::value) {
-			Cn* v=static_cast<Cn*>(m_vars->value(key));
-			ret=v->value();
-		} else
-			ret=m_vars->value(key)->toString();
-	} else if(role==Qt::WhatsThisRole && index.column()==0) {
-		ret = QStringLiteral("%1:=%2").arg(index.sibling(index.row(), 0).data(Qt::DisplayRole).toString())
-							   .arg(index.sibling(index.row(), 1).data(Qt::DisplayRole).toString());
-	}
-	return ret;
+    QVariant ret;
+    if(role==Qt::DisplayRole) {
+        switch(index.column()) {
+            case 0:
+                ret=m_vars->keys()[index.row()];
+                break;
+            case 1:
+                return data(index.sibling(index.row(), 0), Qt::ToolTipRole);
+        }
+    } else if(role==Qt::ToolTipRole && index.column()==0) {
+        QString key = m_vars->keys()[index.row()];
+        if(m_vars->value(key)->type()==Object::value) {
+            Cn* v=static_cast<Cn*>(m_vars->value(key));
+            ret=v->value();
+        } else
+            ret=m_vars->value(key)->toString();
+    } else if(role==Qt::WhatsThisRole && index.column()==0) {
+        ret = QStringLiteral("%1:=%2").arg(index.sibling(index.row(), 0).data(Qt::DisplayRole).toString())
+                               .arg(index.sibling(index.row(), 1).data(Qt::DisplayRole).toString());
+    }
+    return ret;
 }
 
 bool VariablesModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-	if(role!=Qt::EditRole || !value.isValid())
-		return false;
-	
-	if(index.column()==1) { //Changing values
-		QString name=data(index.sibling(index.row(), 0)).toString();
-		m_vars->modify(name, AnalitzaUtils::variantToExpression(value));
-		emit dataChanged(index, index);
-		return true;
-	} else if(index.column()==0) {
-		QString name=data(index.sibling(index.row(), 0)).toString();
-		m_vars->rename(name, value.toString());
-		emit dataChanged(index, index);
-		return true;
-	}
-	return false;
+    if(role!=Qt::EditRole || !value.isValid())
+        return false;
+    
+    if(index.column()==1) { //Changing values
+        QString name=data(index.sibling(index.row(), 0)).toString();
+        m_vars->modify(name, AnalitzaUtils::variantToExpression(value));
+        emit dataChanged(index, index);
+        return true;
+    } else if(index.column()==0) {
+        QString name=data(index.sibling(index.row(), 0)).toString();
+        m_vars->rename(name, value.toString());
+        emit dataChanged(index, index);
+        return true;
+    }
+    return false;
 }
 
 QVariant VariablesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	QVariant ret;
-	if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
-		switch(section) {
-			case 0:
-				ret=QCoreApplication::translate("@title:column", "Name");
-				break;
-			case 1:
-				ret=QCoreApplication::translate("@title:column", "Value");
-				break;
-		}
-	}
-	return ret;
+    QVariant ret;
+    if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
+        switch(section) {
+            case 0:
+                ret=QCoreApplication::translate("@title:column", "Name");
+                break;
+            case 1:
+                ret=QCoreApplication::translate("@title:column", "Value");
+                break;
+        }
+    }
+    return ret;
 }
 
 int VariablesModel::rowCount(const QModelIndex &idx) const
 {
-	if(!m_vars || idx.isValid())
-		return 0;
-	else
-		return m_vars->count();
+    if(!m_vars || idx.isValid())
+        return 0;
+    else
+        return m_vars->count();
 }
 
 QFlags< Qt::ItemFlag > VariablesModel::flags(const QModelIndex& index) const
 {
-	QFlags< Qt::ItemFlag > ret = QAbstractItemModel::flags(index);
-	if(index.column()==1 && m_editable)
-		ret |= Qt::ItemIsEditable;
-	return ret;
+    QFlags< Qt::ItemFlag > ret = QAbstractItemModel::flags(index);
+    if(index.column()==1 && m_editable)
+        ret |= Qt::ItemIsEditable;
+    return ret;
 }
 
 void VariablesModel::updateInformation()
 {
-	beginResetModel();
-	endResetModel();
+    beginResetModel();
+    endResetModel();
 }
 
 void VariablesModel::insertVariable(const QString& name, const Expression& value)
 {
-	beginResetModel();
-	m_vars->modify(name, value);
-	endResetModel();
+    beginResetModel();
+    m_vars->modify(name, value);
+    endResetModel();
 }
 
 

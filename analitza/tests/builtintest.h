@@ -25,17 +25,17 @@
 
 class BuiltInTest : public QObject
 {
-	Q_OBJECT
-	public:
-		BuiltInTest(QObject* parent = 0);
-		~BuiltInTest();
-		
-	private Q_SLOTS:
-		void testCall();
-		void testCall_data();
-		
-	private:
-		Analitza::Analyzer a;
+    Q_OBJECT
+    public:
+        BuiltInTest(QObject* parent = 0);
+        ~BuiltInTest();
+        
+    private Q_SLOTS:
+        void testCall();
+        void testCall_data();
+        
+    private:
+        Analitza::Analyzer a;
 };
 
 #endif // BUILTINTEST_H

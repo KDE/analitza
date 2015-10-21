@@ -26,17 +26,17 @@ namespace Analitza { class Variables; class PlotsModel; }
 class PlotsModelTest : public QObject
 {
 Q_OBJECT
-	public:
-		PlotsModelTest(QObject *parent = 0);
-		~PlotsModelTest();
+    public:
+        PlotsModelTest(QObject *parent = 0);
+        ~PlotsModelTest();
 
-	private Q_SLOTS:
-		void testAppend();
-		void testAppend_data();
+    private Q_SLOTS:
+        void testAppend();
+        void testAppend_data();
         void testDelete();
         void testExamples2D();
 
-	private:
+    private:
         Analitza::PlotsModel *m_model;
 };
 

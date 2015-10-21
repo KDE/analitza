@@ -48,10 +48,10 @@ class Expression;
 class VectorCommand: public Analitza::FunctionDefinition
 {
 public:
-	virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
-	
-	static const QString id;
-	static const Analitza::ExpressionType type;
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    
+    static const QString id;
+    static const Analitza::ExpressionType type;
 };
 
 #endif // VECTORCOMMANDS_H

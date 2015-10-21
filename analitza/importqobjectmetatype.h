@@ -28,13 +28,13 @@ class Analyzer;
 
 class ANALITZA_EXPORT ImportQMetaObject
 {
-	public:
-		ImportQMetaObject(Analitza::Analyzer* a);
-		
-		void import(const QMetaObject& t);
-		
-	private:
-		Analitza::Analyzer* m_a;
+    public:
+        ImportQMetaObject(Analitza::Analyzer* a);
+        
+        void import(const QMetaObject& t);
+        
+    private:
+        Analitza::Analyzer* m_a;
 };
 
 }

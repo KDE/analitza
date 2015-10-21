@@ -32,28 +32,28 @@ class Object;
 
 class FunctionDefinition
 {
-	public:
-		virtual ~FunctionDefinition() {}
-		
-		/** 
-		 * Lets the user specify a function to be injected. When called it should perform whatever
-		 * the function is supposed to do.
-		 * 
-		 * @param args: specifies the values passed as arguments.
-		 * @returns the resulting expression.
-		 */
-		virtual Expression operator()(const QList<Expression>& args)=0;
+    public:
+        virtual ~FunctionDefinition() {}
+        
+        /** 
+         * Lets the user specify a function to be injected. When called it should perform whatever
+         * the function is supposed to do.
+         * 
+         * @param args: specifies the values passed as arguments.
+         * @returns the resulting expression.
+         */
+        virtual Expression operator()(const QList<Expression>& args)=0;
 };
 
 class PointerFunctionDefinition : public FunctionDefinition
 {
-	public:
-		typedef Expression (*func)(const QList<Expression>& args);
-		
-		PointerFunctionDefinition(func call);
-		virtual Expression operator()(const QList<Expression>& args);
-	private:
-		func m_function;
+    public:
+        typedef Expression (*func)(const QList<Expression>& args);
+        
+        PointerFunctionDefinition(func call);
+        virtual Expression operator()(const QList<Expression>& args);
+    private:
+        func m_function;
 };
 
 /**
@@ -66,33 +66,33 @@ class PointerFunctionDefinition : public FunctionDefinition
 
 class ANALITZA_EXPORT BuiltinMethods
 {
-	public:
-		~BuiltinMethods();
-		
-		//TODO improve doc of variadic function ... and put some examples ...
-		//TODO unit test of variadic function with ExpressionType/Checker 
-		/**
-			Adds a new function to the system identified @p id with @p type that can be called using @p f
-			For variadic function use ExpressionType::Any as first lambda parameter. Also, if you use ExpressionType::Any
-			with some type as contained, then it means the all arguments of variadic function must be of the same type, equals 
-			to the contained type.
-		*/
-		void insertFunction(const QString& id, const ExpressionType& type, FunctionDefinition* f);
-		
-		/** @returns whether it exists a builtin function named like @p id */
-		bool contains(const QString& id) const { return m_functions.contains(id); }
-		
-		/** @returns a map that relates all functions with their specified type. */
-		QMap<QString, ExpressionType> varTypes() const { return m_types; }
-		
-		/** @returns the builtin function identified by @p id to be called. */
-		FunctionDefinition* function(const QString& id) const { return m_functions.value(id); }
-		
-		/** @returns a list with the name of all registered identifiers. */
-		QStringList identifiers() const { return m_functions.keys(); }
-	private:
-		QMap<QString, ExpressionType> m_types;
-		QHash<QString, FunctionDefinition*> m_functions;
+    public:
+        ~BuiltinMethods();
+        
+        //TODO improve doc of variadic function ... and put some examples ...
+        //TODO unit test of variadic function with ExpressionType/Checker 
+        /**
+            Adds a new function to the system identified @p id with @p type that can be called using @p f
+            For variadic function use ExpressionType::Any as first lambda parameter. Also, if you use ExpressionType::Any
+            with some type as contained, then it means the all arguments of variadic function must be of the same type, equals 
+            to the contained type.
+        */
+        void insertFunction(const QString& id, const ExpressionType& type, FunctionDefinition* f);
+        
+        /** @returns whether it exists a builtin function named like @p id */
+        bool contains(const QString& id) const { return m_functions.contains(id); }
+        
+        /** @returns a map that relates all functions with their specified type. */
+        QMap<QString, ExpressionType> varTypes() const { return m_types; }
+        
+        /** @returns the builtin function identified by @p id to be called. */
+        FunctionDefinition* function(const QString& id) const { return m_functions.value(id); }
+        
+        /** @returns a list with the name of all registered identifiers. */
+        QStringList identifiers() const { return m_functions.keys(); }
+    private:
+        QMap<QString, ExpressionType> m_types;
+        QHash<QString, FunctionDefinition*> m_functions;
 };
 
 }

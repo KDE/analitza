@@ -35,49 +35,49 @@ class Cn;
 
 class ANALITZA_EXPORT Vector : public Object
 {
-	public:
-		typedef QList<Object*>::iterator iterator;
-		typedef QList<Object*>::const_iterator const_iterator;
-		
-		Vector(const Vector& v);
-		Vector(int size);
-		/** Fills the vector with a fixed numeric @p value */
-		Vector(int size, const Cn *value);
-		virtual ~Vector();
-		
-		void appendBranch(Object* );
-		int size() const { return m_elements.size(); }
-		
-		iterator erase(const iterator& it) { return m_elements.erase(it); }
-		
-		iterator begin() { return m_elements.begin(); }
-		iterator end() { return m_elements.end(); }
-		const_iterator constBegin() const { return m_elements.constBegin(); }
-		const_iterator constEnd() const { return m_elements.constEnd(); }
-		
-		Object* at(int i) const { return m_elements[i]; }
-		void setAt(int i, Object* o) { m_elements[i]=o; }
-		QList<Object*> values() const { return m_elements; }
-		
-		virtual QVariant accept(AbstractExpressionVisitor* e) const;
-		virtual bool isZero() const;
-		
-		virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const;
-		Vector* copy() const;
-		bool operator==(const Vector& v) const;
-		bool hasOnlyNumbers() const { return m_elements.isEmpty()? false : m_hasOnlyNumbers; }
-		bool isStandardBasisVector() const;
-		bool isDiagonalRow() const { return m_elements.isEmpty()? false : m_isDiagonalRowVector; }
-		
-	protected:
-		Vector(Analitza::Object::ObjectType t, int size);
-		
-	private:
-		QList<Object*> m_elements;
-		bool m_hasOnlyNumbers;
-		bool m_nonZeroTaken;
-		bool m_isDiagonalRowVector;
-		short int m_nonZeros;
+    public:
+        typedef QList<Object*>::iterator iterator;
+        typedef QList<Object*>::const_iterator const_iterator;
+        
+        Vector(const Vector& v);
+        Vector(int size);
+        /** Fills the vector with a fixed numeric @p value */
+        Vector(int size, const Cn *value);
+        virtual ~Vector();
+        
+        void appendBranch(Object* );
+        int size() const { return m_elements.size(); }
+        
+        iterator erase(const iterator& it) { return m_elements.erase(it); }
+        
+        iterator begin() { return m_elements.begin(); }
+        iterator end() { return m_elements.end(); }
+        const_iterator constBegin() const { return m_elements.constBegin(); }
+        const_iterator constEnd() const { return m_elements.constEnd(); }
+        
+        Object* at(int i) const { return m_elements[i]; }
+        void setAt(int i, Object* o) { m_elements[i]=o; }
+        QList<Object*> values() const { return m_elements; }
+        
+        virtual QVariant accept(AbstractExpressionVisitor* e) const;
+        virtual bool isZero() const;
+        
+        virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const;
+        Vector* copy() const;
+        bool operator==(const Vector& v) const;
+        bool hasOnlyNumbers() const { return m_elements.isEmpty()? false : m_hasOnlyNumbers; }
+        bool isStandardBasisVector() const;
+        bool isDiagonalRow() const { return m_elements.isEmpty()? false : m_isDiagonalRowVector; }
+        
+    protected:
+        Vector(Analitza::Object::ObjectType t, int size);
+        
+    private:
+        QList<Object*> m_elements;
+        bool m_hasOnlyNumbers;
+        bool m_nonZeroTaken;
+        bool m_isDiagonalRowVector;
+        short int m_nonZeros;
 };
 
 }

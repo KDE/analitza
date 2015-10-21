@@ -25,68 +25,68 @@ using namespace Analitza;
 
 Variables::Variables() : QHash<QString, Object*>()
 {
-	initializeConstants();
+    initializeConstants();
 }
 
 void Variables::initializeConstants()
 {
-	insert("true", new Cn(true));
-	insert("false", new Cn(false));
-	insert("pi", new Cn(Cn::pi()));
-	insert("e", new Cn(Cn::e()));
-	insert("euler", new Cn(Cn::euler()));
-	insert("i", new Cn(0, 1));
+    insert("true", new Cn(true));
+    insert("false", new Cn(false));
+    insert("pi", new Cn(Cn::pi()));
+    insert("e", new Cn(Cn::e()));
+    insert("euler", new Cn(Cn::euler()));
+    insert("i", new Cn(0, 1));
 }
 
 Variables::Variables(const Variables& v) : QHash<QString, Object*>(v)
 {
-	QHash<QString, Object*>::iterator i;
-	for (i = this->begin(); i != this->end(); ++i)
-		*i = (*i)->copy();
+    QHash<QString, Object*>::iterator i;
+    for (i = this->begin(); i != this->end(); ++i)
+        *i = (*i)->copy();
 }
 
 Variables::~Variables()
 {
-	qDeleteAll(*this);
+    qDeleteAll(*this);
 }
 
 void Variables::modify(const QString & name, const Expression & e)
 {
-	const Analitza::Object* o=e.tree();
-	if(o->isContainer() && static_cast<const Container*>(o)->containerType()==Container::math) {
-		o=*static_cast<const Container*>(o)->constBegin();
-	}
-	modify(name, o);
+    const Analitza::Object* o=e.tree();
+    if(o->isContainer() && static_cast<const Container*>(o)->containerType()==Container::math) {
+        o=*static_cast<const Container*>(o)->constBegin();
+    }
+    modify(name, o);
 }
 
 Cn* Variables::modify(const QString & name, const double & d)
 {
-	iterator it = find(name);
-	if(it==end() || (*it)->type()!=Object::value) {
-		Cn* val=new Cn(d);
-		insert(name, val);
-		return val;
-	} else {
-		Cn* val = static_cast<Cn*>(*it);
-		val->setValue(d);
-		return val;
-	}
+    iterator it = find(name);
+    if(it==end() || (*it)->type()!=Object::value) {
+        Cn* val=new Cn(d);
+        insert(name, val);
+        return val;
+    } else {
+        Cn* val = static_cast<Cn*>(*it);
+        val->setValue(d);
+        return val;
+    }
 }
 
 void Variables::modify(const QString& name, const Object* o)
 {
-	delete value(name);
-	
-	insert(name, o->copy());
+    delete value(name);
+    
+    insert(name, o->copy());
 }
 
 void Variables::rename(const QString& orig, const QString& dest)
 {
-	Q_ASSERT(contains(orig));
-	insert(dest, take(orig));
+    Q_ASSERT(contains(orig));
+    insert(dest, take(orig));
 }
 
 Expression Variables::valueExpression(const QString& name) const
 {
-	return Expression(value(name)->copy());
+    return Expression(value(name)->copy());
 }

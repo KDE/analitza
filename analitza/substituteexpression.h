@@ -37,18 +37,18 @@ class Apply;
 
 class SubstituteExpression : public AbstractExpressionTransformer
 {
-	public:
-		Object* run(const Object* pattern, const QMap<QString, const Object*>& values);
-		
-	private:
-		Object* walkApply(const Apply* pattern);
-		Object* walkVariable(const Ci* pattern);
-		
-		QString solveRename(const QString& name) const;
-		
-		QMap<QString, const Object*> m_values;
-		QMap<QString, QString> m_renames;
-		QStringList m_bvars;
+    public:
+        Object* run(const Object* pattern, const QMap<QString, const Object*>& values);
+        
+    private:
+        Object* walkApply(const Apply* pattern);
+        Object* walkVariable(const Ci* pattern);
+        
+        QString solveRename(const QString& name) const;
+        
+        QMap<QString, const Object*> m_values;
+        QMap<QString, QString> m_renames;
+        QStringList m_bvars;
 };
 
 }

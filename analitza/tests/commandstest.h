@@ -24,30 +24,30 @@
 namespace Analitza { class Analyzer; }
 
 /**
-	@author Percy Camilo T. Aucahuasi
+    @author Percy Camilo T. Aucahuasi
 */
 class CommandsTest : public QObject
 {
 Q_OBJECT
-	public:
-		CommandsTest(QObject *parent = 0);
-		~CommandsTest();
-	
-	private Q_SLOTS:
-		void initTestCase();
-		
-		// check correct calculation of matrix commands
-		void testCorrect_data();
-		void testCorrect();
-		
-		// check correct generation of empty matrix by using commands
-		void testIncorrect_data();
-		void testIncorrect();
-		
-		void cleanupTestCase();
-	private:
-		
-		Analitza::Analyzer *a;
+    public:
+        CommandsTest(QObject *parent = 0);
+        ~CommandsTest();
+    
+    private Q_SLOTS:
+        void initTestCase();
+        
+        // check correct calculation of matrix commands
+        void testCorrect_data();
+        void testCorrect();
+        
+        // check correct generation of empty matrix by using commands
+        void testIncorrect_data();
+        void testIncorrect();
+        
+        void cleanupTestCase();
+    private:
+        
+        Analitza::Analyzer *a;
 };
 
 #endif // MATRIXTEST_H

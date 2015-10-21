@@ -33,12 +33,12 @@ AbstractExpressionTransformer::~AbstractExpressionTransformer()
 #define ITERATION_WALKER(T, ...)\
 Object* AbstractExpressionTransformer::walk##T(const T* pattern)\
 {\
-	T* ret = new T(__VA_ARGS__);\
-	T ::const_iterator it=pattern->constBegin(), itEnd=pattern->constEnd();\
-	for(; it!=itEnd; ++it) {\
-		ret->appendBranch(walk(*it));\
-	}\
-	return ret;\
+    T* ret = new T(__VA_ARGS__);\
+    T ::const_iterator it=pattern->constBegin(), itEnd=pattern->constEnd();\
+    for(; it!=itEnd; ++it) {\
+        ret->appendBranch(walk(*it));\
+    }\
+    return ret;\
 }
 
 ITERATION_WALKER(List)
@@ -48,66 +48,66 @@ ITERATION_WALKER(Container, pattern->containerType())
 
 Object* AbstractExpressionTransformer::walk(const Object* pattern)
 {
-	if(!pattern)
-		return 0;
-	
-	switch(pattern->type()) {
-		case Object::apply:
-			return walkApply(static_cast<const Apply*>(pattern));
-		case Object::variable:
-			return walkVariable(static_cast<const Ci*>(pattern));
-		case Object::container:
-			return walkContainer(static_cast<const Container*>(pattern));
-		case Object::list:
-			return walkList(static_cast<const List*>(pattern));
-		case Object::vector:
-			return walkVector(static_cast<const Vector*>(pattern));
-		case Object::matrix:
-			return walkMatrix(static_cast<const Matrix*>(pattern));
-		case Object::matrixrow:
-			return walkMatrixRow(static_cast<const MatrixRow*>(pattern));
-		case Object::oper:
-		case Object::value:
-		case Object::custom:
-			return pattern->copy();
-		case Object::none:
-			break;
-	}
-	
-	Q_ASSERT(false);
-	return 0;
+    if(!pattern)
+        return 0;
+    
+    switch(pattern->type()) {
+        case Object::apply:
+            return walkApply(static_cast<const Apply*>(pattern));
+        case Object::variable:
+            return walkVariable(static_cast<const Ci*>(pattern));
+        case Object::container:
+            return walkContainer(static_cast<const Container*>(pattern));
+        case Object::list:
+            return walkList(static_cast<const List*>(pattern));
+        case Object::vector:
+            return walkVector(static_cast<const Vector*>(pattern));
+        case Object::matrix:
+            return walkMatrix(static_cast<const Matrix*>(pattern));
+        case Object::matrixrow:
+            return walkMatrixRow(static_cast<const MatrixRow*>(pattern));
+        case Object::oper:
+        case Object::value:
+        case Object::custom:
+            return pattern->copy();
+        case Object::none:
+            break;
+    }
+    
+    Q_ASSERT(false);
+    return 0;
 }
 
 Object* AbstractExpressionTransformer::walkApply(const Analitza::Apply* pattern)
 {
-	Apply* ret = new Apply;
-	ret->ulimit()=walk(pattern->ulimit());
-	ret->dlimit()=walk(pattern->dlimit());
-	ret->domain()=walk(pattern->domain());
-	
-	if(pattern->firstOperator().isCorrect()) {
-		Operator op = pattern->firstOperator();
-		ret->appendBranch(walk(&op));
-	}
-	
-	Apply::const_iterator it=pattern->firstValue(), itEnd=pattern->constEnd();
-	for(; it!=itEnd; ++it)
-		ret->appendBranch(walk(*it));
-	
-	return ret;
+    Apply* ret = new Apply;
+    ret->ulimit()=walk(pattern->ulimit());
+    ret->dlimit()=walk(pattern->dlimit());
+    ret->domain()=walk(pattern->domain());
+    
+    if(pattern->firstOperator().isCorrect()) {
+        Operator op = pattern->firstOperator();
+        ret->appendBranch(walk(&op));
+    }
+    
+    Apply::const_iterator it=pattern->firstValue(), itEnd=pattern->constEnd();
+    for(; it!=itEnd; ++it)
+        ret->appendBranch(walk(*it));
+    
+    return ret;
 }
 
 Object* AbstractExpressionTransformer::walkVariable(const Analitza::Ci* pattern)
 {
-	return pattern->copy();
+    return pattern->copy();
 }
 
 Object* AbstractExpressionTransformer::walkMatrix(const Matrix* pattern)
 {
-	Matrix* ret = new Matrix;
-	Matrix::const_iterator it=pattern->constBegin(), itEnd=pattern->constEnd();
-	for(; it!=itEnd; ++it) {
-		ret->appendBranch(static_cast<MatrixRow*>(walk(*it)));
-	}
-	return ret;
+    Matrix* ret = new Matrix;
+    Matrix::const_iterator it=pattern->constBegin(), itEnd=pattern->constEnd();
+    for(; it!=itEnd; ++it) {
+        ret->appendBranch(static_cast<MatrixRow*>(walk(*it)));
+    }
+    return ret;
 }

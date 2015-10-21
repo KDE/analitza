@@ -36,11 +36,11 @@ using namespace Analitza;
 
 int main(int argc, char *argv[])
 {
-	QApplication app(argc, argv);
-	QCommandLineParser parser;
-	parser.setApplicationDescription("PlotView2DTest");
+    QApplication app(argc, argv);
+    QCommandLineParser parser;
+    parser.setApplicationDescription("PlotView2DTest");
     parser.addOption(QCommandLineOption("all-disabled", app.tr("marks all the plots as not visible")));
-	parser.process(app);
+    parser.process(app);
 
     QMainWindow *mainWindow = new QMainWindow();
     mainWindow->setMinimumSize(640, 480);

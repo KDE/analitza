@@ -28,25 +28,25 @@ namespace Analitza
 
 class ProvideDerivative : public AbstractExpressionTransformer
 {
-	public:
-		ProvideDerivative(const QString& var);
-		Object* run(const Object* o);
-		
-		bool isCorrect() const { return m_errors.isEmpty(); }
-		QStringList errors() const { return m_errors; }
-		
-	private:
-		QStringList m_errors;
-		virtual Object* walkApply(const Analitza::Apply* pattern);
-		
-		Object* derivateContentVector(const Vector* v);
-		Object* derivateContentList(const List* v);
-		Object* derivativeContainer(const Container *c);
-		Object* derivativeApply(const Apply *c);
-		
-		Apply* makeDiff(Analitza::Object* o) const;
-		void clearDiff(Apply* a);
-		QString var;
+    public:
+        ProvideDerivative(const QString& var);
+        Object* run(const Object* o);
+        
+        bool isCorrect() const { return m_errors.isEmpty(); }
+        QStringList errors() const { return m_errors; }
+        
+    private:
+        QStringList m_errors;
+        virtual Object* walkApply(const Analitza::Apply* pattern);
+        
+        Object* derivateContentVector(const Vector* v);
+        Object* derivateContentList(const List* v);
+        Object* derivativeContainer(const Container *c);
+        Object* derivativeApply(const Apply *c);
+        
+        Apply* makeDiff(Analitza::Object* o) const;
+        void clearDiff(Apply* a);
+        QString var;
 };
 
 }

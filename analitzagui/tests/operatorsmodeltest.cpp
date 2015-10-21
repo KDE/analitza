@@ -31,7 +31,7 @@ using Analitza::Expression;
 QTEST_MAIN( OperatorsModelTest )
 
 OperatorsModelTest::OperatorsModelTest(QObject *parent)
-	: QObject(parent)
+    : QObject(parent)
 {}
 
 OperatorsModelTest::~OperatorsModelTest() {}
@@ -40,65 +40,65 @@ void OperatorsModelTest::cleanupTestCase() {}
 
 void OperatorsModelTest::testExamples_data()
 {
-	QTest::addColumn<int>("i");
-	for(int i=0; i<m.rowCount(); i++) {
-		QModelIndex idx(m.index(i, 0));
-		QTest::newRow(qPrintable(idx.data().toString())) << i;
-	}
+    QTest::addColumn<int>("i");
+    for(int i=0; i<m.rowCount(); i++) {
+        QModelIndex idx(m.index(i, 0));
+        QTest::newRow(qPrintable(idx.data().toString())) << i;
+    }
 }
 
 void OperatorsModelTest::testExamples()
 {
-	QFETCH(int, i);
-	QModelIndex idx(m.index(i, 0));
-	
-	QModelIndex nameIdx, descriptionIdx, sampleIdx, exampleIdx;
-	nameIdx = idx.sibling(idx.row(), 0);
-	descriptionIdx = idx.sibling(idx.row(), 1);
-	sampleIdx = idx.sibling(idx.row(), 2);
-	exampleIdx = idx.sibling(idx.row(), 3);
-	
-	QString name=m.data(nameIdx).toString();
-	QString description=m.data(descriptionIdx).toString();
-	QString sample=m.data(sampleIdx).toString();
-	QString example=m.data(exampleIdx).toString();
-	
-// 		qDebug() << "testing: " << name << example;
-	
-	QVERIFY(!name.isEmpty());
-	QVERIFY(!description.isEmpty());
-	QVERIFY(!sample.isEmpty());
-	QVERIFY(!example.isEmpty());
-	Expression ex(example, false);
-	if(!ex.isCorrect())
-		qDebug() << "error" << example << ex.error();
-	QCOMPARE(ex.toString(), example);
-	QVERIFY(!ex.toMathMLPresentation().isEmpty());
-	ex = ex.lambdaBody();
-	
-	Analitza::Analyzer a;
-	a.setExpression(ex);
-	if(!a.isCorrect()) qDebug() << example << "1. error" << a.errors();// QVERIFY(a.isCorrect());
-	
-	a.simplify();
-	if(!a.isCorrect()) qDebug() << example << "2. error" << a.errors();// QVERIFY(a.isCorrect());
-	a.variables()->modify("x", 0.1);
-	a.setExpression(ex);
-	if(!a.isCorrect()) qDebug() << example << "2.1 type error" << ex.toString() << a.errors();// QVERIFY(a.isCorrect());
-	
-	bool typecorr = a.type().canReduceTo(Analitza::ExpressionType::Value);
-	if(!typecorr)
-		qDebug() << example << "2.2 error" << ex.toString() << a.type().toString();
-	QVERIFY(typecorr);
-	
-	Expression e = a.calculate();
-	if(!a.isCorrect()) qDebug() << example << "3. error" << a.errors();// QVERIFY(a.isCorrect());
-	if(!e.isCorrect()) qDebug() << example << "4. error" << e.error(); // QVERIFY(e.isCorrect());
-	
-	e = a.evaluate();
-	if(!a.isCorrect()) qDebug() << example << "5. error" << a.errors();// QVERIFY(a.isCorrect());
-	if(!e.isCorrect()) qDebug() << example << "6. error" << e.error(); // QVERIFY(e.isCorrect());
-	QVERIFY(!a.expression().toMathMLPresentation().isEmpty());
+    QFETCH(int, i);
+    QModelIndex idx(m.index(i, 0));
+    
+    QModelIndex nameIdx, descriptionIdx, sampleIdx, exampleIdx;
+    nameIdx = idx.sibling(idx.row(), 0);
+    descriptionIdx = idx.sibling(idx.row(), 1);
+    sampleIdx = idx.sibling(idx.row(), 2);
+    exampleIdx = idx.sibling(idx.row(), 3);
+    
+    QString name=m.data(nameIdx).toString();
+    QString description=m.data(descriptionIdx).toString();
+    QString sample=m.data(sampleIdx).toString();
+    QString example=m.data(exampleIdx).toString();
+    
+//         qDebug() << "testing: " << name << example;
+    
+    QVERIFY(!name.isEmpty());
+    QVERIFY(!description.isEmpty());
+    QVERIFY(!sample.isEmpty());
+    QVERIFY(!example.isEmpty());
+    Expression ex(example, false);
+    if(!ex.isCorrect())
+        qDebug() << "error" << example << ex.error();
+    QCOMPARE(ex.toString(), example);
+    QVERIFY(!ex.toMathMLPresentation().isEmpty());
+    ex = ex.lambdaBody();
+    
+    Analitza::Analyzer a;
+    a.setExpression(ex);
+    if(!a.isCorrect()) qDebug() << example << "1. error" << a.errors();// QVERIFY(a.isCorrect());
+    
+    a.simplify();
+    if(!a.isCorrect()) qDebug() << example << "2. error" << a.errors();// QVERIFY(a.isCorrect());
+    a.variables()->modify("x", 0.1);
+    a.setExpression(ex);
+    if(!a.isCorrect()) qDebug() << example << "2.1 type error" << ex.toString() << a.errors();// QVERIFY(a.isCorrect());
+    
+    bool typecorr = a.type().canReduceTo(Analitza::ExpressionType::Value);
+    if(!typecorr)
+        qDebug() << example << "2.2 error" << ex.toString() << a.type().toString();
+    QVERIFY(typecorr);
+    
+    Expression e = a.calculate();
+    if(!a.isCorrect()) qDebug() << example << "3. error" << a.errors();// QVERIFY(a.isCorrect());
+    if(!e.isCorrect()) qDebug() << example << "4. error" << e.error(); // QVERIFY(e.isCorrect());
+    
+    e = a.evaluate();
+    if(!a.isCorrect()) qDebug() << example << "5. error" << a.errors();// QVERIFY(a.isCorrect());
+    if(!e.isCorrect()) qDebug() << example << "6. error" << e.error(); // QVERIFY(e.isCorrect());
+    QVERIFY(!a.expression().toMathMLPresentation().isEmpty());
 }
 
 

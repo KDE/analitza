@@ -31,50 +31,50 @@ class Vector;
 
 class ANALITZA_EXPORT MatrixRow : public Vector
 {
-	public:
-		MatrixRow(int size=0);
-		virtual QVariant accept(AbstractExpressionVisitor* e) const;
-		
-		MatrixRow* copy() const;
+    public:
+        MatrixRow(int size=0);
+        virtual QVariant accept(AbstractExpressionVisitor* e) const;
+        
+        MatrixRow* copy() const;
 };
 
 class ANALITZA_EXPORT Matrix : public Object
 {
-	public:
-		typedef QList<MatrixRow*>::iterator iterator;
-		typedef QList<MatrixRow*>::const_iterator const_iterator;
-		
-		Matrix();
-		/** Fills the matrix with a fixed numeric @p value, the matrix size will be @p m x @p n */
-		Matrix(int m, int n, const Cn *value);
-		virtual ~Matrix();
-		void appendBranch(MatrixRow* o);
-		
-		virtual Matrix* copy() const;
-		virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;
-		virtual QVariant accept(AbstractExpressionVisitor* exp) const;
-		const_iterator constBegin() const { return m_rows.constBegin(); }
-		const_iterator constEnd() const { return m_rows.constEnd(); }
-		iterator begin() { return m_rows.begin(); }
-		iterator end() { return m_rows.end(); }
-		QList< MatrixRow* > rows() const { return m_rows; }
-		bool operator==(const Matrix& m) const;
-		int rowCount() const { return m_rows.size(); }
-		Analitza::Matrix::iterator erase(const Analitza::Matrix::iterator& it) { return m_rows.erase(it); }
-		Object* at(int i, int j) const;
-		int columnCount() const;
-		bool isSquare() const;
-		virtual bool isZero() const;
-		bool hasOnlyNumbers() const { return m_rows.isEmpty()? false : m_hasOnlyNumbers; }
-		bool isIdentity() const;
-		bool isDiagonal() const;
-		
-	public:
-		static Matrix* identity(int n);
-		
-	private:
-		QList<MatrixRow*> m_rows;
-		bool m_hasOnlyNumbers;
+    public:
+        typedef QList<MatrixRow*>::iterator iterator;
+        typedef QList<MatrixRow*>::const_iterator const_iterator;
+        
+        Matrix();
+        /** Fills the matrix with a fixed numeric @p value, the matrix size will be @p m x @p n */
+        Matrix(int m, int n, const Cn *value);
+        virtual ~Matrix();
+        void appendBranch(MatrixRow* o);
+        
+        virtual Matrix* copy() const;
+        virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;
+        virtual QVariant accept(AbstractExpressionVisitor* exp) const;
+        const_iterator constBegin() const { return m_rows.constBegin(); }
+        const_iterator constEnd() const { return m_rows.constEnd(); }
+        iterator begin() { return m_rows.begin(); }
+        iterator end() { return m_rows.end(); }
+        QList< MatrixRow* > rows() const { return m_rows; }
+        bool operator==(const Matrix& m) const;
+        int rowCount() const { return m_rows.size(); }
+        Analitza::Matrix::iterator erase(const Analitza::Matrix::iterator& it) { return m_rows.erase(it); }
+        Object* at(int i, int j) const;
+        int columnCount() const;
+        bool isSquare() const;
+        virtual bool isZero() const;
+        bool hasOnlyNumbers() const { return m_rows.isEmpty()? false : m_hasOnlyNumbers; }
+        bool isIdentity() const;
+        bool isDiagonal() const;
+        
+    public:
+        static Matrix* identity(int n);
+        
+    private:
+        QList<MatrixRow*> m_rows;
+        bool m_hasOnlyNumbers;
 };
 
 }

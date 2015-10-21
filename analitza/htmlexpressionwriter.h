@@ -34,28 +34,28 @@ namespace Analitza
 
 class HtmlExpressionWriter : public AbstractExpressionVisitor
 {
-	public:
-		HtmlExpressionWriter(const Object* o);
-		
-		virtual QVariant visit(const None* var);
-		virtual QVariant visit(const Ci* var);
-		virtual QVariant visit(const Cn* var);
-		virtual QVariant visit(const Container* var);
-		virtual QVariant visit(const Operator* var);
-		virtual QVariant visit(const Vector* var);
-		virtual QVariant visit(const List* l);
-		virtual QVariant visit(const Apply* a);
-		virtual QVariant visit(const CustomObject* c);
-		virtual QVariant visit(const Matrix* c);
-		virtual QVariant visit(const MatrixRow* c);
-		
-		QVariant result() const { return m_result; }
-		
-	private:
-		template <class T>
-			static QStringList allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer);
-		QVariant m_result;
-		static const double MIN_PRINTABLE_VALUE;
+    public:
+        HtmlExpressionWriter(const Object* o);
+        
+        virtual QVariant visit(const None* var);
+        virtual QVariant visit(const Ci* var);
+        virtual QVariant visit(const Cn* var);
+        virtual QVariant visit(const Container* var);
+        virtual QVariant visit(const Operator* var);
+        virtual QVariant visit(const Vector* var);
+        virtual QVariant visit(const List* l);
+        virtual QVariant visit(const Apply* a);
+        virtual QVariant visit(const CustomObject* c);
+        virtual QVariant visit(const Matrix* c);
+        virtual QVariant visit(const MatrixRow* c);
+        
+        QVariant result() const { return m_result; }
+        
+    private:
+        template <class T>
+            static QStringList allValues(T it, const T& itEnd, AbstractExpressionVisitor* writer);
+        QVariant m_result;
+        static const double MIN_PRINTABLE_VALUE;
 };
 
 }

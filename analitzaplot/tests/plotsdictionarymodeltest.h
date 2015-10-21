@@ -22,19 +22,19 @@
 #include <QObject>
 
 /**
-	@author Aleix Pol
+    @author Aleix Pol
 */
 namespace Analitza { class Variables; }
 
 class PlotsDictionaryModelTest : public QObject
 {
 Q_OBJECT
-	public:
-		PlotsDictionaryModelTest(QObject *parent = 0);
-		~PlotsDictionaryModelTest();
+    public:
+        PlotsDictionaryModelTest(QObject *parent = 0);
+        ~PlotsDictionaryModelTest();
 
-	private Q_SLOTS:
-		void testDictionaries();
+    private Q_SLOTS:
+        void testDictionaries();
 };
 
 #endif

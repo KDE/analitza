@@ -41,32 +41,32 @@ PlotsDictionaryModelTest::~PlotsDictionaryModelTest()
 
 void PlotsDictionaryModelTest::testDictionaries()
 {
-	PlotsDictionaryModel m;
-	m.clear(); //we don't want the installed, we want the ones in the source directory
-	QFileInfo f(QFINDTESTDATA("../data/plots/3Ds.plots"));
-	QDir d(f.dir());
-	foreach(const QString& f, d.entryList(QStringList("*.plots"), QDir::Files)) {
-		m.createDictionary(d.filePath(f));
-	}
-	
-	QVERIFY(m.rowCount()>0);
-	PlotsModel* plot = m.plotModel();
-	
-	for(int i=0; i<m.rowCount(); i++) {
-		QModelIndex idx = m.index(i, 0);
-		QVariant v=idx.data(Qt::DisplayRole);
-		QVERIFY(v.isValid());
-		QVERIFY(v.type()==QVariant::String);
-		QVERIFY(!v.toString().isEmpty());
-		QVERIFY(!idx.data(PlotsDictionaryModel::ExpressionRole).toString().isEmpty());
-		
-		m.setCurrentRow(i);
-		QCOMPARE(plot->rowCount(), 1);
-		
-		QModelIndex plotIdx = plot->index(0,0);
-		PlotItem* item = plotIdx.data(PlotsModel::PlotRole).value<PlotItem*>();
-		QVERIFY(item);
-		QCOMPARE(idx.data(Qt::DisplayRole).toString(), item->name());
-	}
+    PlotsDictionaryModel m;
+    m.clear(); //we don't want the installed, we want the ones in the source directory
+    QFileInfo f(QFINDTESTDATA("../data/plots/3Ds.plots"));
+    QDir d(f.dir());
+    foreach(const QString& f, d.entryList(QStringList("*.plots"), QDir::Files)) {
+        m.createDictionary(d.filePath(f));
+    }
+    
+    QVERIFY(m.rowCount()>0);
+    PlotsModel* plot = m.plotModel();
+    
+    for(int i=0; i<m.rowCount(); i++) {
+        QModelIndex idx = m.index(i, 0);
+        QVariant v=idx.data(Qt::DisplayRole);
+        QVERIFY(v.isValid());
+        QVERIFY(v.type()==QVariant::String);
+        QVERIFY(!v.toString().isEmpty());
+        QVERIFY(!idx.data(PlotsDictionaryModel::ExpressionRole).toString().isEmpty());
+        
+        m.setCurrentRow(i);
+        QCOMPARE(plot->rowCount(), 1);
+        
+        QModelIndex plotIdx = plot->index(0,0);
+        PlotItem* item = plotIdx.data(PlotsModel::PlotRole).value<PlotItem*>();
+        QVERIFY(item);
+        QCOMPARE(idx.data(Qt::DisplayRole).toString(), item->name());
+    }
 }
 

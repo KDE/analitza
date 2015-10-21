@@ -29,8 +29,8 @@ void AnalitzaDeclarativePlugin::registerTypes(const char* uri)
 {
     qmlRegisterType<AnalitzaWrapper>(uri, 1, 0, "Analitza");
     qmlRegisterType<ExpressionWrapper>(uri, 1, 0, "Expression");
-	qmlRegisterType<Graph2DMobile>(uri, 1, 0, "Graph2DView");
-	qmlRegisterType<Graph3DItem>(uri, 1, 1, "Graph3DView");
+    qmlRegisterType<Graph2DMobile>(uri, 1, 0, "Graph2DView");
+    qmlRegisterType<Graph3DItem>(uri, 1, 1, "Graph3DView");
     qmlRegisterType<Analitza::PlotsModel>(uri, 1, 0, "PlotsModel");
     qmlRegisterType<Analitza::VariablesModel>(uri, 1, 0, "VariablesModel");
     qmlRegisterInterface<Analitza::Variables*>("Analitza::Variables");

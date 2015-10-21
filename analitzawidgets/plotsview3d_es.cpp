@@ -32,7 +32,7 @@ using namespace Analitza;
 PlotsView3DES::PlotsView3DES(QWidget *parent)
     : QOpenGLWidget(parent), m_selection(0)
 {
-	setFocusPolicy(Qt::ClickFocus);
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 PlotsView3DES::~PlotsView3DES()

@@ -68,8 +68,8 @@ QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int ro
     if(role==Qt::DisplayRole && orientation==Qt::Horizontal) {
         switch(section) 
         {
-			case 0: return QCoreApplication::translate("@title:column", "Name");
-			case 1: return QCoreApplication::translate("@title:column", "Plot");
+            case 0: return QCoreApplication::translate("@title:column", "Name");
+            case 1: return QCoreApplication::translate("@title:column", "Plot");
         }
     }
     
@@ -217,12 +217,12 @@ void PlotsModel::addPlot(PlotItem* it)
 
 void PlotsModel::updatePlot(int row, PlotItem* it)
 {
-	it->setModel(this);
-	delete m_items[row];
-	m_items[row]=it;
-	
-	QModelIndex idx = index(row);
-	emit dataChanged(idx, idx);
+    it->setModel(this);
+    delete m_items[row];
+    m_items[row]=it;
+    
+    QModelIndex idx = index(row);
+    emit dataChanged(idx, idx);
 }
 
 void PlotsModel::emitChanged(PlotItem* it)
@@ -234,18 +234,18 @@ void PlotsModel::emitChanged(PlotItem* it)
 
 QModelIndex PlotsModel::indexForName(const QString& name)
 {
-	const int rows = rowCount();
-	for(int i=0; i<rows; i++) {
-		QModelIndex idx = index(i);
-		if(idx.data().toString()==name)
-			return idx;
-	}
-	return QModelIndex();
+    const int rows = rowCount();
+    for(int i=0; i<rows; i++) {
+        QModelIndex idx = index(i);
+        if(idx.data().toString()==name)
+            return idx;
+    }
+    return QModelIndex();
 }
 
 QString PlotsModel::freeId() const
 {
-	return "f"+QString::number(m_namingCount);
+    return "f"+QString::number(m_namingCount);
 }
 
 void PlotsModel::setResolution(int res)
@@ -262,26 +262,26 @@ static QColor randomFunctionColor() { return QColor::fromHsv(qrand()%255, 255, 2
 
 QStringList PlotsModel::addFunction(const QString& expression, Dimension dim, Analitza::Variables* vars)
 {
-	Analitza::Expression e(expression, Analitza::Expression::isMathML(expression));
+    Analitza::Expression e(expression, Analitza::Expression::isMathML(expression));
 
-	QString fname;
-	do {
-		fname = freeId();
-	} while(vars && vars->contains(fname));
-	QColor fcolor = randomFunctionColor();
+    QString fname;
+    do {
+        fname = freeId();
+    } while(vars && vars->contains(fname));
+    QColor fcolor = randomFunctionColor();
 
-	QStringList err;
-	PlotBuilder req = PlotsFactory::self()->requestPlot(e, dim, vars);
-	if(req.canDraw()) {
-		auto it = req.create(fcolor, fname);
+    QStringList err;
+    PlotBuilder req = PlotsFactory::self()->requestPlot(e, dim, vars);
+    if(req.canDraw()) {
+        auto it = req.create(fcolor, fname);
 
-		if(it->isCorrect())
-			addPlot(it);
-		else {
-			err = it->errors();
-			delete it;
-		}
-	}
+        if(it->isCorrect())
+            addPlot(it);
+        else {
+            err = it->errors();
+            delete it;
+        }
+    }
 
-	return err;
+    return err;
 }

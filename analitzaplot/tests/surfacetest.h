@@ -22,33 +22,33 @@
 #include <QObject>
 
 /**
-	@author Percy Camilo T. Aucahuasi
+    @author Percy Camilo T. Aucahuasi
 */
 namespace Analitza { class Variables; }
 
 class SurfaceTest : public QObject
 {
 Q_OBJECT
-	public:
-		SurfaceTest(QObject *parent = 0);
-		~SurfaceTest();
+    public:
+        SurfaceTest(QObject *parent = 0);
+        ~SurfaceTest();
 
-	private Q_SLOTS:
-		void initTestCase();
+    private Q_SLOTS:
+        void initTestCase();
 
         void testCorrect(); // correct surfaces
         void testCorrect_data();
 
-		void testIncorrect(); // cases that can not be drawn
-		void testIncorrect_data();
+        void testIncorrect(); // cases that can not be drawn
+        void testIncorrect_data();
 
         //TODO
 //         void testParamIntervals();
 //         void testParamIntervals_data();
 
-		void cleanupTestCase();
-	private:
-		Analitza::Variables* m_vars;
+        void cleanupTestCase();
+    private:
+        Analitza::Variables* m_vars;
 };
 
 #endif

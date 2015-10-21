@@ -41,14 +41,14 @@ class Operator;
 
 class Monomial
 {
-	public:
-		Monomial(const Operator& o, Object* o2, bool& sign);
-		Analitza::Object* createMono(const Analitza::Operator& o) const;
-		bool isValue() const;
-		static bool isScalar(const Object* o);
-		
-		qreal first;
-		Analitza::Object* second;
+    public:
+        Monomial(const Operator& o, Object* o2, bool& sign);
+        Analitza::Object* createMono(const Analitza::Operator& o) const;
+        bool isValue() const;
+        static bool isScalar(const Object* o);
+        
+        qreal first;
+        Analitza::Object* second;
 };
 
 /**
@@ -66,19 +66,19 @@ class Monomial
 
 class Polynomial : public QList<Monomial>
 {
-	public:
-		Polynomial(Apply* c);
-		
-		Analitza::Object* toObject();
-		void negate(int i);
-		
-	private:
-		void addMonomial(const Monomial& m);
-		void addValue(Analitza::Object* value);
-		void simpScalars(bool m_firstValue);
-		QList<Object*> m_scalars;
-		Operator m_operator;
-		bool m_sign;
+    public:
+        Polynomial(Apply* c);
+        
+        Analitza::Object* toObject();
+        void negate(int i);
+        
+    private:
+        void addMonomial(const Monomial& m);
+        void addValue(Analitza::Object* value);
+        void simpScalars(bool m_firstValue);
+        QList<Object*> m_scalars;
+        Operator m_operator;
+        bool m_sign;
 };
 
 }

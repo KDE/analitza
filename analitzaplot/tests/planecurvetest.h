@@ -23,35 +23,35 @@
 #include <QObject>
 
 /**
-	@author Aleix Pol
+    @author Aleix Pol
 */
 namespace Analitza { class Variables; }
 
 class PlaneCurveTest : public QObject
 {
 Q_OBJECT
-	public:
-		PlaneCurveTest(QObject *parent = 0);
-		~PlaneCurveTest();
+    public:
+        PlaneCurveTest(QObject *parent = 0);
+        ~PlaneCurveTest();
 
-	private Q_SLOTS:
-		void initTestCase();
+    private Q_SLOTS:
+        void initTestCase();
 
         void testCorrect(); // correct curves
         void testCorrect_data();
 
-		void testIncorrect(); // cases that can not be drawn
-		void testIncorrect_data();
+        void testIncorrect(); // cases that can not be drawn
+        void testIncorrect_data();
 
-		void testJumps();
-		void testJumps_data();
+        void testJumps();
+        void testJumps_data();
 
         void testParamIntervals();
         void testParamIntervals_data();
 
-		void cleanupTestCase();
-	private:
-		Analitza::Variables* m_vars;
+        void cleanupTestCase();
+    private:
+        Analitza::Variables* m_vars;
 };
 
 #endif

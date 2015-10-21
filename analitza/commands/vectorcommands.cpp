@@ -36,52 +36,52 @@ const ExpressionType VectorCommand::type = ExpressionType(ExpressionType::Lambda
 
 Expression VectorCommand::operator()(const QList< Analitza::Expression >& args)
 {
-	Expression ret;
-	
-	const int nargs = args.size();
-	
-	switch(nargs) {
-		case 0: {
-			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(VectorCommand::id));
-		}	break;
-		case 1: {
-			const Analitza::Object *arg = args.first().tree();
-			
-			//TODO vector(5) := vector{0,0,0,0,0}
-			if (arg->type() == Analitza::Object::list) {
-				const Analitza::List *list = static_cast<const Analitza::List*>(arg);
-				const int n = list->size();
-				
-				Analitza::Vector *vector = new Analitza::Vector(n);
-				
-				for (int i = 0; i < n; ++i)
-					vector->appendBranch(list->at(i)->copy());
-				
-				ret.setTree(vector);
-			} else {
-				ret.addError(QCoreApplication::tr("Invalid parameter type for '%1', was expected a list").arg(VectorCommand::id));
-			}
-		}	break;
-		case 2: {
-			const Analitza::Object *arg = args.first().tree();
-			
-			if (arg->type() == Analitza::Object::value) {
-				const Analitza::Cn *lengthobj = static_cast<const Analitza::Cn*>(args.first().tree());
-				
-				if (lengthobj->isInteger() && lengthobj->value() > 0) {
-					ret.setTree(new Analitza::Vector(lengthobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())));
-				}
-				else {
-					ret.addError(QCoreApplication::tr("Vector size must be some integer value greater to zero"));
-				}
-			} else {
-				ret.addError(QCoreApplication::tr("Vector size must be some integer value greater to zero"));
-			}
-		}	break;
-		default:
-			ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(VectorCommand::id));
-			break;
-	}
-	
-	return ret;
+    Expression ret;
+    
+    const int nargs = args.size();
+    
+    switch(nargs) {
+        case 0: {
+            ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(VectorCommand::id));
+        }    break;
+        case 1: {
+            const Analitza::Object *arg = args.first().tree();
+            
+            //TODO vector(5) := vector{0,0,0,0,0}
+            if (arg->type() == Analitza::Object::list) {
+                const Analitza::List *list = static_cast<const Analitza::List*>(arg);
+                const int n = list->size();
+                
+                Analitza::Vector *vector = new Analitza::Vector(n);
+                
+                for (int i = 0; i < n; ++i)
+                    vector->appendBranch(list->at(i)->copy());
+                
+                ret.setTree(vector);
+            } else {
+                ret.addError(QCoreApplication::tr("Invalid parameter type for '%1', was expected a list").arg(VectorCommand::id));
+            }
+        }    break;
+        case 2: {
+            const Analitza::Object *arg = args.first().tree();
+            
+            if (arg->type() == Analitza::Object::value) {
+                const Analitza::Cn *lengthobj = static_cast<const Analitza::Cn*>(args.first().tree());
+                
+                if (lengthobj->isInteger() && lengthobj->value() > 0) {
+                    ret.setTree(new Analitza::Vector(lengthobj->intValue(), static_cast<const Analitza::Cn*>(args.last().tree())));
+                }
+                else {
+                    ret.addError(QCoreApplication::tr("Vector size must be some integer value greater to zero"));
+                }
+            } else {
+                ret.addError(QCoreApplication::tr("Vector size must be some integer value greater to zero"));
+            }
+        }    break;
+        default:
+            ret.addError(QCoreApplication::tr("Invalid parameter count for '%1'").arg(VectorCommand::id));
+            break;
+    }
+    
+    return ret;
 }
