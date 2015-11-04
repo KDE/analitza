@@ -38,6 +38,7 @@ Q_DECLARE_METATYPE(PlotItem*)
 PlotsModel::PlotsModel(QObject* parent)
     : QAbstractListModel(parent)
     , m_resolution(500)
+    , m_namingCount(0)
 {}
 
 PlotsModel::~PlotsModel()
