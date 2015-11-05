@@ -46,6 +46,11 @@ PlotsModel::~PlotsModel()
     clear();
 }
 
+QHash<int, QByteArray> PlotsModel::roleNames() const
+{
+    return QAbstractListModel::roleNames().unite({{ DescriptionRole, "description" }});
+}
+
 void PlotsModel::clear()
 {
     if (!m_items.isEmpty()) {
@@ -114,6 +119,8 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
             return int(tmpcurve->spaceDimension());
         case PlotRole:
             return qVariantFromValue<PlotItem*>(tmpcurve);
+        case DescriptionRole:
+            return tmpcurve->display();
     }
 
     

@@ -48,7 +48,8 @@ friend class PlotItem;
 public:
     enum Roles {
         DimensionRole = Qt::UserRole+1,
-        PlotRole
+        PlotRole,
+        DescriptionRole
     };
     
     PlotsModel(QObject * parent = 0);
@@ -61,6 +62,7 @@ public:
     virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex& parent) const;
     virtual bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
+    QHash<int, QByteArray> roleNames() const override;
 
     void addPlot(PlotItem *it);
     void updatePlot(int row, PlotItem* it);
