@@ -31,16 +31,16 @@ namespace Analitza {
 class ExpressionWrapper : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString expression READ toString WRITE setText)
+    Q_PROPERTY(QString expression READ toString CONSTANT)
+    Q_PROPERTY(bool isCorrect READ isCorrect CONSTANT)
     public:
         ExpressionWrapper(QObject* parent=0);
         explicit ExpressionWrapper(const Analitza::Expression & e, QObject* parent = 0);
         
-        void setText(const QString& exp);
-        
-    public Q_SLOTS:
-        QString toString() const;
         bool isCorrect() const;
+        QString toString() const;
+
+    public Q_SLOTS:
         QVariant value() const;
         QStringList errors() const;
         
@@ -63,6 +63,8 @@ class AnalitzaWrapper : public QObject
         
         Analitza::Analyzer* wrapped() const { return m_wrapped; }
         
+        Q_SCRIPTABLE QVariant simplify(const QString& expression);
+
         Q_SCRIPTABLE QVariant execute(const QString& expression);
         Q_SCRIPTABLE QVariant executeFunc(const QString& name, const QVariantList& args);
         Q_SCRIPTABLE QString unusedVariableName() const;

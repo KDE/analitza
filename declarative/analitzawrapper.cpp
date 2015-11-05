@@ -37,8 +37,6 @@ ExpressionWrapper::ExpressionWrapper(const Analitza::Expression& e, QObject* par
     , m_exp(e)
 {}
 
-void ExpressionWrapper::setText(const QString& exp) { m_exp.setText(exp); }
-
 bool ExpressionWrapper::isCorrect() const { return m_exp.isCorrect(); }
 QString ExpressionWrapper::toString() const { return m_exp.toString(); }
 QVariant ExpressionWrapper::value() const { return AnalitzaUtils::expressionToVariant(m_exp); }
@@ -71,6 +69,19 @@ void AnalitzaWrapper::setVariables(Analitza::Variables* v)
     m_wrapped = 0;
     m_vars = v;
     initWrapped();
+}
+
+QVariant AnalitzaWrapper::simplify(const QString& expression)
+{
+    initWrapped();
+    Analitza::Expression e(expression, false);
+    if(!e.isCorrect()) {
+        return e.error();
+    }
+    m_wrapped->setExpression(e);
+    m_wrapped->simplify();
+
+    return qVariantFromValue(new ExpressionWrapper(m_wrapped->expression()));
 }
 
 QVariant AnalitzaWrapper::execute(const QString& expression)
