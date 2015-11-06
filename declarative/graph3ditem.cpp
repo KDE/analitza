@@ -83,6 +83,8 @@ void Graph3DItem::setModel(QAbstractItemModel* model)
     auto updateCount = [this](const QModelIndex &parent, int start, int end) { m_plotter->updatePlots(parent, start, end); };
     connect(model, &QAbstractItemModel::rowsInserted, this, updateCount);
     connect(model, &QAbstractItemModel::rowsAboutToBeRemoved, this, updateCount);
+
+    Q_EMIT modelChanged(model);
 }
 
 void Graph3DItem::rotate(qreal x, qreal y)

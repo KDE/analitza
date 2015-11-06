@@ -42,7 +42,7 @@ private:
 class Graph3DItem : public QQuickFramebufferObject
 {
     Q_OBJECT
-    Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
+    Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel NOTIFY modelChanged)
     public:
         Graph3DItem(QQuickItem* parent = Q_NULLPTR);
         ~Graph3DItem();
@@ -56,6 +56,9 @@ class Graph3DItem : public QQuickFramebufferObject
         Q_SCRIPTABLE void rotate(qreal x, qreal y);
         Q_SCRIPTABLE void scale(qreal s);
         Q_SCRIPTABLE void resetView();
+
+    Q_SIGNALS:
+        void modelChanged(QAbstractItemModel* model);
 
     private:
         Plotter3DRenderer *m_plotter;
