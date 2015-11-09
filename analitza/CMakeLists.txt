@@ -3,7 +3,6 @@ project(AnalitzaCore)
 add_subdirectory(tests)
 
 set(analitza_SRCS
-    ${analitza_QM_LOADER}
 
     expressionstream.cpp
 	polynomial.cpp
@@ -53,6 +52,8 @@ set(analitza_SRCS
 if(EIGEN3_FOUND)
     list(APPEND analitza_SRCS commands/eigencommands.cpp)
 endif()
+
+ecm_create_qm_loader(analitza_SRCS analitza_qt)
 
 add_library(Analitza ${analitza_SRCS})
 target_link_libraries(Analitza Qt5::Core Qt5::Xml)
