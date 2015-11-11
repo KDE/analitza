@@ -123,67 +123,17 @@ const QColor Plotter2D::computeSubGridColor() const
     return col;
 }
 
+static double magnitudeLess(int value)
+{
+    return pow(10, round(log10(value))-1);
+}
+
 const Plotter2D::GridInfo Plotter2D::getGridInfo() const
 {
     GridInfo ret;
     
-    const double currvpsize = viewport.width();
-    
-    static double oldvpsize = currvpsize;
-    static double inc = (m_scaleMode == Linear) ? 1.0 : M_PI; // by default 1.0 (with Linear scale) //TODO log scale
-    static double zoomoutacum = 0.0;
-    static int zoomcount = -1;
-    static bool sub5 = false;
-    
-    float zoomfactor = 2;
-    
-    if (oldvpsize < currvpsize) // zoom-out
-    {
-        zoomoutacum += currvpsize - oldvpsize;
-        
-        if (2*zoomfactor*inc <= zoomoutacum)
-        {
-            zoomoutacum = 0.0;
-            
-            if ((zoomcount) % 3 == 0)
-                    sub5 = true;
-                else
-                    sub5 = false;
-            
-            if (zoomcount % 3 == 0)
-                inc *= 2.5; // 5*h/2
-            else
-                inc *= 2; //2*h
-            
-            ++zoomcount;
-        }
-    }
-    else
-        if (oldvpsize > currvpsize) // zoom-in
-        {
-            if (currvpsize < 2.0)
-                zoomfactor = 1;
-            
-            if (currvpsize <= 2*inc*zoomfactor)
-            {
-                --zoomcount;
-                
-                if ((zoomcount - 1) % 3 == 0)
-                    sub5 = true;
-                else
-                    sub5 = false;
-                
-                if (zoomcount % 3 == 0)
-                    inc *= 0.4; // 2*h/5
-                else
-                    inc *= 0.5; // h/2
-            }
-        }
-    
-    oldvpsize = currvpsize;
-    
-    ret.inc = inc;
-    ret.sub5 = sub5;
+    ret.inc = (m_scaleMode == Linear) ? magnitudeLess(viewport.width()) : M_PI; // by default 1.0 (with Linear scale) //TODO log scale;
+    ret.sub5 = true;
     
     ret.nxinilabels = std::floor(viewport.left()/ret.inc);
     ret.nyinilabels = std::floor(viewport.bottom()/ret.inc);
@@ -196,7 +146,7 @@ const Plotter2D::GridInfo Plotter2D::getGridInfo() const
     ret.yend = ret.nyendlabels*ret.inc;
 
     bool drawminor = m_showMinorGrid || m_showMinorTicks;
-    const double nfactor = drawminor ? (sub5? 5 : 4) : 1;
+    const double nfactor = drawminor ? (ret.sub5? 5 : 4) : 1;
     
     ret.nxiniticks = nfactor*ret.nxinilabels;
     ret.nyiniticks = nfactor*ret.nyinilabels;
