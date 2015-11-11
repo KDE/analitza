@@ -34,9 +34,11 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
     Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
     Q_PROPERTY(QRectF viewport READ lastViewport WRITE setViewport)
     Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
+    Q_PROPERTY(bool showMinorGrid READ showMinorGrid WRITE setShowGrid)
     Q_PROPERTY(bool keepAspectRatio READ keepAspectRatio WRITE setKeepAspectRatio)
     Q_PROPERTY(bool currentFunction READ currentFunction WRITE setCurrentFunction)
     Q_PROPERTY(bool ticksShown READ ticksShownAtAll WRITE setTicksShownAtAll)
+    Q_PROPERTY(bool minorTicksShown READ minorTicksShown WRITE setShowMinorTicks)
     public:
         Graph2DMobile(QQuickItem* parent = 0);
         
