@@ -196,7 +196,7 @@ const Plotter2D::GridInfo Plotter2D::getGridInfo() const
     ret.yend = ret.nyendlabels*ret.inc;
 
     bool drawminor = m_showMinorGrid || m_showMinorTicks;
-    double nfactor = drawminor ? (sub5? 5 : 4) : 1;
+    const double nfactor = drawminor ? (sub5? 5 : 4) : 1;
     
     ret.nxiniticks = nfactor*ret.nxinilabels;
     ret.nyiniticks = nfactor*ret.nyinilabels;
@@ -249,16 +249,16 @@ void Plotter2D::drawMainAxes(QPainter* painter) const
     painter->setPen(axesPen);
     painter->setBrush(axesPen.color());
     
-    int startAngleX = 150*16;
-    int startAngleY = 240*16;
-    int spanAngle = 60*16;
-    QPointF Xright(this->width(), center.y());
-    QPointF Ytop(center.x(), 0.);
+    const int startAngleX = 150*16;
+    const int startAngleY = 240*16;
+    const int spanAngle = 60*16;
+    const QPointF Xright(this->width(), center.y());
+    const QPointF Ytop(center.x(), 0.);
     const double arrowWidth=15., arrowHeight=4.;
-    QPointF dpx(arrowWidth, arrowHeight);
-    QPointF dpy(arrowHeight, arrowWidth);
-    QRectF rectX(Xright+dpx, Xright-dpx);
-    QRectF rectY(Ytop+dpy, Ytop-dpy);
+    const QPointF dpx(arrowWidth, arrowHeight);
+    const QPointF dpy(arrowHeight, arrowWidth);
+    const QRectF rectX(Xright+dpx, Xright-dpx);
+    const QRectF rectY(Ytop+dpy, Ytop-dpy);
 
     if (m_showAxes&Qt::Horizontal)
     {
@@ -303,9 +303,9 @@ const QString Plotter2D::computeAngleLabelByFrac(unsigned int n, unsigned int d)
     {
         case Radian:
         {
-            s = (n==1) ? QStringLiteral("") : QString::number(n);
+            s = (n==1) ? QString() : QString::number(n);
             s += PiSymbol;
-            s += (d==1) ? QStringLiteral("") : "/"+QString::number(d);
+            s += (d==1) ? QString() : '/'+QString::number(d);
         }
         break;
         case Degree: s = QString::number(radiansToDegrees(n*M_PI/d))+DegreeSymbol; break;
@@ -349,10 +349,9 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
     const unsigned int step = std::ceil(M_PI/gridinfo.inc);
     
     QString s;
-    QPointF p;
-    
-    int from = (axis == Analitza::XAxis) ? gridinfo.nxinilabels : gridinfo.nyinilabels;
-    int to = (axis == Analitza::XAxis) ? gridinfo.nxendlabels : gridinfo.nyendlabels;
+
+    const int from = (axis == Analitza::XAxis) ? gridinfo.nxinilabels : gridinfo.nyinilabels;
+    const int to = (axis == Analitza::XAxis) ? gridinfo.nxendlabels : gridinfo.nyendlabels;
     
     painter->save();
     QFont tickFont = QFontDatabase::systemFont(QFontDatabase::SmallestReadableFont);
@@ -364,10 +363,9 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
         
         double newval = i*gridinfo.inc;
         
-        if (isxaxis)
-            p = toWidget(QPointF(newval, 0.0));
-        else
-            p = toWidget(QPointF(0.0, newval));
+        const QPointF p = isxaxis
+            ? toWidget(QPointF(newval, 0.0))
+            : toWidget(QPointF(0.0, newval));
         
         switch (m_scaleMode)
         {
@@ -385,17 +383,17 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
                     const QPair<unsigned int, unsigned int> frac = simplifyFraction(qAbs(i), step);
                     
                     s += computeAngleLabelByFrac(frac.first, frac.second);
-                }                
+                }
             }
             break;
         }
         
-        int swidth = painter->fontMetrics().width(s);
+        const int swidth = painter->fontMetrics().width(s);
         
         if (isxaxis)
             painter->drawText(p.x()-swidth/2+textposcorrection, p.y()+axisxseparation, s);
         else
-            painter->drawText(p.x()-swidth-axisyseparation, p.y()+hfmhalf-textposcorrection, s);
+            painter->drawText(p.x()-swidth-axisyseparation, p.y()+2*hfmhalf, s);
     }
     painter->restore();
 }
@@ -536,24 +534,18 @@ void Plotter2D::drawCircles(QPainter* painter, const GridInfo& gridinfo, GridSty
                 painter->setPen(gridPen);
                 painter->drawEllipse(er);
             }
-            else // sub intervals
+            else if (m_showMinorGrid)// sub intervals
             {
-                if (m_showMinorGrid)
-                {
-                    painter->setPen(subGridPen);
-                    painter->drawEllipse(er);
-                }
+                painter->setPen(subGridPen);
+                painter->drawEllipse(er);
             }
         }
         
         if (m_showPolarAxis) // draw polar rays
         {
             double h = Pi12; // 2pi/(Pi/12) = 24 steps/turns
-            double t = h;
             const double r = std::abs(until); // radius
             const QPointF origin = toWidget(QPointF(0,0));
-            
-            QPointF p;
             
             int k = 1;
             unsigned int alternatesubgridcount = 2;
@@ -564,31 +556,28 @@ void Plotter2D::drawCircles(QPainter* painter, const GridInfo& gridinfo, GridSty
             if (!viewport.contains(QPointF(0.0, 0.0)))
             {
                 h = Pi36; // 2pi/(Pi/36) = 72 steps
-                t = h;
                 steps = 72; // or turns
                 alternatesubgridcount = 3;
                 dontdrawataxiscount = 17;
             }
             
+            double t = h;
             for (uint j = 1; j <= steps; ++j, ++k, t += h)
             {
                 if (j % alternatesubgridcount == 0)
                     painter->setPen(gridPen);
-                else
+                else if (m_showMinorGrid)
                 {
-                    if (!m_showMinorGrid)
-                        continue;
-                    
                     painter->setPen(subGridPen);
-                }
-                
-                p = toWidget(QPointF(r*std::cos(t), r*std::sin(t)));
-                painter->drawLine(origin, p);
-                
-                if (k % dontdrawataxiscount == 0) // avoid draw the ray at 0,pi/2,pi,3pi/2
-                {
-                    t += h;
-                    ++j;
+
+                    QPointF p = toWidget(QPointF(r*std::cos(t), r*std::sin(t)));
+                    painter->drawLine(origin, p);
+
+                    if (k % dontdrawataxiscount == 0) // avoid draw the ray at 0,pi/2,pi,3pi/2
+                    {
+                        t += h;
+                        ++j;
+                    }
                 }
             }
         }
@@ -598,48 +587,35 @@ void Plotter2D::drawCircles(QPainter* painter, const GridInfo& gridinfo, GridSty
     if (m_showTickLabels & Qt::Horizontal)
     {
         painter->setPen(textPen);
-        QPointF p;
-        int i = 0;
-        
         const QPointF yoffset(0.,-3.);
         
-        for (int j = gridinfo.nxiniticks; j < gridinfo.nxendticks; ++j, ++i)
+        for (int j = gridinfo.nxiniticks, i = 0; j < gridinfo.nxendticks; ++j, ++i)
         {
             if (j == 0) continue;
             
-            double x = j*inc;
-            
-            p = toWidget(QPointF(x, 0.));
+            const double x = j*inc;
+            const QPointF p = toWidget(QPointF(x, 0.));
 
-            if ((i % nsubinc == 0) || !drawminor)
+            if ((i % nsubinc == 0) || !drawminor || m_showMinorTicks)
                 painter->drawLine(p, p+yoffset);
-            else // sub intervals
-                if (m_showMinorTicks)
-                    painter->drawLine(p, p+yoffset);
         }
     }
     
     if (m_showTickLabels & Qt::Vertical)
     {
         painter->setPen(textPen);
-        QPointF p;
-        int i = 0;
-        
         const QPointF xoffset(3.,0.);
         
-        for (int j = gridinfo.nyiniticks; j < gridinfo.nyendticks; ++j, ++i)
+        for (int j = gridinfo.nyiniticks, i = 0; j < gridinfo.nyendticks; ++j, ++i)
         {
             if (j == 0) continue;
             
-            double y = j*inc;
+            const double y = j*inc;
             
-            p = toWidget(QPointF(0., y));
+            const QPointF p = toWidget(QPointF(0., y));
             
-            if ((i % nsubinc == 0) || !(m_showMinorGrid || m_showMinorTicks))
+            if ((i % nsubinc == 0) || !(m_showMinorGrid || m_showMinorTicks) || m_showMinorTicks)
                 painter->drawLine(p, p+xoffset);
-            else // sub intervals
-                if (m_showMinorTicks)
-                    painter->drawLine(p, p+xoffset);
         }
     }
     //END draw ticks
@@ -659,33 +635,24 @@ void Plotter2D::drawSquares(QPainter* painter, const GridInfo& gridinfo, GridSty
     const bool drawminor = m_showMinorGrid || m_showMinorTicks;
     const double inc = drawminor? gridinfo.inc/nsubinc : gridinfo.inc; // if show minor, then inc with sub intervals
     
-    QPointF p;
-    int i = 0;
-    
-    for (int n = gridinfo.nxiniticks; n < gridinfo.nxendticks; ++n, ++i)
+    for (int n = gridinfo.nxiniticks, i = 0; n < gridinfo.nxendticks; ++n, ++i)
     {
         if (n == 0) continue;
         
-        double x = n*inc;
+        const double x = n*inc;
+        const QPointF p = toWidget(QPointF(x, 0.));
         
-        p = toWidget(QPointF(x, 0.));
-        
-        if (m_showGrid && (gridStyle == Crosses))
+        if (m_showGrid && gridStyle == Crosses)
         {
-            QPointF py;
-            int k = 0;
-            
             const double crossside = 5;
-            
-            for (int j = gridinfo.nyiniticks; j < gridinfo.nyendticks; ++j, ++k)
+            const double centx = p.x();
+
+            for (int j = gridinfo.nyiniticks, k = 0; j < gridinfo.nyendticks; ++j, ++k)
             {
                 if (j == 0) continue;
-                
-                double y = j*inc;
-                
-                py = toWidget(QPointF(0., y));
-                
-                const double centx = p.x();
+
+                const double y = j*inc;
+                const QPointF py = toWidget(QPointF(0., y));
                 const double centy = py.y();
                 
                 if (((i % nsubinc == 0) && (k % nsubinc == 0)) || !drawminor) // intervals
@@ -694,24 +661,22 @@ void Plotter2D::drawSquares(QPainter* painter, const GridInfo& gridinfo, GridSty
                     painter->drawLine(QPointF(centx-crossside, centy), QPointF(centx+crossside, centy)); // horizontal
                     painter->drawLine(QPointF(centx, centy-crossside), QPointF(centx, centy+crossside)); // vertical
                 }
-                else // sub intervals
-                    if (m_showMinorGrid)
-                    {
-                        painter->setPen(subGridPenBold);
-                        painter->drawLine(QPointF(centx-crossside, centy), QPointF(centx+crossside, centy)); // horizontal
-                        painter->drawLine(QPointF(centx, centy-crossside), QPointF(centx, centy+crossside)); // vertical
-                    }
+                else if (m_showMinorGrid)// sub intervals
+                {
+                    painter->setPen(subGridPenBold);
+                    painter->drawLine(QPointF(centx-crossside, centy), QPointF(centx+crossside, centy)); // horizontal
+                    painter->drawLine(QPointF(centx, centy-crossside), QPointF(centx, centy+crossside)); // vertical
+                }
             }
         }
         
         if ((i % nsubinc == 0) || !drawminor) // intervals
         {
-            if (m_showGrid)
-                if (gridStyle == Squares || gridStyle == VerticalLines)
-                {
-                    painter->setPen(gridPen);
-                    painter->drawLine(QPointF(p.x(), height()), QPointF(p.x(), 0.)); 
-                }
+            if (m_showGrid && (gridStyle == Squares || gridStyle == VerticalLines))
+            {
+                painter->setPen(gridPen);
+                painter->drawLine(QPointF(p.x(), height()), QPointF(p.x(), 0.));
+            }
             
             if ((m_showTicks & Qt::Horizontal))
             {
@@ -721,12 +686,11 @@ void Plotter2D::drawSquares(QPainter* painter, const GridInfo& gridinfo, GridSty
         }
         else // sub intervals
         {
-            if (m_showGrid && m_showMinorGrid)
-                if (gridStyle == Squares || gridStyle == VerticalLines)
-                {
-                    painter->setPen(subGridPen);
-                    painter->drawLine(QPointF(p.x(), height()), QPointF(p.x(), 0.)); 
-                }
+            if (m_showGrid && m_showMinorGrid && (gridStyle == Squares || gridStyle == VerticalLines))
+            {
+                painter->setPen(subGridPen);
+                painter->drawLine(QPointF(p.x(), height()), QPointF(p.x(), 0.));
+            }
             
             if ((m_showTicks & Qt::Horizontal) && m_showMinorTicks)
             {
@@ -736,24 +700,20 @@ void Plotter2D::drawSquares(QPainter* painter, const GridInfo& gridinfo, GridSty
         }
     }
     
-    i = 0;
-    
-    for (int j = gridinfo.nyiniticks; j < gridinfo.nyendticks; ++j, ++i)
+    for (int j = gridinfo.nyiniticks, i = 0; j < gridinfo.nyendticks; ++j, ++i)
     {
         if (j == 0) continue;
         
-        double y = j*inc;
-        
-        p = toWidget(QPointF(0., y));
+        const double y = j*inc;
+        const QPointF p = toWidget(QPointF(0., y));
         
         if ((i % nsubinc == 0) || !drawminor) // intervals
         {
-            if (m_showGrid)
-                if (gridStyle == Squares || gridStyle == HorizontalLines)
-                {
-                    painter->setPen(gridPen);
-                    painter->drawLine(QPointF(0., p.y()), QPointF(width(), p.y()));
-                }
+            if (m_showGrid && (gridStyle == Squares || gridStyle == HorizontalLines))
+            {
+                painter->setPen(gridPen);
+                painter->drawLine(QPointF(0., p.y()), QPointF(width(), p.y()));
+            }
             
             if ((m_showTicks & Qt::Horizontal))
             {
@@ -763,12 +723,11 @@ void Plotter2D::drawSquares(QPainter* painter, const GridInfo& gridinfo, GridSty
         }
         else // sub intervals
         {
-            if (m_showGrid && m_showMinorGrid)
-                if (gridStyle == Squares || gridStyle == HorizontalLines)
-                    {
-                        painter->setPen(subGridPen);
-                        painter->drawLine(QPointF(0., p.y()), QPointF(width(), p.y()));
-                    }
+            if (m_showGrid && m_showMinorGrid && (gridStyle == Squares || gridStyle == HorizontalLines))
+            {
+                painter->setPen(subGridPen);
+                painter->drawLine(QPointF(0., p.y()), QPointF(width(), p.y()));
+            }
             
             if ((m_showTicks & Qt::Horizontal) && m_showMinorTicks)
             {
@@ -844,7 +803,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 #endif
         for(unsigned int j=0; j<pointsCount; ++j)
         {
-            QPointF act=toWidget(vect.at(j));
+            const QPointF act = toWidget(vect.at(j));
 
 //          qDebug() << "xxxxx" << act << ultim << qIsNaN(act.y()) << qIsNaN(ultim.y());
             if(qIsInf(act.y()) && !qIsNaN(act.y())) qDebug() << "trying to plot from a NaN value" << act << ultim;

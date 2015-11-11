@@ -68,6 +68,9 @@ class ANALITZAPLOT_EXPORT Plotter2D
 
         /** Returns whether we have chosen to draw the grid. */
         bool showGrid() const {return m_showGrid; }
+
+        /** Returns whether we have chosen to draw the minor grid. */
+        bool showMinorGrid() const {return m_showMinorGrid; }
         
         void setGridColor(const QColor &color) { m_gridColor = color;  forceRepaint(); }
         
@@ -128,6 +131,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void setShowTickLabels(Qt::Orientations o) { m_showTickLabels = o; forceRepaint(); }
         //only works if showticks is true
         void setShowMinorTicks(bool mt) { m_showMinorTicks=mt; forceRepaint(); }
+        bool minorTicksShown() const { return m_showMinorTicks; }
         
         //these 2 only work when gridmode is polar, showpolar axis aumenta cuando esta lejos de origin
         void setShowPolarAxis(bool pt) { m_showPolarAxis = pt;  forceRepaint(); }
