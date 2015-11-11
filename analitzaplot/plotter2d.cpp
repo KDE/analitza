@@ -1015,3 +1015,9 @@ void Plotter2D::zoomOut(bool repaint)
 {
     scaleViewport(ZoomOutFactor, QPoint(m_size.width()*0.5, m_size.height()*0.5), repaint);
 }
+
+void Plotter2D::setShowMinorGrid(bool mt)
+{
+    m_showMinorGrid=mt;
+    forceRepaint();
+}
