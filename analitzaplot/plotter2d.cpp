@@ -288,11 +288,8 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
 {
     Q_ASSERT(axis == XAxis || axis == Analitza::YAxis);
     
-    static const unsigned short axisxseparation = 16; // distance between tick text and x-axis 
-    static const unsigned short axisyseparation = 4; // distance between tick text and y-axis
-    static const unsigned short textposcorrection = 2;
     const bool isxaxis = (axis == XAxis);
-    const double hfmhalf = isxaxis ? 0.0 : painter->fontMetrics().height()*0.5;
+    const double fontHeight = painter->fontMetrics().height();
     
     const bool incbig = (M_PI <= gridinfo.inc);
     const unsigned int bigstep = std::floor(gridinfo.inc/M_PI);
@@ -339,11 +336,10 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
         }
         
         const int swidth = painter->fontMetrics().width(s);
-        
         if (isxaxis)
-            painter->drawText(p.x()-swidth/2+textposcorrection, p.y()+axisxseparation, s);
+            painter->drawText(p.x() - swidth/2, p.y()+fontHeight, s);
         else
-            painter->drawText(p.x()-swidth-axisyseparation, p.y()+2*hfmhalf, s);
+            painter->drawText(p.x() - swidth - fontHeight/2, p.y()+fontHeight/2, s);
     }
     painter->restore();
 }
