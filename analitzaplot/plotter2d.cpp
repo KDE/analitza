@@ -129,7 +129,7 @@ const Plotter2D::GridInfo Plotter2D::getGridInfo() const
     GridInfo ret;
     
     if (m_scaleMode == Linear) {
-        const double val = log10(viewport.width());
+        const double val = log10(qMax(viewport.width(), -viewport.height()));
         const double diff = val-floor(val);
         const double magnitude = pow(10, floor(val)-1);
 
