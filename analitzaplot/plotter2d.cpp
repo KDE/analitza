@@ -134,7 +134,7 @@ const Plotter2D::GridInfo Plotter2D::getGridInfo() const
         const double magnitude = pow(10, floor(val)-1);
 
         ret.inc = magnitude;
-        ret.incLabelSkip = diff < 0.5 ? 1 : 2;
+        ret.incLabelSkip = diff < 0.5 ? 1 : 3;
     } else {
         ret.inc = M_PI;
         ret.incLabelSkip = 1;
