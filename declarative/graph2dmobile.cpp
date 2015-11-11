@@ -34,7 +34,7 @@ Graph2DMobile::Graph2DMobile(QQuickItem* parent)
 {
     setSize(QSizeF(100,100));
     
-    defViewport = QRectF(QPointF(-12., 10.), QSizeF(24., -20.));
+    defViewport = QRectF(QPointF(-5., 5.), QSizeF(10., -10.));
     resetViewport();
     setFlags(QQuickItem::ItemHasContents);
 }
