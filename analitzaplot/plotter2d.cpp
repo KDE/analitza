@@ -57,7 +57,7 @@ struct Plotter2D::GridInfo
 {
     double inc, xini, yini, xend, yend;
     // sub5 flag is used for draw sub 5 intervals instead of 4
-    bool sub5; // true if inc=5*pow(10,n) (so, in this case, we draw 5 sub intervals, not 4)
+    int subinc; // true if inc=5*pow(10,n) (so, in this case, we draw 5 sub intervals, not 4)
     // we need scale for ticks, and for labels, thicks can be minor, labels no: so 
     // this is necessary for minor ticks and for minir grid (but not for labels, so when draw labels we need )
     int nxiniticks, nyiniticks, nxendticks, nyendticks; // nxini = floor(viewport.left()/inc), so xini is nxini*inc ... and so on
@@ -132,8 +132,8 @@ const Plotter2D::GridInfo Plotter2D::getGridInfo() const
 {
     GridInfo ret;
     
-    ret.inc = (m_scaleMode == Linear) ? magnitudeLess(viewport.width()) : M_PI; // by default 1.0 (with Linear scale) //TODO log scale;
-    ret.sub5 = true;
+    ret.inc = (m_scaleMode == Linear) ? magnitudeLess(viewport.width()) : M_PI;
+    ret.subinc = 4;
     
     ret.nxinilabels = std::floor(viewport.left()/ret.inc);
     ret.nyinilabels = std::floor(viewport.bottom()/ret.inc);
@@ -145,8 +145,8 @@ const Plotter2D::GridInfo Plotter2D::getGridInfo() const
     ret.xend = ret.nxendlabels*ret.inc;
     ret.yend = ret.nyendlabels*ret.inc;
 
-    bool drawminor = m_showMinorGrid || m_showMinorTicks;
-    const double nfactor = drawminor ? (ret.sub5? 5 : 4) : 1;
+    const bool drawminor = m_showMinorGrid || m_showMinorTicks;
+    const double nfactor = drawminor ? ret.subinc : 1;
     
     ret.nxiniticks = nfactor*ret.nxinilabels;
     ret.nyiniticks = nfactor*ret.nyinilabels;
@@ -355,7 +355,7 @@ void Plotter2D::drawPolarTickLabels(QPainter* painter, const Plotter2D::GridInfo
     painter->setPen(m_gridColor);
     
     //TODO if minor
-    const double newinc = gridinfo.inc/(gridinfo.sub5 ? 5 : 4); // inc with sub intervals
+    const double newinc = gridinfo.inc/(gridinfo.subinc); // inc with sub intervals
     
     //x
     // we assume 0 belongs to interval [gridinfo.xini, gridinfo.xend]
@@ -459,7 +459,7 @@ void Plotter2D::drawCircles(QPainter* painter, const GridInfo& gridinfo, GridSty
     const QPen gridPen(m_gridColor);
     const QPen subGridPen(computeSubGridColor());
 
-    const unsigned short nsubinc = gridinfo.sub5 ? 5 : 4; // count for draw sub intervals
+    const unsigned short nsubinc = gridinfo.subinc; // count for draw sub intervals
     const bool drawminor = m_showMinorGrid || m_showMinorTicks;
     const double inc = drawminor ? gridinfo.inc/nsubinc : gridinfo.inc; // if show minor, then inc with sub intervals
     
@@ -581,7 +581,7 @@ void Plotter2D::drawSquares(QPainter* painter, const GridInfo& gridinfo, GridSty
     const QPen gridPenBold(gridPen.brush(), 2);
     const QPen subGridPenBold(subGridPen.brush(), gridPenBold.widthF());
     
-    const unsigned short nsubinc = gridinfo.sub5 ? 5:4; // count for draw sub intervals
+    const unsigned short nsubinc = gridinfo.subinc; // count for draw sub intervals
     const bool drawminor = m_showMinorGrid || m_showMinorTicks;
     const double inc = drawminor? gridinfo.inc/nsubinc : gridinfo.inc; // if show minor, then inc with sub intervals
     
