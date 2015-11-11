@@ -56,6 +56,7 @@ const double Plotter2D::ZoomOutFactor = 2*1.03; // 2 x (regular mouse wheel back
 struct Plotter2D::GridInfo
 {
     double inc, xini, yini, xend, yend;
+    int incLabelSkip;
     // sub5 flag is used for draw sub 5 intervals instead of 4
     int subinc; // true if inc=5*pow(10,n) (so, in this case, we draw 5 sub intervals, not 4)
     // we need scale for ticks, and for labels, thicks can be minor, labels no: so 
@@ -123,16 +124,22 @@ const QColor Plotter2D::computeSubGridColor() const
     return col;
 }
 
-static double magnitudeLess(int value)
-{
-    return pow(10, round(log10(value))-1);
-}
-
 const Plotter2D::GridInfo Plotter2D::getGridInfo() const
 {
     GridInfo ret;
     
-    ret.inc = (m_scaleMode == Linear) ? magnitudeLess(viewport.width()) : M_PI;
+    if (m_scaleMode == Linear) {
+        const double val = log10(viewport.width());
+        const double diff = val-floor(val);
+        const double magnitude = pow(10, floor(val)-1);
+
+        ret.inc = magnitude;
+        ret.incLabelSkip = diff < 0.5 ? 1 : 2;
+    } else {
+        ret.inc = M_PI;
+        ret.incLabelSkip = 1;
+    }
+
     ret.subinc = 4;
     
     ret.nxinilabels = std::floor(viewport.left()/ret.inc);
@@ -306,7 +313,7 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
     painter->setPen(QPen(QPalette().text().color()));
     for (int i = from; i <= to; ++i)
     {
-        if (i == 0) continue;
+        if (i == 0 || i%gridinfo.incLabelSkip!=0) continue;
         
         double newval = i*gridinfo.inc;
         
