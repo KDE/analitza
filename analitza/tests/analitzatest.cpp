@@ -48,7 +48,7 @@ template <> char *toString(const Analitza::Cn &cn)
 
 }
 
-Q_DECLARE_METATYPE(Cn);
+Q_DECLARE_METATYPE(Cn)
 
 AnalitzaTest::AnalitzaTest(QObject *parent)
  : QObject(parent)

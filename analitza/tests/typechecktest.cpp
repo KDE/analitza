@@ -263,7 +263,7 @@ void TypeCheckTest::testUncorrection_data()
     //TODO: Add invalid recursive call
 }
 
-Q_DECLARE_METATYPE(ExpressionType);
+Q_DECLARE_METATYPE(ExpressionType)
 
 void TypeCheckTest::testReduction()
 {

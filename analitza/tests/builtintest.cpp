@@ -28,7 +28,7 @@
 
 QTEST_MAIN( BuiltInTest )
 
-Q_DECLARE_METATYPE(int*);
+Q_DECLARE_METATYPE(int*)
 
 using namespace Analitza;
 

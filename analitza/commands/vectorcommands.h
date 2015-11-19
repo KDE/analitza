@@ -23,7 +23,7 @@
 
 namespace Analitza {
 class Expression;
-};
+}
 
 
 /**

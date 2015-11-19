@@ -23,7 +23,7 @@
 
 namespace Analitza {
 class Expression;
-};
+}
 
 class IsZeroMatrixCommand: public Analitza::FunctionDefinition
 {
