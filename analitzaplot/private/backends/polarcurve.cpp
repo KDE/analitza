@@ -43,10 +43,10 @@ public:
     ICON_NAME(QStringLiteral("newpolar"))
     EXAMPLES(QStringList(QStringLiteral("q->3*sin(q/0.142)")) << QStringLiteral("q->q+3"))
     
-    void update(const QRectF& viewport);
+    void update(const QRectF& viewport) override;
     
-    QPair<QPointF, QString> image(const QPointF &mousepos);
-    QLineF tangent(const QPointF &mousepos) ;
+    QPair<QPointF, QString> image(const QPointF &mousepos) override;
+    QLineF tangent(const QPointF &mousepos) override ;
     
     Analitza::Cn *p;
 };

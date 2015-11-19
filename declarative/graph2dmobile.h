@@ -42,13 +42,13 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
     public:
         Graph2DMobile(QQuickItem* parent = 0);
         
-        virtual void forceRepaint();
-        virtual void viewportChanged() {}
-        virtual void modelChanged();
-        virtual int currentFunction() const { return m_currentFunction; }
+        virtual void forceRepaint() override;
+        virtual void viewportChanged() override {}
+        virtual void modelChanged() override;
+        virtual int currentFunction() const override { return m_currentFunction; }
         
-        void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) /*Q_OVERRIDE*/;
-        QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) /*Q_OVERRIDE*/;
+        void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) override /*Q_OVERRIDE*/;
+        QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) override /*Q_OVERRIDE*/;
         
         void setCurrentFunction(int f) { m_currentFunction = f; }
         bool ticksShownAtAll() const { return ticksShown()!=0; }

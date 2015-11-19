@@ -46,7 +46,7 @@ class CFib : public Analitza::FunctionDefinition
             }
         }
         
-        virtual Expression operator()(const QList<Expression>& args) {
+        virtual Expression operator()(const QList<Expression>& args) override {
             int val = args.first().toReal().intValue();
             if(val>=0)
                 return Expression(Cn(fib(val)));
@@ -60,7 +60,7 @@ class CFib : public Analitza::FunctionDefinition
 
 class VehicleConstructor : public Analitza::FunctionDefinition
 {
-    virtual Expression operator()(const QList< Expression >& args)
+    virtual Expression operator()(const QList< Expression >& args) override
     {
         return Expression::constructCustomObject(QVariant(args.first().toReal().intValue()),0);
     }
@@ -68,7 +68,7 @@ class VehicleConstructor : public Analitza::FunctionDefinition
 
 class Tires : public Analitza::FunctionDefinition
 {
-    virtual Expression operator()(const QList< Expression >& args)
+    virtual Expression operator()(const QList< Expression >& args) override
     {
         QVariant value = args.first().customObjectValue();
         return Expression(Cn(value.toInt()));
@@ -83,7 +83,7 @@ class NewIntConstructor : public Analitza::FunctionDefinition
         delete vv;
     }
     
-    virtual Expression operator()(const QList< Expression >& args)
+    virtual Expression operator()(const QList< Expression >& args) override
     {
         int* pi=new int(args.first().toReal().intValue());
         return Expression::constructCustomObject(QVariant::fromValue<int*>(pi), destroy);
@@ -92,7 +92,7 @@ class NewIntConstructor : public Analitza::FunctionDefinition
 
 class ReadInt : public Analitza::FunctionDefinition
 {
-    virtual Expression operator()(const QList< Expression >& args)
+    virtual Expression operator()(const QList< Expression >& args) override
     {
         Cn n(*args.first().customObjectValue().value<int*>());
         return Expression(n);
@@ -101,7 +101,7 @@ class ReadInt : public Analitza::FunctionDefinition
 
 class CreateList : public Analitza::FunctionDefinition
 {
-    virtual Expression operator()(const QList< Expression >& args)
+    virtual Expression operator()(const QList< Expression >& args) override
     {
         QList<Expression> exps;
         for(int i=0; i<10; i++)
@@ -113,7 +113,7 @@ class CreateList : public Analitza::FunctionDefinition
 
 class Wrong : public Analitza::FunctionDefinition
 {
-    virtual Expression operator()(const QList< Expression >& args)
+    virtual Expression operator()(const QList< Expression >& args) override
     {
         return args.first();
     }
@@ -121,7 +121,7 @@ class Wrong : public Analitza::FunctionDefinition
 
 class MeaningOfLife : public Analitza::FunctionDefinition
 {
-    virtual Expression operator()(const QList< Expression >& args)
+    virtual Expression operator()(const QList< Expression >& args) override
     {
         Q_UNUSED(args)
         return Expression(Cn(42.));
@@ -130,7 +130,7 @@ class MeaningOfLife : public Analitza::FunctionDefinition
 
 class JustCrash : public Analitza::FunctionDefinition
 {
-    virtual Expression operator()(const QList< Expression >& args)
+    virtual Expression operator()(const QList< Expression >& args) override
     {
         Q_ASSERT(false);
         operator()(args);

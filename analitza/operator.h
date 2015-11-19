@@ -119,11 +119,11 @@ class ANALITZA_EXPORT Operator : public Object
         /** Converts a @p s operator tag to the operator. */
         static OperatorType toOperatorType(const QString &s);
         
-        virtual bool matches(const Object*, QMap<QString, const Object*>*) const;
+        virtual bool matches(const Object*, QMap<QString, const Object*>*) const override;
         virtual bool decorate(const QMap< QString, Object** >& ) { return false; }
         
-        virtual QVariant accept(AbstractExpressionVisitor*) const;
-        virtual Operator* copy() const;
+        virtual QVariant accept(AbstractExpressionVisitor*) const override;
+        virtual Operator* copy() const override;
         
         static const char words[nOfOps][14];
     private:

@@ -73,7 +73,7 @@ public:
     
     ~PlotsView2D();
     
-    QSize sizeHint() const { return QSize(100, 100); }
+    QSize sizeHint() const override { return QSize(100, 100); }
     
     /** Saves the graphs to a file located at @p path. */
     bool toImage(const QString& path, Format f);
@@ -85,7 +85,7 @@ public:
 
 public Q_SLOTS:
     /** Marks the image as dirty and repaints everything. */
-    void forceRepaint() { valid=false; repaint(); }
+    void forceRepaint() override { valid=false; repaint(); }
 
     /** Sets the viewport to a default viewport. */
     void resetViewport() { setViewport(defViewport); }
@@ -141,9 +141,9 @@ private:
     };
     
 private:
-    virtual void viewportChanged();
-    virtual int currentFunction() const;
-    virtual void modelChanged();
+    virtual void viewportChanged() override;
+    virtual int currentFunction() const override;
+    virtual void modelChanged() override;
     
     //painting
     QPixmap buffer;
@@ -152,13 +152,13 @@ private:
     QPoint cursorPos;
     
     //events
-    void paintEvent( QPaintEvent * );
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
-    void keyPressEvent(QKeyEvent * e );
-    void wheelEvent(QWheelEvent *e);
-    void resizeEvent(QResizeEvent *);
+    void paintEvent( QPaintEvent * ) override;
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *e) override;
+    void keyPressEvent(QKeyEvent * e ) override;
+    void wheelEvent(QWheelEvent *e) override;
+    void resizeEvent(QResizeEvent *) override;
 
     GraphMode mode;
     QPoint press; QPoint last;

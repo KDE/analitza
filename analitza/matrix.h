@@ -33,9 +33,9 @@ class ANALITZA_EXPORT MatrixRow : public Vector
 {
     public:
         MatrixRow(int size=0);
-        virtual QVariant accept(AbstractExpressionVisitor* e) const;
+        virtual QVariant accept(AbstractExpressionVisitor* e) const override;
         
-        MatrixRow* copy() const;
+        MatrixRow* copy() const override;
 };
 
 class ANALITZA_EXPORT Matrix : public Object
@@ -50,9 +50,9 @@ class ANALITZA_EXPORT Matrix : public Object
         virtual ~Matrix();
         void appendBranch(MatrixRow* o);
         
-        virtual Matrix* copy() const;
-        virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const;
-        virtual QVariant accept(AbstractExpressionVisitor* exp) const;
+        virtual Matrix* copy() const override;
+        virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const override;
+        virtual QVariant accept(AbstractExpressionVisitor* exp) const override;
         const_iterator constBegin() const { return m_rows.constBegin(); }
         const_iterator constEnd() const { return m_rows.constEnd(); }
         iterator begin() { return m_rows.begin(); }
@@ -64,7 +64,7 @@ class ANALITZA_EXPORT Matrix : public Object
         Object* at(int i, int j) const;
         int columnCount() const;
         bool isSquare() const;
-        virtual bool isZero() const;
+        virtual bool isZero() const override;
         bool hasOnlyNumbers() const { return m_rows.isEmpty()? false : m_hasOnlyNumbers; }
         bool isIdentity() const;
         bool isDiagonal() const;

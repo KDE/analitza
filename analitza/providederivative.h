@@ -37,7 +37,7 @@ class ProvideDerivative : public AbstractExpressionTransformer
         
     private:
         QStringList m_errors;
-        virtual Object* walkApply(const Analitza::Apply* pattern);
+        virtual Object* walkApply(const Analitza::Apply* pattern) override;
         
         Object* derivateContentVector(const Vector* v);
         Object* derivateContentList(const List* v);

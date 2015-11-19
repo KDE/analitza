@@ -45,11 +45,11 @@ public:
     EXAMPLES(QStringList())
 
     //Own
-    virtual bool setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max);
-    virtual bool setInterval(const QString& argname, double min, double max);
+    virtual bool setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max) override;
+    virtual bool setInterval(const QString& argname, double min, double max) override;
 
-    QVector3D fromParametricArgs(double u, double v);
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2viewport);
+    QVector3D fromParametricArgs(double u, double v) override;
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2viewport) override;
 
 
 };

@@ -44,10 +44,10 @@ public:
     ICON_NAME(QStringLiteral("newparametric"))
     EXAMPLES(QStringList(QStringLiteral("t->vector {t,t**2}")))
     
-    void update(const QRectF& viewport);
+    void update(const QRectF& viewport) override;
     
-    QPair<QPointF, QString> image(const QPointF &mousepos);
-    QLineF tangent(const QPointF &mousepos) ;
+    QPair<QPointF, QString> image(const QPointF &mousepos) override;
+    QLineF tangent(const QPointF &mousepos) override ;
     
     Analitza::Cn *t;
 

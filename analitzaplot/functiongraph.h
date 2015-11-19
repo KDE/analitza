@@ -43,14 +43,14 @@ class ANALITZAPLOT_EXPORT FunctionGraph : public PlotItem
 public:
     virtual ~FunctionGraph();
 
-    Analitza::Variables *variables() const;
+    Analitza::Variables *variables() const override;
     
     //MappingGraph
-    QString typeName() const;
-    const Analitza::Expression &expression() const;
-    QString iconName() const;
-    Dimension spaceDimension() const;
-    CoordinateSystem coordinateSystem() const;
+    QString typeName() const override;
+    const Analitza::Expression &expression() const override;
+    QString iconName() const override;
+    Dimension spaceDimension() const override;
+    CoordinateSystem coordinateSystem() const override;
     QStringList errors() const;
     bool isCorrect() const;
 
@@ -73,7 +73,7 @@ public:
      * This is useful because sometimes the expression is modified when entered so that
      * we can plot it properly, this remembers what the user entered.
      */
-    QString display() const;
+    QString display() const override;
     void setDisplay(const QString& display);
     
     /** 

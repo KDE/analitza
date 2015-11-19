@@ -33,7 +33,7 @@ class ANALITZA_EXPORT MathMLPresentationLexer : public AbstractLexer
         MathMLPresentationLexer(const QString &source);
         
     private:
-        void getToken();
+        void getToken() override;
         QXmlStreamReader m_xml;
         QStack<QString> m_tags;
         QMap<QString, TOKEN> m_tokenTags;

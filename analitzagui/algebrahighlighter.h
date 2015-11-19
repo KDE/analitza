@@ -69,7 +69,7 @@ class ANALITZAGUI_EXPORT AlgebraHighlighter : public QSyntaxHighlighter
         int editingParameter() const;
         bool editingBounds() const;
     private:
-        void highlightBlock(const QString &text);
+        void highlightBlock(const QString &text) override;
         
         enum MMLtokEnum { //For mathml highlighting
             gt,    

@@ -142,18 +142,18 @@ class ANALITZAWIDGETS_EXPORT ExpressionEdit : public QPlainTextEdit
         
     protected:
         /** Inherited from QTextEdit, just deals with the menu. */
-        void contextMenuEvent(QContextMenuEvent * e);
+        void contextMenuEvent(QContextMenuEvent * e) override;
     
     private:
         bool returnPress();
         QString helpShow(const QString& funcname, int param, bool bounds, const Analitza::Variables* v) const;
         void helper(const QString&, const QPoint& p);
         QString lastWord(int);
-        void focusInEvent (QFocusEvent * event);
-        void focusOutEvent ( QFocusEvent * event );
+        void focusInEvent (QFocusEvent * event) override;
+        void focusOutEvent ( QFocusEvent * event ) override;
         
         void removenl();
-        void keyPressEvent(QKeyEvent * e);
+        void keyPressEvent(QKeyEvent * e) override;
         
         QLabel *m_helptip;
         AlgebraHighlighter *m_highlight;

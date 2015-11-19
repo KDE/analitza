@@ -43,9 +43,9 @@ class ANALITZA_EXPORT CustomObject : public Object
         explicit CustomObject(const QVariant& v, destructor f);
         virtual ~CustomObject();
         
-        virtual Object* copy() const;
-        virtual bool matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* found) const;
-        virtual QVariant accept(AbstractExpressionVisitor* exp) const;
+        virtual Object* copy() const override;
+        virtual bool matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* found) const override;
+        virtual QVariant accept(AbstractExpressionVisitor* exp) const override;
         
         bool operator==(const CustomObject& obj) const;
         QVariant value() const { return m_value; }

@@ -821,7 +821,7 @@ namespace Analitza
             
             ~TypeBoundingIterator() { delete list; }
             
-            virtual bool hasNext()
+            virtual bool hasNext() override
             {
                 bool cont=true;
                 for(int i=iterators.size()-1; cont && i>=0; i--) {
@@ -857,7 +857,7 @@ namespace Analitza
                 delete objul;
             }
             
-            bool hasNext()
+            bool hasNext() override
             {
                 bool cont=true;
                 for(int i=values.size()-1; cont && i>=0; i--) {

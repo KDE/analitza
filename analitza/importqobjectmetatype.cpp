@@ -43,7 +43,7 @@ class QObjectGet : public Analitza::FunctionDefinition
     public:
         QObjectGet(const QByteArray& name) : m_name(name) {}
     
-        virtual Expression operator()(const QList< Expression >& args)
+        virtual Expression operator()(const QList< Expression >& args) override
         {
             QObject* o=args.first().customObjectValue().value<QObject*>();
             QVariant v=o->property(m_name);
@@ -69,7 +69,7 @@ class QObjectSet : public Analitza::FunctionDefinition
     public:
         QObjectSet(const QByteArray& name) : m_name(name) {}
     
-        virtual Expression operator()(const QList< Expression >& args)
+        virtual Expression operator()(const QList< Expression >& args) override
         {
             QObject* o=args.first().customObjectValue().value<QObject*>();
             QVariant value=AnalitzaUtils::expressionToVariant(args.last());
@@ -97,7 +97,7 @@ class QObjectCastToParent : public Analitza::FunctionDefinition
         QObjectCastToParent(const QByteArray& name, const QByteArray& nameParent)
             : m_name(name), m_nameParent(nameParent) {}
         
-        virtual Expression operator()(const QList< Expression >& args)
+        virtual Expression operator()(const QList< Expression >& args) override
         {
             QObject* o=args.first().customObjectValue().value<QObject*>();
             return Expression::constructCustomObject(qVariantFromValue<QObject*>(o), 0);

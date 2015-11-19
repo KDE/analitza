@@ -33,22 +33,22 @@ namespace Analitza {
 }
 
 #define TYPE_NAME(name) \
-const QString typeName() const { return QCoreApplication::tr(TypeName()); } \
+const QString typeName() const override { return QCoreApplication::tr(TypeName()); } \
 static const char* TypeName() { return name; } 
 
 #define EXPRESSION_TYPE(name) \
 static Analitza::ExpressionType ExpressionType() { return Analitza::ExpressionType(name); }
 
 #define COORDDINATE_SYSTEM(name) \
-CoordinateSystem coordinateSystem() const { return CoordSystem(); } \
+CoordinateSystem coordinateSystem() const override { return CoordSystem(); }\
 static CoordinateSystem CoordSystem() { return name; }
 
 #define PARAMETERS(name) \
-QStringList parameters() const { return Parameters(); } \
+QStringList parameters() const override { return Parameters(); } \
 static QStringList Parameters() { return (name); }
 
 #define ICON_NAME(name) \
-QString iconName() const { return IconName(); } \
+QString iconName() const override { return IconName(); } \
 static QString IconName() { return (name); } 
 
 #define EXAMPLES(exs) \
@@ -63,7 +63,7 @@ public:
     AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v = 0);
     virtual ~AbstractFunctionGraph();
     
-    Dimension spaceDimension() const;
+    Dimension spaceDimension() const override;
 
     Analitza::Variables *variables() const;
     void setVariables(Analitza::Variables *variables);

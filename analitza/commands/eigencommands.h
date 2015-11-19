@@ -29,7 +29,7 @@ class Expression;
 class EigenvaluesCommand: public Analitza::FunctionDefinition
 {
 public:
-    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
 
     static const QString id;
     static const Analitza::ExpressionType type;
@@ -39,7 +39,7 @@ public:
 class EigenvectorsCommand: public Analitza::FunctionDefinition
 {
 public:
-    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args);
+    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
 
     static const QString id;
     static const Analitza::ExpressionType type;

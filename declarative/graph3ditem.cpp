@@ -111,12 +111,12 @@ public:
         m_plotter->initGL();
     }
 
-    void render() {
+    void render() override {
         m_plotter->drawPlots();
         m_plotter->window()->resetOpenGLState();
     }
 
-    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size)
+    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override
     {
         QOpenGLFramebufferObjectFormat format;
         format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);

@@ -42,8 +42,8 @@ public:
 
     //Own
 
-    QVector3D fromParametricArgs(double u, double v);
-    void update(const QVector3D& oppositecorner1, const QVector3D& oppositecorner2);
+    QVector3D fromParametricArgs(double u, double v) override;
+    void update(const QVector3D& oppositecorner1, const QVector3D& oppositecorner2) override;
 };
 
 QVector3D ParamSurf::fromParametricArgs(double u, double v)

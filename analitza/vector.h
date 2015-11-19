@@ -59,11 +59,11 @@ class ANALITZA_EXPORT Vector : public Object
         void setAt(int i, Object* o) { m_elements[i]=o; }
         QList<Object*> values() const { return m_elements; }
         
-        virtual QVariant accept(AbstractExpressionVisitor* e) const;
-        virtual bool isZero() const;
+        virtual QVariant accept(AbstractExpressionVisitor* e) const override;
+        virtual bool isZero() const override;
         
-        virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const;
-        Vector* copy() const;
+        virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const override;
+        Vector* copy() const override;
         bool operator==(const Vector& v) const;
         bool hasOnlyNumbers() const { return m_elements.isEmpty()? false : m_hasOnlyNumbers; }
         bool isStandardBasisVector() const;

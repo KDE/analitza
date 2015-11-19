@@ -61,8 +61,8 @@ public:
 
     //Own
 
-    QVector3D fromParametricArgs(double u, double v);
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
+    QVector3D fromParametricArgs(double u, double v) override;
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
 };
 
 QVector3D Fxy::fromParametricArgs(double u, double v)
@@ -101,8 +101,8 @@ public:
     ICON_NAME(QStringLiteral("newfunction3d"))
     EXAMPLES(QStringList(QStringLiteral("x+z")))
 
-    QVector3D fromParametricArgs(double u, double v);
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
+    QVector3D fromParametricArgs(double u, double v) override;
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
 };
 
 QVector3D Fxz::fromParametricArgs(double u, double v)
@@ -134,8 +134,8 @@ public:
     ICON_NAME(QStringLiteral("newfunction3d"))
     EXAMPLES(QStringList(QStringLiteral("y+z")))
 
-    QVector3D fromParametricArgs(double u, double v);
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
+    QVector3D fromParametricArgs(double u, double v) override;
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
 };
 
 QVector3D Fyz::fromParametricArgs(double u, double v)

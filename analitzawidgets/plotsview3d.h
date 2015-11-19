@@ -69,19 +69,19 @@ private Q_SLOTS:
     void removeFuncs(const QModelIndex &index,int,int);
 
 private:
-    virtual int currentPlot() const { return -1 ;}
-    virtual void modelChanged();
-    virtual void renderGL();
+    virtual int currentPlot() const override { return -1 ;}
+    virtual void modelChanged() override;
+    virtual void renderGL() override;
 
-    virtual void keyPressEvent(QKeyEvent*);
+    virtual void keyPressEvent(QKeyEvent*) override;
     
-    virtual void wheelEvent(QWheelEvent* ev);
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void wheelEvent(QWheelEvent* ev) override;
+    virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
     
-    virtual void paintGL();
-    virtual void initializeGL();
-    virtual void resizeGL(int width, int height);
+    virtual void paintGL() override;
+    virtual void initializeGL() override;
+    virtual void resizeGL(int width, int height) override;
     
     QItemSelectionModel* m_selection;
     

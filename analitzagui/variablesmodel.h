@@ -45,12 +45,12 @@ class ANALITZAGUI_EXPORT VariablesModel : public QAbstractTableModel
         VariablesModel(Analitza::Variables* v, QObject *parent=0);
         void setVariables(Analitza::Variables* v);
         
-        virtual QFlags< Qt::ItemFlag > flags(const QModelIndex& index) const;
-        bool setData(const QModelIndex& index, const QVariant& value, int role=Qt::EditRole);
-        QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const;
-        QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
-        int rowCount(const QModelIndex &parent) const;
-        int columnCount(const QModelIndex &) const { return 2; }
+        virtual QFlags< Qt::ItemFlag > flags(const QModelIndex& index) const override;
+        bool setData(const QModelIndex& index, const QVariant& value, int role=Qt::EditRole) override;
+        QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const override;
+        QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const override;
+        int rowCount(const QModelIndex &parent) const override;
+        int columnCount(const QModelIndex &) const override { return 2; }
         
         void insertVariable(const QString& name, const Analitza::Expression& value);
         void setEditable(bool ed) { m_editable=ed; }

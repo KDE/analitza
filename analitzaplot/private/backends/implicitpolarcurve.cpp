@@ -44,12 +44,12 @@ public:
     ICON_NAME(QStringLiteral("newpolar"))
     EXAMPLES(QStringList(QStringLiteral("r+p=0")))
 
-    void update(const QRectF& viewport);
+    void update(const QRectF& viewport) override;
     
-    QPair<QPointF, QString> image(const QPointF &mousepos);
-    QLineF tangent(const QPointF &mousepos) ;
+    QPair<QPointF, QString> image(const QPointF &mousepos) override;
+    QLineF tangent(const QPointF &mousepos) override ;
     
-    virtual double evalScalarField(double x, double y);
+    virtual double evalScalarField(double x, double y) override;
     
     Analitza::Cn *r;
     Analitza::Cn *p;

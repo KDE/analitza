@@ -34,9 +34,9 @@ class FunctionCartesian : public AbstractPlaneCurve
         FunctionCartesian(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
             : AbstractPlaneCurve(functionExpression, variables) { }
 
-        void update(const QRectF& viewport);
-        QPair<QPointF, QString> image(const QPointF &mousepos);
-        QLineF tangent(const QPointF &mousepos) ;
+        void update(const QRectF& viewport) override;
+        QPair<QPointF, QString> image(const QPointF &mousepos) override;
+        QLineF tangent(const QPointF &mousepos) override ;
         Analitza::Cn* arg() { return AbstractPlaneCurve::arg(parameters().at(0)); }
 
     protected:
@@ -86,10 +86,10 @@ public:
     ICON_NAME(QStringLiteral("newfunction"))
     EXAMPLES(QStringList(QStringLiteral("y")) << QStringLiteral("y*y") << QStringLiteral("y+4"))
     
-    void update(const QRectF& viewport);
+    void update(const QRectF& viewport) override;
     
-    QPair<QPointF, QString> image(const QPointF &mousepos);
-    QLineF tangent(const QPointF &mousepos);
+    QPair<QPointF, QString> image(const QPointF &mousepos) override;
+    QLineF tangent(const QPointF &mousepos) override;
     
     qreal resolution() const { return 5000; }
 };

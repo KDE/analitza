@@ -47,9 +47,9 @@ class ANALITZA_EXPORT Apply : public Object
         typedef QVector<Object*>::const_iterator const_iterator;
         typedef QVector<Object*>::iterator iterator;
         
-        virtual Apply* copy() const;
-        virtual bool matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* found) const;
-        virtual QVariant accept(AbstractExpressionVisitor* exp) const;
+        virtual Apply* copy() const override;
+        virtual bool matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* found) const override;
+        virtual QVariant accept(AbstractExpressionVisitor* exp) const override;
         const Operator& firstOperator() const { return m_op; }
         int countValues() const { return m_params.size(); }
         

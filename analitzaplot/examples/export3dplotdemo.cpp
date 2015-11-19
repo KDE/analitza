@@ -32,9 +32,9 @@ class ExportPlotter3D : public Plotter3D
 public:
     ExportPlotter3D(PlotsModel* m) : Plotter3D(m) {}
 
-    virtual int currentPlot() const { return -1; }
-    virtual void renderGL() {}
-    virtual void modelChanged() {}
+    virtual int currentPlot() const override { return -1; }
+    virtual void renderGL() override {}
+    virtual void modelChanged() override {}
 };
 
 int main(int argc, char** argv)

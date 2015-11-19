@@ -285,13 +285,13 @@ struct ObjectWalker : public AbstractExpressionVisitor
 {
     ObjectWalker(const QByteArray& pref) : ind(0), m_prefix(pref) {}
     
-    virtual QVariant visit(const None* var)
+    virtual QVariant visit(const None* var) override
     { qDebug() << prefix().constData() << "| none: " << var->toString(); return QString(); }
     
-    virtual QVariant visit(const Operator* root)
+    virtual QVariant visit(const Operator* root) override
     { qDebug() << prefix().constData() << "| operator: " << root->toString(); return QString(); }
     
-    virtual QVariant visit(const Ci* var)
+    virtual QVariant visit(const Ci* var) override
      {
         QString value;
         if(var->depth()>=0)
@@ -303,14 +303,14 @@ struct ObjectWalker : public AbstractExpressionVisitor
         return QString();
     }
     
-    virtual QVariant visit(const Cn* num)
+    virtual QVariant visit(const Cn* num) override
     { qDebug() << prefix().constData() << "| num: " << num->value() << " format: " << num->format(); return QString(); }
     
-    virtual QVariant visit(const CustomObject* c)
+    virtual QVariant visit(const CustomObject* c) override
     { qDebug() << prefix().constData() << "| custom " << c; return QString(); }
     
     
-    virtual QVariant visit(const Container* c)
+    virtual QVariant visit(const Container* c) override
     {
         qDebug() << prefix().constData() << "| cont: " << c->tagName();// << "=" << c->toString();
         ind++;
@@ -320,7 +320,7 @@ struct ObjectWalker : public AbstractExpressionVisitor
         return QString();
     }
     
-    virtual QVariant visit(const Apply* c)
+    virtual QVariant visit(const Apply* c) override
     {
         qDebug() << prefix().constData() << "| apply op:" << c->firstOperator().toString();
         ind++;
@@ -334,7 +334,7 @@ struct ObjectWalker : public AbstractExpressionVisitor
         return QString();
     }
     
-    virtual QVariant visit(const Vector* v)
+    virtual QVariant visit(const Vector* v) override
     {
         qDebug() << prefix().constData() << "| vector: " << v->size();
         ind++;
@@ -344,7 +344,7 @@ struct ObjectWalker : public AbstractExpressionVisitor
         return QString();
     }
     
-    virtual QVariant visit(const List* v)
+    virtual QVariant visit(const List* v) override
     {
         qDebug() << prefix().constData() << "| list: " << v->size();
         ind++;
@@ -354,7 +354,7 @@ struct ObjectWalker : public AbstractExpressionVisitor
         return QString();
     }
     
-    virtual QVariant visit(const Matrix* m) {
+    virtual QVariant visit(const Matrix* m) override {
         qDebug() << prefix().constData() << "| matrix: ";
         ind++;
         for(Matrix::const_iterator it=m->constBegin(); it!=m->constEnd(); ++it)
@@ -363,7 +363,7 @@ struct ObjectWalker : public AbstractExpressionVisitor
         return QString();
     }
     
-    virtual QVariant visit(const MatrixRow* m) {
+    virtual QVariant visit(const MatrixRow* m) override {
         qDebug() << prefix().constData() << "| matrix: ";
         ind++;
         for(MatrixRow::const_iterator it=m->constBegin(); it!=m->constEnd(); ++it)
@@ -382,7 +382,7 @@ struct ObjectWalker : public AbstractExpressionVisitor
     
     void visitNow(const Object* o) { if(o) o->accept(this); else qDebug() << prefix().constData() << "Null" ;}
     
-    QVariant result() const { return QString(); }
+    QVariant result() const override { return QString(); }
     
     int ind;
     QByteArray m_prefix;

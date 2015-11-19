@@ -45,9 +45,9 @@ public:
 
     //Own
     virtual ~ImplicitSurf() {  }
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
     
-    double evalScalarField(double x, double y, double z);
+    double evalScalarField(double x, double y, double z) override;
 };
 
 double ImplicitSurf::evalScalarField(double x, double y, double z)

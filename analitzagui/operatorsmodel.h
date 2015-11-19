@@ -49,10 +49,10 @@ class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
         /** Updates the variables information */
         void updateInformation();
         
-        QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const;
-        QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const;
-        int rowCount(const QModelIndex &parent=QModelIndex()) const;
-        int columnCount(const QModelIndex &parent=QModelIndex()) const;
+        QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const override;
+        QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const override;
+        int rowCount(const QModelIndex &parent=QModelIndex()) const override;
+        int columnCount(const QModelIndex &parent=QModelIndex()) const override;
         
         void setVariables(const Analitza::Variables* v) { m_vars=v; }
         QModelIndex indexForOperatorName(const QString& id) const;

@@ -38,19 +38,19 @@ class StringExpressionWriter : public AbstractExpressionVisitor
     public:
         StringExpressionWriter(const Object* o);
         
-        virtual QVariant visit(const None* var);
-        virtual QVariant visit(const Ci* var);
-        virtual QVariant visit(const Cn* var);
-        virtual QVariant visit(const Container* var);
-        virtual QVariant visit(const Operator* var);
-        virtual QVariant visit(const Vector* var);
-        virtual QVariant visit(const List* l);
-        virtual QVariant visit(const Matrix* m);
-        virtual QVariant visit(const MatrixRow* mr);
-        virtual QVariant visit(const Apply* a);
-        virtual QVariant visit(const CustomObject* c);
+        virtual QVariant visit(const None* var) override;
+        virtual QVariant visit(const Ci* var) override;
+        virtual QVariant visit(const Cn* var) override;
+        virtual QVariant visit(const Container* var) override;
+        virtual QVariant visit(const Operator* var) override;
+        virtual QVariant visit(const Vector* var) override;
+        virtual QVariant visit(const List* l) override;
+        virtual QVariant visit(const Matrix* m) override;
+        virtual QVariant visit(const MatrixRow* mr) override;
+        virtual QVariant visit(const Apply* a) override;
+        virtual QVariant visit(const CustomObject* c) override;
         
-        QVariant result() const { return m_result; }
+        QVariant result() const override { return m_result; }
         
         static int weight(const Analitza::Operator* op, int size, int pos);
         static const QMap<Operator::OperatorType, QString> s_operators;

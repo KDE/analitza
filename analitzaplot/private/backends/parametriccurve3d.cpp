@@ -38,7 +38,7 @@ public:
     ICON_NAME(QStringLiteral("newparametric3d"))
     EXAMPLES(QStringList(QStringLiteral("t->vector {t,t**2,t}")))
     
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
+    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
 
 private:
     int resolution() { return 5000; }

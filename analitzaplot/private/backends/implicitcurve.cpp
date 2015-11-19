@@ -51,13 +51,13 @@ public:
     ICON_NAME(QStringLiteral("newimplicit"))
     EXAMPLES(QStringList(QStringLiteral("x^3-y^2+2")) << QStringLiteral("y^2*(y^2-10)-x^2*(x^2-9)"))
 
-    void update(const QRectF& viewport);
+    void update(const QRectF& viewport) override;
 
-    QPair<QPointF, QString> image(const QPointF &mousepos);
-    QLineF tangent(const QPointF &mousepos) ;
+    QPair<QPointF, QString> image(const QPointF &mousepos) override;
+    QLineF tangent(const QPointF &mousepos) override ;
 
     //
-    virtual double evalScalarField(double x, double y);
+    virtual double evalScalarField(double x, double y) override;
 
 private:
     double getFValue(double xValue, double yValue);
