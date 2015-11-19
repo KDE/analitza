@@ -57,9 +57,9 @@ int main(int argc, char** argv)
             qDebug() << "Intervals should be specified as x=b..c";
         }
         bool ok;
-        double from = interval.mid(equalIdx+1, dotdotIdx-equalIdx).toDouble(&ok);
+        double from = interval.midRef(equalIdx+1, dotdotIdx-equalIdx).toDouble(&ok);
         Q_ASSERT(ok);
-        double to = interval.mid(dotdotIdx+2).toDouble(&ok);
+        double to = interval.midRef(dotdotIdx+2).toDouble(&ok);
         Q_ASSERT(ok);
         intervals[interval.left(equalIdx)] = qMakePair<double, double>(from, to);
     }
