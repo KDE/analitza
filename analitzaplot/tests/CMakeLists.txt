@@ -1,5 +1,3 @@
-add_definitions("-DSOURCE_DIR=\\\"${CMAKE_CURRENT_SOURCE_DIR}\\\"")
-
 ecm_add_tests(
     planecurvetest.cpp
     spacecurvetest.cpp
