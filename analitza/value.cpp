@@ -49,11 +49,11 @@ bool Cn::setValue(const QDomElement& val)
     m_format=Real;
     m_imaginaryPart=0;
     
-    if(tag == "cn"){ // a is a number
-        if(val.attribute("type", "integer") == "real") {
+    if(tag == QLatin1String("cn")){ // a is a number
+        if(val.attribute(QStringLiteral("type"), QStringLiteral("integer")) == QLatin1String("real")) {
             m_value= val.text().trimmed().toDouble(&wrong); //TODO: Base on double not implemented
-        } else if(val.attribute("type", "integer") == "integer"){
-            int base = val.attribute("base", "10").toInt(NULL, 10);
+        } else if(val.attribute(QStringLiteral("type"), QStringLiteral("integer")) == QLatin1String("integer")){
+            int base = val.attribute(QStringLiteral("base"), QStringLiteral("10")).toInt(NULL, 10);
             m_value= val.text().trimmed().toInt(&wrong, base);
             m_format=Integer;
         }
@@ -63,13 +63,13 @@ bool Cn::setValue(const QDomElement& val)
         else if(val.attribute("type") == "complex-cartesian")    { /*TODO: Not implemented */ }
         else if(val.attribute("type") == "complex-polar")    { /*TODO: Not implemented */ }
 #endif
-        else if(val.attribute("type") == "constant"){
-            if(val.text() == "&pi;")            { m_value = pi().m_value; }
-            else if (val.text() == "&ee;" || val.text() == "&ExponentialE;"){ m_value = e().m_value; }
-            else if (val.text() == "&true;")    { m_value=1.; m_format=Boolean; }
-            else if (val.text() == "&false;")    { m_value=0.; m_format=Boolean; }
-            else if (val.text() == "&gamma;")    { m_value = 0.5772156649; }
-            else if (val.text() == "&ImagniaryI;")    { m_value=0; m_imaginaryPart=1; m_format=Complex; }
+        else if(val.attribute(QStringLiteral("type")) == QLatin1String("constant")){
+            if(val.text() == QLatin1String("&pi;"))            { m_value = pi().m_value; }
+            else if (val.text() == QLatin1String("&ee;") || val.text() == QLatin1String("&ExponentialE;")){ m_value = e().m_value; }
+            else if (val.text() == QLatin1String("&true;"))    { m_value=1.; m_format=Boolean; }
+            else if (val.text() == QLatin1String("&false;"))    { m_value=0.; m_format=Boolean; }
+            else if (val.text() == QLatin1String("&gamma;"))    { m_value = 0.5772156649; }
+            else if (val.text() == QLatin1String("&ImagniaryI;"))    { m_value=0; m_imaginaryPart=1; m_format=Complex; }
 #if 0
             else if (val.text() == "&infin;")    ; //TODO: Not implemented  }
             else if (val.text() == "&NaN;")        ; //TODO: Not implemented  }*/

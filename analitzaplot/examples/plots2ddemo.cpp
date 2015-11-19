@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QCommandLineParser parser;
-    parser.setApplicationDescription("PlotView2DTest");
-    parser.addOption(QCommandLineOption("all-disabled", app.tr("marks all the plots as not visible")));
+    parser.setApplicationDescription(QStringLiteral("PlotView2DTest"));
+    parser.addOption(QCommandLineOption(QStringLiteral("all-disabled"), app.tr("marks all the plots as not visible")));
     parser.process(app);
 
     QMainWindow *mainWindow = new QMainWindow();
@@ -62,16 +62,16 @@ int main(int argc, char *argv[])
     view2d->setModel(model);
 
     PlotsFactory* s = PlotsFactory::self();
-    model->addPlot(s->requestPlot(Analitza::Expression("4*sin(2*q)"), Dim2D).create(Qt::cyan, "polar curv"));
-    model->addPlot(s->requestPlot(Analitza::Expression("p**2=cos(r)*(3*pi/4)**2"), Dim2D).create(Qt::yellow, "implicit polar curv"));
-    model->addPlot(s->requestPlot(Analitza::Expression("x->x*x"), Dim2D).create(Qt::magenta, "f(x)"));
-    model->addPlot(s->requestPlot(Analitza::Expression("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x"), Dim2D).create(Qt::green, "khipu"));
-    model->addPlot(s->requestPlot(Analitza::Expression("t->vector{t*t+1, t+2}"), Dim2D).create(Qt::blue, "param2d1"));
-    model->addPlot(s->requestPlot(Analitza::Expression("(x,y)->x*x-y*y"), Dim3D).create(Qt::red, "3D"));
+    model->addPlot(s->requestPlot(Analitza::Expression(QStringLiteral("4*sin(2*q)")), Dim2D).create(Qt::cyan, QStringLiteral("polar curv")));
+    model->addPlot(s->requestPlot(Analitza::Expression(QStringLiteral("p**2=cos(r)*(3*pi/4)**2")), Dim2D).create(Qt::yellow, QStringLiteral("implicit polar curv")));
+    model->addPlot(s->requestPlot(Analitza::Expression(QStringLiteral("x->x*x")), Dim2D).create(Qt::magenta, QStringLiteral("f(x)")));
+    model->addPlot(s->requestPlot(Analitza::Expression(QStringLiteral("(2*x+y)*(x^2+y^2)^4+2*y*(5*x^4+10*x^2*y^2-3*y^4)+y=2*x")), Dim2D).create(Qt::green, QStringLiteral("khipu")));
+    model->addPlot(s->requestPlot(Analitza::Expression(QStringLiteral("t->vector{t*t+1, t+2}")), Dim2D).create(Qt::blue, QStringLiteral("param2d1")));
+    model->addPlot(s->requestPlot(Analitza::Expression(QStringLiteral("(x,y)->x*x-y*y")), Dim3D).create(Qt::red, QStringLiteral("3D")));
 
     //END test calls
 
-    if(parser.isSet("all-disabled"))
+    if(parser.isSet(QStringLiteral("all-disabled")))
         for(int i=0; i<model->rowCount(); ++i)
             model->setData(model->index(i), false, Qt::CheckStateRole);
 

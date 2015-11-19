@@ -26,9 +26,9 @@
 MathMLPresentationLexer::MathMLPresentationLexer(const QString &source)
     : AbstractLexer(source), m_xml(source)
 {
-    m_tokenTags["mfrac"]=TOKEN(ExpressionTable::tDiv, 0, "divide");
-    m_tokenTags["msup"]=TOKEN(ExpressionTable::tPow, 0, "power");
-    m_tokenTags["msqrt"]=TOKEN(ExpressionTable::tPow, 0, "root");
+    m_tokenTags[QStringLiteral("mfrac")]=TOKEN(ExpressionTable::tDiv, 0, QStringLiteral("divide"));
+    m_tokenTags[QStringLiteral("msup")]=TOKEN(ExpressionTable::tPow, 0, QStringLiteral("power"));
+    m_tokenTags[QStringLiteral("msqrt")]=TOKEN(ExpressionTable::tPow, 0, QStringLiteral("root"));
 }
 
 void MathMLPresentationLexer::getToken()
@@ -61,26 +61,26 @@ void MathMLPresentationLexer::getToken()
                     if(m_tokens.last().type==ExpressionTable::tComa)
                         m_tokens.takeLast();
                     
-                    if(e=="msqrt") {
+                    if(e==QLatin1String("msqrt")) {
                         m_tokens.append(TOKEN(ExpressionTable::tComa, 0));
-                        m_tokens.append(TOKEN(ExpressionTable::tVal, 0, "<cn>2</cn>"));
+                        m_tokens.append(TOKEN(ExpressionTable::tVal, 0, QStringLiteral("<cn>2</cn>")));
                     }
                     m_tokens.append(TOKEN(ExpressionTable::tRpr, 0));
                 }
                 
                 m_tags.pop();
-                if(!m_tags.isEmpty() && m_tokenTags.contains(m_tags.top()) && e!="mo") {
+                if(!m_tags.isEmpty() && m_tokenTags.contains(m_tags.top()) && e!=QLatin1String("mo")) {
                     m_tokens.append(TOKEN(ExpressionTable::tComa, 0));
                 }
                 break;
             default:
-                if(m_tags.top()=="mn") {
+                if(m_tags.top()==QLatin1String("mn")) {
                     TOKEN ret(ExpressionTable::tVal, 0, QStringLiteral("<cn>%1</cn>").arg(m_xml.text().toString()));
                     m_tokens.append(ret);
-                } else if(m_tags.top()=="mi") {
+                } else if(m_tags.top()==QLatin1String("mi")) {
                     TOKEN ret(ExpressionTable::tId, 0, m_xml.text().toString());
                     m_tokens.append(ret);
-                } else if(m_tags.top()=="mo") {
+                } else if(m_tags.top()==QLatin1String("mo")) {
                     if(!m_tokens.isEmpty() && m_tokens.last().type==ExpressionTable::tComa)
                         m_tokens.takeLast();
                     
@@ -95,7 +95,7 @@ void MathMLPresentationLexer::getToken()
                     m_tokens.append(TOKEN(t, 0));
                 } else {
                     QString text = m_xml.text().toString().trimmed();
-                    if(text=="if" || text=="otherwise") {
+                    if(text==QLatin1String("if") || text==QLatin1String("otherwise")) {
                         m_tokens.append(TOKEN(ExpressionTable::tQm, 0, m_xml.text().toString()));
                     } else
                         qDebug() << "dunno" << text;

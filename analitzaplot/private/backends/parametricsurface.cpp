@@ -36,8 +36,8 @@ public:
                 Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(
                 Analitza::ExpressionType::Value), 3)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("u") << "v")
-    ICON_NAME("draw-donut")
+    PARAMETERS(QStringList(QStringLiteral("u")) << QStringLiteral("v"))
+    ICON_NAME(QStringLiteral("draw-donut"))
     EXAMPLES(QStringList())
 
     //Own
@@ -48,8 +48,8 @@ public:
 
 QVector3D ParamSurf::fromParametricArgs(double u, double v)
 {
-    arg("u")->setValue(u);
-    arg("v")->setValue(v);    
+    arg(QStringLiteral("u"))->setValue(u);
+    arg(QStringLiteral("v"))->setValue(v);    
     
     Analitza::Expression res = analyzer->calculateLambda();
     Analitza::Cn x=res.elementAt(0).toReal();

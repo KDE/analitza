@@ -49,13 +49,13 @@ QHash<QChar, int> initializeOperators()
 QHash<QString, int> initializeLongOperators()
 {
     QHash<QString, int> longOperators;
-    longOperators["->"]=ExpressionTable::tLambda;
-    longOperators[":="]=ExpressionTable::tAssig;
-    longOperators[".."]=ExpressionTable::tLimits;
-    longOperators["**"]=ExpressionTable::tPow;
-    longOperators["<="]=ExpressionTable::tLeq;
-    longOperators[">="]=ExpressionTable::tGeq;
-    longOperators["!="]=ExpressionTable::tNeq;
+    longOperators[QStringLiteral("->")]=ExpressionTable::tLambda;
+    longOperators[QStringLiteral(":=")]=ExpressionTable::tAssig;
+    longOperators[QStringLiteral("..")]=ExpressionTable::tLimits;
+    longOperators[QStringLiteral("**")]=ExpressionTable::tPow;
+    longOperators[QStringLiteral("<=")]=ExpressionTable::tLeq;
+    longOperators[QStringLiteral(">=")]=ExpressionTable::tGeq;
+    longOperators[QStringLiteral("!=")]=ExpressionTable::tNeq;
     return longOperators;
 }
 
@@ -77,7 +77,7 @@ void AbstractLexer::printQueue(const QQueue<TOKEN>& q) const
         else if(m_operators.values().contains(t.type)) res += m_operators.key(t.type);
         else res+= (t.val + ';' + QString::number(t.type) + error());
     }
-    qDebug() << q.count() << ":::" << "(" << res.join("|") << ")";
+    qDebug() << q.count() << ":::" << "(" << res.join(QStringLiteral("|")) << ")";
 }
 
 int AbstractLexer::lex()

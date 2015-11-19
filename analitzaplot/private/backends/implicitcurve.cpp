@@ -35,8 +35,6 @@
 #define M_PI           3.14159265358979323846
 #endif
 
-static const double pi=M_PI;
-
 using namespace Analitza;
 
 class FunctionImplicit : public AbstractPlaneCurve, public MarchingSquares
@@ -49,9 +47,9 @@ public:
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("x") << "y")
-    ICON_NAME("newimplicit")
-    EXAMPLES(QStringList("x^3-y^2+2") << "y^2*(y^2-10)-x^2*(x^2-9)")
+    PARAMETERS(QStringList(QStringLiteral("x")) << QStringLiteral("y"))
+    ICON_NAME(QStringLiteral("newimplicit"))
+    EXAMPLES(QStringList(QStringLiteral("x^3-y^2+2")) << QStringLiteral("y^2*(y^2-10)-x^2*(x^2-9)"))
 
     void update(const QRectF& viewport);
 
@@ -77,8 +75,8 @@ void FunctionImplicit::update(const QRectF& vp)
     
     if (hasIntervals())
     {
-        QPair<double, double> intervalx = interval("x");
-        QPair<double, double> intervaly = interval("y");
+        QPair<double, double> intervalx = interval(QStringLiteral("x"));
+        QPair<double, double> intervaly = interval(QStringLiteral("y"));
 
         minx = intervalx.first;
         maxx = intervalx.second;
@@ -223,8 +221,8 @@ QLineF FunctionImplicit::tangent(const QPointF &/*mousepos*/)
 
 double FunctionImplicit::getFValue(double xValue, double yValue)
 {
-    arg("x")->setValue(xValue);
-    arg("y")->setValue(yValue);
+    arg(QStringLiteral("x"))->setValue(xValue);
+    arg(QStringLiteral("y"))->setValue(yValue);
 
 //     return analyzer->calculateLambda().toReal().value();
     

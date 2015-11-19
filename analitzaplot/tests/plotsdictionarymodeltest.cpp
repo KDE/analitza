@@ -45,7 +45,7 @@ void PlotsDictionaryModelTest::testDictionaries()
     m.clear(); //we don't want the installed, we want the ones in the source directory
     QFileInfo f(QFINDTESTDATA("../data/plots/3Ds.plots"));
     QDir d(f.dir());
-    foreach(const QString& f, d.entryList(QStringList("*.plots"), QDir::Files)) {
+    foreach(const QString& f, d.entryList(QStringList(QLatin1String("*.plots")), QDir::Files)) {
         m.createDictionary(d.filePath(f));
     }
     

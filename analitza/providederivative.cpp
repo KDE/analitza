@@ -43,19 +43,19 @@ ProvideDerivative::ProvideDerivative(const QString& var) : var(var)
 {
     if(s_transformations.isEmpty()) {
         QMap<QString, Transformation::treeCheck> nat;
-        nat.insert("Real", independentTree);
+        nat.insert(QStringLiteral("Real"), independentTree);
         
-        s_transformations += Transformation(Transformation::parse("diff(x:x)"), Transformation::parse("1"));
-        s_transformations += Transformation(Transformation::parse("diff(sin(p):x)"), Transformation::parse("diff(p:x)*cos(p)"));
-        s_transformations += Transformation(Transformation::parse("diff(cos(p):x)"), Transformation::parse("diff(p:x)*(-sin p)"));
-        s_transformations += Transformation(Transformation::parse("diff(tan(p):x)"), Transformation::parse("diff(p:x)/(cos(p)**2)"));
-        s_transformations += Transformation(Transformation::parse("diff(f/g:x)"), Transformation::parse("(diff(f:x)*g-f*diff(g:x))/g**2"));
-        s_transformations += Transformation(Transformation::parse("diff(ln(p):x)"), Transformation::parse("diff(p:x)/p"));
-        s_transformations += Transformation(Transformation::parse("diff(log(p):x)"), Transformation::parse("diff(p:x)/(ln(10)*p)"));
-        s_transformations += Transformation(Transformation::parse("diff(f**Real:x)"), Transformation::parse("Real*diff(f:x)*f**(Real-1)"), nat); //this is just a simplification, should be deprecated
-        s_transformations += Transformation(Transformation::parse("diff(f**g:x)"), Transformation::parse("f**g*(diff(g:x)*ln f+g/f*diff(f:x))"));
-        s_transformations += Transformation(Transformation::parse("diff(abs(p):x)"), Transformation::parse("diff(p:x)*p/abs(p)"));
-        s_transformations += Transformation(Transformation::parse("diff(exp(p):x)"), Transformation::parse("diff(p:x)*exp(p)"));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(x:x)")), Transformation::parse(QStringLiteral("1")));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(sin(p):x)")), Transformation::parse(QStringLiteral("diff(p:x)*cos(p)")));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(cos(p):x)")), Transformation::parse(QStringLiteral("diff(p:x)*(-sin p)")));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(tan(p):x)")), Transformation::parse(QStringLiteral("diff(p:x)/(cos(p)**2)")));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(f/g:x)")), Transformation::parse(QStringLiteral("(diff(f:x)*g-f*diff(g:x))/g**2")));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(ln(p):x)")), Transformation::parse(QStringLiteral("diff(p:x)/p")));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(log(p):x)")), Transformation::parse(QStringLiteral("diff(p:x)/(ln(10)*p)")));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(f**Real:x)")), Transformation::parse(QStringLiteral("Real*diff(f:x)*f**(Real-1)")), nat); //this is just a simplification, should be deprecated
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(f**g:x)")), Transformation::parse(QStringLiteral("f**g*(diff(g:x)*ln f+g/f*diff(f:x))")));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(abs(p):x)")), Transformation::parse(QStringLiteral("diff(p:x)*p/abs(p)")));
+        s_transformations += Transformation(Transformation::parse(QStringLiteral("diff(exp(p):x)")), Transformation::parse(QStringLiteral("diff(p:x)*exp(p)")));
     }
 }
 

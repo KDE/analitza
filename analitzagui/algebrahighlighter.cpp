@@ -44,7 +44,7 @@ QString removeTags(const QString& in)
         else if(tag && in[i]=='>')
             tag=false;
         else if(!tag) {
-            if(in.mid(i,4)=="&gt;"){
+            if(in.mid(i,4)==QLatin1String("&gt;")){
                 out += '>';
                 i+=3;
             } else
@@ -113,9 +113,9 @@ void AlgebraHighlighter::highlightBlock(const QString &text)
                 }
                 i=k;
             }
-            else if(lasttag=="cn")
+            else if(lasttag==QLatin1String("cn"))
                 setFormat(i, 1, number);
-            else if(lasttag=="ci")
+            else if(lasttag==QLatin1String("ci"))
                 setFormat(i, 1, variable);
         }
         
@@ -130,7 +130,7 @@ void AlgebraHighlighter::highlightBlock(const QString &text)
             bool isBold=false;
             switch(lex.current.type){
                 case ExpressionTable::tVal:
-                    if(lex.current.val.mid(1,2)=="cn") //if it is a number
+                    if(lex.current.val.mid(1,2)==QLatin1String("cn")) //if it is a number
                         f=number;
                     else { //if it is a variable
                         if(a && a->variables()->contains(removeTags(lex.current.val)))

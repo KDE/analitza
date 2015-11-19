@@ -41,17 +41,17 @@ int main(int argc, char** argv)
 {
     QGuiApplication app(argc, argv);
     QCommandLineParser parser;
-    parser.addPositionalArgument("expression", QGuiApplication::translate("option description", "Expression to plot"), "expression...");
-    parser.addOption(QCommandLineOption("output", QGuiApplication::translate("option description", "Created filename"), "output.x3d"));
-    parser.addOption(QCommandLineOption("interval", QGuiApplication::translate("option description", "Specifies an interval"), "var=num..num"));
+    parser.addPositionalArgument(QStringLiteral("expression"), QGuiApplication::translate("option description", "Expression to plot"), QStringLiteral("expression..."));
+    parser.addOption(QCommandLineOption(QStringLiteral("output"), QGuiApplication::translate("option description", "Created filename"), QStringLiteral("output.x3d")));
+    parser.addOption(QCommandLineOption(QStringLiteral("interval"), QGuiApplication::translate("option description", "Specifies an interval"), QStringLiteral("var=num..num")));
 
     parser.process(app);
     PlotsModel model;
 
     QMap<QString, QPair<double,double> > intervals;
-    foreach(const QString& interval, parser.values("interval")) {
+    foreach(const QString& interval, parser.values(QLatin1String("interval"))) {
         int equalIdx = interval.indexOf('=');
-        int dotdotIdx = interval.indexOf("..");
+        int dotdotIdx = interval.indexOf(QStringLiteral(".."));
 
         if(equalIdx<0 || dotdotIdx<0) {
             qDebug() << "Intervals should be specified as x=b..c";
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
     }
     ExportPlotter3D plotter(&model);
     plotter.updatePlots(QModelIndex(), 0, model.rowCount()-1);
-    plotter.exportSurfaces(parser.value("output"));
+    plotter.exportSurfaces(parser.value(QStringLiteral("output")));
 
     return 0;
 }

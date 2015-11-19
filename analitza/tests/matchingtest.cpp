@@ -34,8 +34,8 @@ void MatchingTest::testCompareTrees_data()
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QStringList>("outputs");
     
-    QStringList outputs = QStringList() << "x" << "2+2";
-    QStringList outputsXY = QStringList() << "x" << "2+2" << "y" << "2+3";
+    QStringList outputs = QStringList() << QStringLiteral("x") << QStringLiteral("2+2");
+    QStringList outputsXY = QStringList() << QStringLiteral("x") << QStringLiteral("2+2") << QStringLiteral("y") << QStringLiteral("2+3");
     
     QTest::newRow("tree") << true << "x" << "2+2" << outputs;
     QTest::newRow("simple") << true << "sin(x)" << "sin(2+2)" << outputs;
@@ -44,11 +44,11 @@ void MatchingTest::testCompareTrees_data()
     QTest::newRow("vector") << true << "vector{x,sin(x),x}" << "vector{2+2,sin(2+2),2+2}" << outputs;
     QTest::newRow("multiple_wrong") << false << "sin(x)+sin(x)" << "sin(2+2)+sin(2+3)" << outputs;
     QTest::newRow("multiple_vars") << true  << "sin(x)+sin(y)" << "sin(2+2)+sin(2+3)" << outputsXY;
-    QTest::newRow("diff") << true  << "diff(x:x)" << "diff(x:x)" << (QStringList("x") << "x");
-    QTest::newRow("correct boundings") << false << "diff(x**2:x)" << "diff(x:x)" << (QStringList("x") << "x");
+    QTest::newRow("diff") << true  << "diff(x:x)" << "diff(x:x)" << (QStringList(QStringLiteral("x")) << QStringLiteral("x"));
+    QTest::newRow("correct boundings") << false << "diff(x**2:x)" << "diff(x:x)" << (QStringList(QStringLiteral("x")) << QStringLiteral("x"));
     
     QTest::newRow("bounded") << true  << "diff(sum(p : w=a..b))" << "diff(sum(x+x:x=0..10))" << (QStringList() <<
-        "p" << "x+x" << "w" << "x" << "a" << "0" << "b" << "10");
+        QStringLiteral("p") << QStringLiteral("x+x") << QStringLiteral("w") << QStringLiteral("x") << QStringLiteral("a") << QStringLiteral("0") << QStringLiteral("b") << QStringLiteral("10"));
 }
 
 void MatchingTest::testCompareTrees()

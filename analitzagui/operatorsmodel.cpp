@@ -123,12 +123,12 @@ QString OperatorsModel::sample(const Analitza::Operator& oper)
     QString sample = QCoreApplication::tr("%1(").arg(funcname);
     
     if(oper.nparams()<0) {
-        return QCoreApplication::tr("%1... parameters, ...%2)").arg(sample).arg(bounds);
+        return QCoreApplication::tr("%1... parameters, ...%2)").arg(sample, bounds);
     } else {
         for(int i=0; i<oper.nparams(); ++i) {
             sample += QCoreApplication::tr("par%1").arg(i+1);
             if(i<oper.nparams()-1)
-                sample += ", ";
+                sample += QLatin1String(", ");
         }
         return sample+bounds+')';
     }
@@ -368,127 +368,127 @@ QString OperatorsModel::example(const Analitza::Operator& o)
     
     switch(o.operatorType()) {
         case Operator::plus:
-            s="x+2";
+            s=QStringLiteral("x+2");
             break;
         case Operator::times:
-            s="x*2";
+            s=QStringLiteral("x*2");
             break;
         case Operator::divide:
-            s="x/2";
+            s=QStringLiteral("x/2");
             break;
         case Operator::minus:
-            s="x-2";
+            s=QStringLiteral("x-2");
             break;
         case Operator::power:
-            s="x^2";
+            s=QStringLiteral("x^2");
             break;
         case Operator::rem:
-            s="rem(x, 5)";
+            s=QStringLiteral("rem(x, 5)");
             break;
         case Operator::quotient:
-            s="quotient(x, 2)";
+            s=QStringLiteral("quotient(x, 2)");
             break;
         case Operator::factorof:
-            s="factorof(x, 3)";
+            s=QStringLiteral("factorof(x, 3)");
             break;
         case Operator::min:
-            s="min(x, 4)";
+            s=QStringLiteral("min(x, 4)");
             break;
         case Operator::max:
-            s="max(x, 4)";
+            s=QStringLiteral("max(x, 4)");
             break;
         case Operator::gt:
-            s="piecewise { x>4 ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { x>4 ? 1, ? 0 }");
             break;
         case Operator::lt:
-            s="piecewise { x<4 ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { x<4 ? 1, ? 0 }");
             break;
         case Operator::eq:
-            s="piecewise { x=4 ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { x=4 ? 1, ? 0 }");
             break;
         case Operator::approx:
-            s="piecewise { approx(x, 4) ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { approx(x, 4) ? 1, ? 0 }");
             break;
         case Operator::neq:
-            s="piecewise { x!=4 ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { x!=4 ? 1, ? 0 }");
             break;
         case Operator::geq:
-            s="piecewise { x>=4 ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { x>=4 ? 1, ? 0 }");
             break;
         case Operator::leq:
-            s="piecewise { x<=4 ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { x<=4 ? 1, ? 0 }");
             break;
         case Operator::_and:
-            s="piecewise { and(x>-2, x<2) ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { and(x>-2, x<2) ? 1, ? 0 }");
             break;
         case Operator::_or:
-            s="piecewise { or(x>2, x>-2) ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { or(x>2, x>-2) ? 1, ? 0 }");
             break;
         case Operator::_xor:
-            s="piecewise { xor(x>0, x<3) ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { xor(x>0, x<3) ? 1, ? 0 }");
             break;
         case Operator::implies:
-            s="piecewise { implies(x<0, x<3) ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { implies(x<0, x<3) ? 1, ? 0 }");
             break;
         case Operator::forall:
-            s="piecewise { forall(t:t@list { true, false, false }) ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { forall(t:t@list { true, false, false }) ? 1, ? 0 }");
             break;
         case Operator::exists:
-            s="piecewise { exists(t:t@list { true, false, false }) ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { exists(t:t@list { true, false, false }) ? 1, ? 0 }");
             break;
         case Operator::_not:
-            s="piecewise { not(x>0) ? 1, ? 0 }";
+            s=QStringLiteral("piecewise { not(x>0) ? 1, ? 0 }");
             break;
         case Operator::gcd:
-            s="gcd(x, 3)";
+            s=QStringLiteral("gcd(x, 3)");
             break;
         case Operator::lcm:
-            s="lcm(x, 4)";
+            s=QStringLiteral("lcm(x, 4)");
             break;
         case Operator::root:
-            s="root(x, 2)";
+            s=QStringLiteral("root(x, 2)");
             break;
         case Operator::selector:
-            s="scalarproduct(vector { 0, x }, vector { x, 0 })[1]";
+            s=QStringLiteral("scalarproduct(vector { 0, x }, vector { x, 0 })[1]");
             break;
         case Operator::sum:
-            s="x*sum(t*t:t=0..3)";
+            s=QStringLiteral("x*sum(t*t:t=0..3)");
             break;
         case Operator::product:
-            s="product(t+t:t=1..3)";
+            s=QStringLiteral("product(t+t:t=1..3)");
             break;
         case Operator::card:
-            s="card(vector { x, 1, 2 })";
+            s=QStringLiteral("card(vector { x, 1, 2 })");
             break;
         case Operator::scalarproduct:
-            s="scalarproduct(vector { 0, x }, vector { x, 0 })[1]";
+            s=QStringLiteral("scalarproduct(vector { 0, x }, vector { x, 0 })[1]");
             break;
         case Operator::diff:
-            s="(diff(x^2:x))(x)";
+            s=QStringLiteral("(diff(x^2:x))(x)");
             break;
         case Operator::_union:
-            s="union(list { 1, 2, 3 }, list { 4, 5, 6 })[rem(floor(x), 5)+3]";
+            s=QStringLiteral("union(list { 1, 2, 3 }, list { 4, 5, 6 })[rem(floor(x), 5)+3]");
             break;
         case Operator::map:
-            s="map(x->x+x, list { 1, 2, 3, 4, 5, 6 })[rem(floor(x), 5)+3]";
+            s=QStringLiteral("map(x->x+x, list { 1, 2, 3, 4, 5, 6 })[rem(floor(x), 5)+3]");
             break;
         case Operator::filter:
-            s="filter(u->rem(u, 2)=0, list { 2, 4, 3, 4, 8, 6 })[rem(floor(x), 5)+3]";
+            s=QStringLiteral("filter(u->rem(u, 2)=0, list { 2, 4, 3, 4, 8, 6 })[rem(floor(x), 5)+3]");
             break;
         case Operator::transpose:
-            s = "transpose(matrix { matrixrow { 1, 2, 3, 4, 5, 6 } })[rem(floor(x), 5)+3][1]";
+            s = QStringLiteral("transpose(matrix { matrixrow { 1, 2, 3, 4, 5, 6 } })[rem(floor(x), 5)+3][1]");
             break;
         case Operator::real:
-            s = "real(x*i)";
+            s = QStringLiteral("real(x*i)");
             break;
         case Operator::conjugate:
-            s = "conjugate(x*i)";
+            s = QStringLiteral("conjugate(x*i)");
             break;
         case Operator::arg:
-            s = "arg(x*i)";
+            s = QStringLiteral("arg(x*i)");
             break;
         case Operator::imaginary:
-            s = "imaginary(x*i)";
+            s = QStringLiteral("imaginary(x*i)");
             break;
         case Operator::factorial:
         case Operator::arcsech:

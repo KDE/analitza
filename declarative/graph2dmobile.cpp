@@ -78,10 +78,10 @@ void Graph2DMobile::modelChanged()
 {
     connect(model(), &QAbstractItemModel::dataChanged,
         this, &Graph2DMobile::updateFuncs);
-    connect(model(), SIGNAL( rowsInserted ( const QModelIndex &, int, int ) ),
-        this, SLOT(addFuncs(const QModelIndex&, int, int)));
-    connect(model(), SIGNAL( rowsRemoved ( const QModelIndex &, int, int ) ),
-        this, SLOT(removeFuncs(const QModelIndex&, int, int)));
+    connect(model(), &QAbstractItemModel::rowsInserted,
+        this, &Graph2DMobile::addFuncs);
+    connect(model(), &QAbstractItemModel::rowsRemoved,
+        this, &Graph2DMobile::removeFuncs);
 }
 
 void Graph2DMobile::addFuncs(const QModelIndex& parent, int start, int end) { updateFunctions(parent, start, end); }

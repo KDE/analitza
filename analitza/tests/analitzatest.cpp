@@ -44,7 +44,7 @@ QTEST_MAIN( AnalitzaTest )
 namespace QTest {
 
 template <> char *toString(const Analitza::Cn &cn)
-{ return qstrdup(QString::fromLatin1("Cn(%1)").arg(cn.toString()).toLatin1().constData()); }
+{ return qstrdup(QStringLiteral("Cn(%1)").arg(cn.toString()).toLatin1().constData()); }
 
 }
 
@@ -310,7 +310,7 @@ void AnalitzaTest::testDerivativeSimple()
     Expression e(expression, false);
     a->setExpression(e);
     QVERIFY(a->isCorrect());
-    a->setExpression(a->derivative("x"));
+    a->setExpression(a->derivative(QStringLiteral("x")));
     a->simplify();
     Expression deriv=a->expression();
     QCOMPARE(deriv.toString(), QString(QStringLiteral("x->")+result));
@@ -352,18 +352,18 @@ void AnalitzaTest::testCorrection_data()
     QStringList script;
     
     script.clear();
-    script << "f:=y->y*y";
-    script << "f(i)";
+    script << QStringLiteral("f:=y->y*y");
+    script << QStringLiteral("f(i)");
     QTest::newRow("from complex function") << script << "-1";
     
     script.clear();
-    script << "n:=2";
-    script << "n+1";
+    script << QStringLiteral("n:=2");
+    script << QStringLiteral("n+1");
     QTest::newRow("simple") << script << "3";
     
     script.clear();
-    script << "f:=x->x+2";
-    script << "f(1)";
+    script << QStringLiteral("f:=x->x+2");
+    script << QStringLiteral("f(1)");
     QTest::newRow("simple func") << script << "3";
     
 //     script.clear();
@@ -372,129 +372,129 @@ void AnalitzaTest::testCorrection_data()
 //     QTest::newRow("long func") << script << "3";
     
     script.clear();
-    script << "fact:=n->piecewise { n=1?1, ? n*fact(n-1) }";
-    script << "fact(5)";
+    script << QStringLiteral("fact:=n->piecewise { n=1?1, ? n*fact(n-1) }");
+    script << QStringLiteral("fact(5)");
     QTest::newRow("piecewise factorial") << script << "120";
     
     script.clear();
-    script << "fib:=n->piecewise { n=0?0, n=1?1, ?fib(n-1)+fib(n-2) }";
-    script << "fib(6)";
+    script << QStringLiteral("fib:=n->piecewise { n=0?0, n=1?1, ?fib(n-1)+fib(n-2) }");
+    script << QStringLiteral("fib(6)");
     QTest::newRow("piecewise fibonacci") << script << "8";
     
     script.clear();
-    script << "n:=vector{1}";
-    script << "func:=n->n+1";
-    script << "func(5)";
+    script << QStringLiteral("n:=vector{1}");
+    script << QStringLiteral("func:=n->n+1");
+    script << QStringLiteral("func(5)");
     QTest::newRow("simple function, shadowed parameter") << script << "6";
     
     script.clear();
-    script << "x:=3";
-    script << "x*sum(x : x=0..99)";
+    script << QStringLiteral("x:=3");
+    script << QStringLiteral("x*sum(x : x=0..99)");
     QTest::newRow("bounded scope") << script << "14850";
     
     script.clear();
-    script << "f:=diff(x^2:x)";
-    script << "f(3)";
+    script << QStringLiteral("f:=diff(x^2:x)");
+    script << QStringLiteral("f(3)");
     QTest::newRow("diff function") << script << "6";
     
     script.clear();
-    script << "fv:=vector{x->x, x->x+2}";
-    script << "(selector(1, fv))(1)";
-    script << "(selector(1, fv))(1)+(selector(2, fv))(2)";
+    script << QStringLiteral("fv:=vector{x->x, x->x+2}");
+    script << QStringLiteral("(selector(1, fv))(1)");
+    script << QStringLiteral("(selector(1, fv))(1)+(selector(2, fv))(2)");
     QTest::newRow("selector+lambda") << script << "5";
     
-    QTest::newRow("lists") << QStringList("union(list{0}, list{1}, list{2,3})") << "list { 0, 1, 2, 3 }";
+    QTest::newRow("lists") << QStringList(QStringLiteral("union(list{0}, list{1}, list{2,3})")) << "list { 0, 1, 2, 3 }";
     
     script.clear();
-    script <<    "valueTableRec := (func, antimages, i) ->"
+    script <<    QStringLiteral("valueTableRec := (func, antimages, i) ->"
                 "piecewise { i=0 ? list{}, "
                     "? union(list{func(selector(i, antimages))}, valueTableRec(func, antimages, i-1))"
-                " }"
-            << "valueTableRec(x->x**2, list{1,2,3}, 3)";
+                " }")
+            << QStringLiteral("valueTableRec(x->x**2, list{1,2,3}, 3)");
     QTest::newRow("yay") << script << "list { 9, 4, 1 }";
     
     script.clear();
-    script << "f:=ff->(y->ff(y))";
+    script << QStringLiteral("f:=ff->(y->ff(y))");
 //     script << "f(x->x**2)";
-    script << "(f(x->x**2))(2)";
+    script << QStringLiteral("(f(x->x**2))(2)");
     QTest::newRow("yay2") << script << "4";
     
     script.clear();
-    script <<    "findroot:=(der, dee)->piecewise { dee>1 ?"
-                "piecewise { rem(der, dee)=0 ? true, ? findroot(der, dee-1)  }, ? false }";
-    script << "isprime:=n->not(findroot(n, floor(root(n, 2))))";
-    script << "primes:=(from, to)->piecewise { or(from<0, to<0, from>=to)? list{},"
-                " isprime(from)? union(list{from}, primes(from+1, to)), ? primes(from+1, to)}";
-    script << "primes(1, 25)";
+    script <<    QStringLiteral("findroot:=(der, dee)->piecewise { dee>1 ?"
+                "piecewise { rem(der, dee)=0 ? true, ? findroot(der, dee-1)  }, ? false }");
+    script << QStringLiteral("isprime:=n->not(findroot(n, floor(root(n, 2))))");
+    script << QStringLiteral("primes:=(from, to)->piecewise { or(from<0, to<0, from>=to)? list{},"
+                " isprime(from)? union(list{from}, primes(from+1, to)), ? primes(from+1, to)}");
+    script << QStringLiteral("primes(1, 25)");
     QTest::newRow("primes") << script << "list { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23 }";
     
     script.clear();
-    script << "f:=v->sum(i**2 : i@v)";
-    script << "f(list{1,2,3})";
-    script << "f(vector{1,2,3})";
+    script << QStringLiteral("f:=v->sum(i**2 : i@v)");
+    script << QStringLiteral("f(list{1,2,3})");
+    script << QStringLiteral("f(vector{1,2,3})");
     QTest::newRow("sum.list") << script << "14";
     
     script.clear();
-    script << "f:=o->vector { x->x+o, x->x*o }";
-    script << "vector { selector(1, f(3)), selector(1, f(4)) }";
+    script << QStringLiteral("f:=o->vector { x->x+o, x->x*o }");
+    script << QStringLiteral("vector { selector(1, f(3)), selector(1, f(4)) }");
     QTest::newRow("lambda") << script << "vector { x->x+3, x->x+4 }";
     
     script.clear();
-    script << "comb:=(n, i)->factorial(n)/(factorial(i)*factorial(n-i))"
-           << "p:=10^-2"
-           << "pu:=n->sum(  comb(n,i)*p^(n-i)*(1-p)*sum(x:x=0..i)  :i=0..(floor((n-1)/2)))"
-           << "pu(5)";
+    script << QStringLiteral("comb:=(n, i)->factorial(n)/(factorial(i)*factorial(n-i))")
+           << QStringLiteral("p:=10^-2")
+           << QStringLiteral("pu:=n->sum(  comb(n,i)*p^(n-i)*(1-p)*sum(x:x=0..i)  :i=0..(floor((n-1)/2)))")
+           << QStringLiteral("pu(5)");
     
     QTest::newRow("bug241047") << script << "2.97495e-05";
     
     script.clear();
-    script << "comb:=(n, i)->factorial(n)/(factorial(i)*factorial(n-i))"
-           << "probability:=(place, case, totalprobability,"
+    script << QStringLiteral("comb:=(n, i)->factorial(n)/(factorial(i)*factorial(n-i))")
+           << QStringLiteral("probability:=(place, case, totalprobability,"
                     "positive, negative)->(comb(place,"
-                    "case)*(positive/totalprobability)^case)*(negative/totalprobability)^(place-case)"
-           << "sum(probability(5, t, 6, 1, 5):t=0..5)";
+                    "case)*(positive/totalprobability)^case)*(negative/totalprobability)^(place-case)")
+           << QStringLiteral("sum(probability(5, t, 6, 1, 5):t=0..5)");
     
     QTest::newRow("probabilities") << script << "1";
     
     script.clear();
     script
-            << "rtail:=(elems,i)->piecewise { card(elems)>=i ? union(list{elems[i]}, rtail(elems, i+1)), ? list{} }"
-            << "tail:=elems->rtail(elems,2)"
-            << "foldr:=(f,z,elems)->piecewise {card(elems)=0 ? z, ? f(elems[1], foldr(f, z, tail(elems))) }"
-            << "sumsum:=elems->foldr((x,y)->x+y, 0, elems)"
-            << "sumsum(list{1,2,3})";
+            << QStringLiteral("rtail:=(elems,i)->piecewise { card(elems)>=i ? union(list{elems[i]}, rtail(elems, i+1)), ? list{} }")
+            << QStringLiteral("tail:=elems->rtail(elems,2)")
+            << QStringLiteral("foldr:=(f,z,elems)->piecewise {card(elems)=0 ? z, ? f(elems[1], foldr(f, z, tail(elems))) }")
+            << QStringLiteral("sumsum:=elems->foldr((x,y)->x+y, 0, elems)")
+            << QStringLiteral("sumsum(list{1,2,3})");
     QTest::newRow("sumsum") << script << "6";
     
     script.clear();
     script
-            << "rtail:=(elems,i)->piecewise { card(elems)>=i ? union(list{elems[i]}, rtail(elems, i+1)), ? list{} }"
-            << "tail:=elems->rtail(elems,2)"
-            << "foldr:=(f,z,elems)->piecewise {card(elems)=0 ? z, ? f(elems[1], foldr(f, z, tail(elems))) }"
-            << "cfilter:=(condition,elems)->foldr((v,pred)->piecewise{ condition(v) ? union(list{v}, pred), ? pred }, list{}, elems)"
+            << QStringLiteral("rtail:=(elems,i)->piecewise { card(elems)>=i ? union(list{elems[i]}, rtail(elems, i+1)), ? list{} }")
+            << QStringLiteral("tail:=elems->rtail(elems,2)")
+            << QStringLiteral("foldr:=(f,z,elems)->piecewise {card(elems)=0 ? z, ? f(elems[1], foldr(f, z, tail(elems))) }")
+            << QStringLiteral("cfilter:=(condition,elems)->foldr((v,pred)->piecewise{ condition(v) ? union(list{v}, pred), ? pred }, list{}, elems)")
             
-            << "cfilter(x->x>3, list{1,2,3,4,5})";
+            << QStringLiteral("cfilter(x->x>3, list{1,2,3,4,5})");
     QTest::newRow("custom filter") << script << "list { 4, 5 }";
     
     script.clear();
     script
-            << "pmap:=(func, list, i)->piecewise { i>=card(list)+1 ? list {}, ? union(list { func(selector(i, list)) }, pmap(func, list, i+1)) }"
-            << "cmap:=(func, list)->pmap(func, list, 1)"
-            << "refImport:=x->x>3"
-            << "importedRef:=imports->cmap(refImport, imports)"
+            << QStringLiteral("pmap:=(func, list, i)->piecewise { i>=card(list)+1 ? list {}, ? union(list { func(selector(i, list)) }, pmap(func, list, i+1)) }")
+            << QStringLiteral("cmap:=(func, list)->pmap(func, list, 1)")
+            << QStringLiteral("refImport:=x->x>3")
+            << QStringLiteral("importedRef:=imports->cmap(refImport, imports)")
             
-            << "importedRef(list{1,2,3,4,5})";
+            << QStringLiteral("importedRef(list{1,2,3,4,5})");
     QTest::newRow("custom map") << script << "list { false, false, false, true, true }";
     
     script.clear();
     script
-            << "f:=v->sum(i**2 : i@v)"
-            << "g:=(u, v)->f(u)+f(v)"
-            << "g(vector{1,2}, vector{3,4})";
+            << QStringLiteral("f:=v->sum(i**2 : i@v)")
+            << QStringLiteral("g:=(u, v)->f(u)+f(v)")
+            << QStringLiteral("g(vector{1,2}, vector{3,4})");
     QTest::newRow("aaa") << script << "30";
     
     script.clear();
-    script << "f := (w,zz) -> list{zz} | acs->forall(a<w : a@acs)";
-    script << "f(2,3)";
+    script << QStringLiteral("f := (w,zz) -> list{zz} | acs->forall(a<w : a@acs)");
+    script << QStringLiteral("f(2,3)");
     QTest::newRow("lambda1") << script << "false";
 }
 
@@ -534,8 +534,8 @@ void AnalitzaTest::testCorrection()
     }
     QCOMPARE(evalResult.toString(), result);
 
-    QString script = expression.join("\n");
-    script+="\n\n\n";
+    QString script = expression.join(QStringLiteral("\n"));
+    script+=QLatin1String("\n\n\n");
     QTextStream stream(&script);
     a->importScript(&stream);
     QVERIFY(a->isCorrect());
@@ -565,35 +565,35 @@ void AnalitzaTest::testTypeUncorrection()
 void AnalitzaTest::testTypeUncorrection_data()
 {
     QTest::addColumn<QStringList>("expression");
-    QTest::newRow("vect+sin") << QStringList("3+sin(vector{3,4,2})");
-    QTest::newRow("scalar+card") << QStringList("card(3)");
-    QTest::newRow("wrong operation") << QStringList("lcm(vector{0}, vector{0})");
+    QTest::newRow("vect+sin") << QStringList(QStringLiteral("3+sin(vector{3,4,2})"));
+    QTest::newRow("scalar+card") << QStringList(QStringLiteral("card(3)"));
+    QTest::newRow("wrong operation") << QStringList(QStringLiteral("lcm(vector{0}, vector{0})"));
     
     QStringList script;
-    script << "x:=3";
-    script << "x(3)";
+    script << QStringLiteral("x:=3");
+    script << QStringLiteral("x(3)");
     QTest::newRow("value call") << script;
     
     script.clear();
-    script << "f:=(x,y)->x*y";
-    script << "f(3)";
+    script << QStringLiteral("f:=(x,y)->x*y");
+    script << QStringLiteral("f(3)");
     QTest::newRow("call missing parameter") << script;
 }
 
 void AnalitzaTest::testUncorrection_data()
 {
     QTest::addColumn<QStringList>("expression");
-    QTest::newRow("summatory with uncorrect downlimit1") << QStringList("sum(x : x=y..3)");
-    QTest::newRow("summatory with uncorrect downlimit2") << QStringList("sum(x : x=x..3)");
-    QTest::newRow("wrong sum") << QStringList("sum(x : x=10..0)");
+    QTest::newRow("summatory with uncorrect downlimit1") << QStringList(QStringLiteral("sum(x : x=y..3)"));
+    QTest::newRow("summatory with uncorrect downlimit2") << QStringList(QStringLiteral("sum(x : x=x..3)"));
+    QTest::newRow("wrong sum") << QStringList(QStringLiteral("sum(x : x=10..0)"));
     
     QStringList script;
-    script << "a:=b";
-    script << "b:=a";
+    script << QStringLiteral("a:=b");
+    script << QStringLiteral("b:=a");
     QTest::newRow("var dependency cycle") << script;
     
     
-    QTest::newRow("unsupported diff") << QStringList("diff(arccos(x):x)");
+    QTest::newRow("unsupported diff") << QStringList(QStringLiteral("diff(arccos(x):x)"));
 }
 
 void AnalitzaTest::testUncorrection()
@@ -714,13 +714,13 @@ void AnalitzaTest::testEvaluate_data()
     QTest::addColumn<QString>("result");
     
     QStringList script;
-    script << "f:=x->x";
-    script << "f(x)";
+    script << QStringLiteral("f:=x->x");
+    script << QStringLiteral("f(x)");
     QTest::newRow("function parameter") << script << "x";
     
     script.clear();
-    script << "pu:=n->sum(p**i:i=0..floor(n))";
-    script << "pu(3)";
+    script << QStringLiteral("pu:=n->sum(p**i:i=0..floor(n))");
+    script << QStringLiteral("pu(3)");
     QTest::newRow("calls") << script << "sum(p^i:i=0..3)";
 }
 
@@ -864,7 +864,7 @@ void AnalitzaTest::testOperators()
                                             << new Cn(1.)
                                             << new Cn(-1.)
                                             << new Cn(-.5)
-                                            << new Ci("x")
+                                            << new Ci(QStringLiteral("x"))
                                             << v; //lets try to make it crash
     QList<int> params;
     if(o.nparams()<0)
@@ -890,10 +890,10 @@ void AnalitzaTest::testOperators()
                 Container *bvar=new Container(Container::bvar);
                 apply->appendBranch(bvar);
                 
-                QList<Object*> bvarValues=QList<Object*>() << new Ci("x");
+                QList<Object*> bvarValues=QList<Object*>() << new Ci(QStringLiteral("x"));
                 foreach(Object* obvar, bvarValues) {
                     Analitza::Apply* cc=(Analitza::Apply*) apply->copy();
-                    Container* bvar=(Container*) cc->bvarCi().first();
+                    Container* bvar=(Container*) cc->bvarCi().at(0);
                     bvar->appendBranch(obvar->copy());
                     
                     Expression e1(cc);
@@ -901,7 +901,7 @@ void AnalitzaTest::testOperators()
                     
                     a->calculate();
                     a->evaluate();
-                    a->derivative("x");
+                    a->derivative(QStringLiteral("x"));
                 }
                 qDeleteAll(bvarValues);
             } else {
@@ -909,7 +909,7 @@ void AnalitzaTest::testOperators()
                 a->setExpression(e);
                 a->calculate();
                 a->evaluate();
-                a->derivative("x");
+                a->derivative(QStringLiteral("x"));
             }
         }
     }
@@ -937,7 +937,7 @@ void AnalitzaTest::testOperators()
             a->calculate();
             a->evaluate();
             a->simplify();
-            a->derivative("x");
+            a->derivative(QStringLiteral("x"));
             
             Cn* vv = new Cn(v);
             QVector<Object*> stack;

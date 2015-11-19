@@ -58,8 +58,8 @@ QVariant VariablesModel::data(const QModelIndex & index, int role) const
         } else
             ret=m_vars->value(key)->toString();
     } else if(role==Qt::WhatsThisRole && index.column()==0) {
-        ret = QStringLiteral("%1:=%2").arg(index.sibling(index.row(), 0).data(Qt::DisplayRole).toString())
-                               .arg(index.sibling(index.row(), 1).data(Qt::DisplayRole).toString());
+        ret = QStringLiteral("%1:=%2").arg(index.sibling(index.row(), 0).data(Qt::DisplayRole).toString(),
+                                           index.sibling(index.row(), 1).data(Qt::DisplayRole).toString());
     }
     return ret;
 }

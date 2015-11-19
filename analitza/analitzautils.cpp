@@ -297,7 +297,7 @@ struct ObjectWalker : public AbstractExpressionVisitor
         if(var->depth()>=0)
             value="stack("+QString::number(var->depth())+')';
         else
-            value="symbols";
+            value=QStringLiteral("symbols");
         
         qDebug() << prefix().constData() << "| variable: " << var->name() << "depth:" << var->depth() << "Val:" << value;
         return QString();
@@ -624,9 +624,9 @@ int countDepth(int depth, const Object* tree)
 
 QString generateDependencyGraph(const Variables* v)
 {
-    QStringList special=QStringList() << "check";
+    QStringList special=QStringList() << QStringLiteral("check");
     QString ret;
-    ret += "digraph G {\n";
+    ret += QLatin1String("digraph G {\n");
     
     foreach(const QString& n, special) {
         ret += '\t'+n+" [shape=doublecircle];\n";
@@ -645,7 +645,7 @@ QString generateDependencyGraph(const Variables* v)
         }
     }
     
-    ret += "}\n";
+    ret += QLatin1String("}\n");
     return ret;
 }
 

@@ -43,8 +43,8 @@ void MathMLPresentationTest::testSimple_data()
     QTest::addColumn<QString>("input");
     QTest::addColumn<AbstractLexer::TOKEN*>("output");
     
-    QTest::newRow("1 value") << "<mn>123</mn>" << new AbstractLexer::TOKEN(ExpressionTable::tVal, 0, "<cn>123</cn>");
-    QTest::newRow("1 variable") << "<mi>x</mi>" << new AbstractLexer::TOKEN(ExpressionTable::tId, 0, "x");
+    QTest::newRow("1 value") << "<mn>123</mn>" << new AbstractLexer::TOKEN(ExpressionTable::tVal, 0, QStringLiteral("<cn>123</cn>"));
+    QTest::newRow("1 variable") << "<mi>x</mi>" << new AbstractLexer::TOKEN(ExpressionTable::tId, 0, QStringLiteral("x"));
 //     QTest::newRow("1 variable pi") << "<mi>&pi;</mi>" << new AbstractLexer::TOKEN(ExpressionTable::tVal, 0, "<ci>&pi;</ci>");
     
     QTest::newRow("1 operator") << "<mo>+</mo>" << new AbstractLexer::TOKEN(ExpressionTable::tAdd, 0, QString());
@@ -333,7 +333,7 @@ void MathMLPresentationTest::testToPresentation_data()
 
 void MathMLPresentationTest::testToPresentation()
 {
-    if(QString(QTest::currentDataTag())=="piecewise" || QString(QTest::currentDataTag())=="normal function")
+    if(QLatin1String(QTest::currentDataTag())==QLatin1String("piecewise") || QLatin1String(QTest::currentDataTag())==QLatin1String("normal function"))
         QSKIP("need to find time to fix piecewise and normal function");
     QFETCH(QString, mml_pr);
     QFETCH(QString, expression);

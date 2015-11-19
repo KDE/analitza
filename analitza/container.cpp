@@ -47,16 +47,16 @@ char Container::m_typeStr[][20] = {
 QMap<QString, Container::ContainerType> createNameToType()
 {
     QMap<QString, Container::ContainerType> ret;
-    ret["declare"]=Container::declare;
-    ret["math"]=Container::math;
-    ret["lambda"]=Container::lambda;
-    ret["bvar"]=Container::bvar;
-    ret["uplimit"]=Container::uplimit;
-    ret["downlimit"]=Container::downlimit;
-    ret["piecewise"]=Container::piecewise;
-    ret["piece"]=Container::piece;
-    ret["otherwise"]=Container::otherwise;
-    ret["domainofapplication"]=Container::domainofapplication;
+    ret[QStringLiteral("declare")]=Container::declare;
+    ret[QStringLiteral("math")]=Container::math;
+    ret[QStringLiteral("lambda")]=Container::lambda;
+    ret[QStringLiteral("bvar")]=Container::bvar;
+    ret[QStringLiteral("uplimit")]=Container::uplimit;
+    ret[QStringLiteral("downlimit")]=Container::downlimit;
+    ret[QStringLiteral("piecewise")]=Container::piecewise;
+    ret[QStringLiteral("piece")]=Container::piece;
+    ret[QStringLiteral("otherwise")]=Container::otherwise;
+    ret[QStringLiteral("domainofapplication")]=Container::domainofapplication;
     
     return ret;
 }

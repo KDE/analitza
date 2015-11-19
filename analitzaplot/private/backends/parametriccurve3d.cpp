@@ -34,9 +34,9 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Vector,
                                             Analitza::ExpressionType(Analitza::ExpressionType::Value), 3)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("t"))
-    ICON_NAME("newparametric3d")
-    EXAMPLES(QStringList("t->vector {t,t**2,t}"))
+    PARAMETERS(QStringList(QStringLiteral("t")))
+    ICON_NAME(QStringLiteral("newparametric3d"))
+    EXAMPLES(QStringList(QStringLiteral("t->vector {t,t**2,t}")))
     
     void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
 
@@ -49,7 +49,7 @@ void ParametricCurve3D::update(const QVector3D & /*oppositecorner1*/, const QVec
 {
     QPair< double, double > theInterval;
     if(hasIntervals())
-         theInterval = interval("t");
+         theInterval = interval(QStringLiteral("t"));
     else
         theInterval = qMakePair(-3.1415*5, 3.1415*5);
     double dlimit=theInterval.first;
@@ -63,11 +63,11 @@ void ParametricCurve3D::update(const QVector3D & /*oppositecorner1*/, const QVec
     
     QVector3D curp;
     
-    arg("t")->setValue(dlimit);
+    arg(QStringLiteral("t"))->setValue(dlimit);
     Expression res;
     
     for(double t=dlimit; t<ulimit; t+=inv_res) {
-        arg("t")->setValue(t);
+        arg(QStringLiteral("t"))->setValue(t);
         res=analyzer->calculateLambda();
         
         Cn x=res.elementAt(0).toReal();

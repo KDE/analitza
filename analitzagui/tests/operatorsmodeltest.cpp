@@ -82,7 +82,7 @@ void OperatorsModelTest::testExamples()
     
     a.simplify();
     if(!a.isCorrect()) qDebug() << example << "2. error" << a.errors();// QVERIFY(a.isCorrect());
-    a.variables()->modify("x", 0.1);
+    a.variables()->modify(QStringLiteral("x"), 0.1);
     a.setExpression(ex);
     if(!a.isCorrect()) qDebug() << example << "2.1 type error" << ex.toString() << a.errors();// QVERIFY(a.isCorrect());
     

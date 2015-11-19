@@ -57,10 +57,10 @@ static QString removeTags(const QString& in)
         else if(tag && in[i]=='>')
             tag=false;
         else if(!tag) {
-            if(in.mid(i,6)=="&quot;"){
+            if(in.mid(i,6)==QLatin1String("&quot;")){
                 out += '"';
                 i+=5;
-            } else if(in.mid(i,4)=="&gt;"){
+            } else if(in.mid(i,4)==QLatin1String("&gt;")){
                 out += '>';
                 i+=3;
             } else

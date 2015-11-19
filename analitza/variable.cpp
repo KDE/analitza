@@ -69,5 +69,5 @@ bool Ci::matches(const Object* exp, QMap<QString, const Object*>* found) const
 
 QString Ci::toHtml() const
 {
-    return QStringLiteral("<span class='%1'>%2</span>").arg(m_function ? "func" : "var").arg(m_name);
+    return QStringLiteral("<span class='%1'>%2</span>").arg(m_function ? QStringLiteral("func") : QStringLiteral("var"), m_name);
 }

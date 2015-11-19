@@ -29,7 +29,6 @@ using namespace Analitza;
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
 #endif
-static const double pi=M_PI;
 
 class FunctionParametric : public AbstractPlaneCurve
 {
@@ -41,9 +40,9 @@ public:
             .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
             .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Vector, Analitza::ExpressionType(Analitza::ExpressionType::Value), 2)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("t"))
-    ICON_NAME("newparametric")
-    EXAMPLES(QStringList("t->vector {t,t**2}"))
+    PARAMETERS(QStringList(QStringLiteral("t")))
+    ICON_NAME(QStringLiteral("newparametric"))
+    EXAMPLES(QStringList(QStringLiteral("t->vector {t,t**2}")))
     
     void update(const QRectF& viewport);
     
@@ -59,14 +58,14 @@ private:
 
 FunctionParametric::FunctionParametric(const Expression& e, Variables* v): AbstractPlaneCurve(e, v)
 {
-    t = arg("t");
+    t = arg(QStringLiteral("t"));
 }
 
 void FunctionParametric::update(const QRectF& viewport)
 {
     QPair< double, double > theInterval;
     if(hasIntervals())
-         theInterval = interval("t");
+         theInterval = interval(QStringLiteral("t"));
     else
         theInterval = qMakePair(-3.1415*5, 3.1415*5);
     double dlimit=theInterval.first;
@@ -87,7 +86,7 @@ void FunctionParametric::update(const QRectF& viewport)
     int i = 0;
     
     for(double t=dlimit; t<ulimit; t+=inv_res, ++i) {
-        arg("t")->setValue(t);
+        arg(QStringLiteral("t"))->setValue(t);
         Expression res=analyzer->calculateLambda();
         
         Cn x=res.elementAt(0).toReal();
@@ -102,7 +101,7 @@ void FunctionParametric::update(const QRectF& viewport)
 QPair<QPointF, QString> FunctionParametric::image(const QPointF &point)
 {
     
-    arg("t")->setValue(findTValueForPoint(point).value());
+    arg(QStringLiteral("t"))->setValue(findTValueForPoint(point).value());
     
     Expression res=analyzer->calculateLambda();
     Analitza::Cn comp1 = res.elementAt(0).toReal();

@@ -77,7 +77,7 @@ void SurfaceTest::testIncorrect()
 
     PlotBuilder rp = PlotsFactory::self()->requestPlot(Expression(input), Dim3D);
     if(rp.canDraw()) {
-        FunctionGraph* f = rp.create(Qt::red, "lala");
+        FunctionGraph* f = rp.create(Qt::red, QStringLiteral("lala"));
         Surface* surface = dynamic_cast<Surface*>(f);
         QVERIFY(surface);
         

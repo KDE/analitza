@@ -39,8 +39,8 @@ public:
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("x") << "y" << "z")
-    ICON_NAME("draw-square-inverted-corners")
+    PARAMETERS(QStringList(QStringLiteral("x")) << QStringLiteral("y") << QStringLiteral("z"))
+    ICON_NAME(QStringLiteral("draw-square-inverted-corners"))
     EXAMPLES(QStringList())
 
     //Own
@@ -52,9 +52,9 @@ public:
 
 double ImplicitSurf::evalScalarField(double x, double y, double z)
 {
-    arg("x")->setValue(x);
-    arg("y")->setValue(y);
-    arg("z")->setValue(z);
+    arg(QStringLiteral("x"))->setValue(x);
+    arg(QStringLiteral("y"))->setValue(y);
+    arg(QStringLiteral("z"))->setValue(z);
     
     return analyzer->calculateLambda().toReal().value();
 }
@@ -80,9 +80,9 @@ void ImplicitSurf::update(const QVector3D & /*oppositecorner1*/, const QVector3D
     
     if (hasIntervals())
     {
-        QPair<double, double> intervalx = interval("x");
-        QPair<double, double> intervaly = interval("y");
-        QPair<double, double> intervalz = interval("z");
+        QPair<double, double> intervalx = interval(QStringLiteral("x"));
+        QPair<double, double> intervaly = interval(QStringLiteral("y"));
+        QPair<double, double> intervalz = interval(QStringLiteral("z"));
 
         spaceLimits.minX = intervalx.first;
         spaceLimits.maxX = intervalx.second;

@@ -46,17 +46,17 @@ QStringList StringExpressionWriter::allValues(T it, const T& itEnd, AbstractExpr
 QMap<Operator::OperatorType, QString> initOperators()
 {
     QMap<Operator::OperatorType, QString> ret;
-    ret.insert(Operator::plus, "+");
-    ret.insert(Operator::times, "*");
-    ret.insert(Operator::divide, "/");
-    ret.insert(Operator::eq, "=");
-    ret.insert(Operator::neq, "!=");
-    ret.insert(Operator::lt, "<");
-    ret.insert(Operator::leq, "<=");
-    ret.insert(Operator::gt, ">");
-    ret.insert(Operator::geq, ">=");
-    ret.insert(Operator::power, "^");
-    ret.insert(Operator::minus, "-");
+    ret.insert(Operator::plus, QStringLiteral("+"));
+    ret.insert(Operator::times, QStringLiteral("*"));
+    ret.insert(Operator::divide, QStringLiteral("/"));
+    ret.insert(Operator::eq, QStringLiteral("="));
+    ret.insert(Operator::neq, QStringLiteral("!="));
+    ret.insert(Operator::lt, QStringLiteral("<"));
+    ret.insert(Operator::leq, QStringLiteral("<="));
+    ret.insert(Operator::gt, QStringLiteral(">"));
+    ret.insert(Operator::geq, QStringLiteral(">="));
+    ret.insert(Operator::power, QStringLiteral("^"));
+    ret.insert(Operator::minus, QStringLiteral("-"));
     return ret;
 }
 
@@ -119,15 +119,15 @@ QVariant StringExpressionWriter::visit(const Cn* var)
         if (var->complexValue().imag() != 1 && var->complexValue().imag() != -1) {
             if (qAbs(var->complexValue().imag()) > MIN_PRINTABLE_VALUE) {
                 if (!realiszero && var->complexValue().imag()>0.)
-                    realpart += QLatin1String("+");
+                    realpart += QLatin1Char('+');
                 imagpart = QString::number(var->complexValue().imag(), 'g', 12);
-                imagpart += QLatin1String("*i");
+                imagpart += QStringLiteral("*i");
             }
         } else  {
             if (var->complexValue().imag() == 1)
-                imagpart = QLatin1String("i");
+                imagpart = QStringLiteral("i");
             else if (var->complexValue().imag() == -1)
-                imagpart = QLatin1String("-i");
+                imagpart = QStringLiteral("-i");
         }
         
         return QVariant::fromValue<QString>(realpart+imagpart);
@@ -177,7 +177,7 @@ QVariant StringExpressionWriter::visit(const Analitza::Apply* a)
         bounds += '=';
         if(a->dlimit())
             bounds += a->dlimit()->accept(this).toString();
-        bounds += "..";
+        bounds += QLatin1String("..");
         if(a->ulimit())
             bounds += a->ulimit()->accept(this).toString();
     }
@@ -218,7 +218,7 @@ QVariant StringExpressionWriter::visit(const Analitza::Apply* a)
         if(a->m_params.first()->type()!=Object::variable)
             n='('+n+')';
         
-        toret += QStringLiteral("%1(%2)").arg(n).arg(ret.join(", "));
+        toret += QStringLiteral("%1(%2)").arg(n, ret.join(QStringLiteral(", ")));
     } else if(op.operatorType()==Operator::selector) {
         if(a->m_params.last()->isApply()) {
             const Apply* a1=static_cast<const Apply*>(a->m_params.last());
@@ -226,7 +226,7 @@ QVariant StringExpressionWriter::visit(const Analitza::Apply* a)
                 ret.last()='('+ret.last()+')';
         }
         
-        toret += QStringLiteral("%1[%2]").arg(ret.last()).arg(ret.first());
+        toret += QStringLiteral("%1[%2]").arg(ret.last(), ret.first());
     } else if(ret.count()>1 && s_operators.contains(op.operatorType())) {
         toret += ret.join(s_operators.value(op.operatorType()));
     } else if(ret.count()==1 && op.operatorType()==Operator::minus)
@@ -235,13 +235,13 @@ QVariant StringExpressionWriter::visit(const Analitza::Apply* a)
         QString bounding;
         if(!bounds.isEmpty() || !bvars.isEmpty()) {
             if(bvars.count()!=1) bounding +='(';
-            bounding += bvars.join(", ");
+            bounding += bvars.join(QStringLiteral(", "));
             if(bvars.count()!=1) bounding +=')';
             
             bounding = ':'+bounding +bounds;
         }
             
-        toret += QStringLiteral("%1(%2%3)").arg(op.accept(this).toString()).arg(ret.join(", ")).arg(bounding);
+        toret += QStringLiteral("%1(%2%3)").arg(op.accept(this).toString(), ret.join(QStringLiteral(", ")), bounding);
     }
     
     return toret;
@@ -254,25 +254,25 @@ QVariant StringExpressionWriter::visit(const Container* var)
     QString toret;
     switch(var->containerType()) {
         case Container::declare:
-            toret += ret.join(":=");
+            toret += ret.join(QStringLiteral(":="));
             break;
         case Container::lambda: {
             QString last=ret.takeLast();
             QStringList bvars = var->bvarStrings();
             if(bvars.count()!=1) toret +='(';
-            toret += bvars.join(", ");
+            toret += bvars.join(QStringLiteral(", "));
             if(bvars.count()!=1) toret +=')';
             toret += "->" + last;
         }    break;
         case Container::math:
-            toret += ret.join("; ");
+            toret += ret.join(QStringLiteral("; "));
             break;
         case Container::uplimit: //x->(n1..n2) is put at the same time
         case Container::downlimit:
             break;
         case Container::bvar:
             if(ret.count()>1) toret += '(';
-            toret += ret.join(", ");
+            toret += ret.join(QStringLiteral(", "));
             if(ret.count()>1) toret += ')';
             break;
         case Container::piece:
@@ -282,7 +282,7 @@ QVariant StringExpressionWriter::visit(const Container* var)
             toret += "? "+ret[0];
             break;
         default:
-            toret += var->tagName()+" { "+ret.join(", ")+" }";
+            toret += var->tagName()+" { "+ret.join(QStringLiteral(", "))+" }";
             break;
     }
     return toret;

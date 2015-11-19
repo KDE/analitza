@@ -1003,9 +1003,9 @@ void MarchingCubes::add_triangle( const int* trig, char n, int v12 )
 {
     int    tv[3] ;
 
-    for( register int t = 0 ; t < 3*n ; t++ )
+    for( int t = 0 ; t < 3*n ; t++ )
     {
-        register int t3 = t % 3;
+        int t3 = t % 3;
         switch( trig[t] )
         {
                 case  0 :

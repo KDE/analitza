@@ -137,23 +137,23 @@ QString ExpressionType::toString() const
 {
     QString ret;
     switch(m_type) {
-        case ExpressionType::Value:ret="num";  break;
-        case ExpressionType::Char: ret="char"; break;
-        case ExpressionType::Bool: ret="bool"; break;
+        case ExpressionType::Value:ret=QStringLiteral("num");  break;
+        case ExpressionType::Char: ret=QStringLiteral("char"); break;
+        case ExpressionType::Bool: ret=QStringLiteral("bool"); break;
         case ExpressionType::List:
-            ret='['+typesToString(m_contained).join("$")+']';
+            ret='['+typesToString(m_contained).join(QStringLiteral("$"))+']';
             break;
         case ExpressionType::Vector:
-            ret='<'+typesToString(m_contained).join("$")+','+QString::number(m_size)+'>';
+            ret='<'+typesToString(m_contained).join(QStringLiteral("$"))+','+QString::number(m_size)+'>';
             break;
         case ExpressionType::Matrix:
             ret=QStringLiteral("{%1,%2x%3}").arg(contained().contained().toString()).arg(m_size).arg(contained().size());
             break;
         case ExpressionType::Error:
-            ret="err";
+            ret=QStringLiteral("err");
             break;
         case ExpressionType::Lambda:
-            ret=typesToString(m_contained).join(" -> ");
+            ret=typesToString(m_contained).join(QStringLiteral(" -> "));
             break;
         case ExpressionType::Any: {
 //             ret=QString(m_any, '*');
@@ -165,7 +165,7 @@ QString ExpressionType::toString() const
 //             ret+=QString::number(m_any);
         }    break;
         case ExpressionType::Many:
-            ret=/*"{"+*/typesToString(m_contained).join(" | ")/*+"}"*/;
+            ret=/*"{"+*/typesToString(m_contained).join(QStringLiteral(" | "))/*+"}"*/;
             break;
         case ExpressionType::Object:
             ret="obj:"+m_objectName;
@@ -209,10 +209,10 @@ bool ExpressionType::operator==(const ExpressionType& t) const
     ret=ret            && t.m_contained==m_contained;
     
     if(!ret && t.type()==ExpressionType::Many && t.alternatives().size()==1)
-        ret=*this==t.alternatives().first();
+        ret=*this==t.alternatives().at(0);
     
     if(!ret &&   type()==ExpressionType::Many &&   alternatives().size()==1)
-        ret=t==alternatives().first();
+        ret=t==alternatives().at(0);
     
     ret &= m_objectName==t.m_objectName;
 //     qDebug() << "++++++++" << t << *this << ret;
@@ -574,7 +574,7 @@ ExpressionType ExpressionType::minimumType(const ExpressionType& t1, const Expre
     else if(t1.type()==ExpressionType::Lambda && t2.type()==ExpressionType::Lambda && t1.parameters().size()==t2.parameters().size()) {
         ExpressionType t(ExpressionType::Lambda);
         for(int i=0; i<t1.parameters().size(); i++) {
-            t.addParameter(minimumType(t1.parameters()[i], t2.parameters()[i]));
+            t.addParameter(minimumType(t1.parameters().at(i), t2.parameters().at(i)));
         }
         if(!t.isError()) {
             t.addAssumptions(t1.assumptions());
@@ -681,7 +681,7 @@ QMap<int, ExpressionType> ExpressionType::computeStars(const QMap<int, Expressio
                 break;
             Q_ASSERT(type.parameters().size()==candidate.parameters().size());
             for(int i=0; i<type.parameters().size(); i++) {
-                ret=computeStars(ret, candidate.parameters()[i], type.parameters()[i]);
+                ret=computeStars(ret, candidate.parameters().at(i), type.parameters().at(i));
             }
             break;
         case ExpressionType::Many:

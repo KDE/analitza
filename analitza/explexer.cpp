@@ -30,11 +30,11 @@ ExpLexer::ExpLexer(const QString &source)
 QString ExpLexer::escape(const QString& str)
 {
     QString ret=str;
-    ret.replace('&', "&amp;");
-    ret.replace('<', "&lt;");
-    ret.replace('>', "&gt;");
-    ret.replace('\'', "&apos;");
-    ret.replace('"', "&quot;");
+    ret.replace('&', QLatin1String("&amp;"));
+    ret.replace('<', QLatin1String("&lt;"));
+    ret.replace('>', QLatin1String("&gt;"));
+    ret.replace('\'', QLatin1String("&apos;"));
+    ret.replace('"', QLatin1String("&quot;"));
     return ret;
 }
 
@@ -98,11 +98,11 @@ void ExpLexer::getToken()
         
         QString attrib;
         if(!m_realRx.cap(2).isEmpty() || !m_realRx.cap(3).isEmpty() || !m_realRx.cap(4).isEmpty())
-            attrib+=" type='real'";
+            attrib+=QLatin1String(" type='real'");
         
         Q_ASSERT(!ret.val.isEmpty());
         
-        ret.val = QStringLiteral("<cn%1>%2</cn>").arg(attrib).arg(ret.val);
+        ret.val = QStringLiteral("<cn%1>%2</cn>").arg(attrib, ret.val);
         ret.type= ExpressionTable::tVal;
         
         pos += m_realRx.matchedLength();

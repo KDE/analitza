@@ -33,64 +33,64 @@ class Frp : public AbstractSurface/*, static class? better macros FooClass*/
 public:
     explicit Frp(const Analitza::Expression& e);
     Frp(const Analitza::Expression& e, Analitza::Variables* v);
-    
+
     TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Cylindrical Surface z=F(r: Radial, p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cylindrical)
-    PARAMETERS(QStringList("r") << "p")
-    ICON_NAME("newcylindrical")
+    PARAMETERS(QStringList(QStringLiteral("r")) << QStringLiteral("p"))
+    ICON_NAME(QStringLiteral("newcylindrical"))
     EXAMPLES(QStringList())
 
     //Own
     virtual bool setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max);
     virtual bool setInterval(const QString& argname, double min, double max);
-    
+
     QVector3D fromParametricArgs(double u, double v);
     void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2viewport);
-    
-    
+
+
 };
 
 bool Frp::setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max)
 {
-    
+
     Analitza::Analyzer *intervalsAnalizer = new Analitza::Analyzer(analyzer->variables());
 
     QPair<Analitza::Expression, Analitza::Expression> ival = interval(argname, true);
-    
+
     double min_val = ival.first.toReal().value();
     double max_val = ival.second.toReal().value();
 
     delete intervalsAnalizer;
-    
+
     if (min_val<0 || max_val < 0) // el radio es distancia por tanto es positivo, el angulo va de 0 hasta +inf
-        return false; 
-    
+        return false;
+
     if (argname == QStringLiteral("p") && max_val >= 2*M_PI)
         return false;
-    
+
     return AbstractFunctionGraph::setInterval(argname, min, max);
 }
 
 bool Frp::setInterval(const QString& argname, double min, double max)
 {
     if (min<0 || max < 0) // el radio es distancia por tanto es positivo, el angulo va de 0 hasta +inf
-        return false; 
-    
+        return false;
+
     if (argname == QStringLiteral("p") && max >= 2*M_PI)
         return false;
-    
+
 
     return AbstractFunctionGraph::setInterval(argname, min, max);
 }
 
 Frp::Frp(const Analitza::Expression& e): AbstractSurface(e)
 {
-    setInterval("r", 0,5);
-    setInterval("p", 0, M_PI);
+    setInterval(QStringLiteral("r"), 0,5);
+    setInterval(QStringLiteral("p"), 0, M_PI);
 }
 
 Frp::Frp(const Analitza::Expression& e, Analitza::Variables*): AbstractSurface(e)
@@ -98,12 +98,12 @@ Frp::Frp(const Analitza::Expression& e, Analitza::Variables*): AbstractSurface(e
 
 QVector3D Frp::fromParametricArgs(double r, double p)
 {
-    
-    arg("r")->setValue(r);
-    arg("p")->setValue(p);    
+
+    arg(QStringLiteral("r"))->setValue(r);
+    arg(QStringLiteral("p"))->setValue(p);
 
     double h = analyzer->calculateLambda().toReal().value();
-    
+
     return cylindricalToCartesian(r,p,h);
 }
 

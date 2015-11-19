@@ -98,9 +98,6 @@ void Vector::appendBranch(Object* o)
     }
     
     if (o->type() == Object::value) {
-        const double val = static_cast<const Cn*>(o)->value();
-        const bool isone = (val == 1);
-        
         //puse && !m_nonZeroTaken sin testing
         if (m_nonZeros > 1 && !m_nonZeroTaken) {
             m_isDiagonalRowVector = false;

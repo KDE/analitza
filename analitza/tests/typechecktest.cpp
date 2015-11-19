@@ -32,26 +32,26 @@ TypeCheckTest::TypeCheckTest(QObject* parent)
     : QObject(parent)
     , v(new Analitza::Variables)
 {
-    v->modify("fnum", Expression("x->3"));
-    v->modify("fplus", Expression("x->x+x"));
-    v->modify("tovector", Expression("x->vector{x,x}"));
-    v->modify("fnull", Expression("x->x"));
-    v->modify("number", Expression("3"));
-    v->modify("fwrong", Expression("x->piecewise { 1>2 ? fwrong(x), ?fwrong(x+1) }"));
+    v->modify(QStringLiteral("fnum"), Expression(QStringLiteral("x->3")));
+    v->modify(QStringLiteral("fplus"), Expression(QStringLiteral("x->x+x")));
+    v->modify(QStringLiteral("tovector"), Expression(QStringLiteral("x->vector{x,x}")));
+    v->modify(QStringLiteral("fnull"), Expression(QStringLiteral("x->x")));
+    v->modify(QStringLiteral("number"), Expression(QStringLiteral("3")));
+    v->modify(QStringLiteral("fwrong"), Expression(QStringLiteral("x->piecewise { 1>2 ? fwrong(x), ?fwrong(x+1) }")));
 //     v->modify("frec", Expression("x->piecewise { 3>3? frec(x-1), ? 1}"));
-    v->modify("frec", Expression("x->piecewise { frec(cos(x))>3? 2, ? 1}"));
-    v->modify("fact", Expression("n->piecewise { n=1?1, ? n*fact(n-1) }"));
-    v->modify("golambda", Expression("(func, param)->func(param)"));
-    v->modify("gonum", Expression("func->func(1, 2)")); // (num -> num -> a) -> a
-    v->modify("valid", Expression("a->true")); // (num -> num -> a) -> a
+    v->modify(QStringLiteral("frec"), Expression(QStringLiteral("x->piecewise { frec(cos(x))>3? 2, ? 1}")));
+    v->modify(QStringLiteral("fact"), Expression(QStringLiteral("n->piecewise { n=1?1, ? n*fact(n-1) }")));
+    v->modify(QStringLiteral("golambda"), Expression(QStringLiteral("(func, param)->func(param)")));
+    v->modify(QStringLiteral("gonum"), Expression(QStringLiteral("func->func(1, 2)"))); // (num -> num -> a) -> a
+    v->modify(QStringLiteral("valid"), Expression(QStringLiteral("a->true"))); // (num -> num -> a) -> a
     
-    v->modify("fib", Expression("n->piecewise { eq(n,0)?0, eq(n,1)?1, ?fib(n-1)+fib(n-2) }"));
-    v->modify("fv", Expression("vector{x->sin(x), x->cos(x)}"));
-    v->modify("rtail", Expression("(elems,i)->piecewise { card(elems)>=i ? union(list{elems[i]}, rtail(elems, i+1)), ? list{} }"));
-    v->modify("tail", Expression("elems->rtail(elems,1)"));
-    v->modify("foldr", Expression("(f,z,elems)->piecewise {card(elems)=0 ? z, ? f(elems[1], foldr(f, z, tail(elems))) }"));
-    v->modify("foldl", Expression("(f,z,xs)->piecewise{ card(xs)<=0? z, ? foldl(f, f(z, xs[1]), tail(xs)) }"));
-    v->modify("twoargs", Expression("(x,y)->sin(x)+y"));
+    v->modify(QStringLiteral("fib"), Expression(QStringLiteral("n->piecewise { eq(n,0)?0, eq(n,1)?1, ?fib(n-1)+fib(n-2) }")));
+    v->modify(QStringLiteral("fv"), Expression(QStringLiteral("vector{x->sin(x), x->cos(x)}")));
+    v->modify(QStringLiteral("rtail"), Expression(QStringLiteral("(elems,i)->piecewise { card(elems)>=i ? union(list{elems[i]}, rtail(elems, i+1)), ? list{} }")));
+    v->modify(QStringLiteral("tail"), Expression(QStringLiteral("elems->rtail(elems,1)")));
+    v->modify(QStringLiteral("foldr"), Expression(QStringLiteral("(f,z,elems)->piecewise {card(elems)=0 ? z, ? f(elems[1], foldr(f, z, tail(elems))) }")));
+    v->modify(QStringLiteral("foldl"), Expression(QStringLiteral("(f,z,xs)->piecewise{ card(xs)<=0? z, ? foldl(f, f(z, xs[1]), tail(xs)) }")));
+    v->modify(QStringLiteral("twoargs"), Expression(QStringLiteral("(x,y)->sin(x)+y")));
 }
 
 TypeCheckTest::~TypeCheckTest()
@@ -298,7 +298,7 @@ class FooCommand : public Analitza::FunctionDefinition
 {
     virtual Expression operator()(const QList< Expression >&)
     {
-        return Expression("matrix { matrixrow { 8, 9, 0},matrixrow { 7, 5, 3},matrixrow { 1, 2, 10}}");
+        return Expression(QStringLiteral("matrix { matrixrow { 8, 9, 0},matrixrow { 7, 5, 3},matrixrow { 1, 2, 10}}"));
     }
 };
 
@@ -308,7 +308,7 @@ void TypeCheckTest::testVariadic()
     QFETCH(ExpressionType, type);
     
     Analyzer a(v);
-    a.builtinMethods()->insertFunction("foocommand", type, new FooCommand);
+    a.builtinMethods()->insertFunction(QStringLiteral("foocommand"), type, new FooCommand);
     
     a.setExpression(Expression(expression));
     

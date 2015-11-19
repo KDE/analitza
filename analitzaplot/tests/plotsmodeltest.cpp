@@ -84,7 +84,7 @@ void PlotsModelTest::testAppend()
     PlotBuilder plot = PlotsFactory::self()->requestPlot(exp, Dim2D);
     QVERIFY(plot.canDraw());
     
-    PlaneCurve* item = dynamic_cast<PlaneCurve*>(plot.create(Qt::red, "hola"));
+    PlaneCurve* item = dynamic_cast<PlaneCurve*>(plot.create(Qt::red, QStringLiteral("hola")));
     m_model->addPlot(item);
     if(!item->isCorrect())
         qDebug() << "errors:" << item->errors();
@@ -102,9 +102,9 @@ void PlotsModelTest::testAppend()
 
 void PlotsModelTest::testDelete()
 {
-    Expression exp("x*x+y*y+z*z=9");
+    Expression exp(QStringLiteral("x*x+y*y+z*z=9"));
     PlotBuilder plot = PlotsFactory::self()->requestPlot(exp, Dim3D);
-    m_model->addPlot(plot.create(Qt::red, "item to be deleted"));
+    m_model->addPlot(plot.create(Qt::red, QStringLiteral("item to be deleted")));
 
     int size = m_model->rowCount();
 
@@ -120,7 +120,7 @@ void PlotsModelTest::testExamples2D()
         PlotBuilder plot = PlotsFactory::self()->requestPlot(Analitza::Expression(example), Dim2D);
         QVERIFY(plot.canDraw());
         
-        PlaneCurve* curve = dynamic_cast<PlaneCurve*>(plot.create(Qt::black, "lalala"));
+        PlaneCurve* curve = dynamic_cast<PlaneCurve*>(plot.create(Qt::black, QStringLiteral("lalala")));
         QVERIFY(curve);
         curve->update(QRectF(-5,-5,10,10)); // the viewport is in world coordinates (not screen coordinates)
         QVERIFY(curve->isCorrect());

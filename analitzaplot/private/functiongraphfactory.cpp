@@ -86,7 +86,7 @@ bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, PlotItemConstuct
     
     QString id = QString::number((int)dim)+"|"+
                  QString::number((int)coordinateSystemFunction)+"|"+
-                 arguments.join(",");
+                 arguments.join(QStringLiteral(","));
                  
                 
     Q_ASSERT(!contains(id)); // verificar que no se registren los mismos tipos

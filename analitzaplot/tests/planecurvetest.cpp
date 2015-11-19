@@ -67,7 +67,7 @@ void PlaneCurveTest::testCorrect()
 
     QVERIFY(pb.canDraw());
     if(pb.canDraw()) {
-        FunctionGraph* item = pb.create(Qt::green, "hola");
+        FunctionGraph* item = pb.create(Qt::green, QStringLiteral("hola"));
         QVERIFY(item);
         QVERIFY(item->isCorrect());
         PlaneCurve* curve = dynamic_cast<PlaneCurve*>(item);
@@ -107,7 +107,7 @@ void PlaneCurveTest::testIncorrect()
 
     PlotBuilder rp = PlotsFactory::self()->requestPlot(Expression(input), Dim2D);
     if(rp.canDraw()) {
-        FunctionGraph* f = rp.create(Qt::red, "lala");
+        FunctionGraph* f = rp.create(Qt::red, QStringLiteral("lala"));
         PlaneCurve* curve = dynamic_cast<PlaneCurve*>(f);
         QVERIFY(curve);
         
@@ -130,7 +130,7 @@ void PlaneCurveTest::testJumps()
     QFETCH(QString, input);
     QFETCH(int, jumps);
 
-    PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D).create(Qt::red, "hola");
+    PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D).create(Qt::red, QStringLiteral("hola"));
     PlaneCurve* f3 = dynamic_cast<PlaneCurve*>(plot);
     QVERIFY(f3->isCorrect());
     f3->update(QRect(-10, 10, 20, -20));
@@ -155,10 +155,10 @@ void PlaneCurveTest::testParamIntervals_data()
     QTest::addColumn<IntervalExpression>("interval_expression");
 
     QTest::newRow("simple_interval_vals") << "x->x*x" << "x" <<
-                                          qMakePair(-7.0, 5.0) << qMakePair(Analitza::Expression("a+b-4"), Analitza::Expression("16"));
+                                          qMakePair(-7.0, 5.0) << qMakePair(Analitza::Expression(QStringLiteral("a+b-4")), Analitza::Expression(QStringLiteral("16")));
 
     QTest::newRow("implicit_curve_1_interval_vals") << "x*x+y*y=8" << "y" <<
-            qMakePair(-9.0+2, 15.0) << qMakePair(Analitza::Expression("-abs(a*b)"), Analitza::Expression("cos(0)*a*a"));
+            qMakePair(-9.0+2, 15.0) << qMakePair(Analitza::Expression(QStringLiteral("-abs(a*b)")), Analitza::Expression(QStringLiteral("cos(0)*a*a")));
 }
 
 void PlaneCurveTest::testParamIntervals()
@@ -168,10 +168,10 @@ void PlaneCurveTest::testParamIntervals()
     QFETCH(IntervalValue, interval_value);
     QFETCH(IntervalExpression, interval_expression);
 
-    m_vars->modify("a", -4.0);
-    m_vars->modify("b", -9.5);
+    m_vars->modify(QStringLiteral("a"), -4.0);
+    m_vars->modify(QStringLiteral("b"), -9.5);
 
-    PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D, m_vars).create(Qt::red, "hola");
+    PlotItem* plot = PlotsFactory::self()->requestPlot(Expression(input), Dim2D, m_vars).create(Qt::red, QStringLiteral("hola"));
     PlaneCurve* f3 = dynamic_cast<PlaneCurve*>(plot);
     QVERIFY(f3->isCorrect());
 
@@ -182,8 +182,8 @@ void PlaneCurveTest::testParamIntervals()
     QVERIFY(f3->setInterval(param, interval_expression.first, interval_expression.second));
     QCOMPARE(f3->interval(param, true).second.toString(), QStringLiteral("16"));
     
-    delete m_vars->take("a");
-    delete m_vars->take("b");
+    delete m_vars->take(QStringLiteral("a"));
+    delete m_vars->take(QStringLiteral("b"));
 }
 
 

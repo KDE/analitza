@@ -175,7 +175,7 @@ bool Expression::ExpressionPrivate::check(const Apply* c)
     
     if(op.isBounded() && op!=Operator::diff) {
         if(!(c->ulimit() && c->dlimit()) && !c->domain()) {
-            m_err << QCoreApplication::tr("<em>%1</em> missing bounds on '%2'").arg(c->bvarStrings().join(" ")).arg(op.toString());
+            m_err << QCoreApplication::tr("<em>%1</em> missing bounds on '%2'").arg(c->bvarStrings().join(QStringLiteral(" ")), op.toString());
         }
     }
     
@@ -292,7 +292,7 @@ bool Expression::ExpressionPrivate::canAdd(const Object* where, const Object* br
                 }
                 
                 if (matrix->rowCount() != 0)
-                    if (static_cast<MatrixRow*>(matrix->rows().first())->size() != matrixrow->size()) {
+                    if (static_cast<MatrixRow*>(matrix->rows().at(0))->size() != matrixrow->size()) {
                         m_err << QCoreApplication::tr("All matrixrow elements must have the same size");
                         correct=false;
                     }
@@ -432,7 +432,7 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
     Cn *num; Operator *op;
     Object* ret=0;
     
-    if(elem.tagName()=="cs")
+    if(elem.tagName()==QLatin1String("cs"))
         ret=listFromString(elem.text());
     else switch(whatType(elem.tagName())) {
         case Object::container: {
@@ -470,7 +470,7 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
             break;
         case Object::variable: {
             Ci* var = new Ci(elem.text());
-            var->setFunction(elem.attribute("type")=="function");
+            var->setFunction(elem.attribute(QStringLiteral("type"))==QLatin1String("function"));
             ret=var;
         }    break;
         case Object::vector: {
@@ -542,19 +542,19 @@ QString Expression::toString() const
 enum Object::ObjectType Expression::whatType(const QString& tag)
 {
     Object::ObjectType ret=Object::none;
-    if(tag=="cn")
+    if(tag==QLatin1String("cn"))
         ret= Object::value;
-    else if(tag=="ci")
+    else if(tag==QLatin1String("ci"))
         ret= Object::variable;
-    else if(tag=="vector")
+    else if(tag==QLatin1String("vector"))
         ret= Object::vector;
-    else if(tag=="list")
+    else if(tag==QLatin1String("list"))
         ret= Object::list;
-    else if(tag=="matrix")
+    else if(tag==QLatin1String("matrix"))
         ret= Object::matrix;
-    else if(tag=="matrixrow")
+    else if(tag==QLatin1String("matrixrow"))
         ret= Object::matrixrow;
-    else if(tag=="apply")
+    else if(tag==QLatin1String("apply"))
         ret= Object::apply;
     else if(Operator::toOperatorType(tag)!=0)
         ret= Object::oper;
@@ -610,7 +610,7 @@ Cn Expression::toReal() const
     if(Q_LIKELY(tree && tree->type()==Object::value))
         return *static_cast<Cn*>(tree);
     else {
-        qDebug() << "trying to return not a real value as real:" << (tree ? tree->toString() : "null");
+        qDebug() << "trying to return not a real value as real:" << (tree ? tree->toString() : QStringLiteral("null"));
         return Cn(0.);
     }
 }
@@ -621,7 +621,7 @@ QString Expression::stringValue() const
     if(Q_LIKELY(d->m_tree && d->m_tree->type()==Object::list))
         return AnalitzaUtils::listToString(static_cast<const List*>(tree));
     else {
-        qDebug() << "trying to return not a string value as string:" << (tree ? tree->toString() : "null");
+        qDebug() << "trying to return not a string value as string:" << (tree ? tree->toString() : QStringLiteral("null"));
         return QString();
     }
 }
@@ -917,33 +917,33 @@ QVariant Expression::customObjectValue() const
     if(Q_LIKELY(tree && tree->type()==Object::custom))
         return static_cast<const CustomObject*>(tree)->value();
     else {
-        qDebug() << "trying to return as a custom object something that it is not:" << (tree ? tree->toString() : "null");
+        qDebug() << "trying to return as a custom object something that it is not:" << (tree ? tree->toString() : QStringLiteral("null"));
         return QVariant();
     }
 }
 
-static void print_dom(const QDomNode& in, int ind)
-{
-    QString a;
-    
-    if(ind >100){
-        qDebug("...");
-        return;
-    }
-    
-    for(int i=0; i<ind; i++)
-        a.append("______|");
-    
-    if(in.hasChildNodes())
-        qDebug("%s%s(%s) -- %d", qPrintable(a), qPrintable(in.toElement().tagName()), qPrintable(in.toElement().text()), in.childNodes().length());
-    else
-        qDebug("%s%s", qPrintable(a), qPrintable(in.toElement().tagName()));
-    
-    for(int i=0 ; i<in.childNodes().length(); i++){
-        if(in.childNodes().item(i).isElement())
-            print_dom(in.childNodes().item(i), ind+1);
-    }
-}
+// static void print_dom(const QDomNode& in, int ind)
+// {
+//     QString a;
+//
+//     if(ind >100){
+//         qDebug("...");
+//         return;
+//     }
+//
+//     for(int i=0; i<ind; i++)
+//         a.append("______|");
+//
+//     if(in.hasChildNodes())
+//         qDebug("%s%s(%s) -- %d", qPrintable(a), qPrintable(in.toElement().tagName()), qPrintable(in.toElement().text()), in.childNodes().length());
+//     else
+//         qDebug("%s%s", qPrintable(a), qPrintable(in.toElement().tagName()));
+//
+//     for(int i=0 ; i<in.childNodes().length(); i++){
+//         if(in.childNodes().item(i).isElement())
+//             print_dom(in.childNodes().item(i), ind+1);
+//     }
+// }
 
 bool Expression::isCompleteExpression(const QString& exp, bool justempty)
 {

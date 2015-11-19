@@ -126,8 +126,8 @@ QList<ExpressionType> ExpressionTypeChecker::computePairs(const QList<Expression
         }
     } else 
         foreach(const ExpressionType& opt, options) {
-            if(opt.parameters().first().canReduceTo(param)) {//Infer on param!=param but canReduce?
-                QMap<int, ExpressionType> stars = ExpressionType::computeStars(QMap<int, ExpressionType>(), opt.parameters().first(), param);
+            if(opt.parameters().at(0).canReduceTo(param)) {//Infer on param!=param but canReduce?
+                QMap<int, ExpressionType> stars = ExpressionType::computeStars(QMap<int, ExpressionType>(), opt.parameters().at(0), param);
                 ret += opt.starsToType(stars);
             }
         }
@@ -573,7 +573,7 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
                         continue;
                     }
                     
-                    const bool isvariadic = (opt.parameters().first().type() == ExpressionType::Any);
+                    const bool isvariadic = (opt.parameters().at(0).type() == ExpressionType::Any);
                     //if we have a variadic check only the return type (that is why we put 0 as args count here)
                     const int nargs = opt.parameters().size()-1;
                     
@@ -586,12 +586,11 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
                             Q_ASSERT(opt.parameters().size() == 2); // Any and return type
                             
                             //when use Any with contained we need to check if all args must be of the contained type
-                            if (opt.parameters().first().hasContained()) {
+                            if (opt.parameters().at(0).hasContained()) {
                                 for(int i=0; valid && i<altargs.size(); i++) {
-                                    if(!altargs[i].canReduceTo(opt.parameters().first().contained())) {
+                                    if(!altargs[i].canReduceTo(opt.parameters().at(0).contained())) {
                                         addError(QCoreApplication::tr("Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'").
-                                        arg(altargs[i].toString()).
-                                        arg(opt.parameters().first().contained().toString()).
+                                        arg(altargs[i].toString(), opt.parameters().at(0).contained().toString()).
                                         arg(i+1).
                                         arg(c->toString()));
                                         
@@ -611,11 +610,10 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
                         
                         for(int i=0; valid && i<nargs; i++) {
                             if (i<opt.parameters().size() && i<altargs.size()) {
-                                if(!altargs[i].canCompareTo(opt.parameters()[i])) {
+                                if(!altargs[i].canCompareTo(opt.parameters().at(i))) {
                                     if (isvariadic)
                                         addError(QCoreApplication::tr("Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'").
-                                        arg(altargs[i].toString()).
-                                        arg(opt.parameters()[i].toString()).
+                                        arg(altargs[i].toString(), opt.parameters().at(i).toString()).
                                         arg(i+1).
                                         arg(c->toString()));
                                     
@@ -623,9 +621,9 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
                                     break;
                                 }
                                 
-                                starToType=ExpressionType::computeStars(starToType, opt.parameters()[i], altargs[i]);
+                                starToType=ExpressionType::computeStars(starToType, opt.parameters().at(i), altargs[i]);
                                 
-                                ExpressionType t=opt.parameters()[i].starsToType(starToType);
+                                ExpressionType t=opt.parameters().at(i).starsToType(starToType);
                                 starToParam=ExpressionType::computeStars(starToParam, altargs[i], t);
                                 valid=!t.isError() && inferType(altargs[i].starsToType(starToParam), t, &assumptions);
                                 
@@ -669,7 +667,7 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
     m_typeForBVar=ctx;
     
     if(current.type()==ExpressionType::Many && current.alternatives().size()==1) {
-        current=current.alternatives().first();
+        current=current.alternatives().at(0);
     }
     
     return QString();
@@ -821,7 +819,7 @@ QVariant ExpressionTypeChecker::visit(const Container* c)
         if(current.alternatives().isEmpty())
             current=ExpressionType(ExpressionType::Error);
         else if(current.alternatives().count()==1)
-            current=current.alternatives().first();
+            current=current.alternatives().at(0);
     }
     
     return QString();
@@ -958,7 +956,7 @@ QMap<QString, ExpressionType> ExpressionTypeChecker::typeIs(const Object* o, con
     }
     
     if(!corr)
-        addError(QCoreApplication::tr("Cannot convert '%1' to '%2'").arg(o->toString()).arg(type.toString()));
+        addError(QCoreApplication::tr("Cannot convert '%1' to '%2'").arg(o->toString(), type.toString()));
     
     return assumptions;
 }

@@ -782,7 +782,7 @@ Object* Operations::reduceValueMatrix(Operator::OperatorType op, Cn* v, Matrix* 
                 *correct=new QString(QCoreApplication::tr("Invalid index for a container"));
                 ret=new None();
             } else {
-                MatrixRow* row = static_cast<MatrixRow*>(m1->rows()[select-1]);
+                MatrixRow* row = static_cast<MatrixRow*>(m1->rows().at(select-1));
                 Vector* nv = new Vector(row->size());
                 for(Vector::iterator it=row->begin(); it!=row->end(); ++it) {
                     nv->appendBranch((*it));

@@ -30,8 +30,6 @@
 
 using namespace Analitza;
 
-static const double pi=M_PI;
-
 class ImplicitPolar : public AbstractPlaneCurve, MarchingSquares
 {
 public:
@@ -42,9 +40,9 @@ public:
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Polar)
-    PARAMETERS(QStringList("r") << "p") //r:radial - t:theta
-    ICON_NAME("newpolar")
-    EXAMPLES(QStringList("r+p=0"))
+    PARAMETERS(QStringList(QStringLiteral("r")) << QStringLiteral("p")) //r:radial - t:theta
+    ICON_NAME(QStringLiteral("newpolar"))
+    EXAMPLES(QStringList(QStringLiteral("r+p=0")))
 
     void update(const QRectF& viewport);
     
@@ -60,8 +58,8 @@ public:
 ImplicitPolar::ImplicitPolar(const Analitza::Expression& e, Analitza::Variables* v)
     : AbstractPlaneCurve(e, v)
 {
-    r = arg("r");
-    p = arg("p");
+    r = arg(QStringLiteral("r"));
+    p = arg(QStringLiteral("p"));
 }
 
 double ImplicitPolar::evalScalarField(double x, double y)

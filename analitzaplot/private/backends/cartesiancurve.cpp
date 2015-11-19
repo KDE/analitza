@@ -37,14 +37,14 @@ class FunctionCartesian : public AbstractPlaneCurve
         void update(const QRectF& viewport);
         QPair<QPointF, QString> image(const QPointF &mousepos);
         QLineF tangent(const QPointF &mousepos) ;
-        Analitza::Cn* arg() { return AbstractPlaneCurve::arg(parameters().first()); }
+        Analitza::Cn* arg() { return AbstractPlaneCurve::arg(parameters().at(0)); }
 
     protected:
         void initDerivative() {
             if(!analyzer->isCorrect())
                 return;
             
-            m_deriv = analyzer->derivative(parameters().first());
+            m_deriv = analyzer->derivative(parameters().at(0));
             if(!analyzer->isCorrect() || !m_deriv.isCorrect()) {
                 m_deriv.clear();
                 analyzer->flushErrors();
@@ -66,9 +66,9 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("x"))
-    ICON_NAME("newfunction")
-    EXAMPLES(QStringList("x") << "x*x" << "x+4")
+    PARAMETERS(QStringList(QStringLiteral("x")))
+    ICON_NAME(QStringLiteral("newfunction"))
+    EXAMPLES(QStringList(QStringLiteral("x")) << QStringLiteral("x*x") << QStringLiteral("x+4"))
 };
 
 ///Functions where the y is bounding. like y->sin(y). FunctionY mirrored
@@ -82,9 +82,9 @@ public:
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                    Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("y"))
-    ICON_NAME("newfunction")
-    EXAMPLES(QStringList("y") << "y*y" << "y+4")
+    PARAMETERS(QStringList(QStringLiteral("y")))
+    ICON_NAME(QStringLiteral("newfunction"))
+    EXAMPLES(QStringList(QStringLiteral("y")) << QStringLiteral("y*y") << QStringLiteral("y+4"))
     
     void update(const QRectF& viewport);
     
@@ -102,7 +102,7 @@ void FunctionCartesian::update(const QRectF& viewport)
         l_lim=viewport.left();
         r_lim=viewport.right();
     } else {
-        QPair< double, double> limits = interval(parameters().first());
+        QPair< double, double> limits = interval(parameters().at(0));
         l_lim = limits.first;
         r_lim = limits.second;
     }
@@ -124,7 +124,7 @@ QPair<QPointF, QString> FunctionCartesian::image(const QPointF &p)
 
     if (hasIntervals())
     {
-        QPair<double, double> intervalx = interval(parameters().first());
+        QPair<double, double> intervalx = interval(parameters().at(0));
     
         if (intervalx.first >=dp.x() || dp.x() >= intervalx.second)
             return QPair<QPointF, QString>(QPointF(), QString());
@@ -256,7 +256,7 @@ void FunctionX::update(const QRectF& viewport)
         l_lim=viewport.left();
         r_lim=viewport.right();
     } else {
-        QPair< double, double> limits = interval(parameters().first());
+        QPair< double, double> limits = interval(parameters().at(0));
         l_lim = limits.first;
         r_lim = limits.second;
     }

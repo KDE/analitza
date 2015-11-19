@@ -143,11 +143,11 @@ void ExpTest::testExp_data()
     QTest::addColumn<QString>("input");
     QTest::addColumn<QString>("output");
 
-    QString fourX="<math><apply><plus /><ci>x</ci><ci>x</ci><ci>x</ci><ci>x</ci></apply></math>";
+    QString fourX=QStringLiteral("<math><apply><plus /><ci>x</ci><ci>x</ci><ci>x</ci><ci>x</ci></apply></math>");
 
     //FIXME: Repetition not supported
 //     QTest::newRow("simple expression") << "x+x+x+x" << fourX;
-    QTest::newRow("composed expression") << QString::fromUtf8("3²")
+    QTest::newRow("composed expression") << QStringLiteral("3²")
             << "<math><apply><power /><cn>3</cn><cn>2</cn></apply></math>";
     QTest::newRow("plus operator in plus() form") << "plus(x,x,x,x)" << fourX;
     QTest::newRow("sum") << "x*sum(x : x=1..10)" << "<math><apply><times /><ci>x</ci>"
@@ -188,15 +188,15 @@ void ExpTest::testLength_data()
     
     lengths.clear();
     lengths << 2 << 3;
-    QTest::newRow("power with utf composition") << QString::fromUtf8("22²²²") << lengths;
+    QTest::newRow("power with utf composition") << QStringLiteral("22²²²") << lengths;
     
     lengths.clear();
     lengths << 1;
-    QTest::newRow("utf composed variable") << QString::fromUtf8("ç") << lengths;
+    QTest::newRow("utf composed variable") << QStringLiteral("ç") << lengths;
     
     lengths.clear();
     lengths << 1 << 1;
-    QTest::newRow("no times operator") << QString::fromUtf8("2x") << lengths;
+    QTest::newRow("no times operator") << QStringLiteral("2x") << lengths;
 }
 
 void ExpTest::testLength()

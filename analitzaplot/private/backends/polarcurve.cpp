@@ -27,7 +27,6 @@
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
 #endif
-static const double pi=M_PI;
 
 using namespace Analitza;
 
@@ -40,9 +39,9 @@ public:
                     Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                     Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Polar)
-    PARAMETERS(QStringList("q")) //q:theta
-    ICON_NAME("newpolar")
-    EXAMPLES(QStringList("q->3*sin(q/0.142)") << "q->q+3")    
+    PARAMETERS(QStringList(QStringLiteral("q"))) //q:theta
+    ICON_NAME(QStringLiteral("newpolar"))
+    EXAMPLES(QStringList(QStringLiteral("q->3*sin(q/0.142)")) << QStringLiteral("q->q+3"))
     
     void update(const QRectF& viewport);
     
@@ -54,7 +53,7 @@ public:
 
 FunctionPolar::FunctionPolar(const Analitza::Expression& e, Analitza::Variables* v): AbstractPlaneCurve(e, v)
 {
-    p = arg("q");
+    p = arg(QStringLiteral("q"));
 }
 
 void FunctionPolar::update(const QRectF& viewport)
@@ -79,7 +78,7 @@ void FunctionPolar::update(const QRectF& viewport)
 
         points.reserve(10*static_cast<int>(pi_factor));
     } else {
-        QPair< double, double> limits = interval("q");
+        QPair< double, double> limits = interval(QStringLiteral("q"));
         dlimit = limits.first;
         ulimit = limits.second;
         inv_res = (ulimit-dlimit)/(M_PI*M_PI*16);

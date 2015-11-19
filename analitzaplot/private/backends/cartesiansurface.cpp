@@ -55,9 +55,9 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("x") << "y")
-    ICON_NAME("newfunction3d")
-    EXAMPLES(QStringList("x*x+y") << "x+y*sin(x)" << "x*y")
+    PARAMETERS(QStringList(QStringLiteral("x")) << QStringLiteral("y"))
+    ICON_NAME(QStringLiteral("newfunction3d"))
+    EXAMPLES(QStringList(QStringLiteral("x*x+y")) << QStringLiteral("x+y*sin(x)") << QStringLiteral("x*y"))
 
     //Own
 
@@ -67,8 +67,8 @@ public:
 
 QVector3D Fxy::fromParametricArgs(double u, double v)
 {
-    arg("x")->setValue(u);
-    arg("y")->setValue(v);    
+    arg(QStringLiteral("x"))->setValue(u);
+    arg(QStringLiteral("y"))->setValue(v);    
     
     return QVector3D(u,v,analyzer->calculateLambda().toReal().value());
 }
@@ -97,9 +97,9 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("x") << "z")
-    ICON_NAME("newfunction3d")
-    EXAMPLES(QStringList("x+z"))
+    PARAMETERS(QStringList(QStringLiteral("x")) << QStringLiteral("z"))
+    ICON_NAME(QStringLiteral("newfunction3d"))
+    EXAMPLES(QStringList(QStringLiteral("x+z")))
 
     QVector3D fromParametricArgs(double u, double v);
     void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
@@ -107,8 +107,8 @@ public:
 
 QVector3D Fxz::fromParametricArgs(double u, double v)
 {
-    arg("x")->setValue(u);
-    arg("z")->setValue(v);    
+    arg(QStringLiteral("x"))->setValue(u);
+    arg(QStringLiteral("z"))->setValue(v);    
     
     return QVector3D(u,analyzer->calculateLambda().toReal().value(),v);
 }
@@ -130,9 +130,9 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("y") << "z")
-    ICON_NAME("newfunction3d")
-    EXAMPLES(QStringList("y+z"))
+    PARAMETERS(QStringList(QStringLiteral("y")) << QStringLiteral("z"))
+    ICON_NAME(QStringLiteral("newfunction3d"))
+    EXAMPLES(QStringList(QStringLiteral("y+z")))
 
     QVector3D fromParametricArgs(double u, double v);
     void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
@@ -140,8 +140,8 @@ public:
 
 QVector3D Fyz::fromParametricArgs(double u, double v)
 {
-    arg("y")->setValue(u);
-    arg("z")->setValue(v);    
+    arg(QStringLiteral("y"))->setValue(u);
+    arg(QStringLiteral("z"))->setValue(v);    
     
     return QVector3D(u,analyzer->calculateLambda().toReal().value(),v);
 }

@@ -52,7 +52,7 @@ class CFib : public Analitza::FunctionDefinition
                 return Expression(Cn(fib(val)));
             else {
                 Expression err;
-                err.addError("cannot calculate negative fibonacci");
+                err.addError(QStringLiteral("cannot calculate negative fibonacci"));
                 return err;
             }
         }
@@ -145,51 +145,51 @@ BuiltInTest::BuiltInTest(QObject* parent)
     ExpressionType fibType(ExpressionType::Lambda);
     fibType.addParameter(ExpressionType(ExpressionType::Value));
     fibType.addParameter(ExpressionType(ExpressionType::Value));
-    a.builtinMethods()->insertFunction("fib", fibType, new CFib);
+    a.builtinMethods()->insertFunction(QStringLiteral("fib"), fibType, new CFib);
     
     //object tests: tires
     ExpressionType tiresType(ExpressionType::Lambda);
-    tiresType.addParameter(ExpressionType("Vehicle"));
+    tiresType.addParameter(ExpressionType(QStringLiteral("Vehicle")));
     tiresType.addParameter(ExpressionType(ExpressionType::Value));
-    a.builtinMethods()->insertFunction("tires", tiresType, new Tires);
+    a.builtinMethods()->insertFunction(QStringLiteral("tires"), tiresType, new Tires);
     
     //object tests: constructor
     ExpressionType vehicleType(ExpressionType::Lambda);
     vehicleType.addParameter(ExpressionType(ExpressionType::Value));
-    vehicleType.addParameter(ExpressionType("Vehicle"));
-    a.builtinMethods()->insertFunction("vehicle", vehicleType, new VehicleConstructor);
+    vehicleType.addParameter(ExpressionType(QStringLiteral("Vehicle")));
+    a.builtinMethods()->insertFunction(QStringLiteral("vehicle"), vehicleType, new VehicleConstructor);
     
     //object tests: newint
     ExpressionType refintType(ExpressionType::Lambda);
     refintType.addParameter(ExpressionType(ExpressionType::Value));
-    refintType.addParameter(ExpressionType("RefInt"));
-    a.builtinMethods()->insertFunction("refint", refintType, new NewIntConstructor);
+    refintType.addParameter(ExpressionType(QStringLiteral("RefInt")));
+    a.builtinMethods()->insertFunction(QStringLiteral("refint"), refintType, new NewIntConstructor);
     
     //object tests: readint
     ExpressionType readintType(ExpressionType::Lambda);
-    readintType.addParameter(ExpressionType("RefInt"));
+    readintType.addParameter(ExpressionType(QStringLiteral("RefInt")));
     readintType.addParameter(ExpressionType(ExpressionType::Value));
-    a.builtinMethods()->insertFunction("readint", readintType, new ReadInt);
+    a.builtinMethods()->insertFunction(QStringLiteral("readint"), readintType, new ReadInt);
     
     //Returns a list
     ExpressionType createlistType(ExpressionType::Lambda);
     createlistType.addParameter(ExpressionType(ExpressionType::Value));
     createlistType.addParameter(ExpressionType(ExpressionType::List, ExpressionType(ExpressionType::Value)));
-    a.builtinMethods()->insertFunction("createlist", createlistType, new CreateList);
+    a.builtinMethods()->insertFunction(QStringLiteral("createlist"), createlistType, new CreateList);
     
     ExpressionType wrongType(ExpressionType::Lambda);
     wrongType.addParameter(ExpressionType(ExpressionType::Value));
-    wrongType.addParameter(ExpressionType("Wrong"));
-    a.builtinMethods()->insertFunction("wrong", refintType, new Wrong);
+    wrongType.addParameter(ExpressionType(QStringLiteral("Wrong")));
+    a.builtinMethods()->insertFunction(QStringLiteral("wrong"), refintType, new Wrong);
     
     ExpressionType justReturn(ExpressionType::Lambda);
     justReturn.addParameter(ExpressionType(ExpressionType::Value));
-    a.builtinMethods()->insertFunction("lifesmeaning", justReturn, new MeaningOfLife);
+    a.builtinMethods()->insertFunction(QStringLiteral("lifesmeaning"), justReturn, new MeaningOfLife);
     
     ExpressionType justCrash(ExpressionType::Lambda);
     justCrash.addParameter(ExpressionType(ExpressionType::Value));
     justCrash.addParameter(ExpressionType(ExpressionType::Bool));
-    a.builtinMethods()->insertFunction("justcrash", justCrash, new JustCrash);
+    a.builtinMethods()->insertFunction(QStringLiteral("justcrash"), justCrash, new JustCrash);
 }
 
 BuiltInTest::~BuiltInTest()
@@ -202,33 +202,33 @@ void BuiltInTest::testCall_data()
     QTest::addColumn<QStringList>("inputs");
     QTest::addColumn<QString>("output");
     
-    QTest::newRow("negfib") << (IN "fib(-1)") << "err";
-    QTest::newRow("zerofib") << (IN "fib(0)") << "0";
-    QTest::newRow("fib") << (IN "fib(23)") << "28657";
-    QTest::newRow("fibmap") << (IN "map(fib, list{1,5,10})") << "list { 1, 5, 55 }";
+    QTest::newRow("negfib") << (IN QStringLiteral("fib(-1)")) << "err";
+    QTest::newRow("zerofib") << (IN QStringLiteral("fib(0)")) << "0";
+    QTest::newRow("fib") << (IN QStringLiteral("fib(23)")) << "28657";
+    QTest::newRow("fibmap") << (IN QStringLiteral("map(fib, list{1,5,10})")) << "list { 1, 5, 55 }";
     
-    QTest::newRow("vechicle") << (IN "tires(vehicle(2))") << "2";
-    QTest::newRow("varcar") << (IN "car:=vehicle(4)" << "tires(car)") << "4";
+    QTest::newRow("vechicle") << (IN QStringLiteral("tires(vehicle(2))")) << "2";
+    QTest::newRow("varcar") << (IN QStringLiteral("car:=vehicle(4)") << QStringLiteral("tires(car)")) << "4";
     
-    QTest::newRow("lambdaarg") << (IN "call:=(x,y)->x(y)" << "car:=call(vehicle,4)" << "tires(car)") << "4";
+    QTest::newRow("lambdaarg") << (IN QStringLiteral("call:=(x,y)->x(y)") << QStringLiteral("car:=call(vehicle,4)") << QStringLiteral("tires(car)")) << "4";
     
-    QTest::newRow("ref") << (IN "sum(readint(refint(x)) : x=1..10)") << "55";
+    QTest::newRow("ref") << (IN QStringLiteral("sum(readint(refint(x)) : x=1..10)")) << "55";
     
-    QTest::newRow("sum") << (IN "sum(x : x@createlist(3))") << "75";
-    QTest::newRow("sum2") << (IN "f:=w->sum(x : x@w)" << "f(createlist(3))") << "75";
-    QTest::newRow("comparison") << (IN "vehicle(2)!=vehicle(3)") << "true";
-    QTest::newRow("comparison2") << (IN "vehicle(2)!=vehicle(2)") << "false";
+    QTest::newRow("sum") << (IN QStringLiteral("sum(x : x@createlist(3))")) << "75";
+    QTest::newRow("sum2") << (IN QStringLiteral("f:=w->sum(x : x@w)") << QStringLiteral("f(createlist(3))")) << "75";
+    QTest::newRow("comparison") << (IN QStringLiteral("vehicle(2)!=vehicle(3)")) << "true";
+    QTest::newRow("comparison2") << (IN QStringLiteral("vehicle(2)!=vehicle(2)")) << "false";
     
-    QTest::newRow("error1") << (IN "tires(2)") << "errcomp";
-    QTest::newRow("error2") << (IN "tires(createlist(3))") << "errcomp";
-    QTest::newRow("error3") << (IN "tires(wrong(3))") << "errcomp";
+    QTest::newRow("error1") << (IN QStringLiteral("tires(2)")) << "errcomp";
+    QTest::newRow("error2") << (IN QStringLiteral("tires(createlist(3))")) << "errcomp";
+    QTest::newRow("error3") << (IN QStringLiteral("tires(wrong(3))")) << "errcomp";
     
-    QTest::newRow("onearg") << (IN "lifesmeaning()") << "42";
+    QTest::newRow("onearg") << (IN QStringLiteral("lifesmeaning()")) << "42";
     
-    QTest::newRow("and") << (IN "and(false, justcrash(33))") << "false";
-    QTest::newRow("or") << (IN "or(true, justcrash(33))") << "true";
-    QTest::newRow("and1") << (IN "and(false, true, justcrash(33))") << "false";
-    QTest::newRow("or1") << (IN "or(true, false, justcrash(33))") << "true";
+    QTest::newRow("and") << (IN QStringLiteral("and(false, justcrash(33))")) << "false";
+    QTest::newRow("or") << (IN QStringLiteral("or(true, justcrash(33))")) << "true";
+    QTest::newRow("and1") << (IN QStringLiteral("and(false, true, justcrash(33))")) << "false";
+    QTest::newRow("or1") << (IN QStringLiteral("or(true, false, justcrash(33))")) << "true";
 }
 
 void BuiltInTest::testCall()

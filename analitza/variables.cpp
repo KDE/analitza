@@ -30,12 +30,12 @@ Variables::Variables() : QHash<QString, Object*>()
 
 void Variables::initializeConstants()
 {
-    insert("true", new Cn(true));
-    insert("false", new Cn(false));
-    insert("pi", new Cn(Cn::pi()));
-    insert("e", new Cn(Cn::e()));
-    insert("euler", new Cn(Cn::euler()));
-    insert("i", new Cn(0, 1));
+    insert(QStringLiteral("true"), new Cn(true));
+    insert(QStringLiteral("false"), new Cn(false));
+    insert(QStringLiteral("pi"), new Cn(Cn::pi()));
+    insert(QStringLiteral("e"), new Cn(Cn::e()));
+    insert(QStringLiteral("euler"), new Cn(Cn::euler()));
+    insert(QStringLiteral("i"), new Cn(0, 1));
 }
 
 Variables::Variables(const Variables& v) : QHash<QString, Object*>(v)

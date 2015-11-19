@@ -63,17 +63,17 @@ HtmlExpressionWriter::HtmlExpressionWriter(const Object* o)
 
 QVariant HtmlExpressionWriter::visit(const Vector* vec)
 {
-    return QString(keyword("vector ")+oper("{ ")+allValues<Vector::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(", ")))+oper(" }"));
+    return QString(keyword(QStringLiteral("vector "))+oper(QStringLiteral("{ "))+allValues<Vector::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(QStringLiteral(", "))))+oper(QStringLiteral(" }")));
 }
 
 QVariant HtmlExpressionWriter::visit(const Matrix* m)
 {
-    return QString(keyword("matrix ")+oper("{ ")+allValues(m->constBegin(), m->constEnd(), this).join(QString(oper(", ")))+oper(" }"));
+    return QString(keyword(QStringLiteral("matrix "))+oper(QStringLiteral("{ "))+allValues(m->constBegin(), m->constEnd(), this).join(QString(oper(QStringLiteral(", "))))+oper(QStringLiteral(" }")));
 }
 
 QVariant HtmlExpressionWriter::visit(const MatrixRow* mr)
 {
-    return QString(keyword("matrixrow ")+oper("{ ")+allValues(mr->constBegin(), mr->constEnd(), this).join(QString(oper(", ")))+oper(" }"));
+    return QString(keyword(QStringLiteral("matrixrow "))+oper(QStringLiteral("{ "))+allValues(mr->constBegin(), mr->constEnd(), this).join(QString(oper(QStringLiteral(", "))))+oper(QStringLiteral(" }")));
 }
 
 QVariant HtmlExpressionWriter::visit(const List* vec)
@@ -81,14 +81,14 @@ QVariant HtmlExpressionWriter::visit(const List* vec)
     if(!vec->isEmpty() && vec->at(0)->type()==Object::value && static_cast<Cn*>(vec->at(0))->format()==Cn::Char) {
         return QVariant::fromValue<QString>(QStringLiteral("<span class='string'>&quot;") + AnalitzaUtils::listToString(vec) + QStringLiteral("&quot;</span>"));
     } else
-        return QVariant::fromValue<QString>(keyword("list ")+oper("{ ")+allValues<List::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(", ")))+oper(" }"));
+        return QVariant::fromValue<QString>(keyword(QStringLiteral("list "))+oper(QStringLiteral("{ "))+allValues<List::const_iterator>(vec->constBegin(), vec->constEnd(), this).join(QString(oper(QStringLiteral(", "))))+oper(QStringLiteral(" }")));
 }
 
 QVariant HtmlExpressionWriter::visit(const Cn* var)
 {
     QString innerhtml;
     if(var->isBoolean())
-        innerhtml = var->isTrue() ? "true" : "false";
+        innerhtml = var->isTrue() ? QStringLiteral("true") : QStringLiteral("false");
     else if(var->isCharacter())
         innerhtml = QString(var->character());
     else if(var->isComplex()) {
@@ -105,13 +105,13 @@ QVariant HtmlExpressionWriter::visit(const Cn* var)
                 if (!realiszero && var->complexValue().imag()>0.)
                     realpart += QLatin1String("+");
                 imagpart = QString::number(var->complexValue().imag(), 'g', 12);
-                imagpart += QLatin1String("*i");
+                imagpart += QStringLiteral("*i");
             }
         } else  {
             if (var->complexValue().imag() == 1)
-                imagpart = QLatin1String("i");
+                imagpart = QStringLiteral("i");
             else if (var->complexValue().imag() == -1)
-                imagpart = QLatin1String("-i");
+                imagpart = QStringLiteral("-i");
         }
         
         innerhtml = realpart+imagpart;
@@ -143,7 +143,7 @@ QVariant HtmlExpressionWriter::visit ( const Analitza::Apply* a )
         bounds += oper('=');
         if(a->dlimit())
             bounds += a->dlimit()->accept(this).toString();
-        bounds += oper("..");
+        bounds += oper(QStringLiteral(".."));
         if(a->ulimit())
             bounds += a->ulimit()->accept(this).toString();
     }
@@ -185,7 +185,7 @@ QVariant HtmlExpressionWriter::visit ( const Analitza::Apply* a )
         if(a->m_params.first()->type()!=Object::variable)
             n=oper('(')+n+oper(')');
         
-        toret += n+oper('(') + ret.join(oper(", ")) + oper(')');
+        toret += n+oper('(') + ret.join(oper(QStringLiteral(", "))) + oper(')');
     } else if(op.operatorType()==Operator::selector) {
         if(a->m_params.last()->isApply()) {
             const Apply* a1=static_cast<const Apply*>(a->m_params.last());
@@ -206,13 +206,13 @@ QVariant HtmlExpressionWriter::visit ( const Analitza::Apply* a )
         
         if(!bounds.isEmpty() || !bvars.isEmpty()) {
             if(bvars.count()!=1) bounding +=oper('(');
-            bounding += bvars.join(oper(", "));
+            bounding += bvars.join(oper(QStringLiteral(", ")));
             if(bvars.count()!=1) bounding +=oper(')');
             
             bounding = ':'+bounding +bounds;
         }
         
-        toret += op.accept(this).toString()+oper('(')+ret.join(oper(", "))+bounding+oper(')');
+        toret += op.accept(this).toString()+oper('(')+ret.join(oper(QStringLiteral(", ")))+bounding+oper(')');
     }
     
     return toret;
@@ -226,7 +226,7 @@ QVariant HtmlExpressionWriter::visit(const Container* var)
     QString toret;
     switch(var->containerType()) {
         case Container::declare:
-            toret += ret.join(oper(":="));
+            toret += ret.join(oper(QStringLiteral(":=")));
             break;
         case Container::lambda: {
             QString last=ret.takeLast();
@@ -235,29 +235,29 @@ QVariant HtmlExpressionWriter::visit(const Container* var)
                 bvars += bvar->accept(this).toString();
             
             if(bvars.count()!=1) toret +=oper('(');
-            toret += bvars.join(", ");
+            toret += bvars.join(QStringLiteral(", "));
             if(bvars.count()!=1) toret +=oper(')');
-            toret += oper("->") + last;
+            toret += oper(QStringLiteral("->")) + last;
         }    break;
         case Container::math:
-            toret += ret.join(oper("; "));
+            toret += ret.join(oper(QStringLiteral("; ")));
             break;
         case Container::uplimit: //x->(n1..n2) is put at the same time
         case Container::downlimit:
             break;
         case Container::bvar:
             if(ret.count()>1) toret += oper('(');
-            toret += ret.join(", ");
+            toret += ret.join(QStringLiteral(", "));
             if(ret.count()>1) toret += oper(')');
             break;
         case Container::piece:
-            toret += ret[1]+oper(" ? ")+ret[0];
+            toret += ret[1]+oper(QStringLiteral(" ? "))+ret[0];
             break;
         case Container::otherwise:
-            toret += oper("? ")+ret[0];
+            toret += oper(QStringLiteral("? "))+ret[0];
             break;
         default:
-            toret += var->tagName()+oper(" { ")+ret.join(oper(", "))+oper(" }");
+            toret += var->tagName()+oper(QStringLiteral(" { "))+ret.join(oper(QStringLiteral(", ")))+oper(QStringLiteral(" }"));
             break;
     }
     return toret;

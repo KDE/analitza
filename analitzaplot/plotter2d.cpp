@@ -86,8 +86,8 @@ Plotter2D::Plotter2D(const QSizeF& size)
     , m_showAxes(Qt::Vertical|Qt::Horizontal)
     , m_showPolarAxis(false)
     , m_showPolarAngles(false)
-    , m_axisXLabel("x")
-    , m_axisYLabel("y")
+    , m_axisXLabel(QStringLiteral("x"))
+    , m_axisYLabel(QStringLiteral("y"))
 {}
 
 Plotter2D::~Plotter2D()
@@ -280,7 +280,7 @@ const QString Plotter2D::computeAngleLabelByStep(unsigned int k, unsigned int st
     {
         case Radian:
         {
-            s = (k==1) ? ((step==1) ? "" : QString::number(step)) : QString::number(k*step);
+            s = (k==1) ? ((step==1) ? QLatin1String("") : QString::number(step)) : QString::number(k*step);
             s += PiSymbol;
         }
         break;

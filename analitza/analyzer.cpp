@@ -125,7 +125,7 @@ QStringList printAll(const QVector<T*> & p)
         if(v)
             ret += v->toString();
         else
-            ret += "<null>";
+            ret += QStringLiteral("<null>");
     return ret;
 }
 
@@ -350,7 +350,7 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
                 m_runStack.resize(m_runStackTop);
                 m_runStackTop = top;
                 
-                alphaConversion(r, r->bvarCi().first()->depth());
+                alphaConversion(r, r->bvarCi().at(0)->depth());
                 Expression::computeDepth(r);
                 ret=r;
             } break;
@@ -623,7 +623,7 @@ Object* Analyzer::calcLambda(const Container* c)
 {
     Container * cc=c->copy();
     if(cc->bvarCount()>0)
-        alphaConversion(cc, cc->bvarCi().first()->depth());
+        alphaConversion(cc, cc->bvarCi().at(0)->depth());
     Expression::computeDepth(cc);
     return cc;
 }
@@ -1244,7 +1244,7 @@ Object* applyTransformations(Object* root, const QList<Transformation>& trans)
 
 bool actuallyE(const Object* o)
 {
-    return o->type()==Object::variable && static_cast<const Ci*>(o)->name()=="e";
+    return o->type()==Object::variable && static_cast<const Ci*>(o)->name()==QLatin1String("e");
 }
 
 QList<Transformation> simplifications()
@@ -1252,19 +1252,19 @@ QList<Transformation> simplifications()
     static QList<Transformation> ret;
     if(Q_UNLIKELY(ret.isEmpty())) {
         //divide
-        ret += Transformation(Transformation::parse("f/f"), Transformation::parse("1"));
-        ret += Transformation(Transformation::parse("f/1"), Transformation::parse("f"));
+        ret += Transformation(Transformation::parse(QStringLiteral("f/f")), Transformation::parse(QStringLiteral("1")));
+        ret += Transformation(Transformation::parse(QStringLiteral("f/1")), Transformation::parse(QStringLiteral("f")));
         
         //power
-        ret += Transformation(Transformation::parse("0**k"), Transformation::parse("0"));
-        ret += Transformation(Transformation::parse("1**k"), Transformation::parse("1"));
-        ret += Transformation(Transformation::parse("x**1"), Transformation::parse("x"));
-        ret += Transformation(Transformation::parse("(x**y)**z"), Transformation::parse("x**(y*z)"));
+        ret += Transformation(Transformation::parse(QStringLiteral("0**k")), Transformation::parse(QStringLiteral("0")));
+        ret += Transformation(Transformation::parse(QStringLiteral("1**k")), Transformation::parse(QStringLiteral("1")));
+        ret += Transformation(Transformation::parse(QStringLiteral("x**1")), Transformation::parse(QStringLiteral("x")));
+        ret += Transformation(Transformation::parse(QStringLiteral("(x**y)**z")), Transformation::parse(QStringLiteral("x**(y*z)")));
 
         //ln
         QMap<QString, Transformation::treeCheck> eulerNumber;
-        eulerNumber.insert("e", actuallyE);
-        ret += Transformation(Transformation::parse("ln e"), Transformation::parse("1"), eulerNumber);
+        eulerNumber.insert(QStringLiteral("e"), actuallyE);
+        ret += Transformation(Transformation::parse(QStringLiteral("ln e")), Transformation::parse(QStringLiteral("1")), eulerNumber);
     }
     
     return ret;
@@ -1328,8 +1328,8 @@ Object* Analyzer::simpApply(Apply* c)
 //             qDebug()<< "PAAPPA" << root->toString();
             static QList<Transformation> addTrans;
             if(addTrans.isEmpty()) {
-                addTrans += Transformation(Transformation::parse("--x"), Transformation::parse("x"));
-                addTrans += Transformation(Transformation::parse("-a--b"), Transformation::parse("b-a"));
+                addTrans += Transformation(Transformation::parse(QStringLiteral("--x")), Transformation::parse(QStringLiteral("x")));
+                addTrans += Transformation(Transformation::parse(QStringLiteral("-a--b")), Transformation::parse(QStringLiteral("b-a")));
             }
             
             root = applyTransformations(root, addTrans);

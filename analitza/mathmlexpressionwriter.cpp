@@ -62,7 +62,7 @@ QVariant MathMLExpressionWriter::visit(const Cn* val)
     } else {
         QString type;
         if(val->format()==Cn::Real)
-            type = " type='real'";
+            type = QStringLiteral(" type='real'");
         
         return QStringLiteral("<cn%1>%2</cn>").arg(type).arg(val->value(), 0, 'g', 12);
     }
@@ -122,7 +122,7 @@ QVariant MathMLExpressionWriter::visit(const Container* c)
     foreach(const Object* o, c->m_params)
         ret += o->accept(this).toString();
     
-    return QStringLiteral("<%1>%2</%1>").arg(c->tagName()).arg(ret);
+    return QStringLiteral("<%1>%2</%1>").arg(c->tagName(), ret);
 }
 
 QVariant MathMLExpressionWriter::visit(const Apply* a)

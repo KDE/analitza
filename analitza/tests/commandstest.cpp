@@ -52,210 +52,210 @@ void CommandsTest::testCorrect_data()
     QStringList script;
     
     script.clear();
-    script << "range(10)";
+    script << QStringLiteral("range(10)");
     QTest::newRow("simple range") << script << "list { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }";
     
     script.clear();
-    script << "range(-1.5, 2)";
+    script << QStringLiteral("range(-1.5, 2)");
     QTest::newRow("range(a,b)") << script << "list { -1.5, -0.5, 0.5, 1.5 }";
     
     script.clear();
-    script << "range(0, 1, 0.2)";
+    script << QStringLiteral("range(0, 1, 0.2)");
     QTest::newRow("range(a,b)") << script << "list { 0, 0.2, 0.4, 0.6, 0.8, 1 }";
     
     script.clear();
-    script << "vector(3, -2.3)";
+    script << QStringLiteral("vector(3, -2.3)");
     QTest::newRow("simple fill vector") << script << "vector { -2.3, -2.3, -2.3 }";
     
     script.clear();
-    script << "7*vector(34, 14.2)[23]";
+    script << QStringLiteral("7*vector(34, 14.2)[23]");
     QTest::newRow("select fill vector") << script << "99.4";
     
     script.clear();
-    script << "seq := range(14, 20, 2)";
-    script << "vector(seq)";
+    script << QStringLiteral("seq := range(14, 20, 2)");
+    script << QStringLiteral("vector(seq)");
     QTest::newRow("vector by range/seq") << script << "vector { 14, 16, 18, 20 }";
     
     script.clear();
-    script << "matrix(3, 2, -15.7)";
+    script << QStringLiteral("matrix(3, 2, -15.7)");
     QTest::newRow("simple fill matrix") << script << "matrix { matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 }, matrixrow { -15.7, -15.7 } }";
     
     script.clear();
-    script << "matrix(2)";
+    script << QStringLiteral("matrix(2)");
     QTest::newRow("simple fill square matrix") << script << "matrix { matrixrow { 0, 0 }, matrixrow { 0, 0 } }";
     
     script.clear();
-    script << "matrix(3, 2)";
+    script << QStringLiteral("matrix(3, 2)");
     QTest::newRow("simple matrix") << script << "matrix { matrixrow { 0, 0 }, matrixrow { 0, 0 }, matrixrow { 0, 0 } }";
     
     script.clear();
-    script << "matrix(3, 2, -9.8)[2][1]";
+    script << QStringLiteral("matrix(3, 2, -9.8)[2][1]");
     QTest::newRow("select simple matrix") << script << "-9.8";
     
     script.clear();
-    script << "matrix(vector{2,3}, vector{7, 4})";
+    script << QStringLiteral("matrix(vector{2,3}, vector{7, 4})");
     QTest::newRow("matrix by vectors/columns") << script << "matrix { matrixrow { 2, 7 }, matrixrow { 3, 4 } }";
     
     script.clear();
-    script << "matrix(matrixrow{2,3}, matrixrow{7, 4})";
+    script << QStringLiteral("matrix(matrixrow{2,3}, matrixrow{7, 4})");
     QTest::newRow("matrix by rows") << script << "matrix { matrixrow { 2, 3 }, matrixrow { 7, 4 } }";
     
     script.clear();
-    script << "A := matrix{matrixrow{13,6}, matrixrow{-2,5}}";
-    script << "matrix(vector{2,3}, vector{7, 4}) + A";
+    script << QStringLiteral("A := matrix{matrixrow{13,6}, matrixrow{-2,5}}");
+    script << QStringLiteral("matrix(vector{2,3}, vector{7, 4}) + A");
     QTest::newRow("matrix by vectors/columns + A") << script << "matrix { matrixrow { 15, 13 }, matrixrow { 1, 9 } }";
     
     script.clear();
-    script << "A := matrix{matrixrow{2, 3, 6}, matrixrow{-5, 0, 2.3}}";
-    script << "matrix(2, 3, -9) + A";
+    script << QStringLiteral("A := matrix{matrixrow{2, 3, 6}, matrixrow{-5, 0, 2.3}}");
+    script << QStringLiteral("matrix(2, 3, -9) + A");
     QTest::newRow("fill + A") << script << "matrix { matrixrow { -7, -6, -3 }, matrixrow { -14, -9, -6.7 } }";
     
     script.clear();
-    script << "A := matrix{matrixrow{2, 3}, matrixrow{-5, 1}}";
-    script << "B := matrix{matrixrow{12, 13}, matrixrow{-15, 11}}";
-    script << "blockmatrix(matrixrow{A, B})";
+    script << QStringLiteral("A := matrix{matrixrow{2, 3}, matrixrow{-5, 1}}");
+    script << QStringLiteral("B := matrix{matrixrow{12, 13}, matrixrow{-15, 11}}");
+    script << QStringLiteral("blockmatrix(matrixrow{A, B})");
     QTest::newRow("simple block matrix") << script << "matrix { matrixrow { 2, 3, 12, 13 }, matrixrow { -5, 1, -15, 11 } }";
     
-    const QString resultblockmatrix = "matrix { matrixrow { 1, 8, 7, 6 }, matrixrow { 3, 5, 0, 2 }, matrixrow { 1, 4, 9, 3 } }";
+    const QString resultblockmatrix = QStringLiteral("matrix { matrixrow { 1, 8, 7, 6 }, matrixrow { 3, 5, 0, 2 }, matrixrow { 1, 4, 9, 3 } }");
     
     script.clear();
-    script << "A := matrix(vector{1,3}, vector{8,5})";
-    script << "B := matrix{matrixrow{7,6}, matrixrow{0,2}}";
-    script << "C := matrix(matrixrow{1,4})";
-    script << "D := matrix(vector{9}, vector{3})";
-    script << "blockmatrix(matrixrow{A, B}, matrixrow{C, D})";
+    script << QStringLiteral("A := matrix(vector{1,3}, vector{8,5})");
+    script << QStringLiteral("B := matrix{matrixrow{7,6}, matrixrow{0,2}}");
+    script << QStringLiteral("C := matrix(matrixrow{1,4})");
+    script << QStringLiteral("D := matrix(vector{9}, vector{3})");
+    script << QStringLiteral("blockmatrix(matrixrow{A, B}, matrixrow{C, D})");
     QTest::newRow("block matrix 4 blocks conf 1") << script << resultblockmatrix;
     
     script.clear();
-    script << "A := matrix{matrixrow{1,8,7}, matrixrow{3,5,0}}";
-    script << "B := matrix(vector{6,2})";
-    script << "C := matrix(matrixrow{1,4,9})";
-    script << "D := matrix(1,1,3)";
-    script << "blockmatrix(matrixrow{A, B}, matrixrow{C, D})";
+    script << QStringLiteral("A := matrix{matrixrow{1,8,7}, matrixrow{3,5,0}}");
+    script << QStringLiteral("B := matrix(vector{6,2})");
+    script << QStringLiteral("C := matrix(matrixrow{1,4,9})");
+    script << QStringLiteral("D := matrix(1,1,3)");
+    script << QStringLiteral("blockmatrix(matrixrow{A, B}, matrixrow{C, D})");
     QTest::newRow("block matrix by rows, conf 2") << script << resultblockmatrix;
     
     script.clear();
-    script << "A := matrix(matrixrow{1,8})";
-    script << "B := transpose(matrix(diag(diag(7,6))))";
-    script << "C := matrix{matrixrow{3,5}}";
-    script << "D := matrix(matrixrow{0,2})";
-    script << "E := matrix(vector{1},vector{4})";
-    script << "F := matrix{matrixrow{9,3}}";
-    script << "blockmatrix(matrixrow{A, B}, matrixrow{C, D}, matrixrow{E, F})";
+    script << QStringLiteral("A := matrix(matrixrow{1,8})");
+    script << QStringLiteral("B := transpose(matrix(diag(diag(7,6))))");
+    script << QStringLiteral("C := matrix{matrixrow{3,5}}");
+    script << QStringLiteral("D := matrix(matrixrow{0,2})");
+    script << QStringLiteral("E := matrix(vector{1},vector{4})");
+    script << QStringLiteral("F := matrix{matrixrow{9,3}}");
+    script << QStringLiteral("blockmatrix(matrixrow{A, B}, matrixrow{C, D}, matrixrow{E, F})");
     QTest::newRow("block matrix by rows, conf 3") << script << resultblockmatrix;
     
     script.clear();
-    script << "A := matrix(vector{1,3}, vector{8,5})";
-    script << "B := matrix(matrixrow{1,4})";
-    script << "C := matrix{matrixrow{7,6}, matrixrow{0,2}}";
-    script << "D := matrix(vector{9}, vector{3})";
-    script << "blockmatrix(vector{A, B}, vector{C, D})";
+    script << QStringLiteral("A := matrix(vector{1,3}, vector{8,5})");
+    script << QStringLiteral("B := matrix(matrixrow{1,4})");
+    script << QStringLiteral("C := matrix{matrixrow{7,6}, matrixrow{0,2}}");
+    script << QStringLiteral("D := matrix(vector{9}, vector{3})");
+    script << QStringLiteral("blockmatrix(vector{A, B}, vector{C, D})");
     QTest::newRow("block matrix by cols, conf 1") << script << resultblockmatrix;
     
     script.clear();
-    script << "A := matrix{matrixrow{1,8}}";
-    script << "B := matrix(matrixrow{3,5})";
-    script << "C := matrix(matrixrow{1,4})";
-    script << "D := matrix{matrixrow{7,6}}";
-    script << "E := matrix(matrixrow{0,2})";
-    script << "F := matrix(matrixrow{9,3})";
-    script << "blockmatrix(vector{A, B, C}, vector{D, E, F})";
+    script << QStringLiteral("A := matrix{matrixrow{1,8}}");
+    script << QStringLiteral("B := matrix(matrixrow{3,5})");
+    script << QStringLiteral("C := matrix(matrixrow{1,4})");
+    script << QStringLiteral("D := matrix{matrixrow{7,6}}");
+    script << QStringLiteral("E := matrix(matrixrow{0,2})");
+    script << QStringLiteral("F := matrix(matrixrow{9,3})");
+    script << QStringLiteral("blockmatrix(vector{A, B, C}, vector{D, E, F})");
     QTest::newRow("block matrix by cols, conf 2") << script << resultblockmatrix;
     
     script.clear();
-    script << "matrix(2,5)";
+    script << QStringLiteral("matrix(2,5)");
     QTest::newRow("simple 0") << script << "matrix { matrixrow { 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 0, 0, 0 } }";
     
     script.clear();
-    script << "identitymatrix(3)";
+    script << QStringLiteral("identitymatrix(3)");
     QTest::newRow("simple I") << script << "matrix { matrixrow { 1, 0, 0 }, matrixrow { 0, 1, 0 }, matrixrow { 0, 0, 1 } }";
     
     script.clear();
-    script << "identitymatrix(3)-identitymatrix(3)";
+    script << QStringLiteral("identitymatrix(3)-identitymatrix(3)");
     QTest::newRow("I - I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
     
     script.clear();
-    script << "0*identitymatrix(3)";
+    script << QStringLiteral("0*identitymatrix(3)");
     QTest::newRow("0*I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
     
     script.clear();
-    script << "matrix(3,3) + identitymatrix(3)";
+    script << QStringLiteral("matrix(3,3) + identitymatrix(3)");
     QTest::newRow("0 + I") << script << "matrix { matrixrow { 1, 0, 0 }, matrixrow { 0, 1, 0 }, matrixrow { 0, 0, 1 } }";
     
     script.clear();
-    script << "diag(5, 3.2, 6, -9)";
+    script << QStringLiteral("diag(5, 3.2, 6, -9)");
     QTest::newRow("simple diag") << script << "matrix { matrixrow { 5, 0, 0, 0 }, matrixrow { 0, 3.2, 0, 0 }, matrixrow { 0, 0, 6, 0 }, matrixrow { 0, 0, 0, -9 } }";
     
     script.clear();
-    script << "diag(vector{5, 3.2, 6, -9})";
+    script << QStringLiteral("diag(vector{5, 3.2, 6, -9})");
     QTest::newRow("simple diag by vector") << script << "matrix { matrixrow { 5, 0, 0, 0 }, matrixrow { 0, 3.2, 0, 0 }, matrixrow { 0, 0, 6, 0 }, matrixrow { 0, 0, 0, -9 } }";
     
     script.clear();
-    script << "diag(1, 1, 1) - identitymatrix(3)";
+    script << QStringLiteral("diag(1, 1, 1) - identitymatrix(3)");
     QTest::newRow("zeromatrix: diag - I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
     
     script.clear();
-    script << "diag(vector{1, 1, 1}) - identitymatrix(3)";
+    script << QStringLiteral("diag(vector{1, 1, 1}) - identitymatrix(3)");
     QTest::newRow("zeromatrix: diag by vector - I") << script << "matrix { matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 }, matrixrow { 0, 0, 0 } }";
     
     script.clear();
-    script << "diag(5, 7.8, -0.6, 3.5)[3][3] + diag(5, 7.8, -0.6, 3.5)[2][3]";
+    script << QStringLiteral("diag(5, 7.8, -0.6, 3.5)[3][3] + diag(5, 7.8, -0.6, 3.5)[2][3]");
     QTest::newRow("selector diag") << script << "-0.6";
     
     script.clear();
-    script << "v := vector{5, 7.8, -0.6, 3.5}";
-    script << "diag(v)[3][3] + diag(v)[2][3]";
+    script << QStringLiteral("v := vector{5, 7.8, -0.6, 3.5}");
+    script << QStringLiteral("diag(v)[3][3] + diag(v)[2][3]");
     QTest::newRow("selector diag by vector") << script << "-0.6";
     
     script.clear();
-    script << "blockdiag(matrix{matrixrow{1, 3}, matrixrow{-6, 8}}, matrix{matrixrow{5, 6}, matrixrow{14, -1.2}})";
+    script << QStringLiteral("blockdiag(matrix{matrixrow{1, 3}, matrixrow{-6, 8}}, matrix{matrixrow{5, 6}, matrixrow{14, -1.2}})");
     QTest::newRow("simple block diagonal") << script << "matrix { matrixrow { 1, 3, 0, 0 }, matrixrow { -6, 8, 0, 0 }, matrixrow { 0, 0, 5, 6 }, matrixrow { 0, 0, 14, -1.2 } }";
     
     script.clear();
-    script << "I := identitymatrix(3)";
-    script << "A := matrix(2,3, -6)";
-    script << "B := 3*I";
-    script << "blockdiag(I, A, B)";
+    script << QStringLiteral("I := identitymatrix(3)");
+    script << QStringLiteral("A := matrix(2,3, -6)");
+    script << QStringLiteral("B := 3*I");
+    script << QStringLiteral("blockdiag(I, A, B)");
     QTest::newRow("block diagonal") << script << "matrix { matrixrow { 1, 0, 0, 0, 0, 0, 0, 0, 0 }, matrixrow { 0, 1, 0, 0, 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 1, 0, 0, 0, 0, 0, 0 }, matrixrow { 0, 0, 0, -6, -6, -6, 0, 0, 0 }, matrixrow { 0, 0, 0, -6, -6, -6, 0, 0, 0 }, matrixrow { 0, 0, 0, 0, 0, 0, 3, 0, 0 }, matrixrow { 0, 0, 0, 0, 0, 0, 0, 3, 0 }, matrixrow { 0, 0, 0, 0, 0, 0, 0, 0, 3 } }";
     
     script.clear();
-    script << "tridiag(-2.1, 3.6, 48, 5)";
+    script << QStringLiteral("tridiag(-2.1, 3.6, 48, 5)");
     QTest::newRow("simple tridiag") << script << "matrix { matrixrow { 3.6, 48, 0, 0, 0 }, matrixrow { -2.1, 3.6, 48, 0, 0 }, matrixrow { 0, -2.1, 3.6, 48, 0 }, matrixrow { 0, 0, -2.1, 3.6, 48 }, matrixrow { 0, 0, 0, -2.1, 3.6 } }";
     
     script.clear();
-    script << "A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -1.2, cos(pi)}, matrixrow{-45, 9.6, -2.3}}";
-    script << "tridiag(-8, 10, 7.2, 3) - identitymatrix(3) + A";
+    script << QStringLiteral("A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -1.2, cos(pi)}, matrixrow{-45, 9.6, -2.3}}");
+    script << QStringLiteral("tridiag(-8, 10, 7.2, 3) - identitymatrix(3) + A");
     QTest::newRow("tridiag - I + A") << script << "matrix { matrixrow { 1.2, 9.5, 5 }, matrixrow { -8, 7.8, 6.2 }, matrixrow { -45, 1.6, 6.7 } }";
     
     script.clear();
-    script << "A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -12, 1}, matrixrow{-45, 9.6, cos(pi)}}";
-    script << "diag(A)";
+    script << QStringLiteral("A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -12, 1}, matrixrow{-45, 9.6, cos(pi)}}");
+    script << QStringLiteral("diag(A)");
     QTest::newRow("simple diag(A)") << script << "vector { -7.8, -12, -1 }";
     
     script.clear();
-    script << "A := matrix{matrixrow{8, 2.3, 5}, matrixrow{-45, -cos(pi), 12}}";
-    script << "diag(A)";
+    script << QStringLiteral("A := matrix{matrixrow{8, 2.3, 5}, matrixrow{-45, -cos(pi), 12}}");
+    script << QStringLiteral("diag(A)");
     QTest::newRow("getdiag fat") << script << "vector { 8, 1 }";
     
     script.clear();
-    script << "A := matrix{matrixrow{8, 2.3, 1}, matrixrow{3, 32, 2}, matrixrow{-45, 12, 3}, matrixrow{1, 0, 3}, matrixrow{-5, 1, 0}}";
-    script << "diag(A)";
+    script << QStringLiteral("A := matrix{matrixrow{8, 2.3, 1}, matrixrow{3, 32, 2}, matrixrow{-45, 12, 3}, matrixrow{1, 0, 3}, matrixrow{-5, 1, 0}}");
+    script << QStringLiteral("diag(A)");
     QTest::newRow("getdiag skinny") << script << "vector { 8, 32, 3 }";
     
     script.clear();
-    script << "A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -12, 1}, matrixrow{-45, 9.6, cos(pi)}}";
-    script << "diag(A)[2]";
+    script << QStringLiteral("A := matrix{matrixrow{-7.8, 2.3, 5}, matrixrow{0, -12, 1}, matrixrow{-45, 9.6, cos(pi)}}");
+    script << QStringLiteral("diag(A)[2]");
     QTest::newRow("selector getdiag") << script << "-12";
     
     script.clear();
-    script << "v := vector{5,5,0}";
-    script << "A := matrix{matrixrow{0, -1, 2}, matrixrow{4, 0, -3.2}, matrixrow{5.8, -15, 0}}";
-    script << "B := matrix(3,3, 4.5)";
-    script << "D := diag(v)";
-    script << "I := identitymatrix(3)";
-    script << "O := matrix(3,3)";
-    script << "T := tridiag(2,1,8,3)";
-    script << "A + B + D - cos(pi)*I + O + T";
+    script << QStringLiteral("v := vector{5,5,0}");
+    script << QStringLiteral("A := matrix{matrixrow{0, -1, 2}, matrixrow{4, 0, -3.2}, matrixrow{5.8, -15, 0}}");
+    script << QStringLiteral("B := matrix(3,3, 4.5)");
+    script << QStringLiteral("D := diag(v)");
+    script << QStringLiteral("I := identitymatrix(3)");
+    script << QStringLiteral("O := matrix(3,3)");
+    script << QStringLiteral("T := tridiag(2,1,8,3)");
+    script << QStringLiteral("A + B + D - cos(pi)*I + O + T");
     QTest::newRow("complex exp") << script << "matrix { matrixrow { 11.5, 11.5, 6.5 }, matrixrow { 10.5, 11.5, 9.3 }, matrixrow { 10.3, -8.5, 6.5 } }";
     
 // 3.6     48      0     9    80
@@ -263,41 +263,41 @@ void CommandsTest::testCorrect_data()
 //   1   -2.1    3.6    47    90
 //   0     -7   -2.1   3.3    42
 //   5      4      3  -2.1   3.5
-    const QString square = "A := matrix{matrixrow{3.6, 48, 0, 9, 80}, matrixrow {2.1, 3.2, 49, 20, 100}, matrixrow{1, -2.1, 3.6, 47, 90}, matrixrow{0, -7, -2.1, 3.3, 42}, matrixrow{5, 4,  3, -2.1, 3.5}}";
+    const QString square = QStringLiteral("A := matrix{matrixrow{3.6, 48, 0, 9, 80}, matrixrow {2.1, 3.2, 49, 20, 100}, matrixrow{1, -2.1, 3.6, 47, 90}, matrixrow{0, -7, -2.1, 3.3, 42}, matrixrow{5, 4,  3, -2.1, 3.5}}");
     
     script.clear();
     script << square;
-    script << "diag(A,2)";
+    script << QStringLiteral("diag(A,2)");
     QTest::newRow("getndiag square +2") << script << "vector { 0, 20, 90 }";
     
     script.clear();
     script << square;
-    script << "diag(A,-2)";
+    script << QStringLiteral("diag(A,-2)");
     QTest::newRow("getndiag square -2") << script << "vector { 1, -7, 3 }";
     
     script.clear();
     script << square;
-    script << "diag(A,-3)";
+    script << QStringLiteral("diag(A,-3)");
     QTest::newRow("getndiag square -3") << script << "vector { 0, 4 }";
     
     script.clear();
     script << square;
-    script << "diag(A,3)";
+    script << QStringLiteral("diag(A,3)");
     QTest::newRow("getndiag square +3") << script << "vector { 9, 100 }";
     
     script.clear();
     script << square;
-    script << "diag(A,-3)";
+    script << QStringLiteral("diag(A,-3)");
     QTest::newRow("getndiag square -3") << script << "vector { 0, 4 }";
     
     script.clear();
     script << square;
-    script << "diag(A,4)[1]";
+    script << QStringLiteral("diag(A,4)[1]");
     QTest::newRow("selector getndiag square corner +") << script << "80";
 
     script.clear();
     script << square;
-    script << "diag(A,-4)[1]";
+    script << QStringLiteral("diag(A,-4)[1]");
     QTest::newRow("selector getndiag square corner -") << script << "5";
     
 //  3.6    42     0      9     80   4   15
@@ -305,31 +305,31 @@ void CommandsTest::testCorrect_data()
 //    1   2.2   3.6     47      0   8    9
 //    0     0  -2.3    5.6     48   2    1
 //    2     4     3   -2.1    3.6   3    5
-    const QString fat = "A := matrix{matrixrow{3.6, 42, 0, 9, 80, 4, 15}, matrixrow{-4.1, 7.8, 45, 0, 100, 6,7}, matrixrow{1, 2.2, 5.6, 47, 0 , 8, 9}, matrixrow{0, 0, -2.3, 3.6, 48, 2,1}, matrixrow{2, 4, 3, -2.1, 3.6, 3,5}}";
+    const QString fat = QStringLiteral("A := matrix{matrixrow{3.6, 42, 0, 9, 80, 4, 15}, matrixrow{-4.1, 7.8, 45, 0, 100, 6,7}, matrixrow{1, 2.2, 5.6, 47, 0 , 8, 9}, matrixrow{0, 0, -2.3, 3.6, 48, 2,1}, matrixrow{2, 4, 3, -2.1, 3.6, 3,5}}");
     
     script.clear();
     script << fat;
-    script << "diag(A,5)";
+    script << QStringLiteral("diag(A,5)");
     QTest::newRow("getndiag fat +5") << script << "vector { 4, 7 }";
     
     script.clear();
     script << fat;
-    script << "diag(A,1)";
+    script << QStringLiteral("diag(A,1)");
     QTest::newRow("getndiag fat +1") << script << "vector { 42, 45, 47, 48, 3 }";
     
     script.clear();
     script << fat;
-    script << "diag(A,-1)";
+    script << QStringLiteral("diag(A,-1)");
     QTest::newRow("getndiag fat -1") << script << "vector { -4.1, 2.2, -2.3, -2.1 }";
     
     script.clear();
     script << fat;
-    script << "diag(A,6)[1]";
+    script << QStringLiteral("diag(A,6)[1]");
     QTest::newRow("selector getndiag fat corner +") << script << "15";
 
     script.clear();
     script << fat;
-    script << "diag(A,-4)[1]";
+    script << QStringLiteral("diag(A,-4)[1]");
     QTest::newRow("selector getndiag fat corner -") << script << "2";
     
 //  3.6    42
@@ -337,64 +337,64 @@ void CommandsTest::testCorrect_data()
 //    1   2.2
 //    0     1
 //    2     4
-    const QString skinny = "A := matrix{matrixrow{3.6, 42}, matrixrow{-4.1, 7.8}, matrixrow{1, 2.2}, matrixrow{0, 1}, matrixrow{2, 4}}";
+    const QString skinny = QStringLiteral("A := matrix{matrixrow{3.6, 42}, matrixrow{-4.1, 7.8}, matrixrow{1, 2.2}, matrixrow{0, 1}, matrixrow{2, 4}}");
     
     script.clear();
     script << fat;
-    script << "diag(A,1)[1]";
+    script << QStringLiteral("diag(A,1)[1]");
     QTest::newRow("selector getndiag skinny corner +") << script << "42";
     
     script.clear();
     script << skinny;
-    script << "diag(A,-1)";
+    script << QStringLiteral("diag(A,-1)");
     QTest::newRow("getndiag skinny -1") << script << "vector { -4.1, 2.2 }";
     
     script.clear();
     script << skinny;
-    script << "diag(A,-3)";
+    script << QStringLiteral("diag(A,-3)");
     QTest::newRow("getndiag skinny -3") << script << "vector { 0, 4 }";
     
     script.clear();
     script << skinny;
-    script << "diag(A,-4)";
+    script << QStringLiteral("diag(A,-4)");
     QTest::newRow("getndiag skinny -4") << script << "vector { 2 }";
     
     script.clear();
     script << skinny;
-    script << "isdiag(A)";
+    script << QStringLiteral("isdiag(A)");
     QTest::newRow("is not diag") << script << "false";
     
     script.clear();
-    script << "iszeromatrix(matrix(8,5))";
+    script << QStringLiteral("iszeromatrix(matrix(8,5))");
     QTest::newRow("is zero matrix") << script << "true";
     
     script.clear();
-    script << "isidentitymatrix(identitymatrix(5))";
+    script << QStringLiteral("isidentitymatrix(identitymatrix(5))");
     QTest::newRow("Id is identity matrix") << script << "true";
     
     script.clear();
-    script << "isidentitymatrix(blockdiag(identitymatrix(3), matrix{matrixrow{1}}, identitymatrix(2)))";
+    script << QStringLiteral("isidentitymatrix(blockdiag(identitymatrix(3), matrix{matrixrow{1}}, identitymatrix(2)))");
     QTest::newRow("block of Id is Id matrix") << script << "true";
     
     script.clear();
-    script << "isdiag(identitymatrix(4))";
+    script << QStringLiteral("isdiag(identitymatrix(4))");
     QTest::newRow("Id is diag matrix") << script << "true";
     
 #ifdef HAVE_EIGEN3
     script.clear();
-    script << "eigenvalues(identitymatrix(4))";
+    script << QStringLiteral("eigenvalues(identitymatrix(4))");
     QTest::newRow("eigenvalues: from Id") << script << "list { 1, 1, 1, 1 }";
     
     script.clear();
-    script << "eigenvalues(matrix(vector{3,4}, vector{-2, -1}))";
+    script << QStringLiteral("eigenvalues(matrix(vector{3,4}, vector{-2, -1}))");
     QTest::newRow("eigenvalues: full complex") << script << "list { 1+2*i, 1-2*i }";
     
     script.clear();
-    script << "eigenvectors(identitymatrix(4))";
+    script << QStringLiteral("eigenvectors(identitymatrix(4))");
     QTest::newRow("eigenvectors: from Id") << script << "list { vector { 1, 0, 0, 0 }, vector { 0, 1, 0, 0 }, vector { 0, 0, 1, 0 }, vector { 0, 0, 0, 1 } }";
     
     script.clear();
-    script << "eigenvectors(matrix(vector{3,4}, vector{-2, -1}))";
+    script << QStringLiteral("eigenvectors(matrix(vector{3,4}, vector{-2, -1}))");
     QTest::newRow("complex eigenvectors") << script << "list { vector { -0.408248290464+0.408248290464*i, 0.816496580928*i }, vector { -0.408248290464-0.408248290464*i, -0.816496580928*i } }";
 #endif
 }
@@ -421,8 +421,8 @@ void CommandsTest::testCorrect()
     }
     QCOMPARE(last.toString(), result);
 
-    QString script = expression.join("\n");
-    script+="\n\n\n";
+    QString script = expression.join(QStringLiteral("\n"));
+    script+=QLatin1String("\n\n\n");
     QTextStream stream(&script);
     a->importScript(&stream);
     QVERIFY(a->isCorrect());

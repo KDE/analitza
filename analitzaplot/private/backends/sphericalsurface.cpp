@@ -38,8 +38,8 @@ public:
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
                         Analitza::ExpressionType(Analitza::ExpressionType::Value)))
     COORDDINATE_SYSTEM(Cartesian)
-    PARAMETERS(QStringList("t")<< "p") // t azimuth p polar
-    ICON_NAME("newspherical")
+    PARAMETERS(QStringList(QStringLiteral("t"))<< QStringLiteral("p")) // t azimuth p polar
+    ICON_NAME(QStringLiteral("newspherical"))
     EXAMPLES(QStringList())
 
     //Own
@@ -93,8 +93,8 @@ bool SphericalSurface::setInterval(const QString& argname, double min, double ma
 
 SphericalSurface::SphericalSurface(const Analitza::Expression& e): AbstractSurface(e)
 {
-    setInterval("t", 0, M_PI);
-    setInterval("p", 0, M_PI);
+    setInterval(QStringLiteral("t"), 0, M_PI);
+    setInterval(QStringLiteral("p"), 0, M_PI);
 }
 
 SphericalSurface::SphericalSurface(const Analitza::Expression& e, Analitza::Variables* v)
@@ -103,8 +103,8 @@ SphericalSurface::SphericalSurface(const Analitza::Expression& e, Analitza::Vari
 
 QVector3D SphericalSurface::fromParametricArgs(double a, double p)
 {
-    arg("t")->setValue(a);
-    arg("p")->setValue(p);    
+    arg(QStringLiteral("t"))->setValue(a);
+    arg(QStringLiteral("p"))->setValue(p);    
 
     double r = analyzer->calculateLambda().toReal().value();
 
