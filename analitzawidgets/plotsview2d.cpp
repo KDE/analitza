@@ -377,8 +377,8 @@ void PlotsView2D::modelChanged()
     if (m_currentModel)
     {
         disconnect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-        disconnect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-        disconnect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+        disconnect(model(), &QAbstractItemModel::rowsInserted, this, &PlotsView2D::addFuncs);
+        disconnect(model(), &QAbstractItemModel::rowsRemoved, this, &PlotsView2D::removeFuncs);
         
         //WARNING should we disconnect selection too? if so then must be documented
 //         if (m_selection)
@@ -390,8 +390,8 @@ void PlotsView2D::modelChanged()
     m_currentModel = model();
 
     connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-    connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-    connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+    connect(model(), &QAbstractItemModel::rowsInserted, this, &PlotsView2D::addFuncs);
+    connect(model(), &QAbstractItemModel::rowsRemoved, this, &PlotsView2D::removeFuncs);
 }
 
 void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)

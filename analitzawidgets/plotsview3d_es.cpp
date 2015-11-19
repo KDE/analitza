@@ -136,9 +136,9 @@ void PlotsView3DES::modelChanged()
 //         }
 //     }
 
-    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-    connect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-    connect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+    connect(model(), &QAbstractItemModel::dataChanged, this, &PlotsView3DES::updateFuncs);
+    connect(model(), &QAbstractItemModel::rowsInserted, this, &PlotsView3DES::addFuncs);
+    connect(model(), &QAbstractItemModel::rowsRemoved, this, &PlotsView3DES::removeFuncs);
 
     update();
 }

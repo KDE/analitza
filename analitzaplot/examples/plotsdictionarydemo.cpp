@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     QTreeView* plots = new QTreeView(&central);
     plots->setModel(m.plotModel());
     layout->addWidget(plots);
-    QObject::connect(tree, SIGNAL(clicked(QModelIndex)), &m, SLOT(setCurrentIndex(QModelIndex)));
+    QObject::connect(tree, &QAbstractItemView::clicked, &m, &PlotsDictionaryModel::setCurrentIndex);
     
     central.show();
     return app.exec();

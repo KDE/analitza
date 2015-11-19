@@ -76,8 +76,8 @@ void Graph2DMobile::resetViewport()
 
 void Graph2DMobile::modelChanged()
 {
-    connect(model(), SIGNAL(dataChanged( const QModelIndex&, const QModelIndex& )),
-        this, SLOT(updateFuncs(const QModelIndex&, const QModelIndex)));
+    connect(model(), &QAbstractItemModel::dataChanged,
+        this, &Graph2DMobile::updateFuncs);
     connect(model(), SIGNAL( rowsInserted ( const QModelIndex &, int, int ) ),
         this, SLOT(addFuncs(const QModelIndex&, int, int)));
     connect(model(), SIGNAL( rowsRemoved ( const QModelIndex &, int, int ) ),

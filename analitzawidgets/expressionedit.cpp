@@ -70,7 +70,7 @@ ExpressionEdit::ExpressionEdit(QWidget *parent, AlgebraHighlighter::Mode inimode
     m_helptip->hide();
     m_hideHelpTip = new QTimer(this);
     m_hideHelpTip->setInterval(500);
-    connect(m_hideHelpTip, SIGNAL(timeout()), m_helptip, SLOT(hide()));
+    connect(m_hideHelpTip, &QTimer::timeout, m_helptip, &QWidget::hide);
     
     m_highlight= new AlgebraHighlighter(this->document(), a);
     
@@ -96,8 +96,8 @@ ExpressionEdit::ExpressionEdit(QWidget *parent, AlgebraHighlighter::Mode inimode
     completionView->hideColumn(2);
     completionView->hideColumn(3);
     
-    connect(this, SIGNAL(returnPressed()), this, SLOT(returnP()));
-    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorMov()));
+    connect(this, &ExpressionEdit::returnPressed, this, &ExpressionEdit::returnP);
+    connect(this, &QPlainTextEdit::cursorPositionChanged, this, &ExpressionEdit::cursorMov);
     connect(this, SIGNAL(signalHelper(QString)), this, SLOT(helper(QString)));
     connect(m_completer, SIGNAL(activated(QString)), this, SLOT(completed(QString)));
 //     connect(m_completer, SIGNAL(activated(QModelIndex)), this, SLOT(completed(QModelIndex)));
@@ -293,7 +293,7 @@ void ExpressionEdit::cursorMov()
     
     if(help.isEmpty()) {
         if(isCorrect()) {
-            QTimer::singleShot(500, this, SLOT(showSimplified()));
+            QTimer::singleShot(500, this, &ExpressionEdit::showSimplified);
         }
     } else
         helper(help);
@@ -429,7 +429,7 @@ void ExpressionEdit::contextMenuEvent(QContextMenuEvent * e)
         QAction* ac=examples->addAction(example);
         ac->setData(example);
     }
-    connect(examples, SIGNAL(triggered(QAction*)), SLOT(setActionText(QAction*)));
+    connect(examples, &QMenu::triggered, this, &ExpressionEdit::setActionText);
     
     popup->exec(e->globalPos());
 
