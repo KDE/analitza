@@ -20,6 +20,7 @@
 #include "analitzawrapper.h"
 #include <analitzaplot/plotsmodel.h>
 #include <analitzagui/variablesmodel.h>
+#include <analitzagui/operatorsmodel.h>
 #include <analitza/variables.h>
 #include <graph2dmobile.h>
 #include <graph3ditem.h>
@@ -33,5 +34,6 @@ void AnalitzaDeclarativePlugin::registerTypes(const char* uri)
     qmlRegisterType<Graph3DItem>(uri, 1, 1, "Graph3DView");
     qmlRegisterType<Analitza::PlotsModel>(uri, 1, 0, "PlotsModel");
     qmlRegisterType<Analitza::VariablesModel>(uri, 1, 0, "VariablesModel");
+    qmlRegisterType<OperatorsModel>(uri, 1, 0, "OperatorsModel");
     qmlRegisterInterface<Analitza::Variables*>("Analitza::Variables");
 }

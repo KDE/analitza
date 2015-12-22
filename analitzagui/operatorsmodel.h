@@ -28,9 +28,11 @@ class Variables;
 class Operator;
 }
 
+//TODO: get in the namespace
 /** Operators model is a model class that has a relation of all operators string with their OperatorType. */
 class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
 {
+    Q_OBJECT
     public:
         /** Constructor. Creates a new Operator Model. */
         explicit OperatorsModel(QObject *parent=0);
@@ -63,5 +65,6 @@ class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
     private:
         const Analitza::Variables *m_vars;
 };
+
 
 #endif
