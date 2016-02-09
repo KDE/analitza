@@ -107,6 +107,7 @@ class ANALITZA_EXPORT ExpressionType
         static QList<ExpressionType> manyFromArgs(const QList<ExpressionType>& args);
     private:
         static void starsSimplification(ExpressionType& t, QMap<int, int>& reductions, int& next);
+        static QMap<int, ExpressionType> processContained(const QMap<int, ExpressionType>& initial, const ExpressionType& candidate, const ExpressionType& type);
         
         Type m_type;
         ///In case of list and vector the inside type

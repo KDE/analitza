@@ -630,6 +630,18 @@ void ExpressionType::clearAssumptions()
     }
 }
 
+QMap<int, ExpressionType> ExpressionType::processContained(const QMap<int, ExpressionType>& initial, const ExpressionType& candidate, const ExpressionType& type)
+{
+    auto ret=computeStars(initial, candidate.contained(), type.contained());
+
+    if(candidate.size()<0) {
+        ExpressionType t=type;
+        t.m_contained.first()=t.m_contained.first().starsToType(ret);
+        ret[candidate.size()] = t;
+    }
+    return ret;
+}
+
 QMap<int, ExpressionType> ExpressionType::computeStars(const QMap<int, ExpressionType>& initial, const ExpressionType& candidate, const ExpressionType& type)
 {
     QMap<int, ExpressionType> ret(initial);
@@ -656,24 +668,12 @@ QMap<int, ExpressionType> ExpressionType::computeStars(const QMap<int, Expressio
             break;
         case ExpressionType::Matrix:
             if(type.type()==ExpressionType::Matrix) { // remove? assert?
-                ret=computeStars(initial, candidate.contained(), type.contained());
-                
-                if(candidate.size()<0) {
-                    ExpressionType t=type;
-                    t.m_contained.first()=t.m_contained.first().starsToType(ret);
-                    ret[candidate.size()] = t;
-                }
+                ret = processContained(initial, candidate, type);
             }
             break;
         case ExpressionType::Vector:
             if(type.type()==ExpressionType::Vector) { // remove?
-                ret=computeStars(initial, candidate.contained(), type.contained());
-                
-                if(candidate.size()<0) {
-                    ExpressionType t=type;
-                    t.m_contained.first()=t.m_contained.first().starsToType(ret);
-                    ret[candidate.size()] = t;
-                }
+                ret = processContained(initial, candidate, type);
             }
             break;
         case ExpressionType::Lambda:
