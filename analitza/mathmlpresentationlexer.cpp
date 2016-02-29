@@ -90,8 +90,10 @@ void MathMLPresentationLexer::getToken()
                         t = m_operators[op[0]];
                     else if(op.length()==2 && m_longOperators.contains(op))
                         t = m_longOperators[op];
-                    else
+                    else {
                         m_err= QCoreApplication::translate("Error message", "Unknown token '%1'").arg(op);
+                        break;
+                    }
                     m_tokens.append(TOKEN(t, 0));
                 } else {
                     QString text = m_xml.text().toString().trimmed();
