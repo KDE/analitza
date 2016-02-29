@@ -730,17 +730,16 @@ QList<Ci*> Expression::parameters() const
 Expression Expression::lambdaBody() const
 {
     Q_ASSERT(isLambda());
-    Object *ret=0;
     Object* ob = actualRoot(d->m_tree);
     if(ob->isContainer()) {
         Container* c = (Container*) ob;
         Q_ASSERT(c->containerType()==Container::lambda);
-        ret = c->m_params.last();
+        Object *ret = c->m_params.last();
+        Object* o = ret->copy();
+        computeDepth(o);
+        return Expression(o);
     }
-    
-    Object* o = ret->copy();
-    computeDepth(o);
-    return Expression(o);
+    return {};
 }
 
 bool Expression::isVector() const
