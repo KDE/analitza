@@ -673,6 +673,7 @@ void AnalitzaTest::testSimplify_data()
     QTest::newRow("piecewise3") << "piecewise { 2=2 ? 4, ? 3}" << "4";
     
     QTest::newRow("sum.dlul") << "w->sum(x : x=(floor(2.5)+w)..(ceiling(2.5)))" << "w->sum(x:x=w+2..3)";
+    QTest::newRow("sum.times") << "sum(2*x : x=0..y)" << "2*sum(x:x=0..y)";
     QTest::newRow("trig") << "sin(x)/cos(x)" << "sin(x)/cos(x)";
     
     QTest::newRow("mono") << "2*x*y+3*x*y" << "5*x*y";

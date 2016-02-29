@@ -49,10 +49,10 @@ Object* SubstituteExpression::walkApply(const Apply* pattern)
     QVector<Ci*> bvars = pattern->bvarCi();
     foreach(Ci* bvar, bvars) {
         Ci* nbvar = bvar->copy();
-        QString name = bvar->name();
+        const QString name = bvar->name();
         
-        if(m_values.contains(name) && !m_renames.contains(name)) {
-            const Object* val = m_values.value(bvar->name());
+        const Object* val = m_values.value(bvar->name());
+        if(val && !m_renames.contains(name)) {
             Q_ASSERT(val->type()==Object::variable);
             QString newname = static_cast<const Ci*>(val)->name();
             m_renames.insert(name, newname);

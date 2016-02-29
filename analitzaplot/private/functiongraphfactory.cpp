@@ -133,6 +133,7 @@ AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Anal
 {
     Q_ASSERT(builderFunctionsWithVars.contains(id));
     AbstractFunctionGraph* ret = builderFunctionsWithVars.value(id)(exp, v);
+    Q_ASSERT(ret);
     ret->setInternalId(id);
     return ret;
 }

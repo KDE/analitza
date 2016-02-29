@@ -1722,14 +1722,14 @@ Object* Analyzer::simpSum(Apply* c)
         if(removed>0) {
             Apply* nc=new Apply;
             nc->appendBranch(new Operator(Operator::times));
-            nc->m_params=out;
-            nc->appendBranch(c);
+            nc->m_params << out << c;
             
-            cval->m_params=sum;
             if(sum.count()==1) {
                 cval->m_params.clear();
                 delete cval;
                 c->m_params.last()=sum.last();
+            } else {
+                cval->m_params=sum;
             }
             
             ret=simp(nc);
