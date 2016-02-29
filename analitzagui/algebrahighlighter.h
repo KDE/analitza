@@ -79,7 +79,6 @@ class ANALITZAGUI_EXPORT AlgebraHighlighter : public QSyntaxHighlighter
         };
         
         bool m_correct;
-        int antnum;
         Mode m_mode;
         uint m_pos;
         int m_editingParameter;

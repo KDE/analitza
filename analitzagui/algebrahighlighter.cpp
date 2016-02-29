@@ -29,7 +29,7 @@
 #include <analitza/expressionparser.h>
 
 AlgebraHighlighter::AlgebraHighlighter(QTextDocument *doc, const Analitza::Analyzer *na)
-    : QSyntaxHighlighter(doc), m_correct(true), m_mode(Autodetect), m_pos(0), a(na)
+    : QSyntaxHighlighter(doc), m_correct(true), m_mode(Autodetect), m_pos(0), m_editingParameter(-1), m_editingBounds(-1), a(na)
 {
     bold.setFontWeight(QFont::Bold);
 }

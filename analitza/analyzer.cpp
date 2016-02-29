@@ -132,14 +132,14 @@ QStringList printAll(const QVector<T*> & p)
 const int defsize = /*500*/0;
 
 Analyzer::Analyzer()
-    : m_vars(new Variables), m_varsOwned(true), m_hasdeps(true)
+    : m_vars(new Variables), m_runStackTop(-1), m_varsOwned(true), m_hasdeps(true)
 {
     m_runStack.reserve(defsize);
     registerBuiltinMethods();
 }
 
 Analyzer::Analyzer(Variables* v)
-    : m_vars(v), m_varsOwned(false), m_hasdeps(true)
+    : m_vars(v), m_runStackTop(-1), m_varsOwned(false), m_hasdeps(true)
 {
     m_runStack.reserve(defsize);
     Q_ASSERT(v);
@@ -147,7 +147,7 @@ Analyzer::Analyzer(Variables* v)
 }
 
 Analyzer::Analyzer(const Analyzer& a)
-    : m_exp(a.m_exp), m_err(a.m_err), m_varsOwned(true), m_hasdeps(a.m_hasdeps)
+    : m_exp(a.m_exp), m_err(a.m_err), m_runStackTop(-1), m_varsOwned(true), m_hasdeps(a.m_hasdeps)
 {
     m_vars = new Variables(*a.m_vars);
     m_runStack.reserve(defsize);

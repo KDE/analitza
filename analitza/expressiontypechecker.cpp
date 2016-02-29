@@ -70,7 +70,8 @@ void printAssumptions(const QString& prefix, const ExpressionType& current)
 }
 
 ExpressionTypeChecker::ExpressionTypeChecker(Variables* v)
-    : m_v(v)
+    : m_stars(0)
+    , m_v(v)
 {}
 
 ExpressionType ExpressionTypeChecker::check(const Expression& exp)
