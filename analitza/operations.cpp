@@ -1158,6 +1158,7 @@ Operations::UnaryOp Operations::opsUnary[] = {
 
 Object * Operations::reduceUnary(Operator::OperatorType op, Object * val, QString** correct)
 {
+    Q_ASSERT(val->type()<=Operator::matrix);
     UnaryOp f=opsUnary[val->type()];
     
     Q_ASSERT(f && "using reduceUnary in a wrong way");
