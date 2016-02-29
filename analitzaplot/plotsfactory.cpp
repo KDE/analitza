@@ -97,6 +97,10 @@ QStringList PlotsFactory::examples(Dimensions s) const
 
 //------------------------------------------ PlotBuilder
 
+PlotBuilder::PlotBuilder()
+    : m_vars(nullptr)
+{}
+
 bool PlotBuilder::canDraw() const
 {
     return m_errors.isEmpty() && !m_id.isEmpty();

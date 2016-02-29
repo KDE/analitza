@@ -43,7 +43,7 @@ class ANALITZAPLOT_EXPORT PlotBuilder
         Variables* m_vars;
 
     protected:
-        PlotBuilder() {}
+        PlotBuilder();
         
         QString m_id;
         QStringList m_errors;
