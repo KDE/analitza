@@ -188,7 +188,7 @@ void Plotter2D::drawAxes(QPainter* painter, GridStyle gridStyle) const
     
     switch (gridStyle) 
     {
-        case Polar: drawCircles(painter, grid, gridStyle); break;
+        case Circles: drawCircles(painter, grid, gridStyle); break;
         default: drawSquares(painter, grid, gridStyle); break;
     }
     
