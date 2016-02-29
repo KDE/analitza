@@ -98,6 +98,7 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
                 case 0: return tmpcurve->name();
                 case 1: return tmpcurve->display();
             }
+            break;
         case Qt::DecorationRole:
             if(index.column()==0)
             {
