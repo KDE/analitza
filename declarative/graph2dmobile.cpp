@@ -107,8 +107,9 @@ QStringList Graph2DMobile::addFunction(const QString& expression, Analitza::Vari
     PlotsModel* plotsmodel = qobject_cast<PlotsModel*>(model());
     if(!plotsmodel)
         qWarning() << "only can add plots to a PlotsModel instance";
-    
-    return plotsmodel->addFunction(expression, Dim2D, vars);
+    else
+        return plotsmodel->addFunction(expression, Dim2D, vars);
+    return {};
 }
 
 void Graph2DMobile::setTicksShownAtAll(bool shown)

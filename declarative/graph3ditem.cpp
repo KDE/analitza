@@ -61,8 +61,9 @@ QStringList Graph3DItem::addFunction(const QString& expression, Analitza::Variab
     PlotsModel* plotsmodel = qobject_cast<PlotsModel*>(m_plotter->model());
     if(!plotsmodel)
         qWarning() << "only can add plots to a PlotsModel instance";
-
-    return plotsmodel->addFunction(expression, Dim3D, vars);
+    else
+        return plotsmodel->addFunction(expression, Dim3D, vars);
+    return {};
 }
 
 QAbstractItemModel* Graph3DItem::model() const
