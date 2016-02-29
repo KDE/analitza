@@ -178,11 +178,11 @@ Expression EigenvectorsCommand::operator()(const QList< Analitza::Expression >& 
     }
     const int neigenvectors = eigeninfo.rows();
     
-    Analitza::List *list = new Analitza::List;
+    QScopedPointer<Analitza::List> list(new Analitza::List);
     
     for (int j = 0; j < neigenvectors; ++j) {
         const Eigen::VectorXcd col = eigeninfo.col(j);
-        Analitza::Vector *eigenvector = new Analitza::Vector(neigenvectors);
+        QScopedPointer<Analitza::Vector> eigenvector(new Analitza::Vector(neigenvectors));
         
         for (int i = 0; i < neigenvectors; ++i) {
             const std::complex<double> eigenvalue = col(i);
@@ -191,15 +191,9 @@ Expression EigenvectorsCommand::operator()(const QList< Analitza::Expression >& 
             
             if (std::isnan(realpart) || std::isnan(imagpart)) {
                 ret.addError(QCoreApplication::tr("Returned eigenvalue is NaN", "NaN means Not a Number, is an invalid float number"));
-                
-                delete list;
-                
                 return ret;
             } else if (std::isinf(realpart) || std::isinf(imagpart)) {
                 ret.addError(QCoreApplication::tr("Returned eigenvalue is too big"));
-                
-                delete list;
-                
                 return ret;
             } else {
                 bool isonlyreal = true;
@@ -220,10 +214,10 @@ Expression EigenvectorsCommand::operator()(const QList< Analitza::Expression >& 
             }
         }
         
-        list->appendBranch(eigenvector);
+        list->appendBranch(eigenvector.take());
     }
     
-    ret.setTree(list);
+    ret.setTree(list.take());
     
     return ret;
 }
