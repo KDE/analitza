@@ -19,6 +19,7 @@
 #ifndef ANALITZAWRAPPER_H
 #define ANALITZAWRAPPER_H
 
+#include <QScopedPointer>
 #include <QObject>
 #include <QVariant>
 #include <analitza/expression.h>
@@ -57,11 +58,12 @@ class AnalitzaWrapper : public QObject
     Q_PROPERTY(Analitza::Variables* variables READ variables WRITE setVariables)
     public:
         explicit AnalitzaWrapper(QObject* parent = 0);
+        ~AnalitzaWrapper();
         
         void setCalculate(bool calc) { m_calc = calc; }
         bool isCalculate() const { return m_calc; } 
         
-        Analitza::Analyzer* wrapped() const { return m_wrapped; }
+        Analitza::Analyzer* wrapped() const { return m_wrapped.data(); }
         
         Q_SCRIPTABLE QVariant simplify(const QString& expression);
 
@@ -81,7 +83,7 @@ class AnalitzaWrapper : public QObject
     private:
         void initWrapped();
         
-        Analitza::Analyzer* m_wrapped;
+        QScopedPointer<Analitza::Analyzer> m_wrapped;
         Analitza::Variables* m_vars;
         bool m_calc;
 };

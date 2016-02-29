@@ -46,18 +46,21 @@ QStringList ExpressionWrapper::errors() const { return m_exp.error(); }
 
 AnalitzaWrapper::AnalitzaWrapper(QObject* parent)
     : QObject(parent)
-    , m_wrapped(0), m_calc(false)
+    , m_wrapped(0), m_vars(nullptr), m_calc(false)
 {
     initWrapped();
 }
+
+AnalitzaWrapper::~AnalitzaWrapper()
+{}
 
 void AnalitzaWrapper::initWrapped()
 {
     if(!m_wrapped) {
         if(m_vars)
-            m_wrapped = new Analitza::Analyzer(m_vars);
+            m_wrapped.reset(new Analitza::Analyzer(m_vars));
         else {
-            m_wrapped = new Analitza::Analyzer;
+            m_wrapped.reset(new Analitza::Analyzer);
             m_vars = m_wrapped->variables();
         }
     }
@@ -65,8 +68,7 @@ void AnalitzaWrapper::initWrapped()
 
 void AnalitzaWrapper::setVariables(Analitza::Variables* v)
 {
-    delete m_wrapped;
-    m_wrapped = 0;
+    m_wrapped.reset(nullptr);
     m_vars = v;
     initWrapped();
 }
