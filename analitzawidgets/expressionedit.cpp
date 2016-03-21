@@ -111,7 +111,6 @@ ExpressionEdit::ExpressionEdit(QWidget *parent, AlgebraHighlighter::Mode inimode
 
 ExpressionEdit::~ExpressionEdit()
 {
-    delete m_highlight;
 }
 
 void ExpressionEdit::setExpression(const Analitza::Expression& e)
