@@ -76,6 +76,9 @@ void AnalitzaTest::testTrivialCalculate_data()
     QTest::newRow("val.e0") << "12.0e-02" << Cn(12e-2);
     QTest::newRow("vale") << "12e-2" << Cn(12e-2);
     QTest::newRow("val") << "12e2" << Cn(12e2);
+
+    QTest::newRow("factorial5") << "factorial(5)" << Cn(120);
+    QTest::newRow("factorial12") << "factorial(12)" << Cn(12*11*10*9*8*7*6*5*4*3*2*1);
     
     QTest::newRow("simple addition") << "2+2" << Cn(4.);
     QTest::newRow("simple power") << "2**99" << Cn(pow(2., 99.));

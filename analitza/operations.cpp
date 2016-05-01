@@ -359,14 +359,9 @@ Cn* reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString** correct)
         case Operator::minus:
                  oper->setValue(-a);
             break;
-        case Operator::factorial: {
-            //Use gamma from math.h?
-            uint res=1;
-            for(int i=a; i>1.; i--) {
-                res*=floor(i);
-            }
-                 oper->setValue(res);
-        }    break;
+        case Operator::factorial:
+                oper->setValue(std::lgammaf(a));
+            break;
         case Operator::sin:
                  oper->setValue(sin(a));
             break;
