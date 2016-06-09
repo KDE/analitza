@@ -24,7 +24,7 @@
 
 namespace Analitza {
 class Expression;
-};
+}
 
 class EigenvaluesCommand: public Analitza::FunctionDefinition
 {
