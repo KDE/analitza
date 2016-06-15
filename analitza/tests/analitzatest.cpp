@@ -448,7 +448,11 @@ void AnalitzaTest::testCorrection_data()
            << QStringLiteral("pu:=n->sum(  comb(n,i)*p^(n-i)*(1-p)*sum(x:x=0..i)  :i=0..(floor((n-1)/2)))")
            << QStringLiteral("pu(5)");
     
+#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
+    QTest::newRow("bug241047") << script << "2.97495e-5";
+#else
     QTest::newRow("bug241047") << script << "2.97495e-05";
+#endif
     
     script.clear();
     script << QStringLiteral("comb:=(n, i)->factorial(n)/(factorial(i)*factorial(n-i))")
