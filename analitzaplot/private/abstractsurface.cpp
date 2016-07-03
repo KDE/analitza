@@ -85,27 +85,23 @@ bool AbstractSurface::buildParametricSurface()
 
 void AbstractSurface::doQuad(int n, int m, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3)
 {
-    int i;
-
-    QVector3D A, B, C, D;   
-
-    for (i=0; i<m; i++)
+    for (int i=0; i<m; i++)
     {
-        A = QVector3D((p0.x()*(float)(m-i) + p1.x()*(float)i)/(float)m, 
-                      (p0.y()*(float)(m-i) + p1.y()*(float)i)/(float)m,
-                      (p0.z()*(float)(m-i) + p1.z()*(float)i)/(float)m);
+        const QVector3D A((p0.x()*(float)(m-i) + p1.x()*(float)i)/(float)m,
+                          (p0.y()*(float)(m-i) + p1.y()*(float)i)/(float)m,
+                          (p0.z()*(float)(m-i) + p1.z()*(float)i)/(float)m);
         
-        B = QVector3D((p0.x()*(float)(m-i-1) + p1.x()*(float)(i+1))/(float)m,
-                      (p0.y()*(float)(m-i-1) + p1.y()*(float)(i+1))/(float)m,
-                      (p0.z()*(float)(m-i-1) + p1.z()*(float)(i+1))/(float)m);
+        const QVector3D B((p0.x()*(float)(m-i-1) + p1.x()*(float)(i+1))/(float)m,
+                          (p0.y()*(float)(m-i-1) + p1.y()*(float)(i+1))/(float)m,
+                          (p0.z()*(float)(m-i-1) + p1.z()*(float)(i+1))/(float)m);
 
-        C = QVector3D((p2.x()*(float)(m-i)   + p3.x()*(float)i)/(float)m,
-                      (p2.y()*(float)(m-i)   + p3.y()*(float)i)/(float)m,
-                      (p2.z()*(float)(m-i)   + p3.z()*(float)i)/(float)m);
+        const QVector3D C((p2.x()*(float)(m-i)   + p3.x()*(float)i)/(float)m,
+                          (p2.y()*(float)(m-i)   + p3.y()*(float)i)/(float)m,
+                          (p2.z()*(float)(m-i)   + p3.z()*(float)i)/(float)m);
 
-        D = QVector3D((p2.x()*(float)(m-i-1) + p3.x()*(float)(i+1))/(float)m, 
-                      (p2.y()*(float)(m-i-1) + p3.y()*(float)(i+1))/(float)m,
-                      (p2.z()*(float)(m-i-1) + p3.z()*(float)(i+1))/(float)m);
+        const QVector3D D((p2.x()*(float)(m-i-1) + p3.x()*(float)(i+1))/(float)m,
+                          (p2.y()*(float)(m-i-1) + p3.y()*(float)(i+1))/(float)m,
+                          (p2.z()*(float)(m-i-1) + p3.z()*(float)(i+1))/(float)m);
         
         doStrip(n, A, B, C, D);
     }
@@ -113,18 +109,18 @@ void AbstractSurface::doQuad(int n, int m, const QVector3D &p0,  const QVector3D
 
 void AbstractSurface::doStrip(int n, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3)
 {
-    QVector3D A, B, buffer[3];
+    QVector3D buffer[3];
     QVector3D theStrip[MAXSTRIP][2];
 
     for (int i=0; i<=n; i++)
     {
-        A = QVector3D((p0.x()*(float)(n-i) + p2.x()*(float)i)/(float)n,
-                      (p0.y()*(float)(n-i) + p2.y()*(float)i)/(float)n,
-                      (p0.z()*(float)(n-i) + p2.z()*(float)i)/(float)n);
+        const QVector3D A((p0.x()*(float)(n-i) + p2.x()*(float)i)/(float)n,
+                          (p0.y()*(float)(n-i) + p2.y()*(float)i)/(float)n,
+                          (p0.z()*(float)(n-i) + p2.z()*(float)i)/(float)n);
 
-        B = QVector3D((p1.x()*(float)(n-i) + p3.x()*(float)i)/(float)n, 
-                      (p1.y()*(float)(n-i) + p3.y()*(float)i)/(float)n,
-                      (p1.z()*(float)(n-i) + p3.z()*(float)i)/(float)n);
+        const QVector3D B((p1.x()*(float)(n-i) + p3.x()*(float)i)/(float)n,
+                          (p1.y()*(float)(n-i) + p3.y()*(float)i)/(float)n,
+                          (p1.z()*(float)(n-i) + p3.z()*(float)i)/(float)n);
 
         theStrip[i][0] = A;
         theStrip[i][1] = B;
