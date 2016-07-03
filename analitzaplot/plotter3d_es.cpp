@@ -40,8 +40,6 @@
 using namespace std;
 using namespace Analitza;
 
-Q_DECLARE_METATYPE(PlotItem*)
-
 const GLubyte Plotter3DES::XAxisArrowColor[] = {250 -1 , 1, 1};
 const GLubyte Plotter3DES::YAxisArrowColor[] = {1, 255 - 1, 1};
 const GLubyte Plotter3DES::ZAxisArrowColor[] = {1, 1, 255 - 1};

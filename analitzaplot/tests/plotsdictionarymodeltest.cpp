@@ -30,8 +30,6 @@ using namespace Analitza;
 
 QTEST_MAIN( PlotsDictionaryModelTest )
 
-Q_DECLARE_METATYPE(PlotItem*)
-
 PlotsDictionaryModelTest::PlotsDictionaryModelTest(QObject *parent)
     : QObject(parent)
 {}

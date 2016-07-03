@@ -44,8 +44,6 @@
 using namespace std;
 using namespace Analitza;
 
-Q_DECLARE_METATYPE(PlotItem*)
-
 void qgluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
 {
     const GLdouble ymax = zNear * tan(fovy * M_PI / 360.0);

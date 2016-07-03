@@ -38,8 +38,6 @@
 
 using namespace Analitza;
 
-Q_DECLARE_METATYPE(PlotItem*)
-
 // #define DEBUG_GRAPH
 
 QColor const Plotter2D::m_axeColor(100,100,255); //TODO convert from const to param/attr and make setAxisColor(Qt::oriantation, qcolor)

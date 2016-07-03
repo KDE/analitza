@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QSet>
 #include <QColor>
+#include <QVariant>
 
 #include "analitzaplotexport.h"
 #include "plottingenums.h"
@@ -83,5 +84,7 @@ private:
 };
 
 }
+
+Q_DECLARE_METATYPE(Analitza::PlotItem*);
 
 #endif // ANALITZAPLOT_PLOTITEM_H
