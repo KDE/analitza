@@ -34,19 +34,24 @@ static QByteArray fromNumbers(const QVector<T>& input)
 {
     QByteArray ret;
     foreach(qreal r, input) {
-        ret += QByteArray::number(r)+QByteArrayLiteral(" ");
+        ret += QByteArray::number(r)+' ';
     }
     ret.chop(1);
     return ret;
+}
+
+static QByteArray fromVector3D(const QVector3D &r)
+{
+    return QByteArray::number(r.x())+' '
+         + QByteArray::number(r.y())+' '
+         + QByteArray::number(r.z());
 }
 
 static QByteArray fromNumbers(const QVector<QVector3D>& input)
 {
     QByteArray ret;
     foreach(const QVector3D &r, input) {
-        ret += QByteArray::number(r.x())+QByteArrayLiteral(" ");
-        ret += QByteArray::number(r.y())+QByteArrayLiteral(" ");
-        ret += QByteArray::number(r.z())+QByteArrayLiteral(" ");
+        ret += fromVector3D(r);
     }
     ret.chop(1);
     return ret;
@@ -113,4 +118,50 @@ void Export3D::exportX3D(const QString& path, QAbstractItemModel* model)
     f.write(QByteArrayLiteral(
         "</Scene>\n"
     "</X3D>\n"));
+}
+
+void Export3D::exportSTL(const QString& path, QAbstractItemModel* model)
+{
+    QFile f(path);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "couldn't open" << path;
+        return;
+    }
+
+    f.write(QByteArrayLiteral("solid myplot\n"));
+    for (int i = 0; i < model->rowCount(); ++i)
+    {
+        const QModelIndex pi = model->index(i, 0);
+
+        if (!pi.isValid())
+            continue;
+
+        PlotItem* item = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
+
+        Surface *surf = dynamic_cast<Surface*>(item);
+        if (!surf || !surf->isVisible())
+            continue;
+
+        const auto normals = surf->normals();
+        const auto vertices = surf->vertices();
+        const auto indexes = surf->indexes();
+
+        for (int i = 0, c = indexes.count()/3; i<c; ++i) {
+//             f.write("  facet normal " + fromVector3D(normals[i]) + '\n');
+            const QVector3D v1 = vertices[indexes[i*3 + 0]]
+                          , v2 = vertices[indexes[i*3 + 1]]
+                          , v3 = vertices[indexes[i*3 + 2]];
+
+            //TODO: should be using the normals from Surface
+            f.write("  facet normal " + fromVector3D(QVector3D::normal(v1, v2, v3)) + '\n');
+            f.write("     outer loop\n");
+            f.write("       vertex " + fromVector3D(v1) + '\n');
+            f.write("       vertex " + fromVector3D(v2) + '\n');
+            f.write("       vertex " + fromVector3D(v3) + '\n');
+            f.write("     endloop\n");
+            f.write("  endfacet\n");
+        }
+        f.write("\n");
+    }
+    f.write("endsolid myplot\n");
 }

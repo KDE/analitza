@@ -303,7 +303,10 @@ void Plotter3D::drawPlots()
 
 void Plotter3D::exportSurfaces(const QString& path) const
 {
-    Export3D::exportX3D(path, m_model);
+    if (path.endsWith(".stl", Qt::CaseInsensitive))
+        Export3D::exportSTL(path, m_model);
+    else
+        Export3D::exportX3D(path, m_model);
 }
 
 void Plotter3D::updatePlots(const QModelIndex & parent, int s, int e)

@@ -27,4 +27,5 @@ class QAbstractItemModel;
 namespace Export3D
 {
 void exportX3D(const QString &path, QAbstractItemModel* model);
+void exportSTL(const QString &path, QAbstractItemModel* model);
 }
