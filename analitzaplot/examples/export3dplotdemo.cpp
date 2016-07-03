@@ -42,8 +42,9 @@ int main(int argc, char** argv)
     QGuiApplication app(argc, argv);
     QCommandLineParser parser;
     parser.addPositionalArgument(QStringLiteral("expression"), QGuiApplication::translate("option description", "Expression to plot"), QStringLiteral("expression..."));
-    parser.addOption(QCommandLineOption(QStringLiteral("output"), QGuiApplication::translate("option description", "Created filename"), QStringLiteral("output.x3d")));
+    parser.addPositionalArgument(QStringLiteral("output"), QGuiApplication::translate("option description", "Created filename"), QStringLiteral("output.x3d"));
     parser.addOption(QCommandLineOption(QStringLiteral("interval"), QGuiApplication::translate("option description", "Specifies an interval"), QStringLiteral("var=num..num")));
+    parser.addHelpOption();
 
     parser.process(app);
     PlotsModel model;
@@ -64,7 +65,10 @@ int main(int argc, char** argv)
         intervals[interval.left(equalIdx)] = qMakePair<double, double>(from, to);
     }
 
-    foreach(const QString& input, parser.positionalArguments()) {
+    QStringList args = parser.positionalArguments();
+    const QString output = args.takeLast();
+
+    foreach(const QString& input, args) {
         Expression exp(input);
         if(!exp.isCorrect()) {
             std::cerr << "Incorrect expression: " << qPrintable(input) << std::endl;
@@ -86,7 +90,7 @@ int main(int argc, char** argv)
     }
     ExportPlotter3D plotter(&model);
     plotter.updatePlots(QModelIndex(), 0, model.rowCount()-1);
-    plotter.exportSurfaces(parser.value(QStringLiteral("output")));
+    plotter.exportSurfaces(output);
 
     return 0;
 }
