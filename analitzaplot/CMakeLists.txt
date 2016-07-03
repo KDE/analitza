@@ -35,6 +35,7 @@ set ( analitzaplot_SRCS
     private/abstractspacecurve.cpp
     private/abstractsurface.cpp
     private/functiongraphfactory.cpp
+    private/export3d.cpp
 
     private/backends/cartesiansurface.cpp
     private/backends/implicitcurve.cpp
