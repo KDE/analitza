@@ -28,7 +28,7 @@
 using namespace std;
 using Analitza::Expression;
 
-QTEST_MAIN( OperatorsModelTest )
+QTEST_GUILESS_MAIN( OperatorsModelTest )
 
 OperatorsModelTest::OperatorsModelTest(QObject *parent)
     : QObject(parent)
