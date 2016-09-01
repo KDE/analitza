@@ -85,6 +85,6 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(Analitza::PlotItem*);
+Q_DECLARE_METATYPE(Analitza::PlotItem*)
 
 #endif // ANALITZAPLOT_PLOTITEM_H
