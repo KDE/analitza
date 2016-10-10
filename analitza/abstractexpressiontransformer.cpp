@@ -41,7 +41,7 @@ Object* AbstractExpressionTransformer::walk##T(const T* pattern)\
     return ret;\
 }
 
-ITERATION_WALKER(List)
+ITERATION_WALKER(List, {})
 ITERATION_WALKER(MatrixRow, pattern->size())
 ITERATION_WALKER(Vector, pattern->size())
 ITERATION_WALKER(Container, pattern->containerType())
