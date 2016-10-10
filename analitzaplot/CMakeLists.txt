@@ -60,7 +60,7 @@ set ( analitzaplot_SRCS
     plotter2d.cpp
     plotter3d_es.cpp
 )
-if(OPENGL_FOUND)
+if(HAVE_OPENGL)
     include_directories ( ${OPENGL_INCLUDE_DIR} )
     list(APPEND analitzaplot_SRCS plotter3d.cpp)
 endif()
@@ -108,7 +108,7 @@ install(FILES
 if(HAVE_OPENGL)
     install(FILES
         plotter3d.h DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
-endif(HAVE_OPENGL)
+endif()
 
 add_subdirectory(data)
 add_subdirectory(tests)
