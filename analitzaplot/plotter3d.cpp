@@ -606,6 +606,23 @@ void Plotter3D::addPlots(PlotItem* item)
     }
 }
 
+
+void Plotter3D::setPlotStyle(PlotStyle ps)
+{
+    if (ps == m_plotStyle)
+        return;
+
+    m_plotStyle = ps;
+    switch (m_plotStyle)
+    {
+        case Solid: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
+        case Wired: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
+        case Dots:  glPolygonMode(GL_FRONT_AND_BACK, GL_POINT); break;
+    }
+
+    renderGL();
+}
+
 PlotItem* Plotter3D::itemAt(int row) const
 {
     QModelIndex pi = m_model->index(row, 0);
