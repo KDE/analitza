@@ -592,16 +592,11 @@ void Plotter3D::addPlots(PlotItem* item)
         glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*surf->vertices().size() + 3*sizeof(float)*surf->normals().size(), 0, GL_STREAM_DRAW);
         glBufferSubData(GL_ARRAY_BUFFER, 0, 3*sizeof(float)*surf->vertices().size(), surf->vertices().constData());
         glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*surf->vertices().size(), 3*sizeof(float)*surf->normals().size(), surf->normals().constData());
-        //TODO ifdef debug_Graph
-        //glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
-        //qDebug() << "Vertex Array in VBO: " << bufferSize << " bytes";
 
         //indices
         glGenBuffers(1, &m_itemGeometries[item].first);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_itemGeometries[item].first);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)*surf->indexes().size(), surf->indexes().constData(), GL_STATIC_DRAW);
-        //glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
-        //qDebug() << "Index Array in VBO: " << bufferSize << " bytes";
 
     }
 }
