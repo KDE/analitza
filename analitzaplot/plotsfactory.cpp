@@ -70,7 +70,7 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
         if(FunctionGraphFactory::self()->contains(expectedid)) {
             id = expectedid;
         } else
-            errs << QCoreApplication::tr("Function type not recognized");
+            errs << QCoreApplication::tr("Function type '%1' not recognized").arg(expectedid);
     } else {
         errs << a.errors();
     }
