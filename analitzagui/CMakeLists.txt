@@ -1,15 +1,6 @@
-project(AnalitzaGui)
-
 add_subdirectory(tests)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-set(analitzagui_SRCS
-	operatorsmodel.cpp
-	algebrahighlighter.cpp
-	variablesmodel.cpp
-)
-add_library(AnalitzaGui ${analitzagui_SRCS})
+add_library(AnalitzaGui operatorsmodel.cpp algebrahighlighter.cpp variablesmodel.cpp)
 target_link_libraries(AnalitzaGui Qt5::Core Qt5::Gui Analitza)
 
 set_target_properties(AnalitzaGui PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )

@@ -1,5 +1,3 @@
-include_directories(${analitza_SOURCE_DIR})
-
 set(testLibs Qt5::Core Qt5::Xml Qt5::Test Analitza)
 
 ecm_add_tests(

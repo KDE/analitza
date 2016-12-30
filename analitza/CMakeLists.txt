@@ -1,5 +1,3 @@
-project(AnalitzaCore)
-
 add_subdirectory(tests)
 
 set(analitza_SRCS

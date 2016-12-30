@@ -1,5 +1,3 @@
-project(AnalitzaPlot)
-
 if(WIN32)
     find_package(GLEW REQUIRED)
     include_directories(${GLEW_INCLUDE_DIRS})
@@ -18,10 +16,6 @@ if(MSVC)
 elseif(MINGW)
     add_definitions(-D_BSD_SOURCE)
 endif()
-
-include_directories (
-  ${CMAKE_CURRENT_SOURCE_DIR}
-)
 
 set ( analitzaplot_SRCS
     private/utils/mathutils.cpp

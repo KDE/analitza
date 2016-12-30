@@ -1,10 +1,3 @@
-project(analitza-declarative)
-
-include_directories(
-        ${CMAKE_SOURCE_DIR}
-        ${CMAKE_BINARY_DIR}
-)
-
 add_library(analitzadeclarativeplugin SHARED analitzadeclarativeplugin.cpp graph2dmobile.cpp graph3ditem analitzawrapper.cpp)
 
 target_link_libraries(analitzadeclarativeplugin

@@ -1,7 +1,3 @@
-project(AnalitzaWidgets)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
 find_path(IEEEFP_DIR ieeefp.h)
 if(IEEEFP_DIR)
     include_directories(${IEEEFP_DIR})
