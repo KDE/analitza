@@ -80,7 +80,7 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         QAbstractItemModel* model() const { return m_model; }
 
         PlotStyle plotStyle() const { return m_plotStyle; }
-        void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; }
+        void setPlotStyle(PlotStyle ps) { m_plotStyle = ps; renderGL(); }
 //         void setPlottingAttributes(PlotStyle st) { m_plotStyle = ps; }
         PlottingFocusPolicy plottingFocusPolicy() const { return m_plottingFocusPolicy; }
         void setPlottingFocusPolicy(PlottingFocusPolicy fp);

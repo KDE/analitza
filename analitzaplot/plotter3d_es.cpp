@@ -162,6 +162,13 @@ void Plotter3DES::drawPlots()
 
     const int vertexLocation = program.attributeLocation("vertex");
     const int normalLocation = program.attributeLocation("normal");
+    GLenum mode;
+    switch (m_plotStyle)
+    {
+        case Solid: mode = GL_TRIANGLES; break;
+        case Wired: mode = GL_LINES; break;
+        case Dots:  mode = GL_POINTS; break;
+    }
 
     drawAxes();
     drawRefPlane();
@@ -198,11 +205,12 @@ void Plotter3DES::drawPlots()
 
             program.setAttributeBuffer(vertexLocation, GL_FLOAT, 0, 3);
             program.setAttributeBuffer(normalLocation, GL_FLOAT, offsetNormal, 3);
-            glDrawElements(GL_TRIANGLES, surf->indexes().size(), GL_UNSIGNED_INT, surf->indexes().constData());
+            glDrawElements(mode, surf->indexes().size(), GL_UNSIGNED_INT, surf->indexes().constData());
 
-            //FIXME: reconsider? they're really hard to see, especially on hidpi screens
-            program.setUniformValue("color", QColor(Qt::black));
-            glDrawElements(GL_POINTS, surf->indexes().size(), GL_UNSIGNED_INT, surf->indexes().constData());
+            if (mode == GL_TRIANGLES) {
+                program.setUniformValue("color", QColor(Qt::black));
+                glDrawElements(GL_POINTS, surf->indexes().size(), GL_UNSIGNED_INT, surf->indexes().constData());
+            }
             it.release();
             program.disableAttributeArray(normalLocation);
         }
