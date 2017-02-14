@@ -50,7 +50,7 @@ class PlotItem;
  * use Plotter3D and OpenGL as a backend.
  */
 
-class ANALITZAWIDGETS_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
+class ANALITZAWIDGETS_DEPRECATED_EXPORT PlotsView3D : public  QGLWidget, public Plotter3D
 {
     Q_OBJECT
 

@@ -26,7 +26,6 @@
 #include "analitzaplot/surface.h"
 #include "analitzaplot/spacecurve.h"
 #include "analitzaplot/plotsmodel.h"
-#include "plotsview3d.h"
 #include "plotsview3d_es.h"
 #include <plotsfactory.h>
 #include <analitza/expression.h>
@@ -42,7 +41,6 @@ int main(int argc, char *argv[])
     parser.setApplicationDescription(QStringLiteral("PlotView3DTest"));
     parser.addOption(QCommandLineOption(QStringLiteral("all-disabled"), app.tr("marks all the plots as not visible")));
     parser.addOption(QCommandLineOption(QStringLiteral("simple-rotation"), app.tr("doesn't let you rotate the Z axis")));
-    parser.addOption(QCommandLineOption(QStringLiteral("experimental-view"), app.tr("runs the view under development")));
     parser.addHelpOption();
     parser.process(app);
 
@@ -76,21 +74,12 @@ int main(int argc, char *argv[])
 
 
     central->addWidget(viewsource);
-    if (parser.isSet(QStringLiteral("experimental-view"))) {
-        PlotsView3DES *view3des = new PlotsView3DES(central);
-        view3des->setSelectionModel(viewsource->selectionModel());
-        view3des->setUseSimpleRotation(parser.isSet(QStringLiteral("simple-rotation")));
-        view3des->setModel(model);
-        central->addWidget(view3des);
-        view3des->setFocus();
-    } else {
-        PlotsView3D *view3d = new PlotsView3D(central);
-        view3d->setSelectionModel(viewsource->selectionModel());
-        view3d->setUseSimpleRotation(parser.isSet(QStringLiteral("simple-rotation")));
-        view3d->setModel(model);
-        central->addWidget(view3d);
-        view3d->setFocus();
-    }
+    PlotsView3DES *view3des = new PlotsView3DES(central);
+    view3des->setSelectionModel(viewsource->selectionModel());
+    view3des->setUseSimpleRotation(parser.isSet(QStringLiteral("simple-rotation")));
+    view3des->setModel(model);
+    central->addWidget(view3des);
+    view3des->setFocus();
 
     central->setStretchFactor(1, 2);
     mainWindow->setCentralWidget(central);

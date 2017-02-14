@@ -39,6 +39,7 @@ install(FILES
 if(HAVE_OPENGL)
     install(FILES
         plotsview3d.h
+        plotsview3d_es.h
 
         DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzagui/ COMPONENT Devel
     )

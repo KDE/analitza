@@ -95,6 +95,7 @@ install(FILES
     plotter2d.h
     plottingenums.h
     plotsfactory.h
+    plotter3d_es.h
 
     DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
 )
