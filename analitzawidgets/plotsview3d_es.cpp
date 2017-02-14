@@ -46,17 +46,6 @@ void PlotsView3DES::setSelectionModel(QItemSelectionModel* selection)
 //     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(forceRepaint()));
 }
 
-void PlotsView3DES::resetView()
-{
-    //TODO remove qglviewer
-//     setSceneCenter(qglviewer::Vec(0.f,0.f,0.f));
-
-//     camera()->setUpVector(qglviewer::Vec(-1,-1,1), false);
-//     camera()->setPosition(qglviewer::Vec(7,7,7));
-//     camera()->lookAt(qglviewer::Vec(0,0,0));
-//     camera()->setRevolveAroundPoint(qglviewer::Vec(0,0,0));
-}
-
 void PlotsView3DES::addFuncs(const QModelIndex & parent, int start, int end)
 {
     updatePlots(parent, start, end);
@@ -124,17 +113,12 @@ void PlotsView3DES::mousePressEvent(QMouseEvent *e)
 void PlotsView3DES::modelChanged()
 {
 //     if (model()) {
-//         disconnect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-//         disconnect(model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(addFuncs(QModelIndex,int,int)));
-//         disconnect(model(), SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeFuncs(QModelIndex,int,int)));
+//         disconnect(model(), &QAbstractItemModel::dataChanged, this, &PlotsView3DES::updateFuncs);
+//         disconnect(model(), &QAbstractItemModel::rowsInserted, this, &PlotsView3DES::addFuncs);
+//         disconnect(model(), &QAbstractItemModel::rowsRemoved, this, &PlotsView3DES::removeFuncs);
 //     }
 
-//     for (int i = 0; i < model()->rowCount(); ++i) {
-//         if (itemAt(i)) {
-//             glDeleteLists(m_displayLists[itemAt(i)], 1);
-//             addFuncs(QModelIndex(), 0, model()->rowCount()-1);
-//         }
-//     }
+    addFuncs({}, 0, model()->rowCount());
 
     connect(model(), &QAbstractItemModel::dataChanged, this, &PlotsView3DES::updateFuncs);
     connect(model(), &QAbstractItemModel::rowsInserted, this, &PlotsView3DES::addFuncs);

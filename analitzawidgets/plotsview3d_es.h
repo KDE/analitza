@@ -50,7 +50,7 @@ class PlotItem;
  * use Plotter3D and OpenGL as a backend.
  */
 
-class ANALITZAWIDGETS_EXPORT PlotsView3DES : public  QOpenGLWidget, public Plotter3DES
+class ANALITZAWIDGETS_EXPORT PlotsView3DES : public QOpenGLWidget, public Plotter3DES
 {
     Q_OBJECT
 
@@ -60,9 +60,6 @@ public:
 
     void setSelectionModel(QItemSelectionModel* selection);
 
-public Q_SLOTS:
-    void resetView();
-    
 private Q_SLOTS:
     void updateFuncs(const QModelIndex &indexf,const QModelIndex &indext);
     void addFuncs(const QModelIndex &index,int,int);

@@ -480,9 +480,3 @@ void Plotter3DES::drawRefPlane()
     glDrawArrays(GL_LINES, 0, vxs.size());
     program.disableAttributeArray(vertexLocation);
 }
-
-QPixmap Plotter3DES::renderPixmap() const
-{
-#warning TODO
-    return QPixmap();
-}

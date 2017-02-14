@@ -117,9 +117,6 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         /** sets the view to the initial perspective */
         void resetView();
 
-        /** @returns the current scene in a pixmap. */
-        QPixmap renderPixmap() const;
-
     protected:
         void addPlots(PlotItem* item);
 
