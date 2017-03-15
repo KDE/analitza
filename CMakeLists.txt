@@ -25,18 +25,9 @@ include(CheckLibraryExists) #FindCurses seems to need that on the CI
 include(ECMPoQmTools)
 set(ANALITZA_INCLUDE_INSTALL_DIR "${KDE_INSTALL_INCLUDEDIR}/Analitza5")
 
-ecm_setup_version(7.0.0 VARIABLE_PREFIX ANALITZA
+ecm_setup_version(8.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/Analitza5ConfigVersion.cmake")
-
-find_package(OpenGL)
-set_package_properties(OpenGL PROPERTIES TYPE OPTIONAL
-                                         PURPOSE "Support for 3D graphs in Analitza"
-                                         URL "http://opengl.org")
-if(OPENGL_FOUND)
-    find_package(Qt5OpenGL ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE)
-endif()
-set(HAVE_OPENGL ${Qt5OpenGL_FOUND})
 
 find_package(Eigen3) # find and setup Eigen3 if available
 set(HAVE_EIGEN3 ${EIGEN3_FOUND})

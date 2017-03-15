@@ -19,7 +19,7 @@
 #include <QGuiApplication>
 #include <QCommandLineParser>
 #include <qfileinfo.h>
-#include <analitzaplot/plotter3d.h>
+#include <analitzaplot/plotter3d_es.h>
 #include <analitzaplot/plotsmodel.h>
 #include <analitzaplot/plotsfactory.h>
 #include <functiongraph.h>
@@ -27,10 +27,10 @@
 
 using namespace Analitza;
 
-class ExportPlotter3D : public Plotter3D
+class ExportPlotter3D : public Plotter3DES
 {
 public:
-    ExportPlotter3D(PlotsModel* m) : Plotter3D(m) {}
+    ExportPlotter3D(PlotsModel* m) : Plotter3DES(m) {}
 
     virtual int currentPlot() const override { return -1; }
     virtual void renderGL() override {}

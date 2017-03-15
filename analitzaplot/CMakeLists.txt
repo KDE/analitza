@@ -54,10 +54,6 @@ set ( analitzaplot_SRCS
     plotter2d.cpp
     plotter3d_es.cpp
 )
-if(HAVE_OPENGL)
-    include_directories ( ${OPENGL_INCLUDE_DIR} )
-    list(APPEND analitzaplot_SRCS plotter3d.cpp)
-endif()
 
 add_library( AnalitzaPlot ${analitzaplot_SRCS} )
 target_link_libraries ( AnalitzaPlot
@@ -67,15 +63,11 @@ target_link_libraries ( AnalitzaPlot
   Analitza
 )
 
-if(HAVE_OPENGL)
-    target_link_libraries(AnalitzaPlot ${OPENGL_gl_LIBRARY} )
-elseif(CMAKE_SYSTEM_NAME STREQUAL Android)
+if(CMAKE_SYSTEM_NAME STREQUAL Android)
     target_link_libraries(AnalitzaPlot GLESv2)
-endif()
-
-if(WIN32)
+elseif(WIN32)
     target_link_libraries(AnalitzaPlot ${GLEW_LIBRARIES})
-endif(WIN32)
+endif()
 
 set_target_properties(AnalitzaPlot PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
@@ -99,11 +91,6 @@ install(FILES
 
     DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel
 )
-
-if(HAVE_OPENGL)
-    install(FILES
-        plotter3d.h DESTINATION ${ANALITZA_INCLUDE_INSTALL_DIR}/analitzaplot/ COMPONENT Devel)
-endif()
 
 add_subdirectory(data)
 add_subdirectory(tests)
