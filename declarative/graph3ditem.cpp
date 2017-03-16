@@ -20,7 +20,7 @@
 #include <QQuickWindow>
 #include <QOpenGLFramebufferObject>
 #include <analitzaplot/plotsmodel.h>
-#include <QThread>
+#include <QTimer>
 
 using namespace Analitza;
 
@@ -31,8 +31,7 @@ Plotter3DRenderer::Plotter3DRenderer(Graph3DItem* item)
 
 void Plotter3DRenderer::renderGL()
 {
-    Q_ASSERT(QThread::currentThread() == m_item->thread());
-    m_item->update();
+    QTimer::singleShot(0, m_item, &Graph3DItem::update);
 }
 
 QQuickWindow* Plotter3DRenderer::window() const
