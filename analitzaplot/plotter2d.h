@@ -62,7 +62,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         virtual ~Plotter2D();
 
         /** Sets whether we will draw the grid. */
-        void setShowGrid(bool show) { m_showGrid=show; forceRepaint(); }
+        void setShowGrid(bool show);
         //only works if showgrid is true. for polar grid it affects to subdivision of angles/rays
         void setShowMinorGrid(bool mt);
 
@@ -154,6 +154,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         virtual void viewportChanged() = 0;
         virtual int currentFunction() const = 0;
         virtual void modelChanged() = 0;
+        virtual void showGridChanged() = 0;
         
     protected: // utils
         QRectF lastUserViewport() const { return userViewport; }

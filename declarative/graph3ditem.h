@@ -55,7 +55,7 @@ class Graph3DItem : public QQuickFramebufferObject
         Q_SCRIPTABLE QStringList addFunction(const QString& expression, const QSharedPointer<Analitza::Variables>& vars = {});
         Q_SCRIPTABLE void rotate(qreal x, qreal y);
         Q_SCRIPTABLE void scale(qreal s);
-        Q_SCRIPTABLE void resetView();
+        Q_SCRIPTABLE void resetViewport();
 
     Q_SIGNALS:
         void modelChanged(QAbstractItemModel* model);

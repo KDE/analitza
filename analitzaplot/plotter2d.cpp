@@ -1022,3 +1022,14 @@ void Plotter2D::setShowMinorGrid(bool mt)
     m_showMinorGrid=mt;
     forceRepaint();
 }
+
+void Plotter2D::setShowGrid(bool show)
+{
+    if (m_showGrid != show) {
+        m_showGrid=show;
+        forceRepaint();
+
+        showGridChanged();
+    }
+}
+

@@ -115,7 +115,7 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         bool isUsingSimpleRotation() const { return m_simpleRotation; }
 
         /** sets the view to the initial perspective */
-        void resetView();
+        void resetViewport();
 
     protected:
         void addPlots(PlotItem* item);

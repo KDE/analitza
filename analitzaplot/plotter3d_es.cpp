@@ -118,7 +118,7 @@ void Plotter3DES::initGL()
     program.link();
 }
 
-void Plotter3DES::resetView()
+void Plotter3DES::resetViewport()
 {
     m_rot.setToIdentity();
     resetViewPrivate(QVector3D(-45, 0, -135));

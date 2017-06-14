@@ -130,6 +130,8 @@ Q_SIGNALS:
     void status(const QString &msg);
     
     void viewportChanged(const QRectF&);
+
+    void showGridChanged() override;
     
 private:
     //TODO setviewmodemosusemovemode, pan

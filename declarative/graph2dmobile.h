@@ -32,8 +32,8 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
 {
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
-    Q_PROPERTY(QRectF viewport READ lastViewport WRITE setViewport)
-    Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
+    Q_PROPERTY(QRectF viewport READ lastViewport WRITE setViewport RESET resetViewport)
+    Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid NOTIFY showGridChanged)
     Q_PROPERTY(bool showMinorGrid READ showMinorGrid WRITE setShowMinorGrid)
     Q_PROPERTY(bool keepAspectRatio READ keepAspectRatio WRITE setKeepAspectRatio)
     Q_PROPERTY(bool currentFunction READ currentFunction WRITE setCurrentFunction)
@@ -47,8 +47,8 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
         virtual void modelChanged() override;
         virtual int currentFunction() const override { return m_currentFunction; }
         
-        void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) override /*Q_OVERRIDE*/;
-        QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) override /*Q_OVERRIDE*/;
+        void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) override;
+        QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) override;
         
         void setCurrentFunction(int f) { m_currentFunction = f; }
         bool ticksShownAtAll() const { return ticksShown()!=0; }
@@ -65,6 +65,9 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
         void addFuncs(const QModelIndex& parent, int start, int end);
         void removeFuncs(const QModelIndex& parent, int start, int end);
         
+    Q_SIGNALS:
+        void showGridChanged() override;
+
     private:
         void paint();
 
