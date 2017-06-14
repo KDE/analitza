@@ -27,13 +27,14 @@
 
 #include <QPair>
 #include <QMap>
+#include <QSharedPointer>
 
 #include "planecurve.h"
 #include "spacecurve.h"
 #include "surface.h"
 
 #define REGISTER_FUNCTIONGRAPH_DIM(dim, constructor, name) \
-static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, Analitza::Variables* v) { return new name (exp, v); } \
+static AbstractFunctionGraph * vcreate##name(const Analitza::Expression &exp, const QSharedPointer<Analitza::Variables>& v) { return new name (exp, v); } \
         namespace { bool _##name=FunctionGraphFactory::self()->registerFunctionGraph(dim, constructor, vcreate##name, \
         name ::TypeName(), name ::ExpressionType, name ::CoordSystem(), name ::Parameters(), \
         name ::IconName(), name ::Examples); }
@@ -52,7 +53,7 @@ class PlotItem;
 class FunctionGraphFactory
 {
 public:
-    typedef AbstractFunctionGraph* (*BuilderFunctionWithVars)(const Analitza::Expression&, Analitza::Variables* );
+    typedef AbstractFunctionGraph* (*BuilderFunctionWithVars)(const Analitza::Expression&, const QSharedPointer<Analitza::Variables>& );
     typedef FunctionGraph* (*PlotItemConstuctor)(AbstractFunctionGraph*);
     typedef Analitza::ExpressionType (*ExpressionTypeFunction)();
     typedef QStringList (*ExamplesFunction)();
@@ -81,8 +82,8 @@ public:
     QString trait(const Analitza::Expression& expr, const Analitza::ExpressionType& t, Dimension dim) const;
     bool contains(const QString &id) const;
     
-    AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
-    FunctionGraph* buildItem(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const;
+    AbstractFunctionGraph * build(const QString& id, const Analitza::Expression& exp, const QSharedPointer<Analitza::Variables>& v) const;
+    FunctionGraph* buildItem(const QString& id, const Analitza::Expression& exp, const QSharedPointer<Analitza::Variables>& v) const;
 
     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > registeredFunctionGraphs() const;
 

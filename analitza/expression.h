@@ -44,6 +44,7 @@ class Cn;
 
 class ANALITZA_EXPORT Expression
 {
+    Q_GADGET
     public:
         typedef void (*CustomObjectDestructor)(const QVariant&);
         /**

@@ -26,7 +26,7 @@
 
 using namespace Analitza;
 
-VariablesModel::VariablesModel(Variables* v, QObject *parent)
+VariablesModel::VariablesModel(const QSharedPointer<Variables>& v, QObject *parent)
     : QAbstractTableModel(parent), m_vars(v), m_editable(true)
 {}
 
@@ -34,9 +34,9 @@ VariablesModel::VariablesModel(QObject* parent)
     : QAbstractTableModel(parent), m_vars(0), m_editable(true)
 {}
 
-void VariablesModel::setVariables(Variables* v)
+void VariablesModel::setVariables(const QSharedPointer<Variables> &v)
 {
-    m_vars=v;
+    m_vars = v;
 }
 
 QVariant VariablesModel::data(const QModelIndex & index, int role) const

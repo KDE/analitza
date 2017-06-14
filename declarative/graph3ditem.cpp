@@ -55,7 +55,7 @@ Graph3DItem::Graph3DItem(QQuickItem* parent)
 Graph3DItem::~Graph3DItem()
 {}
 
-QStringList Graph3DItem::addFunction(const QString& expression, Analitza::Variables* vars)
+QStringList Graph3DItem::addFunction(const QString& expression, const QSharedPointer<Analitza::Variables>& vars)
 {
     PlotsModel* plotsmodel = qobject_cast<PlotsModel*>(m_plotter->model());
     if(!plotsmodel)

@@ -60,8 +60,8 @@ class AbstractFunctionGraph : public AbstractMappingGraph
 {
 friend class FunctionGraphFactory;
 public:
-    AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v = 0);
-    virtual ~AbstractFunctionGraph();
+    explicit AbstractFunctionGraph(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v = {});
+    ~AbstractFunctionGraph() override;
     
     Dimension spaceDimension() const override;
 

@@ -23,14 +23,14 @@
 #include "abstractfunctiongraph.h"
 
 #define CONSTRUCTORS(name) \
-name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) : AbstractSurface(functionExpression, variables) { }
+name (const Analitza::Expression &functionExpression, const QSharedPointer<Analitza::Variables>& variables) : AbstractSurface(functionExpression, variables) { }
 
 namespace Analitza {
 
 class AbstractSurface : public AbstractFunctionGraph //strategy pattern for curves
 {
 public:
-    explicit AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v = 0);
+    explicit AbstractSurface(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v = {});
     virtual ~AbstractSurface();
 
     //Own

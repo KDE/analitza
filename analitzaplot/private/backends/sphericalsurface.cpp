@@ -30,7 +30,7 @@ class SphericalSurface : public AbstractSurface/*, static class? better macros F
 {
 public:
     explicit SphericalSurface(const Analitza::Expression& e);
-    SphericalSurface(const Analitza::Expression& e, Analitza::Variables* v);
+    SphericalSurface(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v);
     
     TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Spherical Surface Radial=F(t:Azimuth, p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
@@ -97,7 +97,7 @@ SphericalSurface::SphericalSurface(const Analitza::Expression& e): AbstractSurfa
     setInterval(QStringLiteral("p"), 0, M_PI);
 }
 
-SphericalSurface::SphericalSurface(const Analitza::Expression& e, Analitza::Variables* v)
+SphericalSurface::SphericalSurface(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v)
     : AbstractSurface(e, v)
 {}
 

@@ -102,7 +102,7 @@ void Graph2DMobile::translate(qreal x, qreal y)
     moveViewport(QPoint(x,y));
 }
 
-QStringList Graph2DMobile::addFunction(const QString& expression, Analitza::Variables* vars)
+QStringList Graph2DMobile::addFunction(const QString& expression, const QSharedPointer<Analitza::Variables>& vars)
 {
     PlotsModel* plotsmodel = qobject_cast<PlotsModel*>(model());
     if(!plotsmodel)

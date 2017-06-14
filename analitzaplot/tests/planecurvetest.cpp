@@ -32,13 +32,12 @@ QTEST_MAIN( PlaneCurveTest )
 
 PlaneCurveTest::PlaneCurveTest(QObject *parent)
     : QObject(parent)
+    , m_vars(new Analitza::Variables)
 {
-    m_vars=new Analitza::Variables;
 }
 
 PlaneCurveTest::~PlaneCurveTest()
 {
-    delete m_vars;
 }
 
 void PlaneCurveTest::initTestCase()

@@ -267,7 +267,7 @@ void PlotsModel::setResolution(int res)
 
 static QColor randomFunctionColor() { return QColor::fromHsv(qrand()%255, 255, 225); }
 
-QStringList PlotsModel::addFunction(const QString& expression, Dimension dim, Analitza::Variables* vars)
+QStringList PlotsModel::addFunction(const QString& expression, Dimension dim, const QSharedPointer<Analitza::Variables>& vars)
 {
     Analitza::Expression e(expression, Analitza::Expression::isMathML(expression));
 

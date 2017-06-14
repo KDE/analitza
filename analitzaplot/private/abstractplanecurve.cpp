@@ -29,7 +29,7 @@
 
 using namespace Analitza;
 
-AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v)
+AbstractPlaneCurve::AbstractPlaneCurve(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v)
     : AbstractFunctionGraph(e, v)
 {}
 

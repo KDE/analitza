@@ -31,7 +31,7 @@ using namespace Analitza;
 class FunctionCartesian : public AbstractPlaneCurve
 {
     public:
-        FunctionCartesian(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
+        FunctionCartesian(const Analitza::Expression &functionExpression, const QSharedPointer<Analitza::Variables>& variables)
             : AbstractPlaneCurve(functionExpression, variables) { }
 
         void update(const QRectF& viewport) override;
@@ -59,7 +59,7 @@ class FunctionCartesian : public AbstractPlaneCurve
 class FunctionY : public FunctionCartesian
 {
 public:
-    FunctionY(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
+    FunctionY(const Analitza::Expression &functionExpression, const QSharedPointer<Analitza::Variables>& variables)
         : FunctionCartesian(functionExpression, variables) { initDerivative(); }
     TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Plane Curve F(y)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
@@ -75,7 +75,7 @@ public:
 class FunctionX : public FunctionCartesian
 {
 public:
-    FunctionX(const Analitza::Expression &functionExpression, Analitza::Variables *variables)
+    FunctionX(const Analitza::Expression &functionExpression, const QSharedPointer<Analitza::Variables>& variables)
         : FunctionCartesian(functionExpression, variables) { initDerivative(); }
     TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Plane Curve F(x)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(

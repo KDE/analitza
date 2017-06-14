@@ -21,6 +21,7 @@
 #define ANALITZATEST_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 /**
     @author Aleix Pol
@@ -51,7 +52,7 @@ Q_OBJECT
 
         void cleanupTestCase();
     private:
-        Analitza::Variables* m_vars;
+        QSharedPointer<Analitza::Variables> m_vars;
 };
 
 #endif

@@ -58,7 +58,7 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
         void translate(qreal x, qreal y);
         void scale(qreal s, int x, int y);
         void resetViewport();
-        QStringList addFunction(const QString& expression, Analitza::Variables* vars=0);
+        QStringList addFunction(const QString& expression, const QSharedPointer<Analitza::Variables>& vars = {});
         
     private Q_SLOTS:
         void updateFuncs(const QModelIndex& start, const QModelIndex& end);

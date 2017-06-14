@@ -22,7 +22,7 @@
 #include "abstractfunctiongraph.h"
 
 #define CONSTRUCTORS(name) \
-name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractSpaceCurve(functionExpression, variables) { }
+name (const Analitza::Expression &functionExpression, const QSharedPointer<Analitza::Variables>& variables) :AbstractSpaceCurve(functionExpression, variables) { }
 
 namespace Analitza {
 class Variables;
@@ -30,7 +30,7 @@ class Variables;
 class AbstractSpaceCurve : public AbstractFunctionGraph 
 {
 public:
-    AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v = 0);
+    AbstractSpaceCurve(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v = {});
     virtual ~AbstractSpaceCurve();
 
     //Curve ... los expongo como publicos tanto para planecurve como para los backend (

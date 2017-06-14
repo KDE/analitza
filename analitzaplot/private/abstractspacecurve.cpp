@@ -33,7 +33,7 @@ using namespace Analitza;
 
 using std::atan2;
 
-AbstractSpaceCurve::AbstractSpaceCurve(const Analitza::Expression& e, Analitza::Variables* v)
+AbstractSpaceCurve::AbstractSpaceCurve(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v)
 : AbstractFunctionGraph(e, v)
 {}
 

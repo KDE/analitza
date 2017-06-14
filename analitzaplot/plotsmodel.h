@@ -78,7 +78,7 @@ public:
     /**
      * Helper method to help easily add elements to the model
      */
-    Q_SCRIPTABLE QStringList addFunction(const QString& expression, Analitza::Dimension dim, Analitza::Variables* vars);
+    Q_SCRIPTABLE QStringList addFunction(const QString& expression, Analitza::Dimension dim, const QSharedPointer<Analitza::Variables>& vars);
 
 protected:
     void emitChanged(PlotItem* it);

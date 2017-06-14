@@ -33,7 +33,7 @@ using namespace Analitza;
 class FunctionPolar : public AbstractPlaneCurve
 {
 public:
-    FunctionPolar(const Analitza::Expression& e, Analitza::Variables* v = 0);
+    FunctionPolar(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v = 0);
     TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Polar Curve r=F(p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
                     Analitza::ExpressionType(Analitza::ExpressionType::Value)).addParameter(
@@ -51,7 +51,7 @@ public:
     Analitza::Cn *p;
 };
 
-FunctionPolar::FunctionPolar(const Analitza::Expression& e, Analitza::Variables* v): AbstractPlaneCurve(e, v)
+FunctionPolar::FunctionPolar(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v): AbstractPlaneCurve(e, v)
 {
     p = arg(QStringLiteral("q"));
 }

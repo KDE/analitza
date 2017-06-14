@@ -33,7 +33,7 @@ using namespace Analitza;
 class ImplicitPolar : public AbstractPlaneCurve, MarchingSquares
 {
 public:
-    ImplicitPolar(const Analitza::Expression& e, Analitza::Variables* v = 0);
+    ImplicitPolar(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v = {});
     TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Polar implicit Curve 0=F(r: Radial, p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
         .addParameter(Analitza::ExpressionType(Analitza::ExpressionType::Value))
@@ -55,7 +55,7 @@ public:
     Analitza::Cn *p;
 };
 
-ImplicitPolar::ImplicitPolar(const Analitza::Expression& e, Analitza::Variables* v)
+ImplicitPolar::ImplicitPolar(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v)
     : AbstractPlaneCurve(e, v)
 {
     r = arg(QStringLiteral("r"));

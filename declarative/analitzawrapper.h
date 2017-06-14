@@ -52,7 +52,7 @@ class ExpressionWrapper : public QObject
 class AnalitzaWrapper : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool calculate READ isCalculate WRITE setCalculate)
+    Q_PROPERTY(bool calculate READ isCalculate WRITE setCalculate NOTIFY isCalculateChanged)
     Q_PROPERTY(bool isCorrect READ isCorrect)
     Q_PROPERTY(QStringList errors READ errors)
     Q_PROPERTY(Analitza::Variables* variables READ variables WRITE setVariables)
@@ -60,7 +60,7 @@ class AnalitzaWrapper : public QObject
         explicit AnalitzaWrapper(QObject* parent = 0);
         ~AnalitzaWrapper();
         
-        void setCalculate(bool calc) { m_calc = calc; }
+        void setCalculate(bool calc);
         bool isCalculate() const { return m_calc; } 
         
         Analitza::Analyzer* wrapped() const { return m_wrapped.data(); }
@@ -79,6 +79,9 @@ class AnalitzaWrapper : public QObject
         
         Analitza::Variables* variables() const { return m_vars; }
         void setVariables(Analitza::Variables* v);
+
+    Q_SIGNALS:
+        void isCalculateChanged(bool isCalculate);
         
     private:
         void initWrapped();

@@ -33,7 +33,7 @@ using namespace Analitza;
 // Make the list control large enough that it can show at least four items at a time without scrolling. 
 // For lists of ten or more items, increase this minimum size as appropriate. 
 
-AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, Analitza::Variables* v)
+AbstractFunctionGraph::AbstractFunctionGraph(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v)
     : AbstractMappingGraph()
     , m_resolution(200)
     , m_e(e)

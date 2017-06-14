@@ -20,6 +20,7 @@
 #define OPERATORSMODEL_H
 
 #include <QAbstractTableModel>
+#include <QSharedPointer>
 #include "analitzaguiexport.h"
 
 namespace Analitza
@@ -56,14 +57,14 @@ class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
         int rowCount(const QModelIndex &parent=QModelIndex()) const override;
         int columnCount(const QModelIndex &parent=QModelIndex()) const override;
         
-        void setVariables(const Analitza::Variables* v) { m_vars=v; }
+        void setVariables(const QSharedPointer<Analitza::Variables> &v) { m_vars=v; }
         QModelIndex indexForOperatorName(const QString& id) const;
         QString parameterHelp(const QModelIndex& idx, int param, bool inbounds) const;
         static QString standardFunctionCallHelp(const QString& funcname, int param, int paramcount, bool inbounds, bool isbounded);
         
         
     private:
-        const Analitza::Variables *m_vars;
+        QSharedPointer<Analitza::Variables> m_vars;
 };
 
 

@@ -32,7 +32,7 @@ class Frp : public AbstractSurface/*, static class? better macros FooClass*/
 {
 public:
     explicit Frp(const Analitza::Expression& e);
-    Frp(const Analitza::Expression& e, Analitza::Variables* v);
+    Frp(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v);
 
     TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Cylindrical Surface z=F(r: Radial, p: Polar)"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda).addParameter(
@@ -93,7 +93,7 @@ Frp::Frp(const Analitza::Expression& e): AbstractSurface(e)
     setInterval(QStringLiteral("p"), 0, M_PI);
 }
 
-Frp::Frp(const Analitza::Expression& e, Analitza::Variables*): AbstractSurface(e)
+Frp::Frp(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& /*v*/): AbstractSurface(e)
 {}
 
 QVector3D Frp::fromParametricArgs(double r, double p)

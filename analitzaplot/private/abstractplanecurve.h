@@ -24,7 +24,7 @@
 #include <QLineF>
 
 #define CONSTRUCTORS(name) \
-name (const Analitza::Expression &functionExpression, Analitza::Variables *variables) :AbstractPlaneCurve(functionExpression, variables) { }
+name (const Analitza::Expression &functionExpression, const QSharedPointer<Analitza::Variables>& variables) :AbstractPlaneCurve(functionExpression, variables) { }
 
 namespace Analitza {
 class Variables;
@@ -32,8 +32,8 @@ class Variables;
 class AbstractPlaneCurve : public AbstractFunctionGraph 
 {
 public:
-    AbstractPlaneCurve(const Analitza::Expression& e, Analitza::Variables* v = 0);
-    virtual ~AbstractPlaneCurve();
+    explicit AbstractPlaneCurve(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v = {});
+    ~AbstractPlaneCurve() override;
 
     QVector<QPointF> points;
     QVector<int> jumps;

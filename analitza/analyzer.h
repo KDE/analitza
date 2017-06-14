@@ -21,12 +21,13 @@
 #define ANALYZER_H
 
 #include <QStringList>
+#include <QSharedPointer>
+#include <QStack>
 
 #include "expression.h"
 #include "analitzaexport.h"
 #include "expressiontype.h"
 #include "builtinmethods.h"
-#include <QStack>
 #include <analitza/analitzautils.h>
 
 namespace Analitza
@@ -65,7 +66,8 @@ class ANALITZA_EXPORT Analyzer
         /** Constructor. Creates an empty Analyzer module. 
             @param v: Sets a custom variables module. This module will _not_ be deleted along with Analyzer
         */
-        Analyzer(Variables* v);
+        explicit Analyzer(Variables* v);
+        explicit Analyzer(const QSharedPointer<Variables> &v);
         
         /** Copy constructor. Creates a copy of the @p a Analyzer instance. Inherits its Variable structure. */
         Analyzer(const Analyzer& a);
@@ -110,7 +112,7 @@ class ANALITZA_EXPORT Analyzer
         QStringList errors() const { return m_exp.error() + m_err; }
         
         /** @returns Returns a way to query variables. */
-        Variables *variables() const { return m_vars; }
+        QSharedPointer<Variables> variables() const { return m_vars; }
         
         /**
             Adds a variable entry. It is the proper way to do it because tracks some possible errors.
@@ -163,13 +165,12 @@ class ANALITZA_EXPORT Analyzer
         static funcContainer operateContainer[];
         
         Expression m_exp;
-        Variables *m_vars;
+        QSharedPointer<Variables> m_vars;
         QStringList m_err;
         QVector<Object*> m_runStack;
         int m_runStackTop;
         BuiltinMethods m_builtin;
         
-        const bool m_varsOwned;
         bool m_hasdeps;
         ExpressionType m_currentType;
         QMap<QString, ExpressionType> m_variablesTypes;

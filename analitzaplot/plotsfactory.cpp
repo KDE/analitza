@@ -34,7 +34,6 @@ PlotsFactory::PlotsFactory()
 
 PlotsFactory::~PlotsFactory()
 {
-    delete m_vars;
 }
 
 PlotsFactory* PlotsFactory::self()
@@ -42,7 +41,7 @@ PlotsFactory* PlotsFactory::self()
     return factoryInstance;
 }
 
-PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimension dim, Variables* vars) const
+PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimension dim, const QSharedPointer<Variables> &vars) const
 {
     QStringList errs;
     

@@ -288,7 +288,7 @@ void ExpressionEdit::cursorMov()
     QString help = helpShow(m_highlight->editingName(),
                             m_highlight->editingParameter(),
                             m_highlight->editingBounds(),
-                            a ? a->variables() : 0);
+                            a ? a->variables().data() : nullptr);
     
     if(help.isEmpty()) {
         if(isCorrect()) {

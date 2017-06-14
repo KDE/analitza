@@ -129,7 +129,7 @@ bool FunctionGraphFactory::contains(const QString& id) const
     return builderFunctionsWithVars.contains(id);
 }
 
-AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
+AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Analitza::Expression& exp, const QSharedPointer<Analitza::Variables>& v) const
 {
     Q_ASSERT(builderFunctionsWithVars.contains(id));
     AbstractFunctionGraph* ret = builderFunctionsWithVars.value(id)(exp, v);
@@ -138,7 +138,7 @@ AbstractFunctionGraph* FunctionGraphFactory::build(const QString& id, const Anal
     return ret;
 }
 
-FunctionGraph* FunctionGraphFactory::buildItem(const QString& id, const Analitza::Expression& exp, Analitza::Variables* v) const
+FunctionGraph* FunctionGraphFactory::buildItem(const QString& id, const Analitza::Expression& exp, const QSharedPointer<Analitza::Variables>& v) const
 {
     return plotConstructor[id](build(id, exp, v));
 }

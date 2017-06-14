@@ -52,7 +52,7 @@ class Graph3DItem : public QQuickFramebufferObject
 
         QQuickFramebufferObject::Renderer * createRenderer() const override;
 
-        Q_SCRIPTABLE QStringList addFunction(const QString& expression, Analitza::Variables* vars=0);
+        Q_SCRIPTABLE QStringList addFunction(const QString& expression, const QSharedPointer<Analitza::Variables>& vars = {});
         Q_SCRIPTABLE void rotate(qreal x, qreal y);
         Q_SCRIPTABLE void scale(qreal s);
         Q_SCRIPTABLE void resetView();

@@ -27,7 +27,7 @@ static const int MAXALONG = 32;
 
 using namespace Analitza;
 
-AbstractSurface::AbstractSurface(const Analitza::Expression& e, Analitza::Variables* v)
+AbstractSurface::AbstractSurface(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v)
 : AbstractFunctionGraph(e, v)
 {}
 

@@ -20,6 +20,7 @@
 #define VARIABLESMODEL_H
 
 #include <QAbstractTableModel>
+#include <QSharedPointer>
 #include "analitzaguiexport.h"
 
 namespace Analitza
@@ -38,12 +39,12 @@ class Expression;
 class ANALITZAGUI_EXPORT VariablesModel : public QAbstractTableModel
 {
     Q_OBJECT
-    Q_PROPERTY(Analitza::Variables* variables READ variables WRITE setVariables)
+    Q_PROPERTY(QSharedPointer<Analitza::Variables> variables READ variables WRITE setVariables)
     public:
         /** Constructor. Creates a new Variable Model. */
         explicit VariablesModel(QObject *parent=0);
-        VariablesModel(Analitza::Variables* v, QObject *parent=0);
-        void setVariables(Analitza::Variables* v);
+        VariablesModel(const QSharedPointer<Analitza::Variables> &v, QObject *parent = nullptr);
+        void setVariables(const QSharedPointer<Analitza::Variables> &v);
         
         virtual QFlags< Qt::ItemFlag > flags(const QModelIndex& index) const override;
         bool setData(const QModelIndex& index, const QVariant& value, int role=Qt::EditRole) override;
@@ -55,13 +56,13 @@ class ANALITZAGUI_EXPORT VariablesModel : public QAbstractTableModel
         void insertVariable(const QString& name, const Analitza::Expression& value);
         void setEditable(bool ed) { m_editable=ed; }
         
-        Analitza::Variables* variables() const { return m_vars; }
+        QSharedPointer<Analitza::Variables> variables() const { return m_vars; }
     public Q_SLOTS:
         /** Updates the variables information */
         void updateInformation();
         
     private:
-        Analitza::Variables *m_vars;
+        QSharedPointer<Analitza::Variables> m_vars;
         bool m_editable;
 };
 

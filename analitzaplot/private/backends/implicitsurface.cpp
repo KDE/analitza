@@ -30,7 +30,7 @@ using namespace Analitza;
 class ImplicitSurf : public AbstractSurface , public MarchingCubes/*, static class? better macros FooClass*/
 {
 public:
-    ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v);
+    ImplicitSurf(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v);
 
     TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Implicit Surface"))
     EXPRESSION_TYPE(Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
@@ -60,7 +60,7 @@ double ImplicitSurf::evalScalarField(double x, double y, double z)
 }
 
 
-ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, Analitza::Variables* v): AbstractSurface(e, v)
+ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v): AbstractSurface(e, v)
 {
 
 }

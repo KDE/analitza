@@ -61,7 +61,7 @@ void AnalitzaWrapper::initWrapped()
             m_wrapped.reset(new Analitza::Analyzer(m_vars));
         else {
             m_wrapped.reset(new Analitza::Analyzer);
-            m_vars = m_wrapped->variables();
+            m_vars = m_wrapped->variables().data();
         }
     }
 }
@@ -167,3 +167,11 @@ void AnalitzaWrapper::removeVariable(const QString& name)
 bool AnalitzaWrapper::isCorrect() const { return m_wrapped->isCorrect(); }
 
 QStringList AnalitzaWrapper::errors() const { return m_wrapped->errors(); }
+
+void AnalitzaWrapper::setCalculate(bool calc)
+{
+    if (m_calc != calc) {
+        m_calc = calc;
+        Q_EMIT isCalculateChanged(calc);
+    }
+}

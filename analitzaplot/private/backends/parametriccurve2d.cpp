@@ -33,7 +33,7 @@ using namespace Analitza;
 class FunctionParametric : public AbstractPlaneCurve
 {
 public:
-    FunctionParametric(const Expression& e, Variables* v = 0);
+    FunctionParametric(const Expression& e, const QSharedPointer<Analitza::Variables>& v);
     TYPE_NAME(QT_TRANSLATE_NOOP("Function type", "Parametric Curve 2D"))
     EXPRESSION_TYPE(
         Analitza::ExpressionType(Analitza::ExpressionType::Lambda)
@@ -56,7 +56,7 @@ private:
     int resolution() { return 5000; }
 };
 
-FunctionParametric::FunctionParametric(const Expression& e, Variables* v): AbstractPlaneCurve(e, v)
+FunctionParametric::FunctionParametric(const Expression& e, const QSharedPointer<Analitza::Variables>& v): AbstractPlaneCurve(e, v)
 {
     t = arg(QStringLiteral("t"));
 }
