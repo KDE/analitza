@@ -200,6 +200,11 @@ void Analyzer::setExpression(const Expression & e)
     }
 }
 
+void Analitza::Analyzer::setVariables(const QSharedPointer<Analitza::Variables>& v)
+{
+    m_vars = v;
+}
+
 void Analyzer::importScript(QTextStream* stream)
 {
     ExpressionStream s(stream);

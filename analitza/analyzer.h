@@ -74,6 +74,9 @@ class ANALITZA_EXPORT Analyzer
         
         /** Destructor. */
         ~Analyzer();
+
+        /** sets the @p v Variables tuple we are going to use */
+        void setVariables(const QSharedPointer<Variables> &v);
         
         /** Sets an expression to calculate. */
         void setExpression(const Expression &e);

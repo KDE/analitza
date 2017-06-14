@@ -55,7 +55,7 @@ class AnalitzaWrapper : public QObject
     Q_PROPERTY(bool calculate READ isCalculate WRITE setCalculate NOTIFY isCalculateChanged)
     Q_PROPERTY(bool isCorrect READ isCorrect)
     Q_PROPERTY(QStringList errors READ errors)
-    Q_PROPERTY(Analitza::Variables* variables READ variables WRITE setVariables)
+    Q_PROPERTY(QSharedPointer<Analitza::Variables> variables READ variables WRITE setVariables)
     public:
         explicit AnalitzaWrapper(QObject* parent = 0);
         ~AnalitzaWrapper();
@@ -77,8 +77,8 @@ class AnalitzaWrapper : public QObject
         QStringList errors() const;
         bool isCorrect() const;
         
-        Analitza::Variables* variables() const { return m_vars; }
-        void setVariables(Analitza::Variables* v);
+        QSharedPointer<Analitza::Variables> variables() const { return m_vars; }
+        void setVariables(const QSharedPointer<Analitza::Variables> &v);
 
     Q_SIGNALS:
         void isCalculateChanged(bool isCalculate);
@@ -87,7 +87,7 @@ class AnalitzaWrapper : public QObject
         void initWrapped();
         
         QScopedPointer<Analitza::Analyzer> m_wrapped;
-        Analitza::Variables* m_vars;
+        QSharedPointer<Analitza::Variables> m_vars;
         bool m_calc;
 };
 
