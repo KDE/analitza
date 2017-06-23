@@ -21,6 +21,9 @@
 #include <QOpenGLFramebufferObject>
 #include <analitzaplot/plotsmodel.h>
 #include <QTimer>
+#include <QQuickItemGrabResult>
+#include <QGuiApplication>
+#include <QElapsedTimer>
 
 using namespace Analitza;
 
@@ -72,7 +75,8 @@ QAbstractItemModel* Graph3DItem::model() const
 
 void Graph3DItem::setModel(QAbstractItemModel* model)
 {
-    disconnect(m_plotter->model(), 0, this, 0);
+    if (m_plotter->model())
+        disconnect(m_plotter->model(), 0, this, 0);
 
     m_plotter->setModel(model);
 
@@ -100,6 +104,16 @@ void Graph3DItem::scale(qreal s)
 void Graph3DItem::resetViewport()
 {
     m_plotter->resetViewport();
+}
+
+bool Graph3DItem::save(const QUrl& url)
+{
+    return m_plotter->save(url);
+}
+
+QStringList Graph3DItem::filters() const
+{
+    return m_plotter->filters();
 }
 
 class Plotter3DFboRenderer : public QQuickFramebufferObject::Renderer
@@ -131,4 +145,19 @@ QQuickFramebufferObject::Renderer* Graph3DItem::createRenderer() const
 {
     m_plotter->setViewport(QRectF({0,0}, QSizeF(width(), height())));
     return new Plotter3DFboRenderer(m_plotter);
+}
+
+QImage Plotter3DRenderer::grabImage()
+{
+    QSharedPointer<QQuickItemGrabResult> imgGrab = m_item->grabToImage();
+    QImage ret;
+    connect(imgGrab.data(), &QQuickItemGrabResult::ready, this, [imgGrab, &ret]() {
+        ret = imgGrab->image();
+    });
+    QElapsedTimer timer;
+    timer.start();
+    while(ret.size().isEmpty() && timer.elapsed()<2000) {
+        qGuiApp->processEvents();
+    }
+    return ret;
 }

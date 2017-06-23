@@ -59,6 +59,7 @@ add_library( AnalitzaPlot ${analitzaplot_SRCS} )
 target_link_libraries ( AnalitzaPlot
   Qt5::Core
   Qt5::Gui
+  Qt5::PrintSupport
 
   Analitza
 )

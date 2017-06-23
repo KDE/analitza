@@ -18,7 +18,8 @@
 
 #include <QGuiApplication>
 #include <QCommandLineParser>
-#include <qfileinfo.h>
+#include <QFileInfo>
+#include <QImage>
 #include <analitzaplot/plotter3d_es.h>
 #include <analitzaplot/plotsmodel.h>
 #include <analitzaplot/plotsfactory.h>
@@ -35,6 +36,7 @@ public:
     virtual int currentPlot() const override { return -1; }
     virtual void renderGL() override {}
     virtual void modelChanged() override {}
+    QImage grabImage() override { return {}; }
 };
 
 int main(int argc, char** argv)

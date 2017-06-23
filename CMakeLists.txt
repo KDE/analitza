@@ -9,7 +9,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 #Checking whether we can compile calgebra
 
 set(QT_REQUIRED_VERSION 5.2)
-find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg Test Qml Quick)
+find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg Test Qml Quick PrintSupport)
 
 include(FeatureSummary)
 include(ECMAddAppIcon)

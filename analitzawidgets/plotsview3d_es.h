@@ -79,6 +79,7 @@ private:
     virtual void paintGL() override;
     virtual void initializeGL() override;
     virtual void resizeGL(int width, int height) override;
+    QImage grabImage() override;
     
     QItemSelectionModel* m_selection;
     

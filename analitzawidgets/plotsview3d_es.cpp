@@ -171,3 +171,8 @@ void PlotsView3DES::keyPressEvent(QKeyEvent* ev)
             break;
     }
 }
+
+QImage PlotsView3DES::grabImage()
+{
+    return grabFramebuffer();
+}

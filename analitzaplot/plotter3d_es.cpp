@@ -32,6 +32,9 @@
 #include <QFile>
 #include <QOpenGLFunctions>
 #include <QPixmap>
+#include <QUrl>
+#include <QPrinter>
+#include <QPainter>
 
 #if defined(HAVE_IEEEFP_H)
 #include <ieeefp.h>
@@ -479,4 +482,35 @@ void Plotter3DES::drawRefPlane()
     program.setAttributeArray(vertexLocation, GL_FLOAT, vxs.constData(), 3);
     glDrawArrays(GL_LINES, 0, vxs.size());
     program.disableAttributeArray(vertexLocation);
+}
+
+bool Plotter3DES::save(const QUrl& url)
+{
+    if (!url.isLocalFile())
+        return false;
+
+    const QString path = url.toLocalFile();
+    if(path.endsWith(QLatin1String(".x3d")) || path.endsWith(QLatin1String(".stl"))) {
+        exportSurfaces(path);
+    } else if(path.endsWith(QLatin1String(".pdf"))) {
+        auto px = grabImage();
+        QPrinter printer;
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(path);
+        printer.setPaperSize(px.size(), QPrinter::DevicePixel);
+        printer.setPageMargins(0,0,0,0, QPrinter::DevicePixel);
+        QPainter painter;
+        painter.begin(&printer);
+        painter.drawImage(QPoint(0,0), px);
+        painter.end();
+    } else {
+        auto px = grabImage();
+        return px.save(path);
+    }
+    return true;
+}
+
+QStringList Plotter3DES::filters() const
+{
+    return {QObject::tr("PNG File (*.png)"), QObject::tr("PDF Document(*.pdf)"), QObject::tr("X3D Document (*.x3d)"), QObject::tr("STL Document (*.stl)")};
 }

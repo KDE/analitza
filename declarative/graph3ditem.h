@@ -34,6 +34,7 @@ public:
     void renderGL() override;
 
     QQuickWindow* window() const;
+    QImage grabImage() override;
 
 private:
     Graph3DItem * m_item;
@@ -42,6 +43,7 @@ private:
 class Graph3DItem : public QQuickFramebufferObject
 {
     Q_OBJECT
+    Q_PROPERTY(QStringList filters READ filters CONSTANT)
     Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel NOTIFY modelChanged)
     public:
         Graph3DItem(QQuickItem* parent = Q_NULLPTR);
@@ -56,6 +58,10 @@ class Graph3DItem : public QQuickFramebufferObject
         Q_SCRIPTABLE void rotate(qreal x, qreal y);
         Q_SCRIPTABLE void scale(qreal s);
         Q_SCRIPTABLE void resetViewport();
+
+        Q_SCRIPTABLE bool save(const QUrl &url);
+
+        QStringList filters() const;
 
     Q_SIGNALS:
         void modelChanged(QAbstractItemModel* model);

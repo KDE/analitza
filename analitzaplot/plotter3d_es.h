@@ -117,6 +117,20 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         /** sets the view to the initial perspective */
         void resetViewport();
 
+        /**
+         * saves the currently displayed plot in @p url
+         *
+         * @returns whether it was saved successfully
+         */
+        bool save(const QUrl &url);
+
+        /**
+         * @returns the filters supported by save
+         *
+         * @see save()
+         */
+        QStringList filters() const;
+
     protected:
         void addPlots(PlotItem* item);
 
@@ -124,6 +138,8 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         static const quint8 XAxisArrowColor[];
         static const quint8 YAxisArrowColor[];
         static const quint8 ZAxisArrowColor[];
+
+        virtual QImage grabImage() = 0;
 
         void resetViewPrivate(const QVector3D& rot);
 
