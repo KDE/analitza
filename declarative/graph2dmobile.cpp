@@ -146,3 +146,16 @@ QSGNode* Graph2DMobile::updatePaintNode(QSGNode* node, QQuickItem::UpdatePaintNo
     n->setRect(boundingRect());
     return n;
 }
+
+QStringList Graph2DMobile::filters() const
+{
+    return {QObject::tr("PNG File (*.png)")};
+}
+
+bool Graph2DMobile::save(const QUrl& url) const
+{
+    if(!url.isLocalFile())
+        return false;
+
+    return m_buffer.save(url.toLocalFile());
+}

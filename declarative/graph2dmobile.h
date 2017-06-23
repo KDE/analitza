@@ -39,6 +39,7 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
     Q_PROPERTY(bool currentFunction READ currentFunction WRITE setCurrentFunction)
     Q_PROPERTY(bool ticksShown READ ticksShownAtAll WRITE setTicksShownAtAll)
     Q_PROPERTY(bool minorTicksShown READ minorTicksShown WRITE setShowMinorTicks)
+    Q_PROPERTY(QStringList filters READ filters CONSTANT)
     public:
         Graph2DMobile(QQuickItem* parent = 0);
         
@@ -54,11 +55,14 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
         bool ticksShownAtAll() const { return ticksShown()!=0; }
         void setTicksShownAtAll(bool shown);
         
+        QStringList filters() const;
+
     public Q_SLOTS:
         void translate(qreal x, qreal y);
         void scale(qreal s, int x, int y);
         void resetViewport();
         QStringList addFunction(const QString& expression, const QSharedPointer<Analitza::Variables>& vars = {});
+        bool save(const QUrl &url) const;
         
     private Q_SLOTS:
         void updateFuncs(const QModelIndex& start, const QModelIndex& end);
