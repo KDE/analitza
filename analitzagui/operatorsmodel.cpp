@@ -28,6 +28,14 @@ OperatorsModel::OperatorsModel(QObject *parent) : QAbstractTableModel(parent), m
 {
 }
 
+QHash<int, QByteArray> OperatorsModel::roleNames() const
+{
+    return QAbstractTableModel::roleNames().unite( {
+            {IsVariableRole, "isVariable"},
+            {DescriptionRole, "description"}
+    });
+}
+
 QVariant OperatorsModel::data(const QModelIndex & index, int role) const
 {
     QVariant ret;
@@ -65,6 +73,15 @@ QVariant OperatorsModel::data(const QModelIndex & index, int role) const
         QFont f;
         f.setItalic(true);
         ret=f;
+    } else if(role==DescriptionRole && index.column()==0) {
+        Analitza::Operator oper((Analitza::Operator::OperatorType) (index.row()+1));
+        switch(index.column()) {
+            case 0:
+                ret=description(oper);
+                break;
+        }
+    } else if(role==IsVariableRole && index.column()==0) {
+        ret=index.row()<Analitza::Operator::nOfOps-2;
     }
     return ret;
 }
@@ -587,6 +604,13 @@ QString OperatorsModel::standardFunctionCallHelp(const QString& funcname, int pa
 
 }
 
+QString OperatorsModel::lastWord(int pos, const QString& exp)
+{
+    int act=pos-1;
+    for(; act>=0 && exp[act].isLetter(); act--) {}
+
+    return exp.mid(act+1, pos-act-1);
+}
 
 /*QString OperatorsModel::operToString(const Operator& op) const
 {

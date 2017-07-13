@@ -35,6 +35,11 @@ class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
 {
     Q_OBJECT
     public:
+        enum Roles {
+            IsVariableRole = Qt::UserRole + 1,
+            DescriptionRole
+        };
+
         /** Constructor. Creates a new Operator Model. */
         explicit OperatorsModel(QObject *parent=0);
         
@@ -46,6 +51,8 @@ class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
         
         static QString example(const Analitza::Operator& o);
         
+        QHash<int, QByteArray> roleNames() const override;
+
         /** Adds an entry to the model. */
     //     void addEntry(int i, const QString&, const QString&, const QString& ex=QString());
         
@@ -62,6 +69,7 @@ class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
         QString parameterHelp(const QModelIndex& idx, int param, bool inbounds) const;
         static QString standardFunctionCallHelp(const QString& funcname, int param, int paramcount, bool inbounds, bool isbounded);
         
+        Q_SCRIPTABLE static QString lastWord(int pos, const QString &exp);
         
     private:
         QSharedPointer<Analitza::Variables> m_vars;

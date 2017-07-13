@@ -132,8 +132,8 @@ void ExpressionEdit::updateCompleter()
  
 void ExpressionEdit::completed(const QString& newText)
 {
-    int c = newText.length() - lastWord(textCursor().selectionStart()).length();
-    QString toInsert=newText.right(c);
+    int l = OperatorsModel::lastWord(textCursor().selectionStart(), text()).length();
+    QString toInsert=newText.mid(l);
     if(Analitza::Expression::whatType(newText) == Analitza::Object::oper && !isMathML())
         toInsert += '(';
     insertPlainText(toInsert);
@@ -242,7 +242,7 @@ void ExpressionEdit::keyPressEvent(QKeyEvent * e)
         default:
             QPlainTextEdit::keyPressEvent(e);
             m_history.last() = this->toPlainText();
-            QString last = lastWord(textCursor().selectionStart());
+            QString last = OperatorsModel::lastWord(textCursor().selectionStart(), text());
             if(!last.isEmpty()) {
                 m_completer->setCompletionPrefix(last);
                 m_completer->complete();
@@ -267,15 +267,6 @@ void ExpressionEdit::keyPressEvent(QKeyEvent * e)
     int lineCount=toPlainText().count('\n')+1;
     setFixedHeight(m_lineHeight*lineCount+15);
     setCorrect(m_highlight->isCorrect());
-}
-
-QString ExpressionEdit::lastWord(int pos)
-{
-    QString exp=text();
-    int act=pos-1;
-    for(; act>=0 && exp[act].isLetter(); act--) {}
-    
-    return exp.mid(act+1, pos-act-1);
 }
 
 void ExpressionEdit::cursorMov()
