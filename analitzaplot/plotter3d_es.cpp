@@ -512,5 +512,5 @@ bool Plotter3DES::save(const QUrl& url)
 
 QStringList Plotter3DES::filters() const
 {
-    return {QObject::tr("PNG File (*.png)"), QObject::tr("PDF Document(*.pdf)"), QObject::tr("X3D Document (*.x3d)"), QObject::tr("STL Document (*.stl)")};
+    return {QObject::tr("PNG Image (*.png)"), QObject::tr("PDF Document (*.pdf)"), QObject::tr("X3D Document (*.x3d)"), QObject::tr("STL Document (*.stl)")};
 }
