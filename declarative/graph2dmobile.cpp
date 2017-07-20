@@ -149,7 +149,7 @@ QSGNode* Graph2DMobile::updatePaintNode(QSGNode* node, QQuickItem::UpdatePaintNo
 
 QStringList Graph2DMobile::filters() const
 {
-    return {QObject::tr("PNG File (*.png)")};
+    return {QObject::tr("PNG Image (*.png)")};
 }
 
 bool Graph2DMobile::save(const QUrl& url) const
