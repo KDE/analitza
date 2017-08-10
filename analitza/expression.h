@@ -117,7 +117,7 @@ class ANALITZA_EXPORT Expression
         /**
          *    Returns the expression of the lambda body (without resolving the dependencies)
          */
-        Expression lambdaBody() const Q_REQUIRED_RESULT;
+        Expression lambdaBody() const /*Q_REQUIRED_RESULT*/;
         
         /**
          *    Returns whether it is a vector expression.
