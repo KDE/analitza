@@ -21,10 +21,6 @@
 #ifndef PLOTSVIEW3DES_H
 #define PLOTSVIEW3DES_H
 
-#ifdef _WIN32
-#include <GL/glew.h>
-#endif
-
 #include <QOpenGLWidget>
 #include <QMouseEvent>
 
