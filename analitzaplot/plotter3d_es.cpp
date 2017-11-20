@@ -463,7 +463,7 @@ void Plotter3DES::drawAxes()
 void Plotter3DES::drawRefPlane()
 {
     glLineWidth(1.f);
-    const int lims = 10;
+    const float lims = 10;
     QVector<QVector3D> vxs;
 
     for(float x=-lims; x<=lims; ++x) {
