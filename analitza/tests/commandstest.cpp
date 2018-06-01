@@ -57,11 +57,11 @@ void CommandsTest::testCorrect_data()
     
     script.clear();
     script << QStringLiteral("range(-1.5, 2)");
-    QTest::newRow("range(a,b)") << script << "list { -1.5, -0.5, 0.5, 1.5 }";
+    QTest::newRow("range(-1.5, 2)") << script << "list { -1.5, -0.5, 0.5, 1.5 }";
     
     script.clear();
     script << QStringLiteral("range(0, 1, 0.2)");
-    QTest::newRow("range(a,b)") << script << "list { 0, 0.2, 0.4, 0.6, 0.8, 1 }";
+    QTest::newRow("range(0, 1, 0.2)") << script << "list { 0, 0.2, 0.4, 0.6, 0.8, 1 }";
     
     script.clear();
     script << QStringLiteral("vector(3, -2.3)");
