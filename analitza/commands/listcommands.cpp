@@ -69,8 +69,9 @@ Expression RangeCommand::operator()(const QList< Analitza::Expression >& args)
     
     Analitza::List *seq = new Analitza::List;
         
-    for (double x = a; x <= b; x += h)
+    for (double x = a; x < b || qFuzzyCompare(x, b); x += h) {
         seq->appendBranch(new Analitza::Cn(x));
+    }
     
     ret.setTree(seq);
     
