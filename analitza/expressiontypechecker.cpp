@@ -155,7 +155,7 @@ ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Ob
         foreach(const ExpressionType& t, types) {
             QList<ExpressionType> thing=computePairs(Operations::inferUnary(o->operatorType()), t);
             foreach(const ExpressionType& opt, thing) {
-                ExpressionType tt(opt.parameters().last());
+                ExpressionType tt(opt.parameters().constLast());
                 tt.addAssumptions(t.assumptions());
                 ret+=tt;
             }
@@ -520,7 +520,7 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
                 ExpressionType ret2(ExpressionType::Many);
                 bool error=false;
                 foreach(const ExpressionType& type, t) {
-                    ExpressionType returntype(type.parameters().last());
+                    ExpressionType returntype(type.parameters().constLast());
                     returntype.addAssumptions(type.assumptions());
                     if(c->m_params.first()->type()==Object::variable) {
                         QString name=static_cast<Ci*>(c->m_params.first())->name();
@@ -538,7 +538,7 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
                             
                             oldt=oldt.starsToType(stars);
 //                             qDebug() << "hmmm..." << oldt << stars << type << "::::::\n\t" << oldt.assumptions() << "\n\t" << type.assumptions();
-                            returntype=oldt.parameters().last();
+                            returntype=oldt.parameters().constLast();
 //                             printAssumptions("reeeeet", returntype);
                             
                             error = !returntype.addAssumption(name, oldt); //can't happen, we already checked it's not an assumption
@@ -632,10 +632,10 @@ QVariant ExpressionTypeChecker::visit(const Apply* c)
                             }
                         }
                         
-                        valid &= ExpressionType::matchAssumptions(&starToType, opt.parameters().last().assumptions(), assumptions);
+                        valid &= ExpressionType::matchAssumptions(&starToType, opt.parameters().constLast().assumptions(), assumptions);
                         
                         if(valid) {
-                            ExpressionType t=opt.parameters().last();
+                            ExpressionType t=opt.parameters().constLast();
                             
                             t.addAssumptions(assumptions);
                             
@@ -744,7 +744,7 @@ QVariant ExpressionTypeChecker::visit(const Container* c)
             
         }    break;
         case Container::piece: {
-            QMap<QString, ExpressionType> assumptions=typeIs(c->m_params.last(), ExpressionType(ExpressionType::Bool)); //condition check
+            QMap<QString, ExpressionType> assumptions=typeIs(c->m_params.constLast(), ExpressionType(ExpressionType::Bool)); //condition check
             c->m_params.first()->accept(this); //we return the body
             QList<ExpressionType> alts=current.type()==ExpressionType::Many ? current.alternatives() : QList<ExpressionType>() << current, rets;
             foreach(const ExpressionType& t, alts) {
@@ -767,7 +767,7 @@ QVariant ExpressionTypeChecker::visit(const Container* c)
             Ci* var = static_cast<Ci*>(c->m_params.first());
             
             m_calculating.append(var->name());
-            c->m_params.last()->accept(this);
+            c->m_params.constLast()->accept(this);
             m_calculating.removeLast();
             
             current=tellTypeIdentity(var->name(), current);
@@ -776,7 +776,7 @@ QVariant ExpressionTypeChecker::visit(const Container* c)
             QSet<QString> aux=m_lambdascope;
             QStringList bvars=c->bvarStrings();
             m_lambdascope+=bvars.toSet();
-            c->m_params.last()->accept(this);
+            c->m_params.constLast()->accept(this);
             m_lambdascope=aux;
             
             QList<ExpressionType> alts=current.type()==ExpressionType::Many ? current.alternatives() : QList<ExpressionType>() << current;

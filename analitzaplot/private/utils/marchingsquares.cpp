@@ -25,7 +25,6 @@
 sMarching_Square MarchingSquares::evaluar_cubo(const Square& cubo)
 {
     sMarching_Square res;
-    QPointF punto;
     res.centro = cubo.center();
     res.medio_lado = cubo.halfEdge();
 

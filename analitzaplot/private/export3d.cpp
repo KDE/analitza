@@ -142,7 +142,6 @@ void Export3D::exportSTL(const QString& path, QAbstractItemModel* model)
         if (!surf || !surf->isVisible())
             continue;
 
-        const auto normals = surf->normals();
         const auto vertices = surf->vertices();
         const auto indexes = surf->indexes();
 

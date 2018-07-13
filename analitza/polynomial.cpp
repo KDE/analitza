@@ -228,12 +228,12 @@ Polynomial::Polynomial(Apply* c)
     }
     
     first = true;
-    for(iterator it=monos.begin(), itEnd=monos.end(); it!=itEnd; ++it, first=false) {
+    for(auto it=monos.begin(), itEnd=monos.end(); it!=itEnd; ++it, first=false) {
         if(m_operator==Operator::minus && !first)
             it->first*=-1;
     }
     
-    for(iterator it=monos.begin(), itEnd=monos.end(); it!=itEnd; ++it, first=false)
+    for(auto it=monos.begin(), itEnd=monos.end(); it!=itEnd; ++it, first=false)
         addMonomial(*it);
     
     simpScalars(firstValue);
@@ -247,7 +247,7 @@ void Polynomial::addMonomial(const Monomial& m)
     }
     
     bool found = false;
-    QList<Monomial>::iterator it1(begin());
+    auto it1(begin());
     for(; it1!=end(); ++it1) {
         Object *o1=it1->second, *o2=m.second;
         found = AnalitzaUtils::equalTree(o1, o2);
@@ -274,7 +274,7 @@ void Polynomial::simpScalars(bool firstValue)
     if(!firstValue && m_operator==Operator::minus && !m_scalars.isEmpty())
         m_scalars.first() = negateObject(m_scalars.first());
 
-    for(QList<Object*>::const_iterator i=m_scalars.constBegin(); i!=m_scalars.constEnd(); ++i) {
+    for(auto i=m_scalars.constBegin(); i!=m_scalars.constEnd(); ++i) {
         bool d=false;
         
         Object* aux = simpExpression(*i);
@@ -326,7 +326,7 @@ Object* Polynomial::toObject()
         Apply* c = new Apply;
         c->appendBranch(new Operator(m_operator));
         
-        QList<Monomial>::iterator i=begin();
+        auto i=begin();
         bool first=true;
         for(; i!=end(); ++i, first=false) {
             if(!first && m_operator==Operator::minus)

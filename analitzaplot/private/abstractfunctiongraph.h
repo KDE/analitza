@@ -126,10 +126,7 @@ public:
     
     Analitza::Expression value(Analitza::Analyzer *analyzer) const
     { 
-        QString expstr = m_expressionValue.toString();
-        
         analyzer->setExpression(m_expressionValue);
-            
         return analyzer->calculate();
     }
 
