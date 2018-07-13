@@ -69,7 +69,7 @@ public:
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
-    PlotsView2D(QWidget* parent = 0);
+    PlotsView2D(QWidget* parent = nullptr);
     
     ~PlotsView2D();
     

@@ -488,7 +488,7 @@ Object * Operations::reduceValueVector(Operator::OperatorType op, Cn * oper, Vec
         case Operator::selector: {
             int select=oper->intValue();
             delete oper;
-            Object* ret=0;
+            Object* ret=nullptr;
             if(select<1 || (select-1) >= v1->size()) {
                 *correct=new QString(QCoreApplication::tr("Invalid index for a container"));
                 ret=new None();
@@ -538,7 +538,7 @@ Object * Operations::reduceVectorVector(Operator::OperatorType op, Vector * v1, 
 
 Object* Operations::reduceMatrixVector(Operator::OperatorType op, Matrix* matrix, Vector* vector, QString** correct)
 {
-    Object* ret = 0;
+    Object* ret = nullptr;
     if (op == Operator::times) {
         if (matrix->hasOnlyNumbers() && vector->hasOnlyNumbers()) {
             const int maxk = matrix->columnCount();
@@ -575,7 +575,7 @@ Object* Operations::reduceMatrixVector(Operator::OperatorType op, Matrix* matrix
 
 Object* Operations::reduceUnaryVector(Operator::OperatorType op, Vector* c, QString** correct)
 {
-    Object *ret=0;
+    Object *ret=nullptr;
     switch(op) {
         case Operator::card:
             ret=new Cn(c->size());
@@ -604,7 +604,7 @@ Object* Operations::reduceUnaryVector(Operator::OperatorType op, Vector* c, QStr
 
 Object* Operations::reduceListList(Operator::OperatorType op, List* l1, List* l2, QString** correct)
 {
-    Object* ret=0;
+    Object* ret=nullptr;
     switch(op) {
         case Operator::_union: {
             List::iterator itEnd=l2->end();
@@ -626,7 +626,7 @@ Object* Operations::reduceListList(Operator::OperatorType op, List* l1, List* l2
 
 Object* Operations::reduceUnaryList(Operator::OperatorType op, List* l, QString** correct)
 {
-    Object *ret=0;
+    Object *ret=nullptr;
     switch(op) {
         case Operator::card:
             ret=new Cn(l->size());
@@ -645,13 +645,13 @@ Object* Operations::reduceValueList(Operator::OperatorType op, Cn* oper, List* v
     switch(op) {
         case Operator::selector: {
             int select=oper->intValue();
-            Object* ret=0;
+            Object* ret=nullptr;
             if(select<1 || (select-1) >= v1->size()) {
                 *correct=new QString(QCoreApplication::tr("Invalid index for a container"));
                 ret=new None();
             } else {
                 ret=v1->at(select-1);
-                v1->setAt(select-1, 0);
+                v1->setAt(select-1, nullptr);
             }
             delete oper;
             return ret;
@@ -659,7 +659,7 @@ Object* Operations::reduceValueList(Operator::OperatorType op, Cn* oper, List* v
         default:
             break;
     }
-    return 0;
+    return nullptr;
 }
 
 Object* Operations::reduceCustomCustom(Operator::OperatorType op, CustomObject* v1, CustomObject* v2, QString** )
@@ -674,12 +674,12 @@ Object* Operations::reduceCustomCustom(Operator::OperatorType op, CustomObject* 
     }
     
     Q_ASSERT(false && "not implemented, please report");
-    return 0;
+    return nullptr;
 }
 
 Object* Operations::reduceVectorMatrix(Operator::OperatorType op, Vector* vector, Matrix* matrix, QString** correct)
 {
-    Object* ret = 0;
+    Object* ret = nullptr;
     if (op == Operator::times) {
         if (vector->hasOnlyNumbers() && matrix->hasOnlyNumbers()) {
             if (1 == matrix->rowCount()) {
@@ -712,7 +712,7 @@ Object* Operations::reduceVectorMatrix(Operator::OperatorType op, Vector* vector
 
 Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Matrix* m2, QString** correct)
 {
-    Object* ret = 0;
+    Object* ret = nullptr;
     switch(op) {
         //TODO see if we can use here and or xor for matrix too
         case Operator::plus:
@@ -774,7 +774,7 @@ Object* Operations::reduceMatrixMatrix(Operator::OperatorType op, Matrix* m1, Ma
 
 Object* Operations::reduceValueMatrix(Operator::OperatorType op, Cn* v, Matrix* m1, QString** correct)
 {
-    Object* ret = 0;
+    Object* ret = nullptr;
     switch(op) {
         case Operator::selector: {
             int select=v->intValue();
@@ -786,7 +786,7 @@ Object* Operations::reduceValueMatrix(Operator::OperatorType op, Cn* v, Matrix* 
                 Vector* nv = new Vector(row->size());
                 for(Vector::iterator it=row->begin(); it!=row->end(); ++it) {
                     nv->appendBranch((*it));
-                    *it = 0;
+                    *it = nullptr;
                 }
                 ret = nv;
             }
@@ -811,7 +811,7 @@ Object* Operations::reduceValueMatrix(Operator::OperatorType op, Cn* v, Matrix* 
 
 Object* Operations::reduceMatrixValue(Operator::OperatorType op, Matrix* matrix, Cn* value, QString** correct)
 {
-    Object* ret = 0;
+    Object* ret = nullptr;
     switch(op) {
         case Operator::power: {
             if (matrix->hasOnlyNumbers()) {
@@ -895,7 +895,7 @@ Object* Operations::reduceMatrixValue(Operator::OperatorType op, Matrix* matrix,
 
 Object* Operations::reduceUnaryMatrix(Operator::OperatorType op, Matrix* m, QString** )
 {
-    Object* ret = 0;
+    Object* ret = nullptr;
     switch(op) {
         case Operator::transpose: {
             int sizeA = m->rowCount(), sizeB = static_cast<MatrixRow*>(*m->constBegin())->size();
@@ -1122,17 +1122,17 @@ QList<ExpressionType> Operations::inferUnary(Operator::OperatorType op)
 }
 
 Operations::BinaryOp Operations::opsBinary[Object::custom+1][Object::custom+1] = {
-    {0,(Operations::BinaryOp) reduceNoneValue,0,0,0,0,0,0,(Operations::BinaryOp) reduceNoneMatrix,0,0},
-    {(Operations::BinaryOp) reduceValueNone, (Operations::BinaryOp) reduceValueValue, 0, (Operations::BinaryOp) reduceValueVector, (Operations::BinaryOp) reduceValueList,0,0,0,(Operations::BinaryOp) reduceValueMatrix,0},
-    {0,0,0,0,0,0,0,0,0,0,0},
-    {0, (Operations::BinaryOp) reduceVectorValue, 0, (Operations::BinaryOp) reduceVectorVector, 0,0,0,0,(Operations::BinaryOp) reduceVectorMatrix,0,0},
-    {0, 0, 0,0, (Operations::BinaryOp) reduceListList, 0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0},
-    {(Operations::BinaryOp) reduceMatrixNone, (Operations::BinaryOp) reduceMatrixValue,0, (Operations::BinaryOp) reduceMatrixVector,0,0,0,0, (Operations::BinaryOp) reduceMatrixMatrix,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,(Operations::BinaryOp) reduceCustomCustom}
+    {nullptr,(Operations::BinaryOp) reduceNoneValue,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,(Operations::BinaryOp) reduceNoneMatrix,nullptr,nullptr},
+    {(Operations::BinaryOp) reduceValueNone, (Operations::BinaryOp) reduceValueValue, nullptr, (Operations::BinaryOp) reduceValueVector, (Operations::BinaryOp) reduceValueList,nullptr,nullptr,nullptr,(Operations::BinaryOp) reduceValueMatrix,nullptr},
+    {nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr},
+    {nullptr, (Operations::BinaryOp) reduceVectorValue, nullptr, (Operations::BinaryOp) reduceVectorVector, nullptr,nullptr,nullptr,nullptr,(Operations::BinaryOp) reduceVectorMatrix,nullptr,nullptr},
+    {nullptr, nullptr, nullptr,nullptr, (Operations::BinaryOp) reduceListList, nullptr,nullptr,nullptr,nullptr,nullptr},
+    {nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr},
+    {nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr},
+    {nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr},
+    {(Operations::BinaryOp) reduceMatrixNone, (Operations::BinaryOp) reduceMatrixValue,nullptr, (Operations::BinaryOp) reduceMatrixVector,nullptr,nullptr,nullptr,nullptr, (Operations::BinaryOp) reduceMatrixMatrix,nullptr,nullptr},
+    {nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr},
+    {nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,(Operations::BinaryOp) reduceCustomCustom}
 };
 
 Object * Operations::reduce(Operator::OperatorType op, Object * val1, Object * val2, QString** correct)
@@ -1145,14 +1145,14 @@ Object * Operations::reduce(Operator::OperatorType op, Object * val1, Object * v
 }
 
 Operations::UnaryOp Operations::opsUnary[] = {
-    0,
+    nullptr,
     (Operations::UnaryOp) Operations::reduceUnaryValue,
-    0, //variable
+    nullptr, //variable
     (Operations::UnaryOp) Operations::reduceUnaryVector,
     (Operations::UnaryOp) Operations::reduceUnaryList,
-    0, //apply
-    0, //oper
-    0, //container
+    nullptr, //apply
+    nullptr, //oper
+    nullptr, //container
     (Operations::UnaryOp) Operations::reduceUnaryMatrix
 };
 

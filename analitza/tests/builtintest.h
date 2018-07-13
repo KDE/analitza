@@ -27,7 +27,7 @@ class BuiltInTest : public QObject
 {
     Q_OBJECT
     public:
-        BuiltInTest(QObject* parent = 0);
+        BuiltInTest(QObject* parent = nullptr);
         ~BuiltInTest();
         
     private Q_SLOTS:

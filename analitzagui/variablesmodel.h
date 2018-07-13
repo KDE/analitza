@@ -42,7 +42,7 @@ class ANALITZAGUI_EXPORT VariablesModel : public QAbstractTableModel
     Q_PROPERTY(QSharedPointer<Analitza::Variables> variables READ variables WRITE setVariables)
     public:
         /** Constructor. Creates a new Variable Model. */
-        explicit VariablesModel(QObject *parent=0);
+        explicit VariablesModel(QObject *parent=nullptr);
         VariablesModel(const QSharedPointer<Analitza::Variables> &v, QObject *parent = nullptr);
         void setVariables(const QSharedPointer<Analitza::Variables> &v);
         

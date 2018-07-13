@@ -502,7 +502,7 @@ Analitza::Expression variantToExpression(const QVariant& v)
         
         return Analitza::Expression::constructList(expressionList);
     } else if(v.canConvert<QObject*>()) {
-        return Analitza::Expression::constructCustomObject(v, 0);
+        return Analitza::Expression::constructCustomObject(v, nullptr);
     }
     
     Q_ASSERT(false && "couldn't figure out the type");
@@ -529,7 +529,7 @@ T* replaceDepthTemplate(int depth, T* tree, Object* towhat)
 Object* replaceDepth(int depth, Object* tree, Object* towhat)
 {
     if(!tree)
-        return 0;
+        return nullptr;
     
     Q_ASSERT(depth>=0);
     switch(tree->type()) {

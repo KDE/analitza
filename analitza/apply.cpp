@@ -26,7 +26,7 @@
 using namespace Analitza;
 
 Apply::Apply()
-    : Object(apply), m_ulimit(0), m_dlimit(0), m_domain(0), m_op(Operator::function)
+    : Object(apply), m_ulimit(nullptr), m_dlimit(nullptr), m_domain(nullptr), m_op(Operator::function)
 {}
 
 Apply::~Apply()
@@ -49,25 +49,25 @@ bool Apply::addBranch(Object* o)
             case Container::uplimit:
                 Q_ASSERT(!m_ulimit);
                 m_ulimit = c->m_params[0];
-                c->m_params[0]=0;
+                c->m_params[0]=nullptr;
                 delete c;
                 break;
             case Container::downlimit:
                 Q_ASSERT(!m_dlimit);
                 m_dlimit = c->m_params[0];
-                c->m_params[0]=0;
+                c->m_params[0]=nullptr;
                 delete c;
                 break;
             case Container::domainofapplication:
                 Q_ASSERT(!m_domain);
                 m_domain = c->m_params[0];
-                c->m_params[0]=0;
+                c->m_params[0]=nullptr;
                 delete c;
                 break;
             case Container::bvar:
                 Q_ASSERT(c->m_params[0]->type()==variable);
                 m_bvars += static_cast<Ci*>(c->m_params[0]);
-                c->m_params[0]=0;
+                c->m_params[0]=nullptr;
                 delete c;
                 break;
             default:
@@ -127,9 +127,9 @@ bool Apply::operator==(const Apply& a) const
 Apply* Apply::copy() const
 {
     Apply* ret=new Apply;
-    ret->m_dlimit = m_dlimit? m_dlimit->copy() : 0;
-    ret->m_ulimit = m_ulimit? m_ulimit->copy() : 0;
-    ret->m_domain = m_domain? m_domain->copy() : 0;
+    ret->m_dlimit = m_dlimit? m_dlimit->copy() : nullptr;
+    ret->m_ulimit = m_ulimit? m_ulimit->copy() : nullptr;
+    ret->m_domain = m_domain? m_domain->copy() : nullptr;
     ret->m_op     = m_op;
     
     foreach(const Ci* var, m_bvars)

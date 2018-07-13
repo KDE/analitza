@@ -70,7 +70,7 @@ Quadtree::Quadtree(double largo_mundo) {
 
     root->cubo.setHalfEdge(largo_mundo/2);
     for(unsigned int i=0; i<8; i++) {
-        root->nodos[i]=NULL;
+        root->nodos[i]=nullptr;
     }
 }
 
@@ -78,7 +78,7 @@ Quadtree::Quadtree(Square cubo) {
     root = new QNode;
     root->cubo = cubo;
     for(unsigned int i=0; i<8; i++) {
-        root->nodos[i]=NULL;
+        root->nodos[i]=nullptr;
     }
 }
 Quadtree::~Quadtree() {
@@ -93,7 +93,7 @@ void Quadtree::inicializar_nodos(QNode* padre)
         padre->nodos[i] = new QNode;
         padre->nodos[i]->cubo.setHalfEdge(hhedge);
         for(unsigned int j=0; j<4; j++) {
-            padre->nodos[i]->nodos[j]=NULL;
+            padre->nodos[i]->nodos[j]=nullptr;
         }
     }
 
@@ -106,7 +106,7 @@ void Quadtree::inicializar_nodos(QNode* padre)
 }
 
 void Quadtree::borrar_rec(QNode* nodo) {
-    if(nodo == NULL) {
+    if(nodo == nullptr) {
         return;
     }
     for(unsigned int i=0; i<4; i++) {
@@ -141,6 +141,6 @@ void Quadtree::bajarNivel(QNode* nodo) {
 void Quadtree::borrarHijos(QNode* padre) {
     for(unsigned int i=0; i<4; i++) {
         borrar_rec(padre->nodos[i]);
-        padre->nodos[i] = NULL;
+        padre->nodos[i] = nullptr;
     }
 }

@@ -49,7 +49,7 @@ ITERATION_WALKER(Container, pattern->containerType())
 Object* AbstractExpressionTransformer::walk(const Object* pattern)
 {
     if(!pattern)
-        return 0;
+        return nullptr;
     
     switch(pattern->type()) {
         case Object::apply:
@@ -75,7 +75,7 @@ Object* AbstractExpressionTransformer::walk(const Object* pattern)
     }
     
     Q_ASSERT(false);
-    return 0;
+    return nullptr;
 }
 
 Object* AbstractExpressionTransformer::walkApply(const Analitza::Apply* pattern)

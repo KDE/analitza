@@ -31,7 +31,7 @@ VariablesModel::VariablesModel(const QSharedPointer<Variables>& v, QObject *pare
 {}
 
 VariablesModel::VariablesModel(QObject* parent)
-    : QAbstractTableModel(parent), m_vars(0), m_editable(true)
+    : QAbstractTableModel(parent), m_vars(nullptr), m_editable(true)
 {}
 
 void VariablesModel::setVariables(const QSharedPointer<Variables> &v)

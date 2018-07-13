@@ -290,7 +290,7 @@ Expression Analyzer::calculateLambda()
 Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& unscoped)
 {
     Q_ASSERT(branch);
-    Object *ret=0;
+    Object *ret=nullptr;
 //     qDebug() << "POPOPO" << branch->toString();
     
     //Won't calc() so would be a good idea to have it simplified
@@ -361,7 +361,7 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
                 ret=r;
             } break;
             case Container::math:
-                ret=0;
+                ret=nullptr;
                 foreach(const Object* o, c->m_params) {
                     delete ret;
                     ret=eval(o, resolve, unscoped);
@@ -515,9 +515,9 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
                         if(values.size()==1)
                             ret = values.first();
                         else {
-                            r->ulimit()=0;
-                            r->dlimit()=0;
-                            r->domain()=0;
+                            r->ulimit()=nullptr;
+                            r->dlimit()=nullptr;
+                            r->domain()=nullptr;
                             
                             Apply *newC = new Apply;
                             Operator::OperatorType t;
@@ -590,7 +590,7 @@ Object* Analyzer::derivative(const QString &var, const Object* o)
 
 Object* Analyzer::calcPiecewise(const Container* c)
 {
-    Object* ret=0;
+    Object* ret=nullptr;
     //Here we have a list of options and finally the otherwise option
     foreach(Object *o, c->m_params) {
         Container *p=static_cast<Container*>(o);
@@ -636,7 +636,7 @@ Object* Analyzer::calcLambda(const Container* c)
 
 Object* Analyzer::calcDeclare(const Container* c)
 {
-    Object *ret=0;
+    Object *ret=nullptr;
     
     const Ci *var = (const Ci*) c->m_params[0];
     ret=simp(c->m_params[1]->copy());
@@ -662,7 +662,7 @@ Object* Analyzer::calcElements(const Object* root, T* nv)
 Object* Analyzer::calc(const Object* root)
 {
     Q_ASSERT(root);
-    Object* ret=0;
+    Object* ret=nullptr;
     
     switch(root->type()) {
         case Object::container:
@@ -713,7 +713,7 @@ bool isNull(Analitza::Operator::OperatorType opt, Object* ret)
 
 Object* Analyzer::operate(const Apply* c)
 {
-    Object* ret=0;
+    Object* ret=nullptr;
     const Operator& op = c->firstOperator();
     Operator::OperatorType opt=op.operatorType();
     
@@ -749,7 +749,7 @@ Object* Analyzer::operate(const Apply* c)
                         (op.nparams()>-1 && count==op.nparams()) ||
                         opt==Operator::minus);
             
-            QString* error=0;
+            QString* error=nullptr;
             if(count>=2) {
                 Apply::const_iterator it = c->firstValue(), itEnd=c->constEnd();
                 ret = calc(*it);
@@ -770,7 +770,7 @@ Object* Analyzer::operate(const Apply* c)
                     if(Q_UNLIKELY(error)) {
                         m_err.append(*error);
                         delete error;
-                        error=0;
+                        error=nullptr;
                         break;
                     }
                     
@@ -794,7 +794,7 @@ Object* Analyzer::operate(const Apply* c)
 }
 
 Analyzer::funcContainer Analyzer::operateContainer[Container::domainofapplication+1] =
-    {0, &Analyzer::calcMath, &Analyzer::calcDeclare, &Analyzer::calcLambda, 0,0,0,0,&Analyzer::calcPiecewise,0,0};
+    {nullptr, &Analyzer::calcMath, &Analyzer::calcDeclare, &Analyzer::calcLambda, nullptr,nullptr,nullptr,nullptr,&Analyzer::calcPiecewise,nullptr,nullptr};
 
 Object* Analyzer::operate(const Container* c)
 {
@@ -887,7 +887,7 @@ namespace Analitza
 
 BoundingIterator* Analyzer::initializeBVars(const Apply* n, int base)
 {
-    BoundingIterator* ret=0;
+    BoundingIterator* ret=nullptr;
     
     Object* domain=n->domain();
     
@@ -915,7 +915,7 @@ BoundingIterator* Analyzer::initializeBVars(const Apply* n, int base)
 }
 BoundingIterator* Analyzer::initBVarsContainer(const Analitza::Apply* n, int base, Object* domain)
 {
-    BoundingIterator* ret = 0;
+    BoundingIterator* ret = nullptr;
     QVector<Ci*> bvars=n->bvarCi();
     
     switch(domain->type()) {
@@ -941,7 +941,7 @@ BoundingIterator* Analyzer::initBVarsContainer(const Analitza::Apply* n, int bas
 
 BoundingIterator* Analyzer::initBVarsRange(const Apply* n, int base, Object* objdl, Object* objul)
 {
-    BoundingIterator* ret = 0;
+    BoundingIterator* ret = nullptr;
     if(isCorrect() && objul->type()==Object::value && objdl->type()==Object::value) {
         Cn *u=static_cast<Cn*>(objul);
         Cn *d=static_cast<Cn*>(objdl);
@@ -975,7 +975,7 @@ Object* Analyzer::boundedOperation(const Apply& n, const Operator& t, Object* in
     if(!it)
         return initial;
     
-    QString* correct=0;
+    QString* correct=nullptr;
     Operator::OperatorType type=t.operatorType();
     do {
         Object *val=calc(n.m_params.last());
@@ -1038,7 +1038,7 @@ Object* Analyzer::func(const Apply& n)
 
 Object* Analyzer::calcCallFunction(Container* function, const QVector<Object*>& args, const Object* oper)
 {
-    Object* ret=0;
+    Object* ret=nullptr;
     int bvarsize = args.size();
     
     if(function && function->m_params.size()>1) {
@@ -1090,7 +1090,7 @@ Object* Analyzer::calcCallFunction(Container* function, const QVector<Object*>& 
         Expression exp=(*func)(expargs);
         if(Q_UNLIKELY(exp.isCorrect())) {
             ret=exp.tree();
-            exp.setTree(0);
+            exp.setTree(nullptr);
         } else {
             m_err += exp.error();
             ret = new None();
@@ -1323,13 +1323,13 @@ Object* Analyzer::simpApply(Apply* c)
                     v->rvalue() *= -1;
                     
                     root=v;
-                    *c->firstValue()=0;
+                    *c->firstValue()=nullptr;
                     delete c;
-                    c=0;
+                    c=nullptr;
                 }
             } else {
                 root=simpPolynomials(c);
-                c=0;
+                c=nullptr;
             }
 //             qDebug()<< "PAAPPA" << root->toString();
             static QList<Transformation> addTrans;
@@ -1372,7 +1372,7 @@ Object* Analyzer::simpApply(Apply* c)
                 nc->appendBranch(aPlusOne);
                 nc->appendBranch(function);
                 
-                c->m_params.last()=0;
+                c->m_params.last()=nullptr;
                 delete c;
                 root=simp(nc);
             } else if(function->isApply()) {
@@ -1384,8 +1384,8 @@ Object* Analyzer::simpApply(Apply* c)
             Object* val=simp(*c->firstValue());
             if(val->type()==Object::vector)
             {
-                c->m_params.last()=0;
-                QString* err=0;
+                c->m_params.last()=nullptr;
+                QString* err=nullptr;
                 val=Operations::reduceUnary(Operator::card, val, &err);
                 if(Q_UNLIKELY(err)) { delete err; }
                 delete c;
@@ -1399,14 +1399,14 @@ Object* Analyzer::simpApply(Apply* c)
             Object* idx=c->m_params[0];
             Object* value=c->m_params[1];
             if(idx->type()==Object::value && value->type()==Object::vector) {
-                QString* err=0;
+                QString* err=nullptr;
                 Object* ret=Operations::reduce(Operator::selector, idx, value, &err);
                 delete err;
                 
                 if(ret) {
                     root=ret;
-                    c->m_params[0]=0;
-                    c->m_params[1]=0;
+                    c->m_params[0]=nullptr;
+                    c->m_params[1]=nullptr;
                     
                     delete c;
                 }
@@ -1423,7 +1423,7 @@ Object* Analyzer::simpApply(Apply* c)
                     newParams.append(*it);
                 else {
                     if((*it)->type()==Object::list && newParams.last()->type()==Object::list) {
-                        QString* err=0;
+                        QString* err=nullptr;
                         Object* ret=Operations::reduce(Operator::_union, newParams.last(), *it, &err);
                         delete err;
                         newParams.last()=ret;
@@ -1432,10 +1432,10 @@ Object* Analyzer::simpApply(Apply* c)
                         newParams.append(*it);
                     }
                 }
-                *it=0;
+                *it=nullptr;
             }
             
-            if(newParams.last()==0)
+            if(newParams.last()==nullptr)
                 newParams.resize(newParams.size()-1);
             
             //if only one, remove union
@@ -1521,7 +1521,7 @@ Object* Analyzer::simpApply(Apply* c)
         case Operator::function: {
             Object* function=c->m_params[0];
             
-            Container* cfunc=0;
+            Container* cfunc=nullptr;
             QList<Ci*> bvars;
             if(function->isContainer()) {
                 cfunc=(Container*) function;
@@ -1544,7 +1544,7 @@ Object* Analyzer::simpApply(Apply* c)
                 }
                 
                 root=simp(cfunc->m_params.last());
-                cfunc->m_params.last()=0;
+                cfunc->m_params.last()=nullptr;
                 delete c;
             }
         }    break;
@@ -1582,12 +1582,12 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
     switch(op.operatorType()) {
         case Operator::plus:
         case Operator::minus: {
-            Object* varTree = 0;
+            Object* varTree = nullptr;
             //f(x)-w=0 => f(x)=w => x=f-1(x)
             for(Apply::const_iterator it=a->constBegin(), itEnd=a->constEnd(); it!=itEnd; ++it) {
                 bool hasvars = hasVars(*it);
                 if(hasvars && varTree) {
-                    varTree = 0; //we don't support having more than 1 variable in the minus yet
+                    varTree = nullptr; //we don't support having more than 1 variable in the minus yet
                     return QList<Object*>();
                 }
                 
@@ -1602,8 +1602,8 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
             }
             
             if(varTree) {
-                Apply* na = 0;
-                Object* value = 0;
+                Apply* na = nullptr;
+                Object* value = nullptr;
                 if(a->countValues()>2) {
                     na = new Apply;
                     na->appendBranch(new Operator(a->firstOperator().inverse()));
@@ -1692,13 +1692,13 @@ Object* Analyzer::testResult(const Object* o, const QString& var, const Object* 
 
 Object* Analyzer::simpPolynomials(Apply* c)
 {
-    Q_ASSERT(c!=0 && c->isApply());
+    Q_ASSERT(c!=nullptr && c->isApply());
     
     Polynomial monos(c);
     
     c->m_params.clear();
     delete c;
-    c=0;
+    c=nullptr;
     
     Object *root=monos.toObject();
     
@@ -1720,7 +1720,7 @@ Object* Analyzer::simpSum(Apply* c)
                 sum.append(*it);
             } else {
                 out.append(*it);
-                *it=0;
+                *it=nullptr;
                 ++removed;
             }
         }
@@ -1749,7 +1749,7 @@ Object* Analyzer::simpPiecewise(Container *c)
 {
     Object *root=c;
     //Here we have a list of options and finally the otherwise option
-    Container *otherwise=0;
+    Container *otherwise=nullptr;
     Container::const_iterator it=c->m_params.constBegin(), itEnd=c->constEnd();
     QList<Object*> newList;
     

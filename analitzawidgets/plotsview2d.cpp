@@ -50,8 +50,8 @@ PlotsView2D::PlotsView2D(QWidget *parent)
     , mode(None)
     , m_framed(false)
     , m_readonly(false)
-    , m_selection(0)
-    , m_currentModel(0)
+    , m_selection(nullptr)
+    , m_currentModel(nullptr)
 {
     this->setFocusPolicy(Qt::ClickFocus);
     this->setCursor(Qt::CrossCursor);

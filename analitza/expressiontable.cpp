@@ -5,7 +5,7 @@ const char *const ExpressionTable::spell [] = {
   "end of file", "+", "-", "*", ":=", "..", "/", "^", "²", "identifier", 
   "->", "?", ",", "(", ")", "{", "}", "[", "]", "|", 
   "value", "=", "<", ">", ">=", "<=", "!=", ":", "@", "//Comment//", 
-  "abc", 0, 0, 
+  "abc", nullptr, nullptr, 
 #ifndef QLALR_NO_EXPRESSIONTABLE_DEBUG_INFO
 "Program", "Declaration", "Expression", "Id", "String", "Number", "UniPow", 
   "Value", "PrimaryExpression", "BlockExpression", "SubscriptExpression", "PrimaryExpressionExt", "FunctionCall", "FunctionId", "FBody", "PipedCall", "LambdaExpression", 

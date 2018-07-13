@@ -74,7 +74,7 @@ void MatchingTest::testCompareTrees()
     
     QStringList keys=outs.keys();
     foreach(const QString& key, keys) {
-        QVERIFY(outFunc.value(key)!=0);
+        QVERIFY(outFunc.value(key)!=nullptr);
         QCOMPARE(outs[key], outFunc[key]->toString());
     }
 }

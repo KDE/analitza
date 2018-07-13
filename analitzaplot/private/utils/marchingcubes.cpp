@@ -55,16 +55,16 @@ void MarchingCubes::print_cube()
 // Constructor
 MarchingCubes::MarchingCubes(  ) :
         i_originalMC(false),
-        i_data      ((double*)NULL),
-        i_x_verts   (( int *)NULL),
-        i_y_verts   (( int *)NULL),
-        i_z_verts   (( int *)NULL),
+        i_data      ((double*)nullptr),
+        i_x_verts   (( int *)nullptr),
+        i_y_verts   (( int *)nullptr),
+        i_z_verts   (( int *)nullptr),
         i_nverts    (0),
         i_ntrigs    (0),
         i_Nverts    (0),
         i_Ntrigs    (0),
-        i_vertices  (( Vertex *)NULL),
-        i_triangles ((Triangle*)NULL)
+        i_vertices  (( Vertex *)nullptr),
+        i_triangles ((Triangle*)nullptr)
 {
 }
 //_____________________________________________________________________________
@@ -243,10 +243,10 @@ void MarchingCubes::clean_temps()
     if (i_z_verts)
         delete [] i_z_verts;
 
- i_data     = (double*)NULL ;
-    i_x_verts  = (int*)NULL ;
-    i_y_verts  = (int*)NULL ;
-    i_z_verts  = (int*)NULL ;
+ i_data     = (double*)nullptr ;
+    i_x_verts  = (int*)nullptr ;
+    i_y_verts  = (int*)nullptr ;
+    i_z_verts  = (int*)nullptr ;
 }
 //_____________________________________________________________________________
 
@@ -260,8 +260,8 @@ void MarchingCubes::clean_all()
     clean_temps() ;
     delete [] i_vertices  ;
     delete [] i_triangles ;
-    i_vertices  = (Vertex   *)NULL ;
-    i_triangles = (Triangle *)NULL ;
+    i_vertices  = (Vertex   *)nullptr ;
+    i_triangles = (Triangle *)nullptr ;
     i_nverts = i_ntrigs = 0 ;
     i_Nverts = i_Ntrigs = 0 ;
 

@@ -62,7 +62,7 @@ class VehicleConstructor : public Analitza::FunctionDefinition
 {
     virtual Expression operator()(const QList< Expression >& args) override
     {
-        return Expression::constructCustomObject(QVariant(args.first().toReal().intValue()),0);
+        return Expression::constructCustomObject(QVariant(args.first().toReal().intValue()),nullptr);
     }
 };
 

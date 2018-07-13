@@ -24,7 +24,7 @@
 
 using Analitza::Operator;
 
-OperatorsModel::OperatorsModel(QObject *parent) : QAbstractTableModel(parent), m_vars(0)
+OperatorsModel::OperatorsModel(QObject *parent) : QAbstractTableModel(parent), m_vars(nullptr)
 {
 }
 

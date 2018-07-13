@@ -53,7 +53,7 @@ bool Cn::setValue(const QDomElement& val)
         if(val.attribute(QStringLiteral("type"), QStringLiteral("integer")) == QLatin1String("real")) {
             m_value= val.text().trimmed().toDouble(&wrong); //TODO: Base on double not implemented
         } else if(val.attribute(QStringLiteral("type"), QStringLiteral("integer")) == QLatin1String("integer")){
-            int base = val.attribute(QStringLiteral("base"), QStringLiteral("10")).toInt(NULL, 10);
+            int base = val.attribute(QStringLiteral("base"), QStringLiteral("10")).toInt(nullptr, 10);
             m_value= val.text().trimmed().toInt(&wrong, base);
             m_format=Integer;
         }

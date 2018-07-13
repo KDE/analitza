@@ -27,7 +27,7 @@ class TypeCheckTest : public QObject
 {
     Q_OBJECT
     public:
-        TypeCheckTest(QObject* parent = 0);
+        TypeCheckTest(QObject* parent = nullptr);
         ~TypeCheckTest();
         
     private Q_SLOTS:

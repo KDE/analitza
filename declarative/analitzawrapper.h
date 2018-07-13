@@ -35,8 +35,8 @@ class ExpressionWrapper : public QObject
     Q_PROPERTY(QString expression READ toString CONSTANT)
     Q_PROPERTY(bool isCorrect READ isCorrect CONSTANT)
     public:
-        ExpressionWrapper(QObject* parent=0);
-        explicit ExpressionWrapper(const Analitza::Expression & e, QObject* parent = 0);
+        ExpressionWrapper(QObject* parent=nullptr);
+        explicit ExpressionWrapper(const Analitza::Expression & e, QObject* parent = nullptr);
         
         bool isCorrect() const;
         QString toString() const;
@@ -57,7 +57,7 @@ class AnalitzaWrapper : public QObject
     Q_PROPERTY(QStringList errors READ errors)
     Q_PROPERTY(QSharedPointer<Analitza::Variables> variables READ variables WRITE setVariables)
     public:
-        explicit AnalitzaWrapper(QObject* parent = 0);
+        explicit AnalitzaWrapper(QObject* parent = nullptr);
         ~AnalitzaWrapper();
         
         void setCalculate(bool calc);

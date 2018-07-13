@@ -46,7 +46,7 @@ QStringList ExpressionWrapper::errors() const { return m_exp.error(); }
 
 AnalitzaWrapper::AnalitzaWrapper(QObject* parent)
     : QObject(parent)
-    , m_wrapped(0), m_vars(new Analitza::Variables), m_calc(false)
+    , m_wrapped(nullptr), m_vars(new Analitza::Variables), m_calc(false)
 {
     initWrapped();
 }

@@ -26,7 +26,7 @@
 
 using namespace Analitza;
 
-FunctionGraphFactory* FunctionGraphFactory::m_self=0;
+FunctionGraphFactory* FunctionGraphFactory::m_self=nullptr;
 
 QString FunctionGraphFactory::typeName(const QString& id) const
 {

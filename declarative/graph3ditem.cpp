@@ -76,7 +76,7 @@ QAbstractItemModel* Graph3DItem::model() const
 void Graph3DItem::setModel(QAbstractItemModel* model)
 {
     if (m_plotter->model())
-        disconnect(m_plotter->model(), 0, this, 0);
+        disconnect(m_plotter->model(), nullptr, this, nullptr);
 
     m_plotter->setModel(model);
 

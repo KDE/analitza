@@ -41,7 +41,7 @@ class ANALITZAGUI_EXPORT OperatorsModel : public QAbstractTableModel
         };
 
         /** Constructor. Creates a new Operator Model. */
-        explicit OperatorsModel(QObject *parent=0);
+        explicit OperatorsModel(QObject *parent=nullptr);
         
         /** Returns the description of the @p o operator. */
         static QString description(const Analitza::Operator& o);

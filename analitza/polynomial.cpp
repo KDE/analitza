@@ -72,7 +72,7 @@ Object* Monomial::createMono(const Operator& o) const
 {
     Operator::OperatorType mult = o.multiplicityOperator();
     
-    Object* toAdd=0;
+    Object* toAdd=nullptr;
     if(first==0.)
         delete second;
     else if(first==1.)
@@ -126,7 +126,7 @@ Monomial::Monomial(const Operator& o, Object* o2, bool& sign)
                     first = sc->value();
                     second = cx->m_params[var];
                     
-                    cx->m_params[var]=0;
+                    cx->m_params[var]=nullptr;
                     delete cx;
                     
                     ismono=true;
@@ -156,7 +156,7 @@ Monomial::Monomial(const Operator& o, Object* o2, bool& sign)
             }
         } else if(cx->firstOperator()==Operator::minus && cx->isUnary()) {
             *this = Monomial(o, *cx->firstValue(), sign);
-            *cx->firstValue()=0;
+            *cx->firstValue()=nullptr;
             delete cx;
             ismono=true;
                 
@@ -270,7 +270,7 @@ void Polynomial::addMonomial(const Monomial& m)
 
 void Polynomial::simpScalars(bool firstValue)
 {
-    Object *value=0;
+    Object *value=nullptr;
     if(!firstValue && m_operator==Operator::minus && !m_scalars.isEmpty())
         m_scalars.first() = negateObject(m_scalars.first());
 
@@ -279,7 +279,7 @@ void Polynomial::simpScalars(bool firstValue)
         
         Object* aux = simpExpression(*i);
         if(value) {
-            QString* err=0;
+            QString* err=nullptr;
             value=Operations::reduce(m_operator.operatorType(), value, aux, &err);
             d=err;
             delete err;
@@ -288,7 +288,7 @@ void Polynomial::simpScalars(bool firstValue)
         
         if(d) {
             addValue(aux);
-            value=0;
+            value=nullptr;
         }
     }
     
@@ -319,7 +319,7 @@ void Polynomial::addValue(Object* value)
 
 Object* Polynomial::toObject()
 {
-    Object* root = 0;
+    Object* root = nullptr;
     if(count()==1) {
         root = first().createMono(m_operator);
     } else if(count()>1) {

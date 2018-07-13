@@ -59,7 +59,7 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         //TODO transparency effect when select current item
 //         enum FocusEffect {};
 
-        Plotter3DES(QAbstractItemModel* model = 0);
+        Plotter3DES(QAbstractItemModel* model = nullptr);
         virtual ~Plotter3DES();
 
         virtual void initGL();

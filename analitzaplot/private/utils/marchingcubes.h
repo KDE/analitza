@@ -118,9 +118,9 @@ public :
   /** accesses the number of triangles of the generated mesh */
   int ntrigs() const { return i_ntrigs ; }
   /** accesses a specific vertex of the generated mesh */
-  Vertex   * vert( const int i ) const { if( i < 0  || i >= i_nverts ) return ( Vertex *)NULL ; return i_vertices  + i ; }
+  Vertex   * vert( const int i ) const { if( i < 0  || i >= i_nverts ) return ( Vertex *)nullptr ; return i_vertices  + i ; }
   /** accesses a specific triangle of the generated mesh */
-  Triangle * trig( const int i ) const { if( i < 0  || i >= i_ntrigs ) return (Triangle*)NULL ; return i_triangles + i ; }
+  Triangle * trig( const int i ) const { if( i < 0  || i >= i_ntrigs ) return (Triangle*)nullptr ; return i_triangles + i ; }
 
   /** accesses the vertex buffer of the generated mesh */
   Vertex   *mc_vertices () { return i_vertices  ; }

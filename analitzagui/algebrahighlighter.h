@@ -40,7 +40,7 @@ class ANALITZAGUI_EXPORT AlgebraHighlighter : public QSyntaxHighlighter
         } Mode;
         
         /** Constructor. Creates an AlgebraHighlighter from a QTextDocument @p doc. */
-        explicit AlgebraHighlighter(QTextDocument *doc, const Analitza::Analyzer* na=0);
+        explicit AlgebraHighlighter(QTextDocument *doc, const Analitza::Analyzer* na=nullptr);
         //int highlightParagraph(const QString &text, int endStateOfLastPara);
         
         /** Returns the currently highlight mode. */

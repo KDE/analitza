@@ -387,12 +387,12 @@ PlotItem* Plotter3DES::itemAt(int row) const
     QModelIndex pi = m_model->index(row, 0);
 
     if (!pi.isValid())
-        return 0;
+        return nullptr;
 
     PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
 
     if (plot->spaceDimension() != Dim3D)
-        return 0;
+        return nullptr;
 
     return plot;
 }

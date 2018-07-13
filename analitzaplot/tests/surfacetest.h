@@ -30,7 +30,7 @@ class SurfaceTest : public QObject
 {
 Q_OBJECT
     public:
-        SurfaceTest(QObject *parent = 0);
+        SurfaceTest(QObject *parent = nullptr);
         ~SurfaceTest();
 
     private Q_SLOTS:

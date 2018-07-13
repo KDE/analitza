@@ -29,7 +29,7 @@ class ExpTest : public QObject
 {
 Q_OBJECT
     public:
-        ExpTest(QObject *parent = 0);
+        ExpTest(QObject *parent = nullptr);
         ~ExpTest();
     
     private Q_SLOTS:

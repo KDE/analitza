@@ -55,7 +55,7 @@ class ANALITZAWIDGETS_EXPORT ExpressionEdit : public QPlainTextEdit
         *    @param parent is the widget parent.
         *    @param ini specifies what input format is going to expect the highlighting.
         */
-        explicit ExpressionEdit(QWidget *parent = 0, AlgebraHighlighter::Mode ini=AlgebraHighlighter::Autodetect);
+        explicit ExpressionEdit(QWidget *parent = nullptr, AlgebraHighlighter::Mode ini=AlgebraHighlighter::Autodetect);
         
         /** Destructor. */
         ~ExpressionEdit();

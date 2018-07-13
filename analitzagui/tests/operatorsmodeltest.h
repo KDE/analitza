@@ -30,7 +30,7 @@ class OperatorsModelTest : public QObject
 {
     Q_OBJECT
     public:
-        OperatorsModelTest(QObject *parent = 0);
+        OperatorsModelTest(QObject *parent = nullptr);
         ~OperatorsModelTest();
     
     private Q_SLOTS:

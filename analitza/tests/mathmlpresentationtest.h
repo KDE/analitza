@@ -29,7 +29,7 @@ class MathMLPresentationTest : public QObject
 {
 Q_OBJECT
     public:
-        MathMLPresentationTest(QObject *parent = 0);
+        MathMLPresentationTest(QObject *parent = nullptr);
         ~MathMLPresentationTest();
     
     private Q_SLOTS:

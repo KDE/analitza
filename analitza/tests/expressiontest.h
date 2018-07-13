@@ -30,7 +30,7 @@ class ExpressionTest : public QObject
 {
 Q_OBJECT
     public:
-        ExpressionTest(QObject *parent = 0);
+        ExpressionTest(QObject *parent = nullptr);
         ~ExpressionTest();
     
     private Q_SLOTS:

@@ -30,7 +30,7 @@ class CommandsTest : public QObject
 {
 Q_OBJECT
     public:
-        CommandsTest(QObject *parent = 0);
+        CommandsTest(QObject *parent = nullptr);
         ~CommandsTest();
     
     private Q_SLOTS:

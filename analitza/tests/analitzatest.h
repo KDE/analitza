@@ -30,7 +30,7 @@ class AnalitzaTest : public QObject
 {
 Q_OBJECT
     public:
-        AnalitzaTest(QObject *parent = 0);
+        AnalitzaTest(QObject *parent = nullptr);
         ~AnalitzaTest();
     
     private Q_SLOTS:

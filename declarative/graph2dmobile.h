@@ -41,7 +41,7 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
     Q_PROPERTY(bool minorTicksShown READ minorTicksShown WRITE setShowMinorTicks)
     Q_PROPERTY(QStringList filters READ filters CONSTANT)
     public:
-        Graph2DMobile(QQuickItem* parent = 0);
+        Graph2DMobile(QQuickItem* parent = nullptr);
         
         virtual void forceRepaint() override;
         virtual void viewportChanged() override {}

@@ -63,7 +63,7 @@ public:
                 } else {
 //                     delete ob;
                     delete v;
-                    return 0;
+                    return nullptr;
                 }
             }
             n = n.nextSibling();
@@ -77,7 +77,7 @@ public:
 };
 
 Expression::Expression()
-    : d(new ExpressionPrivate(0))
+    : d(new ExpressionPrivate(nullptr))
 {}
 
 Expression::Expression(Object * o)
@@ -85,13 +85,13 @@ Expression::Expression(Object * o)
 {}
 
 Expression::Expression(const Cn & e)
-    : d(new ExpressionPrivate(0))
+    : d(new ExpressionPrivate(nullptr))
 {
     d->m_tree = new Cn(e);
 }
 
 Expression::Expression(const Expression & e)
-    : d(new ExpressionPrivate(0))
+    : d(new ExpressionPrivate(nullptr))
 {
     d->m_err=e.d->m_err;
     if(e.isCorrect() && e.d->m_tree)
@@ -99,7 +99,7 @@ Expression::Expression(const Expression & e)
 }
 
 Expression::Expression(const QString & exp, bool mathml)
-    : d(new ExpressionPrivate(0))
+    : d(new ExpressionPrivate(nullptr))
 {
     if(mathml)
         setMathML(exp);
@@ -121,7 +121,7 @@ Expression Expression::operator=(const Expression & e)
         if(e.d->m_tree)
             d->m_tree = e.d->m_tree->copy();
         else
-            d->m_tree=0;
+            d->m_tree=nullptr;
         
         d->m_err = e.d->m_err;
     }
@@ -132,7 +132,7 @@ bool Expression::setText(const QString & exp)
 {
     if(exp.isEmpty()) {
         delete d->m_tree;
-        d->m_tree = 0;
+        d->m_tree = nullptr;
         return true;
     }
     d->m_err.clear();
@@ -307,7 +307,7 @@ bool Expression::ExpressionPrivate::canAdd(const Object* where, const Object* br
     return correct;
 }
 
-static void variableDepth(Object* o, int& next, const QMap<QString, int>& scope, const Object* parent=0)
+static void variableDepth(Object* o, int& next, const QMap<QString, int>& scope, const Object* parent=nullptr)
 {
     Q_ASSERT(o);
     switch(o->type()) {
@@ -430,7 +430,7 @@ bool Expression::setMathML(const QString & s)
 Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
 {
     Cn *num; Operator *op;
-    Object* ret=0;
+    Object* ret=nullptr;
     
     if(elem.tagName()==QLatin1String("cs"))
         ret=listFromString(elem.text());
@@ -443,7 +443,7 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
                 
                 if(c && !check(c)) {
                     delete c;
-                    c=0;
+                    c=nullptr;
                 }
                 ret = c;
             } else
@@ -499,7 +499,7 @@ Object* Expression::ExpressionPrivate::branch(const QDomElement& elem)
             Apply *a=addElements<Apply>(new Apply, &elem);
             if(a && !check(a)) {
                 delete a;
-                a=0;
+                a=nullptr;
             }
             ret=a;
         }    break;
@@ -577,7 +577,7 @@ bool Expression::operator!=(const Expression& e) const
 void Expression::clear()
 {
     delete d->m_tree;
-    d->m_tree=0;
+    d->m_tree=nullptr;
     d->m_err.clear();
 }
 

@@ -27,7 +27,7 @@ class PlotsModelTest : public QObject
 {
 Q_OBJECT
     public:
-        PlotsModelTest(QObject *parent = 0);
+        PlotsModelTest(QObject *parent = nullptr);
         ~PlotsModelTest();
 
     private Q_SLOTS:

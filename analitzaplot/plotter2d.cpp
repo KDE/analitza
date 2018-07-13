@@ -75,7 +75,7 @@ Plotter2D::Plotter2D(const QSizeF& size)
     , m_keepRatio(true)
     , m_dirty(true)
     , m_size(size)
-    , m_model(0)
+    , m_model(nullptr)
     , m_angleMode(Radian)
     , m_scaleMode(Linear)
     , m_showTicks(Qt::Vertical|Qt::Horizontal)
@@ -692,17 +692,17 @@ void Plotter2D::drawSquares(QPainter* painter, const GridInfo& gridinfo, GridSty
 PlotItem* Plotter2D::itemAt(int row) const
 {
     if (!m_model)
-        return 0;
+        return nullptr;
     
     QModelIndex pi = m_model->index(row, 0);
 
     if (!pi.isValid())
-        return 0;
+        return nullptr;
 
     PlotItem* plot = pi.data(PlotsModel::PlotRole).value<PlotItem*>();
 
     if (plot->spaceDimension() != Dim2D)
-        return 0;
+        return nullptr;
 
     return plot;
 }

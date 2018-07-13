@@ -32,7 +32,7 @@ class PlaneCurveTest : public QObject
 {
 Q_OBJECT
     public:
-        PlaneCurveTest(QObject *parent = 0);
+        PlaneCurveTest(QObject *parent = nullptr);
         ~PlaneCurveTest();
 
     private Q_SLOTS:

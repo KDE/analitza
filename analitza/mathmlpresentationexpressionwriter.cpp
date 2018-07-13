@@ -159,30 +159,30 @@ const char *_log10="<msub><mo>log</mo><mn>10</mn></msub>", *logE="<msub><mo>log<
 }
 
 MathMLPresentationExpressionWriter::operatorToString
-    MathMLPresentationExpressionWriter::m_operatorToPresentation[] = { 0,
+    MathMLPresentationExpressionWriter::m_operatorToPresentation[] = { nullptr,
             joinOp<&plus>, joinOp<&times>,
             minus, divide, quotient,
             power, root, postfix<&factorial>,
             joinOp<&_and>,joinOp<&_or>,joinOp<&_xor>, prefix<&_not>,
-            0,0,0,0,//gcd, lcm, rem, factorof,
-            0,0,//max, min,
+            nullptr,nullptr,nullptr,nullptr,//gcd, lcm, rem, factorof,
+            nullptr,nullptr,//max, min,
             joinOp<&lt>, joinOp<&gt>,
             joinOp<&equal>,
             joinOp<&neq>, joinOp<&leq>, joinOp<&geq>, joinOp<&implies>,
             joinOp<&approx>, infix<&mabs, &mabs>, infix<&lfloor, &rfloor>, infix<&lceil, &rceil>,
             // approx, abs, floor, ceiling,
-            0,0,0,// sin, cos, tan,
-            0,0,0,// sec, csc, cot,
-            0,0,0,// sinh, cosh, tanh,
-            0,0,0,// sech, csch, coth,
-            0,0,0,// arcsin, arccos, arctan,
-            0,// arccot,// arccoth,
-            0,0,0,// arccosh, arccsc, arccsch,
-            0,0,0,0,// arcsec, arcsech, arcsinh, arctanh,
+            nullptr,nullptr,nullptr,// sin, cos, tan,
+            nullptr,nullptr,nullptr,// sec, csc, cot,
+            nullptr,nullptr,nullptr,// sinh, cosh, tanh,
+            nullptr,nullptr,nullptr,// sech, csch, coth,
+            nullptr,nullptr,nullptr,// arcsin, arccos, arctan,
+            nullptr,// arccot,// arccoth,
+            nullptr,nullptr,nullptr,// arccosh, arccsc, arccsch,
+            nullptr,nullptr,nullptr,nullptr,// arcsec, arcsech, arcsinh, arctanh,
             exp, prefixOp<&_log10>, prefixOp<&logE>,// exp, ln, log,
-            0,0,0,0,// //             conjugate, arg, real, imaginary,
+            nullptr,nullptr,nullptr,nullptr,// //             conjugate, arg, real, imaginary,
             sum, product, diff,// sum, product, diff,
-            prefix<&cardinal>, joinOp<&scalarproduct>, selector, 0,
+            prefix<&cardinal>, joinOp<&scalarproduct>, selector, nullptr,
             function // function
     };
 
@@ -318,7 +318,7 @@ QVariant Analitza::MathMLPresentationExpressionWriter::visit(const Analitza::App
     
     operatorToString call=m_operatorToPresentation[op.operatorType()];
     
-    if(call!=0) {
+    if(call!=nullptr) {
         ret = call(a, this);
     } else if(op.operatorType()!=0) {
         QString bvars;

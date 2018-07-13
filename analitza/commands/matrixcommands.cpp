@@ -132,11 +132,11 @@ Expression MatrixCommand::operator()(const QList< Analitza::Expression >& args)
                 delete matrix;
             else if (iscorrect) {
                 if (isVector) {
-                    QString* error=0;
+                    QString* error=nullptr;
                     ret.setTree(Analitza::Operations::reduceUnary(Analitza::Operator::transpose, matrix, &error));
                     delete matrix;
                 
-                    Q_ASSERT(error == 0);
+                    Q_ASSERT(error == nullptr);
                 } else
                     ret.setTree(matrix);
             } else {
@@ -279,7 +279,7 @@ Expression DiagonalMatrixCommand::operator()(const QList< Analitza::Expression >
     Q_ASSERT(ret.isCorrect());
     
     //BEGIN diag(a,b, ...) or diag(vector{a,b, ...})
-    const Analitza::Vector *v = byvector? static_cast<const Analitza::Vector*>(args.first().tree()) : 0;
+    const Analitza::Vector *v = byvector? static_cast<const Analitza::Vector*>(args.first().tree()) : nullptr;
     
     if (byvector) nargs = v->size();
     

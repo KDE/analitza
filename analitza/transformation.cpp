@@ -55,7 +55,7 @@ Analitza::Object* Transformation::applyTransformation(const Analitza::Object* in
             return obj;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 const Object* Transformation::parse(const QString& exp)
@@ -64,7 +64,7 @@ const Object* Transformation::parse(const QString& exp)
 //     if(!e.isCorrect()) qDebug() << "lelele" << exp << e.error();
     Q_ASSERT(e.isCorrect());
     Object* tree = e.tree();
-    e.setTree(0);
+    e.setTree(nullptr);
     
     //We remove the math node
     Container* root = static_cast<Container*>(tree);

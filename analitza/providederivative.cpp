@@ -82,7 +82,7 @@ Object* ProvideDerivative::walkApply(const Apply* a)
                 return ret;
             }
         }
-        Object* ret = 0;
+        Object* ret = nullptr;
         if(val->isApply()) ret=derivativeApply(static_cast<Apply*>(val));
         else if(val->isContainer()) ret=derivativeContainer(static_cast<Container*>(val));
         else if(val->type()==Object::list) ret=derivateContentList(static_cast<const List*>(val));
@@ -158,7 +158,7 @@ Object* ProvideDerivative::derivativeApply(const Apply* c)
         default:
             break;
     }
-    return 0;
+    return nullptr;
 }
 
 Object* ProvideDerivative::derivativeContainer(const Container *c)
@@ -195,7 +195,7 @@ Object* ProvideDerivative::derivativeContainer(const Container *c)
         
         return cret;
     }
-    return 0;
+    return nullptr;
 }
 
 Apply* ProvideDerivative::makeDiff(Object* o) const
@@ -210,6 +210,6 @@ Apply* ProvideDerivative::makeDiff(Object* o) const
 
 void ProvideDerivative::clearDiff(Apply* a)
 {
-    *a->firstValue()=0;
+    *a->firstValue()=nullptr;
     delete a;
 }

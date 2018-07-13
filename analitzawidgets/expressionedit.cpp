@@ -60,7 +60,7 @@ class HelpTip : public QLabel
 };
 
 ExpressionEdit::ExpressionEdit(QWidget *parent, AlgebraHighlighter::Mode inimode)
-    : QPlainTextEdit(parent), m_histPos(0), a(0), m_correct(true), m_ans(QStringLiteral("ans"))
+    : QPlainTextEdit(parent), m_histPos(0), a(nullptr), m_correct(true), m_ans(QStringLiteral("ans"))
 {
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     this->setTabChangesFocus(true);

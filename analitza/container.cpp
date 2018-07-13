@@ -183,7 +183,7 @@ const Container* Container::extractType(Container::ContainerType t) const
         if(c->isContainer() && c->containerType()==t)
             return c;
     }
-    return 0;
+    return nullptr;
 }
 
 void Container::appendBranch(Object* o)

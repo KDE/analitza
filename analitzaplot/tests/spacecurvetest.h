@@ -30,7 +30,7 @@ class SpaceCurveTest : public QObject
 {
 Q_OBJECT
     public:
-        SpaceCurveTest(QObject *parent = 0);
+        SpaceCurveTest(QObject *parent = nullptr);
         ~SpaceCurveTest();
 
     private Q_SLOTS:

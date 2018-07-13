@@ -30,7 +30,7 @@ class PlotsDictionaryModelTest : public QObject
 {
 Q_OBJECT
     public:
-        PlotsDictionaryModelTest(QObject *parent = 0);
+        PlotsDictionaryModelTest(QObject *parent = nullptr);
         ~PlotsDictionaryModelTest();
 
     private Q_SLOTS:
