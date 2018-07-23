@@ -41,7 +41,7 @@ class HelpTip : public QLabel
 {
     public:
         HelpTip(QWidget* parent)
-            : QLabel(parent, Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool | Qt::X11BypassWindowManagerHint)
+            : QLabel(parent, Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::ToolTip | Qt::X11BypassWindowManagerHint)
         {
             setFrameShape(QFrame::Box);
             setFocusPolicy(Qt::NoFocus);
