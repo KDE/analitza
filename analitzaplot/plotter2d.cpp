@@ -40,6 +40,11 @@ using namespace Analitza;
 
 // #define DEBUG_GRAPH
 
+class Analitza::Plotter2DPrivate {
+public:
+    QAbstractItemModel* m_model = nullptr;
+};
+
 QColor const Plotter2D::m_axeColor(100,100,255); //TODO convert from const to param/attr and make setAxisColor(Qt::oriantation, qcolor)
 QColor const Plotter2D::m_derivativeColor(90,90,160); //TODO remove derivative logic from plotter2d, move it to other module
 QString const Plotter2D::PiSymbol(QChar(0x03C0));
@@ -75,7 +80,7 @@ Plotter2D::Plotter2D(const QSizeF& size)
     , m_keepRatio(true)
     , m_dirty(true)
     , m_size(size)
-    , m_model(nullptr)
+    , d(new Plotter2DPrivate)
     , m_angleMode(Radian)
     , m_scaleMode(Linear)
     , m_showTicks(Qt::Vertical|Qt::Horizontal)
@@ -89,7 +94,9 @@ Plotter2D::Plotter2D(const QSizeF& size)
 {}
 
 Plotter2D::~Plotter2D()
-{}
+{
+    delete d;
+}
 
 void Plotter2D::setGridStyleHint(GridStyle suggestedgs)
 {
@@ -576,7 +583,6 @@ void Plotter2D::drawSquares(QPainter* painter, const GridInfo& gridinfo, GridSty
 {
     painter->setRenderHint(QPainter::Antialiasing, false);
     
-    const QPen textPen = QPen(QPalette().text().color());
     const QPen gridPen(m_gridColor);
     const QPen subGridPen(computeSubGridColor());
     const QPen gridPenBold(gridPen.brush(), 2);
@@ -691,10 +697,10 @@ void Plotter2D::drawSquares(QPainter* painter, const GridInfo& gridinfo, GridSty
 
 PlotItem* Plotter2D::itemAt(int row) const
 {
-    if (!m_model)
+    if (!d->m_model)
         return nullptr;
     
-    QModelIndex pi = m_model->index(row, 0);
+    QModelIndex pi = d->m_model->index(row, 0);
 
     if (!pi.isValid())
         return nullptr;
@@ -716,17 +722,15 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
     p.begin(qpd);
     p.setPen(pfunc);
 
-    if (!m_model || m_dirty)
+    if (!d->m_model || m_dirty)
         return;
     
     p.setRenderHint(QPainter::Antialiasing, true);
     
-    int current=currentFunction();
+    const int current=currentFunction();
+    const int dpr = qMax<int>(1, qRound(qpd->logicalDpiX()/100.)) << 1;
 
-    int dpr = qMax<int>(1, qRound(qpd->logicalDpiX()/100.));
-    dpr *= dpr;
-
-    for (int k = 0; k < m_model->rowCount(); ++k )
+    for (int k = 0; k < d->m_model->rowCount(); ++k )
     {
         PlaneCurve* curve = dynamic_cast<PlaneCurve *>(itemAt(k));
 
@@ -760,7 +764,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
             if(qIsInf(act.y()) && !qIsNaN(act.y())) qDebug() << "trying to plot from a NaN value" << act << ultim;
             else if(qIsInf(act.y()) && qIsNaN(act.y())) qDebug() << "trying to plot to a NaN value";
 
-            bool bothinf=(qIsInf(ultim.y()) && qIsInf(act.y())) || (qIsInf(ultim.x()) && qIsInf(act.x()));
+            const bool bothinf=(qIsInf(ultim.y()) && qIsInf(act.y())) || (qIsInf(ultim.x()) && qIsInf(act.x()));
             if(!bothinf && !qIsNaN(act.y()) && !qIsNaN(ultim.y()) && nextjump!=int(j)) {
                 if(qIsInf(ultim.y())) {
                     if(act.y()<0) ultim.setY(0);
@@ -813,7 +817,7 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
 
 void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end)
 {
-    if (!m_model || parent.isValid())
+    if (!d->m_model || parent.isValid())
         return;
 
     QRectF viewportFixed = viewport;
@@ -837,7 +841,7 @@ void Plotter2D::updateFunctions(const QModelIndex & parent, int start, int end)
 
 QPair<QPointF, QString> Plotter2D::calcImage(const QPointF& ndp) const
 {
-    if (!m_model || currentFunction() == -1)
+    if (!d->m_model || currentFunction() == -1)
         return QPair<QPointF, QString>();
 
     PlaneCurve* curve = dynamic_cast<PlaneCurve*>(itemAt(currentFunction()));
@@ -857,23 +861,24 @@ QRectF Plotter2D::normalizeUserViewport(const QRectF uvp)
     if (m_keepRatio && rang_x != rang_y)
     {
         rang_y=rang_x=qMin(std::fabs(rang_x), std::fabs(rang_y));
-        
+
         if(rang_y>0.) rang_y=-rang_y;
         if(rang_x<0.) rang_x=-rang_x;
 
         double newW=width()/rang_x, newH=height()/rang_x;
-        
+
         double mx=(uvp.width()-newW)/2.;
         double my=(uvp.height()-newH)/2.;
-        
+
         normalizeduvp.setLeft(uvp.left()+mx);
         normalizeduvp.setTop(uvp.bottom()-my);
         normalizeduvp.setWidth(newW);
         normalizeduvp.setHeight(-newH); //WARNING why negative distance?
+
         //Commented because precision could make the program crash
 //      Q_ASSERT(uvp.center() == viewport.center());
     }
-    
+
     return normalizeduvp;
 }
 
@@ -882,8 +887,8 @@ void Plotter2D::updateScale(bool repaint)
     viewport = normalizeUserViewport(userViewport);
 
     if (repaint) {
-        if (m_model && m_model->rowCount()>0)
-            updateFunctions(QModelIndex(), 0, m_model->rowCount()-1);
+        if (d->m_model && d->m_model->rowCount()>0)
+            updateFunctions(QModelIndex(), 0, d->m_model->rowCount()-1);
         else
             forceRepaint();
     }
@@ -903,7 +908,7 @@ void Plotter2D::setViewport(const QRectF& vp, bool repaint)
 
 QLineF Plotter2D::slope(const QPointF& dp) const
 {
-    if (!m_model || currentFunction() == -1)
+    if (!d->m_model || currentFunction() == -1)
         return QLineF();
 
     PlaneCurve* plot = dynamic_cast<PlaneCurve*>(itemAt(currentFunction()));
@@ -981,10 +986,10 @@ void Plotter2D::setKeepAspectRatio(bool ar)
 
 void Plotter2D::setModel(QAbstractItemModel* f)
 {
-    if(m_model == f)
+    if(d->m_model == f)
         return;
     
-    m_model=f;
+    d->m_model=f;
     modelChanged();
     forceRepaint();
 }
@@ -1033,3 +1038,7 @@ void Plotter2D::setShowGrid(bool show)
     }
 }
 
+QAbstractItemModel* Plotter2D::model() const
+{
+    return d->m_model;
+}

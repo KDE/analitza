@@ -37,7 +37,7 @@ class QModelIndex;
 namespace Analitza
 {
 class PlotItem;
-
+class Plotter2DPrivate;
 /**
  * \class Plotter2D
  * 
@@ -101,7 +101,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         void updateFunctions(const QModelIndex & parent, int start, int end);
         
         void setModel(QAbstractItemModel* f);
-        QAbstractItemModel* model() const { return m_model; }
+        QAbstractItemModel* model() const;
         
         /** Sets the graph's viewport to @p v. */
         void setViewport(const QRectF& vp, bool repaint=true);
@@ -201,7 +201,8 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QRectF viewport; // normalized viewport (with scale information), this one is the current viewport (used in currentViewport)
         QRectF userViewport; // raw viewport that user sets by setViewport, so we need to normalized userViewport into viewport to include scale and aspect radio information 
         QSizeF m_size;
-        QAbstractItemModel* m_model;
+
+        Plotter2DPrivate* const d;
         
         AngleMode m_angleMode;
         ScaleMode m_scaleMode;
