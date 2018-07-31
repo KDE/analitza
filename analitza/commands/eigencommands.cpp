@@ -196,19 +196,9 @@ Expression EigenvectorsCommand::operator()(const QList< Analitza::Expression >& 
                 ret.addError(QCoreApplication::tr("Returned eigenvalue is too big"));
                 return ret;
             } else {
-                bool isonlyreal = true;
-                
-                if (std::isnormal(imagpart)) {
-                    isonlyreal = false;
-                }
-                
-                Analitza::Cn * eigenvalueobj = 0;
-                
-                if (isonlyreal) {
-                    eigenvalueobj = new Analitza::Cn(realpart);
-                } else {
-                    eigenvalueobj = new Analitza::Cn(realpart, imagpart);
-                }
+                auto eigenvalueobj = !std::isnormal(imagpart) ?
+                                            new Analitza::Cn(realpart)
+                                        : new Analitza::Cn(realpart, imagpart);
                 
                 eigenvector->appendBranch(eigenvalueobj);
             }
