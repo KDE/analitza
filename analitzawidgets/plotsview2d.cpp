@@ -279,8 +279,10 @@ void PlotsView2D::keyPressEvent(QKeyEvent * e)
 
 void PlotsView2D::resizeEvent(QResizeEvent * ev)
 {
-    buffer=QPixmap(ev->size());
-    setPaintedSize(ev->size());
+    if (ev->size() != buffer.size()) {
+        buffer = QPixmap(ev->size());
+        setPaintedSize(ev->size());
+    }
 }
 
 bool PlotsView2D::toImage(const QString &path, Format f)
