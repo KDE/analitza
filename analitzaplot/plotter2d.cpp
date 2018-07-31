@@ -43,6 +43,7 @@ using namespace Analitza;
 class Analitza::Plotter2DPrivate {
 public:
     QAbstractItemModel* m_model = nullptr;
+    qreal m_dpr = 1.;
 };
 
 QColor const Plotter2D::m_axeColor(100,100,255); //TODO convert from const to param/attr and make setAxisColor(Qt::oriantation, qcolor)
@@ -939,15 +940,15 @@ QLineF Plotter2D::toWidget(const QLineF &f) const
 QPointF Plotter2D::toWidget(const QPointF& p) const
 {
     double left=-viewport.left(), top=-viewport.top();
-    return QPointF((left + p.x()) * rang_x,  (top + p.y()) * rang_y);
+    return QPointF((left + p.x()) * rang_x / d->m_dpr,  (top + p.y()) * rang_y / d->m_dpr);
 }
 
 QPointF Plotter2D::fromWidget(const QPoint& p) const
 {
-    double part_negativa_x = -viewport.left();
-    double part_negativa_y = -viewport.top();
+    double negativePartX = -viewport.left();
+    double negativePartY = -viewport.top();
     
-    return QPointF(p.x()/rang_x-part_negativa_x, p.y()/rang_y-part_negativa_y);
+    return QPointF(p.x()/(rang_x*d->m_dpr)-negativePartX, p.y()/(rang_y*d->m_dpr)-negativePartY);
 }
 
 QPointF Plotter2D::toViewport(const QPoint &mv) const
@@ -992,6 +993,11 @@ void Plotter2D::setModel(QAbstractItemModel* f)
     d->m_model=f;
     modelChanged();
     forceRepaint();
+}
+
+void Analitza::Plotter2D::setDevicePixelRatio(qreal dpr)
+{
+    d->m_dpr = dpr;
 }
 
 void Plotter2D::setPaintedSize(const QSize& size)

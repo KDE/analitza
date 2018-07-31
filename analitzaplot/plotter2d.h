@@ -169,6 +169,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         
         QLineF toWidget(const QLineF &) const;
         void setPaintedSize(const QSize& size);
+        void setDevicePixelRatio(qreal dpr);
         void scaleViewport(qreal scale, const QPoint& center, bool repaint=true);
 
     private:

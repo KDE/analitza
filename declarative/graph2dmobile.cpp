@@ -45,12 +45,15 @@ void Graph2DMobile::paint()
         return;
 
 //     qDebug() << "hellooo" << boundingRect();
-    QSize bounding = boundingRect().size().toSize();
+    const auto dpr = window()->effectiveDevicePixelRatio();
+    const QSize bounding = (boundingRect().size() * dpr).toSize();
     if(bounding.isEmpty())
         return;
     
     if(m_buffer.size()!=bounding) {
         m_buffer = QImage(bounding, QImage::Format_ARGB32);
+        m_buffer.setDevicePixelRatio(dpr);
+        setDevicePixelRatio(dpr);
         setPaintedSize(bounding);
     }
     
@@ -99,7 +102,7 @@ void Graph2DMobile::scale(qreal s, int x, int y)
 
 void Graph2DMobile::translate(qreal x, qreal y)
 {
-    moveViewport(QPoint(x,y));
+    moveViewport(QPoint(x,y) * window()->effectiveDevicePixelRatio());
 }
 
 QStringList Graph2DMobile::addFunction(const QString& expression, const QSharedPointer<Analitza::Variables>& vars)
