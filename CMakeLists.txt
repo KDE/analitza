@@ -46,9 +46,7 @@ add_subdirectory(analitzagui)
 add_subdirectory(analitzawidgets)
 add_subdirectory(declarative)
 
-if (IS_DIRECTORY "${CMAKE_SOURCE_DIR}/po")
-    ecm_install_po_files_as_qm(po)
-endif()
+ecm_install_po_files_as_qm(po)
 
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Analitza5")
 ecm_configure_package_config_file(
