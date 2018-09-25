@@ -32,7 +32,7 @@ class Vector;
 class ANALITZA_EXPORT MatrixRow : public Vector
 {
     public:
-        MatrixRow(int size=0);
+        explicit MatrixRow(int size=0);
         virtual QVariant accept(AbstractExpressionVisitor* e) const override;
         
         MatrixRow* copy() const override;

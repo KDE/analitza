@@ -51,7 +51,7 @@ class ANALITZAWIDGETS_DEPRECATED_EXPORT PlotsView3D : public  QGLWidget, public 
     Q_OBJECT
 
 public:
-    PlotsView3D(QWidget* parent = 0);
+    explicit PlotsView3D(QWidget* parent = 0);
     virtual ~PlotsView3D();
 
     void setSelectionModel(QItemSelectionModel* selection);

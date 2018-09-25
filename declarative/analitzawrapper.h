@@ -35,7 +35,7 @@ class ExpressionWrapper : public QObject
     Q_PROPERTY(QString expression READ toString CONSTANT)
     Q_PROPERTY(bool isCorrect READ isCorrect CONSTANT)
     public:
-        ExpressionWrapper(QObject* parent=nullptr);
+        explicit ExpressionWrapper(QObject* parent=nullptr);
         explicit ExpressionWrapper(const Analitza::Expression & e, QObject* parent = nullptr);
         
         bool isCorrect() const;

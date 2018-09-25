@@ -17,8 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef GRAPH2D_H
-#define GRAPH2D_H
+#ifndef PLOTSVIEW2D_H
+#define PLOTSVIEW2D_H
 
 #include <QResizeEvent>
 #include <QWheelEvent>
@@ -69,7 +69,7 @@ public:
     enum Format { PNG, SVG };
     
     /** Constructor. Constructs a new Graph2D. */
-    PlotsView2D(QWidget* parent = nullptr);
+    explicit PlotsView2D(QWidget* parent = nullptr);
     
     ~PlotsView2D();
     

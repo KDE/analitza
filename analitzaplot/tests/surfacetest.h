@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef ANALITZATEST_H
-#define ANALITZATEST_H
+#ifndef SURFACETEST_H
+#define SURFACETEST_H
 
 #include <QObject>
 

@@ -77,7 +77,7 @@ class Monomial
 class Polynomial : public QList<Monomial>
 {
     public:
-        Polynomial(Apply* c);
+        explicit Polynomial(Apply* c);
         
         Analitza::Object* toObject();
         void negate(int i);

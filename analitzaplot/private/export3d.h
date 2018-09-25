@@ -16,6 +16,9 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+#ifndef EXPORT3D_H
+#define EXPORT3D_H
+
 #include <QString>
 
 /*
@@ -29,3 +32,4 @@ namespace Export3D
 void exportX3D(const QString &path, QAbstractItemModel* model);
 void exportSTL(const QString &path, QAbstractItemModel* model);
 }
+#endif

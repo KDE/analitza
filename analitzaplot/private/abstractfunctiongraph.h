@@ -108,12 +108,12 @@ class EndPoint
 public:
     EndPoint() {}
 
-    EndPoint(double value)
+    explicit EndPoint(double value)
     {
         setValue(value);
     }
 
-    EndPoint(const Analitza::Expression &expression)
+    explicit EndPoint(const Analitza::Expression &expression)
     {
         if (!setValue(expression))
             setValue(0.0);

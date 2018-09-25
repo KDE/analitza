@@ -17,8 +17,8 @@
  *************************************************************************************/
 
 
-#ifndef IMPORTQMETAOBJECT_H
-#define IMPORTQMETAOBJECT_H
+#ifndef IMPORTQOBJECTMETATYPE_H
+#define IMPORTQOBJECTMETATYPE_H
 #include <QMetaObject>
 #include <analitza/analitzaexport.h>
 
@@ -29,7 +29,7 @@ class Analyzer;
 class ANALITZA_EXPORT ImportQMetaObject
 {
     public:
-        ImportQMetaObject(Analitza::Analyzer* a);
+        explicit ImportQMetaObject(Analitza::Analyzer* a);
         
         void import(const QMetaObject& t);
         

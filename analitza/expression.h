@@ -60,7 +60,7 @@ class ANALITZA_EXPORT Expression
         /**
          *    Creates an expression from a value
          */
-        Expression(const Cn& e);
+        explicit Expression(const Cn& e);
         
         explicit Expression(Object* o);
         

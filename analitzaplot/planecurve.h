@@ -17,8 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef ANALITZAPLOT_FUNCTION_H
-#define ANALITZAPLOT_FUNCTION_H
+#ifndef ANALITZAPLOT_PLANECURVE_H
+#define ANALITZAPLOT_PLANECURVE_H
 
 #include "functiongraph.h"
 
@@ -48,7 +48,7 @@ class AbstractSurface;
 class ANALITZAPLOT_EXPORT PlaneCurve : public FunctionGraph 
 {
 public:
-    PlaneCurve(AbstractFunctionGraph* g);
+    explicit PlaneCurve(AbstractFunctionGraph* g);
     virtual ~PlaneCurve();
 
     QVector<int> jumps() const;
@@ -60,4 +60,4 @@ public:
 
 }
 
-#endif // ANALITZAPLOT_FUNCTION_H
+#endif // ANALITZAPLOT_PLANECURVE_H

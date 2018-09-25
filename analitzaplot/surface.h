@@ -38,7 +38,7 @@ namespace Analitza {
 class ANALITZAPLOT_EXPORT Surface : public FunctionGraph
 {
 public:
-    Surface(AbstractFunctionGraph* g);
+    explicit Surface(AbstractFunctionGraph* g);
     
     virtual ~Surface();
 

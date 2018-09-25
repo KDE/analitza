@@ -20,7 +20,7 @@
 #define EIGENCOMMANDS_H
 
 #include "builtinmethods.h"
-#include "config-analitza.h"
+#include <config-analitza.h>
 
 namespace Analitza {
 class Expression;

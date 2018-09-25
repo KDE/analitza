@@ -20,9 +20,8 @@
  *************************************************************************************/
 
 
-
-#include <QtCore/QDebug>
 #include "expressionparser.h"
+#include <QDebug>
 #include "abstractlexer.h"
 #include "operator.h"
 #include <QCoreApplication>

@@ -34,7 +34,7 @@ class Expression;
 class ANALITZA_EXPORT ExpressionTypeChecker : public AbstractExpressionVisitor
 {
     public:
-        ExpressionTypeChecker(Variables* v);
+        explicit ExpressionTypeChecker(Variables* v);
         
         ExpressionType check(const Expression& exp);
         

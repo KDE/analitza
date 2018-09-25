@@ -21,7 +21,7 @@
 #include <QtTest/QTest>
 
 #include "analyzer.h"
-#include "config-analitza.h"
+#include <config-analitza.h>
 
 using Analitza::Expression;
 

@@ -58,7 +58,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         struct GridInfo; // interval structure for carry current grid state information across interval methods
 
     public:
-        Plotter2D(const QSizeF& size);
+        explicit Plotter2D(const QSizeF& size);
         virtual ~Plotter2D();
 
         /** Sets whether we will draw the grid. */

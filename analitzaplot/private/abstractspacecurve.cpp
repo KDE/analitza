@@ -17,6 +17,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+#include "abstractspacecurve.h"
 #include "functiongraph.h"
 
 #include <cmath>
@@ -26,7 +27,6 @@
 #include "analitza/value.h"
 #include "analitza/variable.h"
 
-#include "abstractspacecurve.h"
 #include "utils/mathutils.h"
 
 using namespace Analitza;

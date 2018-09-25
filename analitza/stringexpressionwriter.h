@@ -36,7 +36,7 @@ namespace Analitza
 class StringExpressionWriter : public AbstractExpressionVisitor
 {
     public:
-        StringExpressionWriter(const Object* o);
+        explicit StringExpressionWriter(const Object* o);
         
         virtual QVariant visit(const None* var) override;
         virtual QVariant visit(const Ci* var) override;

@@ -39,7 +39,7 @@ class ANALITZA_EXPORT AbstractLexer
             uint pos;
         };
         
-        AbstractLexer(const QString &source);
+        explicit AbstractLexer(const QString &source);
         virtual ~AbstractLexer();
         int lex();
         int lineNumber() const { return m_lines; }

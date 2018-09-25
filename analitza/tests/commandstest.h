@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef MATRIXTEST_H
-#define MATRIXTEST_H
+#ifndef COMMANDTEST_H
+#define COMMANDTEST_H
 
 #include <QObject>
 
@@ -50,4 +50,4 @@ Q_OBJECT
         Analitza::Analyzer *a;
 };
 
-#endif // MATRIXTEST_H
+#endif // COMMANDTEST_H

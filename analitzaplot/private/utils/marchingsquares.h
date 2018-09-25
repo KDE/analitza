@@ -16,8 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#ifndef FUNCTIONGRAPH2_H_mc
-#define FUNCTIONGRAPH2_H_mc
+#ifndef MARCHINGSQUARES_H
+#define MARCHINGSQUARES_H
 
 #include "quadtree.h"
 

@@ -29,7 +29,7 @@ namespace Analitza
 class ProvideDerivative : public AbstractExpressionTransformer
 {
     public:
-        ProvideDerivative(const QString& var);
+        explicit ProvideDerivative(const QString& var);
         Object* run(const Object* o);
         
         bool isCorrect() const { return m_errors.isEmpty(); }

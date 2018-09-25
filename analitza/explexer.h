@@ -28,7 +28,7 @@ class ANALITZA_EXPORT ExpLexer : public AbstractLexer
 {
     public:
         
-        ExpLexer(const QString &source);
+        explicit ExpLexer(const QString &source);
         
         static QString escape(const QString& str);
         

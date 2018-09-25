@@ -38,7 +38,7 @@ class MathMLPresentationExpressionWriter : public AbstractExpressionVisitor
 {
     public:
         typedef QString (*operatorToString)(const Apply* o, MathMLPresentationExpressionWriter* w);
-        MathMLPresentationExpressionWriter(const Object* o);
+        explicit MathMLPresentationExpressionWriter(const Object* o);
         
         virtual QVariant visit(const None* var) override;
         virtual QVariant visit(const Ci* var) override;

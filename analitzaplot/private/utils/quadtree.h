@@ -17,8 +17,8 @@
  *************************************************************************************/
 
 
-#ifndef FUNCTIONGRAPH2_H__oct_q
-#define FUNCTIONGRAPH2_H__oct_q
+#ifndef QUADTREE_H
+#define QUADTREE_H
 
 #include <QRectF>
 
@@ -67,8 +67,8 @@ private:
     void crear_rec(QNode* nodo, unsigned int nivel_actual, unsigned int nivel_max);
 
 public:
-    Quadtree(double largo_mundo);
-    Quadtree(Square cubo);
+    explicit Quadtree(double largo_mundo);
+    explicit Quadtree(Square cubo);
     ~Quadtree();
 
     QNode* get_raiz();

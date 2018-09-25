@@ -50,7 +50,7 @@ class PointerFunctionDefinition : public FunctionDefinition
     public:
         typedef Expression (*func)(const QList<Expression>& args);
         
-        PointerFunctionDefinition(func call);
+        explicit PointerFunctionDefinition(func call);
         virtual Expression operator()(const QList<Expression>& args) override;
     private:
         func m_function;

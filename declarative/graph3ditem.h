@@ -27,7 +27,7 @@ class Graph3DItem;
 class Plotter3DRenderer : public QObject, public Analitza::Plotter3DES
 {
 public:
-    Plotter3DRenderer(Graph3DItem* item);
+    explicit Plotter3DRenderer(Graph3DItem* item);
 
     int currentPlot() const override { return 0; }
     void modelChanged() override {}
@@ -46,7 +46,7 @@ class Graph3DItem : public QQuickFramebufferObject
     Q_PROPERTY(QStringList filters READ filters CONSTANT)
     Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel NOTIFY modelChanged)
     public:
-        Graph3DItem(QQuickItem* parent = Q_NULLPTR);
+        explicit Graph3DItem(QQuickItem* parent = Q_NULLPTR);
         ~Graph3DItem();
 
         QAbstractItemModel* model() const;

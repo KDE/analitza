@@ -52,7 +52,7 @@ public:
         DescriptionRole
     };
     
-    PlotsModel(QObject * parent = nullptr);
+    explicit PlotsModel(QObject * parent = nullptr);
     virtual ~PlotsModel();
 
     virtual Qt::ItemFlags flags(const QModelIndex & index) const override;

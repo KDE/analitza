@@ -141,7 +141,7 @@ Expression EigenvaluesCommand::operator()(const QList< Analitza::Expression >& a
                 isonlyreal = false;
             }
             
-            Analitza::Cn * eigenvalueobj = 0;
+            Analitza::Cn * eigenvalueobj = nullptr;
             
             if (isonlyreal) {
                 eigenvalueobj = new Analitza::Cn(realpart);

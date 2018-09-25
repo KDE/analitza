@@ -38,7 +38,7 @@ namespace Analitza {
 class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {
 public:
-    SpaceCurve(AbstractFunctionGraph* g);
+    explicit SpaceCurve(AbstractFunctionGraph* g);
     virtual ~SpaceCurve();
 
     QVector<int> jumps() const;

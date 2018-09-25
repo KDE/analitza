@@ -28,7 +28,7 @@ namespace Analitza
 class ANALITZA_EXPORT ExpressionStream
 {
     public:
-        ExpressionStream(QTextStream* dev);
+        explicit ExpressionStream(QTextStream* dev);
         
         bool atEnd() const;
         bool isInterrupted() const;

@@ -40,7 +40,7 @@ class ANALITZA_EXPORT Vector : public Object
         typedef QList<Object*>::const_iterator const_iterator;
         
         Vector(const Vector& v);
-        Vector(int size);
+        explicit Vector(int size);
         /** Fills the vector with a fixed numeric @p value */
         Vector(int size, const Cn *value);
         virtual ~Vector();

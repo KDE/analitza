@@ -18,8 +18,8 @@
  *************************************************************************************/
 
 
-#ifndef ABSTRACTMAPPINGGRAPH_H
-#define ABSTRACTMAPPINGGRAPH_H
+#ifndef ABSTRACTPLOTITEM_H
+#define ABSTRACTPLOTITEM_H
 
 #include <plottingenums.h>
 
@@ -42,4 +42,4 @@ protected:
 
 }
 
-#endif // ABSTRACTMAPPINGGRAPH_H
+#endif // ABSTRACTPLOTITEM_H

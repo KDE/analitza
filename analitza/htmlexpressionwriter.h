@@ -35,7 +35,7 @@ namespace Analitza
 class HtmlExpressionWriter : public AbstractExpressionVisitor
 {
     public:
-        HtmlExpressionWriter(const Object* o);
+        explicit HtmlExpressionWriter(const Object* o);
         
         virtual QVariant visit(const None* var) override;
         virtual QVariant visit(const Ci* var) override;

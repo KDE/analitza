@@ -30,7 +30,7 @@ class ANALITZA_EXPORT MathMLPresentationLexer : public AbstractLexer
 {
     public:
         
-        MathMLPresentationLexer(const QString &source);
+        explicit MathMLPresentationLexer(const QString &source);
         
     private:
         void getToken() override;
