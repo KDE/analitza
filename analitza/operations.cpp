@@ -836,9 +836,9 @@ Object* Operations::reduceMatrixValue(Operator::OperatorType op, Matrix* matrix,
                                         products[1] = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, matrix, matrix, correct));
                                     
                                     //NOTE see http://rosettacode.org/wiki/Addition-chain_exponentiation#C for more details
-                                    for (i = 2; i <= len; i++) 
-                                        for (j = i - 1; j; j--) 
-                                            for (k = j; k >= 0; k--) 
+                                    for (i = 2; i <= len; ++i) 
+                                        for (j = i - 1; j; --j) 
+                                            for (k = j; k >= 0; --k) 
                                             {
                                                 if (additionChains[exp][k+1] + additionChains[exp][j+1] < additionChains[exp][i+1]) break;
                                                 if (additionChains[exp][k+1] + additionChains[exp][j+1] > additionChains[exp][i+1]) continue;
@@ -849,7 +849,7 @@ Object* Operations::reduceMatrixValue(Operator::OperatorType op, Matrix* matrix,
                                     ret = products[len];
                                     
                                     //NOTE free the memory, except products[len]
-                                    for (i = 0; i < len; i++)
+                                    for (i = 0; i < len; ++i)
                                         delete products[i];
                                 } else { // else: use Exponentiation by squaring
                                     Matrix *product = Matrix::identity(base->rowCount());
