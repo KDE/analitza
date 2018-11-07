@@ -19,8 +19,8 @@
 #ifndef EXPLEXER_H
 #define EXPLEXER_H
 
-#include <QtCore/QString>
-#include <QtCore/QStringList>
+#include <QString>
+#include <QStringList>
 #include "abstractlexer.h"
 #include "analitzaexport.h"
 

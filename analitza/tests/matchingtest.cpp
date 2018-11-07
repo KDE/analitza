@@ -17,7 +17,7 @@
  *************************************************************************************/
 
 #include "matchingtest.h"
-#include <QtTest/QTest>
+#include <QTest>
 
 #include <analitza/expression.h>
 #include <substituteexpression.h>

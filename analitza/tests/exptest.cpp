@@ -19,7 +19,7 @@
 #include "exptest.h"
 #include "explexer.h"
 #include "expressionparser.h"
-#include <QtTest/QTest>
+#include <QTest>
 #include <QDebug>
 
 QTEST_MAIN( ExpTest )

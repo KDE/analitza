@@ -27,7 +27,7 @@
 #include "value.h"
 #include <variable.h>
 #include <analitzautils.h>
-#include <QtTest/QTest>
+#include <QTest>
 //#include <operations.h>
 
 using namespace std;

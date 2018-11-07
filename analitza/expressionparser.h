@@ -22,8 +22,8 @@
 #ifndef EXPRESSIONPARSER_H
 #define EXPRESSIONPARSER_H
 
-#include <QtCore/QStringList>
-#include <QtCore/QVector>
+#include <QStringList>
+#include <QVector>
 #include "expressiontable_p.h"
 #include "analitzaexport.h"
 class AbstractLexer;

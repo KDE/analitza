@@ -19,10 +19,10 @@
 #ifndef ABSTRACTLEXER_H
 #define ABSTRACTLEXER_H
 
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QHash>
-#include <QtCore/QQueue>
+#include <QString>
+#include <QStringList>
+#include <QHash>
+#include <QQueue>
 #include "analitzaexport.h"
 
 class ANALITZA_EXPORT AbstractLexer

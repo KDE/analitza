@@ -19,7 +19,7 @@
 #ifndef TYPECHECKTEST_H
 #define TYPECHECKTEST_H
 
-#include <QtCore/QObject>
+#include <QObject>
 #include <variables.h>
 
 

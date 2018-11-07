@@ -18,7 +18,7 @@
 
 #include "commandstest.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
 #include "analyzer.h"
 #include <config-analitza.h>

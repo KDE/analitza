@@ -18,7 +18,7 @@
 
 #include "typechecktest.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 #include <cmath>
 #include "expression.h"
 #include <expressiontypechecker.h>

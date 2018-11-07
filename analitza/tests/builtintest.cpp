@@ -24,7 +24,7 @@
 #include <analyzer.h>
 #include <builtinmethods.h>
 #include <value.h>
-#include <QtTest/QTest>
+#include <QTest>
 
 QTEST_MAIN( BuiltInTest )
 

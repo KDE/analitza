@@ -19,10 +19,10 @@
 #ifndef MATHMLPRESENTATIONLEXERLEXER_H
 #define MATHMLPRESENTATIONLEXERLEXER_H
 
-#include <QtCore/QString>
-#include <QtCore/QMap>
-#include <QtCore/QStack>
-#include <QtCore/QXmlStreamReader>
+#include <QString>
+#include <QMap>
+#include <QStack>
+#include <QXmlStreamReader>
 #include "abstractlexer.h"
 #include "analitzaexport.h"
 

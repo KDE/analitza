@@ -23,7 +23,7 @@
 
 #include <cmath>
 #include <analitzautils.h>
-#include <QtTest/QTest>
+#include <QTest>
 
 using namespace std;
 using Analitza::Expression;

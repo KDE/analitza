@@ -27,7 +27,7 @@
 #include "analitza/variables.h"
 #include <analitza/analyzer.h>
 #include <analitza/value.h>
-#include <QtTest/QTest>
+#include <QTest>
 #include <cmath>
 
 using namespace std;

@@ -21,7 +21,7 @@
 #include <plotsfactory.h>
 #include "analitza/expression.h"
 #include "analitza/variables.h"
-#include <QtTest/QTest>
+#include <QTest>
 #include <cmath>
 
 using namespace std;

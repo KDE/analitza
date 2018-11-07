@@ -18,7 +18,7 @@
  *************************************************************************************/
 
 #include "plotsdictionarymodeltest.h"
-#include <QtTest/QTest>
+#include <QTest>
 #include <QStandardPaths>
 #include <QDebug>
 #include <qdir.h>

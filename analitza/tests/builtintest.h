@@ -20,7 +20,7 @@
 #ifndef BUILTINTEST_H
 #define BUILTINTEST_H
 
-#include <QtCore/QObject>
+#include <QObject>
 #include <analyzer.h>
 
 class BuiltInTest : public QObject

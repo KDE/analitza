@@ -20,7 +20,7 @@
 #include <analitza/expression.h>
 #include <analitza/analyzer.h>
 #include <analitza/variables.h>
-#include <QtTest/QTest>
+#include <QTest>
 #include <cmath>
 #include <analitza/analitzautils.h>
 #include <analitza/value.h>
