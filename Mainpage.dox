@@ -53,13 +53,13 @@ user input (a
 \ref Analitza::Analyzer "Analyzer" can evaluate the expression.
 \li \ref Analitza::PlotsModel "PlotsModel" manage the mathematical objects that can be 
 drawn by \ref Analitza::Plotter2D "Plotter2D" or 
-\ref Analitza::Plotter3D "Plotter3D" (both plotters are agnostic of technologies 
+\ref Analitza::Plotter3DES "Plotter3D" (both plotters are agnostic of technologies 
 like QtWidgets or QtQuick).
 \li \ref Analitza::ExpressionEdit "ExpressionEdit" is a widget that allows inline 
 editing of mathematical expressions. \ref Analitza::PlotsView2D "PlotsView2D" is 
 a widget that uses \ref Analitza::Plotter2D "Plotter2D" to show plots (same with 
 \ref Analitza::PlotsView3D "PlotsView3D": it uses 
-\ref Analitza::Plotter3D "Plotter3D").
+\ref Analitza::Plotter3DES "Plotter3D").
 
 \section features Features
 

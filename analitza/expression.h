@@ -267,6 +267,7 @@ class ANALITZA_EXPORT Expression
         static Expression constructString(const QString& str);
         
         /** @returns if a non-mathml expression is fully introduced (e.g. has closed all parentheses).
+            @param exp the expression to analyze
             @param justempty tells if it's an expression with just spaces and comments
          */
         static bool isCompleteExpression(const QString& exp, bool justempty=false);
