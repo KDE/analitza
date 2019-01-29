@@ -44,7 +44,7 @@
 using namespace std;
 using namespace Analitza;
 
-const GLubyte Plotter3DES::XAxisArrowColor[] = {250 -1 , 1, 1};
+const GLubyte Plotter3DES::XAxisArrowColor[] = {250 -1, 1, 1};
 const GLubyte Plotter3DES::YAxisArrowColor[] = {1, 255 - 1, 1};
 const GLubyte Plotter3DES::ZAxisArrowColor[] = {1, 1, 255 - 1};
 
@@ -401,24 +401,28 @@ void Plotter3DES::drawAxes()
 {
     glLineWidth(1.5f);
 
-    program.setUniformValue("color", QColor(Qt::red));
-    static GLfloat const axisVertices[] = {
+    static GLfloat const xVertices[] = {
         0.f, 0.f, 0.f,
-
-        10.f, .0f, 0.f,
-        0.f, 10.f, 0.f,
-        0.f, 0.f, 10.f
+        10.f, 0.f, 0.f,
     };
-    static QVector<GLuint> const idxs = {0,1,0,2,0,3};
+    static GLfloat const yVertices[] = {
+        0.f, 0.f, 0.f,
+        0.f, 10.f, 0.f,
+    };
+    static GLfloat const zVertices[] = {
+        0.f, 0.f, 0.f,
+        0.f, 0.f, 10.f,
+    };
 
+    static QVector<GLuint> const idxs = {0,1};
 
     const int vertexLocation = program.attributeLocation("vertex");
     program.enableAttributeArray(vertexLocation);
 
-    program.setAttributeArray(vertexLocation, axisVertices, 3);
+    program.setUniformValue("color", QColor(Qt::red));
+    program.setAttributeArray(vertexLocation, xVertices, 3);
     glDrawElements(GL_LINES, idxs.size(), GL_UNSIGNED_INT, idxs.constData());
 
-//     program.setUniformValue("color", XAxisArrowColor);
     static GLfloat const XArrowVertices[] = {
         10.f,   0.f, 0.f,
 
@@ -431,7 +435,10 @@ void Plotter3DES::drawAxes()
     program.setAttributeArray(vertexLocation, XArrowVertices, 3);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
-//     program.setUniformValue("color", YAxisArrowColor);
+    program.setUniformValue("color", QColor(Qt::green));
+    program.setAttributeArray(vertexLocation, yVertices, 3);
+    glDrawElements(GL_LINES, idxs.size(), GL_UNSIGNED_INT, idxs.constData());
+
     static GLfloat const YArrowVertices[] = {
            0.f, 10.f,  0.f,
 
@@ -444,10 +451,12 @@ void Plotter3DES::drawAxes()
     program.setAttributeArray(vertexLocation, YArrowVertices, 3);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
-//     program.setUniformValue("color", ZAxisArrowColor);
+    program.setUniformValue("color", QColor(Qt::blue));
+    program.setAttributeArray(vertexLocation, zVertices, 3);
+    glDrawElements(GL_LINES, idxs.size(), GL_UNSIGNED_INT, idxs.constData());
+
     static GLfloat const ZArrowVertices[] = {
            0.f,  0.f, 10.f,
-
           0.1f,  0.f, 9.8f,
            0.f, 0.1f, 9.8f,
          -0.1f,  0.f, 9.8f,
