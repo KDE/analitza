@@ -292,3 +292,11 @@ QStringList PlotsModel::addFunction(const QString& expression, Dimension dim, co
 
     return err;
 }
+
+bool Analitza::PlotsModel::canAddFunction(const QString& expression, int _dim, const QSharedPointer<Analitza::Variables>& vars)
+{
+    const Analitza::Dimension dim = static_cast<Analitza::Dimension>(_dim);
+    Analitza::Expression e(expression, Analitza::Expression::isMathML(expression));
+    PlotBuilder req = PlotsFactory::self()->requestPlot(e, dim, vars);
+    return req.canDraw();
+}

@@ -62,14 +62,16 @@ PlotBuilder PlotsFactory::requestPlot(const Analitza::Expression& testexp, Dimen
     Analitza::Analyzer a(vars ? vars : m_vars);
     a.setExpression(exp);
     a.setExpression(a.dependenciesToLambda());
-    
+
     QString id;
     if(a.isCorrect()) {
         QString expectedid = FunctionGraphFactory::self()->trait(a.expression(), a.type(), dim);
         if(FunctionGraphFactory::self()->contains(expectedid)) {
             id = expectedid;
-        } else
+        } else if (!expectedid.isEmpty())
             errs << QCoreApplication::tr("Function type '%1' not recognized").arg(expectedid);
+        else
+            errs << QCoreApplication::tr("Function '%1' not recognized").arg(a.expression().toString());
     } else {
         errs << a.errors();
     }

@@ -169,7 +169,7 @@ class ANALITZA_EXPORT Expression
         /**
          *    Converts the expression to a string expression.
          */
-        QString toString() const;
+        Q_SCRIPTABLE QString toString() const;
         
         /**
          *    Converts the expression to MathML.
@@ -278,5 +278,7 @@ class ANALITZA_EXPORT Expression
 };
 
 }
+
+Q_DECLARE_METATYPE(Analitza::Expression)
 
 #endif

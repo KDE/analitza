@@ -78,7 +78,15 @@ public:
     /**
      * Helper method to help easily add elements to the model
      */
-    Q_SCRIPTABLE QStringList addFunction(const QString& expression, Analitza::Dimension dim, const QSharedPointer<Analitza::Variables>& vars);
+    QStringList addFunction(const QString& expression, Analitza::Dimension dim, const QSharedPointer<Analitza::Variables>& vars);
+
+    ///convenience function for QML
+    Q_SCRIPTABLE QStringList addFunction(const QString& expression, int dim, const QSharedPointer<Analitza::Variables>& vars) { return addFunction(expression, Analitza::Dimension(dim), vars); }
+
+    /**
+     * Helper method to help easily add elements to the model
+     */
+    Q_SCRIPTABLE bool canAddFunction(const QString& expression, int dim, const QSharedPointer<Analitza::Variables>& vars);
 
 protected:
     void emitChanged(PlotItem* it);
