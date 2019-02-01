@@ -119,6 +119,8 @@ void Plotter3DES::initGL()
         "}"
     );
     program.link();
+
+    updatePlots(QModelIndex(), 0, m_model->rowCount()-1);
 }
 
 void Plotter3DES::resetViewport()
