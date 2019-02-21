@@ -57,11 +57,13 @@ set ( analitzaplot_SRCS
 
 add_library( AnalitzaPlot ${analitzaplot_SRCS} )
 target_link_libraries ( AnalitzaPlot
+PUBLIC
+  Analitza
   Qt5::Core
   Qt5::Gui
-  Qt5::PrintSupport
 
-  Analitza
+PRIVATE
+  Qt5::PrintSupport # this pulls widgets
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Android)
