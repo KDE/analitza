@@ -131,6 +131,8 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
          */
         QStringList filters() const;
 
+        void setReferencePlaneColor(const QColor &color) { m_referencePlaneColor = color; }
+
     protected:
         void addPlots(PlotItem* item);
 
