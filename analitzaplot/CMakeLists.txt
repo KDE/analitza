@@ -67,9 +67,9 @@ PRIVATE
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Android)
-    target_link_libraries(AnalitzaPlot GLESv2)
+    target_link_libraries(AnalitzaPlot PRIVATE GLESv2)
 elseif(WIN32)
-    target_link_libraries(AnalitzaPlot ${GLEW_LIBRARIES})
+    target_link_libraries(AnalitzaPlot PRIVATE ${GLEW_LIBRARIES})
 endif()
 
 set_target_properties(AnalitzaPlot PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
