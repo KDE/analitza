@@ -73,7 +73,7 @@ void AlgebraHighlighter::highlightBlock(const QString &text)
     QPalette pal=qApp->palette();
     QColor number(pal.color(QPalette::Active, QPalette::Link));
     QColor variable(pal.color(QPalette::Active, QPalette::LinkVisited));
-    QColor comment(pal.color(QPalette::Active, QPalette::Background));
+    QColor comment(pal.color(QPalette::Active, QPalette::Window));
     QColor id(150,0,50);
     QColor string(0xbb,0,0);
     QColor uncorrect(Qt::red);
