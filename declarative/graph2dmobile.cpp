@@ -20,7 +20,7 @@
 #include <QPainter>
 #include <QEvent>
 #include <QSGSimpleTextureNode>
-#include <qquickwindow.h>
+#include <QQuickWindow>
 #include <analitza/variables.h>
 #include <analitzaplot/planecurve.h>
 #include <analitzaplot/plotsmodel.h>

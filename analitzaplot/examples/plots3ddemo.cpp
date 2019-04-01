@@ -17,11 +17,11 @@
  *************************************************************************************/
 
 #include <QMainWindow>
-#include <qtreeview.h>
-#include <qsplitter.h>
+#include <QTreeView>
+#include <QSplitter>
 #include <QVBoxLayout>
 #include <QStatusBar>
-#include <qapplication.h>
+#include <QApplication>
 
 #include "analitzaplot/surface.h"
 #include "analitzaplot/spacecurve.h"

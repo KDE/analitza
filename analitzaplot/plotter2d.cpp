@@ -27,7 +27,7 @@
 #include <cmath>
 #include <QPalette>
 #include <QPainter>
-#include <qfontdatabase.h>
+#include <QFontDatabase>
 #include <QDebug>
 #include <qnumeric.h>
 

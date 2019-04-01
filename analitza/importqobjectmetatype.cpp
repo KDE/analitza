@@ -18,7 +18,8 @@
 
 #include "importqobjectmetatype.h"
 #include "analyzer.h"
-#include <qmetaobject.h>
+#include <QMetaObject>
+#include <QMetaProperty>
 #include "analitzautils.h"
 #include "value.h"
 

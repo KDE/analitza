@@ -21,7 +21,7 @@
 #include <QTest>
 #include <QStandardPaths>
 #include <QDebug>
-#include <qdir.h>
+#include <QDir>
 #include <analitzaplot/plotitem.h>
 #include <analitzaplot/plotsmodel.h>
 #include <analitzaplot/plotsdictionarymodel.h>

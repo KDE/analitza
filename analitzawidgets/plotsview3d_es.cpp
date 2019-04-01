@@ -23,7 +23,7 @@
 #include <analitzaplot/surface.h>
 #include <analitzaplot/spacecurve.h>
 #include <QVector3D>
-#include <qitemselectionmodel.h>
+#include <QItemSelectionModel>
 #include <QVector>
 #include <QDebug>
 

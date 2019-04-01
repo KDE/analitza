@@ -17,8 +17,8 @@
  *************************************************************************************/
 
 #include <QMainWindow>
-#include <qtreeview.h>
-#include <qsplitter.h>
+#include <QTreeView>
+#include <QSplitter>
 #include <QStatusBar>
 #include <QVBoxLayout>
 

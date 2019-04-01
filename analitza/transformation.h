@@ -20,7 +20,7 @@
 #ifndef TRANSFORMATION_H
 #define TRANSFORMATION_H
 #include <QMap>
-#include <qsharedpointer.h>
+#include <QSharedPointer>
 
 namespace Analitza
 {

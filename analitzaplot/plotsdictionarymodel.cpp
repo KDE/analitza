@@ -24,8 +24,8 @@
 #include <analitzaplot/plotsfactory.h>
 #include <QFile>
 #include <QCoreApplication>
-#include <qstandardpaths.h>
-#include <qdir.h>
+#include <QStandardPaths>
+#include <QDir>
 
 using namespace Analitza;
 
