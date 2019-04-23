@@ -30,6 +30,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
+#include <analitzaplotexport.h>
 
 class QAbstractItemModel;
 class QPainter;
@@ -109,7 +110,7 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         void hideAxisHint();
 
         /**  If the flag @p simplerot is true the rotation ignores any fixed or free direction */
-        void setUseSimpleRotation(bool simplerot);
+        ANALITZAPLOT_DEPRECATED void setUseSimpleRotation(bool simplerot);
 
         /**  Get information about the current rotarion approach: if return true then rotation is simple. */
         bool isUsingSimpleRotation() const { return m_simpleRotation; }
