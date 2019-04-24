@@ -853,7 +853,7 @@ QPair<QPointF, QString> Plotter2D::calcImage(const QPointF& ndp) const
     return QPair<QPointF, QString>();
 }
 
-QRectF Plotter2D::normalizeUserViewport(const QRectF uvp)
+QRectF Plotter2D::normalizeUserViewport(const QRectF &uvp)
 {
     QRectF normalizeduvp = uvp;
     rang_x = width()/normalizeduvp.width();

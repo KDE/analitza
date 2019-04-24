@@ -86,13 +86,13 @@ public:
     void _addTri(const QPointF &a, const QPointF &b);
 
 private:
-    QList<sArista2D> calcular_cortes(sMarching_Square cubo);
+    QList<sArista2D> calcular_cortes(const sMarching_Square &cubo);
     bool signo_opuesto(double a, double b);
     double lineal(double vert_1, double vert_2);
     void agregar_triangulos(QList<QPointF> &lista_triangulos);
-    void identificar_tipo(sMarching_Square cubo);
+    void identificar_tipo(const sMarching_Square &cubo);
     void tipo01(QList<sArista2D> aristas);
-    void tipo05(QList<sArista2D> aristas, sMarching_Square cubo);
+    void tipo05(QList<sArista2D> aristas, const sMarching_Square &cubo);
     
 private:
     double fixed_x;

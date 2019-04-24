@@ -85,7 +85,7 @@ class ANALITZA_EXPORT Apply : public Object
         bool operator==(const Apply& a) const;
         
         /** Adds a @p o branch right after @p before of the Container. */
-        void insertBranch(Apply::iterator before, Object* o) { m_params.insert(before, o); }
+        void insertBranch(const Apply::iterator &before, Object* o) { m_params.insert(before, o); }
         QVector<Object*> values() const { return m_params; }
         Object* at(int p) const;
         

@@ -68,7 +68,7 @@ private:
 
 public:
     explicit Quadtree(double largo_mundo);
-    explicit Quadtree(Square cubo);
+    explicit Quadtree(const Square &cubo);
     ~Quadtree();
 
     QNode* get_raiz();

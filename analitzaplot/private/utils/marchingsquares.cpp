@@ -150,7 +150,7 @@ void MarchingSquares::_addTri(const QPointF& a, const QPointF& b)
 
 }
 
-QList<sArista2D> MarchingSquares::calcular_cortes(sMarching_Square cubo) {
+QList<sArista2D> MarchingSquares::calcular_cortes(const sMarching_Square &cubo) {
     QList<sArista2D> aristas;
     sArista2D temp;
 //  -----
@@ -225,7 +225,7 @@ void MarchingSquares::agregar_triangulos(QList<QPointF> &lista_triangulos) {
     }
 }
 
-void MarchingSquares::identificar_tipo(sMarching_Square cubo) {
+void MarchingSquares::identificar_tipo(const sMarching_Square &cubo) {
 
     QList<sArista2D> aristas;
     QList<unsigned int> vertices;
@@ -275,7 +275,7 @@ void MarchingSquares::tipo01(QList<sArista2D> aristas)
     agregar_triangulos(triangulos);
 }
 
-void MarchingSquares::tipo05(QList<sArista2D> aristas,sMarching_Square cubo)
+void MarchingSquares::tipo05(QList<sArista2D> aristas,const sMarching_Square &cubo)
 {
     if (aristas.isEmpty()) return;
     

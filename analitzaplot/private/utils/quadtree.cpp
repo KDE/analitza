@@ -74,7 +74,7 @@ Quadtree::Quadtree(double largo_mundo) {
     }
 }
 
-Quadtree::Quadtree(Square cubo) {
+Quadtree::Quadtree(const Square &cubo) {
     root = new QNode;
     root->cubo = cubo;
     for(unsigned int i=0; i<8; i++) {

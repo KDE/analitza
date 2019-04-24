@@ -158,7 +158,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         
     protected: // utils
         QRectF lastUserViewport() const { return userViewport; }
-        QRectF normalizeUserViewport(const QRectF uvp); // from userViewport to viewport, this one uses current scale information
+        QRectF normalizeUserViewport(const QRectF &uvp); // from userViewport to viewport, this one uses current scale information
         void updateScale(bool repaint);
         
         QPointF toWidget(const QPointF &) const;

@@ -404,11 +404,11 @@ void ExpressionEdit::contextMenuEvent(QContextMenuEvent * e)
     QScopedPointer<QMenu> popup(createStandardContextMenu());
     popup->addSeparator();
     if(isMathML())
-        popup->addAction(QCoreApplication::tr("To Expression"), this, SLOT(toExpression()));
+        popup->addAction(QCoreApplication::tr("To Expression"), this, &ExpressionEdit::toExpression);
     else
-        popup->addAction(QCoreApplication::tr("To MathML"), this, SLOT(toMathML()));
+        popup->addAction(QCoreApplication::tr("To MathML"), this, &ExpressionEdit::toMathML);
     
-    popup->addAction(QCoreApplication::tr("Simplify"), this, SLOT(simplify()));
+    popup->addAction(QCoreApplication::tr("Simplify"), this, &ExpressionEdit::simplify);
     
     QMenu* examples=popup->addMenu(QCoreApplication::tr("Examples"));
     examples->setEnabled(!m_examples.isEmpty());

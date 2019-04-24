@@ -90,7 +90,7 @@ public:
     void appendBranch(Object* o);
     
     /** Adds a @p o branch right after @p before of the Container. */
-    void insertBranch(Container::iterator before, Object* o) { m_params.insert(before, o); }
+    void insertBranch(const Container::iterator &before, Object* o) { m_params.insert(before, o); }
     
     /** Returns a QStringList where we have all of the bvar in the container */
     QStringList bvarStrings() const;
