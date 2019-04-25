@@ -30,7 +30,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
-#include <analitzaplotexport.h>
+#include "analitzaplotexport.h"
 
 class QAbstractItemModel;
 class QPainter;
