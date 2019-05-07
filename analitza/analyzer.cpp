@@ -287,6 +287,18 @@ Expression Analyzer::calculateLambda()
     return e;
 }
 
+template<typename T, typename Tcontained>
+Analitza::Object * Analyzer::evalElements(const Analitza::Object* branch, T* nv, bool resolve, const QSet<QString>& unscoped)
+{
+    const T* v=static_cast<const T*>(branch);
+    auto itEnd=v->constEnd();
+    for(auto it=v->constBegin(); it!=itEnd; ++it) {
+        Object* res=eval(*it, resolve, unscoped);
+        nv->appendBranch(static_cast<Tcontained*>(res));
+    }
+    return nv;
+}
+
 Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& unscoped)
 {
     Q_ASSERT(branch);
@@ -386,42 +398,13 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
         
 //         qDebug() << "peeee" << var->name() << val << resolve << unscoped;
     } else if(branch->type()==Object::vector) {
-        const Vector* v=static_cast<const Vector*>(branch);
-        Vector* nv=new Vector(v->size());
-        Vector::const_iterator it, itEnd=v->constEnd();
-        for(it=v->constBegin(); it!=itEnd; ++it) {
-            Object* res=eval(*it, resolve, unscoped);
-            nv->appendBranch(res);
-        }
-        ret=nv;
+        ret = evalElements<Vector>(branch, new Vector(static_cast<const Vector*>(branch)->size()), resolve, unscoped);
     } else if(branch->type()==Object::list) {
-        const List* v=static_cast<const List*>(branch);
-        List* nv=new List;
-        List::const_iterator it, itEnd=v->constEnd();
-        for(it=v->constBegin(); it!=itEnd; ++it) {
-            Object* res=eval(*it, resolve, unscoped);
-            nv->appendBranch(res);
-        }
-//         qDebug() << "XXX" << ;
-        ret=nv;
+        ret = evalElements<List>(branch, new List, resolve, unscoped);
     } else if(branch->type()==Object::matrix) {
-        const Matrix* v=static_cast<const Matrix*>(branch);
-        Matrix* nv=new Matrix;
-        Matrix::const_iterator it, itEnd=v->constEnd();
-        for(it=v->constBegin(); it!=itEnd; ++it) {
-            Object* res=eval(*it, resolve, unscoped);
-            nv->appendBranch(static_cast<MatrixRow*>(res));
-        }
-        ret=nv;
+        ret = evalElements<Matrix, MatrixRow>(branch, new Matrix, resolve, unscoped);
     } else if(branch->type()==Object::matrixrow) {
-        const MatrixRow* v=static_cast<const MatrixRow*>(branch);
-        MatrixRow* nv=new MatrixRow;
-        MatrixRow::const_iterator it, itEnd=v->constEnd();
-        for(it=v->constBegin(); it!=itEnd; ++it) {
-            Object* res=eval(*it, resolve, unscoped);
-            nv->appendBranch(static_cast<MatrixRow*>(res));
-        }
-        ret=nv;
+        ret = evalElements<MatrixRow>(branch, new MatrixRow, resolve, unscoped);
     } else if(branch->type()==Object::apply) {
         const Apply* c=static_cast<const Apply*>(branch);
         Operator op = c->firstOperator();
@@ -656,13 +639,13 @@ Object* Analyzer::calcDeclare(const Container* c)
     return ret;
 }
 
-template<class T, class Tit, class Tcontained>
+template<class T, class Tcontained>
 Object* Analyzer::calcElements(const Object* root, T* nv)
 {
     const T *v=static_cast<const T*>(root);
-    Tit it, itEnd=v->constEnd();
+    auto itEnd=v->constEnd();
     
-    for(it=v->constBegin(); it!=itEnd; ++it)
+    for(auto it=v->constBegin(); it!=itEnd; ++it)
         nv->appendBranch(static_cast<Tcontained*>(calc(*it)));
     
     return nv;
@@ -681,16 +664,16 @@ Object* Analyzer::calc(const Object* root)
             ret = operate((const Apply*) root);
             break;
         case Object::vector:
-            ret = calcElements<Vector, Vector::const_iterator>(root, new Vector(static_cast<const Vector*>(root)->size()));
+            ret = calcElements<Vector>(root, new Vector(static_cast<const Vector*>(root)->size()));
             break;
         case Object::list:
-            ret = calcElements<List, List::const_iterator>(root, new List);
+            ret = calcElements<List>(root, new List);
             break;
         case Object::matrix:
-            ret = calcElements<Matrix, Matrix::const_iterator, MatrixRow>(root, new Matrix);
+            ret = calcElements<Matrix, MatrixRow>(root, new Matrix);
             break;
         case Object::matrixrow:
-            ret = calcElements<MatrixRow, MatrixRow::const_iterator>(root, new MatrixRow);
+            ret = calcElements<MatrixRow>(root, new MatrixRow);
             break;
         case Object::value:
         case Object::custom:
@@ -1188,10 +1171,10 @@ void Analyzer::simplify()
     }
 }
 
-template <class T, class Tit, class Tcontained>
+template <class T, class Tcontained>
 void Analyzer::iterateAndSimp(T* v)
 {
-    Tit it = v->begin(), itEnd=v->end();
+    auto it = v->begin(), itEnd=v->end();
     
     for(; it!=itEnd; ++it)
         *it = static_cast<Tcontained*>(simp(*it));
@@ -1214,13 +1197,13 @@ Object* Analyzer::simp(Object* root)
                 root = simp(root);
         }
     } else if(root->type()==Object::vector) {
-        iterateAndSimp<Vector, Vector::iterator>(static_cast<Vector*>(root));
+        iterateAndSimp<Vector>(static_cast<Vector*>(root));
     } else if(root->type()==Object::matrix) {
-        iterateAndSimp<Matrix, Matrix::iterator, MatrixRow>(static_cast<Matrix*>(root));
+        iterateAndSimp<Matrix, MatrixRow>(static_cast<Matrix*>(root));
     } else if(root->type()==Object::matrixrow) {
-        iterateAndSimp<MatrixRow, MatrixRow::iterator>(static_cast<MatrixRow*>(root));
+        iterateAndSimp<MatrixRow>(static_cast<MatrixRow*>(root));
     } else if(root->type()==Object::list) {
-        iterateAndSimp<List, List::iterator>(static_cast<List*>(root));
+        iterateAndSimp<List>(static_cast<List*>(root));
     } else if(root->type()==Object::apply) {
         root = simpApply((Apply*) root);
     } else if(root->isContainer()) {
@@ -1240,7 +1223,7 @@ Object* Analyzer::simp(Object* root)
                 m_runStackTop = top;
             }    break;
             default:
-                iterateAndSimp<Container, Container::iterator>(c);
+                iterateAndSimp<Container>(c);
                 break;
         }
     }
@@ -1567,7 +1550,7 @@ Object* Analyzer::simpApply(Apply* c)
             if(c->domain())
                 c->domain()=simp(c->domain());
             
-            iterateAndSimp<Apply, Apply::iterator>(c);
+            iterateAndSimp<Apply>(c);
             
             root = applyTransformations(root, simplifications());
             break;
@@ -1952,10 +1935,10 @@ Object* Analyzer::applyAlpha(Object* o, int min)
     if(o)
         switch(o->type()) {
             case Object::container:    alphaConversion(static_cast<Container*>(o), min); break;
-            case Object::vector:    alphaConversion<Vector, Vector::iterator>(static_cast<Vector*>(o), min); break;
-            case Object::list:        alphaConversion<List, List::iterator>(static_cast<List*>(o), min); break;
-            case Object::matrix:    alphaConversion<Matrix, Matrix::iterator, MatrixRow>(static_cast<Matrix*>(o), min); break;
-            case Object::matrixrow:    alphaConversion<MatrixRow, MatrixRow::iterator>(static_cast<MatrixRow*>(o), min); break;
+            case Object::vector:    alphaConversion<Vector>(static_cast<Vector*>(o), min); break;
+            case Object::list:        alphaConversion<List>(static_cast<List*>(o), min); break;
+            case Object::matrix:       alphaConversion<Matrix, MatrixRow>(static_cast<Matrix*>(o), min); break;
+            case Object::matrixrow:    alphaConversion<MatrixRow>(static_cast<MatrixRow*>(o), min); break;
             case Object::apply:        alphaConversion(static_cast<Apply*>(o), min); break;
             case Object::variable: {
                 Ci *var = static_cast<Ci*>(o);
@@ -1978,11 +1961,11 @@ Object* Analyzer::applyAlpha(Object* o, int min)
     return o;
 }
 
-template <class T, class Tit, class Tcontained>
+template <class T, class Tcontained>
 void Analyzer::alphaConversion(T* o, int min)
 {
     Q_ASSERT(o);
-    Tit it=o->begin(), itEnd=o->end();
+    auto it=o->begin(), itEnd=o->end();
     for(; it!=itEnd; ++it) {
         *it = static_cast<Tcontained*>(applyAlpha(*it, min));
     }

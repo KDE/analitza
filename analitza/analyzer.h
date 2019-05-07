@@ -216,20 +216,23 @@ class ANALITZA_EXPORT Analyzer
         BoundingIterator* initBVarsContainer(const Apply* n, int base, Object* domain);
         BoundingIterator* initBVarsRange(const Apply* n, int base, Object* dlimit, Object* ulimit);
         
-        template <class T, class Tit, class Tcontained = Object>
+        template <class T, class Tcontained = Object>
         void iterateAndSimp(T* v);
         
         Object* variableValue(Ci* var);
         Object* testResult(const Analitza::Object* o, const QString& var, const Analitza::Object* val);
         
-        template <class T, class Tit, class Tcontained = Object>
+        template <class T, class Tcontained = Object>
         void alphaConversion(T* o, int min);
         void alphaConversion(Apply* a, int min);
         void alphaConversion(Container* a, int min);
         Object* applyAlpha(Analitza::Object* o, int min);
         
-        template<class T, class Tit, class Tcontained = Object>
+        template<class T, class Tcontained = Object>
         Object* calcElements(const Analitza::Object* root, T* nv);
+
+        template<class T, class Tcontained = Object>
+        Object* evalElements(const Analitza::Object* root, T* nv, bool resolve, const QSet<QString>& unscoped);
 };
 
 }
