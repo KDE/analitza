@@ -498,11 +498,21 @@ void AnalitzaTest::testCorrection_data()
             << QStringLiteral("g:=(u, v)->f(u)+f(v)")
             << QStringLiteral("g(vector{1,2}, vector{3,4})");
     QTest::newRow("aaa") << script << "30";
-    
+
     script.clear();
     script << QStringLiteral("f := (w,zz) -> list{zz} | acs->forall(a<w : a@acs)");
     script << QStringLiteral("f(2,3)");
     QTest::newRow("lambda1") << script << "false";
+
+    script.clear();
+    script << QStringLiteral("f := x -> matrix { matrixrow { x, x } }");
+    script << QStringLiteral("f(90)");
+    QTest::newRow("matrix-f") << script << "matrix { matrixrow { 90, 90 } }";
+
+    script.clear();
+    script << QStringLiteral("rotate := angle -> matrix { matrixrow { cos(angle), -sin(angle) }, matrixrow { sin(angle), cos(angle) } }");
+    script << QStringLiteral("rotate(90) * vector { 20, 20 }");
+    QTest::newRow("rotate-vector") << script << "vector { -26.8414055946, 8.91846094943 }";
 }
 
 //testCalculate
