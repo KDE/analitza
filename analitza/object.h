@@ -37,6 +37,7 @@ class AbstractExpressionVisitor;
 //FIXME: Check for public -> protected on some members
 class ANALITZA_EXPORT Object
 {
+    Q_GADGET
 public:
     /** ObjectType is used to describe objects. */
     enum ObjectType {
@@ -52,6 +53,7 @@ public:
         matrixrow,    /**< Describes an object as a matrix row. */
         custom        /**< Describes a custom object */
     };
+    Q_ENUM(ObjectType);
     
     /** Object destructor. Does nothing. */
     virtual ~Object() { /*qDebug() << "Destroying " << this;*/}

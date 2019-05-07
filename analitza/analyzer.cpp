@@ -413,6 +413,15 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
             nv->appendBranch(static_cast<MatrixRow*>(res));
         }
         ret=nv;
+    } else if(branch->type()==Object::matrixrow) {
+        const MatrixRow* v=static_cast<const MatrixRow*>(branch);
+        MatrixRow* nv=new MatrixRow;
+        MatrixRow::const_iterator it, itEnd=v->constEnd();
+        for(it=v->constBegin(); it!=itEnd; ++it) {
+            Object* res=eval(*it, resolve, unscoped);
+            nv->appendBranch(static_cast<MatrixRow*>(res));
+        }
+        ret=nv;
     } else if(branch->type()==Object::apply) {
         const Apply* c=static_cast<const Apply*>(branch);
         Operator op = c->firstOperator();
@@ -1208,6 +1217,8 @@ Object* Analyzer::simp(Object* root)
         iterateAndSimp<Vector, Vector::iterator>(static_cast<Vector*>(root));
     } else if(root->type()==Object::matrix) {
         iterateAndSimp<Matrix, Matrix::iterator, MatrixRow>(static_cast<Matrix*>(root));
+    } else if(root->type()==Object::matrixrow) {
+        iterateAndSimp<MatrixRow, MatrixRow::iterator>(static_cast<MatrixRow*>(root));
     } else if(root->type()==Object::list) {
         iterateAndSimp<List, List::iterator>(static_cast<List*>(root));
     } else if(root->type()==Object::apply) {
