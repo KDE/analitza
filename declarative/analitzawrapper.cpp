@@ -78,7 +78,7 @@ QVariant AnalitzaWrapper::simplify(const QString& expression)
     m_wrapped->setExpression(e);
     m_wrapped->simplify();
 
-    return qVariantFromValue(new ExpressionWrapper(m_wrapped->expression()));
+    return QVariant::fromValue(new ExpressionWrapper(m_wrapped->expression()));
 }
 
 QVariant AnalitzaWrapper::execute(const QString& expression)
@@ -99,7 +99,7 @@ QVariant AnalitzaWrapper::execute(const QString& expression)
     if(!m_wrapped->isCorrect())
         return QVariant();
     
-    return qVariantFromValue(new ExpressionWrapper(res));
+    return QVariant::fromValue(new ExpressionWrapper(res));
 }
 
 QVariant AnalitzaWrapper::executeFunc(const QString& name, const QVariantList& args)
@@ -122,7 +122,7 @@ QVariant AnalitzaWrapper::executeFunc(const QString& name, const QVariantList& a
     if(!m_wrapped->isCorrect())
         return QVariant();
     else
-        return qVariantFromValue(new ExpressionWrapper(expr));
+        return QVariant::fromValue(new ExpressionWrapper(expr));
 }
 
 QString AnalitzaWrapper::dependenciesToLambda(const QString& expression) const

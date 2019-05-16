@@ -101,7 +101,7 @@ class QObjectCastToParent : public Analitza::FunctionDefinition
         virtual Expression operator()(const QList< Expression >& args) override
         {
             QObject* o=args.first().customObjectValue().value<QObject*>();
-            return Expression::constructCustomObject(qVariantFromValue<QObject*>(o), nullptr);
+            return Expression::constructCustomObject(QVariant::fromValue<QObject*>(o), nullptr);
         }
         
         ExpressionType type() const

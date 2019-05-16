@@ -117,7 +117,7 @@ QVariant PlotsModel::data(const QModelIndex & index, int role) const
         case DimensionRole:
             return int(tmpcurve->spaceDimension());
         case PlotRole:
-            return qVariantFromValue<PlotItem*>(tmpcurve);
+            return QVariant::fromValue<PlotItem*>(tmpcurve);
         case DescriptionRole:
             return tmpcurve->display();
     }
