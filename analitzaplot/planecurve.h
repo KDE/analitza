@@ -30,10 +30,6 @@
 
 namespace Analitza
 {
-class Variables;
-class Expression;
-class AbstractPlaneCurve;
-class AbstractSurface;
 
 /**
  * \class PlaneCurve

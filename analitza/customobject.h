@@ -25,7 +25,6 @@
 #include <cmath>
 #include <QVariant>
 
-class QDomElement;
 
 namespace Analitza
 {

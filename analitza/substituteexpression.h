@@ -29,9 +29,6 @@ namespace Analitza
 
 class Object;
 class Ci;
-class Cn;
-class Container;
-class Vector;
 class List;
 class Apply;
 

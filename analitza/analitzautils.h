@@ -32,9 +32,6 @@ class Variables;
 class Expression;
 class Apply;
 class List;
-class Operator;
-class Vector;
-class Matrix;
 }
 
 /**

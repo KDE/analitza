@@ -28,7 +28,6 @@
 namespace Analitza
 {
 class Ci;
-class Container;
 class Cn;
 
 /**

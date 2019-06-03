@@ -38,7 +38,6 @@ class QItemSelectionModel;
 
 namespace Analitza
 {
-class PlotsModel;
 
 /**
  * \class PlotsView2D

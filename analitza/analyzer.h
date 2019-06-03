@@ -33,7 +33,6 @@
 namespace Analitza
 {
 class Polynomial;
-class Monomial;
 class Apply;
 class BoundingIterator;
 class BuiltinMethods;

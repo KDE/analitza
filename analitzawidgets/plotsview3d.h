@@ -32,8 +32,6 @@ class QItemSelectionModel;
 
 namespace Analitza
 {
-class Surface;
-class PlotItem;
 
 /**
  * \class PlotsView3D

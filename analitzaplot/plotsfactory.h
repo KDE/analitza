@@ -28,8 +28,6 @@ class QColor;
 namespace Analitza {
 class Variables;
 class FunctionGraph;
-class PlotsModel;
-class PlotItem;
 
 class ANALITZAPLOT_EXPORT PlotBuilder
 {

@@ -33,8 +33,6 @@
 #include "analitzaplotexport.h"
 
 class QAbstractItemModel;
-class QPainter;
-class QPaintDevice;
 class QModelIndex;
 
 namespace Analitza

@@ -28,7 +28,6 @@ namespace Analitza
 
 class Expression;
 class ExpressionType;
-class Object;
 
 class FunctionDefinition
 {
