@@ -85,6 +85,7 @@ void Graph2DMobile::modelChanged()
         this, &Graph2DMobile::addFuncs);
     connect(model(), &QAbstractItemModel::rowsRemoved,
         this, &Graph2DMobile::removeFuncs);
+    Q_EMIT modelHasChanged();
 }
 
 void Graph2DMobile::addFuncs(const QModelIndex& parent, int start, int end) { updateFunctions(parent, start, end); }

@@ -31,7 +31,7 @@ class Variables;
 class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
 {
     Q_OBJECT
-    Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
+    Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel NOTIFY modelHasChanged)
     Q_PROPERTY(QRectF viewport READ lastViewport WRITE setViewport RESET resetViewport)
     Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid NOTIFY showGridChanged)
     Q_PROPERTY(bool showMinorGrid READ showMinorGrid WRITE setShowMinorGrid)
@@ -57,6 +57,7 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
         
         QStringList filters() const;
 
+
     public Q_SLOTS:
         void translate(qreal x, qreal y);
         void scale(qreal s, int x, int y);
@@ -71,6 +72,7 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
         
     Q_SIGNALS:
         void showGridChanged() override;
+        void modelHasChanged();
 
     private:
         void paint();
