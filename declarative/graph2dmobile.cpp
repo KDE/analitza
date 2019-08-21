@@ -79,12 +79,14 @@ void Graph2DMobile::resetViewport()
 
 void Graph2DMobile::modelChanged()
 {
-    connect(model(), &QAbstractItemModel::dataChanged,
-        this, &Graph2DMobile::updateFuncs);
-    connect(model(), &QAbstractItemModel::rowsInserted,
-        this, &Graph2DMobile::addFuncs);
-    connect(model(), &QAbstractItemModel::rowsRemoved,
-        this, &Graph2DMobile::removeFuncs);
+    if (auto m = model()) {
+        connect(m, &QAbstractItemModel::dataChanged,
+            this, &Graph2DMobile::updateFuncs);
+        connect(m, &QAbstractItemModel::rowsInserted,
+            this, &Graph2DMobile::addFuncs);
+        connect(m, &QAbstractItemModel::rowsRemoved,
+            this, &Graph2DMobile::removeFuncs);
+    }
     Q_EMIT modelHasChanged();
 }
 
