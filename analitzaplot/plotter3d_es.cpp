@@ -267,6 +267,8 @@ void Plotter3DES::setModel(QAbstractItemModel* f)
 {
     m_model = f;
 
+    if (m_model)
+        updatePlots(QModelIndex(), 0, m_model->rowCount()-1);
     modelChanged();
 }
 

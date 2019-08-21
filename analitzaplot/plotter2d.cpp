@@ -992,7 +992,11 @@ void Plotter2D::setModel(QAbstractItemModel* f)
     
     d->m_model=f;
     modelChanged();
-    forceRepaint();
+
+    if (d->m_model)
+        updateFunctions({}, 0, d->m_model->rowCount());
+    else
+        forceRepaint();
 }
 
 void Analitza::Plotter2D::setDevicePixelRatio(qreal dpr)
