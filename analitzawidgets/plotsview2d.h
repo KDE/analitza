@@ -116,12 +116,10 @@ public Q_SLOTS:
         
     /** Zooms out */
     virtual void zoomOut() { Plotter2D::zoomOut(true); }
+
+    void modelChanged() override;
     
 private Q_SLOTS:
-    void updateFuncs(const QModelIndex & parent, int start, int end); //update al insertar itesm
-    void updateFuncs(const QModelIndex& start, const QModelIndex& end); //update al setdata 
-    void addFuncs(const QModelIndex & parent, int start, int end);
-    void removeFuncs(const QModelIndex & parent, int start, int end);
     void changeViewport(const QRectF& vp) { setViewport(vp); }
     
 Q_SIGNALS:
@@ -144,7 +142,6 @@ private:
 private:
     virtual void viewportChanged() override;
     virtual int currentFunction() const override;
-    virtual void modelChanged() override;
     
     //painting
     QPixmap buffer;
@@ -173,7 +170,6 @@ private:
     bool m_readonly;
     QString m_posText;
     QItemSelectionModel* m_selection;
-    QAbstractItemModel *m_currentModel; // use this pointer to disconnect signals when change the model
 };
 
 }

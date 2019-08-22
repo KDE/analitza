@@ -65,11 +65,6 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
         QStringList addFunction(const QString& expression, const QSharedPointer<Analitza::Variables>& vars = {});
         bool save(const QUrl &url) const;
         
-    private Q_SLOTS:
-        void updateFuncs(const QModelIndex& start, const QModelIndex& end);
-        void addFuncs(const QModelIndex& parent, int start, int end);
-        void removeFuncs(const QModelIndex& parent, int start, int end);
-        
     Q_SIGNALS:
         void showGridChanged() override;
         void modelHasChanged();

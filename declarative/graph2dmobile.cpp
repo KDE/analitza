@@ -79,21 +79,8 @@ void Graph2DMobile::resetViewport()
 
 void Graph2DMobile::modelChanged()
 {
-    if (auto m = model()) {
-        connect(m, &QAbstractItemModel::dataChanged,
-            this, &Graph2DMobile::updateFuncs);
-        connect(m, &QAbstractItemModel::rowsInserted,
-            this, &Graph2DMobile::addFuncs);
-        connect(m, &QAbstractItemModel::rowsRemoved,
-            this, &Graph2DMobile::removeFuncs);
-    }
     Q_EMIT modelHasChanged();
 }
-
-void Graph2DMobile::addFuncs(const QModelIndex& parent, int start, int end) { updateFunctions(parent, start, end); }
-
-void Graph2DMobile::removeFuncs(const QModelIndex&, int, int) { forceRepaint(); }
-void Graph2DMobile::updateFuncs(const QModelIndex& start, const QModelIndex& end) { updateFunctions(QModelIndex(), start.row(), end.row()); }
 
 void Graph2DMobile::scale(qreal s, int x, int y)
 {

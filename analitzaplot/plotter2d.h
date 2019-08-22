@@ -183,6 +183,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         PlotItem *itemAt(int row) const;
         int width() const { return m_size.width(); }
         int height() const { return m_size.height(); }
+
         const GridInfo getGridInfo() const; // calculate correct grid params
         const QColor computeSubGridColor() const;
         const QString computeAngleLabelByFrac(unsigned int n, unsigned int d) const; // input npi/d return angle in m_angleMode
@@ -203,6 +204,7 @@ class ANALITZAPLOT_EXPORT Plotter2D
         QRectF userViewport; // raw viewport that user sets by setViewport, so we need to normalized userViewport into viewport to include scale and aspect radio information 
         QSizeF m_size;
 
+        friend class Plotter2DPrivate;
         Plotter2DPrivate* const d;
         
         AngleMode m_angleMode;

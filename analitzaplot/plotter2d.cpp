@@ -40,10 +40,18 @@ using namespace Analitza;
 
 // #define DEBUG_GRAPH
 
-class Analitza::Plotter2DPrivate {
+class Analitza::Plotter2DPrivate : public QObject {
 public:
+    Plotter2DPrivate(Plotter2D* q) : q(q) {}
+
     QAbstractItemModel* m_model = nullptr;
     qreal m_dpr = 1.;
+    Plotter2D* const q;
+
+    void forceRepaint() { q->forceRepaint(); }
+    void addFuncs(const QModelIndex& parent, int start, int end) { q->updateFunctions(parent, start, end); }
+    void updateFuncs(const QModelIndex& start, const QModelIndex& end) { q->updateFunctions(QModelIndex(), start.row(), end.row()); }
+    void setModel(QAbstractItemModel* f);
 };
 
 QColor const Plotter2D::m_axeColor(100,100,255); //TODO convert from const to param/attr and make setAxisColor(Qt::oriantation, qcolor)
@@ -81,7 +89,7 @@ Plotter2D::Plotter2D(const QSizeF& size)
     , m_keepRatio(true)
     , m_dirty(true)
     , m_size(size)
-    , d(new Plotter2DPrivate)
+    , d(new Plotter2DPrivate(this))
     , m_angleMode(Radian)
     , m_scaleMode(Linear)
     , m_showTicks(Qt::Vertical|Qt::Horizontal)
@@ -985,18 +993,34 @@ void Plotter2D::setKeepAspectRatio(bool ar)
     updateScale(true);
 }
 
-void Plotter2D::setModel(QAbstractItemModel* f)
+void Analitza::Plotter2D::setModel(QAbstractItemModel* f)
 {
-    if(d->m_model == f)
+    d->setModel(f);
+}
+
+void Plotter2DPrivate::setModel(QAbstractItemModel* f)
+{
+    if(m_model == f)
         return;
     
-    d->m_model=f;
-    modelChanged();
 
-    if (d->m_model)
-        updateFunctions({}, 0, d->m_model->rowCount());
-    else
-        forceRepaint();
+    if (m_model) {
+        disconnect(m_model, &QAbstractItemModel::dataChanged, this, &Plotter2DPrivate::updateFuncs);
+        disconnect(m_model, &QAbstractItemModel::rowsInserted, this, &Plotter2DPrivate::addFuncs);
+        disconnect(m_model, &QAbstractItemModel::rowsRemoved, this, &Plotter2DPrivate::forceRepaint);
+    }
+
+    m_model = f;
+
+    if (m_model) {
+        connect(m_model, &QAbstractItemModel::dataChanged, this, &Plotter2DPrivate::updateFuncs);
+        connect(m_model, &QAbstractItemModel::rowsInserted, this, &Plotter2DPrivate::addFuncs);
+        connect(m_model, &QAbstractItemModel::rowsRemoved, this, &Plotter2DPrivate::forceRepaint);
+
+        q->updateFunctions({}, 0, m_model->rowCount());
+    } else {
+        q->forceRepaint();
+    }
 }
 
 void Analitza::Plotter2D::setDevicePixelRatio(qreal dpr)

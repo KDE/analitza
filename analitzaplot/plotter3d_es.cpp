@@ -509,6 +509,7 @@ bool Plotter3DES::save(const QUrl& url)
         exportSurfaces(path);
     } else if(path.endsWith(QLatin1String(".pdf"))) {
         auto px = grabImage();
+//this pulls widgets
         QPrinter printer;
         printer.setOutputFormat(QPrinter::PdfFormat);
         printer.setOutputFileName(path);

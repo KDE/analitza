@@ -51,7 +51,6 @@ PlotsView2D::PlotsView2D(QWidget *parent)
     , m_framed(false)
     , m_readonly(false)
     , m_selection(nullptr)
-    , m_currentModel(nullptr)
 {
     this->setFocusPolicy(Qt::ClickFocus);
     this->setCursor(Qt::CrossCursor);
@@ -316,25 +315,8 @@ void PlotsView2D::snapshotToClipboard()
     cb->setImage(buffer.toImage());
 }
 
-void PlotsView2D::addFuncs(const QModelIndex & parent, int start, int end)
+void Analitza::PlotsView2D::modelChanged()
 {
-    Q_ASSERT(!parent.isValid());
-    updateFunctions(parent, start, end);
-}
-
-void PlotsView2D::removeFuncs(const QModelIndex &, int, int)
-{
-    forceRepaint();
-}
-
-void PlotsView2D::updateFuncs(const QModelIndex & parent, int start, int end)
-{
-    updateFunctions(parent, start, end);
-}
-
-void PlotsView2D::updateFuncs(const QModelIndex& start, const QModelIndex& end)
-{
-    updateFuncs(QModelIndex(), start.row(), end.row());
 }
 
 void PlotsView2D::setReadOnly(bool ro)
@@ -369,31 +351,6 @@ int PlotsView2D::currentFunction() const
     }
     
     return ret;
-}
-
-void PlotsView2D::modelChanged()
-{
-    if (m_currentModel == model())
-        return ;
-    
-    if (m_currentModel)
-    {
-        disconnect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-        disconnect(model(), &QAbstractItemModel::rowsInserted, this, &PlotsView2D::addFuncs);
-        disconnect(model(), &QAbstractItemModel::rowsRemoved, this, &PlotsView2D::removeFuncs);
-        
-        //WARNING should we disconnect selection too? if so then must be documented
-//         if (m_selection)
-//             disconnect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(forceRepaint()));
-// 
-//         m_selection = 0;
-    }
-    
-    m_currentModel = model();
-
-    connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(updateFuncs(QModelIndex,QModelIndex)));
-    connect(model(), &QAbstractItemModel::rowsInserted, this, &PlotsView2D::addFuncs);
-    connect(model(), &QAbstractItemModel::rowsRemoved, this, &PlotsView2D::removeFuncs);
 }
 
 void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)
