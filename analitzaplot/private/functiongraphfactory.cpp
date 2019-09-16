@@ -82,7 +82,7 @@ bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, PlotItemConstuct
         const QString& iconNameFunction, ExamplesFunction examplesFunction)
 {
     QStringList arguments(_arguments);
-    qSort(arguments);
+    std::sort(arguments.begin(), arguments.end());
 
     //TODO: turn this id into an internal struct
     QString id = QString::number((int)dim)+"|"+
@@ -107,7 +107,7 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, const Anal
 {
     Q_ASSERT(!expr.isEquation());
     QStringList args = expr.bvarList();
-    qSort(args);
+    std::sort(args.begin(), args.end());
 
     QString key;
     for (int i = 0; i < argumentsFunctions.values().size() && key.isEmpty(); ++i) {

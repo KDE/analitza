@@ -129,7 +129,7 @@ void PlotsView2D::paintEvent(QPaintEvent * )
         p.drawLine(QPointF(0.,ultim.y()), QPointF(size().width(), ultim.y()));
         p.drawLine(QPointF(ultim.x(),0.), QPointF(ultim.x(), size().height()));
         
-        int w=p.fontMetrics().width(m_posText)+15, h=p.fontMetrics().height();
+        int w=p.fontMetrics().boundingRect(m_posText).width()+15, h=p.fontMetrics().height();
         
         if(ultim.x()+w > size().width())
             ultim.setX(size().width()-w);

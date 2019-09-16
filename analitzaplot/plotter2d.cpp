@@ -252,12 +252,12 @@ void Plotter2D::drawMainAxes(QPainter* painter) const
     QFont labelsfont = painter->font();
     labelsfont.setBold(true);
 
-    painter->drawText(Xright.x() - fm.width(m_axisXLabel) - 5, center.y() - 20, m_axisXLabel);
+    painter->drawText(Xright.x() - fm.boundingRect(m_axisXLabel).width() - 5, center.y() - 20, m_axisXLabel);
     painter->drawText(center.x() + 5, Ytop.y() + fm.height() + 15, m_axisYLabel);
 
     //write coords
     QString rightBound=QString::number(viewport.right());
-    int width=painter->fontMetrics().width(rightBound);
+    int width=painter->fontMetrics().boundingRect(rightBound).width();
 
     painter->drawText(QPointF(3.+this->width()/2., 13.                 ), QString::number(viewport.top()));
     painter->drawText(QPointF(3.+this->width()/2., this->height()-5.   ), QString::number(viewport.bottom()));
@@ -356,7 +356,7 @@ void Plotter2D::drawCartesianTickLabels(QPainter* painter, const Plotter2D::Grid
             break;
         }
         
-        const int swidth = painter->fontMetrics().width(s);
+        const int swidth = painter->fontMetrics().boundingRect(s).width();
         if (isxaxis)
             painter->drawText(p.x() - swidth/2, p.y()+fontHeight, s);
         else
