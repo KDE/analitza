@@ -134,7 +134,7 @@ void PlotsView3DES::renderGL()
 
 void PlotsView3DES::wheelEvent(QWheelEvent* ev)
 {
-    scale(1.f-ev->delta()/1000.f);
+    scale(1.f-ev->angleDelta().y()/1000.f);
 }
 
 void PlotsView3DES::mouseMoveEvent(QMouseEvent *e)

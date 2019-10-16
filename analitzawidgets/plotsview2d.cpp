@@ -167,11 +167,16 @@ void PlotsView2D::paintEvent(QPaintEvent * )
 void PlotsView2D::wheelEvent(QWheelEvent *e)
 {
     QRectF viewport=currentViewport();
-    int steps = e->delta()/(8*15);
+    int steps = e->angleDelta().y()/(8*15);
     qreal d = (-0.03*steps) + 1;
     
-    if(d>0 || (viewport.width()+d > 2 && viewport.height()+d < 2))
+    if(d>0 || (viewport.width()+d > 2 && viewport.height()+d < 2)) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         scaleViewport(d, e->pos());
+#else
+        scaleViewport(d, e->position().toPoint());
+#endif
+    }
 }
 
 void PlotsView2D::mousePressEvent(QMouseEvent *e)
