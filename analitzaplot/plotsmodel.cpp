@@ -64,7 +64,7 @@ Qt::ItemFlags PlotsModel::flags(const QModelIndex & index) const
     if(index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
     else
-        return nullptr;
+        return Qt::NoItemFlags;
 }
 
 QVariant PlotsModel::headerData(int section, Qt::Orientation orientation, int role) const
