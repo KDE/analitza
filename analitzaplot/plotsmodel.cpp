@@ -165,7 +165,7 @@ bool PlotsModel::setData(const QModelIndex& index, const QVariant& value, int ro
                     }
                     return false;
                 }
-            }
+            } //fallthrough
         case Qt::CheckStateRole:
             m_items[index.row()]->setVisible(value.toBool());
             return true;
@@ -252,7 +252,7 @@ QModelIndex PlotsModel::indexForName(const QString& name)
 
 QString PlotsModel::freeId() const
 {
-    return "f"+QString::number(m_namingCount);
+    return 'f'+QString::number(m_namingCount);
 }
 
 void PlotsModel::setResolution(int res)

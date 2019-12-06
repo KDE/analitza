@@ -85,8 +85,8 @@ bool FunctionGraphFactory::registerFunctionGraph(Dimension dim, PlotItemConstuct
     std::sort(arguments.begin(), arguments.end());
 
     //TODO: turn this id into an internal struct
-    QString id = QString::number((int)dim)+"|"+
-                 QString::number((int)coordinateSystemFunction)+"|"+
+    QString id = QString::number((int)dim)+'|'+
+                 QString::number((int)coordinateSystemFunction)+'|'+
                  arguments.join(QStringLiteral(","));
     Q_ASSERT(!contains(id)); // verificar que no se registren los mismos tipos
 

@@ -640,7 +640,7 @@ QString generateDependencyGraph(const Variables* v)
         foreach(const QString& d, deps) {
             const Object* o=v->value(d);
             if(o && isLambda(o)) {
-                ret += "\t"+current+" -> "+d+";\n";
+                ret += '\t'+current+" -> "+d+";\n";
             }
         }
     }

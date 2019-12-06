@@ -21,8 +21,8 @@
 
 //NOTE this code generates the whole thing ... 
 // see seq function in 
-// http://rosettacode.org/wiki/Addition-chain_exponentiation/Achain.c or
-// http://www-cs-faculty.stanford.edu/~knuth/programs/achain4.w
+// https://rosettacode.org/wiki/Addition-chain_exponentiation/Achain.c or
+// https://www-cs-faculty.stanford.edu/~knuth/programs/achain4.w
 // int main(int argc, char *argv[])
 // {
 //   const int MAX_N = 2048;

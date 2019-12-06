@@ -35,7 +35,7 @@ namespace Analitza
 class MathMLExpressionWriter : public AbstractExpressionVisitor
 {
     public:
-        MathMLExpressionWriter(const Object* o);
+        explicit MathMLExpressionWriter(const Object* o);
         
         virtual QVariant visit(const None* var) override;
         virtual QVariant visit(const Ci* var) override;

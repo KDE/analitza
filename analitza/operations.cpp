@@ -415,7 +415,7 @@ Cn* reduceUnaryReal(Operator::OperatorType op, Cn* oper, QString** correct)
         case Operator::arccot:
                  oper->setValue(log(a+pow(a*a+1., 0.5)));
             break;
-        case Operator::arcsinh: //see http://en.wikipedia.org/wiki/Inverse_hyperbolic_function
+        case Operator::arcsinh: //see https://en.wikipedia.org/wiki/Inverse_hyperbolic_function
                  oper->setValue(asinh(a));
             break;
         case Operator::arccosh:
@@ -835,7 +835,7 @@ Object* Operations::reduceMatrixValue(Operator::OperatorType op, Matrix* matrix,
                                     if (exp>1)
                                         products[1] = static_cast<Matrix*>(reduceMatrixMatrix(Operator::times, matrix, matrix, correct));
                                     
-                                    //NOTE see http://rosettacode.org/wiki/Addition-chain_exponentiation#C for more details
+                                    //NOTE see https://rosettacode.org/wiki/Addition-chain_exponentiation#C for more details
                                     for (i = 2; i <= len; ++i) 
                                         for (j = i - 1; j; --j) 
                                             for (k = j; k >= 0; --k) 

@@ -154,7 +154,7 @@ QVariant HtmlExpressionWriter::visit ( const Analitza::Apply* a )
     foreach(Object* o, a->m_params) {
         Object::ObjectType type=o->type();
         switch(type) {
-            if(type == Object::oper)
+            case Object::oper:
                 Q_ASSERT(false);
                 break;
             case Object::variable:
