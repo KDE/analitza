@@ -19,7 +19,7 @@ computations and some numerical methods; for instance the library
 can parse mathematical expressions and let you evaluate and draw them. 
 
 Development of Analitza take place in 
-<a href="https://projects.kde.org/projects/kde/kdeedu/analitza/repository/">this</a> 
+<a href="https://commits.kde.org/analitza">this</a> 
 repository.
 
 \section modules Modules
