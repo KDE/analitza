@@ -494,7 +494,7 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
                     resolved=r->dlimit()->type()==Object::value && r->ulimit()->type()==Object::value;
                 }
                 
-                if(resolved && hasVars(*r->firstValue(), newUnscoped.toList())) {
+                if(resolved && hasVars(*r->firstValue(), newUnscoped.values())) {
                     BoundingIterator *it = r->domain()? initBVarsContainer(r, top, r->domain()->copy()) : initBVarsRange(r, top, r->dlimit(), r->ulimit());
                     
                     if(it) {

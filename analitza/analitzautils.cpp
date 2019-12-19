@@ -111,7 +111,7 @@ QStringList dependencies(const Object* o, const QStringList& scope)
             break;
     }
     
-    return ret.toList();
+    return ret.values();
 }
 
 bool hasTheVar(const QSet<QString> & vars, const Object * o)
