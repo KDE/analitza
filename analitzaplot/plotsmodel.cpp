@@ -30,6 +30,7 @@
 #include <QIcon>
 #include <QPixmap>
 #include <QCoreApplication>
+#include <QRandomGenerator>
 
 using namespace Analitza;
 
@@ -265,7 +266,7 @@ void PlotsModel::setResolution(int res)
     }
 }
 
-static QColor randomFunctionColor() { return QColor::fromHsv(qrand()%255, 255, 225); }
+static QColor randomFunctionColor() { return QColor::fromHsv(QRandomGenerator::global()->bounded(255), 255, 225); }
 
 QStringList PlotsModel::addFunction(const QString& expression, Dimension dim, const QSharedPointer<Analitza::Variables>& vars)
 {
