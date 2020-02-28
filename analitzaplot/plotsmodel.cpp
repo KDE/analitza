@@ -48,9 +48,7 @@ PlotsModel::~PlotsModel()
 QHash<int, QByteArray> PlotsModel::roleNames() const
 {
     auto ret = QAbstractListModel::roleNames();
-    ret.insert({
-        { DescriptionRole, "description" }
-    });
+    ret.insert(DescriptionRole, "description");
     return ret;
 }
 

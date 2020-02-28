@@ -35,5 +35,10 @@ void AnalitzaDeclarativePlugin::registerTypes(const char* uri)
     qmlRegisterType<Analitza::PlotsModel>(uri, 1, 0, "PlotsModel");
     qmlRegisterType<Analitza::VariablesModel>(uri, 1, 0, "VariablesModel");
     qmlRegisterType<OperatorsModel>(uri, 1, 0, "OperatorsModel");
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    qmlRegisterInterface<Analitza::Variables*>("Analitza::Variables");
+#else
     qmlRegisterInterface<Analitza::Variables>(uri, 1);
+#endif
 }
