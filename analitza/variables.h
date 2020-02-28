@@ -19,6 +19,7 @@
 #ifndef VARIABLES_H
 #define VARIABLES_H
 
+#include <qobjectdefs.h>
 #include <QHash>
 
 #include "analitzaexport.h"
@@ -41,6 +42,7 @@ class Object;
 
 class ANALITZA_EXPORT Variables : public QHash<QString, Object*>
 {
+    Q_GADGET
     public:
         /** 
         *    Creates an empty variable hash table with the usual constants

@@ -30,10 +30,12 @@ OperatorsModel::OperatorsModel(QObject *parent) : QAbstractTableModel(parent), m
 
 QHash<int, QByteArray> OperatorsModel::roleNames() const
 {
-    return QAbstractTableModel::roleNames().unite( {
-            {IsVariableRole, "isVariable"},
-            {DescriptionRole, "description"}
+    auto ret = QAbstractTableModel::roleNames();
+    ret.insert({
+        {IsVariableRole, "isVariable"},
+        {DescriptionRole, "description"}
     });
+    return ret;
 }
 
 QVariant OperatorsModel::data(const QModelIndex & index, int role) const
