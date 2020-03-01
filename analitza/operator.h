@@ -68,6 +68,9 @@ class ANALITZA_EXPORT Operator : public Object
         };
         /** Constructor. Creates an operator with @p t type .*/
         explicit Operator(OperatorType t) : Object(oper), m_optype(t) {}
+
+        /** Copy constructor */
+        constexpr Operator(const Operator&) = default;
         
         /** Destructor */
         virtual ~Operator() {}
