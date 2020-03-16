@@ -1104,8 +1104,7 @@ Object* Analyzer::calcMap(const Apply* c)
     
     List::iterator it=l->begin(), itEnd=l->end();
     for(; it!=itEnd; ++it) {
-        QVector<Object*> args=QVector<Object*>(1, *it);
-        *it = calcCallFunction(f, args, f);
+        *it = calcCallFunction(f, { *it }, f);
     }
     
     delete f;
