@@ -85,7 +85,7 @@ class Polynomial : public QList<Monomial>
     private:
         void addMonomial(const Monomial& m);
         void addValue(Analitza::Object* value);
-        void simpScalars(bool m_firstValue);
+        void simpScalars(bool firstValue);
 
         QVector<Object*> m_scalars;
         Operator m_operator;

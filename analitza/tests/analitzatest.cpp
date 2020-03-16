@@ -669,6 +669,7 @@ void AnalitzaTest::testSimplify_data()
     QTest::newRow("poli4") << "-x-1-2-4" << "-x-7";
     QTest::newRow("poli4.0") << "-x-y-z" << "-x-y-z";
     QTest::newRow("poli4.1") << "minus(-x, 1, 2, 4)" << "-x-7";
+    QTest::newRow("poli5") << "y+3*(x-1)" << "y+3*(x-1)";
 //     QTest::newRow("powerscomb") << "3**x*3**x" << "9^x";
     QTest::newRow("no var") << "2+2" << "4";
     QTest::newRow("simple") << "x+x" << "2*x";

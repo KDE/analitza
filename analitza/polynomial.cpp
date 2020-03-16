@@ -197,7 +197,7 @@ Polynomial::Polynomial(Apply* c)
         Monomial imono(m_operator, *it, m_sign);
         
         bool added=false;
-        if(imono.second->isApply()) {
+        if(imono.second->isApply() && imono.first == 1) {
             Apply* a = static_cast<Apply*>(imono.second);
             Operator op=a->firstOperator();
             if(a->firstOperator()==m_operator
