@@ -37,6 +37,7 @@
 #include "substituteexpression.h"
 #include "expressionstream.h"
 #include "matrix.h"
+#include "commands/realpower.h"
 #include "commands/listcommands.h"
 #include "commands/vectorcommands.h"
 #include "commands/matrixcommands.h"
@@ -163,6 +164,7 @@ Analyzer::~Analyzer()
 
 void Analyzer::registerBuiltinMethods()
 {
+    m_builtin.insertFunction(RealPower::id, RealPower::type, new RealPower);
     m_builtin.insertFunction(RangeCommand::id, RangeCommand::type, new RangeCommand);
     m_builtin.insertFunction(VectorCommand::id, VectorCommand::type, new VectorCommand);
     m_builtin.insertFunction(MatrixCommand::id, MatrixCommand::type, new MatrixCommand);

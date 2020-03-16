@@ -100,8 +100,9 @@ void AnalitzaTest::testTrivialCalculate_data()
     QTest::newRow("lambda")  << "(x->x+2)(2)" << Cn(4.);
     QTest::newRow("lambda2") << "(x->3*x^2)(1)" << Cn(3.);
     QTest::newRow("lambda3") << "(x->x*sum(t:t=0..3))(2)" << Cn(12.);
-    QTest::newRow("imaginarypow") << "(-4)^(1/4)" << Cn(1.);
+    QTest::newRow("imaginarypow") << "(-4)^(1/4)" << Cn(1, 1);
     QTest::newRow("imaginaryroot") << "root(-4, 4)" << Cn(1.);
+    QTest::newRow("squareroot-1") << "(-1)^(1/2)" << Cn(0, 1);
 
     //comprehension
     QTest::newRow("sum.2bvars") << "sum(x*y : (x, y)=1..3)" << Cn(36.);

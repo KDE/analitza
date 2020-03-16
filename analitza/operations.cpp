@@ -59,9 +59,11 @@ Object* reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a, doubl
             oper->setValue(a - b);
             break;
         case Operator::power:
-            oper->setValue( b==2 ? a*a
-            : b<1 && b>-1 && a<0 ? pow(complex<double>(a), complex<double>(b)).real()
-            : pow(a, b));
+            if (b<1 && b>-1 && a<0) {
+                oper->setValue(pow(complex<double>(a), complex<double>(b)));
+            } else {
+                oper->setValue(b==2 ? a*a : pow(a, b));
+            }
             break;
         case Operator::rem:
             if(Q_LIKELY(floor(b)!=0.))

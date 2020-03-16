@@ -229,6 +229,8 @@ void BuiltInTest::testCall_data()
     QTest::newRow("or") << (IN QStringLiteral("or(true, justcrash(33))")) << "true";
     QTest::newRow("and1") << (IN QStringLiteral("and(false, true, justcrash(33))")) << "false";
     QTest::newRow("or1") << (IN QStringLiteral("or(true, false, justcrash(33))")) << "true";
+
+    QTest::newRow("img-powers") << QStringList{"realpower(-8, 1/3)"} << "-2";
 }
 
 void BuiltInTest::testCall()

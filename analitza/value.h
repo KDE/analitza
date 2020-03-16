@@ -119,7 +119,8 @@ class ANALITZA_EXPORT Cn : public Object
         /**
          *    @returns whether @p d is equal than this object.
          */
-        bool operator==(const Cn& d) const { return m_value==d.m_value && d.m_imaginaryPart==m_imaginaryPart; }
+        bool operator==(const Cn& d) const { return qFuzzyCompare(m_value, d.m_value)
+                                                 && qFuzzyCompare(m_imaginaryPart, d.m_imaginaryPart); }
 
         /**
          *    @returns whether @p d is less than this object.
@@ -167,7 +168,7 @@ class ANALITZA_EXPORT Cn : public Object
         static Cn euler();
     private:
         union { double m_value; ushort m_char; };
-        double m_imaginaryPart;
+        double m_imaginaryPart = 0.;
         enum ValueFormat m_format;
 };
 

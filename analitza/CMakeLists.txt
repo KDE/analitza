@@ -40,6 +40,7 @@ set(analitza_SRCS
 	substituteexpression.cpp
 	transformation.cpp
 	
+	commands/realpower.cpp
 	commands/listcommands.cpp
 	commands/vectorcommands.cpp
 	commands/matrixcommands.cpp
