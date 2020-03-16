@@ -131,3 +131,13 @@ void Cn::setValue(std::complex<double> v)
         m_value = v.real();
     }
 }
+
+constexpr bool ourFuzzyCompare(qreal a, qreal b)
+{
+    return qAbs(a - b) < std::numeric_limits<double>::epsilon()*2;
+}
+
+bool Cn::operator==(const Analitza::Cn& d) const{
+    return ourFuzzyCompare(m_value, d.m_value) && ourFuzzyCompare(m_imaginaryPart, d.m_imaginaryPart);
+}
+

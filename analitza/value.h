@@ -119,8 +119,7 @@ class ANALITZA_EXPORT Cn : public Object
         /**
          *    @returns whether @p d is equal than this object.
          */
-        bool operator==(const Cn& d) const { return qFuzzyCompare(m_value, d.m_value)
-                                                 && qFuzzyCompare(m_imaginaryPart, d.m_imaginaryPart); }
+        bool operator==(const Cn& d) const;
 
         /**
          *    @returns whether @p d is less than this object.
