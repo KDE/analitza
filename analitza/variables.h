@@ -87,7 +87,9 @@ class ANALITZA_EXPORT Variables : public QHash<QString, Object*>
         /** @returns the expression contained by the @p name identifier. */
         Expression valueExpression(const QString& name) const;
          
+        QString toString() const;
 };
 
 }
+
 #endif

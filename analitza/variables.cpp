@@ -90,3 +90,14 @@ Expression Variables::valueExpression(const QString& name) const
 {
     return Expression(value(name)->copy());
 }
+
+QString Variables::toString() const
+{
+    QString dbg;
+    dbg += QStringLiteral("Variables(");
+    for (Variables::const_iterator it = constBegin(), itEnd = constEnd(); it != itEnd; ++it)
+        dbg += it.key() + QLatin1Char('=') + it.value()->toString() + QLatin1String(", ");
+    dbg += QLatin1String(")");
+
+    return dbg;
+}
