@@ -95,22 +95,25 @@ QVariant HtmlExpressionWriter::visit(const Cn* var)
         QString realpart;
         QString imagpart;
         bool realiszero = false;
-        if (qAbs(var->complexValue().real()) > MIN_PRINTABLE_VALUE)
-            realpart = QString::number(var->complexValue().real(), 'g', 12);
+        const auto complex = var->complexValue();
+        if (qAbs(complex.real()) > MIN_PRINTABLE_VALUE)
+            realpart = QString::number(complex.real(), 'g', 12);
         else
             realiszero = true;
-        
-        if (var->complexValue().imag() != 1 && var->complexValue().imag() != -1) {
-            if (qAbs(var->complexValue().imag()) > MIN_PRINTABLE_VALUE) {
-                if (!realiszero && var->complexValue().imag()>0.)
-                    realpart += QLatin1String("+");
-                imagpart = QString::number(var->complexValue().imag(), 'g', 12);
+
+        if (!qFuzzyCompare(qAbs(complex.imag()), 1)) {
+            if (qAbs(complex.imag()) > MIN_PRINTABLE_VALUE) {
+                if (!realiszero && complex.imag()>0.)
+                    realpart += QLatin1Char('+');
+                imagpart = QString::number(complex.imag(), 'g', 12);
                 imagpart += QStringLiteral("*i");
             }
-        } else  {
-            if (var->complexValue().imag() == 1)
+        } else {
+            if (!realiszero)
+                realpart += QLatin1Char('+');
+            if (qFuzzyCompare(complex.imag(), 1))
                 imagpart = QStringLiteral("i");
-            else if (var->complexValue().imag() == -1)
+            else
                 imagpart = QStringLiteral("-i");
         }
         
