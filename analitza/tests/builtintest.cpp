@@ -258,4 +258,19 @@ void BuiltInTest::testCall()
         QCOMPARE(calc.toString(), output);
     else
         QCOMPARE(QStringLiteral("err"), output);
+
+//     Expression eval;
+//     foreach(const QString& input, inputs) {
+//         Expression ei(input);
+//         if(!ei.isCorrect()) qDebug() << "error:" << ei.error();
+//         QVERIFY(ei.isCorrect());
+//         a.setExpression(ei);
+//         QVERIFY(a.isCorrect());
+//         eval = a.evaluate();
+//     }
+//
+//     if(a.isCorrect())
+//         QCOMPARE(eval.toString(), output);
+//     else
+//         QCOMPARE(QStringLiteral("err"), output);
 }
