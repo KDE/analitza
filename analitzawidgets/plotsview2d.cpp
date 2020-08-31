@@ -181,11 +181,11 @@ void PlotsView2D::wheelEvent(QWheelEvent *e)
 
 void PlotsView2D::mousePressEvent(QMouseEvent *e)
 {
-    if(!m_readonly && (e->button()==Qt::LeftButton || e->button()==Qt::MidButton)) {
+    if(!m_readonly && (e->button()==Qt::LeftButton || e->button()==Qt::MiddleButton)) {
         last = press = e->pos();
         ant = toViewport(e->pos());
         this->setCursor(QCursor(Qt::PointingHandCursor));
-        if(e->button()==Qt::MidButton || (e->button()==Qt::LeftButton && e->modifiers()&Qt::ControlModifier))
+        if(e->button()==Qt::MiddleButton || (e->button()==Qt::LeftButton && e->modifiers()&Qt::ControlModifier))
             mode=Pan;
         else if(e->button()==Qt::LeftButton)
             mode=Selection;
