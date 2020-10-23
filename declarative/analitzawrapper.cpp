@@ -23,7 +23,6 @@
 #include <analitza/analitzautils.h>
 #include <analitzagui/variablesmodel.h>
 
-#include <QVariant>
 
 Q_DECLARE_METATYPE(ExpressionWrapper*)
 

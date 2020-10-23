@@ -19,7 +19,6 @@
 #include "stringexpressionwriter.h"
 #include "value.h"
 #include "vector.h"
-#include "operator.h"
 #include "container.h"
 #include <QStringList>
 #include "list.h"

@@ -19,7 +19,6 @@
 
 #include "matrix.h"
 #include "abstractexpressionvisitor.h"
-#include "vector.h"
 #include "value.h"
 
 using namespace Analitza;

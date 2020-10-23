@@ -18,7 +18,6 @@
 
 #include "mathmlpresentationexpressionwriter.h"
 #include "value.h"
-#include "operator.h"
 #include "container.h"
 #include <QStringList>
 #include "vector.h"

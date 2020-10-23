@@ -17,7 +17,6 @@
  *************************************************************************************/
 
 #include "marchingsquares.h"
-#include <QLineF>
 #include <QDebug>
 #include <QPolygon>
 #include <QVector2D>

@@ -17,7 +17,6 @@
  *************************************************************************************/
 
 #include "polynomial.h"
-#include "operator.h"
 #include "apply.h"
 #include "value.h"
 #include "analitzautils.h"

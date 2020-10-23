@@ -20,13 +20,7 @@
 #include "plotsview2d.h"
 
 #include <QSvgGenerator>
-#include <QWheelEvent>
-#include <QPaintEvent>
-#include <QResizeEvent>
 #include <QList>
-#include <QPixmap>
-#include <QMouseEvent>
-#include <QKeyEvent>
 #include <QFile>
 #include <QDebug>
 #include <QTimer>
@@ -37,7 +31,6 @@
 #include <QClipboard>
 
 #include <analitza/analyzer.h>
-#include <analitzaplot/plotter2d.h>
 #include <analitzaplot/plotsmodel.h>
 #include <cmath>
 

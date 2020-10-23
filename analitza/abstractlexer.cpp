@@ -19,7 +19,6 @@
 #include "abstractlexer.h"
 #include "expressionparser.h"
 #include <QDebug>
-#include <QStringList>
 
 QHash<QChar, int> initializeOperators()
 {

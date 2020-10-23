@@ -20,9 +20,7 @@
 #include "expressionedit.h"
 
 #include <QMenu>
-#include <QLabel>
 #include <QKeyEvent>
-#include <QTreeView>
 #include <QHeaderView>
 #include <QApplication>
 #include <QTimer>

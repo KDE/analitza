@@ -30,7 +30,6 @@
 #include <cmath>
 #include <QDebug>
 #include <QFile>
-#include <QOpenGLFunctions>
 #include <QPixmap>
 #include <QUrl>
 #include <QPrinter>

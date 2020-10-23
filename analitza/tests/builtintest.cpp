@@ -21,7 +21,6 @@
 #include <cmath>
 #include "expression.h"
 #include <expressiontypechecker.h>
-#include <analyzer.h>
 #include <builtinmethods.h>
 #include <value.h>
 #include <QTest>
