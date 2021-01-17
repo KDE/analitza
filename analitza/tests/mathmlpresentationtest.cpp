@@ -21,7 +21,6 @@
 #include "expressionparser.h"
 #include "expression.h"
 #include <QTest>
-#include <QtTest>
 
 using Analitza::Expression;
 
