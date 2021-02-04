@@ -66,12 +66,6 @@ class ANALITZAWIDGETS_EXPORT ExpressionEdit : public QPlainTextEdit
         /** Sets the ExpressionEdit input mode. */
         void setMode(AlgebraHighlighter::Mode en);
         
-        /** Sets whether autocompletion will be used. */
-        void setAutocomplete(bool a);
-        
-        /** Returns whether autocompletion will be used. */
-        bool autocomplete();
-        
         /** Returns whether there is MathML on the widget. */
         bool isMathML() const;
         
