@@ -11,12 +11,12 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(QT_REQUIRED_VERSION 5.6)
 find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg Test Qml Quick PrintSupport)
 
+include(CMakePackageConfigHelpers)
 include(FeatureSummary)
 include(ECMAddAppIcon)
 include(ECMSetupVersion)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(ECMAddTests)
-include(ECMPackageConfigHelpers)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(GenerateExportHeader)
@@ -50,7 +50,7 @@ add_subdirectory(declarative)
 ecm_install_po_files_as_qm(po)
 
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Analitza5")
-ecm_configure_package_config_file(
+configure_package_config_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/Analitza5Config.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/Analitza5Config.cmake"
   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
