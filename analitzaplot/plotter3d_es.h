@@ -33,7 +33,6 @@
 #include "analitzaplotexport.h"
 
 class QAbstractItemModel;
-class QModelIndex;
 
 namespace Analitza
 {
