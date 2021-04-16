@@ -16,7 +16,7 @@ include(ECMAddAppIcon)
 include(ECMSetupVersion)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(ECMAddTests)
-include(ECMPackageConfigHelpers)
+include(CMakePackageConfigHelpers)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(GenerateExportHeader)
@@ -50,7 +50,7 @@ add_subdirectory(declarative)
 ecm_install_po_files_as_qm(po)
 
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Analitza5")
-ecm_configure_package_config_file(
+configure_package_config_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/Analitza5Config.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/Analitza5Config.cmake"
   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
