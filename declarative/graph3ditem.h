@@ -47,7 +47,7 @@ class Graph3DItem : public QQuickFramebufferObject
     Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel NOTIFY modelChanged)
     public:
         explicit Graph3DItem(QQuickItem* parent = Q_NULLPTR);
-        ~Graph3DItem();
+        ~Graph3DItem() override;
 
         QAbstractItemModel* model() const;
         void setModel(QAbstractItemModel* model);

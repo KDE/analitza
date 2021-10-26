@@ -39,7 +39,7 @@ class ANALITZA_EXPORT List : public Object
         
         List(const List& v);
         List();
-        virtual ~List();
+        ~List() override;
         
         void appendBranch(Object* );
         int size() const { return m_elements.size(); }

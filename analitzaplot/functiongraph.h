@@ -41,7 +41,7 @@ class AbstractFunctionGraph;
 class ANALITZAPLOT_EXPORT FunctionGraph : public PlotItem
 {
 public:
-    virtual ~FunctionGraph();
+    ~FunctionGraph() override;
 
     Analitza::Variables *variables() const override;
     

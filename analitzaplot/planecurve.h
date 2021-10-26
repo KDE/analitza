@@ -45,7 +45,7 @@ class ANALITZAPLOT_EXPORT PlaneCurve : public FunctionGraph
 {
 public:
     explicit PlaneCurve(AbstractFunctionGraph* g);
-    virtual ~PlaneCurve();
+    ~PlaneCurve() override;
 
     QVector<int> jumps() const;
     const QVector<QPointF> & points() const;

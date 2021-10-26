@@ -31,7 +31,7 @@ class AbstractSurface : public AbstractFunctionGraph //strategy pattern for curv
 {
 public:
     explicit AbstractSurface(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v = {});
-    virtual ~AbstractSurface();
+    ~AbstractSurface() override;
 
     //Own
     virtual void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) = 0;

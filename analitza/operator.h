@@ -73,7 +73,7 @@ class ANALITZA_EXPORT Operator : public Object
         constexpr Operator(const Operator&) = default;
         
         /** Destructor */
-        virtual ~Operator() {}
+        ~Operator() override {}
         
         /** Sets an operator type to the object */
         void setOperator(OperatorType t) { m_optype=t; }

@@ -30,7 +30,7 @@ class ExpTest : public QObject
 Q_OBJECT
     public:
         ExpTest(QObject *parent = nullptr);
-        ~ExpTest();
+        ~ExpTest() override;
     
     private Q_SLOTS:
         void initTestCase();

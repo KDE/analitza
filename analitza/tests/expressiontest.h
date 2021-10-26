@@ -31,7 +31,7 @@ class ExpressionTest : public QObject
 Q_OBJECT
     public:
         ExpressionTest(QObject *parent = nullptr);
-        ~ExpressionTest();
+        ~ExpressionTest() override;
     
     private Q_SLOTS:
         void initTestCase();

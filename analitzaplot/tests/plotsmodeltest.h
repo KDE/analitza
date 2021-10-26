@@ -28,7 +28,7 @@ class PlotsModelTest : public QObject
 Q_OBJECT
     public:
         PlotsModelTest(QObject *parent = nullptr);
-        ~PlotsModelTest();
+        ~PlotsModelTest() override;
 
     private Q_SLOTS:
         void testAppend();

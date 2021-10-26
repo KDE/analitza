@@ -53,7 +53,7 @@ public:
     };
     
     explicit PlotsModel(QObject * parent = nullptr);
-    virtual ~PlotsModel();
+    ~PlotsModel() override;
 
     virtual Qt::ItemFlags flags(const QModelIndex & index) const override;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;

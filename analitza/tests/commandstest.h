@@ -31,7 +31,7 @@ class CommandsTest : public QObject
 Q_OBJECT
     public:
         CommandsTest(QObject *parent = nullptr);
-        ~CommandsTest();
+        ~CommandsTest() override;
     
     private Q_SLOTS:
         void initTestCase();

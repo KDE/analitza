@@ -70,7 +70,7 @@ public:
     /** Constructor. Constructs a new Graph2D. */
     explicit PlotsView2D(QWidget* parent = nullptr);
     
-    ~PlotsView2D();
+    ~PlotsView2D() override;
     
     QSize sizeHint() const override { return QSize(100, 100); }
     

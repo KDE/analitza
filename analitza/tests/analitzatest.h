@@ -31,7 +31,7 @@ class AnalitzaTest : public QObject
 Q_OBJECT
     public:
         AnalitzaTest(QObject *parent = nullptr);
-        ~AnalitzaTest();
+        ~AnalitzaTest() override;
     
     private Q_SLOTS:
         void initTestCase();

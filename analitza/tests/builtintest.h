@@ -28,7 +28,7 @@ class BuiltInTest : public QObject
     Q_OBJECT
     public:
         BuiltInTest(QObject* parent = nullptr);
-        ~BuiltInTest();
+        ~BuiltInTest() override;
         
     private Q_SLOTS:
         void testCall();

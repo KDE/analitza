@@ -31,7 +31,7 @@ class PlotsDictionaryModelTest : public QObject
 Q_OBJECT
     public:
         PlotsDictionaryModelTest(QObject *parent = nullptr);
-        ~PlotsDictionaryModelTest();
+        ~PlotsDictionaryModelTest() override;
 
     private Q_SLOTS:
         void testDictionaries();

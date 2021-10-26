@@ -31,7 +31,7 @@ class OperatorsModelTest : public QObject
     Q_OBJECT
     public:
         OperatorsModelTest(QObject *parent = nullptr);
-        ~OperatorsModelTest();
+        ~OperatorsModelTest() override;
     
     private Q_SLOTS:
         void initTestCase();

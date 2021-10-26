@@ -28,7 +28,7 @@ class TypeCheckTest : public QObject
     Q_OBJECT
     public:
         TypeCheckTest(QObject* parent = nullptr);
-        ~TypeCheckTest();
+        ~TypeCheckTest() override;
         
     private Q_SLOTS:
         void testConstruction();

@@ -31,7 +31,7 @@ class AbstractSpaceCurve : public AbstractFunctionGraph
 {
 public:
     explicit AbstractSpaceCurve(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v = {});
-    virtual ~AbstractSpaceCurve();
+    ~AbstractSpaceCurve() override;
 
     //Curve ... los expongo como publicos tanto para planecurve como para los backend (
     //para los backends por un tema de performance y flexibilidad) 

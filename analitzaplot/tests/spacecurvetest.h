@@ -31,7 +31,7 @@ class SpaceCurveTest : public QObject
 Q_OBJECT
     public:
         SpaceCurveTest(QObject *parent = nullptr);
-        ~SpaceCurveTest();
+        ~SpaceCurveTest() override;
 
     private Q_SLOTS:
         void initTestCase();

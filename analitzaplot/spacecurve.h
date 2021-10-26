@@ -39,7 +39,7 @@ class ANALITZAPLOT_EXPORT SpaceCurve : public FunctionGraph
 {
 public:
     explicit SpaceCurve(AbstractFunctionGraph* g);
-    virtual ~SpaceCurve();
+    ~SpaceCurve() override;
 
     QVector<int> jumps() const;
     const QVector<QVector3D> & points() const;

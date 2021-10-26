@@ -31,7 +31,7 @@ class SurfaceTest : public QObject
 Q_OBJECT
     public:
         SurfaceTest(QObject *parent = nullptr);
-        ~SurfaceTest();
+        ~SurfaceTest() override;
 
     private Q_SLOTS:
         void initTestCase();

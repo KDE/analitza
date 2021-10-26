@@ -115,7 +115,7 @@ class ANALITZA_EXPORT None : public Object
 {
     public:
         explicit None() : Object(Object::none) {}
-        virtual ~None() {}
+        ~None() override {}
         
         bool operator==(const None& ) const { return true; }
         

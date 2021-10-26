@@ -58,7 +58,7 @@ class ANALITZAWIDGETS_EXPORT ExpressionEdit : public QPlainTextEdit
         explicit ExpressionEdit(QWidget *parent = nullptr, AlgebraHighlighter::Mode ini=AlgebraHighlighter::Autodetect);
         
         /** Destructor. */
-        ~ExpressionEdit();
+        ~ExpressionEdit() override;
         
         /** Returns the ExpressionEdit input mode. */
         AlgebraHighlighter::Mode mode() { return m_highlight->mode(); }

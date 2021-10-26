@@ -43,7 +43,7 @@ class ANALITZA_EXPORT Vector : public Object
         explicit Vector(int size);
         /** Fills the vector with a fixed numeric @p value */
         Vector(int size, const Cn *value);
-        virtual ~Vector();
+        ~Vector() override;
         
         void appendBranch(Object* );
         int size() const { return m_elements.size(); }

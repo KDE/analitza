@@ -47,7 +47,7 @@ class ANALITZA_EXPORT Matrix : public Object
         Matrix();
         /** Fills the matrix with a fixed numeric @p value, the matrix size will be @p m x @p n */
         Matrix(int m, int n, const Cn *value);
-        virtual ~Matrix();
+        ~Matrix() override;
         void appendBranch(MatrixRow* o);
         
         virtual Matrix* copy() const override;

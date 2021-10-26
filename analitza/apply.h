@@ -42,7 +42,7 @@ class ANALITZA_EXPORT Apply : public Object
 {
     public:
         Apply();
-        virtual ~Apply();
+        ~Apply() override;
         
         typedef QVector<Object*>::const_iterator const_iterator;
         typedef QVector<Object*>::iterator iterator;

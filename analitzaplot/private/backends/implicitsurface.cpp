@@ -44,7 +44,7 @@ public:
     EXAMPLES(QStringList())
 
     //Own
-    virtual ~ImplicitSurf() {  }
+    ~ImplicitSurf() override {  }
     void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
     
     double evalScalarField(double x, double y, double z) override;

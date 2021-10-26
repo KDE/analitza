@@ -58,7 +58,7 @@ class AnalitzaWrapper : public QObject
     Q_PROPERTY(QSharedPointer<Analitza::Variables> variables READ variables WRITE setVariables)
     public:
         explicit AnalitzaWrapper(QObject* parent = nullptr);
-        ~AnalitzaWrapper();
+        ~AnalitzaWrapper() override;
         
         void setCalculate(bool calc);
         bool isCalculate() const { return m_calc; } 

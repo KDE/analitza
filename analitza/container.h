@@ -72,7 +72,7 @@ public:
     virtual Container* copy() const override;
     
     /** Destructor. Deletes all the references. */
-    virtual ~Container() { qDeleteAll(m_params); }
+    ~Container() override { qDeleteAll(m_params); }
     
     /** Sets the container type to @p c. */
     void setContainerType(enum ContainerType c) { m_cont_type = c; }

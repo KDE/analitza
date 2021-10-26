@@ -819,7 +819,7 @@ namespace Analitza
                 }
             }
             
-            ~TypeBoundingIterator() { delete list; }
+            ~TypeBoundingIterator() override { delete list; }
             
             virtual bool hasNext() override
             {
@@ -850,7 +850,7 @@ namespace Analitza
                 : values(values), dl(odl->value()), ul(oul->value()), step(step), objdl(odl), objul(oul)
             {}
             
-            ~RangeBoundingIterator()
+            ~RangeBoundingIterator() override
             {
                 qDeleteAll(values);
                 delete objdl;

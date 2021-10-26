@@ -40,7 +40,7 @@ class ANALITZAPLOT_EXPORT Surface : public FunctionGraph
 public:
     explicit Surface(AbstractFunctionGraph* g);
     
-    virtual ~Surface();
+    ~Surface() override;
 
     //Own
 

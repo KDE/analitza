@@ -37,7 +37,7 @@ Q_OBJECT
 public:
     enum Roles { ExpressionRole = Qt::UserRole+1, FileRole };
     explicit PlotsDictionaryModel(QObject* parent = nullptr);
-    ~PlotsDictionaryModel();
+    ~PlotsDictionaryModel() override;
     
     int currentRow() const;
     void setCurrentRow(int row);

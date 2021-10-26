@@ -37,7 +37,7 @@ class ANALITZA_EXPORT Ci : public Object
         /** Constructor. Creates a variable with a @p b name */
         explicit Ci(const QString& b);
         
-        ~Ci();
+        ~Ci() override;
         
         /** Returns the variable name */
         QString name() const { return m_name; }

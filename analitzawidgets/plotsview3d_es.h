@@ -50,7 +50,7 @@ class ANALITZAWIDGETS_EXPORT PlotsView3DES : public QOpenGLWidget, public Plotte
 
 public:
     explicit PlotsView3DES(QWidget* parent = nullptr);
-    virtual ~PlotsView3DES();
+    ~PlotsView3DES() override;
 
     void setSelectionModel(QItemSelectionModel* selection);
 

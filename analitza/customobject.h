@@ -40,7 +40,7 @@ class ANALITZA_EXPORT CustomObject : public Object
     public:
         typedef void (*destructor)(const QVariant& v);
         explicit CustomObject(const QVariant& v, destructor f);
-        virtual ~CustomObject();
+        ~CustomObject() override;
         
         virtual Object* copy() const override;
         virtual bool matches(const Analitza::Object* exp, QMap< QString, const Analitza::Object* >* found) const override;

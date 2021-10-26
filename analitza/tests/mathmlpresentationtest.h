@@ -30,7 +30,7 @@ class MathMLPresentationTest : public QObject
 Q_OBJECT
     public:
         MathMLPresentationTest(QObject *parent = nullptr);
-        ~MathMLPresentationTest();
+        ~MathMLPresentationTest() override;
     
     private Q_SLOTS:
         void initTestCase();
