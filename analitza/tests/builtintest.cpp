@@ -1,5 +1,6 @@
 /*************************************************************************************
  *  Copyright (C) 2010 by Aleix Pol <aleixpol@kde.org>                               *
+ *  Copyright (C) 2022 Stephen Swanson <stephen.swanson@mailbox.org>                 *
  *                                                                                   *
  *  This program is free software; you can redistribute it and/or                    *
  *  modify it under the terms of the GNU General Public License                      *
@@ -212,6 +213,9 @@ void BuiltInTest::testCall_data()
     QTest::newRow("lambdaarg") << (IN QStringLiteral("call:=(x,y)->x(y)") << QStringLiteral("car:=call(vehicle,4)") << QStringLiteral("tires(car)")) << "4";
     
     QTest::newRow("ref") << (IN QStringLiteral("sum(readint(refint(x)) : x=1..10)")) << "55";
+
+    QTest::newRow("comb") << (IN QStringLiteral("comb(5,2)")) << "10";
+    QTest::newRow("perm") << (IN QStringLiteral("perm(5,2)")) << "20";
     
     QTest::newRow("sum") << (IN QStringLiteral("sum(x : x@createlist(3))")) << "75";
     QTest::newRow("sum2") << (IN QStringLiteral("f:=w->sum(x : x@w)") << QStringLiteral("f(createlist(3))")) << "75";

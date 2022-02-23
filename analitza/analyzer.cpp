@@ -43,6 +43,7 @@
 #include "commands/matrixcommands.h"
 #include "commands/blockmatrixcommands.h"
 #include "commands/matrixqueries.h"
+#include "commands/combinatronics.h"
 
 #include <config-analitza.h>
 #ifdef HAVE_EIGEN3
@@ -176,6 +177,8 @@ void Analyzer::registerBuiltinMethods()
     m_builtin.insertFunction(IsZeroMatrixCommand::id, IsZeroMatrixCommand::type, new IsZeroMatrixCommand);
     m_builtin.insertFunction(IsIdentityMatrixCommand::id, IsIdentityMatrixCommand::type, new IsIdentityMatrixCommand);
     m_builtin.insertFunction(IsDiagonalMatrixCommand::id, IsDiagonalMatrixCommand::type, new IsDiagonalMatrixCommand);
+    m_builtin.insertFunction(CombinationCommand::id, CombinationCommand::type, new CombinationCommand);
+    m_builtin.insertFunction(PermutationCommand::id, PermutationCommand::type, new PermutationCommand);
 #ifdef HAVE_EIGEN3
     m_builtin.insertFunction(EigenvaluesCommand::id, EigenvaluesCommand::type, new EigenvaluesCommand);
     m_builtin.insertFunction(EigenvectorsCommand::id, EigenvectorsCommand::type, new EigenvectorsCommand);

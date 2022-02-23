@@ -46,6 +46,7 @@ set(analitza_SRCS
 	commands/matrixcommands.cpp
 	commands/blockmatrixcommands.cpp
 	commands/matrixqueries.cpp
+	commands/combinatronics.cpp
 )
 
 if(EIGEN3_FOUND)
