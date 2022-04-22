@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.5)
 
 find_package(ECM 1.7.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 #Checking whether we can compile calgebra
 
@@ -31,9 +30,6 @@ ecm_setup_version(8.0.0 VARIABLE_PREFIX ANALITZA
 
 find_package(Eigen3) # find and setup Eigen3 if available
 set(HAVE_EIGEN3 ${EIGEN3_FOUND})
-if(EIGEN3_FOUND)
-    include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
-endif()
 
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
