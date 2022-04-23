@@ -52,14 +52,14 @@ set(analitza_SRCS
 ecm_create_qm_loader(analitza_SRCS analitza_qt)
 
 add_library(Analitza ${analitza_SRCS})
-target_link_libraries(Analitza Qt5::Core Qt5::Xml)
+target_link_libraries(Analitza PUBLIC Qt5::Core PRIVATE Qt5::Xml)
 target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${ANALITZA_INCLUDE_INSTALL_DIR}>")
 
 set_target_properties(Analitza PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
 
 if(EIGEN3_FOUND)
     target_sources(Analitza PRIVATE commands/eigencommands.cpp)
-    target_link_libraries(Analitza Eigen3::Eigen)
+    target_link_libraries(Analitza PRIVATE Eigen3::Eigen)
 endif()
 
 generate_export_header(Analitza EXPORT_FILE_NAME analitzaexport.h)
