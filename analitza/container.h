@@ -19,8 +19,6 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 
-#include <QDomNode>
-
 #include "object.h"
 #include "operator.h"
 #include "analitzaexport.h"
