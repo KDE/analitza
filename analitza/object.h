@@ -53,7 +53,7 @@ public:
         matrixrow,    /**< Describes an object as a matrix row. */
         custom        /**< Describes a custom object */
     };
-    Q_ENUM(ObjectType);
+    Q_ENUM(ObjectType)
     
     /** Object destructor. Does nothing. */
     virtual ~Object() { /*qDebug() << "Destroying " << this;*/}
