@@ -168,7 +168,8 @@ bool hasTheVar(const QSet<QString> & vars, const Object * o)
         }    break;
         case Object::apply: {
             const Apply *c=static_cast<const Apply*>(o);
-            QSet<QString> bvars=c->bvarStrings().toSet();
+            const auto &bvarString = c->bvarStrings();
+            QSet<QString> bvars=QSet<QString>(bvarString.begin(), bvarString.end());
             QSet<QString> varsCopy=vars;
             foreach(const QString &var, bvars) {
                 varsCopy.remove(var);
