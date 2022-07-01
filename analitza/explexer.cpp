@@ -108,7 +108,7 @@ void ExpLexer::getToken()
         
         pos += m_realRx.matchedLength();
     } else {
-        ret.val=-1;
+        ret.val=QString();
         m_err=QCoreApplication::tr("Unknown token %1").arg(a[pos]);
     }
     ret.len = pos-oldpos;

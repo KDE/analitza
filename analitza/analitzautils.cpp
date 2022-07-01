@@ -50,25 +50,29 @@ QStringList dependencies(const Object* o, const QStringList& scope)
         case Object::matrix: {
             const Matrix *v=(const Matrix*) o;
             for(Matrix::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
-                ret += dependencies(*it, scope).toSet();
+                const auto &dep = dependencies(*it, scope);
+                ret += QSet<QString>(dep.begin(), dep.end());
             }
         }    break;
         case Object::vector: {
             const Vector *v=(const Vector*) o;
             for(Vector::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
-                ret += dependencies(*it, scope).toSet();
+                const auto &dep = dependencies(*it, scope);
+                ret += QSet<QString>(dep.begin(), dep.end());
             }
         }    break;
         case Object::list: {
             const List *v=(const List*) o;
             for(List::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
-                ret += dependencies(*it, scope).toSet();
+                const auto &dep = dependencies(*it, scope);
+                ret += QSet<QString>(dep.begin(), dep.end());
             }
         }    break;
         case Object::matrixrow: {
             const MatrixRow *v=(const MatrixRow*) o;
             for(MatrixRow::const_iterator it=v->constBegin(); it!=v->constEnd(); ++it) {
-                ret += dependencies(*it, scope).toSet();
+                const auto &dep = dependencies(*it, scope);
+                ret += QSet<QString>(dep.begin(), dep.end());
             }
         }    break;
         case Object::container: {
@@ -81,7 +85,8 @@ QStringList dependencies(const Object* o, const QStringList& scope)
             }
             
             for(Container::const_iterator it=c->constBegin()+skip, itEnd=c->constEnd(); it!=itEnd; ++it) {
-                ret += dependencies(*it, newScope).toSet();
+                const auto &dep = dependencies(*it, newScope);
+                ret += QSet<QString>(dep.begin(), dep.end());
             }
         } break;
         case Object::apply: {
@@ -101,7 +106,8 @@ QStringList dependencies(const Object* o, const QStringList& scope)
             
             QStringList newScope=scope+c->bvarStrings();
             for(; it!=c->constEnd(); ++it) {
-                ret += dependencies(*it, newScope).toSet();
+                const auto &dep = dependencies(*it, newScope);
+                ret += QSet<QString>(dep.begin(), dep.end());
             }
         }    break;
         case Object::none:
@@ -152,7 +158,9 @@ bool hasTheVar(const QSet<QString> & vars, const Object * o)
         }    break;
         case Object::container: {
             const Container *c=static_cast<const Container*>(o);
-            QSet<QString> bvars=c->bvarStrings().toSet(), varsCopy=vars;
+            const auto &bvarString = c->bvarStrings();
+            QSet<QString> bvars=QSet<QString>(bvarString.begin(), bvarString.end());
+            QSet<QString> varsCopy=vars;
             foreach(const QString &var, bvars) {
                 varsCopy.remove(var);
             }
@@ -160,7 +168,8 @@ bool hasTheVar(const QSet<QString> & vars, const Object * o)
         }    break;
         case Object::apply: {
             const Apply *c=static_cast<const Apply*>(o);
-            QSet<QString> bvars=c->bvarStrings().toSet(), varsCopy=vars;
+            QSet<QString> bvars=c->bvarStrings().toSet();
+            QSet<QString> varsCopy=vars;
             foreach(const QString &var, bvars) {
                 varsCopy.remove(var);
             }

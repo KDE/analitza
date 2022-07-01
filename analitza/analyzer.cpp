@@ -357,7 +357,8 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
             }    break;
             case Container::lambda: {
                 QSet<QString> newUnscoped(unscoped);
-                newUnscoped+=c->bvarStrings().toSet();
+                const auto &bvarString = c->bvarStrings();
+                newUnscoped+ QSet<QString>(bvarString.begin(), bvarString.end());
                 
                 Container *r = c->copy();
                 Object* old=r->m_params.last();
@@ -478,7 +479,8 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
                 int top = m_runStack.size();
                 bool resolved=false;
                 
-                QSet<QString> bvars = c->bvarStrings().toSet();
+                const auto &bvarString = c->bvarStrings();
+                QSet<QString> bvars = QSet<QString>(bvarString.begin(), bvarString.end());
                 newUnscoped += bvars;
                 m_runStack.resize(top + bvars.size());
                 
@@ -1709,7 +1711,8 @@ Object* Analyzer::simpSum(Apply* c)
     Apply* cval=static_cast<Apply*>(*c->firstValue());
     
     if(cval->isApply() && cval->firstOperator()==Operator::times) {
-        QSet<QString> bvars=c->bvarStrings().toSet();
+        const auto &bvarString = c->bvarStrings();
+        QSet<QString> bvars = QSet<QString>(bvarString.begin(), bvarString.end());
         QVector<Object*> sum, out;
         Apply::iterator it=cval->firstValue(), itEnd=cval->end();
         int removed=0;
