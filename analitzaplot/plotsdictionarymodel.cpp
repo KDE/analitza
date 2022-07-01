@@ -66,7 +66,7 @@ void PlotsDictionaryModel::createDictionary(const QString& file)
 void PlotsDictionaryModel::createAllDictionaries()
 {
 //     QStringList res = KGlobal::dirs()->findAllResources("data", "libanalitza/plots/*.plots");
-    QStringList res = QStandardPaths::locateAll(QStandardPaths::DataLocation, QStringLiteral("libanalitza/plots"));
+    QStringList res = QStandardPaths::locateAll(QStandardPaths::AppLocalDataLocation, QStringLiteral("libanalitza/plots"));
     foreach(const QString& dir, res) {
         QDir d(dir);
         foreach(const QString& f, d.entryList(QStringList("*.plots"))) {

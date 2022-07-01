@@ -21,6 +21,7 @@
 
 #include <QDebug>
 #include <QCoreApplication>
+#include <QRegExp>
 
 ExpLexer::ExpLexer(const QString &source)
     : AbstractLexer(source), m_pos(0)

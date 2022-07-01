@@ -23,6 +23,7 @@
 #include <QStringList>
 #include "abstractlexer.h"
 #include "analitzaexport.h"
+#include <QRegExp>
 
 class ANALITZA_EXPORT ExpLexer : public AbstractLexer
 {
