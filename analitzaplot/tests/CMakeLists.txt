@@ -5,7 +5,7 @@ ecm_add_tests(
     plotsmodeltest.cpp
     plotsdictionarymodeltest.cpp
 
-    LINK_LIBRARIES Qt5::Xml Qt5::Test Qt5::Gui Analitza AnalitzaPlot AnalitzaGui
+    LINK_LIBRARIES Qt::Xml Qt::Test Qt::Gui Analitza AnalitzaPlot AnalitzaGui
 )
 
 function(test_export name expression)

@@ -1,9 +1,9 @@
 add_subdirectory(tests)
 
 add_library(AnalitzaGui operatorsmodel.cpp algebrahighlighter.cpp variablesmodel.cpp)
-target_link_libraries(AnalitzaGui Qt5::Core Qt5::Gui Analitza)
+target_link_libraries(AnalitzaGui Qt::Core Qt::Gui Analitza)
 
-set_target_properties(AnalitzaGui PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
+set_target_properties(AnalitzaGui PROPERTIES VERSION ${ANALITZA_VERSION} SOVERSION ${ANALITZA_SOVERSION} )
 
 generate_export_header(AnalitzaGui EXPORT_FILE_NAME analitzaguiexport.h)
 

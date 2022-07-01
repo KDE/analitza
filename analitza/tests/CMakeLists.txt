@@ -1,4 +1,4 @@
-set(testLibs Qt5::Core Qt5::Xml Qt5::Test Analitza)
+set(testLibs Qt::Core Qt::Xml Qt::Test Analitza)
 
 ecm_add_tests(
     analitzatest.cpp

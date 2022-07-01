@@ -59,11 +59,11 @@ add_library( AnalitzaPlot ${analitzaplot_SRCS} )
 target_link_libraries ( AnalitzaPlot
 PUBLIC
   Analitza
-  Qt5::Core
-  Qt5::Gui
+  Qt::Core
+  Qt::Gui
 
 PRIVATE
-  Qt5::PrintSupport # this pulls widgets
+  Qt::PrintSupport # this pulls widgets
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Android)
@@ -72,7 +72,7 @@ elseif(WIN32)
     target_link_libraries(AnalitzaPlot PRIVATE ${GLEW_LIBRARIES})
 endif()
 
-set_target_properties(AnalitzaPlot PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
+set_target_properties(AnalitzaPlot PROPERTIES VERSION ${ANALITZA_VERSION} SOVERSION ${ANALITZA_SOVERSION} )
 
 generate_export_header(AnalitzaPlot EXPORT_FILE_NAME analitzaplotexport.h)
 

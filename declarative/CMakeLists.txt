@@ -6,7 +6,7 @@ add_library(analitzadeclarativeplugin SHARED
 )
 
 target_link_libraries(analitzadeclarativeplugin
-	Qt5::Core Qt5::Gui Qt5::Qml Qt5::Quick
+	Qt::Core Qt::Gui Qt::Qml Qt::Quick
 	Analitza AnalitzaGui AnalitzaPlot)
 
 install(TARGETS analitzadeclarativeplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/analitza)

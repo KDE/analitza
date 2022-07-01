@@ -11,11 +11,11 @@ set(analitzaplot_SRCS
 )
 
 add_library(AnalitzaWidgets ${analitzaplot_SRCS})
-target_link_libraries(AnalitzaWidgets PUBLIC Qt5::Widgets Analitza AnalitzaPlot AnalitzaGui
-                                      PRIVATE Qt5::Svg
+target_link_libraries(AnalitzaWidgets PUBLIC Qt::Widgets Analitza AnalitzaPlot AnalitzaGui
+                                      PRIVATE Qt::Svg
 )
 
-set_target_properties(AnalitzaWidgets PROPERTIES VERSION ${ANALITZA_VERSION_STRING} SOVERSION ${ANALITZA_SOVERSION} )
+set_target_properties(AnalitzaWidgets PROPERTIES VERSION ${ANALITZA_VERSION} SOVERSION ${ANALITZA_SOVERSION} )
 
 generate_export_header(AnalitzaWidgets)
 

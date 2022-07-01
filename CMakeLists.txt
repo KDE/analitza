@@ -1,20 +1,22 @@
-project(Analitza)
+cmake_minimum_required(VERSION 3.16)
+set(ANALITZA_VERSION "8.0.0")
+project(Analitza VERSION ${ANALITZA_VERSION})
 
-cmake_minimum_required(VERSION 3.5)
+set(QT_MIN_VERSION "5.15.0")
+set(KF5_MIN_VERSION "5.90.0")
+set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 
-find_package(ECM 1.7.0 REQUIRED NO_MODULE)
+find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 #Checking whether we can compile calgebra
 
-set(QT_REQUIRED_VERSION 5.6)
-find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg Test Qml Quick PrintSupport)
 
 include(CMakePackageConfigHelpers)
 include(FeatureSummary)
 include(ECMAddAppIcon)
 include(ECMSetupVersion)
-include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
+include(KDECompilerSettings NO_POLICY_SCOPE)
 include(ECMAddTests)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
@@ -22,6 +24,10 @@ include(GenerateExportHeader)
 include(CheckIncludeFiles)
 include(CheckLibraryExists) #FindCurses seems to need that on the CI
 include(ECMPoQmTools)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg Test Qml Quick PrintSupport)
+if (QT_MAJOR_VERSION STREQUAL "6")
+    find_package(Qt6Core5Compat)
+endif()
 set(ANALITZA_INCLUDE_INSTALL_DIR "${KDE_INSTALL_INCLUDEDIR}/Analitza5")
 
 ecm_setup_version(8.0.0 VARIABLE_PREFIX ANALITZA
@@ -50,7 +56,7 @@ configure_package_config_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/Analitza5Config.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/Analitza5Config.cmake"
   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
-  PATH_VARS  INCLUDE_INSTALL_DIR CMAKE_INSTALL_PREFIX
+  PATH_VARS  KDE_INSTALL_INCLUDEDIR CMAKE_INSTALL_PREFIX
 )
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config-analitza.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-analitza.h)
