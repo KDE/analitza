@@ -17,7 +17,6 @@
  *************************************************************************************/
 
 #include "variablesmodel.h"
-#include <analitza/variables.h>
 #include <analitza/expression.h>
 #include <analitza/value.h>
 #include <analitza/analitzautils.h>

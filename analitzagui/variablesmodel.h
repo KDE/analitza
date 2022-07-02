@@ -22,10 +22,10 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 #include "analitzaguiexport.h"
+#include <analitza/variables.h>
 
 namespace Analitza
 {
-class Variables;
 class Expression;
 
 /**

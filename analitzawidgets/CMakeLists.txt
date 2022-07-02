@@ -15,6 +15,11 @@ target_link_libraries(AnalitzaWidgets PUBLIC Qt::Widgets Analitza AnalitzaPlot A
                                       PRIVATE Qt::Svg
 )
 
+if (QT_MAJOR_VERSION STREQUAL "6")
+    target_link_libraries(AnalitzaWidgets PRIVATE Qt6::OpenGLWidgets)
+endif()
+
+
 set_target_properties(AnalitzaWidgets PROPERTIES VERSION ${ANALITZA_VERSION} SOVERSION ${ANALITZA_SOVERSION} )
 
 generate_export_header(AnalitzaWidgets)

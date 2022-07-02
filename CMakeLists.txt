@@ -26,7 +26,7 @@ include(CheckLibraryExists) #FindCurses seems to need that on the CI
 include(ECMPoQmTools)
 find_package(Qt${QT_MAJOR_VERSION} ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg Test Qml Quick PrintSupport)
 if (QT_MAJOR_VERSION STREQUAL "6")
-    find_package(Qt6Core5Compat)
+    find_package(Qt6 REQUIRED NO_MODULE COMPONENTS Core5Compat OpenGLWidgets)
 endif()
 set(ANALITZA_INCLUDE_INSTALL_DIR "${KDE_INSTALL_INCLUDEDIR}/Analitza5")
 

@@ -512,8 +512,12 @@ bool Plotter3DES::save(const QUrl& url)
         QPrinter printer;
         printer.setOutputFormat(QPrinter::PdfFormat);
         printer.setOutputFileName(path);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         printer.setPaperSize(px.size(), QPrinter::DevicePixel);
-        printer.setPageMargins(0,0,0,0, QPrinter::DevicePixel);
+#else
+#pragma "port printer.setPaperSize";
+#endif
+        printer.setPageMargins(QMarginsF(0,0,0,0));
         QPainter painter;
         painter.begin(&printer);
         painter.drawImage(QPoint(0,0), px);

@@ -66,6 +66,10 @@ PRIVATE
   Qt::PrintSupport # this pulls widgets
 )
 
+if (QT_MAJOR_VERSION STREQUAL "6")
+    target_link_libraries(AnalitzaPlot PRIVATE Qt6::OpenGL)
+endif()
+
 if(CMAKE_SYSTEM_NAME STREQUAL Android)
     target_link_libraries(AnalitzaPlot PRIVATE GLESv2)
 elseif(WIN32)

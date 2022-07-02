@@ -775,7 +775,7 @@ QVariant ExpressionTypeChecker::visit(const Container* c)
         case Container::lambda: {
             QSet<QString> aux=m_lambdascope;
             QStringList bvars=c->bvarStrings();
-            m_lambdascope+=bvars.toSet();
+            m_lambdascope+=QSet<QString>(bvars.begin(), bvars.end());
             c->m_params.constLast()->accept(this);
             m_lambdascope=aux;
             

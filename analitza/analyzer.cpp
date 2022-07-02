@@ -1356,7 +1356,9 @@ Object* Analyzer::simpApply(Apply* c)
             
             //if bvars is empty, we are dealing with an invalid sum()
             Object* function = *c->firstValue();
-            if(!bvars.isEmpty() && !domain && !hasTheVar(bvars.toSet(), function)) {
+
+            const auto barsSet = QSet<QString>(bvars.begin(), bvars.end());
+            if(!bvars.isEmpty() && !domain && !hasTheVar(barsSet, function)) {
                 Apply *cDiff=new Apply;
                 cDiff->appendBranch(new Operator(Operator::minus));
                 cDiff->appendBranch(uplimit  ->copy());

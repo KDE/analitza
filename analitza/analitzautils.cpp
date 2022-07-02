@@ -96,12 +96,22 @@ QStringList dependencies(const Object* o, const QStringList& scope)
             Object* ul=c->ulimit(), *dl=c->dlimit(), *domain=c->domain();
             
             //uplimit and downlimit are in the parent scope
-            if(ul) ret += dependencies(ul, scope).toSet();
-            if(dl) ret += dependencies(dl, scope).toSet();
-            if(domain) ret += dependencies(domain, scope).toSet();
+            if(ul) {
+                const auto &dep = dependencies(ul, scope);
+                ret += QSet<QString>(dep.begin(), dep.end());
+            }
+            if(dl) {
+                const auto &dep = dependencies(dl, scope);
+                ret += QSet<QString>(dep.begin(), dep.end());
+            }
+            if(domain) {
+                const auto &dep = dependencies(domain, scope);
+                ret += QSet<QString>(dep.begin(), dep.end());
+            }
             
             if(c->firstOperator()==Operator::function) {
-                ret += dependencies(c->m_params[0], scope).toSet();
+                const auto &dep = dependencies(c->m_params[0], scope);
+                ret += QSet<QString>(dep.begin(), dep.end());
             }
             
             QStringList newScope=scope+c->bvarStrings();

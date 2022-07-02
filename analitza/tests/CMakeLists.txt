@@ -1,4 +1,7 @@
 set(testLibs Qt::Core Qt::Xml Qt::Test Analitza)
+if (QT_MAJOR_VERSION STREQUAL "6")
+    set (testLibs ${testLibs} Qt6::Core5Compat)
+endif()
 
 ecm_add_tests(
     analitzatest.cpp
