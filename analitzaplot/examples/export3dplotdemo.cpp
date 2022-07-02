@@ -72,7 +72,7 @@ int main(int argc, char** argv)
         double to = QStringView(interval).mid(dotdotIdx+2).toDouble(&ok);
 #endif
         Q_ASSERT(ok);
-        intervals[interval.left(equalIdx)] = qMakePair<double, double>(from, to);
+        intervals[interval.left(equalIdx)] = qMakePair<double, double>(double(from), double(to));
     }
 
     QStringList args = parser.positionalArguments();
