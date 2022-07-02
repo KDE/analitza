@@ -49,7 +49,11 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
         virtual void modelChanged() override;
         virtual int currentFunction() const override { return m_currentFunction; }
         
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) override;
+#else
+        void geometryChange(const QRectF& newGeometry, const QRectF& oldGeometry) override;
+#endif
         QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) override;
         
         void setCurrentFunction(int f) { m_currentFunction = f; }
