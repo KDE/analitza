@@ -23,10 +23,10 @@
 #include <QObject>
 #include <QVariant>
 #include <analitza/expression.h>
+#include <analitza/variables.h>
 
 namespace Analitza {
     class Analyzer;
-    class Variables;
 }
 
 class ExpressionWrapper : public QObject

@@ -23,6 +23,7 @@
 #include <QtQuick/QQuickPaintedItem>
 #include <analitzaplot/plotter2d.h>
 #include <QPixmap>
+#include <QAbstractItemModel>
 
 namespace Analitza {
 class Variables;
