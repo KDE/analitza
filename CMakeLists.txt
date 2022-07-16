@@ -34,7 +34,7 @@ ecm_setup_version(8.0.0 VARIABLE_PREFIX ANALITZA
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/Analitza5ConfigVersion.cmake")
 
-find_package(Eigen3) # find and setup Eigen3 if available
+find_package(Eigen3 CONFIG) # find and setup Eigen3 if available
 set(HAVE_EIGEN3 ${EIGEN3_FOUND})
 
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
