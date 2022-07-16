@@ -358,7 +358,7 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
             case Container::lambda: {
                 QSet<QString> newUnscoped(unscoped);
                 const auto &bvarString = c->bvarStrings();
-                newUnscoped+ QSet<QString>(bvarString.begin(), bvarString.end());
+                newUnscoped += QSet<QString>(bvarString.begin(), bvarString.end());
                 
                 Container *r = c->copy();
                 Object* old=r->m_params.last();
