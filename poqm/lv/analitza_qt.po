@@ -1,0 +1,1567 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Einars Sprugis <einars8@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-02-16 03:26+0000\n"
+"PO-Revision-Date: 2012-12-22 19:11+0200\n"
+"Last-Translator: Einars Sprugis <einars8@gmail.com>\n"
+"Language-Team: Latvian <locale@laka.lv>\n"
+"Language: lv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
+"2);\n"
+"X-Generator: Lokalize 1.5\n"
+"X-Qt-Contexts: true\n"
+
+msgctxt "QObject|dictionary"
+msgid "xaxaxaxaxa"
+msgstr ""
+
+msgctxt "QObject|dictionary"
+msgid "cosa"
+msgstr ""
+
+#: analitza/analyzer.cpp:193
+#, fuzzy
+#| msgid "Cannot calculate the remainder on 0."
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate an empty expression"
+msgstr "Nevar aprēķināt atlikumu nullei (0)."
+
+#: analitza/analyzer.cpp:240 analitza/analyzer.cpp:259
+#: analitza/analyzer.cpp:285
+#, fuzzy
+#| msgid "Must specify a correct operation"
+msgctxt "QCoreApplication|"
+msgid "Must specify a correct operation"
+msgstr "Jānorāda derīga darbība"
+
+#: analitza/analyzer.cpp:255 analitza/analyzer.cpp:288
+#, fuzzy, qt-format
+#| msgid "Unknown identifier: '%1'"
+msgctxt "QCoreApplication|"
+msgid "Unknown identifier: '%1'"
+msgstr "Nezināms identifikators: '%1'"
+
+#: analitza/analyzer.cpp:257 analitza/analyzer.cpp:290
+#, fuzzy
+#| msgctxt "identifier separator in error message"
+#| msgid "', '"
+msgctxt "identifier separator in error message|"
+msgid "', '"
+msgstr "', '"
+
+#: analitza/analyzer.cpp:615
+#, fuzzy
+#| msgctxt "Error message, no proper condition found."
+#| msgid "Could not find a proper choice for a condition statement."
+msgctxt "Error message, no proper condition found.|"
+msgid "Could not find a proper choice for a condition statement."
+msgstr "Neizdevās atrast pareizu izvēli nosacījuma izteikumam."
+
+#: analitza/analyzer.cpp:936
+msgctxt "QCoreApplication|"
+msgid "Type not supported for bounding."
+msgstr ""
+
+#: analitza/analyzer.cpp:961
+#, fuzzy
+#| msgid "The downlimit is greater than the uplimit"
+msgctxt "QCoreApplication|"
+msgid "The downlimit is greater than the uplimit"
+msgstr "Apakšējā robeža ir lielāka nekā augšējā robeža"
+
+#: analitza/analyzer.cpp:963
+#, fuzzy
+#| msgid "Incorrect uplimit or downlimit."
+msgctxt "QCoreApplication|"
+msgid "Incorrect uplimit or downlimit."
+msgstr "Nekorekta augšējā vai apakšējā robeža."
+
+#: analitza/analyzer.cpp:1055 analitza/analyzer.cpp:1080
+#, fuzzy, qt-format
+#| msgid "Incoherent type for the variable '%1'"
+msgctxt "QCoreApplication|"
+msgid "Invalid type for parameter '%1'"
+msgstr "Nesaskaņots tips mainīgajam '%1'"
+
+#: analitza/analyzer.cpp:1877
+#, fuzzy
+#| msgctxt "By a cycle i mean a variable that depends on itself"
+#| msgid "Defined a variable cycle"
+msgctxt "By a cycle i mean a variable that depends on itself|"
+msgid "Defined a variable cycle"
+msgstr "Definēts mainīgs cikls"
+
+#: analitza/analyzer.cpp:1919
+#, fuzzy
+#| msgid "The result is not a number"
+msgctxt "QCoreApplication|"
+msgid "The result is not a number"
+msgstr "Rezultāts nav skaitlis"
+
+#: analitza/commands/blockmatrixcommands.cpp:44
+#: analitza/commands/blockmatrixcommands.cpp:234
+#: analitza/commands/listcommands.cpp:47 analitza/commands/listcommands.cpp:64
+#: analitza/commands/matrixcommands.cpp:48
+#: analitza/commands/matrixcommands.cpp:201
+#: analitza/commands/vectorcommands.cpp:45
+#: analitza/commands/vectorcommands.cpp:82
+#, fuzzy, qt-format
+#| msgid "Incoherent type for the variable '%1'"
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%1'"
+msgstr "Nesaskaņots tips mainīgajam '%1'"
+
+#: analitza/commands/blockmatrixcommands.cpp:86
+#: analitza/commands/blockmatrixcommands.cpp:119
+#: analitza/commands/blockmatrixcommands.cpp:122
+msgctxt "QCoreApplication|"
+msgid "Blocks must have consistent size between each and other"
+msgstr ""
+
+#: analitza/commands/blockmatrixcommands.cpp:90
+#: analitza/commands/blockmatrixcommands.cpp:126
+#: analitza/commands/blockmatrixcommands.cpp:263
+#, fuzzy
+#| msgid "Do not want empty vectors"
+msgctxt "QCoreApplication|"
+msgid "Do not want empty blocks"
+msgstr "Nevēlos tukšus vektorus"
+
+#: analitza/commands/blockmatrixcommands.cpp:93
+#: analitza/commands/blockmatrixcommands.cpp:130
+#: analitza/commands/blockmatrixcommands.cpp:209
+#: analitza/commands/blockmatrixcommands.cpp:267
+msgctxt "QCoreApplication|"
+msgid "Blocks must be matrices"
+msgstr ""
+
+#: analitza/commands/blockmatrixcommands.cpp:142
+msgctxt "QCoreApplication|"
+msgid "Number of blocks must be consistent"
+msgstr ""
+
+#: analitza/commands/blockmatrixcommands.cpp:145
+#: analitza/commands/blockmatrixcommands.cpp:211
+#: analitza/commands/matrixcommands.cpp:147
+#, fuzzy
+#| msgid "Do not want empty vectors"
+msgctxt "QCoreApplication|"
+msgid "Do not want empty vectors/matrixrow elements"
+msgstr "Nevēlos tukšus vektorus"
+
+#: analitza/commands/blockmatrixcommands.cpp:150
+#: analitza/commands/blockmatrixcommands.cpp:213
+#: analitza/commands/matrixcommands.cpp:149
+#, fuzzy
+#| msgid "Do not want empty vectors"
+msgctxt "QCoreApplication|"
+msgid "Matrix constructor needs vectors or matrixrow elements"
+msgstr "Nevēlos tukšus vektorus"
+
+#: analitza/commands/blockmatrixcommands.cpp:244
+#: analitza/commands/matrixcommands.cpp:288
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "the arg %1 is invalid or is error"
+msgstr ""
+
+#: analitza/commands/eigencommands.cpp:39
+#, fuzzy, qt-format
+#| msgid "Invalid parameter count for '%2'. Should have 1 parameter."
+#| msgid_plural "Invalid parameter count for '%2'. Should have %1 parameters."
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%1'. Should have 1 parameter"
+msgstr "Nederīgs parametru skaits priekš '%2'. Jābūt %1 parametram."
+
+#: analitza/commands/eigencommands.cpp:47
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "To use '%1' command the input matrix must be square"
+msgstr ""
+
+#: analitza/commands/eigencommands.cpp:68
+#: analitza/commands/eigencommands.cpp:74
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid ""
+"Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number "
+"value"
+msgstr ""
+
+#: analitza/commands/eigencommands.cpp:126
+#: analitza/commands/eigencommands.cpp:193
+msgctxt "QCoreApplication|NaN means Not a Number, is an invalid float number"
+msgid "Returned eigenvalue is NaN"
+msgstr ""
+
+#: analitza/commands/eigencommands.cpp:132
+#: analitza/commands/eigencommands.cpp:196
+msgctxt "QCoreApplication|"
+msgid "Returned eigenvalue is too big"
+msgstr ""
+
+#: analitza/commands/matrixcommands.cpp:31
+msgctxt "QCoreApplication|"
+msgid "Matrix dimensions must be greater than zero"
+msgstr ""
+
+#: analitza/commands/matrixcommands.cpp:122 analitza/expression.cpp:296
+msgctxt "QCoreApplication|"
+msgid "All matrixrow elements must have the same size"
+msgstr ""
+
+#: analitza/commands/matrixcommands.cpp:127
+msgctxt "QCoreApplication|"
+msgid "Not all are rows or vectors"
+msgstr ""
+
+#: analitza/commands/matrixcommands.cpp:143
+#, fuzzy
+#| msgid "Do not want empty vectors"
+msgctxt "QCoreApplication|"
+msgid "Every argument must be a matrixrow element"
+msgstr "Nevēlos tukšus vektorus"
+
+#: analitza/commands/matrixcommands.cpp:241
+msgctxt "QCoreApplication|"
+msgid "The nth diagonal index must be less than the row count"
+msgstr ""
+
+#: analitza/commands/matrixcommands.cpp:249
+msgctxt "QCoreApplication|"
+msgid "The nth diagonal index must be less than the column count"
+msgstr ""
+
+#: analitza/commands/matrixcommands.cpp:265
+msgctxt "QCoreApplication|"
+msgid "nth diagonal index must be integer number"
+msgstr ""
+
+#: analitza/commands/matrixcommands.cpp:269
+msgctxt "QCoreApplication|"
+msgid "nth diagonal index must be a positive integer number"
+msgstr ""
+
+#: analitza/commands/vectorcommands.cpp:62
+#, fuzzy, qt-format
+#| msgid "Invalid parameter count for '%2'. Should have 1 parameter."
+#| msgid_plural "Invalid parameter count for '%2'. Should have %1 parameters."
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter type for '%1', was expected a list"
+msgstr "Nederīgs parametru skaits priekš '%2'. Jābūt %1 parametram."
+
+#: analitza/commands/vectorcommands.cpp:75
+#: analitza/commands/vectorcommands.cpp:78
+msgctxt "QCoreApplication|"
+msgid "Vector size must be some integer value greater to zero"
+msgstr ""
+
+#: analitza/explexer.cpp:78
+#, fuzzy
+#| msgid "Unexpectedly arrived to the end of the input"
+msgctxt "QCoreApplication|"
+msgid "Unexpectedly arrived to the end of the input"
+msgstr "Negaidīti nonāca līdz ievades beigām"
+
+#: analitza/explexer.cpp:112
+#, fuzzy, qt-format
+#| msgid "Unknown token %1"
+msgctxt "QCoreApplication|"
+msgid "Unknown token %1"
+msgstr "Nezināms elements %1"
+
+#: analitza/expression.cpp:162
+#, fuzzy, qt-format
+#| msgid "<em>%1</em> needs at least 2 parameters"
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> needs at least 2 parameters"
+msgstr "<em>%1</em> nepieciešami vismaz 2 parametri"
+
+#: analitza/expression.cpp:164
+#, fuzzy, qt-format
+#| msgid "<em>%1</em> requires %2 parameters"
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> requires %2 parameters"
+msgstr "<em>%1</em> nepieciešami %2 parametri"
+
+#: analitza/expression.cpp:171
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Missing boundary for '%1'"
+msgstr ""
+
+#: analitza/expression.cpp:173
+#, fuzzy, qt-format
+#| msgid "Unexpected token %1"
+msgctxt "QCoreApplication|"
+msgid "Unexpected bounding for '%1'"
+msgstr "Negaidīts elements %1"
+
+#: analitza/expression.cpp:178
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> missing bounds on '%2'"
+msgstr ""
+
+#: analitza/expression.cpp:200
+#, fuzzy
+#| msgid "Wrong declare"
+msgctxt "QCoreApplication|"
+msgid "Wrong declare"
+msgstr "Nepareiza deklarācija"
+
+#: analitza/expression.cpp:210
+#, fuzzy, qt-format
+#| msgid "Empty container: %1"
+msgctxt "QCoreApplication|"
+msgid "Empty container: %1"
+msgstr "Tukšs konteiners: %1"
+
+#: analitza/expression.cpp:228
+msgctxt "there was a conditional outside a condition structure|"
+msgid "We can only have conditionals inside piecewise structures."
+msgstr ""
+
+#: analitza/expression.cpp:244
+#, fuzzy, qt-format
+#| msgid "Cannot have two parameters with the same name like '%1'."
+msgctxt "QCoreApplication|"
+msgid "Cannot have two parameters with the same name like '%1'."
+msgstr "Nevar būt divi parametri ar vienādu nosaukumu kā '%1'."
+
+#: analitza/expression.cpp:259
+#, fuzzy
+#| msgctxt ""
+#| "this is an error message. otherwise is the else in a mathml condition"
+#| msgid "The <em>otherwise</em> parameter should be the last one"
+msgctxt ""
+"this is an error message. otherwise is the else in a mathml condition|"
+msgid "The <em>otherwise</em> parameter should be the last one"
+msgstr "Parametram <em>savādāk</em> būtu jābūt pēdējam"
+
+#: analitza/expression.cpp:267
+#, qt-format
+msgctxt "there was an element that was not a conditional inside a condition|"
+msgid "%1 is not a proper condition inside the piecewise"
+msgstr ""
+
+#: analitza/expression.cpp:273
+#, fuzzy
+#| msgid "We can only declare variables"
+msgctxt "QCoreApplication|"
+msgid "We can only declare variables"
+msgstr "Mēs mākam deklarēt tikai mainīgos"
+
+#: analitza/expression.cpp:279
+#, fuzzy
+#| msgid "We can only have bounded variables"
+msgctxt "QCoreApplication|"
+msgid "We can only have bounded variables"
+msgstr "Mums var būt tikai piesaistītie mainīgie"
+
+#: analitza/expression.cpp:290 analitza/expression.cpp:495
+#, fuzzy
+#| msgid "Do not want empty vectors"
+msgctxt "QCoreApplication|"
+msgid "Do not want empty matrixrow elements"
+msgstr "Nevēlos tukšus vektorus"
+
+#: analitza/expression.cpp:300
+msgctxt "QCoreApplication|"
+msgid "The matrix must contain only matrixrow elements"
+msgstr ""
+
+#: analitza/expression.cpp:419
+#, fuzzy, qt-format
+#| msgid "Error while parsing: %1"
+msgctxt "QCoreApplication|"
+msgid "Error while parsing: %1"
+msgstr "Kļūda analizējot: %1"
+
+#: analitza/expression.cpp:450
+#, fuzzy, qt-format
+#| msgctxt "An error message"
+#| msgid "Container unknown: %1"
+msgctxt "An error message|"
+msgid "Container unknown: %1"
+msgstr "Nezināms konteiners: %1"
+
+#: analitza/expression.cpp:456
+#, fuzzy, qt-format
+#| msgid "Cannot codify the %1 value."
+msgctxt "QCoreApplication|"
+msgid "Cannot codify the %1 value."
+msgstr "Neizdevās kodificēt %1 vērtību."
+
+#: analitza/expression.cpp:462
+#, fuzzy, qt-format
+#| msgid "The %1 operator cannot have child contexts."
+msgctxt "QCoreApplication|"
+msgid "The %1 operator cannot have child contexts."
+msgstr "%1 operatoram nevar būt bērna konteksti."
+
+#: analitza/expression.cpp:466
+#, fuzzy, qt-format
+#| msgid "The element '%1' is not an operator."
+msgctxt "QCoreApplication|"
+msgid "The element '%1' is not an operator."
+msgstr "Elements '%1' nav operators."
+
+#: analitza/expression.cpp:479
+#, fuzzy
+#| msgid "Do not want empty vectors"
+msgctxt "QCoreApplication|"
+msgid "Do not want empty vectors"
+msgstr "Nevēlos tukšus vektorus"
+
+#: analitza/expression.cpp:489
+#, fuzzy
+#| msgid "Do not want empty vectors"
+msgctxt "QCoreApplication|"
+msgid "Do not want empty matrices"
+msgstr "Nevēlos tukšus vektorus"
+
+#: analitza/expression.cpp:508
+#, fuzzy, qt-format
+#| msgctxt "Error message due to an unrecognized input"
+#| msgid "Not supported/unknown: %1"
+msgctxt "Error message due to an unrecognized input|"
+msgid "Not supported/unknown: %1"
+msgstr "Nav atbalstīts/nezināms: %1"
+
+#: analitza/expressionparser.cpp:296
+#, fuzzy
+#| msgid ", "
+msgctxt "QCoreApplication|"
+msgid ", "
+msgstr ", "
+
+#: analitza/expressionparser.cpp:296
+#, fuzzy, qt-format
+#| msgctxt "error message"
+#| msgid "Expected %1 instead of '%2'"
+msgctxt "error message|"
+msgid "Expected %1 instead of '%2'"
+msgstr "Gaidīts '%1' nevis '%2'"
+
+#: analitza/expressionparser.cpp:298
+#, fuzzy
+#| msgid "Missing right parenthesis"
+msgctxt "QCoreApplication|"
+msgid "Missing right parenthesis"
+msgstr "Trūkst labās iekavas"
+
+#: analitza/expressionparser.cpp:300
+#, fuzzy
+#| msgid "Unbalanced right parenthesis"
+msgctxt "QCoreApplication|"
+msgid "Unbalanced right parenthesis"
+msgstr "Lieka labā iekava"
+
+#: analitza/expressionparser.cpp:303
+#, fuzzy, qt-format
+#| msgid "Unexpected token identifier: %1"
+msgctxt "QCoreApplication|"
+msgid "Unexpected token identifier: %1"
+msgstr "Negaidīts elementa identifikators: %1"
+
+#: analitza/expressionparser.cpp:305
+#, fuzzy, qt-format
+#| msgid "Unexpected token %1"
+msgctxt "QCoreApplication|"
+msgid "Unexpected token %1"
+msgstr "Negaidīts elements %1"
+
+#: analitza/expressiontypechecker.cpp:301
+#, fuzzy, qt-format
+#| msgid "Could not find a type that unifies '%1'"
+msgctxt "QCoreApplication|"
+msgid "Could not find a type that unifies '%1'"
+msgstr "Neizdevās atrast tipu, kas apvieno '%1'"
+
+#: analitza/expressiontypechecker.cpp:473
+#, fuzzy
+#| msgid "The domain should be either a vector or a list"
+msgctxt "QCoreApplication|"
+msgid "The domain should be either a vector or a list"
+msgstr "Definīcijas apgabalam būtu jābūt vai nu vektoram, vai sarakstam"
+
+#: analitza/expressiontypechecker.cpp:558
+#, fuzzy, qt-format
+#| msgid "Could not call '%1'"
+msgctxt "type error message|"
+msgid "Cannot call '%1'"
+msgstr "Neizdevās izsaukt '%1'"
+
+#: analitza/expressiontypechecker.cpp:593
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
+msgstr ""
+
+#: analitza/expressiontypechecker.cpp:604
+#, fuzzy, qt-format
+#| msgid "Invalid parameter count for '%2'. Should have 1 parameter."
+#| msgid_plural "Invalid parameter count for '%2'. Should have %1 parameters."
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%2'. Should have %1 parameters."
+msgstr "Nederīgs parametru skaits priekš '%2'. Jābūt %1 parametram."
+
+#: analitza/expressiontypechecker.cpp:616
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
+msgstr ""
+
+#: analitza/expressiontypechecker.cpp:654
+#, fuzzy, qt-format
+#| msgid "Could not call '%1'"
+msgctxt "QCoreApplication|"
+msgid "Could not call '%1'"
+msgstr "Neizdevās izsaukt '%1'"
+
+#: analitza/expressiontypechecker.cpp:662
+#, fuzzy, qt-format
+#| msgid "Could not solve '%1'"
+msgctxt "QCoreApplication|"
+msgid "Could not solve '%1'"
+msgstr "Neizdevās aprēķināt '%1'"
+
+#: analitza/expressiontypechecker.cpp:695
+#, fuzzy, qt-format
+#| msgid "Incoherent type for the variable '%1'"
+msgctxt "QCoreApplication|"
+msgid "Incoherent type for the variable '%1'"
+msgstr "Nesaskaņots tips mainīgajam '%1'"
+
+#: analitza/expressiontypechecker.cpp:718
+msgctxt "QCoreApplication|"
+msgid "Could not determine the type for piecewise"
+msgstr ""
+
+#: analitza/expressiontypechecker.cpp:937
+#, fuzzy
+#| msgid "Unexpected type"
+msgctxt "QCoreApplication|"
+msgid "Unexpected type"
+msgstr "Negaidīts tips"
+
+#: analitza/expressiontypechecker.cpp:960
+#, fuzzy, qt-format
+#| msgid "Cannot convert '%1' to '%2'"
+msgctxt "QCoreApplication|"
+msgid "Cannot convert '%1' to '%2'"
+msgstr "Nevar pārveidot '%1' uz '%2'"
+
+#: analitza/htmlexpressionwriter.cpp:54 analitza/htmlexpressionwriter.cpp:55
+#, fuzzy, qt-format
+#| msgctxt "html representation of an operator"
+#| msgid "<span class='op'>%1</span>"
+msgctxt "html representation of an operator|"
+msgid "<span class='op'>%1</span>"
+msgstr "<span class='op'>%1</span>"
+
+#: analitza/htmlexpressionwriter.cpp:56
+#, fuzzy, qt-format
+#| msgctxt "html representation of an operator"
+#| msgid "<span class='keyword'>%1</span>"
+msgctxt "html representation of an operator|"
+msgid "<span class='keyword'>%1</span>"
+msgstr "<span class='keyword'>%1</span>"
+
+#: analitza/mathmlpresentationlexer.cpp:94
+#, fuzzy, qt-format
+#| msgctxt "Error message"
+#| msgid "Unknown token '%1'"
+msgctxt "Error message|"
+msgid "Unknown token '%1'"
+msgstr "Nezināms elements '%1'"
+
+#: analitza/operations.cpp:54 analitza/operations.cpp:191
+#, fuzzy
+#| msgid "Cannot divide by 0."
+msgctxt "QCoreApplication|"
+msgid "Cannot divide by 0."
+msgstr "Nevar dalīt ar 0."
+
+#: analitza/operations.cpp:72 analitza/operations.cpp:203
+#, fuzzy
+#| msgid "Cannot calculate the remainder on 0."
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the remainder on 0."
+msgstr "Nevar aprēķināt atlikumu nullei (0)."
+
+#: analitza/operations.cpp:84 analitza/operations.cpp:213
+#, fuzzy
+#| msgid "Cannot calculate the factor on 0."
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the factor on 0."
+msgstr "Nevar aprēķināt reizinātāju nullei (0)."
+
+#: analitza/operations.cpp:140 analitza/operations.cpp:261
+#, fuzzy
+#| msgid "Cannot calculate the lcm of 0."
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the lcm of 0."
+msgstr "Nevar aprēķināt nulles (0) mazāko kopīgo dalāmo."
+
+#: analitza/operations.cpp:246
+msgctxt "QCoreApplication|"
+msgid "Boolean operations on complex numbers not available"
+msgstr ""
+
+#: analitza/operations.cpp:276
+msgctxt "QCoreApplication|"
+msgid "Only square root implemented for complex numbers"
+msgstr ""
+
+#: analitza/operations.cpp:351 analitza/operations.cpp:463
+#, fuzzy, qt-format
+#| msgid "Could not calculate a value %1"
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a value %1"
+msgstr "Neizdevās aprēķināt vērtību %1"
+
+#: analitza/operations.cpp:479
+#, fuzzy, qt-format
+#| msgid "Cannot calculate the remainder on 0."
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate %1 between a value and an error type"
+msgstr "Nevar aprēķināt atlikumu nullei (0)."
+
+#: analitza/operations.cpp:495 analitza/operations.cpp:652
+#: analitza/operations.cpp:784
+#, fuzzy
+#| msgid "Invalid index for a container"
+msgctxt "QCoreApplication|"
+msgid "Invalid index for a container"
+msgstr "Nederīgs konteinera indekss"
+
+#: analitza/operations.cpp:527
+#, fuzzy, qt-format
+#| msgid "Cannot operate on different sized vectors."
+msgctxt "QCoreApplication|"
+msgid "Cannot operate '%1' on different sized vectors."
+msgstr "Nevar darboties uz dažāda izmēra vektoriem."
+
+#: analitza/operations.cpp:566
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication between a matrix and a vector is allowed provided that the "
+"number of columns of the matrix equals the size of the vector"
+msgstr ""
+
+#: analitza/operations.cpp:570 analitza/operations.cpp:707
+msgctxt "QCoreApplication|"
+msgid "Matrix and vector entries must be numbers"
+msgstr ""
+
+#: analitza/operations.cpp:599
+#, fuzzy, qt-format
+#| msgid "Could not calculate a vector's %1"
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a vector's %1"
+msgstr "Nevar aprēķināt vektora %1"
+
+#: analitza/operations.cpp:621 analitza/operations.cpp:637
+#, fuzzy, qt-format
+#| msgid "Could not calculate a list's %1"
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a list's %1"
+msgstr "Nevar aprēķināt saraksta %1"
+
+#: analitza/operations.cpp:703
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication between a vector and a matrix is allowed provided that the "
+"matrix has only one matrixrow element"
+msgstr ""
+
+#: analitza/operations.cpp:730
+msgctxt "QCoreApplication|"
+msgid ""
+"Addition of two matrices is allowed provided that both matrices have the "
+"same number of rows and the same number of columns"
+msgstr ""
+
+#: analitza/operations.cpp:762
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication of two matrices is allowed provided that the number of "
+"columns of the first matrix equals the number of rows of the second matrix"
+msgstr ""
+
+#: analitza/operations.cpp:766 analitza/operations.cpp:804
+#: analitza/operations.cpp:887
+msgctxt "QCoreApplication|"
+msgid "Matrix entries must be numbers"
+msgstr ""
+
+#: analitza/operations.cpp:879
+msgctxt "QCoreApplication|"
+msgid "The exponent of 'power' must be some integer number"
+msgstr ""
+
+#: analitza/operations.cpp:883
+msgctxt "QCoreApplication|"
+msgid "Cannot compute 'power' for non square matrix"
+msgstr ""
+
+#: analitza/operations.cpp:922
+#, fuzzy, qt-format
+#| msgid "Cannot calculate the remainder on 0."
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate %1 between a matrix and an error type"
+msgstr "Nevar aprēķināt atlikumu nullei (0)."
+
+#: analitza/providederivative.cpp:93
+#, fuzzy, qt-format
+#| msgid "Could not calculate the derivative for '%1'"
+msgctxt "QCoreApplication|"
+msgid "Could not calculate the derivative for '%1'"
+msgstr "Neizdevās aprēķināt '%1' atvasinājumu"
+
+#: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
+#: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
+#, fuzzy
+#| msgctxt "@title:column"
+#| msgid "Name"
+msgctxt "@title:column|"
+msgid "Name"
+msgstr "Nosaukums"
+
+#: analitzagui/operatorsmodel.cpp:98
+#, fuzzy
+#| msgctxt "@title:column"
+#| msgid "Description"
+msgctxt "@title:column|"
+msgid "Description"
+msgstr "Apraksts"
+
+#: analitzagui/operatorsmodel.cpp:101
+#, fuzzy
+#| msgctxt "@title:column"
+#| msgid "Parameters"
+msgctxt "@title:column|"
+msgid "Parameters"
+msgstr "Parametri"
+
+#: analitzagui/operatorsmodel.cpp:104
+#, fuzzy
+#| msgctxt "@title:column"
+#| msgid "Example"
+msgctxt "@title:column|"
+msgid "Example"
+msgstr "Piemērs"
+
+#: analitzagui/operatorsmodel.cpp:135
+#, fuzzy
+#| msgctxt "Syntax for function bounding"
+#| msgid " : var"
+msgctxt "Syntax for function bounding|"
+msgid " : var"
+msgstr " : var"
+
+#: analitzagui/operatorsmodel.cpp:137
+#, fuzzy
+#| msgctxt "Syntax for function bounding values"
+#| msgid "=from..to"
+msgctxt "Syntax for function bounding values|"
+msgid "=from..to"
+msgstr "=no..līdz"
+
+#: analitzagui/operatorsmodel.cpp:140
+#, fuzzy, qt-format
+#| msgid "%1("
+msgctxt "QCoreApplication|"
+msgid "%1("
+msgstr "%1("
+
+#: analitzagui/operatorsmodel.cpp:143
+#, fuzzy, qt-format
+#| msgid "%1... parameters, ...%2)"
+msgctxt "QCoreApplication|"
+msgid "%1... parameters, ...%2)"
+msgstr "%1... parametri, ...%2)"
+
+#: analitzagui/operatorsmodel.cpp:146
+#, fuzzy, qt-format
+#| msgid "par%1"
+msgctxt "QCoreApplication|"
+msgid "par%1"
+msgstr "par%1"
+
+#: analitzagui/operatorsmodel.cpp:159
+#, fuzzy
+#| msgid "Addition"
+msgctxt "QCoreApplication|"
+msgid "Addition"
+msgstr "Saskaitīšana"
+
+#: analitzagui/operatorsmodel.cpp:162
+#, fuzzy
+#| msgid "Multiplication"
+msgctxt "QCoreApplication|"
+msgid "Multiplication"
+msgstr "Reizināšana"
+
+#: analitzagui/operatorsmodel.cpp:165
+#, fuzzy
+#| msgid "Division"
+msgctxt "QCoreApplication|"
+msgid "Division"
+msgstr "Dalīšana"
+
+#: analitzagui/operatorsmodel.cpp:168
+#, fuzzy
+#| msgid "Subtraction. Will remove all values from the first one."
+msgctxt "QCoreApplication|"
+msgid "Subtraction. Will remove all values from the first one."
+msgstr "Atņemšana. Noņems visas vērtības no pirmās."
+
+#: analitzagui/operatorsmodel.cpp:171
+#, fuzzy
+#| msgid "Power"
+msgctxt "QCoreApplication|"
+msgid "Power"
+msgstr "Kāpināšana"
+
+#: analitzagui/operatorsmodel.cpp:174
+#, fuzzy
+#| msgid "Remainder"
+msgctxt "QCoreApplication|"
+msgid "Remainder"
+msgstr "Atlikums"
+
+#: analitzagui/operatorsmodel.cpp:177
+#, fuzzy
+#| msgid "Quotient"
+msgctxt "QCoreApplication|"
+msgid "Quotient"
+msgstr "Kvocients"
+
+#: analitzagui/operatorsmodel.cpp:180
+#, fuzzy
+#| msgid "The factor of"
+msgctxt "QCoreApplication|"
+msgid "The factor of"
+msgstr "Dalītājs "
+
+#: analitzagui/operatorsmodel.cpp:183
+#, fuzzy
+#| msgid "Factorial. factorial(n)=n!"
+msgctxt "QCoreApplication|"
+msgid "Factorial. factorial(n)=n!"
+msgstr "Faktoriāls. factorial(n)=n!"
+
+#: analitzagui/operatorsmodel.cpp:186
+#, fuzzy
+#| msgid "Function to calculate the sine of a given angle"
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the sine of a given angle"
+msgstr "Funkcija sinusa aprēķināšanai dotajam leņķim"
+
+#: analitzagui/operatorsmodel.cpp:189
+#, fuzzy
+#| msgid "Function to calculate the cosine of a given angle"
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the cosine of a given angle"
+msgstr "Funkcija kosinusa aprēķināšanai dotajam leņķim"
+
+#: analitzagui/operatorsmodel.cpp:192
+#, fuzzy
+#| msgid "Function to calculate the tangent of a given angle"
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the tangent of a given angle"
+msgstr "Funkcija tangensa aprēķināšanai dotajam leņķim"
+
+#: analitzagui/operatorsmodel.cpp:195
+#, fuzzy
+#| msgid "Secant"
+msgctxt "QCoreApplication|"
+msgid "Secant"
+msgstr "Sekants"
+
+#: analitzagui/operatorsmodel.cpp:198
+#, fuzzy
+#| msgid "Cosecant"
+msgctxt "QCoreApplication|"
+msgid "Cosecant"
+msgstr "Kosekants"
+
+#: analitzagui/operatorsmodel.cpp:201
+#, fuzzy
+#| msgid "Cotangent"
+msgctxt "QCoreApplication|"
+msgid "Cotangent"
+msgstr "Kotangenss"
+
+#: analitzagui/operatorsmodel.cpp:204
+#, fuzzy
+#| msgid "Hyperbolic sine"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic sine"
+msgstr "Hiperboliskais sinuss"
+
+#: analitzagui/operatorsmodel.cpp:207
+#, fuzzy
+#| msgid "Hyperbolic cosine"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cosine"
+msgstr "Hiperboliskais kosinuss"
+
+#: analitzagui/operatorsmodel.cpp:210
+#, fuzzy
+#| msgid "Hyperbolic tangent"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic tangent"
+msgstr "Hiperboliskais tangenss"
+
+#: analitzagui/operatorsmodel.cpp:213
+#, fuzzy
+#| msgid "Hyperbolic secant"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic secant"
+msgstr "Hiperboliskais sekants"
+
+#: analitzagui/operatorsmodel.cpp:216
+#, fuzzy
+#| msgid "Hyperbolic cosecant"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cosecant"
+msgstr "Hiperboliskais kosekants"
+
+#: analitzagui/operatorsmodel.cpp:219
+#, fuzzy
+#| msgid "Hyperbolic cotangent"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cotangent"
+msgstr "Hiperboliskais kotangenss"
+
+#: analitzagui/operatorsmodel.cpp:222
+#, fuzzy
+#| msgid "Arc sine"
+msgctxt "QCoreApplication|"
+msgid "Arc sine"
+msgstr "Arksinuss"
+
+#: analitzagui/operatorsmodel.cpp:225
+#, fuzzy
+#| msgid "Arc cosine"
+msgctxt "QCoreApplication|"
+msgid "Arc cosine"
+msgstr "Arkkosinuss"
+
+#: analitzagui/operatorsmodel.cpp:228
+#, fuzzy
+#| msgid "Arc tangent"
+msgctxt "QCoreApplication|"
+msgid "Arc tangent"
+msgstr "Arktangenss"
+
+#: analitzagui/operatorsmodel.cpp:231
+#, fuzzy
+#| msgid "Arc cotangent"
+msgctxt "QCoreApplication|"
+msgid "Arc cotangent"
+msgstr "Arkkotangenss"
+
+#: analitzagui/operatorsmodel.cpp:237
+#, fuzzy
+#| msgid "Hyperbolic arc tangent"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc tangent"
+msgstr "Hiperboliskais arktangenss"
+
+#: analitzagui/operatorsmodel.cpp:240
+#, fuzzy
+#| msgid "Summatory"
+msgctxt "QCoreApplication|"
+msgid "Summatory"
+msgstr "Summa"
+
+#: analitzagui/operatorsmodel.cpp:243
+#, fuzzy
+#| msgid "Productory"
+msgctxt "QCoreApplication|"
+msgid "Productory"
+msgstr "Reizinājums"
+
+#: analitzagui/operatorsmodel.cpp:246
+#, fuzzy
+#| msgid "For all"
+msgctxt "QCoreApplication|"
+msgid "For all"
+msgstr "Visiem"
+
+#: analitzagui/operatorsmodel.cpp:249
+#, fuzzy
+#| msgid "Exists"
+msgctxt "QCoreApplication|"
+msgid "Exists"
+msgstr "Pastāv"
+
+#: analitzagui/operatorsmodel.cpp:252
+#, fuzzy
+#| msgid "Differentiation"
+msgctxt "QCoreApplication|"
+msgid "Differentiation"
+msgstr "Diferencēšana"
+
+#: analitzagui/operatorsmodel.cpp:255
+#, fuzzy
+#| msgid "Hyperbolic arc sine"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc sine"
+msgstr "Hiperboliskais arksinuss"
+
+#: analitzagui/operatorsmodel.cpp:258
+#, fuzzy
+#| msgid "Hyperbolic arc cosine"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc cosine"
+msgstr "Hiperboliskais arkkosinuss"
+
+#: analitzagui/operatorsmodel.cpp:261
+#, fuzzy
+#| msgid "Arc cosecant"
+msgctxt "QCoreApplication|"
+msgid "Arc cosecant"
+msgstr "Arkkosekants"
+
+#: analitzagui/operatorsmodel.cpp:264
+#, fuzzy
+#| msgid "Hyperbolic arc cosecant"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc cosecant"
+msgstr "Hiperboliskais arkkosekants"
+
+#: analitzagui/operatorsmodel.cpp:267
+#, fuzzy
+#| msgid "Arc secant"
+msgctxt "QCoreApplication|"
+msgid "Arc secant"
+msgstr "Arksekants"
+
+#: analitzagui/operatorsmodel.cpp:270
+#, fuzzy
+#| msgid "Hyperbolic arc secant"
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc secant"
+msgstr "Hiperboliskais arksekants"
+
+#: analitzagui/operatorsmodel.cpp:273
+#, fuzzy
+#| msgid "Exponent (e^x)"
+msgctxt "QCoreApplication|"
+msgid "Exponent (e^x)"
+msgstr "Eksponente (e^x)"
+
+#: analitzagui/operatorsmodel.cpp:276
+#, fuzzy
+#| msgid "Base-e logarithm"
+msgctxt "QCoreApplication|"
+msgid "Base-e logarithm"
+msgstr "Naturāllogaritms"
+
+#: analitzagui/operatorsmodel.cpp:279
+#, fuzzy
+#| msgid "Base-10 logarithm"
+msgctxt "QCoreApplication|"
+msgid "Base-10 logarithm"
+msgstr "Decimāllogaritms"
+
+#: analitzagui/operatorsmodel.cpp:282
+#, fuzzy
+#| msgid "Absolute value. abs(n)=|n|"
+msgctxt "QCoreApplication|"
+msgid "Absolute value. abs(n)=|n|"
+msgstr "Absolūtā vērtība. abs(n)=|n|"
+
+#: analitzagui/operatorsmodel.cpp:285
+msgctxt "QCoreApplication|"
+msgid "Conjugate"
+msgstr ""
+
+#: analitzagui/operatorsmodel.cpp:288
+msgctxt "QCoreApplication|"
+msgid "Arg"
+msgstr ""
+
+#: analitzagui/operatorsmodel.cpp:291
+msgctxt "QCoreApplication|"
+msgid "Real"
+msgstr ""
+
+#: analitzagui/operatorsmodel.cpp:294
+msgctxt "QCoreApplication|"
+msgid "Imaginary"
+msgstr ""
+
+#: analitzagui/operatorsmodel.cpp:297
+#, fuzzy
+#| msgid "Floor value. floor(n)=⌊n⌋"
+msgctxt "QCoreApplication|"
+msgid "Floor value. floor(n)=⌊n⌋"
+msgstr "Grīdas funkcija. floor(n)=⌊n⌋"
+
+#: analitzagui/operatorsmodel.cpp:300
+#, fuzzy
+#| msgid "Ceil value. ceil(n)=⌈n⌉"
+msgctxt "QCoreApplication|"
+msgid "Ceil value. ceil(n)=⌈n⌉"
+msgstr "Griestu funkcija. ceil(n)=⌈n⌉"
+
+#: analitzagui/operatorsmodel.cpp:303
+#, fuzzy
+#| msgid "Minimum"
+msgctxt "QCoreApplication|"
+msgid "Minimum"
+msgstr "Minimums"
+
+#: analitzagui/operatorsmodel.cpp:306
+#, fuzzy
+#| msgid "Maximum"
+msgctxt "QCoreApplication|"
+msgid "Maximum"
+msgstr "Maksimums"
+
+#: analitzagui/operatorsmodel.cpp:309
+#, fuzzy
+#| msgid "Greater than. gt(a,b)=a>b"
+msgctxt "QCoreApplication|"
+msgid "Greater than. gt(a,b)=a>b"
+msgstr "Lielāks par. gt(a,b)=a>b"
+
+#: analitzagui/operatorsmodel.cpp:312
+#, fuzzy
+#| msgid "Less than. lt(a,b)=a<b"
+msgctxt "QCoreApplication|"
+msgid "Less than. lt(a,b)=a<b"
+msgstr "Mazāks par. lt(a,b)=a<b"
+
+#: analitzagui/operatorsmodel.cpp:315
+#, fuzzy
+#| msgid "Equal. eq(a,b) = a=b"
+msgctxt "QCoreApplication|"
+msgid "Equal. eq(a,b) = a=b"
+msgstr "Vienāds. eq(a,b) = a=b"
+
+#: analitzagui/operatorsmodel.cpp:318
+#, fuzzy
+#| msgid "Approximation. approx(a)=a±n"
+msgctxt "QCoreApplication|"
+msgid "Approximation. approx(a)=a±n"
+msgstr "Aproksimācija. approx(a)=a±n"
+
+#: analitzagui/operatorsmodel.cpp:321
+#, fuzzy
+#| msgid "Not equal. neq(a,b)=a≠b"
+msgctxt "QCoreApplication|"
+msgid "Not equal. neq(a,b)=a≠b"
+msgstr "Nav vienāds. neq(a,b)=a≠b"
+
+#: analitzagui/operatorsmodel.cpp:324
+#, fuzzy
+#| msgid "Greater or equal. geq(a,b)=a≥b"
+msgctxt "QCoreApplication|"
+msgid "Greater or equal. geq(a,b)=a≥b"
+msgstr "Lielāks vai vienāds. geq(a,b)=a≥b"
+
+#: analitzagui/operatorsmodel.cpp:327
+#, fuzzy
+#| msgid "Less or equal. leq(a,b)=a≤b"
+msgctxt "QCoreApplication|"
+msgid "Less or equal. leq(a,b)=a≤b"
+msgstr "Mazāks vai vienāds. leq(a,b)=a≤b"
+
+#: analitzagui/operatorsmodel.cpp:330
+#, fuzzy
+#| msgid "Boolean and"
+msgctxt "QCoreApplication|"
+msgid "Boolean and"
+msgstr "Bula UN"
+
+#: analitzagui/operatorsmodel.cpp:333
+#, fuzzy
+#| msgid "Boolean not"
+msgctxt "QCoreApplication|"
+msgid "Boolean not"
+msgstr "Bula NE"
+
+#: analitzagui/operatorsmodel.cpp:336
+#, fuzzy
+#| msgid "Boolean or"
+msgctxt "QCoreApplication|"
+msgid "Boolean or"
+msgstr "Bula VAI"
+
+#: analitzagui/operatorsmodel.cpp:339
+#, fuzzy
+#| msgid "Boolean xor"
+msgctxt "QCoreApplication|"
+msgid "Boolean xor"
+msgstr "Bula XOR"
+
+#: analitzagui/operatorsmodel.cpp:342
+#, fuzzy
+#| msgid "Boolean implication"
+msgctxt "QCoreApplication|"
+msgid "Boolean implication"
+msgstr "Bula implikācija"
+
+#: analitzagui/operatorsmodel.cpp:345
+#, fuzzy
+#| msgid "Greatest common divisor"
+msgctxt "QCoreApplication|"
+msgid "Greatest common divisor"
+msgstr "Lielākais kopīgais dalītājs"
+
+#: analitzagui/operatorsmodel.cpp:348
+#, fuzzy
+#| msgid "Least common multiple"
+msgctxt "QCoreApplication|"
+msgid "Least common multiple"
+msgstr "Mazākais kopīgais dalāmais"
+
+#: analitzagui/operatorsmodel.cpp:351
+#, fuzzy
+#| msgid "Root"
+msgctxt "QCoreApplication|"
+msgid "Root"
+msgstr "Sakne"
+
+#: analitzagui/operatorsmodel.cpp:354
+#, fuzzy
+#| msgid "Cardinal"
+msgctxt "QCoreApplication|"
+msgid "Cardinal"
+msgstr "Kardinālis"
+
+#: analitzagui/operatorsmodel.cpp:357
+#, fuzzy
+#| msgid "Scalar product"
+msgctxt "QCoreApplication|"
+msgid "Scalar product"
+msgstr "Skalārais reizinājums"
+
+#: analitzagui/operatorsmodel.cpp:360
+#, fuzzy
+#| msgid "Select the par1-th element of par2 list or vector"
+msgctxt "QCoreApplication|"
+msgid "Select the par1-th element of par2 list or vector"
+msgstr "Izvēlēties par1-to elementu no par2-ā saraksta vai vektora"
+
+#: analitzagui/operatorsmodel.cpp:363
+#, fuzzy
+#| msgid "Joins several items of the same type"
+msgctxt "QCoreApplication|"
+msgid "Joins several items of the same type"
+msgstr "Savieno vairākus viena un tā paša tipa punktus"
+
+#: analitzagui/operatorsmodel.cpp:366
+#, fuzzy
+#| msgid "Applies a function to every element in a list"
+msgctxt "QCoreApplication|"
+msgid "Applies a function to every element in a list"
+msgstr "Pielieto funkciju katram saraksta elementam"
+
+#: analitzagui/operatorsmodel.cpp:369
+#, fuzzy
+#| msgid "Removes all elements that don't fit a condition"
+msgctxt "QCoreApplication|"
+msgid "Removes all elements that don't fit a condition"
+msgstr "Izņem visus elementus, kuri neatbilst nosacījumam"
+
+#: analitzagui/operatorsmodel.cpp:372
+msgctxt "QCoreApplication|"
+msgid "Transpose"
+msgstr ""
+
+#: analitzagui/operatorsmodel.cpp:572
+#, fuzzy, qt-format
+#| msgctxt "n-ary function prototype"
+#| msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
+msgctxt "n-ary function prototype|"
+msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
+msgstr "<em>%1</em>(..., <b>par%2</b>, ...)"
+
+#: analitzagui/operatorsmodel.cpp:582
+#, fuzzy, qt-format
+#| msgctxt "Function name in function prototype"
+#| msgid "<em>%1</em>("
+msgctxt "Function name in function prototype|"
+msgid "<em>%1</em>("
+msgstr "<em>%1</em>("
+
+#: analitzagui/operatorsmodel.cpp:583
+#, fuzzy, qt-format
+#| msgctxt "Uncorrect function name in function prototype"
+#| msgid "<em style='color:red'><b>%1</b></em>("
+msgctxt "Uncorrect function name in function prototype|"
+msgid "<em style='color:red'><b>%1</b></em>("
+msgstr "<em style='color:red'><b>%1</b></em>("
+
+#: analitzagui/operatorsmodel.cpp:586
+#, fuzzy, qt-format
+#| msgid "par%1"
+msgctxt "Parameter in function prototype|"
+msgid "par%1"
+msgstr "par%1"
+
+#: analitzagui/operatorsmodel.cpp:589 analitzagui/operatorsmodel.cpp:599
+#, fuzzy, qt-format
+#| msgctxt "Current parameter in function prototype"
+#| msgid "<b>%1</b>"
+msgctxt "Current parameter in function prototype|"
+msgid "<b>%1</b>"
+msgstr "<b>%1</b>"
+
+#: analitzagui/operatorsmodel.cpp:592
+#, fuzzy
+#| msgid ", "
+msgctxt "Function parameter separator|"
+msgid ", "
+msgstr ", "
+
+#: analitzagui/operatorsmodel.cpp:596
+#, fuzzy
+#| msgctxt "Current parameter is the bounding"
+#| msgid " : bounds"
+msgctxt "Current parameter is the bounding|"
+msgid " : bounds"
+msgstr " : robežas"
+
+#: analitzagui/variablesmodel.cpp:94
+#, fuzzy
+#| msgctxt "@title:column"
+#| msgid "Value"
+msgctxt "@title:column|"
+msgid "Value"
+msgstr "Vērtība"
+
+#: analitzaplot/plotsfactory.cpp:49
+#, fuzzy
+#| msgid "The expression is not correct"
+msgctxt "QCoreApplication|"
+msgid "The expression is not correct"
+msgstr "Izteiksme nav pareiza"
+
+#: analitzaplot/plotsfactory.cpp:72
+#, fuzzy, qt-format
+#| msgid "Function type not recognized"
+msgctxt "QCoreApplication|"
+msgid "Function type '%1' not recognized"
+msgstr "Funkcijas tips nav atpazīts"
+
+#: analitzaplot/plotsfactory.cpp:74
+#, fuzzy, qt-format
+#| msgid "Function type not recognized"
+msgctxt "QCoreApplication|"
+msgid "Function '%1' not recognized"
+msgstr "Funkcijas tips nav atpazīts"
+
+#: analitzaplot/plotsmodel.cpp:79
+msgctxt "@title:column|"
+msgid "Plot"
+msgstr ""
+
+#: analitzaplot/plotter3d_es.cpp:534 declarative/graph2dmobile.cpp:149
+msgctxt "QObject|"
+msgid "PNG Image (*.png)"
+msgstr ""
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "PDF Document (*.pdf)"
+msgstr ""
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "X3D Document (*.x3d)"
+msgstr ""
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "STL Document (*.stl)"
+msgstr ""
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:64
+msgctxt "Function type|"
+msgid "Plane Curve F(y)"
+msgstr ""
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:80
+msgctxt "Function type|"
+msgid "Plane Curve F(x)"
+msgstr ""
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:137
+#: analitzaplot/private/backends/cartesiancurve.cpp:245
+#, fuzzy
+#| msgid "We can only draw Real results."
+msgctxt "QCoreApplication|"
+msgid "We can only draw Real results."
+msgstr "Mēs mākam zīmēt tikai reālus skaitļus."
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:248
+#: analitzawidgets/plotsview2d.cpp:236
+#, fuzzy, qt-format
+#| msgid "x=%1 y=%2"
+msgctxt "QCoreApplication|"
+msgid "x=%1 y=%2"
+msgstr "x=%1 y=%2"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:52
+msgctxt "Function type|"
+msgid "Surface z=F(x,y)"
+msgstr ""
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:94
+msgctxt "Function type|"
+msgid "Surface y=F(x,z)"
+msgstr ""
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:127
+msgctxt "Function type|"
+msgid "Surface x=F(y,z)"
+msgstr ""
+
+#: analitzaplot/private/backends/cylindricalsurface.cpp:37
+msgctxt "Function type|"
+msgid "Cylindrical Surface z=F(r: Radial, p: Polar)"
+msgstr ""
+
+#: analitzaplot/private/backends/implicitcurve.cpp:44
+msgctxt "Function type|"
+msgid "Implicit Curve"
+msgstr ""
+
+#: analitzaplot/private/backends/implicitpolarcurve.cpp:37
+msgctxt "Function type|"
+msgid "Polar implicit Curve 0=F(r: Radial, p: Polar)"
+msgstr ""
+
+#: analitzaplot/private/backends/implicitsurface.cpp:35
+msgctxt "Function type|"
+msgid "Implicit Surface"
+msgstr ""
+
+#: analitzaplot/private/backends/parametriccurve2d.cpp:37
+msgctxt "Function type|"
+msgid "Parametric Curve 2D"
+msgstr ""
+
+#: analitzaplot/private/backends/parametriccurve3d.cpp:31
+msgctxt "Function type|"
+msgid "Parametric Curve 3D"
+msgstr ""
+
+#: analitzaplot/private/backends/parametricsurface.cpp:32
+msgctxt "Function type|"
+msgid "Parametric Surface"
+msgstr ""
+
+#: analitzaplot/private/backends/polarcurve.cpp:37
+msgctxt "Function type|"
+msgid "Polar Curve r=F(p: Polar)"
+msgstr ""
+
+#: analitzaplot/private/backends/sphericalsurface.cpp:35
+msgctxt "Function type|"
+msgid "Spherical Surface Radial=F(t:Azimuth, p: Polar)"
+msgstr ""
+
+#: analitzawidgets/expressionedit.cpp:295
+#, fuzzy, qt-format
+#| msgid "Result: %1"
+msgctxt "QCoreApplication|"
+msgid "Result: %1"
+msgstr "Rezultāts: %1"
+
+#: analitzawidgets/expressionedit.cpp:405
+#, fuzzy
+#| msgid "To Expression"
+msgctxt "QCoreApplication|"
+msgid "To Expression"
+msgstr "Uz izteiksmi"
+
+#: analitzawidgets/expressionedit.cpp:407
+#, fuzzy
+#| msgid "To MathML"
+msgctxt "QCoreApplication|"
+msgid "To MathML"
+msgstr "Uz MathML"
+
+#: analitzawidgets/expressionedit.cpp:409
+#, fuzzy
+#| msgid "Simplify"
+msgctxt "QCoreApplication|"
+msgid "Simplify"
+msgstr "Vienkāršot"
+
+#: analitzawidgets/expressionedit.cpp:411
+#, fuzzy
+#| msgid "Examples"
+msgctxt "QCoreApplication|"
+msgid "Examples"
+msgstr "Piemēri"
+
+#: analitzawidgets/plotsview2d.cpp:214
+#, fuzzy
+#| msgid "Selected viewport too small"
+msgctxt "QCoreApplication|"
+msgid "Selected viewport too small"
+msgstr "Izvēlētais skats ir pārāk mazs"
+
+#~ msgctxt "NAME OF TRANSLATORS"
+#~ msgid "Your names"
+#~ msgstr "Einārs Sprūģis"
+
+#~ msgctxt "EMAIL OF TRANSLATORS"
+#~ msgid "Your emails"
+#~ msgstr "einars8@gmail.com"
+
+#~ msgctxt "Parameter in function prototype"
+#~ msgid "par%1"
+#~ msgstr "par%1"
+
+#~ msgctxt "Function parameter separator"
+#~ msgid ", "
+#~ msgstr ", "
+
+#, fuzzy
+#~| msgid "Hyperbolic secant"
+#~ msgctxt "dictionary"
+#~ msgid "Hiperbola"
+#~ msgstr "Hiperboliskais sekants"
+
+#~ msgid "Function type not correct for functions depending on %1"
+#~ msgstr "Funkcijas tips nav pareizs funkcijām, kas atkarīgas no %1"
+
+#~ msgid "center"
+#~ msgstr "centrs"
+
+#~ msgctxt "@title:column"
+#~ msgid "Function"
+#~ msgstr "Funkcija"
+
+#~ msgid "%1 function added"
+#~ msgstr "%1 funkcija pielikta"
+
+#~ msgid "Hide '%1'"
+#~ msgstr "Slēpt '%1'"
+
+#~ msgid "Show '%1'"
+#~ msgstr "Rādīt '%1'"
+
+#~ msgid "Remove '%1'"
+#~ msgstr "Izņemt '%1'"

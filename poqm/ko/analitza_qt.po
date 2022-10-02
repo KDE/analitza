@@ -1,0 +1,1222 @@
+# Shinjo Park <kde@peremen.name>, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"PO-Revision-Date: 2021-11-14 18:59+0100\n"
+"Last-Translator: Shinjo Park <kde@peremen.name>\n"
+"Language-Team: Korean <kde-kr@kde.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 21.08.1\n"
+"X-Qt-Contexts: true\n"
+
+msgctxt "QObject|dictionary"
+msgid "xaxaxaxaxa"
+msgstr "xaxaxaxaxa"
+
+msgctxt "QObject|dictionary"
+msgid "cosa"
+msgstr "cosa"
+
+#: analitza/analyzer.cpp:193
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate an empty expression"
+msgstr "빈 수식을 계산할 수 없음"
+
+#: analitza/analyzer.cpp:240 analitza/analyzer.cpp:259
+#: analitza/analyzer.cpp:285
+msgctxt "QCoreApplication|"
+msgid "Must specify a correct operation"
+msgstr "올바른 작업을 지정해야 함"
+
+#: analitza/analyzer.cpp:255 analitza/analyzer.cpp:288
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unknown identifier: '%1'"
+msgstr "알 수 없는 식별자: '%1'"
+
+#: analitza/analyzer.cpp:257 analitza/analyzer.cpp:290
+msgctxt "identifier separator in error message|"
+msgid "', '"
+msgstr "', '"
+
+#: analitza/analyzer.cpp:615
+msgctxt "Error message, no proper condition found.|"
+msgid "Could not find a proper choice for a condition statement."
+msgstr "조건문의 올바른 선택지를 찾을 수 없습니다."
+
+#: analitza/analyzer.cpp:936
+msgctxt "QCoreApplication|"
+msgid "Type not supported for bounding."
+msgstr "형식의 경계를 지원하지 않습니다."
+
+#: analitza/analyzer.cpp:961
+msgctxt "QCoreApplication|"
+msgid "The downlimit is greater than the uplimit"
+msgstr "하위 경계가 상위 경계보다 큼"
+
+#: analitza/analyzer.cpp:963
+msgctxt "QCoreApplication|"
+msgid "Incorrect uplimit or downlimit."
+msgstr "uplimit나 downlimit가 잘못되었습니다."
+
+#: analitza/analyzer.cpp:1055 analitza/analyzer.cpp:1080
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid type for parameter '%1'"
+msgstr "인자 '%1'의 형식이 잘못됨"
+
+#: analitza/analyzer.cpp:1877
+msgctxt "By a cycle i mean a variable that depends on itself|"
+msgid "Defined a variable cycle"
+msgstr "변수 순환 참조가 발견됨"
+
+#: analitza/analyzer.cpp:1919
+msgctxt "QCoreApplication|"
+msgid "The result is not a number"
+msgstr "결과가 숫자가 아님"
+
+#: analitza/commands/blockmatrixcommands.cpp:44
+#: analitza/commands/blockmatrixcommands.cpp:234
+#: analitza/commands/listcommands.cpp:47 analitza/commands/listcommands.cpp:64
+#: analitza/commands/matrixcommands.cpp:48
+#: analitza/commands/matrixcommands.cpp:201
+#: analitza/commands/vectorcommands.cpp:45
+#: analitza/commands/vectorcommands.cpp:82
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%1'"
+msgstr "'%1'의 인자 개수가 잘못됨"
+
+#: analitza/commands/blockmatrixcommands.cpp:86
+#: analitza/commands/blockmatrixcommands.cpp:119
+#: analitza/commands/blockmatrixcommands.cpp:122
+msgctxt "QCoreApplication|"
+msgid "Blocks must have consistent size between each and other"
+msgstr "각각 블록의 크기는 일정해야 함"
+
+#: analitza/commands/blockmatrixcommands.cpp:90
+#: analitza/commands/blockmatrixcommands.cpp:126
+#: analitza/commands/blockmatrixcommands.cpp:263
+msgctxt "QCoreApplication|"
+msgid "Do not want empty blocks"
+msgstr "빈 블록을 지정할 수 없음"
+
+#: analitza/commands/blockmatrixcommands.cpp:93
+#: analitza/commands/blockmatrixcommands.cpp:130
+#: analitza/commands/blockmatrixcommands.cpp:209
+#: analitza/commands/blockmatrixcommands.cpp:267
+msgctxt "QCoreApplication|"
+msgid "Blocks must be matrices"
+msgstr "블록은 행렬이어야 함"
+
+#: analitza/commands/blockmatrixcommands.cpp:142
+msgctxt "QCoreApplication|"
+msgid "Number of blocks must be consistent"
+msgstr "블록 개수는 일정해야 함"
+
+#: analitza/commands/blockmatrixcommands.cpp:145
+#: analitza/commands/blockmatrixcommands.cpp:211
+#: analitza/commands/matrixcommands.cpp:147
+msgctxt "QCoreApplication|"
+msgid "Do not want empty vectors/matrixrow elements"
+msgstr "빈 벡터/matrixrow 원소를 지정할 수 없음"
+
+#: analitza/commands/blockmatrixcommands.cpp:150
+#: analitza/commands/blockmatrixcommands.cpp:213
+#: analitza/commands/matrixcommands.cpp:149
+msgctxt "QCoreApplication|"
+msgid "Matrix constructor needs vectors or matrixrow elements"
+msgstr "행렬 생성자에는 벡터나 matrixrow 원소가 필요함"
+
+#: analitza/commands/blockmatrixcommands.cpp:244
+#: analitza/commands/matrixcommands.cpp:288
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "the arg %1 is invalid or is error"
+msgstr "인자 %1이(가) 잘못되었거나 오류임"
+
+#: analitza/commands/eigencommands.cpp:39
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%1'. Should have 1 parameter"
+msgstr "'%1'의 인자 개수가 잘못되었습니다. 1개여야 함"
+
+#: analitza/commands/eigencommands.cpp:47
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "To use '%1' command the input matrix must be square"
+msgstr "'%1' 명령을 사용하려면 입력 행렬이 정사각행렬이어야 함"
+
+#: analitza/commands/eigencommands.cpp:68
+#: analitza/commands/eigencommands.cpp:74
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid ""
+"Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number "
+"value"
+msgstr "'%3'의 행렬 항목 (%1,%2)의 인자 형식이 잘못됨, 숫자여야 함"
+
+#: analitza/commands/eigencommands.cpp:126
+#: analitza/commands/eigencommands.cpp:193
+msgctxt "QCoreApplication|NaN means Not a Number, is an invalid float number"
+msgid "Returned eigenvalue is NaN"
+msgstr "반환한 고윳값이 NaN임"
+
+#: analitza/commands/eigencommands.cpp:132
+#: analitza/commands/eigencommands.cpp:196
+msgctxt "QCoreApplication|"
+msgid "Returned eigenvalue is too big"
+msgstr "반환한 고윳값이 너무 큼"
+
+#: analitza/commands/matrixcommands.cpp:31
+msgctxt "QCoreApplication|"
+msgid "Matrix dimensions must be greater than zero"
+msgstr "행렬 크기가 0보다 커야 함"
+
+#: analitza/commands/matrixcommands.cpp:122 analitza/expression.cpp:296
+msgctxt "QCoreApplication|"
+msgid "All matrixrow elements must have the same size"
+msgstr "모든 matrixrow 원소의 크기가 같아야 함"
+
+#: analitza/commands/matrixcommands.cpp:127
+msgctxt "QCoreApplication|"
+msgid "Not all are rows or vectors"
+msgstr "행이나 벡터가 아닌 값이 있음"
+
+#: analitza/commands/matrixcommands.cpp:143
+msgctxt "QCoreApplication|"
+msgid "Every argument must be a matrixrow element"
+msgstr "모든 인자는 matrixrow 원소여야 함"
+
+#: analitza/commands/matrixcommands.cpp:241
+msgctxt "QCoreApplication|"
+msgid "The nth diagonal index must be less than the row count"
+msgstr "n번째 대각선 인덱스가 행 개수보다 작아야 함"
+
+#: analitza/commands/matrixcommands.cpp:249
+msgctxt "QCoreApplication|"
+msgid "The nth diagonal index must be less than the column count"
+msgstr "n번째 대각선 인덱스가 열 개수보다 작아야 함"
+
+#: analitza/commands/matrixcommands.cpp:265
+msgctxt "QCoreApplication|"
+msgid "nth diagonal index must be integer number"
+msgstr "n번째 대각선 인덱스가 정수여야 함"
+
+#: analitza/commands/matrixcommands.cpp:269
+msgctxt "QCoreApplication|"
+msgid "nth diagonal index must be a positive integer number"
+msgstr "n번째 대각선 인덱스가 양의 정수여야 함"
+
+#: analitza/commands/vectorcommands.cpp:62
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter type for '%1', was expected a list"
+msgstr "'%1'의 인자 형식 잘못됨, 목록을 예상함"
+
+#: analitza/commands/vectorcommands.cpp:75
+#: analitza/commands/vectorcommands.cpp:78
+msgctxt "QCoreApplication|"
+msgid "Vector size must be some integer value greater to zero"
+msgstr "벡터 크기는 0보다 큰 정수여야 함"
+
+#: analitza/explexer.cpp:78
+msgctxt "QCoreApplication|"
+msgid "Unexpectedly arrived to the end of the input"
+msgstr "예상하지 못하게 입력의 끝에 도달함"
+
+#: analitza/explexer.cpp:112
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unknown token %1"
+msgstr "알 수 없는 토큰 %1"
+
+#: analitza/expression.cpp:162
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> needs at least 2 parameters"
+msgstr "<em>%1</em>에는 최소한 인자 두 개가 필요함"
+
+#: analitza/expression.cpp:164
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> requires %2 parameters"
+msgstr "<em>%1</em>에는 인자 %2개가 필요함"
+
+#: analitza/expression.cpp:171
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Missing boundary for '%1'"
+msgstr "'%1'의 경계가 정의되지 않음"
+
+#: analitza/expression.cpp:173
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unexpected bounding for '%1'"
+msgstr "'%1'의 예상하지 못한 경계"
+
+#: analitza/expression.cpp:178
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> missing bounds on '%2'"
+msgstr "<em>%1</em>의 경계가 '%2'에 정의되지 않음"
+
+#: analitza/expression.cpp:200
+msgctxt "QCoreApplication|"
+msgid "Wrong declare"
+msgstr "잘못된 선언"
+
+#: analitza/expression.cpp:210
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Empty container: %1"
+msgstr "빈 컨테이너: %1"
+
+#: analitza/expression.cpp:228
+msgctxt "there was a conditional outside a condition structure|"
+msgid "We can only have conditionals inside piecewise structures."
+msgstr "piecewise 구조체에만 조건문을 배치할 수 있습니다."
+
+#: analitza/expression.cpp:244
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot have two parameters with the same name like '%1'."
+msgstr "이름이 '%1'인 인자가 두 개 올 수 없습니다."
+
+#: analitza/expression.cpp:259
+msgctxt ""
+"this is an error message. otherwise is the else in a mathml condition|"
+msgid "The <em>otherwise</em> parameter should be the last one"
+msgstr "<em>otherwise</em> 인자는 마지막 인자여야 함"
+
+#: analitza/expression.cpp:267
+#, qt-format
+msgctxt "there was an element that was not a conditional inside a condition|"
+msgid "%1 is not a proper condition inside the piecewise"
+msgstr "%1이(가) piecewise 내의 올바른 조건문이 아님"
+
+#: analitza/expression.cpp:273
+msgctxt "QCoreApplication|"
+msgid "We can only declare variables"
+msgstr "변수만 선언할 수 있음"
+
+#: analitza/expression.cpp:279
+msgctxt "QCoreApplication|"
+msgid "We can only have bounded variables"
+msgstr "경계 있는 변수만 선언할 수 있음"
+
+#: analitza/expression.cpp:290 analitza/expression.cpp:495
+msgctxt "QCoreApplication|"
+msgid "Do not want empty matrixrow elements"
+msgstr "빈 matrixrow 원소가 올 수 없음"
+
+#: analitza/expression.cpp:300
+msgctxt "QCoreApplication|"
+msgid "The matrix must contain only matrixrow elements"
+msgstr "행렬에는 matrixrow 원소만 올 수 있음"
+
+#: analitza/expression.cpp:419
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Error while parsing: %1"
+msgstr "처리 오류: %1"
+
+#: analitza/expression.cpp:450
+#, qt-format
+msgctxt "An error message|"
+msgid "Container unknown: %1"
+msgstr "컨테이너 알 수 없음: %1"
+
+#: analitza/expression.cpp:456
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot codify the %1 value."
+msgstr "%1 값을 부호화할 수 없습니다."
+
+#: analitza/expression.cpp:462
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "The %1 operator cannot have child contexts."
+msgstr "%1 연산자에 자식 콘텍스트가 올 수 없습니다."
+
+#: analitza/expression.cpp:466
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "The element '%1' is not an operator."
+msgstr "'%1' 원소가 연산자가 아닙니다."
+
+#: analitza/expression.cpp:479
+msgctxt "QCoreApplication|"
+msgid "Do not want empty vectors"
+msgstr "빈 벡터를 지정할 수 없음"
+
+#: analitza/expression.cpp:489
+msgctxt "QCoreApplication|"
+msgid "Do not want empty matrices"
+msgstr "빈 행렬을 지정할 수 없음"
+
+#: analitza/expression.cpp:508
+#, qt-format
+msgctxt "Error message due to an unrecognized input|"
+msgid "Not supported/unknown: %1"
+msgstr "지원하지 않음/알 수 없음: %1"
+
+#: analitza/expressionparser.cpp:296
+msgctxt "QCoreApplication|"
+msgid ", "
+msgstr ", "
+
+#: analitza/expressionparser.cpp:296
+#, qt-format
+msgctxt "error message|"
+msgid "Expected %1 instead of '%2'"
+msgstr "'%2' 대신 %1을(를) 예상함"
+
+#: analitza/expressionparser.cpp:298
+msgctxt "QCoreApplication|"
+msgid "Missing right parenthesis"
+msgstr "오른쪽 괄호 없음"
+
+#: analitza/expressionparser.cpp:300
+msgctxt "QCoreApplication|"
+msgid "Unbalanced right parenthesis"
+msgstr "오른쪽 괄호 짝이 맞지 않음"
+
+#: analitza/expressionparser.cpp:303
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unexpected token identifier: %1"
+msgstr "알 수 없는 토큰 식별자: %1"
+
+#: analitza/expressionparser.cpp:305
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unexpected token %1"
+msgstr "알 수 없는 토큰 %1"
+
+#: analitza/expressiontypechecker.cpp:301
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not find a type that unifies '%1'"
+msgstr "'%1'을(를) 통합하는 형식을 찾을 수 없음"
+
+#: analitza/expressiontypechecker.cpp:473
+msgctxt "QCoreApplication|"
+msgid "The domain should be either a vector or a list"
+msgstr "domain은 벡터나 목록이어야 함"
+
+#: analitza/expressiontypechecker.cpp:558
+#, qt-format
+msgctxt "type error message|"
+msgid "Cannot call '%1'"
+msgstr "'%1'을(를) 호출할 수 없음"
+
+#: analitza/expressiontypechecker.cpp:593
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
+msgstr ""
+"'%1'을(를) '%2'(으)로 축소할 수 없습니다. '%4'의 '%3' 인자 형식이 잘못됨"
+
+#: analitza/expressiontypechecker.cpp:604
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%2'. Should have %1 parameters."
+msgstr "'%2'의 인자 개수가 잘못되었습니다. %1개여야 합니다."
+
+#: analitza/expressiontypechecker.cpp:616
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
+msgstr ""
+"'%1'와(과) '%2'을(를) 비교할 수 없습니다. '%4'의 '%3' 인자 형식이 잘못됨"
+
+#: analitza/expressiontypechecker.cpp:654
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not call '%1'"
+msgstr "'%1'을(를) 호출할 수 없음"
+
+#: analitza/expressiontypechecker.cpp:662
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not solve '%1'"
+msgstr "'%1'을(를) 풀 수 없음"
+
+#: analitza/expressiontypechecker.cpp:695
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Incoherent type for the variable '%1'"
+msgstr "'%1' 변수의 형식이 완전하지 않음"
+
+#: analitza/expressiontypechecker.cpp:718
+msgctxt "QCoreApplication|"
+msgid "Could not determine the type for piecewise"
+msgstr "piecewise의 형식을 결정할 수 없음"
+
+#: analitza/expressiontypechecker.cpp:937
+msgctxt "QCoreApplication|"
+msgid "Unexpected type"
+msgstr "예상하지 못한 형식"
+
+#: analitza/expressiontypechecker.cpp:960
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot convert '%1' to '%2'"
+msgstr "'%1'을(를) '%2'(으)로 변환할 수 없음"
+
+#: analitza/htmlexpressionwriter.cpp:54 analitza/htmlexpressionwriter.cpp:55
+#, qt-format
+msgctxt "html representation of an operator|"
+msgid "<span class='op'>%1</span>"
+msgstr "<span class='op'>%1</span>"
+
+#: analitza/htmlexpressionwriter.cpp:56
+#, qt-format
+msgctxt "html representation of an operator|"
+msgid "<span class='keyword'>%1</span>"
+msgstr "<span class='keyword'>%1</span>"
+
+#: analitza/mathmlpresentationlexer.cpp:94
+#, qt-format
+msgctxt "Error message|"
+msgid "Unknown token '%1'"
+msgstr "알 수 없는 토큰 '%1'"
+
+#: analitza/operations.cpp:54 analitza/operations.cpp:191
+msgctxt "QCoreApplication|"
+msgid "Cannot divide by 0."
+msgstr "0으로 나눌 수 없습니다."
+
+#: analitza/operations.cpp:72 analitza/operations.cpp:203
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the remainder on 0."
+msgstr "0으로 나눈 나머지를 계산할 수 없습니다."
+
+#: analitza/operations.cpp:84 analitza/operations.cpp:213
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the factor on 0."
+msgstr "0의 인수를 계산할 수 없습니다."
+
+#: analitza/operations.cpp:140 analitza/operations.cpp:261
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the lcm of 0."
+msgstr "0의 최대 공약수를 계산할 수 없습니다."
+
+#: analitza/operations.cpp:246
+msgctxt "QCoreApplication|"
+msgid "Boolean operations on complex numbers not available"
+msgstr "복소수에서 이진 연산을 수행할 수 없음"
+
+#: analitza/operations.cpp:276
+msgctxt "QCoreApplication|"
+msgid "Only square root implemented for complex numbers"
+msgstr "복소수에서는 제곱근만 계산할 수 있음"
+
+#: analitza/operations.cpp:351 analitza/operations.cpp:463
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a value %1"
+msgstr "%1 값을 계산할 수 없음"
+
+#: analitza/operations.cpp:479
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate %1 between a value and an error type"
+msgstr "%1을(를) 값과 오류 중에서 구별할 수 없음"
+
+#: analitza/operations.cpp:495 analitza/operations.cpp:652
+#: analitza/operations.cpp:784
+msgctxt "QCoreApplication|"
+msgid "Invalid index for a container"
+msgstr "콘테이너의 인덱스 잘못됨"
+
+#: analitza/operations.cpp:527
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot operate '%1' on different sized vectors."
+msgstr "크기가 다른 벡터에서 '%1' 연산을 사용할 수 없습니다."
+
+#: analitza/operations.cpp:566
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication between a matrix and a vector is allowed provided that the "
+"number of columns of the matrix equals the size of the vector"
+msgstr "행렬과 벡터를 곱하려면 행렬의 열 개수가 벡터의 크기와 같아야 함"
+
+#: analitza/operations.cpp:570 analitza/operations.cpp:707
+msgctxt "QCoreApplication|"
+msgid "Matrix and vector entries must be numbers"
+msgstr "행렬과 벡터 항목이 숫자여야 함"
+
+#: analitza/operations.cpp:599
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a vector's %1"
+msgstr "벡터의 %1을(를) 계산할 수 없음"
+
+#: analitza/operations.cpp:621 analitza/operations.cpp:637
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a list's %1"
+msgstr "목록의 %1을(를) 계산할 수 없음"
+
+#: analitza/operations.cpp:703
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication between a vector and a matrix is allowed provided that the "
+"matrix has only one matrixrow element"
+msgstr "벡터와 행렬을 곱하려면 행렬에 matrixrow 원소가 하나만 있어야 함"
+
+#: analitza/operations.cpp:730
+msgctxt "QCoreApplication|"
+msgid ""
+"Addition of two matrices is allowed provided that both matrices have the "
+"same number of rows and the same number of columns"
+msgstr "두 행렬을 더하려면 두 행렬의 행과 열 개수가 같아야 함"
+
+#: analitza/operations.cpp:762
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication of two matrices is allowed provided that the number of "
+"columns of the first matrix equals the number of rows of the second matrix"
+msgstr ""
+"두 행렬을 곱하려면 첫 번째 행렬의 열 개수가 두 번째 행렬의 행 개수와 같아야 "
+"함"
+
+#: analitza/operations.cpp:766 analitza/operations.cpp:804
+#: analitza/operations.cpp:887
+msgctxt "QCoreApplication|"
+msgid "Matrix entries must be numbers"
+msgstr "행렬 항목은 숫자여야 함"
+
+#: analitza/operations.cpp:879
+msgctxt "QCoreApplication|"
+msgid "The exponent of 'power' must be some integer number"
+msgstr "'power'의 지수는 정수여야 함"
+
+#: analitza/operations.cpp:883
+msgctxt "QCoreApplication|"
+msgid "Cannot compute 'power' for non square matrix"
+msgstr "정사각행렬이 아닌 행렬의 'power'를 계산할 수 없음"
+
+#: analitza/operations.cpp:922
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate %1 between a matrix and an error type"
+msgstr "행렬과 오류 형식의 %1을(를) 계산할 수 없음"
+
+#: analitza/providederivative.cpp:93
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate the derivative for '%1'"
+msgstr "'%1'의 도함수를 계산할 수 없음"
+
+#: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
+#: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
+msgctxt "@title:column|"
+msgid "Name"
+msgstr "이름"
+
+#: analitzagui/operatorsmodel.cpp:98
+msgctxt "@title:column|"
+msgid "Description"
+msgstr "설명"
+
+#: analitzagui/operatorsmodel.cpp:101
+msgctxt "@title:column|"
+msgid "Parameters"
+msgstr "인자"
+
+#: analitzagui/operatorsmodel.cpp:104
+msgctxt "@title:column|"
+msgid "Example"
+msgstr "예제"
+
+#: analitzagui/operatorsmodel.cpp:135
+msgctxt "Syntax for function bounding|"
+msgid " : var"
+msgstr " : var"
+
+#: analitzagui/operatorsmodel.cpp:137
+msgctxt "Syntax for function bounding values|"
+msgid "=from..to"
+msgstr "=from..to"
+
+#: analitzagui/operatorsmodel.cpp:140
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "%1("
+msgstr "%1("
+
+#: analitzagui/operatorsmodel.cpp:143
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "%1... parameters, ...%2)"
+msgstr "%1... parameters, ...%2)"
+
+#: analitzagui/operatorsmodel.cpp:146
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "par%1"
+msgstr "par%1"
+
+#: analitzagui/operatorsmodel.cpp:159
+msgctxt "QCoreApplication|"
+msgid "Addition"
+msgstr "더하기"
+
+#: analitzagui/operatorsmodel.cpp:162
+msgctxt "QCoreApplication|"
+msgid "Multiplication"
+msgstr "곱하기"
+
+#: analitzagui/operatorsmodel.cpp:165
+msgctxt "QCoreApplication|"
+msgid "Division"
+msgstr "나누기"
+
+#: analitzagui/operatorsmodel.cpp:168
+msgctxt "QCoreApplication|"
+msgid "Subtraction. Will remove all values from the first one."
+msgstr "빼기"
+
+#: analitzagui/operatorsmodel.cpp:171
+msgctxt "QCoreApplication|"
+msgid "Power"
+msgstr "제곱"
+
+#: analitzagui/operatorsmodel.cpp:174
+msgctxt "QCoreApplication|"
+msgid "Remainder"
+msgstr "나머지"
+
+#: analitzagui/operatorsmodel.cpp:177
+msgctxt "QCoreApplication|"
+msgid "Quotient"
+msgstr "몫"
+
+#: analitzagui/operatorsmodel.cpp:180
+msgctxt "QCoreApplication|"
+msgid "The factor of"
+msgstr "인수"
+
+#: analitzagui/operatorsmodel.cpp:183
+msgctxt "QCoreApplication|"
+msgid "Factorial. factorial(n)=n!"
+msgstr "계승(팩토리얼). factorial(n)=n!"
+
+#: analitzagui/operatorsmodel.cpp:186
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the sine of a given angle"
+msgstr "지정한 각도의 사인을 계산하는 함수"
+
+#: analitzagui/operatorsmodel.cpp:189
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the cosine of a given angle"
+msgstr "지정한 각도의 코사인을 계산하는 함수"
+
+#: analitzagui/operatorsmodel.cpp:192
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the tangent of a given angle"
+msgstr "지정한 각도의 탄젠트를 계산하는 함수"
+
+#: analitzagui/operatorsmodel.cpp:195
+msgctxt "QCoreApplication|"
+msgid "Secant"
+msgstr "시컨트"
+
+#: analitzagui/operatorsmodel.cpp:198
+msgctxt "QCoreApplication|"
+msgid "Cosecant"
+msgstr "코시컨트"
+
+#: analitzagui/operatorsmodel.cpp:201
+msgctxt "QCoreApplication|"
+msgid "Cotangent"
+msgstr "코탄젠트"
+
+#: analitzagui/operatorsmodel.cpp:204
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic sine"
+msgstr "쌍곡선 사인"
+
+#: analitzagui/operatorsmodel.cpp:207
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cosine"
+msgstr "쌍곡선 코사인"
+
+#: analitzagui/operatorsmodel.cpp:210
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic tangent"
+msgstr "쌍곡선 탄젠트"
+
+#: analitzagui/operatorsmodel.cpp:213
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic secant"
+msgstr "쌍곡선 시컨트"
+
+#: analitzagui/operatorsmodel.cpp:216
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cosecant"
+msgstr "쌍곡선 코시컨트"
+
+#: analitzagui/operatorsmodel.cpp:219
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cotangent"
+msgstr "쌍곡선 코탄젠트"
+
+#: analitzagui/operatorsmodel.cpp:222
+msgctxt "QCoreApplication|"
+msgid "Arc sine"
+msgstr "아크 사인"
+
+#: analitzagui/operatorsmodel.cpp:225
+msgctxt "QCoreApplication|"
+msgid "Arc cosine"
+msgstr "아크 코사인"
+
+#: analitzagui/operatorsmodel.cpp:228
+msgctxt "QCoreApplication|"
+msgid "Arc tangent"
+msgstr "아크 탄젠트"
+
+#: analitzagui/operatorsmodel.cpp:231
+msgctxt "QCoreApplication|"
+msgid "Arc cotangent"
+msgstr "아크 코탄젠트"
+
+#: analitzagui/operatorsmodel.cpp:237
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc tangent"
+msgstr "쌍곡선 아크 탄젠트"
+
+#: analitzagui/operatorsmodel.cpp:240
+msgctxt "QCoreApplication|"
+msgid "Summatory"
+msgstr "합"
+
+#: analitzagui/operatorsmodel.cpp:243
+msgctxt "QCoreApplication|"
+msgid "Productory"
+msgstr "곱"
+
+#: analitzagui/operatorsmodel.cpp:246
+msgctxt "QCoreApplication|"
+msgid "For all"
+msgstr "모두"
+
+#: analitzagui/operatorsmodel.cpp:249
+msgctxt "QCoreApplication|"
+msgid "Exists"
+msgstr "존재함"
+
+#: analitzagui/operatorsmodel.cpp:252
+msgctxt "QCoreApplication|"
+msgid "Differentiation"
+msgstr "미분"
+
+#: analitzagui/operatorsmodel.cpp:255
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc sine"
+msgstr "쌍곡선 아크 사인"
+
+#: analitzagui/operatorsmodel.cpp:258
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc cosine"
+msgstr "쌍곡선 아크 코사인"
+
+#: analitzagui/operatorsmodel.cpp:261
+msgctxt "QCoreApplication|"
+msgid "Arc cosecant"
+msgstr "아크 코시컨트"
+
+#: analitzagui/operatorsmodel.cpp:264
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc cosecant"
+msgstr "쌍곡선 아크 코시컨트"
+
+#: analitzagui/operatorsmodel.cpp:267
+msgctxt "QCoreApplication|"
+msgid "Arc secant"
+msgstr "아크 시컨트"
+
+#: analitzagui/operatorsmodel.cpp:270
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc secant"
+msgstr "쌍곡선 아크 시컨트"
+
+#: analitzagui/operatorsmodel.cpp:273
+msgctxt "QCoreApplication|"
+msgid "Exponent (e^x)"
+msgstr "지수(e^x)"
+
+#: analitzagui/operatorsmodel.cpp:276
+msgctxt "QCoreApplication|"
+msgid "Base-e logarithm"
+msgstr "자연로그"
+
+#: analitzagui/operatorsmodel.cpp:279
+msgctxt "QCoreApplication|"
+msgid "Base-10 logarithm"
+msgstr "상용로그"
+
+#: analitzagui/operatorsmodel.cpp:282
+msgctxt "QCoreApplication|"
+msgid "Absolute value. abs(n)=|n|"
+msgstr "절댓값. abs(n)=|n|"
+
+#: analitzagui/operatorsmodel.cpp:285
+msgctxt "QCoreApplication|"
+msgid "Conjugate"
+msgstr "켤레 복소수"
+
+#: analitzagui/operatorsmodel.cpp:288
+msgctxt "QCoreApplication|"
+msgid "Arg"
+msgstr "편각"
+
+#: analitzagui/operatorsmodel.cpp:291
+msgctxt "QCoreApplication|"
+msgid "Real"
+msgstr "실수"
+
+#: analitzagui/operatorsmodel.cpp:294
+msgctxt "QCoreApplication|"
+msgid "Imaginary"
+msgstr "허수"
+
+#: analitzagui/operatorsmodel.cpp:297
+msgctxt "QCoreApplication|"
+msgid "Floor value. floor(n)=⌊n⌋"
+msgstr "값의 버림. floor(n)=⌊n⌋"
+
+#: analitzagui/operatorsmodel.cpp:300
+msgctxt "QCoreApplication|"
+msgid "Ceil value. ceil(n)=⌈n⌉"
+msgstr "값의 올림. ceil(n)=⌈n⌉"
+
+#: analitzagui/operatorsmodel.cpp:303
+msgctxt "QCoreApplication|"
+msgid "Minimum"
+msgstr "최소"
+
+#: analitzagui/operatorsmodel.cpp:306
+msgctxt "QCoreApplication|"
+msgid "Maximum"
+msgstr "최대"
+
+#: analitzagui/operatorsmodel.cpp:309
+msgctxt "QCoreApplication|"
+msgid "Greater than. gt(a,b)=a>b"
+msgstr "보다 큼. gt(a,b)=a>b"
+
+#: analitzagui/operatorsmodel.cpp:312
+msgctxt "QCoreApplication|"
+msgid "Less than. lt(a,b)=a<b"
+msgstr "보다 작음. lt(a,b)=a<b"
+
+#: analitzagui/operatorsmodel.cpp:315
+msgctxt "QCoreApplication|"
+msgid "Equal. eq(a,b) = a=b"
+msgstr "같음. eq(a,b) = a=b"
+
+#: analitzagui/operatorsmodel.cpp:318
+msgctxt "QCoreApplication|"
+msgid "Approximation. approx(a)=a±n"
+msgstr "예측. approx(a)=a±n"
+
+#: analitzagui/operatorsmodel.cpp:321
+msgctxt "QCoreApplication|"
+msgid "Not equal. neq(a,b)=a≠b"
+msgstr "같지 않음. neq(a,b)=a≠b"
+
+#: analitzagui/operatorsmodel.cpp:324
+msgctxt "QCoreApplication|"
+msgid "Greater or equal. geq(a,b)=a≥b"
+msgstr "크거나 같음. geq(a,b)=a≥b"
+
+#: analitzagui/operatorsmodel.cpp:327
+msgctxt "QCoreApplication|"
+msgid "Less or equal. leq(a,b)=a≤b"
+msgstr "작거나 같음. leq(a,b)=a≤b"
+
+#: analitzagui/operatorsmodel.cpp:330
+msgctxt "QCoreApplication|"
+msgid "Boolean and"
+msgstr "이진 and"
+
+#: analitzagui/operatorsmodel.cpp:333
+msgctxt "QCoreApplication|"
+msgid "Boolean not"
+msgstr "이진 not"
+
+#: analitzagui/operatorsmodel.cpp:336
+msgctxt "QCoreApplication|"
+msgid "Boolean or"
+msgstr "이진 or"
+
+#: analitzagui/operatorsmodel.cpp:339
+msgctxt "QCoreApplication|"
+msgid "Boolean xor"
+msgstr "이진 xor"
+
+#: analitzagui/operatorsmodel.cpp:342
+msgctxt "QCoreApplication|"
+msgid "Boolean implication"
+msgstr "이진 귀결"
+
+#: analitzagui/operatorsmodel.cpp:345
+msgctxt "QCoreApplication|"
+msgid "Greatest common divisor"
+msgstr "최대 공약수"
+
+#: analitzagui/operatorsmodel.cpp:348
+msgctxt "QCoreApplication|"
+msgid "Least common multiple"
+msgstr "최소 공배수"
+
+#: analitzagui/operatorsmodel.cpp:351
+msgctxt "QCoreApplication|"
+msgid "Root"
+msgstr "루트"
+
+#: analitzagui/operatorsmodel.cpp:354
+msgctxt "QCoreApplication|"
+msgid "Cardinal"
+msgstr "기수"
+
+#: analitzagui/operatorsmodel.cpp:357
+msgctxt "QCoreApplication|"
+msgid "Scalar product"
+msgstr "스칼라 곱"
+
+#: analitzagui/operatorsmodel.cpp:360
+msgctxt "QCoreApplication|"
+msgid "Select the par1-th element of par2 list or vector"
+msgstr "par2 목록이나 벡터의 par1번째 원소 선택"
+
+#: analitzagui/operatorsmodel.cpp:363
+msgctxt "QCoreApplication|"
+msgid "Joins several items of the same type"
+msgstr "같은 형식의 항목 여러 개 합치기"
+
+#: analitzagui/operatorsmodel.cpp:366
+msgctxt "QCoreApplication|"
+msgid "Applies a function to every element in a list"
+msgstr "목록의 모든 원소에 함수 적용"
+
+#: analitzagui/operatorsmodel.cpp:369
+msgctxt "QCoreApplication|"
+msgid "Removes all elements that don't fit a condition"
+msgstr "조건에 맞지 않는 모든 원소 삭제"
+
+#: analitzagui/operatorsmodel.cpp:372
+msgctxt "QCoreApplication|"
+msgid "Transpose"
+msgstr "전치"
+
+#: analitzagui/operatorsmodel.cpp:572
+#, qt-format
+msgctxt "n-ary function prototype|"
+msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
+msgstr "<em>%1</em>(..., <b>par%2</b>, ...)"
+
+#: analitzagui/operatorsmodel.cpp:582
+#, qt-format
+msgctxt "Function name in function prototype|"
+msgid "<em>%1</em>("
+msgstr "<em>%1</em>("
+
+#: analitzagui/operatorsmodel.cpp:583
+#, qt-format
+msgctxt "Uncorrect function name in function prototype|"
+msgid "<em style='color:red'><b>%1</b></em>("
+msgstr "<em style='color:red'><b>%1</b></em>("
+
+#: analitzagui/operatorsmodel.cpp:586
+#, qt-format
+msgctxt "Parameter in function prototype|"
+msgid "par%1"
+msgstr "par%1"
+
+#: analitzagui/operatorsmodel.cpp:589 analitzagui/operatorsmodel.cpp:599
+#, qt-format
+msgctxt "Current parameter in function prototype|"
+msgid "<b>%1</b>"
+msgstr "<b>%1</b>"
+
+#: analitzagui/operatorsmodel.cpp:592
+msgctxt "Function parameter separator|"
+msgid ", "
+msgstr ", "
+
+#: analitzagui/operatorsmodel.cpp:596
+msgctxt "Current parameter is the bounding|"
+msgid " : bounds"
+msgstr " : bounds"
+
+#: analitzagui/variablesmodel.cpp:94
+msgctxt "@title:column|"
+msgid "Value"
+msgstr "값"
+
+#: analitzaplot/plotsfactory.cpp:49
+msgctxt "QCoreApplication|"
+msgid "The expression is not correct"
+msgstr "수식이 잘못됨"
+
+#: analitzaplot/plotsfactory.cpp:72
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Function type '%1' not recognized"
+msgstr "함수 형식 '%1'을(를) 알 수 없음"
+
+#: analitzaplot/plotsfactory.cpp:74
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Function '%1' not recognized"
+msgstr "함수 '%1'을(를) 알 수 없음"
+
+#: analitzaplot/plotsmodel.cpp:79
+msgctxt "@title:column|"
+msgid "Plot"
+msgstr "플롯"
+
+#: analitzaplot/plotter3d_es.cpp:534 declarative/graph2dmobile.cpp:149
+msgctxt "QObject|"
+msgid "PNG Image (*.png)"
+msgstr "PNG 그림 (*.png)"
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "PDF Document (*.pdf)"
+msgstr "PDF 문서 (*.pdf)"
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "X3D Document (*.x3d)"
+msgstr "X3D 문서 (*.x3d)"
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "STL Document (*.stl)"
+msgstr "STL 문서 (*.stl)"
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:64
+msgctxt "Function type|"
+msgid "Plane Curve F(y)"
+msgstr "평면 곡선 F(y)"
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:80
+msgctxt "Function type|"
+msgid "Plane Curve F(x)"
+msgstr "평면 곡선 F(x)"
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:137
+#: analitzaplot/private/backends/cartesiancurve.cpp:245
+msgctxt "QCoreApplication|"
+msgid "We can only draw Real results."
+msgstr "실수 결과만 그릴 수 있습니다."
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:248
+#: analitzawidgets/plotsview2d.cpp:236
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "x=%1 y=%2"
+msgstr "x=%1 y=%2"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:52
+msgctxt "Function type|"
+msgid "Surface z=F(x,y)"
+msgstr "평면 z=F(x,y)"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:94
+msgctxt "Function type|"
+msgid "Surface y=F(x,z)"
+msgstr "평면 y=F(x,z)"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:127
+msgctxt "Function type|"
+msgid "Surface x=F(y,z)"
+msgstr "평면 x=F(y,z)"
+
+#: analitzaplot/private/backends/cylindricalsurface.cpp:37
+msgctxt "Function type|"
+msgid "Cylindrical Surface z=F(r: Radial, p: Polar)"
+msgstr "원기둥 평면 z=F(r: 반지름, p: 극)"
+
+#: analitzaplot/private/backends/implicitcurve.cpp:44
+msgctxt "Function type|"
+msgid "Implicit Curve"
+msgstr "음함수 곡선"
+
+#: analitzaplot/private/backends/implicitpolarcurve.cpp:37
+msgctxt "Function type|"
+msgid "Polar implicit Curve 0=F(r: Radial, p: Polar)"
+msgstr "극좌표 음함수 곡선 0=F(r: 반지름, p: 극)"
+
+#: analitzaplot/private/backends/implicitsurface.cpp:35
+msgctxt "Function type|"
+msgid "Implicit Surface"
+msgstr "음함수 평면"
+
+#: analitzaplot/private/backends/parametriccurve2d.cpp:37
+msgctxt "Function type|"
+msgid "Parametric Curve 2D"
+msgstr "인수 좌표 곡선 2D"
+
+#: analitzaplot/private/backends/parametriccurve3d.cpp:31
+msgctxt "Function type|"
+msgid "Parametric Curve 3D"
+msgstr "인수 좌표 곡선 3D"
+
+#: analitzaplot/private/backends/parametricsurface.cpp:32
+msgctxt "Function type|"
+msgid "Parametric Surface"
+msgstr "인수 좌표 평면"
+
+#: analitzaplot/private/backends/polarcurve.cpp:37
+msgctxt "Function type|"
+msgid "Polar Curve r=F(p: Polar)"
+msgstr "극좌표 곡선 r=F(p: 극)"
+
+#: analitzaplot/private/backends/sphericalsurface.cpp:35
+msgctxt "Function type|"
+msgid "Spherical Surface Radial=F(t:Azimuth, p: Polar)"
+msgstr "구형 표면 Radial=F(t:방위각, p: 극)"
+
+#: analitzawidgets/expressionedit.cpp:295
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Result: %1"
+msgstr "결과: %1"
+
+#: analitzawidgets/expressionedit.cpp:405
+msgctxt "QCoreApplication|"
+msgid "To Expression"
+msgstr "수식으로"
+
+#: analitzawidgets/expressionedit.cpp:407
+msgctxt "QCoreApplication|"
+msgid "To MathML"
+msgstr "MathML로"
+
+#: analitzawidgets/expressionedit.cpp:409
+msgctxt "QCoreApplication|"
+msgid "Simplify"
+msgstr "간략하게"
+
+#: analitzawidgets/expressionedit.cpp:411
+msgctxt "QCoreApplication|"
+msgid "Examples"
+msgstr "예제"
+
+#: analitzawidgets/plotsview2d.cpp:214
+msgctxt "QCoreApplication|"
+msgid "Selected viewport too small"
+msgstr "선택한 뷰포트가 너무 작음"

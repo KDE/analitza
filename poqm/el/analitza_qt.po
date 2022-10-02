@@ -1,0 +1,1289 @@
+# analitza.po translation [el]
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Stelios <sstavra@gmail.com>, 2012, 2017, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: analitza\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-02-16 03:26+0000\n"
+"PO-Revision-Date: 2020-05-04 13:53+0300\n"
+"Last-Translator: Stelios <sstavra@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-el@kde.org>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 18.12.3\n"
+"X-Qt-Contexts: true\n"
+
+msgctxt "QObject|dictionary"
+msgid "xaxaxaxaxa"
+msgstr "xaxaxaxaxa"
+
+msgctxt "QObject|dictionary"
+msgid "cosa"
+msgstr "cosa"
+
+#: analitza/analyzer.cpp:193
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate an empty expression"
+msgstr "Αδυναμία υπολογισμού κενής έκφρασης"
+
+#: analitza/analyzer.cpp:240 analitza/analyzer.cpp:259
+#: analitza/analyzer.cpp:285
+msgctxt "QCoreApplication|"
+msgid "Must specify a correct operation"
+msgstr "Πρέπει να οριστεί μια σωστή λειτουργία"
+
+#: analitza/analyzer.cpp:255 analitza/analyzer.cpp:288
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unknown identifier: '%1'"
+msgstr "Άγνωστο αναγνωριστικό: '%1'"
+
+#: analitza/analyzer.cpp:257 analitza/analyzer.cpp:290
+msgctxt "identifier separator in error message|"
+msgid "', '"
+msgstr "', '"
+
+#: analitza/analyzer.cpp:615
+msgctxt "Error message, no proper condition found.|"
+msgid "Could not find a proper choice for a condition statement."
+msgstr "Αδυναμία εύρεσης κατάλληλης επιλογής για δήλωση συνθήκης."
+
+#: analitza/analyzer.cpp:936
+msgctxt "QCoreApplication|"
+msgid "Type not supported for bounding."
+msgstr "Ο τύπος δεν υποστηρίζεται για οριοθέτηση."
+
+#: analitza/analyzer.cpp:961
+msgctxt "QCoreApplication|"
+msgid "The downlimit is greater than the uplimit"
+msgstr "Το κάτω όριο είναι μεγαλύτερο από το άνω όριο"
+
+#: analitza/analyzer.cpp:963
+msgctxt "QCoreApplication|"
+msgid "Incorrect uplimit or downlimit."
+msgstr "Λανθασμένο άνω ή κάτω όριο."
+
+#: analitza/analyzer.cpp:1055 analitza/analyzer.cpp:1080
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid type for parameter '%1'"
+msgstr "Μη έγκυρος τύπος για τη μεταβλητή '%1'"
+
+#: analitza/analyzer.cpp:1877
+msgctxt "By a cycle i mean a variable that depends on itself|"
+msgid "Defined a variable cycle"
+msgstr "Ορίστηκε μια κυκλική μεταβλητά"
+
+#: analitza/analyzer.cpp:1919
+msgctxt "QCoreApplication|"
+msgid "The result is not a number"
+msgstr "Το αποτέλεσμα δεν είναι αριθμός"
+
+#: analitza/commands/blockmatrixcommands.cpp:44
+#: analitza/commands/blockmatrixcommands.cpp:234
+#: analitza/commands/listcommands.cpp:47 analitza/commands/listcommands.cpp:64
+#: analitza/commands/matrixcommands.cpp:48
+#: analitza/commands/matrixcommands.cpp:201
+#: analitza/commands/vectorcommands.cpp:45
+#: analitza/commands/vectorcommands.cpp:82
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%1'"
+msgstr "Μη έγκυρη καταμέτρηση παραμέτρων για '%1'"
+
+#: analitza/commands/blockmatrixcommands.cpp:86
+#: analitza/commands/blockmatrixcommands.cpp:119
+#: analitza/commands/blockmatrixcommands.cpp:122
+msgctxt "QCoreApplication|"
+msgid "Blocks must have consistent size between each and other"
+msgstr "Τα μπλοκ πρέπει να έχουν συνεπή απόσταση μεταξύ τους"
+
+#: analitza/commands/blockmatrixcommands.cpp:90
+#: analitza/commands/blockmatrixcommands.cpp:126
+#: analitza/commands/blockmatrixcommands.cpp:263
+msgctxt "QCoreApplication|"
+msgid "Do not want empty blocks"
+msgstr "Ανεπιθύμητα κενά μπλοκ"
+
+#: analitza/commands/blockmatrixcommands.cpp:93
+#: analitza/commands/blockmatrixcommands.cpp:130
+#: analitza/commands/blockmatrixcommands.cpp:209
+#: analitza/commands/blockmatrixcommands.cpp:267
+msgctxt "QCoreApplication|"
+msgid "Blocks must be matrices"
+msgstr "Τα μπλοκ πρέπει να είναι μήτρες"
+
+#: analitza/commands/blockmatrixcommands.cpp:142
+msgctxt "QCoreApplication|"
+msgid "Number of blocks must be consistent"
+msgstr "Ο αριθμός των μπλοκ πρέπει να είναι συνεπής"
+
+#: analitza/commands/blockmatrixcommands.cpp:145
+#: analitza/commands/blockmatrixcommands.cpp:211
+#: analitza/commands/matrixcommands.cpp:147
+msgctxt "QCoreApplication|"
+msgid "Do not want empty vectors/matrixrow elements"
+msgstr "Ανεπιθύμητα κενά διανύσματα / γραμμές μητρών"
+
+#: analitza/commands/blockmatrixcommands.cpp:150
+#: analitza/commands/blockmatrixcommands.cpp:213
+#: analitza/commands/matrixcommands.cpp:149
+msgctxt "QCoreApplication|"
+msgid "Matrix constructor needs vectors or matrixrow elements"
+msgstr "Ο κατασκευαστής μητρών απαιτεί διανύσματα ή γραμμές μητρών"
+
+#: analitza/commands/blockmatrixcommands.cpp:244
+#: analitza/commands/matrixcommands.cpp:288
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "the arg %1 is invalid or is error"
+msgstr "το όρισμα %1 είναι μη έγκυρο ή λάθος"
+
+#: analitza/commands/eigencommands.cpp:39
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%1'. Should have 1 parameter"
+msgstr ""
+"Μη έγκυρη καταμέτρηση παραμέτρων για '%1'. Πρέπει να είναι 1 παράμετρος."
+
+#: analitza/commands/eigencommands.cpp:47
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "To use '%1' command the input matrix must be square"
+msgstr ""
+"Για τη χρήση της '%1' εντολής η μήτρα εισόδου πρέπει να είναι τετράγωνη"
+
+#: analitza/commands/eigencommands.cpp:68
+#: analitza/commands/eigencommands.cpp:74
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid ""
+"Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number "
+"value"
+msgstr ""
+"Μη έγκυρος τύπος παραμέτρου στα δεδομένα της μήτρας (%1,%2) για '%3', πρέπει "
+"να είναι αριθμητική τιμή"
+
+#: analitza/commands/eigencommands.cpp:126
+#: analitza/commands/eigencommands.cpp:193
+msgctxt "QCoreApplication|NaN means Not a Number, is an invalid float number"
+msgid "Returned eigenvalue is NaN"
+msgstr "Η επιστρεφόμενη ιδιοτιμή είναι NaN"
+
+#: analitza/commands/eigencommands.cpp:132
+#: analitza/commands/eigencommands.cpp:196
+msgctxt "QCoreApplication|"
+msgid "Returned eigenvalue is too big"
+msgstr "Η επιστρεφόμενη ιδιοτιμή είναι πολύ μεγάλη"
+
+#: analitza/commands/matrixcommands.cpp:31
+msgctxt "QCoreApplication|"
+msgid "Matrix dimensions must be greater than zero"
+msgstr "Οι διαστάσεις της μήτρας πρέπει να είναι μεγαλύτερες του μηδενός"
+
+#: analitza/commands/matrixcommands.cpp:122 analitza/expression.cpp:296
+msgctxt "QCoreApplication|"
+msgid "All matrixrow elements must have the same size"
+msgstr "Όλα τα αντικείμενα γραμμής της μήτρας πρέπει να έχουν το ίδιο μέγεθος"
+
+#: analitza/commands/matrixcommands.cpp:127
+msgctxt "QCoreApplication|"
+msgid "Not all are rows or vectors"
+msgstr "Δεν είναι όλα γραμμές ή διανύσματα"
+
+#: analitza/commands/matrixcommands.cpp:143
+msgctxt "QCoreApplication|"
+msgid "Every argument must be a matrixrow element"
+msgstr "Κάθε όρισμα πρέπει να είναι αντικείμενο γραμμής της μήτρας"
+
+#: analitza/commands/matrixcommands.cpp:241
+msgctxt "QCoreApplication|"
+msgid "The nth diagonal index must be less than the row count"
+msgstr ""
+"Ο νιοστός διαγώνιος δείκτης πρέπει να είναι μικρότερος από τον αριθμό γραμμών"
+
+#: analitza/commands/matrixcommands.cpp:249
+msgctxt "QCoreApplication|"
+msgid "The nth diagonal index must be less than the column count"
+msgstr ""
+"Ο νιοστός διαγώνιος δείκτης πρέπει να είναι μικρότερος από τον αριθμό στηλών"
+
+#: analitza/commands/matrixcommands.cpp:265
+msgctxt "QCoreApplication|"
+msgid "nth diagonal index must be integer number"
+msgstr "Ο νιοστός διαγώνιος δείκτης πρέπει να είναι ακέραιος αριθμός"
+
+#: analitza/commands/matrixcommands.cpp:269
+msgctxt "QCoreApplication|"
+msgid "nth diagonal index must be a positive integer number"
+msgstr "Ο νιοστός διαγώνιος δείκτης πρέπει να είναι θετικός ακέραιος"
+
+#: analitza/commands/vectorcommands.cpp:62
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter type for '%1', was expected a list"
+msgstr "Μη έγκυρος τύπος παραμέτρου για '%1', θα έπρεπε να ήταν λίστα"
+
+#: analitza/commands/vectorcommands.cpp:75
+#: analitza/commands/vectorcommands.cpp:78
+msgctxt "QCoreApplication|"
+msgid "Vector size must be some integer value greater to zero"
+msgstr ""
+"Το μέγεθος του διανύσματος πρέπει να είναι κάποια ακέραια τιμή μεγαλύτερη "
+"από μηδέν"
+
+#: analitza/explexer.cpp:78
+msgctxt "QCoreApplication|"
+msgid "Unexpectedly arrived to the end of the input"
+msgstr "Απροσδόκητη άφιξη στο τέλος της εισαγωγής δεδομένων"
+
+#: analitza/explexer.cpp:112
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unknown token %1"
+msgstr "Άγνωστο αναγνωριστικό %1"
+
+#: analitza/expression.cpp:162
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> needs at least 2 parameters"
+msgstr "<em>%1</em> χρειάζεται τουλάχιστο 2 παραμέτρους"
+
+#: analitza/expression.cpp:164
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> requires %2 parameters"
+msgstr "<em>%1</em> απαιτεί %2 παραμέτρους"
+
+#: analitza/expression.cpp:171
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Missing boundary for '%1'"
+msgstr "Λείπει το όριο για '%1'"
+
+#: analitza/expression.cpp:173
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unexpected bounding for '%1'"
+msgstr "Απροσδόκητη οριοθέτηση για '%1'"
+
+#: analitza/expression.cpp:178
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> missing bounds on '%2'"
+msgstr "Στην <em>%1</em> λείπουν τα όρια στο '%2'"
+
+#: analitza/expression.cpp:200
+msgctxt "QCoreApplication|"
+msgid "Wrong declare"
+msgstr "Λανθασμένη δήλωση"
+
+#: analitza/expression.cpp:210
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Empty container: %1"
+msgstr "Κενός υποδοχέας: %1"
+
+#: analitza/expression.cpp:228
+msgctxt "there was a conditional outside a condition structure|"
+msgid "We can only have conditionals inside piecewise structures."
+msgstr "Μπορούμε να έχουμε συνθήκες μόνο μέσα σε τμηματικές δομές."
+
+#: analitza/expression.cpp:244
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot have two parameters with the same name like '%1'."
+msgstr "Δεν γίνεται να υπάρχουν δύο παράμετροι με το ίδιο όνομα όπως '%1'."
+
+#: analitza/expression.cpp:259
+msgctxt ""
+"this is an error message. otherwise is the else in a mathml condition|"
+msgid "The <em>otherwise</em> parameter should be the last one"
+msgstr "Η παράμετρος <em>otherwise</em> πρέπει να είναι η τελευταία"
+
+#: analitza/expression.cpp:267
+#, qt-format
+msgctxt "there was an element that was not a conditional inside a condition|"
+msgid "%1 is not a proper condition inside the piecewise"
+msgstr "%1 δεν είναι κατάλληλη συνθήκη μέσα στην τμηματική δομή"
+
+#: analitza/expression.cpp:273
+msgctxt "QCoreApplication|"
+msgid "We can only declare variables"
+msgstr "Μπορούμε μόνο να δηλώσουμε μεταβλητές"
+
+#: analitza/expression.cpp:279
+msgctxt "QCoreApplication|"
+msgid "We can only have bounded variables"
+msgstr "Μπορούμε να έχουμε μόνο μεταβλητές με περιορισμούς"
+
+#: analitza/expression.cpp:290 analitza/expression.cpp:495
+msgctxt "QCoreApplication|"
+msgid "Do not want empty matrixrow elements"
+msgstr "Ανεπιθύμητα κενά αντικείμενα σε γραμμή μήτρας"
+
+#: analitza/expression.cpp:300
+msgctxt "QCoreApplication|"
+msgid "The matrix must contain only matrixrow elements"
+msgstr "Η μήτρα πρέπει να περιέχει μόνο αντικείμενα γραμμής μήτρας"
+
+#: analitza/expression.cpp:419
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Error while parsing: %1"
+msgstr "Σφάλμα συντακτικής ανάλυσης: %1"
+
+#: analitza/expression.cpp:450
+#, qt-format
+msgctxt "An error message|"
+msgid "Container unknown: %1"
+msgstr "Άγνωστος υποδοχέας: %1"
+
+#: analitza/expression.cpp:456
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot codify the %1 value."
+msgstr "Αδυναμία κωδικοποίησης της %1 τιμής."
+
+#: analitza/expression.cpp:462
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "The %1 operator cannot have child contexts."
+msgstr "Ο %1 τελεστής δεν μπορεί να έχει απογόνους."
+
+#: analitza/expression.cpp:466
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "The element '%1' is not an operator."
+msgstr "Το στοιχείο '%1' δεν είναι τελεστής."
+
+#: analitza/expression.cpp:479
+msgctxt "QCoreApplication|"
+msgid "Do not want empty vectors"
+msgstr "Ανεπιθύμητα κενά διανύσματα"
+
+#: analitza/expression.cpp:489
+msgctxt "QCoreApplication|"
+msgid "Do not want empty matrices"
+msgstr "Ανεπιθύμητες κενές μήτρες"
+
+#: analitza/expression.cpp:508
+#, qt-format
+msgctxt "Error message due to an unrecognized input|"
+msgid "Not supported/unknown: %1"
+msgstr "Δεν υποστηρίζεται/άγνωστο: %1"
+
+#: analitza/expressionparser.cpp:296
+msgctxt "QCoreApplication|"
+msgid ", "
+msgstr ", "
+
+#: analitza/expressionparser.cpp:296
+#, qt-format
+msgctxt "error message|"
+msgid "Expected %1 instead of '%2'"
+msgstr "Αναμενόταν %1 αντί για '%2'"
+
+#: analitza/expressionparser.cpp:298
+msgctxt "QCoreApplication|"
+msgid "Missing right parenthesis"
+msgstr "Λείπει η δεξιά παρένθεση"
+
+#: analitza/expressionparser.cpp:300
+msgctxt "QCoreApplication|"
+msgid "Unbalanced right parenthesis"
+msgstr "Ανοικτή δεξιά παρένθεση"
+
+#: analitza/expressionparser.cpp:303
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unexpected token identifier: %1"
+msgstr "Απρόσμενο όνομα αναγνωριστικού: %1"
+
+#: analitza/expressionparser.cpp:305
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unexpected token %1"
+msgstr "Απρόσμενο αναγνωριστικό %1"
+
+#: analitza/expressiontypechecker.cpp:301
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not find a type that unifies '%1'"
+msgstr "Αδυναμία εύρεσης τύπου που να ενοποιεί '%1'"
+
+#: analitza/expressiontypechecker.cpp:473
+msgctxt "QCoreApplication|"
+msgid "The domain should be either a vector or a list"
+msgstr "Το πεδίο πρέπει να είναι ή διάνυσμα ή λίστα"
+
+#: analitza/expressiontypechecker.cpp:558
+#, qt-format
+msgctxt "type error message|"
+msgid "Cannot call '%1'"
+msgstr "Αδυναμία κλήσης '%1'"
+
+#: analitza/expressiontypechecker.cpp:593
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
+msgstr ""
+"Αδυναμία αναγωγής '%1' στο '%2'. Μη έγκυρος τύπος παραμέτρου '%3' για '%4'"
+
+#: analitza/expressiontypechecker.cpp:604
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%2'. Should have %1 parameters."
+msgstr ""
+"Μη έγκυρη καταμέτρηση παραμέτρων για '%2'. Πρέπει να είναι %1 παράμετροι."
+
+#: analitza/expressiontypechecker.cpp:616
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
+msgstr ""
+"Αδυναμία σύγκρισης '%1' με '%2'. Μη έγκυρος τύπος παραμέτρου '%3' για '%4'"
+
+#: analitza/expressiontypechecker.cpp:654
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not call '%1'"
+msgstr "Αδυναμία κλήσης '%1'"
+
+#: analitza/expressiontypechecker.cpp:662
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not solve '%1'"
+msgstr "Αδυναμία επίλυσης '%1'"
+
+#: analitza/expressiontypechecker.cpp:695
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Incoherent type for the variable '%1'"
+msgstr "Μη συνεκτικός τύπος για τη μεταβλητή '%1'"
+
+#: analitza/expressiontypechecker.cpp:718
+msgctxt "QCoreApplication|"
+msgid "Could not determine the type for piecewise"
+msgstr "Αδυναμία προσδιορισμού του τύπου της τμηματικής δομής"
+
+#: analitza/expressiontypechecker.cpp:937
+msgctxt "QCoreApplication|"
+msgid "Unexpected type"
+msgstr "Απρόσμενος τύπος"
+
+#: analitza/expressiontypechecker.cpp:960
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot convert '%1' to '%2'"
+msgstr "Αδυναμία μετατροπής '%1' σε '%2'"
+
+#: analitza/htmlexpressionwriter.cpp:54 analitza/htmlexpressionwriter.cpp:55
+#, qt-format
+msgctxt "html representation of an operator|"
+msgid "<span class='op'>%1</span>"
+msgstr "<span class='op'>%1</span>"
+
+#: analitza/htmlexpressionwriter.cpp:56
+#, qt-format
+msgctxt "html representation of an operator|"
+msgid "<span class='keyword'>%1</span>"
+msgstr "<span class='keyword'>%1</span>"
+
+#: analitza/mathmlpresentationlexer.cpp:94
+#, qt-format
+msgctxt "Error message|"
+msgid "Unknown token '%1'"
+msgstr "Άγνωστο αναγνωριστικό '%1'"
+
+#: analitza/operations.cpp:54 analitza/operations.cpp:191
+msgctxt "QCoreApplication|"
+msgid "Cannot divide by 0."
+msgstr "Αδυναμία διαίρεσης με το 0."
+
+#: analitza/operations.cpp:72 analitza/operations.cpp:203
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the remainder on 0."
+msgstr "Αδυναμία υπολογισμού του υπολοίπου στο 0."
+
+#: analitza/operations.cpp:84 analitza/operations.cpp:213
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the factor on 0."
+msgstr "Αδυναμία υπολογισμού παράγοντα στο 0."
+
+#: analitza/operations.cpp:140 analitza/operations.cpp:261
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the lcm of 0."
+msgstr "Αδυναμία υπολογισμού του ΕΚΠ του 0."
+
+#: analitza/operations.cpp:246
+msgctxt "QCoreApplication|"
+msgid "Boolean operations on complex numbers not available"
+msgstr "Δυαδικές πράξεις σε μιγαδικούς αριθμούς δεν είναι διαθέσιμες"
+
+#: analitza/operations.cpp:276
+msgctxt "QCoreApplication|"
+msgid "Only square root implemented for complex numbers"
+msgstr "Μόνο η τετραγωνική ρίζα έχει υλοποιηθεί για μιγαδικούς αριθμούς"
+
+#: analitza/operations.cpp:351 analitza/operations.cpp:463
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a value %1"
+msgstr "Αδυναμία υπολογισμού τιμής %1"
+
+#: analitza/operations.cpp:479
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate %1 between a value and an error type"
+msgstr "Αδυναμία υπολογισμού %1 μεταξύ τιμής και τύπου σφάλματος"
+
+#: analitza/operations.cpp:495 analitza/operations.cpp:652
+#: analitza/operations.cpp:784
+msgctxt "QCoreApplication|"
+msgid "Invalid index for a container"
+msgstr "Μη έγκυρος δείκτης για υποδοχέα"
+
+#: analitza/operations.cpp:527
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot operate '%1' on different sized vectors."
+msgstr "Αδυναμία εκτέλεσης πράξης με '%1' σε διανύσματα διαφορετικού μεγέθους."
+
+#: analitza/operations.cpp:566
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication between a matrix and a vector is allowed provided that the "
+"number of columns of the matrix equals the size of the vector"
+msgstr ""
+"Ο πολλαπλασιασμός ανάμεσα σε μήτρα και διάνυσμα επιτρέπεται αν το πλήθος των "
+"στηλών της μήτρας ισούται με το μέγεθος του διανύσματος"
+
+#: analitza/operations.cpp:570 analitza/operations.cpp:707
+msgctxt "QCoreApplication|"
+msgid "Matrix and vector entries must be numbers"
+msgstr "Τα δεδομένα σε μήτρα και διάνυσμα πρέπει να είναι αριθμοί"
+
+#: analitza/operations.cpp:599
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a vector's %1"
+msgstr "Αδυναμία υπολογισμού %1 του διανύσματος"
+
+#: analitza/operations.cpp:621 analitza/operations.cpp:637
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a list's %1"
+msgstr "Αδυναμία υπολογισμού %1 της λίστας"
+
+#: analitza/operations.cpp:703
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication between a vector and a matrix is allowed provided that the "
+"matrix has only one matrixrow element"
+msgstr ""
+"Ο πολλαπλασιασμός ανάμεσα σε διάνυσμα και μήτρα επιτρέπεται αν η μήτρα έχει "
+"μόνο ένα αντικείμενο γραμμής"
+
+#: analitza/operations.cpp:730
+msgctxt "QCoreApplication|"
+msgid ""
+"Addition of two matrices is allowed provided that both matrices have the "
+"same number of rows and the same number of columns"
+msgstr ""
+"Η πρόσθεση δύο μητρών επιτρέπεται αν και οι δύο μήτρες έχουν το ίδιο πλήθος "
+"γραμμών και στηλών"
+
+#: analitza/operations.cpp:762
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication of two matrices is allowed provided that the number of "
+"columns of the first matrix equals the number of rows of the second matrix"
+msgstr ""
+"Ο πολλαπλασιαμός ανάμεσα σε δύο μήτρες επιτρέπεται αν το πλήθος των στηλών "
+"της πρώτης ισούται με το πλήθος των γραμμών της δεύτερης"
+
+#: analitza/operations.cpp:766 analitza/operations.cpp:804
+#: analitza/operations.cpp:887
+msgctxt "QCoreApplication|"
+msgid "Matrix entries must be numbers"
+msgstr "Τα δεδομένα της μήτρας πρέπει να είναι αριθμοί"
+
+#: analitza/operations.cpp:879
+msgctxt "QCoreApplication|"
+msgid "The exponent of 'power' must be some integer number"
+msgstr "Ο εκθέτης της 'δύναμης' πρέπει να είναι ακέραιος"
+
+#: analitza/operations.cpp:883
+msgctxt "QCoreApplication|"
+msgid "Cannot compute 'power' for non square matrix"
+msgstr "Αδυναμία υπολογισσμού 'δύναμης' για μη τετραγωνική μήτρα"
+
+#: analitza/operations.cpp:922
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate %1 between a matrix and an error type"
+msgstr "Αδυναμία υπολογισμού %1 μεταξύ μήτρας και τύπου σφάλματος"
+
+#: analitza/providederivative.cpp:93
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate the derivative for '%1'"
+msgstr "Αδυναμία υπολογισμού της παραγώγου για το '%1'"
+
+#: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
+#: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
+msgctxt "@title:column|"
+msgid "Name"
+msgstr "Όνομα"
+
+#: analitzagui/operatorsmodel.cpp:98
+msgctxt "@title:column|"
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: analitzagui/operatorsmodel.cpp:101
+msgctxt "@title:column|"
+msgid "Parameters"
+msgstr "Παράμετροι"
+
+#: analitzagui/operatorsmodel.cpp:104
+msgctxt "@title:column|"
+msgid "Example"
+msgstr "Παράδειγμα"
+
+#: analitzagui/operatorsmodel.cpp:135
+msgctxt "Syntax for function bounding|"
+msgid " : var"
+msgstr " : var"
+
+#: analitzagui/operatorsmodel.cpp:137
+msgctxt "Syntax for function bounding values|"
+msgid "=from..to"
+msgstr "=από..σε"
+
+#: analitzagui/operatorsmodel.cpp:140
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "%1("
+msgstr "%1("
+
+#: analitzagui/operatorsmodel.cpp:143
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "%1... parameters, ...%2)"
+msgstr "%1... παράμετροι, ...%2)"
+
+#: analitzagui/operatorsmodel.cpp:146
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "par%1"
+msgstr "par%1"
+
+#: analitzagui/operatorsmodel.cpp:159
+msgctxt "QCoreApplication|"
+msgid "Addition"
+msgstr "Πρόσθεση"
+
+#: analitzagui/operatorsmodel.cpp:162
+msgctxt "QCoreApplication|"
+msgid "Multiplication"
+msgstr "Πολλαπλασιασμός"
+
+#: analitzagui/operatorsmodel.cpp:165
+msgctxt "QCoreApplication|"
+msgid "Division"
+msgstr "Διαίρεση"
+
+#: analitzagui/operatorsmodel.cpp:168
+msgctxt "QCoreApplication|"
+msgid "Subtraction. Will remove all values from the first one."
+msgstr "Αφαίρεση. Θα αφαιρέσει όλες τις τιμές από την πρώτη."
+
+#: analitzagui/operatorsmodel.cpp:171
+msgctxt "QCoreApplication|"
+msgid "Power"
+msgstr "Δύναμη"
+
+#: analitzagui/operatorsmodel.cpp:174
+msgctxt "QCoreApplication|"
+msgid "Remainder"
+msgstr "Υπόλοιπο"
+
+#: analitzagui/operatorsmodel.cpp:177
+msgctxt "QCoreApplication|"
+msgid "Quotient"
+msgstr "Πηλίκο"
+
+#: analitzagui/operatorsmodel.cpp:180
+msgctxt "QCoreApplication|"
+msgid "The factor of"
+msgstr "Ο παράγοντας του"
+
+#: analitzagui/operatorsmodel.cpp:183
+msgctxt "QCoreApplication|"
+msgid "Factorial. factorial(n)=n!"
+msgstr "Παραγοντικό. factorial(n)=n!"
+
+#: analitzagui/operatorsmodel.cpp:186
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the sine of a given angle"
+msgstr "Συνάρτηση υπολογισμού του ημιτόνου μιας δοσμένης γωνίας"
+
+#: analitzagui/operatorsmodel.cpp:189
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the cosine of a given angle"
+msgstr "Συνάρτηση υπολογισμού του συνημιτόνου μιας δοσμένης γωνίας"
+
+#: analitzagui/operatorsmodel.cpp:192
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the tangent of a given angle"
+msgstr "Συνάρτηση υπολογισμού της εφαπτομένης μιας δοσμένης γωνίας"
+
+#: analitzagui/operatorsmodel.cpp:195
+msgctxt "QCoreApplication|"
+msgid "Secant"
+msgstr "Τέμνουσα"
+
+#: analitzagui/operatorsmodel.cpp:198
+msgctxt "QCoreApplication|"
+msgid "Cosecant"
+msgstr "Συντέμνουσα"
+
+#: analitzagui/operatorsmodel.cpp:201
+msgctxt "QCoreApplication|"
+msgid "Cotangent"
+msgstr "Συνεφαπτομένη"
+
+#: analitzagui/operatorsmodel.cpp:204
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic sine"
+msgstr "Υπερβολικό ημίτονο"
+
+#: analitzagui/operatorsmodel.cpp:207
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cosine"
+msgstr "Υπερβολικό συνημίτονο"
+
+#: analitzagui/operatorsmodel.cpp:210
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic tangent"
+msgstr "Υπερβολική εφαπτομένη"
+
+#: analitzagui/operatorsmodel.cpp:213
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic secant"
+msgstr "Υπερβολική τέμνουσα"
+
+#: analitzagui/operatorsmodel.cpp:216
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cosecant"
+msgstr "Υπερβολική συντέμνουσα"
+
+#: analitzagui/operatorsmodel.cpp:219
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cotangent"
+msgstr "Υπερβολική συνεφαπτομένη"
+
+#: analitzagui/operatorsmodel.cpp:222
+msgctxt "QCoreApplication|"
+msgid "Arc sine"
+msgstr "Τόξο ημιτόνου"
+
+#: analitzagui/operatorsmodel.cpp:225
+msgctxt "QCoreApplication|"
+msgid "Arc cosine"
+msgstr "Τόξο συνημιτόνου"
+
+#: analitzagui/operatorsmodel.cpp:228
+msgctxt "QCoreApplication|"
+msgid "Arc tangent"
+msgstr "Τόξο εφαπτομένης"
+
+#: analitzagui/operatorsmodel.cpp:231
+msgctxt "QCoreApplication|"
+msgid "Arc cotangent"
+msgstr "Τόξο συνεφαπτομένης"
+
+#: analitzagui/operatorsmodel.cpp:237
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc tangent"
+msgstr "Υπερβολικό τόξο εφαπτομένης"
+
+#: analitzagui/operatorsmodel.cpp:240
+msgctxt "QCoreApplication|"
+msgid "Summatory"
+msgstr "Άθροισμα"
+
+#: analitzagui/operatorsmodel.cpp:243
+msgctxt "QCoreApplication|"
+msgid "Productory"
+msgstr "Γινόμενο"
+
+#: analitzagui/operatorsmodel.cpp:246
+msgctxt "QCoreApplication|"
+msgid "For all"
+msgstr "Για κάθε"
+
+#: analitzagui/operatorsmodel.cpp:249
+msgctxt "QCoreApplication|"
+msgid "Exists"
+msgstr "Υπάρχει"
+
+#: analitzagui/operatorsmodel.cpp:252
+msgctxt "QCoreApplication|"
+msgid "Differentiation"
+msgstr "Διαφορισμός"
+
+#: analitzagui/operatorsmodel.cpp:255
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc sine"
+msgstr "Υπερβολικό τόξο ημιτόνου"
+
+#: analitzagui/operatorsmodel.cpp:258
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc cosine"
+msgstr "Υπερβολικό τόξο συνημιτόνου"
+
+#: analitzagui/operatorsmodel.cpp:261
+msgctxt "QCoreApplication|"
+msgid "Arc cosecant"
+msgstr "Τόξο συντέμνουσας"
+
+#: analitzagui/operatorsmodel.cpp:264
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc cosecant"
+msgstr "Υπερβολικό τόξο συντέμνουσας"
+
+#: analitzagui/operatorsmodel.cpp:267
+msgctxt "QCoreApplication|"
+msgid "Arc secant"
+msgstr "Τόξο τέμνουσας"
+
+#: analitzagui/operatorsmodel.cpp:270
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc secant"
+msgstr "Υπερβολικό τόξο τέμνουσας"
+
+#: analitzagui/operatorsmodel.cpp:273
+msgctxt "QCoreApplication|"
+msgid "Exponent (e^x)"
+msgstr "Εκθετική (e^x)"
+
+#: analitzagui/operatorsmodel.cpp:276
+msgctxt "QCoreApplication|"
+msgid "Base-e logarithm"
+msgstr "Λογάριθμος με βάση-e"
+
+#: analitzagui/operatorsmodel.cpp:279
+msgctxt "QCoreApplication|"
+msgid "Base-10 logarithm"
+msgstr "Λογάριθμος με βάση-10"
+
+#: analitzagui/operatorsmodel.cpp:282
+msgctxt "QCoreApplication|"
+msgid "Absolute value. abs(n)=|n|"
+msgstr "Απόλυτη τιμή. abs(n)=|n|"
+
+#: analitzagui/operatorsmodel.cpp:285
+msgctxt "QCoreApplication|"
+msgid "Conjugate"
+msgstr "Συζυγής"
+
+#: analitzagui/operatorsmodel.cpp:288
+msgctxt "QCoreApplication|"
+msgid "Arg"
+msgstr "Όρισμα"
+
+#: analitzagui/operatorsmodel.cpp:291
+msgctxt "QCoreApplication|"
+msgid "Real"
+msgstr "Πραγματικό"
+
+#: analitzagui/operatorsmodel.cpp:294
+msgctxt "QCoreApplication|"
+msgid "Imaginary"
+msgstr "Φανταστικό"
+
+#: analitzagui/operatorsmodel.cpp:297
+msgctxt "QCoreApplication|"
+msgid "Floor value. floor(n)=⌊n⌋"
+msgstr "Τιμή δαπέδου. floor(n)=⌊n⌋"
+
+#: analitzagui/operatorsmodel.cpp:300
+msgctxt "QCoreApplication|"
+msgid "Ceil value. ceil(n)=⌈n⌉"
+msgstr "Τιμή οροφής. ceil(n)=⌈n⌉"
+
+#: analitzagui/operatorsmodel.cpp:303
+msgctxt "QCoreApplication|"
+msgid "Minimum"
+msgstr "Ελάχιστο"
+
+#: analitzagui/operatorsmodel.cpp:306
+msgctxt "QCoreApplication|"
+msgid "Maximum"
+msgstr "Μέγιστο"
+
+#: analitzagui/operatorsmodel.cpp:309
+msgctxt "QCoreApplication|"
+msgid "Greater than. gt(a,b)=a>b"
+msgstr "Μεγαλύτερο από. gt(a,b)=a>b"
+
+#: analitzagui/operatorsmodel.cpp:312
+msgctxt "QCoreApplication|"
+msgid "Less than. lt(a,b)=a<b"
+msgstr "Μικρότερο από. lt(a,b)=a<b"
+
+#: analitzagui/operatorsmodel.cpp:315
+msgctxt "QCoreApplication|"
+msgid "Equal. eq(a,b) = a=b"
+msgstr "Ίσο. eq(a,b) = a=b"
+
+#: analitzagui/operatorsmodel.cpp:318
+msgctxt "QCoreApplication|"
+msgid "Approximation. approx(a)=a±n"
+msgstr "Προσέγγιση. approx(a)=a±n"
+
+#: analitzagui/operatorsmodel.cpp:321
+msgctxt "QCoreApplication|"
+msgid "Not equal. neq(a,b)=a≠b"
+msgstr "Όχι ίσο. neq(a,b)=a≠b"
+
+#: analitzagui/operatorsmodel.cpp:324
+msgctxt "QCoreApplication|"
+msgid "Greater or equal. geq(a,b)=a≥b"
+msgstr "Μεγαλύτερο ή ίσο. geq(a,b)=a≥b"
+
+#: analitzagui/operatorsmodel.cpp:327
+msgctxt "QCoreApplication|"
+msgid "Less or equal. leq(a,b)=a≤b"
+msgstr "Μικρότερο ή ίσο. leq(a,b)=a≤b"
+
+#: analitzagui/operatorsmodel.cpp:330
+msgctxt "QCoreApplication|"
+msgid "Boolean and"
+msgstr "Δυαδικό and"
+
+#: analitzagui/operatorsmodel.cpp:333
+msgctxt "QCoreApplication|"
+msgid "Boolean not"
+msgstr "Δυαδικό not"
+
+#: analitzagui/operatorsmodel.cpp:336
+msgctxt "QCoreApplication|"
+msgid "Boolean or"
+msgstr "Δυαδικό or"
+
+#: analitzagui/operatorsmodel.cpp:339
+msgctxt "QCoreApplication|"
+msgid "Boolean xor"
+msgstr "Δυαδικό xor"
+
+#: analitzagui/operatorsmodel.cpp:342
+msgctxt "QCoreApplication|"
+msgid "Boolean implication"
+msgstr "Λογική συνεπαγωγή"
+
+#: analitzagui/operatorsmodel.cpp:345
+msgctxt "QCoreApplication|"
+msgid "Greatest common divisor"
+msgstr "Μέγιστος κοινός διαιρέτης"
+
+#: analitzagui/operatorsmodel.cpp:348
+msgctxt "QCoreApplication|"
+msgid "Least common multiple"
+msgstr "Ελάχιστο κοινό πολλαπλάσιο"
+
+#: analitzagui/operatorsmodel.cpp:351
+msgctxt "QCoreApplication|"
+msgid "Root"
+msgstr "Ρίζα"
+
+#: analitzagui/operatorsmodel.cpp:354
+msgctxt "QCoreApplication|"
+msgid "Cardinal"
+msgstr "Πληθάριθμος"
+
+#: analitzagui/operatorsmodel.cpp:357
+msgctxt "QCoreApplication|"
+msgid "Scalar product"
+msgstr "Βαθμωτό γινόμενο"
+
+#: analitzagui/operatorsmodel.cpp:360
+msgctxt "QCoreApplication|"
+msgid "Select the par1-th element of par2 list or vector"
+msgstr "Επίλεξε το par1 αντικείμενο της par2 λίστας ή διανύσματος"
+
+#: analitzagui/operatorsmodel.cpp:363
+msgctxt "QCoreApplication|"
+msgid "Joins several items of the same type"
+msgstr "Συνδέει πολλά αντικείμενα του ίδιου τύπου"
+
+#: analitzagui/operatorsmodel.cpp:366
+msgctxt "QCoreApplication|"
+msgid "Applies a function to every element in a list"
+msgstr "Εφαρμόζει μια συνάρτηση σε κάθε στοιχείο μιας λίστας"
+
+#: analitzagui/operatorsmodel.cpp:369
+msgctxt "QCoreApplication|"
+msgid "Removes all elements that don't fit a condition"
+msgstr "Αφαιρεί όλα τα στοιχεία που δεν πληρούν μια συνθήκη"
+
+#: analitzagui/operatorsmodel.cpp:372
+msgctxt "QCoreApplication|"
+msgid "Transpose"
+msgstr "Αναστροφή"
+
+#: analitzagui/operatorsmodel.cpp:572
+#, qt-format
+msgctxt "n-ary function prototype|"
+msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
+msgstr "<em>%1</em>(..., <b>par%2</b>, ...)"
+
+#: analitzagui/operatorsmodel.cpp:582
+#, qt-format
+msgctxt "Function name in function prototype|"
+msgid "<em>%1</em>("
+msgstr "<em>%1</em>("
+
+#: analitzagui/operatorsmodel.cpp:583
+#, qt-format
+msgctxt "Uncorrect function name in function prototype|"
+msgid "<em style='color:red'><b>%1</b></em>("
+msgstr "<em style='color:red'><b>%1</b></em>("
+
+#: analitzagui/operatorsmodel.cpp:586
+#, qt-format
+msgctxt "Parameter in function prototype|"
+msgid "par%1"
+msgstr "par%1"
+
+#: analitzagui/operatorsmodel.cpp:589 analitzagui/operatorsmodel.cpp:599
+#, qt-format
+msgctxt "Current parameter in function prototype|"
+msgid "<b>%1</b>"
+msgstr "<b>%1</b>"
+
+#: analitzagui/operatorsmodel.cpp:592
+msgctxt "Function parameter separator|"
+msgid ", "
+msgstr ", "
+
+#: analitzagui/operatorsmodel.cpp:596
+msgctxt "Current parameter is the bounding|"
+msgid " : bounds"
+msgstr " : όρια"
+
+#: analitzagui/variablesmodel.cpp:94
+msgctxt "@title:column|"
+msgid "Value"
+msgstr "Τιμή"
+
+#: analitzaplot/plotsfactory.cpp:49
+msgctxt "QCoreApplication|"
+msgid "The expression is not correct"
+msgstr "Η έκφραση δεν είναι σωστή"
+
+#: analitzaplot/plotsfactory.cpp:72
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Function type '%1' not recognized"
+msgstr "Ο τύπος '%1' της συνάρτησης δεν αναγνωρίζεται"
+
+#: analitzaplot/plotsfactory.cpp:74
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Function '%1' not recognized"
+msgstr "Η συνάρτηση '%1' δεν αναγνωρίζεται"
+
+#: analitzaplot/plotsmodel.cpp:79
+msgctxt "@title:column|"
+msgid "Plot"
+msgstr "Σχεδίαση"
+
+#: analitzaplot/plotter3d_es.cpp:534 declarative/graph2dmobile.cpp:149
+msgctxt "QObject|"
+msgid "PNG Image (*.png)"
+msgstr "PNG εικόνα (*.png)"
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "PDF Document (*.pdf)"
+msgstr "PDF έγγραφο (*.pdf)"
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "X3D Document (*.x3d)"
+msgstr "X3D έγγραφο (*.x3d)"
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "STL Document (*.stl)"
+msgstr "STL έγγραφο (*.stl)"
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:64
+msgctxt "Function type|"
+msgid "Plane Curve F(y)"
+msgstr "Καμπύλη επιπεδου F(y)"
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:80
+msgctxt "Function type|"
+msgid "Plane Curve F(x)"
+msgstr "Καμπύλη επιπεδου F(x)"
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:137
+#: analitzaplot/private/backends/cartesiancurve.cpp:245
+msgctxt "QCoreApplication|"
+msgid "We can only draw Real results."
+msgstr "Μπορούμε μόνο να σχεδιάσουμε πραγματικά αποτελέσματα."
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:248
+#: analitzawidgets/plotsview2d.cpp:236
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "x=%1 y=%2"
+msgstr "x=%1 y=%2"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:52
+msgctxt "Function type|"
+msgid "Surface z=F(x,y)"
+msgstr "Επιφάνεια z=F(x,y)"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:94
+msgctxt "Function type|"
+msgid "Surface y=F(x,z)"
+msgstr "Επιφάνεια y=F(x,z)"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:127
+msgctxt "Function type|"
+msgid "Surface x=F(y,z)"
+msgstr "Επιφάνεια x=F(y,z)"
+
+#: analitzaplot/private/backends/cylindricalsurface.cpp:37
+msgctxt "Function type|"
+msgid "Cylindrical Surface z=F(r: Radial, p: Polar)"
+msgstr "Κυλινδρική επιφάνεια z=F(r: Radial, p: Polar)"
+
+#: analitzaplot/private/backends/implicitcurve.cpp:44
+msgctxt "Function type|"
+msgid "Implicit Curve"
+msgstr "Πεπλεγμένη καμπύλη"
+
+#: analitzaplot/private/backends/implicitpolarcurve.cpp:37
+msgctxt "Function type|"
+msgid "Polar implicit Curve 0=F(r: Radial, p: Polar)"
+msgstr "Πολική πεπλεγμένη καμπύλη 0=F(r: Radial, p: Polar)"
+
+#: analitzaplot/private/backends/implicitsurface.cpp:35
+msgctxt "Function type|"
+msgid "Implicit Surface"
+msgstr "Πεπλεγμένη επιφάνεια"
+
+#: analitzaplot/private/backends/parametriccurve2d.cpp:37
+msgctxt "Function type|"
+msgid "Parametric Curve 2D"
+msgstr "Παραμετρική επιφάνεια 2D"
+
+#: analitzaplot/private/backends/parametriccurve3d.cpp:31
+msgctxt "Function type|"
+msgid "Parametric Curve 3D"
+msgstr "Παραμετρική επιφάνεια 3D"
+
+#: analitzaplot/private/backends/parametricsurface.cpp:32
+msgctxt "Function type|"
+msgid "Parametric Surface"
+msgstr "Παραμετρική επιφάνεια"
+
+#: analitzaplot/private/backends/polarcurve.cpp:37
+msgctxt "Function type|"
+msgid "Polar Curve r=F(p: Polar)"
+msgstr "Πολική καμπύλη r=F(p: Polar)"
+
+#: analitzaplot/private/backends/sphericalsurface.cpp:35
+msgctxt "Function type|"
+msgid "Spherical Surface Radial=F(t:Azimuth, p: Polar)"
+msgstr "Σφαιρική επιφάνεια Radial=F(t:Azimuth, p: Polar)"
+
+#: analitzawidgets/expressionedit.cpp:295
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Result: %1"
+msgstr "Αποτέλεσμα: %1"
+
+#: analitzawidgets/expressionedit.cpp:405
+msgctxt "QCoreApplication|"
+msgid "To Expression"
+msgstr "στην έκφραση"
+
+#: analitzawidgets/expressionedit.cpp:407
+msgctxt "QCoreApplication|"
+msgid "To MathML"
+msgstr "στο MathML"
+
+#: analitzawidgets/expressionedit.cpp:409
+msgctxt "QCoreApplication|"
+msgid "Simplify"
+msgstr "Απλοποίησε"
+
+#: analitzawidgets/expressionedit.cpp:411
+msgctxt "QCoreApplication|"
+msgid "Examples"
+msgstr "Παραδείγματα"
+
+#: analitzawidgets/plotsview2d.cpp:214
+msgctxt "QCoreApplication|"
+msgid "Selected viewport too small"
+msgstr "Η επιλεγμένη προβολή είναι πολύ μικρή"
+
+#~ msgctxt "NAME OF TRANSLATORS"
+#~ msgid "Your names"
+#~ msgstr "Stelios"
+
+#~ msgctxt "EMAIL OF TRANSLATORS"
+#~ msgid "Your emails"
+#~ msgstr "sstavra@gmail.com"
+
+#~ msgctxt "Parameter in function prototype"
+#~ msgid "par%1"
+#~ msgstr "par%1"
+
+#~ msgctxt "Function parameter separator"
+#~ msgid ", "
+#~ msgstr ", "
+
+#, fuzzy
+#~| msgid "Hyperbolic secant"
+#~ msgctxt "dictionary"
+#~ msgid "Hiperbola"
+#~ msgstr "Υπερβολική τέμνουσα"
+
+#~ msgid "Function type not correct for functions depending on %1"
+#~ msgstr ""
+#~ "Ο τύπος της συνάρτησης δεν είναι σωστός για συναρτήσεις που εξαρτώνται "
+#~ "από %1"
+
+#~ msgid "center"
+#~ msgstr "κέντρο"
+
+#~ msgctxt "@title:column"
+#~ msgid "Function"
+#~ msgstr "Συνάρτηση"
+
+#~ msgid "%1 function added"
+#~ msgstr "%1 συνάρτηση προστέθηκε"
+
+#~ msgid "Hide '%1'"
+#~ msgstr "Απόκρυψη '%1'"
+
+#~ msgid "Show '%1'"
+#~ msgstr "Εμφάνιση '%1'"
+
+#~ msgid "Remove '%1'"
+#~ msgstr "Αφαίρεση '%1'"

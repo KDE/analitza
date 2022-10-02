@@ -1,0 +1,1431 @@
+# Translation of analitza_qt.po to Ukrainian
+# Copyright (C) 2011-2019 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
+#
+# Yuri Chornoivan <yurchor@ukr.net>, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: analitza_qt\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-02-16 03:26+0000\n"
+"PO-Revision-Date: 2019-02-05 08:36+0200\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Qt-Contexts: true\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 19.03.70\n"
+"X-Qt-Contexts: true\n"
+
+msgctxt "QObject|dictionary"
+msgid "xaxaxaxaxa"
+msgstr "xaxaxaxaxa"
+
+msgctxt "QObject|dictionary"
+msgid "cosa"
+msgstr "cosa"
+
+#: analitza/analyzer.cpp:193
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate an empty expression"
+msgstr "Обчислення порожнього виразу неможливе."
+
+#: analitza/analyzer.cpp:240 analitza/analyzer.cpp:259
+#: analitza/analyzer.cpp:285
+msgctxt "QCoreApplication|"
+msgid "Must specify a correct operation"
+msgstr "Слід вказати правильний оператор"
+
+#: analitza/analyzer.cpp:255 analitza/analyzer.cpp:288
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unknown identifier: '%1'"
+msgstr "Невідомий ідентифікатор: «%1»"
+
+#: analitza/analyzer.cpp:257 analitza/analyzer.cpp:290
+msgctxt "identifier separator in error message|"
+msgid "', '"
+msgstr "', '"
+
+#: analitza/analyzer.cpp:615
+msgctxt "Error message, no proper condition found.|"
+msgid "Could not find a proper choice for a condition statement."
+msgstr "Не вдалося знайти належного варіанта у умовному виразі."
+
+#: analitza/analyzer.cpp:936
+msgctxt "QCoreApplication|"
+msgid "Type not supported for bounding."
+msgstr "Цей тип не можна використовувати для визначення меж."
+
+#: analitza/analyzer.cpp:961
+msgctxt "QCoreApplication|"
+msgid "The downlimit is greater than the uplimit"
+msgstr "Нижня межа більша за верхню межу"
+
+#: analitza/analyzer.cpp:963
+msgctxt "QCoreApplication|"
+msgid "Incorrect uplimit or downlimit."
+msgstr "Некоректна верхня або нижня межа."
+
+#: analitza/analyzer.cpp:1055 analitza/analyzer.cpp:1080
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid type for parameter '%1'"
+msgstr "Некоректний тип параметра «%1»"
+
+#: analitza/analyzer.cpp:1877
+msgctxt "By a cycle i mean a variable that depends on itself|"
+msgid "Defined a variable cycle"
+msgstr "Визначено цикл зі змінних"
+
+#: analitza/analyzer.cpp:1919
+msgctxt "QCoreApplication|"
+msgid "The result is not a number"
+msgstr "Результат не є числом"
+
+#: analitza/commands/blockmatrixcommands.cpp:44
+#: analitza/commands/blockmatrixcommands.cpp:234
+#: analitza/commands/listcommands.cpp:47 analitza/commands/listcommands.cpp:64
+#: analitza/commands/matrixcommands.cpp:48
+#: analitza/commands/matrixcommands.cpp:201
+#: analitza/commands/vectorcommands.cpp:45
+#: analitza/commands/vectorcommands.cpp:82
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%1'"
+msgstr "Некоректна кількість параметрів «%1»"
+
+#: analitza/commands/blockmatrixcommands.cpp:86
+#: analitza/commands/blockmatrixcommands.cpp:119
+#: analitza/commands/blockmatrixcommands.cpp:122
+msgctxt "QCoreApplication|"
+msgid "Blocks must have consistent size between each and other"
+msgstr "Розмір блоків має однорідним"
+
+#: analitza/commands/blockmatrixcommands.cpp:90
+#: analitza/commands/blockmatrixcommands.cpp:126
+#: analitza/commands/blockmatrixcommands.cpp:263
+msgctxt "QCoreApplication|"
+msgid "Do not want empty blocks"
+msgstr "Порожні вектори нам не потрібні"
+
+#: analitza/commands/blockmatrixcommands.cpp:93
+#: analitza/commands/blockmatrixcommands.cpp:130
+#: analitza/commands/blockmatrixcommands.cpp:209
+#: analitza/commands/blockmatrixcommands.cpp:267
+msgctxt "QCoreApplication|"
+msgid "Blocks must be matrices"
+msgstr "Блоки мають бути матрицями"
+
+#: analitza/commands/blockmatrixcommands.cpp:142
+msgctxt "QCoreApplication|"
+msgid "Number of blocks must be consistent"
+msgstr "Кількість блоків має бути однорідною"
+
+#: analitza/commands/blockmatrixcommands.cpp:145
+#: analitza/commands/blockmatrixcommands.cpp:211
+#: analitza/commands/matrixcommands.cpp:147
+msgctxt "QCoreApplication|"
+msgid "Do not want empty vectors/matrixrow elements"
+msgstr "Порожні елементи vectors/matrixrow нам не потрібні"
+
+#: analitza/commands/blockmatrixcommands.cpp:150
+#: analitza/commands/blockmatrixcommands.cpp:213
+#: analitza/commands/matrixcommands.cpp:149
+msgctxt "QCoreApplication|"
+msgid "Matrix constructor needs vectors or matrixrow elements"
+msgstr "Конструктору матриці потрібні елементи vectors або matrixrow"
+
+#: analitza/commands/blockmatrixcommands.cpp:244
+#: analitza/commands/matrixcommands.cpp:288
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "the arg %1 is invalid or is error"
+msgstr "аргумент %1 є некоректним або помилковим"
+
+#: analitza/commands/eigencommands.cpp:39
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%1'. Should have 1 parameter"
+msgstr "Некоректна кількість параметрів «%1». Мало бути вказано 1 параметр."
+
+#: analitza/commands/eigencommands.cpp:47
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "To use '%1' command the input matrix must be square"
+msgstr ""
+"Для використання команди «%1» матриця вхідних значень має бути квадратною"
+
+#: analitza/commands/eigencommands.cpp:68
+#: analitza/commands/eigencommands.cpp:74
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid ""
+"Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number "
+"value"
+msgstr ""
+"Некоректний тип параметра у записі матриці (%1,%2) для «%3». Параметр має "
+"бути числовим значенням."
+
+#: analitza/commands/eigencommands.cpp:126
+#: analitza/commands/eigencommands.cpp:193
+msgctxt "QCoreApplication|NaN means Not a Number, is an invalid float number"
+msgid "Returned eigenvalue is NaN"
+msgstr "Повернуте власне значення є NaN"
+
+#: analitza/commands/eigencommands.cpp:132
+#: analitza/commands/eigencommands.cpp:196
+msgctxt "QCoreApplication|"
+msgid "Returned eigenvalue is too big"
+msgstr "Повернуте власне значення є надто великим"
+
+#: analitza/commands/matrixcommands.cpp:31
+msgctxt "QCoreApplication|"
+msgid "Matrix dimensions must be greater than zero"
+msgstr "Розмірності матриці мають перевищувати нуль"
+
+#: analitza/commands/matrixcommands.cpp:122 analitza/expression.cpp:296
+msgctxt "QCoreApplication|"
+msgid "All matrixrow elements must have the same size"
+msgstr "Усі елементи matrixrow мають бути однакового розміру"
+
+#: analitza/commands/matrixcommands.cpp:127
+msgctxt "QCoreApplication|"
+msgid "Not all are rows or vectors"
+msgstr "Не усі є рядками або векторами"
+
+#: analitza/commands/matrixcommands.cpp:143
+msgctxt "QCoreApplication|"
+msgid "Every argument must be a matrixrow element"
+msgstr "Кожен аргумент має бути елементом matrixrow"
+
+#: analitza/commands/matrixcommands.cpp:241
+msgctxt "QCoreApplication|"
+msgid "The nth diagonal index must be less than the row count"
+msgstr "n-ий індекс діагоналі має бути меншим за кількість рядків"
+
+#: analitza/commands/matrixcommands.cpp:249
+msgctxt "QCoreApplication|"
+msgid "The nth diagonal index must be less than the column count"
+msgstr "n-ий індекс діагоналі має бути меншим за кількість стовпчиків"
+
+#: analitza/commands/matrixcommands.cpp:265
+msgctxt "QCoreApplication|"
+msgid "nth diagonal index must be integer number"
+msgstr "n-ий діагональний індекс має бути цілим числом"
+
+#: analitza/commands/matrixcommands.cpp:269
+msgctxt "QCoreApplication|"
+msgid "nth diagonal index must be a positive integer number"
+msgstr "n-ий діагональний індекс має бути додатним цілим числом"
+
+#: analitza/commands/vectorcommands.cpp:62
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter type for '%1', was expected a list"
+msgstr ""
+"Некоректний тип параметра для «%1». Мало бути використано тип списку (list)."
+
+#: analitza/commands/vectorcommands.cpp:75
+#: analitza/commands/vectorcommands.cpp:78
+msgctxt "QCoreApplication|"
+msgid "Vector size must be some integer value greater to zero"
+msgstr "Розмірність вектора має бути цілим значенням, що перевищує нуль"
+
+#: analitza/explexer.cpp:78
+msgctxt "QCoreApplication|"
+msgid "Unexpectedly arrived to the end of the input"
+msgstr "Виявлено несподіване завершення вхідних даних"
+
+#: analitza/explexer.cpp:112
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unknown token %1"
+msgstr "Невідомий елемент %1"
+
+#: analitza/expression.cpp:162
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> needs at least 2 parameters"
+msgstr "<em>%1</em> потрібні принаймні 2 параметри"
+
+#: analitza/expression.cpp:164
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> requires %2 parameters"
+msgstr "<em>%1</em> потрібно %2 параметрів"
+
+#: analitza/expression.cpp:171
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Missing boundary for '%1'"
+msgstr "У «%1» не вказано межу"
+
+#: analitza/expression.cpp:173
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unexpected bounding for '%1'"
+msgstr "Неочікуваний обмеження для «%1»"
+
+#: analitza/expression.cpp:178
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "<em>%1</em> missing bounds on '%2'"
+msgstr "У <em>%1</em> відсутні обмеження на «%2»"
+
+#: analitza/expression.cpp:200
+msgctxt "QCoreApplication|"
+msgid "Wrong declare"
+msgstr "Неправильне оголошення"
+
+#: analitza/expression.cpp:210
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Empty container: %1"
+msgstr "Порожній контейнер: %1"
+
+#: analitza/expression.cpp:228
+msgctxt "there was a conditional outside a condition structure|"
+msgid "We can only have conditionals inside piecewise structures."
+msgstr "Умови можна вказувати лише в умовних конструкціях."
+
+#: analitza/expression.cpp:244
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot have two parameters with the same name like '%1'."
+msgstr ""
+"Не можна використовувати два параметри з однією назвою, наприклад «%1»."
+
+#: analitza/expression.cpp:259
+msgctxt ""
+"this is an error message. otherwise is the else in a mathml condition|"
+msgid "The <em>otherwise</em> parameter should be the last one"
+msgstr "Параметр <em>otherwise</em> слід вказувати останнім."
+
+#: analitza/expression.cpp:267
+#, qt-format
+msgctxt "there was an element that was not a conditional inside a condition|"
+msgid "%1 is not a proper condition inside the piecewise"
+msgstr "%1 не є належною умовою у конструкції умов"
+
+#: analitza/expression.cpp:273
+msgctxt "QCoreApplication|"
+msgid "We can only declare variables"
+msgstr "Можна визначати лише змінні"
+
+#: analitza/expression.cpp:279
+msgctxt "QCoreApplication|"
+msgid "We can only have bounded variables"
+msgstr "Можна лише обмежити змінні"
+
+#: analitza/expression.cpp:290 analitza/expression.cpp:495
+msgctxt "QCoreApplication|"
+msgid "Do not want empty matrixrow elements"
+msgstr "Порожні елементи matrixrow нам не потрібні"
+
+#: analitza/expression.cpp:300
+msgctxt "QCoreApplication|"
+msgid "The matrix must contain only matrixrow elements"
+msgstr "Матриця має містити лише елементи matrixrow"
+
+#: analitza/expression.cpp:419
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Error while parsing: %1"
+msgstr "Помилка під час обробки: %1"
+
+#: analitza/expression.cpp:450
+#, qt-format
+msgctxt "An error message|"
+msgid "Container unknown: %1"
+msgstr "Невідомий контейнер: %1"
+
+#: analitza/expression.cpp:456
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot codify the %1 value."
+msgstr "Не вдалося закодувати значення %1."
+
+#: analitza/expression.cpp:462
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "The %1 operator cannot have child contexts."
+msgstr "Оператор %1 не може мати дочірніх контекстів."
+
+#: analitza/expression.cpp:466
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "The element '%1' is not an operator."
+msgstr "Елемент «%1» не є оператором."
+
+#: analitza/expression.cpp:479
+msgctxt "QCoreApplication|"
+msgid "Do not want empty vectors"
+msgstr "Порожні вектори нам не потрібні"
+
+#: analitza/expression.cpp:489
+msgctxt "QCoreApplication|"
+msgid "Do not want empty matrices"
+msgstr "Порожні матриці нам не потрібні"
+
+#: analitza/expression.cpp:508
+#, qt-format
+msgctxt "Error message due to an unrecognized input|"
+msgid "Not supported/unknown: %1"
+msgstr "Не підтримується/невідомий: %1"
+
+#: analitza/expressionparser.cpp:296
+msgctxt "QCoreApplication|"
+msgid ", "
+msgstr ", "
+
+#: analitza/expressionparser.cpp:296
+#, qt-format
+msgctxt "error message|"
+msgid "Expected %1 instead of '%2'"
+msgstr "Очікувалося %1, знайдено «%2»"
+
+#: analitza/expressionparser.cpp:298
+msgctxt "QCoreApplication|"
+msgid "Missing right parenthesis"
+msgstr "Не вистачає правої дужки"
+
+#: analitza/expressionparser.cpp:300
+msgctxt "QCoreApplication|"
+msgid "Unbalanced right parenthesis"
+msgstr "Незакрита права дужка"
+
+#: analitza/expressionparser.cpp:303
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unexpected token identifier: %1"
+msgstr "Неочікуваний ідентифікатор елемента: %1"
+
+#: analitza/expressionparser.cpp:305
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Unexpected token %1"
+msgstr "Неочікуваний елемент %1"
+
+#: analitza/expressiontypechecker.cpp:301
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not find a type that unifies '%1'"
+msgstr "Не вдалося знайти тип, який узагальнює «%1»"
+
+#: analitza/expressiontypechecker.cpp:473
+msgctxt "QCoreApplication|"
+msgid "The domain should be either a vector or a list"
+msgstr "Мало бути вказано вектор або список"
+
+#: analitza/expressiontypechecker.cpp:558
+#, qt-format
+msgctxt "type error message|"
+msgid "Cannot call '%1'"
+msgstr "Не вдалося викликати «%1»"
+
+#: analitza/expressiontypechecker.cpp:593
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
+msgstr ""
+"Не вдалося спростити «%1» до «%2». Некоректний тип параметра «%3» для «%4»."
+
+#: analitza/expressiontypechecker.cpp:604
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Invalid parameter count for '%2'. Should have %1 parameters."
+msgstr "Некоректна кількість параметрів «%2». Мало бути %1 параметрів."
+
+#: analitza/expressiontypechecker.cpp:616
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
+msgstr ""
+"Порівняння «%1» з «%2» неможливе. Некоректний тип параметра «%3» для «%4»."
+
+#: analitza/expressiontypechecker.cpp:654
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not call '%1'"
+msgstr "Не вдалося викликати «%1»"
+
+#: analitza/expressiontypechecker.cpp:662
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not solve '%1'"
+msgstr "Не вдалося розв’язати «%1»"
+
+#: analitza/expressiontypechecker.cpp:695
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Incoherent type for the variable '%1'"
+msgstr "Невідповідний тип змінної «%1»"
+
+#: analitza/expressiontypechecker.cpp:718
+msgctxt "QCoreApplication|"
+msgid "Could not determine the type for piecewise"
+msgstr "Не вдалося визначити тип умови"
+
+#: analitza/expressiontypechecker.cpp:937
+msgctxt "QCoreApplication|"
+msgid "Unexpected type"
+msgstr "Неочікуваний тип"
+
+#: analitza/expressiontypechecker.cpp:960
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot convert '%1' to '%2'"
+msgstr "Не вдалося перетворити «%1» на «%2»"
+
+#: analitza/htmlexpressionwriter.cpp:54 analitza/htmlexpressionwriter.cpp:55
+#, qt-format
+msgctxt "html representation of an operator|"
+msgid "<span class='op'>%1</span>"
+msgstr "<span class='op'>%1</span>"
+
+#: analitza/htmlexpressionwriter.cpp:56
+#, qt-format
+msgctxt "html representation of an operator|"
+msgid "<span class='keyword'>%1</span>"
+msgstr "<span class='keyword'>%1</span>"
+
+#: analitza/mathmlpresentationlexer.cpp:94
+#, qt-format
+msgctxt "Error message|"
+msgid "Unknown token '%1'"
+msgstr "Невідомий елемент «%1»"
+
+#: analitza/operations.cpp:54 analitza/operations.cpp:191
+msgctxt "QCoreApplication|"
+msgid "Cannot divide by 0."
+msgstr "Не можна ділити на 0."
+
+#: analitza/operations.cpp:72 analitza/operations.cpp:203
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the remainder on 0."
+msgstr "Не вдалося залишок від 0."
+
+#: analitza/operations.cpp:84 analitza/operations.cpp:213
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the factor on 0."
+msgstr "Не вдалося обчислити коефіцієнт при 0."
+
+#: analitza/operations.cpp:140 analitza/operations.cpp:261
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate the lcm of 0."
+msgstr "Не вдалося обчислити найменше спільне кратне для 0."
+
+#: analitza/operations.cpp:246
+msgctxt "QCoreApplication|"
+msgid "Boolean operations on complex numbers not available"
+msgstr "Не можна використовувати булеві операції для комплексних чисел"
+
+#: analitza/operations.cpp:276
+msgctxt "QCoreApplication|"
+msgid "Only square root implemented for complex numbers"
+msgstr "Для комплексних чисел реалізовано лише квадратний корінь"
+
+#: analitza/operations.cpp:351 analitza/operations.cpp:463
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a value %1"
+msgstr "Не вдалося обчислити значення %1"
+
+#: analitza/operations.cpp:479
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate %1 between a value and an error type"
+msgstr "Не вдалося обчислити %1 між значенням і типом помилки"
+
+#: analitza/operations.cpp:495 analitza/operations.cpp:652
+#: analitza/operations.cpp:784
+msgctxt "QCoreApplication|"
+msgid "Invalid index for a container"
+msgstr "Некоректний індекс контейнера"
+
+#: analitza/operations.cpp:527
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot operate '%1' on different sized vectors."
+msgstr "Виконувати операцію «%1» над векторами різної розмірності не можна."
+
+#: analitza/operations.cpp:566
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication between a matrix and a vector is allowed provided that the "
+"number of columns of the matrix equals the size of the vector"
+msgstr ""
+"Множення матриці на вектор можливе, лише якщо кількість стовпчиків у матриці "
+"рівна кількості елементів вектора."
+
+#: analitza/operations.cpp:570 analitza/operations.cpp:707
+msgctxt "QCoreApplication|"
+msgid "Matrix and vector entries must be numbers"
+msgstr "Елементи матриці і вектора мають бути цілими числами"
+
+#: analitza/operations.cpp:599
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a vector's %1"
+msgstr "Не вдалося обчислити %1 вектора"
+
+#: analitza/operations.cpp:621 analitza/operations.cpp:637
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate a list's %1"
+msgstr "Не вдалося обчислити %1 списку"
+
+#: analitza/operations.cpp:703
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication between a vector and a matrix is allowed provided that the "
+"matrix has only one matrixrow element"
+msgstr ""
+"Множення вектора на матрицю можливе, лише якщо у матриці є лише один елемент "
+"matrixrow."
+
+#: analitza/operations.cpp:730
+msgctxt "QCoreApplication|"
+msgid ""
+"Addition of two matrices is allowed provided that both matrices have the "
+"same number of rows and the same number of columns"
+msgstr ""
+"Додавання двох матриць можливе, лише якщо у матрицях однакові кількості "
+"рядків та стовпчиків"
+
+#: analitza/operations.cpp:762
+msgctxt "QCoreApplication|"
+msgid ""
+"Multiplication of two matrices is allowed provided that the number of "
+"columns of the first matrix equals the number of rows of the second matrix"
+msgstr ""
+"Множення двох матриць можливе, лише якщо кількість стовпчиків у першій "
+"матриці дорівнює кількості рядків у другій матриці"
+
+#: analitza/operations.cpp:766 analitza/operations.cpp:804
+#: analitza/operations.cpp:887
+msgctxt "QCoreApplication|"
+msgid "Matrix entries must be numbers"
+msgstr "Елементи матриці мають бути цілими числами"
+
+#: analitza/operations.cpp:879
+msgctxt "QCoreApplication|"
+msgid "The exponent of 'power' must be some integer number"
+msgstr "Степенем у функції «power» має бути якесь ціле число"
+
+#: analitza/operations.cpp:883
+msgctxt "QCoreApplication|"
+msgid "Cannot compute 'power' for non square matrix"
+msgstr "Обчислення функції «power» для неквадратної матриці неможливе"
+
+#: analitza/operations.cpp:922
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Cannot calculate %1 between a matrix and an error type"
+msgstr "Не вдалося обчислити %1 між матрицею і типом помилки"
+
+#: analitza/providederivative.cpp:93
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Could not calculate the derivative for '%1'"
+msgstr "Не вдалося обчислити похідну «%1»"
+
+#: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
+#: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
+msgctxt "@title:column|"
+msgid "Name"
+msgstr "Назва"
+
+#: analitzagui/operatorsmodel.cpp:98
+msgctxt "@title:column|"
+msgid "Description"
+msgstr "Опис"
+
+#: analitzagui/operatorsmodel.cpp:101
+msgctxt "@title:column|"
+msgid "Parameters"
+msgstr "Параметри"
+
+#: analitzagui/operatorsmodel.cpp:104
+msgctxt "@title:column|"
+msgid "Example"
+msgstr "Приклад"
+
+#: analitzagui/operatorsmodel.cpp:135
+msgctxt "Syntax for function bounding|"
+msgid " : var"
+msgstr " : змінна"
+
+#: analitzagui/operatorsmodel.cpp:137
+msgctxt "Syntax for function bounding values|"
+msgid "=from..to"
+msgstr "=від...до"
+
+#: analitzagui/operatorsmodel.cpp:140
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "%1("
+msgstr "%1("
+
+#: analitzagui/operatorsmodel.cpp:143
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "%1... parameters, ...%2)"
+msgstr "%1... параметри, ...%2)"
+
+#: analitzagui/operatorsmodel.cpp:146
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "par%1"
+msgstr "пар%1"
+
+#: analitzagui/operatorsmodel.cpp:159
+msgctxt "QCoreApplication|"
+msgid "Addition"
+msgstr "Додавання"
+
+#: analitzagui/operatorsmodel.cpp:162
+msgctxt "QCoreApplication|"
+msgid "Multiplication"
+msgstr "Множення"
+
+#: analitzagui/operatorsmodel.cpp:165
+msgctxt "QCoreApplication|"
+msgid "Division"
+msgstr "Ділення"
+
+#: analitzagui/operatorsmodel.cpp:168
+msgctxt "QCoreApplication|"
+msgid "Subtraction. Will remove all values from the first one."
+msgstr "Віднімання. Всі значення буде віднято від першого."
+
+#: analitzagui/operatorsmodel.cpp:171
+msgctxt "QCoreApplication|"
+msgid "Power"
+msgstr "Степінь"
+
+#: analitzagui/operatorsmodel.cpp:174
+msgctxt "QCoreApplication|"
+msgid "Remainder"
+msgstr "Залишок"
+
+#: analitzagui/operatorsmodel.cpp:177
+msgctxt "QCoreApplication|"
+msgid "Quotient"
+msgstr "Частка"
+
+#: analitzagui/operatorsmodel.cpp:180
+msgctxt "QCoreApplication|"
+msgid "The factor of"
+msgstr "Дільник"
+
+#: analitzagui/operatorsmodel.cpp:183
+msgctxt "QCoreApplication|"
+msgid "Factorial. factorial(n)=n!"
+msgstr "Факторіал. factorial(n)=n!"
+
+#: analitzagui/operatorsmodel.cpp:186
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the sine of a given angle"
+msgstr "Функція для обчислення синуса за заданим кутом"
+
+#: analitzagui/operatorsmodel.cpp:189
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the cosine of a given angle"
+msgstr "Функція для обчислення косинуса за заданим кутом"
+
+#: analitzagui/operatorsmodel.cpp:192
+msgctxt "QCoreApplication|"
+msgid "Function to calculate the tangent of a given angle"
+msgstr "Функція для обчислення тангенса за заданим кутом"
+
+#: analitzagui/operatorsmodel.cpp:195
+msgctxt "QCoreApplication|"
+msgid "Secant"
+msgstr "Секанс"
+
+#: analitzagui/operatorsmodel.cpp:198
+msgctxt "QCoreApplication|"
+msgid "Cosecant"
+msgstr "Косеканс"
+
+#: analitzagui/operatorsmodel.cpp:201
+msgctxt "QCoreApplication|"
+msgid "Cotangent"
+msgstr "Котангенс"
+
+#: analitzagui/operatorsmodel.cpp:204
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic sine"
+msgstr "Гіперболічний синус"
+
+#: analitzagui/operatorsmodel.cpp:207
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cosine"
+msgstr "Гіперболічний косинус"
+
+#: analitzagui/operatorsmodel.cpp:210
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic tangent"
+msgstr "Гіперболічний тангенс"
+
+#: analitzagui/operatorsmodel.cpp:213
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic secant"
+msgstr "Гіперболічний секанс"
+
+#: analitzagui/operatorsmodel.cpp:216
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cosecant"
+msgstr "Гіперболічний косеканс"
+
+#: analitzagui/operatorsmodel.cpp:219
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic cotangent"
+msgstr "Гіперболічний котангенс"
+
+#: analitzagui/operatorsmodel.cpp:222
+msgctxt "QCoreApplication|"
+msgid "Arc sine"
+msgstr "Обернений синус"
+
+#: analitzagui/operatorsmodel.cpp:225
+msgctxt "QCoreApplication|"
+msgid "Arc cosine"
+msgstr "Обернений косинус"
+
+#: analitzagui/operatorsmodel.cpp:228
+msgctxt "QCoreApplication|"
+msgid "Arc tangent"
+msgstr "Обернений тангенс"
+
+#: analitzagui/operatorsmodel.cpp:231
+msgctxt "QCoreApplication|"
+msgid "Arc cotangent"
+msgstr "Обернений котангенс"
+
+#: analitzagui/operatorsmodel.cpp:237
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc tangent"
+msgstr "Обернений гіперболічний тангенс"
+
+#: analitzagui/operatorsmodel.cpp:240
+msgctxt "QCoreApplication|"
+msgid "Summatory"
+msgstr "Суматор"
+
+#: analitzagui/operatorsmodel.cpp:243
+msgctxt "QCoreApplication|"
+msgid "Productory"
+msgstr "Перемножувач"
+
+#: analitzagui/operatorsmodel.cpp:246
+msgctxt "QCoreApplication|"
+msgid "For all"
+msgstr "Для всіх"
+
+#: analitzagui/operatorsmodel.cpp:249
+msgctxt "QCoreApplication|"
+msgid "Exists"
+msgstr "Існує"
+
+#: analitzagui/operatorsmodel.cpp:252
+msgctxt "QCoreApplication|"
+msgid "Differentiation"
+msgstr "Диференціювання"
+
+#: analitzagui/operatorsmodel.cpp:255
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc sine"
+msgstr "Обернений гіперболічний синус"
+
+#: analitzagui/operatorsmodel.cpp:258
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc cosine"
+msgstr "Обернений гіперболічний косинус"
+
+#: analitzagui/operatorsmodel.cpp:261
+msgctxt "QCoreApplication|"
+msgid "Arc cosecant"
+msgstr "Обернений косеканс"
+
+#: analitzagui/operatorsmodel.cpp:264
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc cosecant"
+msgstr "Обернений гіперболічний косеканс"
+
+#: analitzagui/operatorsmodel.cpp:267
+msgctxt "QCoreApplication|"
+msgid "Arc secant"
+msgstr "Обернений секанс"
+
+#: analitzagui/operatorsmodel.cpp:270
+msgctxt "QCoreApplication|"
+msgid "Hyperbolic arc secant"
+msgstr "Обернений гіперболічний секанс"
+
+#: analitzagui/operatorsmodel.cpp:273
+msgctxt "QCoreApplication|"
+msgid "Exponent (e^x)"
+msgstr "Експонента (e^x)"
+
+#: analitzagui/operatorsmodel.cpp:276
+msgctxt "QCoreApplication|"
+msgid "Base-e logarithm"
+msgstr "Натуральний логарифм"
+
+#: analitzagui/operatorsmodel.cpp:279
+msgctxt "QCoreApplication|"
+msgid "Base-10 logarithm"
+msgstr "Десятковий логарифм"
+
+#: analitzagui/operatorsmodel.cpp:282
+msgctxt "QCoreApplication|"
+msgid "Absolute value. abs(n)=|n|"
+msgstr "Модуль числа. abs(n)=|n|"
+
+#: analitzagui/operatorsmodel.cpp:285
+msgctxt "QCoreApplication|"
+msgid "Conjugate"
+msgstr "Спряження"
+
+#: analitzagui/operatorsmodel.cpp:288
+msgctxt "QCoreApplication|"
+msgid "Arg"
+msgstr "Аргумент"
+
+#: analitzagui/operatorsmodel.cpp:291
+msgctxt "QCoreApplication|"
+msgid "Real"
+msgstr "Дійсна частина"
+
+#: analitzagui/operatorsmodel.cpp:294
+msgctxt "QCoreApplication|"
+msgid "Imaginary"
+msgstr "Уявна частина"
+
+#: analitzagui/operatorsmodel.cpp:297
+msgctxt "QCoreApplication|"
+msgid "Floor value. floor(n)=⌊n⌋"
+msgstr "Найближче менше ціле число. floor(n)=⌊n⌋"
+
+#: analitzagui/operatorsmodel.cpp:300
+msgctxt "QCoreApplication|"
+msgid "Ceil value. ceil(n)=⌈n⌉"
+msgstr "Найближче більше ціле число. ceil(n)=⌈n⌉"
+
+#: analitzagui/operatorsmodel.cpp:303
+msgctxt "QCoreApplication|"
+msgid "Minimum"
+msgstr "Мінімальний"
+
+#: analitzagui/operatorsmodel.cpp:306
+msgctxt "QCoreApplication|"
+msgid "Maximum"
+msgstr "Максимальний"
+
+#: analitzagui/operatorsmodel.cpp:309
+msgctxt "QCoreApplication|"
+msgid "Greater than. gt(a,b)=a>b"
+msgstr "Більше. gt(a,b)=a>b"
+
+#: analitzagui/operatorsmodel.cpp:312
+msgctxt "QCoreApplication|"
+msgid "Less than. lt(a,b)=a<b"
+msgstr "Менше. lt(a,b)=a<b"
+
+#: analitzagui/operatorsmodel.cpp:315
+msgctxt "QCoreApplication|"
+msgid "Equal. eq(a,b) = a=b"
+msgstr "Рівне. eq(a,b) = a=b"
+
+#: analitzagui/operatorsmodel.cpp:318
+msgctxt "QCoreApplication|"
+msgid "Approximation. approx(a)=a±n"
+msgstr "Приблизне. approx(a)=a±n"
+
+#: analitzagui/operatorsmodel.cpp:321
+msgctxt "QCoreApplication|"
+msgid "Not equal. neq(a,b)=a≠b"
+msgstr "Не рівне. neq(a,b)=a≠b"
+
+#: analitzagui/operatorsmodel.cpp:324
+msgctxt "QCoreApplication|"
+msgid "Greater or equal. geq(a,b)=a≥b"
+msgstr "Більше або рівне. geq(a,b)=a≥b"
+
+#: analitzagui/operatorsmodel.cpp:327
+msgctxt "QCoreApplication|"
+msgid "Less or equal. leq(a,b)=a≤b"
+msgstr "Менше або рівне. leq(a,b)=a≤b"
+
+#: analitzagui/operatorsmodel.cpp:330
+msgctxt "QCoreApplication|"
+msgid "Boolean and"
+msgstr "Логічне «і»"
+
+#: analitzagui/operatorsmodel.cpp:333
+msgctxt "QCoreApplication|"
+msgid "Boolean not"
+msgstr "Логічне «ні»"
+
+#: analitzagui/operatorsmodel.cpp:336
+msgctxt "QCoreApplication|"
+msgid "Boolean or"
+msgstr "Логічне «або»"
+
+#: analitzagui/operatorsmodel.cpp:339
+msgctxt "QCoreApplication|"
+msgid "Boolean xor"
+msgstr "Логічне виключне «або»"
+
+#: analitzagui/operatorsmodel.cpp:342
+msgctxt "QCoreApplication|"
+msgid "Boolean implication"
+msgstr "Логічна імплікація"
+
+#: analitzagui/operatorsmodel.cpp:345
+msgctxt "QCoreApplication|"
+msgid "Greatest common divisor"
+msgstr "Найбільший спільний дільник"
+
+#: analitzagui/operatorsmodel.cpp:348
+msgctxt "QCoreApplication|"
+msgid "Least common multiple"
+msgstr "Найменше спільне кратне"
+
+#: analitzagui/operatorsmodel.cpp:351
+msgctxt "QCoreApplication|"
+msgid "Root"
+msgstr "Корінь"
+
+#: analitzagui/operatorsmodel.cpp:354
+msgctxt "QCoreApplication|"
+msgid "Cardinal"
+msgstr "Потужність множини"
+
+#: analitzagui/operatorsmodel.cpp:357
+msgctxt "QCoreApplication|"
+msgid "Scalar product"
+msgstr "Скалярний добуток"
+
+#: analitzagui/operatorsmodel.cpp:360
+msgctxt "QCoreApplication|"
+msgid "Select the par1-th element of par2 list or vector"
+msgstr ""
+"Вибрати елемент з номером, визначеним першим параметром, зі списку чи "
+"вектора, визначеного другим параметром"
+
+#: analitzagui/operatorsmodel.cpp:363
+msgctxt "QCoreApplication|"
+msgid "Joins several items of the same type"
+msgstr "З’єднує декілька елементів одного типу"
+
+#: analitzagui/operatorsmodel.cpp:366
+msgctxt "QCoreApplication|"
+msgid "Applies a function to every element in a list"
+msgstr "Застосовує функцію до всіх елементів у списку"
+
+#: analitzagui/operatorsmodel.cpp:369
+msgctxt "QCoreApplication|"
+msgid "Removes all elements that don't fit a condition"
+msgstr "Вилучає всі елементи, які не відповідають умові"
+
+#: analitzagui/operatorsmodel.cpp:372
+msgctxt "QCoreApplication|"
+msgid "Transpose"
+msgstr "Транспонувати"
+
+#: analitzagui/operatorsmodel.cpp:572
+#, qt-format
+msgctxt "n-ary function prototype|"
+msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
+msgstr "<em>%1</em>(..., <b>par%2</b>, ...)"
+
+#: analitzagui/operatorsmodel.cpp:582
+#, qt-format
+msgctxt "Function name in function prototype|"
+msgid "<em>%1</em>("
+msgstr "<em>%1</em>("
+
+#: analitzagui/operatorsmodel.cpp:583
+#, qt-format
+msgctxt "Uncorrect function name in function prototype|"
+msgid "<em style='color:red'><b>%1</b></em>("
+msgstr "<em style='color:red'><b>%1</b></em>("
+
+#: analitzagui/operatorsmodel.cpp:586
+#, qt-format
+msgctxt "Parameter in function prototype|"
+msgid "par%1"
+msgstr "par%1"
+
+#: analitzagui/operatorsmodel.cpp:589 analitzagui/operatorsmodel.cpp:599
+#, qt-format
+msgctxt "Current parameter in function prototype|"
+msgid "<b>%1</b>"
+msgstr "<b>%1</b>"
+
+#: analitzagui/operatorsmodel.cpp:592
+msgctxt "Function parameter separator|"
+msgid ", "
+msgstr ", "
+
+#: analitzagui/operatorsmodel.cpp:596
+msgctxt "Current parameter is the bounding|"
+msgid " : bounds"
+msgstr " : межі"
+
+#: analitzagui/variablesmodel.cpp:94
+msgctxt "@title:column|"
+msgid "Value"
+msgstr "Значення"
+
+#: analitzaplot/plotsfactory.cpp:49
+msgctxt "QCoreApplication|"
+msgid "The expression is not correct"
+msgstr "Помилка у виразі"
+
+#: analitzaplot/plotsfactory.cpp:72
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Function type '%1' not recognized"
+msgstr "Тип функції «%1» не відомий програмі"
+
+#: analitzaplot/plotsfactory.cpp:74
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Function '%1' not recognized"
+msgstr "Функція «%1» не відома програмі"
+
+#: analitzaplot/plotsmodel.cpp:79
+msgctxt "@title:column|"
+msgid "Plot"
+msgstr "Креслення"
+
+#: analitzaplot/plotter3d_es.cpp:534 declarative/graph2dmobile.cpp:149
+msgctxt "QObject|"
+msgid "PNG Image (*.png)"
+msgstr "зображення PNG (*.png)"
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "PDF Document (*.pdf)"
+msgstr "документ PDF (*.pdf)"
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "X3D Document (*.x3d)"
+msgstr "документ X3D (*.x3d)"
+
+#: analitzaplot/plotter3d_es.cpp:534
+msgctxt "QObject|"
+msgid "STL Document (*.stl)"
+msgstr "документ STL (*.stl)"
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:64
+msgctxt "Function type|"
+msgid "Plane Curve F(y)"
+msgstr "Плоска крива F(y)"
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:80
+msgctxt "Function type|"
+msgid "Plane Curve F(x)"
+msgstr "Плоска крива F(x)"
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:137
+#: analitzaplot/private/backends/cartesiancurve.cpp:245
+msgctxt "QCoreApplication|"
+msgid "We can only draw Real results."
+msgstr "Креслення можливе лише за результатами типу Real."
+
+#: analitzaplot/private/backends/cartesiancurve.cpp:248
+#: analitzawidgets/plotsview2d.cpp:236
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "x=%1 y=%2"
+msgstr "x=%1 y=%2"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:52
+msgctxt "Function type|"
+msgid "Surface z=F(x,y)"
+msgstr "Поверхня z=F(x,y)"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:94
+msgctxt "Function type|"
+msgid "Surface y=F(x,z)"
+msgstr "Поверхня y=F(x,z)"
+
+#: analitzaplot/private/backends/cartesiansurface.cpp:127
+msgctxt "Function type|"
+msgid "Surface x=F(y,z)"
+msgstr "Поверхня x=F(y,z)"
+
+#: analitzaplot/private/backends/cylindricalsurface.cpp:37
+msgctxt "Function type|"
+msgid "Cylindrical Surface z=F(r: Radial, p: Polar)"
+msgstr ""
+"Поверхня у циліндричній системі координат, z=F(r: радіус, p: полярний кут)"
+
+#: analitzaplot/private/backends/implicitcurve.cpp:44
+msgctxt "Function type|"
+msgid "Implicit Curve"
+msgstr "Крива, задана неявним чином"
+
+#: analitzaplot/private/backends/implicitpolarcurve.cpp:37
+msgctxt "Function type|"
+msgid "Polar implicit Curve 0=F(r: Radial, p: Polar)"
+msgstr ""
+"Крива у полярній системі координат, задана неявно 0=F(r: радіус, p: полярний "
+"кут)"
+
+#: analitzaplot/private/backends/implicitsurface.cpp:35
+msgctxt "Function type|"
+msgid "Implicit Surface"
+msgstr "Поверхня, задана неявно"
+
+#: analitzaplot/private/backends/parametriccurve2d.cpp:37
+msgctxt "Function type|"
+msgid "Parametric Curve 2D"
+msgstr "Плоска крива, задана параметрично"
+
+#: analitzaplot/private/backends/parametriccurve3d.cpp:31
+msgctxt "Function type|"
+msgid "Parametric Curve 3D"
+msgstr "Просторова крива, задана параметрично"
+
+#: analitzaplot/private/backends/parametricsurface.cpp:32
+msgctxt "Function type|"
+msgid "Parametric Surface"
+msgstr "Поверхня, задана параметрично"
+
+#: analitzaplot/private/backends/polarcurve.cpp:37
+msgctxt "Function type|"
+msgid "Polar Curve r=F(p: Polar)"
+msgstr "Крива у полярній системі координат, r=F(p: полярний кут)"
+
+#: analitzaplot/private/backends/sphericalsurface.cpp:35
+msgctxt "Function type|"
+msgid "Spherical Surface Radial=F(t:Azimuth, p: Polar)"
+msgstr "Сферична поверхня Радіус=F(t: азимут, p: полярний кут)"
+
+#: analitzawidgets/expressionedit.cpp:295
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Result: %1"
+msgstr "Результат: %1"
+
+#: analitzawidgets/expressionedit.cpp:405
+msgctxt "QCoreApplication|"
+msgid "To Expression"
+msgstr "До виразу"
+
+#: analitzawidgets/expressionedit.cpp:407
+msgctxt "QCoreApplication|"
+msgid "To MathML"
+msgstr "У MathML"
+
+#: analitzawidgets/expressionedit.cpp:409
+msgctxt "QCoreApplication|"
+msgid "Simplify"
+msgstr "Спростити"
+
+#: analitzawidgets/expressionedit.cpp:411
+msgctxt "QCoreApplication|"
+msgid "Examples"
+msgstr "Приклади"
+
+#: analitzawidgets/plotsview2d.cpp:214
+msgctxt "QCoreApplication|"
+msgid "Selected viewport too small"
+msgstr "Вибрана ділянка перегляду замала"
+
+#~ msgctxt "QObject|"
+#~ msgid "PNG File (*.png)"
+#~ msgstr "файл PNG (*.png)"
+
+#~ msgctxt "NAME OF TRANSLATORS"
+#~ msgid "Your names"
+#~ msgstr "Юрій Чорноіван"
+
+#~ msgctxt "EMAIL OF TRANSLATORS"
+#~ msgid "Your emails"
+#~ msgstr "yurchor@ukr.net"
+
+#~ msgctxt "Parameter in function prototype"
+#~ msgid "par%1"
+#~ msgstr "par%1"
+
+#~ msgctxt "Function parameter separator"
+#~ msgid ", "
+#~ msgstr ", "
+
+#~ msgctxt "dictionary"
+#~ msgid "Hipotrocoide"
+#~ msgstr "Гіпотрохоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Hiperbola"
+#~ msgstr "Гіпербола"
+
+#~ msgctxt "dictionary"
+#~ msgid "Nefroide"
+#~ msgstr "Нефроїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Alforja"
+#~ msgstr "Сідло"
+
+#~ msgctxt "dictionary"
+#~ msgid "Anguinea"
+#~ msgstr "Серпантин"
+
+#~ msgctxt "dictionary"
+#~ msgid "Antiversiera"
+#~ msgstr "Антиверсьєра"
+
+#~ msgctxt "dictionary"
+#~ msgid "Astroide"
+#~ msgstr "Астроїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Atriftaloide"
+#~ msgstr "Атрифталоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Bicornia"
+#~ msgstr "Двороге ковадло"
+
+#~ msgctxt "dictionary"
+#~ msgid "Braquistócrona"
+#~ msgstr "Брахістохрона"
+
+#~ msgctxt "dictionary"
+#~ msgid "Cardioide"
+#~ msgstr "Кардіоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Catenaria"
+#~ msgstr "Ланцюгова лінія"
+
+#~ msgctxt "dictionary"
+#~ msgid "Elipse"
+#~ msgstr "Еліпс"
+
+#~ msgctxt "dictionary"
+#~ msgid "Epicicloide"
+#~ msgstr "Епіциклоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Epitrocoide"
+#~ msgstr "Епітрохоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Estrofoide"
+#~ msgstr "Естрофоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Parábola"
+#~ msgstr "Парабола"
+
+#~ msgctxt "dictionary"
+#~ msgid "Recta"
+#~ msgstr "Пряма"
+
+#~ msgctxt "dictionary"
+#~ msgid "Toroide"
+#~ msgstr "Тороїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Tractiz"
+#~ msgstr "Трактриса"
+
+#~ msgctxt "dictionary"
+#~ msgid "Trocoide"
+#~ msgstr "Трохоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Trompo"
+#~ msgstr "Вовчок"
+
+#~ msgctxt "dictionary"
+#~ msgid "Visiera"
+#~ msgstr "Забрало"
+
+#~ msgctxt "dictionary"
+#~ msgid "Cicloide"
+#~ msgstr "Циклоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Círculo"
+#~ msgstr "Коло"
+
+#~ msgctxt "dictionary"
+#~ msgid "Clinoide"
+#~ msgstr "Кліноїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Logaritmo--"
+#~ msgstr "Логарифм"
+
+#~ msgctxt "dictionary"
+#~ msgid "Cornoide"
+#~ msgstr "Корноїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Deltoide"
+#~ msgstr "Дельтоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Capricornoide"
+#~ msgstr "Капрікорноїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Escarabajos"
+#~ msgstr "Каракатиця"
+
+#~ msgctxt "dictionary"
+#~ msgid "Cocleoide"
+#~ msgstr "Коклеоїда"
+
+#~ msgctxt "dictionary"
+#~ msgid "Cranioide"
+#~ msgstr "Краніоїда"
+
+#~ msgid "Function type not correct for functions depending on %1"
+#~ msgstr "Помилковий тип функції, залежної від %1"
+
+#~ msgctxt ""
+#~ "This function can't be represented as a curve. To draw implicit curve, "
+#~ "the function has to satisfy the implicit function theorem."
+#~ msgid "Implicit function undefined in the plane"
+#~ msgstr "Функція, задана неявно, є невизначеною на площині"
+
+#~ msgid "center"
+#~ msgstr "центр"
+
+#~ msgctxt "@title:column"
+#~ msgid "Function"
+#~ msgstr "Функція"
+
+#~ msgid "%1 function added"
+#~ msgstr "функцію %1 додано"
+
+#~ msgid "Hide '%1'"
+#~ msgstr "Сховати «%1»"
+
+#~ msgid "Show '%1'"
+#~ msgstr "Показати «%1»"
+
+#~ msgid "Remove '%1'"
+#~ msgstr "Вилучити «%1»"
+
+#~ msgctxt "Error message"
+#~ msgid "Unknown token %1"
+#~ msgstr "Невідомий елемент %1"
