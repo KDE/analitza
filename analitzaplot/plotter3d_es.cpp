@@ -112,7 +112,7 @@ void Plotter3DES::initGL()
 
         "void main(void)\n"
         "{\n"
-        "   float w = 10.*gl_FragCoord.w;\n"
+        "   highp float w = 10.*gl_FragCoord.w;\n"
         "   highp vec4 zvec = vec4(w, w, w, 1.0);"
         "   gl_FragColor = mix(color, zvec, vec4(.5,.5,.5,1.));\n"
         "}"
