@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -46,17 +46,17 @@ msgstr "', '"
 #: analitza/analyzer.cpp:615
 msgctxt "Error message, no proper condition found.|"
 msgid "Could not find a proper choice for a condition statement."
-msgstr ""
+msgstr "პირობის გამოთქმისთვის სწორი არჩევანის პოვნა შეუძლებელია."
 
 #: analitza/analyzer.cpp:936
 msgctxt "QCoreApplication|"
 msgid "Type not supported for bounding."
-msgstr ""
+msgstr "საზღვრებისთვის მხარდაუჭერელი ტიპი."
 
 #: analitza/analyzer.cpp:961
 msgctxt "QCoreApplication|"
 msgid "The downlimit is greater than the uplimit"
-msgstr ""
+msgstr "ქვედა ზღვარი ზედაზე დიდია"
 
 #: analitza/analyzer.cpp:963
 msgctxt "QCoreApplication|"
@@ -72,7 +72,7 @@ msgstr "არასწორი ტიპი პარამეტრისთ�
 #: analitza/analyzer.cpp:1877
 msgctxt "By a cycle i mean a variable that depends on itself|"
 msgid "Defined a variable cycle"
-msgstr ""
+msgstr "აღწერილია თავის თავზე დამოკიდებული ცვლადი"
 
 #: analitza/analyzer.cpp:1919
 msgctxt "QCoreApplication|"
@@ -96,7 +96,7 @@ msgstr "არასწორი პარამეტრების რაო�
 #: analitza/commands/blockmatrixcommands.cpp:122
 msgctxt "QCoreApplication|"
 msgid "Blocks must have consistent size between each and other"
-msgstr ""
+msgstr "ბლოკების ზომა შეთანხმებული უნდა იყოს"
 
 #: analitza/commands/blockmatrixcommands.cpp:90
 #: analitza/commands/blockmatrixcommands.cpp:126
@@ -123,7 +123,7 @@ msgstr "ბლოკების რაოდენობა მუდმივ�
 #: analitza/commands/matrixcommands.cpp:147
 msgctxt "QCoreApplication|"
 msgid "Do not want empty vectors/matrixrow elements"
-msgstr ""
+msgstr "ვექტორების/მატრიცების ელემენტების დაცარიელება არ ღირს"
 
 #: analitza/commands/blockmatrixcommands.cpp:150
 #: analitza/commands/blockmatrixcommands.cpp:213
@@ -131,6 +131,7 @@ msgstr ""
 msgctxt "QCoreApplication|"
 msgid "Matrix constructor needs vectors or matrixrow elements"
 msgstr ""
+"მატრიცის კონსტრუქტორს ვექტორები ან მატრიცის მწკრივის ელემენტები სჭირდება"
 
 #: analitza/commands/blockmatrixcommands.cpp:244
 #: analitza/commands/matrixcommands.cpp:288
@@ -143,13 +144,13 @@ msgstr "არგუმენტი %1 არასწორია ან შე
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%1'. Should have 1 parameter"
-msgstr ""
+msgstr "'%1'-ის პარამეტრების არასწორი რიცხვი. პარამეტრი მხოლოდ ერთი უნდა იყოს"
 
 #: analitza/commands/eigencommands.cpp:47
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "To use '%1' command the input matrix must be square"
-msgstr ""
+msgstr "ბრძანების '%1' გამოსაყენებლად შეყვანილი მატრიცა კვადრატული უნდა იყოს"
 
 #: analitza/commands/eigencommands.cpp:68
 #: analitza/commands/eigencommands.cpp:74
@@ -159,28 +160,30 @@ msgid ""
 "Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number "
 "value"
 msgstr ""
+"პარამეტრის არასწორი ტიპი მატრიცის ელემენტში (%1, %2) '%3'-სთვის. ის რიცხვს "
+"უნდა წარმოადგენდეს"
 
 #: analitza/commands/eigencommands.cpp:126
 #: analitza/commands/eigencommands.cpp:193
 msgctxt "QCoreApplication|NaN means Not a Number, is an invalid float number"
 msgid "Returned eigenvalue is NaN"
-msgstr ""
+msgstr "დაბრუნებული პირადი მნიშვნელობა რიცხვს არ წარმოადგენს"
 
 #: analitza/commands/eigencommands.cpp:132
 #: analitza/commands/eigencommands.cpp:196
 msgctxt "QCoreApplication|"
 msgid "Returned eigenvalue is too big"
-msgstr ""
+msgstr "დაბრუნებული პირადი მნიშვნელობა მეტისმეტად დიდია"
 
 #: analitza/commands/matrixcommands.cpp:31
 msgctxt "QCoreApplication|"
 msgid "Matrix dimensions must be greater than zero"
-msgstr ""
+msgstr "მატრიცის განზომილებები ნულზე მეტი უნდა იყოს"
 
 #: analitza/commands/matrixcommands.cpp:122 analitza/expression.cpp:296
 msgctxt "QCoreApplication|"
 msgid "All matrixrow elements must have the same size"
-msgstr ""
+msgstr "მატრიცის ყველა მწკრივის ზომა ტოლი უნდა იყოს"
 
 #: analitza/commands/matrixcommands.cpp:127
 msgctxt "QCoreApplication|"
@@ -190,44 +193,44 @@ msgstr "ყველა მწკრივი ან ვექტორი ა�
 #: analitza/commands/matrixcommands.cpp:143
 msgctxt "QCoreApplication|"
 msgid "Every argument must be a matrixrow element"
-msgstr ""
+msgstr "თითოეული არგუმენტი მატრიცის მწკრივის ელემენტს უნდა წარმოადგენდეს"
 
 #: analitza/commands/matrixcommands.cpp:241
 msgctxt "QCoreApplication|"
 msgid "The nth diagonal index must be less than the row count"
-msgstr ""
+msgstr "მე-n-ე დიაგონალის ინდექსი მწკრივების რაოდენობაზე ნაკლები უნდა იყოს"
 
 #: analitza/commands/matrixcommands.cpp:249
 msgctxt "QCoreApplication|"
 msgid "The nth diagonal index must be less than the column count"
-msgstr ""
+msgstr "მე-n-ე დიაგონალის ინდექსი სვეტების რაოდენობაზე ნაკლები უნდა იყოს"
 
 #: analitza/commands/matrixcommands.cpp:265
 msgctxt "QCoreApplication|"
 msgid "nth diagonal index must be integer number"
-msgstr ""
+msgstr "მე-n-ე დიაგონალის ინდექსი მთელ რიცხვს უნდა წარმოადგენდეს"
 
 #: analitza/commands/matrixcommands.cpp:269
 msgctxt "QCoreApplication|"
 msgid "nth diagonal index must be a positive integer number"
-msgstr ""
+msgstr "მე-n-ე დიაგონალის ინდექსი დადებით მთელ რიცხვს უნდა წარმოადგენდეს"
 
 #: analitza/commands/vectorcommands.cpp:62
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter type for '%1', was expected a list"
-msgstr ""
+msgstr "არასწორი პარამეტრის ტიპი '%1'. მოველოდი სიას"
 
 #: analitza/commands/vectorcommands.cpp:75
 #: analitza/commands/vectorcommands.cpp:78
 msgctxt "QCoreApplication|"
 msgid "Vector size must be some integer value greater to zero"
-msgstr ""
+msgstr "ვექტორის ზომა ნულზე მეტი დადებითი რიცხვი უნდა იყოს"
 
 #: analitza/explexer.cpp:78
 msgctxt "QCoreApplication|"
 msgid "Unexpectedly arrived to the end of the input"
-msgstr ""
+msgstr "მოულოდნელად მიღწეულია შეყვანის ბოლო"
 
 #: analitza/explexer.cpp:112
 #, qt-format
@@ -239,31 +242,31 @@ msgstr "უცნობი კოდი %1"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "<em>%1</em> needs at least 2 parameters"
-msgstr ""
+msgstr "<em>%1</em> სულ ცოტა, ორ პარამეტრს მოითხოვს"
 
 #: analitza/expression.cpp:164
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "<em>%1</em> requires %2 parameters"
-msgstr ""
+msgstr "<em>%1</em> %2 პარამეტრს მოითხოვს"
 
 #: analitza/expression.cpp:171
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Missing boundary for '%1'"
-msgstr ""
+msgstr "აკლია ზღვარი '%1'-სთვის"
 
 #: analitza/expression.cpp:173
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected bounding for '%1'"
-msgstr ""
+msgstr "მოულოდნელი ზღვარი '%1'-სთვის"
 
 #: analitza/expression.cpp:178
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "<em>%1</em> missing bounds on '%2'"
-msgstr ""
+msgstr "<em>%1</em> -ს აკლია ზღვრები '%2'-ზე"
 
 #: analitza/expression.cpp:200
 msgctxt "QCoreApplication|"
@@ -285,13 +288,13 @@ msgstr ""
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot have two parameters with the same name like '%1'."
-msgstr ""
+msgstr "ორი ერთნაირი სახელის მქონე პარამეტრი ვერ გექნებათ ('%1')."
 
 #: analitza/expression.cpp:259
 msgctxt ""
 "this is an error message. otherwise is the else in a mathml condition|"
 msgid "The <em>otherwise</em> parameter should be the last one"
-msgstr ""
+msgstr "<em>არადა</em> პარამეტრი ერთი მაინც უნდა იყოს"
 
 #: analitza/expression.cpp:267
 #, qt-format
@@ -302,22 +305,22 @@ msgstr ""
 #: analitza/expression.cpp:273
 msgctxt "QCoreApplication|"
 msgid "We can only declare variables"
-msgstr ""
+msgstr "ცვლადების მხოლოდ აღწერაა შესაძლებელი"
 
 #: analitza/expression.cpp:279
 msgctxt "QCoreApplication|"
 msgid "We can only have bounded variables"
-msgstr ""
+msgstr "დაშვებულია მხოლოდ შემოსაზღვრული ცვლადები"
 
 #: analitza/expression.cpp:290 analitza/expression.cpp:495
 msgctxt "QCoreApplication|"
 msgid "Do not want empty matrixrow elements"
-msgstr ""
+msgstr "მატრიცის მწკრივებში ცარიელი ელემენტების მითითება არ ღირს"
 
 #: analitza/expression.cpp:300
 msgctxt "QCoreApplication|"
 msgid "The matrix must contain only matrixrow elements"
-msgstr ""
+msgstr "მატრიცა მხოლოდ მწკრივის ელემენტებს უნდა შეიცავდეს"
 
 #: analitza/expression.cpp:419
 #, qt-format
@@ -379,18 +382,18 @@ msgstr "მოველოდი %1-ს %2-ის მაგიერ"
 #: analitza/expressionparser.cpp:298
 msgctxt "QCoreApplication|"
 msgid "Missing right parenthesis"
-msgstr ""
+msgstr "აკლა დამხურავი ფრჩხილი"
 
 #: analitza/expressionparser.cpp:300
 msgctxt "QCoreApplication|"
 msgid "Unbalanced right parenthesis"
-msgstr ""
+msgstr "დამხურავი ფრჩხილები არასაკმარისია"
 
 #: analitza/expressionparser.cpp:303
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected token identifier: %1"
-msgstr ""
+msgstr "კოდის მოულოდნელი იდენტიფიკატორი: %1"
 
 #: analitza/expressionparser.cpp:305
 #, qt-format
@@ -402,12 +405,12 @@ msgstr "მოულოდნელი კოდი %1"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not find a type that unifies '%1'"
-msgstr ""
+msgstr "ვერ ვიპოვე ტიპი, რომელიც აერთიანებს '%1'-ს"
 
 #: analitza/expressiontypechecker.cpp:473
 msgctxt "QCoreApplication|"
 msgid "The domain should be either a vector or a list"
-msgstr ""
+msgstr "დომენი ვექტორს ან სიას უნდა წარმოადგენდეს"
 
 #: analitza/expressiontypechecker.cpp:558
 #, qt-format
@@ -420,18 +423,22 @@ msgstr "%1-ის გამოძახება შეუძლებელი�
 msgctxt "QCoreApplication|"
 msgid "Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
 msgstr ""
+"'%1'-ის '%2'-მდე შემცირება შეუძლებელია. პარამეტრის ტიპი '%3' '%4'-თვის "
+"არასწორია"
 
 #: analitza/expressiontypechecker.cpp:604
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%2'. Should have %1 parameters."
-msgstr ""
+msgstr "'%2'-ის პარამეტრების რაოდენობა არასწორია. უნდა იყოს %1 პარამეტრი."
 
 #: analitza/expressiontypechecker.cpp:616
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
 msgstr ""
+"'%1'-ის და '%2'-ის შედარება შეუძლებელია. პარამეტრის '%3' არასწორი ტიპი '%4'-"
+"სთვის"
 
 #: analitza/expressiontypechecker.cpp:654
 #, qt-format
@@ -465,7 +472,7 @@ msgstr "მხარდაუჭერელი ტიპი"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot convert '%1' to '%2'"
-msgstr ""
+msgstr "'%1'-ის '%2'-ში გარდაქმნის შეცდომა"
 
 #: analitza/htmlexpressionwriter.cpp:54 analitza/htmlexpressionwriter.cpp:55
 #, qt-format
@@ -508,12 +515,12 @@ msgstr "0-ის lcm-ის გამოთვლის შეცდომა."
 #: analitza/operations.cpp:246
 msgctxt "QCoreApplication|"
 msgid "Boolean operations on complex numbers not available"
-msgstr ""
+msgstr "კომპლექსურ რიცხვებზე ლოგიკურ ოპერაციებს ვერ ჩაატარებთ"
 
 #: analitza/operations.cpp:276
 msgctxt "QCoreApplication|"
 msgid "Only square root implemented for complex numbers"
-msgstr ""
+msgstr "კომპლექსური რიცხვებისთვის მხოლოდ კვადრატული ფესვია ხელმისაწვდომი"
 
 #: analitza/operations.cpp:351 analitza/operations.cpp:463
 #, qt-format
@@ -525,7 +532,7 @@ msgstr "%1-ის მნიშვნელობის გამოთვლი�
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate %1 between a value and an error type"
-msgstr ""
+msgstr "%1-ის გამოთვლა მნიშვნელობასა და შეცდომის ტიპს შორის შეუძლებელია"
 
 #: analitza/operations.cpp:495 analitza/operations.cpp:652
 #: analitza/operations.cpp:784
@@ -641,7 +648,7 @@ msgstr " : var"
 #: analitzagui/operatorsmodel.cpp:137
 msgctxt "Syntax for function bounding values|"
 msgid "=from..to"
-msgstr ""
+msgstr "=საიდან..სადამდე"
 
 #: analitzagui/operatorsmodel.cpp:140
 #, qt-format
@@ -659,7 +666,7 @@ msgstr "%1... პარამეტრები, ...%2)"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "par%1"
-msgstr ""
+msgstr "პარ%1"
 
 #: analitzagui/operatorsmodel.cpp:159
 msgctxt "QCoreApplication|"
@@ -679,7 +686,7 @@ msgstr "დანაყოფი"
 #: analitzagui/operatorsmodel.cpp:168
 msgctxt "QCoreApplication|"
 msgid "Subtraction. Will remove all values from the first one."
-msgstr ""
+msgstr "გამოკლება. პირველიდან ყველა მნიშვნელობის გამოკლება."
 
 #: analitzagui/operatorsmodel.cpp:171
 msgctxt "QCoreApplication|"
@@ -694,32 +701,32 @@ msgstr "ნაშთი"
 #: analitzagui/operatorsmodel.cpp:177
 msgctxt "QCoreApplication|"
 msgid "Quotient"
-msgstr ""
+msgstr "კოეფიციენტი"
 
 #: analitzagui/operatorsmodel.cpp:180
 msgctxt "QCoreApplication|"
 msgid "The factor of"
-msgstr ""
+msgstr "ფაქტორი"
 
 #: analitzagui/operatorsmodel.cpp:183
 msgctxt "QCoreApplication|"
 msgid "Factorial. factorial(n)=n!"
-msgstr ""
+msgstr "ფაქტორალი. factorial(n)=n!"
 
 #: analitzagui/operatorsmodel.cpp:186
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the sine of a given angle"
-msgstr ""
+msgstr "მითითებული კუთხის სინუსის გამოთვლის ფუნქცია"
 
 #: analitzagui/operatorsmodel.cpp:189
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the cosine of a given angle"
-msgstr ""
+msgstr "მითითებული კუთხის კოსინუსის გამოთვლის ფუნქცია"
 
 #: analitzagui/operatorsmodel.cpp:192
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the tangent of a given angle"
-msgstr ""
+msgstr "მითითებული კუთხის ტანგენსის გამოთვლის ფუნქცია"
 
 #: analitzagui/operatorsmodel.cpp:195
 msgctxt "QCoreApplication|"
@@ -794,12 +801,12 @@ msgstr "ჰიპერბოლური არკტანგენსი"
 #: analitzagui/operatorsmodel.cpp:240
 msgctxt "QCoreApplication|"
 msgid "Summatory"
-msgstr ""
+msgstr "შეჯამება"
 
 #: analitzagui/operatorsmodel.cpp:243
 msgctxt "QCoreApplication|"
 msgid "Productory"
-msgstr ""
+msgstr "წარმოებული"
 
 #: analitzagui/operatorsmodel.cpp:246
 msgctxt "QCoreApplication|"
@@ -854,22 +861,22 @@ msgstr "ექსპონენტი (e^x)"
 #: analitzagui/operatorsmodel.cpp:276
 msgctxt "QCoreApplication|"
 msgid "Base-e logarithm"
-msgstr ""
+msgstr "Base-e ლოგარითმი"
 
 #: analitzagui/operatorsmodel.cpp:279
 msgctxt "QCoreApplication|"
 msgid "Base-10 logarithm"
-msgstr ""
+msgstr "Base-10 ლოგარითმი"
 
 #: analitzagui/operatorsmodel.cpp:282
 msgctxt "QCoreApplication|"
 msgid "Absolute value. abs(n)=|n|"
-msgstr ""
+msgstr "აბსოლუტური მნიშვნელობა. abs(n)=|n|"
 
 #: analitzagui/operatorsmodel.cpp:285
 msgctxt "QCoreApplication|"
 msgid "Conjugate"
-msgstr ""
+msgstr "უღლება"
 
 #: analitzagui/operatorsmodel.cpp:288
 msgctxt "QCoreApplication|"
@@ -889,12 +896,12 @@ msgstr "წარმოსახვითი"
 #: analitzagui/operatorsmodel.cpp:297
 msgctxt "QCoreApplication|"
 msgid "Floor value. floor(n)=⌊n⌋"
-msgstr ""
+msgstr "უმცირესი მნიშვნელობა. floor(n)=⌊n⌋"
 
 #: analitzagui/operatorsmodel.cpp:300
 msgctxt "QCoreApplication|"
 msgid "Ceil value. ceil(n)=⌈n⌉"
-msgstr ""
+msgstr "უდიდესი მნიშვნელობა. ceil(n)=⌈n⌉"
 
 #: analitzagui/operatorsmodel.cpp:303
 msgctxt "QCoreApplication|"
@@ -909,37 +916,37 @@ msgstr "მაქსიმუმი"
 #: analitzagui/operatorsmodel.cpp:309
 msgctxt "QCoreApplication|"
 msgid "Greater than. gt(a,b)=a>b"
-msgstr ""
+msgstr "მეტია, ვიდრე. gt(a,b)=a>b"
 
 #: analitzagui/operatorsmodel.cpp:312
 msgctxt "QCoreApplication|"
 msgid "Less than. lt(a,b)=a<b"
-msgstr ""
+msgstr "ნაკლებია, ვიდრე. lt(a,b)=a<b"
 
 #: analitzagui/operatorsmodel.cpp:315
 msgctxt "QCoreApplication|"
 msgid "Equal. eq(a,b) = a=b"
-msgstr ""
+msgstr "უდრის eq(a,b) = a=b"
 
 #: analitzagui/operatorsmodel.cpp:318
 msgctxt "QCoreApplication|"
 msgid "Approximation. approx(a)=a±n"
-msgstr ""
+msgstr "დაახლოება. approx(a)=a±n"
 
 #: analitzagui/operatorsmodel.cpp:321
 msgctxt "QCoreApplication|"
 msgid "Not equal. neq(a,b)=a≠b"
-msgstr ""
+msgstr "არ უდრის. neq(a,b)=a≠b"
 
 #: analitzagui/operatorsmodel.cpp:324
 msgctxt "QCoreApplication|"
 msgid "Greater or equal. geq(a,b)=a≥b"
-msgstr ""
+msgstr "მეტია ან ტოლია. geq(a,b)=a≥b"
 
 #: analitzagui/operatorsmodel.cpp:327
 msgctxt "QCoreApplication|"
 msgid "Less or equal. leq(a,b)=a≤b"
-msgstr ""
+msgstr "ნაკლებია ან ტოლია. leq(a,b)=a≤b"
 
 #: analitzagui/operatorsmodel.cpp:330
 msgctxt "QCoreApplication|"
@@ -964,7 +971,7 @@ msgstr "ლოგიკური არ-ანა"
 #: analitzagui/operatorsmodel.cpp:342
 msgctxt "QCoreApplication|"
 msgid "Boolean implication"
-msgstr ""
+msgstr "ლოგიკური დასკვნა"
 
 #: analitzagui/operatorsmodel.cpp:345
 msgctxt "QCoreApplication|"
@@ -984,12 +991,12 @@ msgstr "Root"
 #: analitzagui/operatorsmodel.cpp:354
 msgctxt "QCoreApplication|"
 msgid "Cardinal"
-msgstr ""
+msgstr "კარდინალი"
 
 #: analitzagui/operatorsmodel.cpp:357
 msgctxt "QCoreApplication|"
 msgid "Scalar product"
-msgstr ""
+msgstr "სკალარული პროდუქტი"
 
 #: analitzagui/operatorsmodel.cpp:360
 msgctxt "QCoreApplication|"
@@ -1004,7 +1011,7 @@ msgstr ""
 #: analitzagui/operatorsmodel.cpp:366
 msgctxt "QCoreApplication|"
 msgid "Applies a function to every element in a list"
-msgstr ""
+msgstr "ფუნქციის სიის ყველა ელემენტზე გადატარება"
 
 #: analitzagui/operatorsmodel.cpp:369
 msgctxt "QCoreApplication|"
@@ -1014,13 +1021,13 @@ msgstr ""
 #: analitzagui/operatorsmodel.cpp:372
 msgctxt "QCoreApplication|"
 msgid "Transpose"
-msgstr ""
+msgstr "ტრანსპოზიცია"
 
 #: analitzagui/operatorsmodel.cpp:572
 #, qt-format
 msgctxt "n-ary function prototype|"
 msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
-msgstr ""
+msgstr "<em>%1</em>(..., <b>პარ%2</b>, ...)"
 
 #: analitzagui/operatorsmodel.cpp:582
 #, qt-format
@@ -1038,7 +1045,7 @@ msgstr "<em style='color:red'><b>%1</b></em>("
 #, qt-format
 msgctxt "Parameter in function prototype|"
 msgid "par%1"
-msgstr ""
+msgstr "პარ%1"
 
 #: analitzagui/operatorsmodel.cpp:589 analitzagui/operatorsmodel.cpp:599
 #, qt-format
@@ -1054,7 +1061,7 @@ msgstr ", "
 #: analitzagui/operatorsmodel.cpp:596
 msgctxt "Current parameter is the bounding|"
 msgid " : bounds"
-msgstr ""
+msgstr " : საზღვრები"
 
 #: analitzagui/variablesmodel.cpp:94
 msgctxt "@title:column|"
@@ -1064,24 +1071,24 @@ msgstr "მნიშვნელობა"
 #: analitzaplot/plotsfactory.cpp:49
 msgctxt "QCoreApplication|"
 msgid "The expression is not correct"
-msgstr ""
+msgstr "გამოსახულება არასწორია"
 
 #: analitzaplot/plotsfactory.cpp:72
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Function type '%1' not recognized"
-msgstr ""
+msgstr "ფუნქციის ტიპი '%1' უცნობია"
 
 #: analitzaplot/plotsfactory.cpp:74
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Function '%1' not recognized"
-msgstr ""
+msgstr "ფუნქცია '%1' უცნობია"
 
 #: analitzaplot/plotsmodel.cpp:79
 msgctxt "@title:column|"
 msgid "Plot"
-msgstr ""
+msgstr "გრაფიკი"
 
 #: analitzaplot/plotter3d_es.cpp:534 declarative/graph2dmobile.cpp:149
 msgctxt "QObject|"
