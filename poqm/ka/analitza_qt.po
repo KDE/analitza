@@ -282,7 +282,7 @@ msgstr "ცარიელი კონტეინერი: %1"
 #: analitza/expression.cpp:228
 msgctxt "there was a conditional outside a condition structure|"
 msgid "We can only have conditionals inside piecewise structures."
-msgstr ""
+msgstr "პირობები მხოლოდ სათითაოდ-მიწოდებულ სტრუქტურებშია შესაძლებელი."
 
 #: analitza/expression.cpp:244
 #, qt-format
@@ -300,7 +300,7 @@ msgstr "<em>არადა</em> პარამეტრი ერთი მა
 #, qt-format
 msgctxt "there was an element that was not a conditional inside a condition|"
 msgid "%1 is not a proper condition inside the piecewise"
-msgstr ""
+msgstr "%1 არასწორი პირობაა სათითაოდ-მიწოდებულ ფუნქციაში"
 
 #: analitza/expression.cpp:273
 msgctxt "QCoreApplication|"
@@ -456,12 +456,12 @@ msgstr "%1-ის ამოხსნის პრობლემა"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Incoherent type for the variable '%1'"
-msgstr ""
+msgstr "არაკოჰერენტული ტიპი ცვლადისთვის '%1'"
 
 #: analitza/expressiontypechecker.cpp:718
 msgctxt "QCoreApplication|"
 msgid "Could not determine the type for piecewise"
-msgstr ""
+msgstr "ნაწილებად გადაცემულის ტიპის განსაზღვრა შეუძლებელია"
 
 #: analitza/expressiontypechecker.cpp:937
 msgctxt "QCoreApplication|"
@@ -544,7 +544,7 @@ msgstr "კონტეინერის არასწორი ინდე�
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot operate '%1' on different sized vectors."
-msgstr ""
+msgstr "ოპერაციის ('%1') შესრულება სხვადასხვა ზომის ვექტორებზე შეუძლებელია."
 
 #: analitza/operations.cpp:566
 msgctxt "QCoreApplication|"
@@ -552,17 +552,19 @@ msgid ""
 "Multiplication between a matrix and a vector is allowed provided that the "
 "number of columns of the matrix equals the size of the vector"
 msgstr ""
+"მატრიცის ვექტორზე გამრავლება შესაძლებელია, თუ მატრიცის სვეტების რაოდენობა "
+"ვექტორის ზომას უდრის"
 
 #: analitza/operations.cpp:570 analitza/operations.cpp:707
 msgctxt "QCoreApplication|"
 msgid "Matrix and vector entries must be numbers"
-msgstr ""
+msgstr "მატრიცის და ვექტორის ელემენტები რიცხვები უნდა იყოს"
 
 #: analitza/operations.cpp:599
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not calculate a vector's %1"
-msgstr ""
+msgstr "ვექტორის %1-ის გამოთვლა შეუძლებელია"
 
 #: analitza/operations.cpp:621 analitza/operations.cpp:637
 #, qt-format
@@ -576,6 +578,8 @@ msgid ""
 "Multiplication between a vector and a matrix is allowed provided that the "
 "matrix has only one matrixrow element"
 msgstr ""
+"ვექტორის მატრიცაზე გამრავლება შესაძლებელია მხოლოდ იმ შემთხვევაში, თუ "
+"მატრიცას მისი მწკრივის მხოლოდ ერთი ელემენტი გააჩნია"
 
 #: analitza/operations.cpp:730
 msgctxt "QCoreApplication|"
@@ -583,6 +587,8 @@ msgid ""
 "Addition of two matrices is allowed provided that both matrices have the "
 "same number of rows and the same number of columns"
 msgstr ""
+"ორი მატრიცის შეკრება შესაძლებელია იმ შემთხვევაში, თუ ორივე მატრიცას ტოლი "
+"მწკრივების და სვეტების რაოდენობა გააჩნია"
 
 #: analitza/operations.cpp:762
 msgctxt "QCoreApplication|"
@@ -590,6 +596,8 @@ msgid ""
 "Multiplication of two matrices is allowed provided that the number of "
 "columns of the first matrix equals the number of rows of the second matrix"
 msgstr ""
+"ორი მატრიცის გადამრავლება შესაძლებელია, თუ პირველი მატრიცის სვეტების "
+"რაოდენობა მეორე მატრიცის მწკრივების რაოდენობას უდრის"
 
 #: analitza/operations.cpp:766 analitza/operations.cpp:804
 #: analitza/operations.cpp:887
@@ -600,24 +608,24 @@ msgstr "მატრიცის ელემენტები რიცხვ�
 #: analitza/operations.cpp:879
 msgctxt "QCoreApplication|"
 msgid "The exponent of 'power' must be some integer number"
-msgstr ""
+msgstr "'power' ფუნქციის ხარისხი მთელ რიცხვს უნდა წარმოადგენდეს"
 
 #: analitza/operations.cpp:883
 msgctxt "QCoreApplication|"
 msgid "Cannot compute 'power' for non square matrix"
-msgstr ""
+msgstr "'power' ფუნქციის გამოთვლა არა-კვადრატული მატრიცისთვის შეუძლებელია"
 
 #: analitza/operations.cpp:922
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate %1 between a matrix and an error type"
-msgstr ""
+msgstr "%1-ის მატრიცისა და შეცდომის ტიპს შორის გამოთვლის შეცდომა"
 
 #: analitza/providederivative.cpp:93
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not calculate the derivative for '%1'"
-msgstr ""
+msgstr "'%1'-ის წარმოებულის გამოთვლის შეცდომა"
 
 #: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
 #: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
@@ -1001,12 +1009,12 @@ msgstr "სკალარული პროდუქტი"
 #: analitzagui/operatorsmodel.cpp:360
 msgctxt "QCoreApplication|"
 msgid "Select the par1-th element of par2 list or vector"
-msgstr ""
+msgstr "აირჩიეთ par2 სიის ან par1-ე ელემენტი ან ვექტორი"
 
 #: analitzagui/operatorsmodel.cpp:363
 msgctxt "QCoreApplication|"
 msgid "Joins several items of the same type"
-msgstr ""
+msgstr "იგივე ტიპის მქონე ელემენტების შერწყმა"
 
 #: analitzagui/operatorsmodel.cpp:366
 msgctxt "QCoreApplication|"
@@ -1016,7 +1024,7 @@ msgstr "ფუნქციის სიის ყველა ელემენ
 #: analitzagui/operatorsmodel.cpp:369
 msgctxt "QCoreApplication|"
 msgid "Removes all elements that don't fit a condition"
-msgstr ""
+msgstr "ყველა ელემენტის წაშლა, რომელიც პირობას არ ეთანხება"
 
 #: analitzagui/operatorsmodel.cpp:372
 msgctxt "QCoreApplication|"
@@ -1113,18 +1121,18 @@ msgstr "STL Document (*.stl)"
 #: analitzaplot/private/backends/cartesiancurve.cpp:64
 msgctxt "Function type|"
 msgid "Plane Curve F(y)"
-msgstr ""
+msgstr "სიბრტყის მრუდი F(y)"
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:80
 msgctxt "Function type|"
 msgid "Plane Curve F(x)"
-msgstr ""
+msgstr "სიბრტყის მრუდი F(x)"
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:137
 #: analitzaplot/private/backends/cartesiancurve.cpp:245
 msgctxt "QCoreApplication|"
 msgid "We can only draw Real results."
-msgstr ""
+msgstr "ჩვენ მხოლოდ რეალური შედეგების დახატვა შეგვიძლია."
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:248
 #: analitzawidgets/plotsview2d.cpp:236
@@ -1151,22 +1159,23 @@ msgstr "ზედაპირი x=F(y,z)"
 #: analitzaplot/private/backends/cylindricalsurface.cpp:37
 msgctxt "Function type|"
 msgid "Cylindrical Surface z=F(r: Radial, p: Polar)"
-msgstr ""
+msgstr "ცილინდრული ზედაპირის z=F(r: რადიალი, p: პოლარული)"
 
 #: analitzaplot/private/backends/implicitcurve.cpp:44
 msgctxt "Function type|"
 msgid "Implicit Curve"
-msgstr ""
+msgstr "არაცხადი მრუდი"
 
 #: analitzaplot/private/backends/implicitpolarcurve.cpp:37
 msgctxt "Function type|"
 msgid "Polar implicit Curve 0=F(r: Radial, p: Polar)"
 msgstr ""
+"მრუდი პოლარულ კოორდინატების სისტემაში 0=F(r: რადიუსი, p: პოლარული კუთხე)"
 
 #: analitzaplot/private/backends/implicitsurface.cpp:35
 msgctxt "Function type|"
 msgid "Implicit Surface"
-msgstr ""
+msgstr "არაცხადი ზედაპირი"
 
 #: analitzaplot/private/backends/parametriccurve2d.cpp:37
 msgctxt "Function type|"
@@ -1186,12 +1195,12 @@ msgstr "პარამეტრული ზედაპირი"
 #: analitzaplot/private/backends/polarcurve.cpp:37
 msgctxt "Function type|"
 msgid "Polar Curve r=F(p: Polar)"
-msgstr ""
+msgstr "პოლარული მრუდი r=F(p: პოლარული კუთხე)"
 
 #: analitzaplot/private/backends/sphericalsurface.cpp:35
 msgctxt "Function type|"
 msgid "Spherical Surface Radial=F(t:Azimuth, p: Polar)"
-msgstr ""
+msgstr "სფერული ზედაპირის რადიალი = F (t: აზიმუტი, p: პოლარული კუთხე)"
 
 #: analitzawidgets/expressionedit.cpp:295
 #, qt-format
