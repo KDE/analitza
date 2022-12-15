@@ -1,8 +1,8 @@
-# Giovanni Sora <g.sora@tiscali.it>, 2020, 2021.
+# Giovanni Sora <g.sora@tiscali.it>, 2020, 2021, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2021-11-10 22:04+0100\n"
+"PO-Revision-Date: 2022-12-14 12:21+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 21.08.3\n"
+"X-Generator: Lokalize 21.12.3\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -724,17 +724,17 @@ msgstr ""
 #: analitzagui/operatorsmodel.cpp:195
 msgctxt "QCoreApplication|"
 msgid "Secant"
-msgstr ""
+msgstr "Secante"
 
 #: analitzagui/operatorsmodel.cpp:198
 msgctxt "QCoreApplication|"
 msgid "Cosecant"
-msgstr ""
+msgstr "Cosecante"
 
 #: analitzagui/operatorsmodel.cpp:201
 msgctxt "QCoreApplication|"
 msgid "Cotangent"
-msgstr ""
+msgstr "Cotangente"
 
 #: analitzagui/operatorsmodel.cpp:204
 msgctxt "QCoreApplication|"
