@@ -1,8 +1,8 @@
-# Emir SARI <emir_sari@icloud.com>, 2022.
+# Emir SARI <emir_sari@icloud.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2022-11-15 05:01+0300\n"
+"PO-Revision-Date: 2023-01-18 22:31+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Lokalize 22.08.3\n"
+"X-Generator: Lokalize 22.12.1\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -279,7 +279,7 @@ msgstr "Boş kap: %1"
 #: analitza/expression.cpp:228
 msgctxt "there was a conditional outside a condition structure|"
 msgid "We can only have conditionals inside piecewise structures."
-msgstr "Parçalı yapılar içinde sadece koşullarımız olabilir."
+msgstr "Parçalı yapılar içinde yalnızca koşullarımız olabilir."
 
 #: analitza/expression.cpp:244
 #, qt-format
@@ -302,12 +302,12 @@ msgstr "%1 parça içinde uygun bir durum değildir"
 #: analitza/expression.cpp:273
 msgctxt "QCoreApplication|"
 msgid "We can only declare variables"
-msgstr "Sadece değişkenleri tanımlayabiliriz"
+msgstr "Yalnızca değişkenleri tanımlayabiliriz"
 
 #: analitza/expression.cpp:279
 msgctxt "QCoreApplication|"
 msgid "We can only have bounded variables"
-msgstr "Sadece sınırlı değişkenlerimiz olabilir"
+msgstr "Yalnızca sınırlı değişkenlerimiz olabilir"
 
 #: analitza/expression.cpp:290 analitza/expression.cpp:495
 msgctxt "QCoreApplication|"
@@ -317,7 +317,7 @@ msgstr "Boş matris satırı ögeleri olamaz"
 #: analitza/expression.cpp:300
 msgctxt "QCoreApplication|"
 msgid "The matrix must contain only matrixrow elements"
-msgstr "Matrisler sadece matris satırı ögeleri içerebilir"
+msgstr "Matrisler yalnızca matris satırı ögeleri içerebilir"
 
 #: analitza/expression.cpp:419
 #, qt-format
@@ -516,7 +516,7 @@ msgstr "Karmaşık sayılarda mantıksal işlemler kullanılamaz"
 #: analitza/operations.cpp:276
 msgctxt "QCoreApplication|"
 msgid "Only square root implemented for complex numbers"
-msgstr "Karmaşık sayılar için sadece karekök alma işlemi kullanılabilir"
+msgstr "Karmaşık sayılar için yalnızca karekök alma işlemi kullanılabilir"
 
 #: analitza/operations.cpp:351 analitza/operations.cpp:463
 #, qt-format
@@ -574,8 +574,8 @@ msgid ""
 "Multiplication between a vector and a matrix is allowed provided that the "
 "matrix has only one matrixrow element"
 msgstr ""
-"Bir matris ile vektörün çarpımına matrisin sadece bir satır içerdiğinde izin "
-"verilmektedir"
+"Bir matris ile vektörün çarpımına matrisin yalnızca bir satır içerdiğinde "
+"izin verilmektedir"
 
 #: analitza/operations.cpp:730
 msgctxt "QCoreApplication|"
@@ -1128,7 +1128,7 @@ msgstr "Düzlem Eğrisi F(x)"
 #: analitzaplot/private/backends/cartesiancurve.cpp:245
 msgctxt "QCoreApplication|"
 msgid "We can only draw Real results."
-msgstr "Sadece Gerçek sonuçları çizebilirsiniz."
+msgstr "Yalnızca Gerçek sonuçları çizebilirsiniz."
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:248
 #: analitzawidgets/plotsview2d.cpp:236
