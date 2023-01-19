@@ -3,7 +3,7 @@ set(ANALITZA_VERSION "8.0.0")
 project(Analitza VERSION ${ANALITZA_VERSION})
 
 set(QT_MIN_VERSION "5.15.2")
-set(KF5_MIN_VERSION "5.90.0")
+set(KF5_MIN_VERSION "5.92.0")
 set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
@@ -24,6 +24,7 @@ include(GenerateExportHeader)
 include(CheckIncludeFiles)
 include(CheckLibraryExists) #FindCurses seems to need that on the CI
 include(ECMPoQmTools)
+include(ECMDeprecationSettings)
 find_package(Qt${QT_MAJOR_VERSION} ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Xml Svg Test Qml Quick PrintSupport)
 if (QT_MAJOR_VERSION STREQUAL "6")
     find_package(Qt6 REQUIRED NO_MODULE COMPONENTS Core5Compat OpenGLWidgets)
@@ -41,6 +42,9 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 remove_definitions(-DQT_NO_CAST_FROM_BYTEARRAY)
+ecm_set_disabled_deprecation_versions(QT 5.12.2
+    KF 5.102
+)
 
 
 add_subdirectory(analitza)
