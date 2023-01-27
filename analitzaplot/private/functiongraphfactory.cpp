@@ -110,7 +110,7 @@ QString FunctionGraphFactory::trait(const Analitza::Expression& expr, const Anal
     std::sort(args.begin(), args.end());
 
     QString key;
-    for (int i = 0; i < argumentsFunctions.values().size() && key.isEmpty(); ++i) {
+    for (int i = 0; i < argumentsFunctions.size() && key.isEmpty(); ++i) {
 //         qDebug() << "---" << args << dim << t.toString() << " || " << argumentsFunctions.values()[i] << spaceDimensions.values()[i] << expressionTypeFunctions.values()[i]().toString();
         if (args == argumentsFunctions.values()[i]
             && dim == spaceDimensions.values()[i]
@@ -146,7 +146,7 @@ QMap< QString, QPair< QStringList, Analitza::ExpressionType > > FunctionGraphFac
 {
     QMap< QString, QPair< QStringList, Analitza::ExpressionType > > ret;
     
-    for (int i = 0; i < typeNameFunctions.values().size(); ++i)
+    for (int i = 0; i < typeNameFunctions.size(); ++i)
         ret[typeNameFunctions.values()[i]] = qMakePair( argumentsFunctions.values()[i],
             expressionTypeFunctions.values()[i]()); 
 
