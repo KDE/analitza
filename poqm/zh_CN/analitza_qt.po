@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
-"PO-Revision-Date: 2023-05-22 14:00\n"
+"PO-Revision-Date: 2023-06-17 04:11\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -259,7 +259,7 @@ msgstr "“%1”的边界丢失"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected bounding for '%1'"
-msgstr "未预期的边界“ %1”"
+msgstr "“ %1”的意外边界"
 
 #: analitza/expression.cpp:178
 #, qt-format
@@ -392,13 +392,13 @@ msgstr "不平衡的右括号"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected token identifier: %1"
-msgstr "未预期的标识符：%1"
+msgstr "意外的令牌标识符：%1"
 
 #: analitza/expressionparser.cpp:305
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected token %1"
-msgstr "未预期的记号 %1"
+msgstr "意外的令牌 %1"
 
 #: analitza/expressiontypechecker.cpp:301
 #, qt-format
@@ -461,7 +461,7 @@ msgstr "无法确定分段的类型"
 #: analitza/expressiontypechecker.cpp:937
 msgctxt "QCoreApplication|"
 msgid "Unexpected type"
-msgstr "未预期的类型"
+msgstr "意外的类型"
 
 #: analitza/expressiontypechecker.cpp:960
 #, qt-format
