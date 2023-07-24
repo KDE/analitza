@@ -954,3 +954,5 @@ QStringList Expression::comments() const
 {
     return m_comments;
 }
+
+#include "moc_expression.cpp"

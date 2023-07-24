@@ -553,3 +553,5 @@ void CommandsTest::testIncorrect()
 }
 
 
+
+#include "moc_commandstest.cpp"

@@ -358,3 +358,5 @@ void PlotsView2D::setSelectionModel(QItemSelectionModel* selection)
 
     connect(m_selection,SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(forceRepaint()));
 }
+
+#include "moc_plotsview2d.cpp"

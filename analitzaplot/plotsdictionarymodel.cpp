@@ -127,3 +127,5 @@ void PlotsDictionaryModel::setCurrentIndex(const QModelIndex& idx)
 {
     setCurrentRow(idx.row());
 }
+
+#include "moc_plotsdictionarymodel.cpp"

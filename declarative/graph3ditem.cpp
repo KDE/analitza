@@ -163,3 +163,5 @@ QImage Plotter3DRenderer::grabImage()
     }
     return ret;
 }
+
+#include "moc_graph3ditem.cpp"

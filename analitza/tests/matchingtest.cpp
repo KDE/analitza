@@ -114,3 +114,5 @@ void MatchingTest::testSubstitutions()
     
     QCOMPARE(substituted->toString(), result);
 }
+
+#include "moc_matchingtest.cpp"

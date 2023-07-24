@@ -102,3 +102,5 @@ void OperatorsModelTest::testExamples()
 }
 
 
+
+#include "moc_operatorsmodeltest.cpp"

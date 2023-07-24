@@ -41,3 +41,5 @@ void AnalitzaDeclarativePlugin::registerTypes(const char* uri)
     qRegisterMetaType<Analitza::Variables>();
 #endif
 }
+
+#include "moc_analitzadeclarativeplugin.cpp"

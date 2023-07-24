@@ -133,3 +133,5 @@ void SurfaceTest::testIncorrect()
 // }
 
 
+
+#include "moc_surfacetest.cpp"

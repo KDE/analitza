@@ -241,3 +241,5 @@ void ExpTest::testCorrection()
 }
 
 
+
+#include "moc_exptest.cpp"

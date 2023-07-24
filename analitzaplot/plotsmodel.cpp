@@ -303,3 +303,5 @@ bool Analitza::PlotsModel::canAddFunction(const QString& expression, int _dim, c
     PlotBuilder req = PlotsFactory::self()->requestPlot(e, dim, vars);
     return req.canDraw();
 }
+
+#include "moc_plotsmodel.cpp"

@@ -101,3 +101,5 @@ QString Variables::toString() const
 
     return dbg;
 }
+
+#include "moc_variables.cpp"

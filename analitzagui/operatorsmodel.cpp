@@ -626,3 +626,5 @@ QString OperatorsModel::lastWord(int pos, const QString& exp)
 }*/
 
 
+
+#include "moc_operatorsmodel.cpp"

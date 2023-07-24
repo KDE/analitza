@@ -128,3 +128,5 @@ void VariablesModel::insertVariable(const QString& name, const Expression& value
 }
 
 
+
+#include "moc_variablesmodel.cpp"

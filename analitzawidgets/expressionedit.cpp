@@ -466,3 +466,5 @@ bool ExpressionEdit::isCorrect() const
 }
 
 
+
+#include "moc_expressionedit.cpp"

@@ -41,3 +41,5 @@ bool Analitza::None::matches(const Analitza::Object* exp, QMap< QString, const O
         return false;
     return true;
 }
+
+#include "moc_object.cpp"

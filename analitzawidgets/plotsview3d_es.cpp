@@ -176,3 +176,5 @@ QImage PlotsView3DES::grabImage()
 {
     return grabFramebuffer();
 }
+
+#include "moc_plotsview3d_es.cpp"

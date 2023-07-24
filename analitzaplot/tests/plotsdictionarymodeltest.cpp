@@ -68,3 +68,5 @@ void PlotsDictionaryModelTest::testDictionaries()
     }
 }
 
+
+#include "moc_plotsdictionarymodeltest.cpp"

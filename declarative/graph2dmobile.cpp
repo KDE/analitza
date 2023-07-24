@@ -156,3 +156,5 @@ bool Graph2DMobile::save(const QUrl& url) const
 
     return m_buffer.save(url.toLocalFile());
 }
+
+#include "moc_graph2dmobile.cpp"

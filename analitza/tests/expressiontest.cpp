@@ -225,3 +225,5 @@ void ExpressionTest::testUncorrection()
 }
 
 
+
+#include "moc_expressiontest.cpp"

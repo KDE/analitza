@@ -340,3 +340,5 @@ void TypeCheckTest::testVariadic_data()
     QTest::newRow("f2type_alt_2params_ok") << "foocommand(3,44)" << vtype;
     QTest::newRow("f3type_alt_3params_ok") << "foocommand(list{5,6,2},44,vector{3,5})" << vtype;
 }
+
+#include "moc_typechecktest.cpp"

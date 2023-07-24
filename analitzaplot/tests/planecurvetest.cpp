@@ -186,3 +186,5 @@ void PlaneCurveTest::testParamIntervals()
 }
 
 
+
+#include "moc_planecurvetest.cpp"

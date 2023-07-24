@@ -187,3 +187,5 @@ void PlotsView3D::keyPressEvent(QKeyEvent* ev)
             break;
     }
 }
+
+#include "moc_plotsview3d.cpp"

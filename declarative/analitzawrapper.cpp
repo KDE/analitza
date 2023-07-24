@@ -168,3 +168,5 @@ void AnalitzaWrapper::setCalculate(bool calc)
         Q_EMIT isCalculateChanged(calc);
     }
 }
+
+#include "moc_analitzawrapper.cpp"

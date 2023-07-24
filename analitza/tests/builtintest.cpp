@@ -277,3 +277,5 @@ void BuiltInTest::testCall()
 //     else
 //         QCOMPARE(QStringLiteral("err"), output);
 }
+
+#include "moc_builtintest.cpp"

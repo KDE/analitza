@@ -356,3 +356,5 @@ void MathMLPresentationTest::testToPresentation()
 }
 
 
+
+#include "moc_mathmlpresentationtest.cpp"

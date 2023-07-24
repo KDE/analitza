@@ -129,3 +129,5 @@ void PlotsModelTest::testExamples2D()
         QVERIFY(curve->points().count()>=2);
     }
 }
+
+#include "moc_plotsmodeltest.cpp"

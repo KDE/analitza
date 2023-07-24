@@ -139,3 +139,5 @@ void SpaceCurveTest::testIncorrect()
 // }
 
 
+
+#include "moc_spacecurvetest.cpp"
