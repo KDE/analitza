@@ -249,7 +249,9 @@ class ANALITZA_EXPORT Expression
         /**
          *    @returns whether @p s is MathML or not. Very simple.
          */
-        static bool isMathML(const QString& s) { return !s.isEmpty() && s[0]=='<'; }
+        static bool isMathML(const QString& s) {
+            return !s.isEmpty() && s[0] == QLatin1Char('<');
+        }
         
         static void computeDepth(Object* o);
         
