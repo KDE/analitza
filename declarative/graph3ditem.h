@@ -1,26 +1,12 @@
-/*************************************************************************************
- *  Copyright (C) 2015 by Aleix Pol <aleixpol@kde.org>                               *
- *                                                                                   *
- *  This program is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU General Public License                      *
- *  as published by the Free Software Foundation; either version 2                   *
- *  of the License, or (at your option) any later version.                           *
- *                                                                                   *
- *  This program is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
- *  GNU General Public License for more details.                                     *
- *                                                                                   *
- *  You should have received a copy of the GNU General Public License                *
- *  along with this program; if not, write to the Free Software                      *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
- *************************************************************************************/
+// SPDX-FileCopyrightText: 2015 Aleix Pol <aleixpol@kde.org>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef GRAPH3DITEM_H
 #define GRAPH3DITEM_H
 
 #include <QQuickFramebufferObject>
 #include "plotter3d_es.h"
+#include <qqmlregistration.h>
 
 class Graph3DItem;
 
@@ -43,6 +29,7 @@ private:
 class Graph3DItem : public QQuickFramebufferObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Graph3DView)
     Q_PROPERTY(QStringList filters READ filters CONSTANT)
     Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel NOTIFY modelChanged)
     public:

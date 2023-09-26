@@ -24,6 +24,7 @@
 #include <analitzaplot/plotter2d.h>
 #include <QPixmap>
 #include <QAbstractItemModel>
+#include <QtQml/qqmlregistration.h>
 
 namespace Analitza {
 class Variables;
@@ -32,6 +33,7 @@ class Variables;
 class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Graph2DView)
     Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel NOTIFY modelHasChanged)
     Q_PROPERTY(QRectF viewport READ lastViewport WRITE setViewport RESET resetViewport)
     Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid NOTIFY showGridChanged)
@@ -43,23 +45,20 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
     Q_PROPERTY(QStringList filters READ filters CONSTANT)
     public:
         explicit Graph2DMobile(QQuickItem* parent = nullptr);
-        
+
         virtual void forceRepaint() override;
         virtual void viewportChanged() override {}
         virtual void modelChanged() override;
         virtual int currentFunction() const override { return m_currentFunction; }
-        
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) override;
-#else
+
         void geometryChange(const QRectF& newGeometry, const QRectF& oldGeometry) override;
-#endif
+
         QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*) override;
-        
+
         void setCurrentFunction(int f) { m_currentFunction = f; }
         bool ticksShownAtAll() const { return ticksShown()!=0; }
         void setTicksShownAtAll(bool shown);
-        
+
         QStringList filters() const;
 
 
@@ -69,7 +68,7 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
         void resetViewport();
         QStringList addFunction(const QString& expression, const QSharedPointer<Analitza::Variables>& vars = {});
         bool save(const QUrl &url) const;
-        
+
     Q_SIGNALS:
         void showGridChanged() override;
         void modelHasChanged();
@@ -79,7 +78,7 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
 
         bool m_dirty;
         int m_currentFunction;
-        
+
         QImage m_buffer;
         QRectF defViewport;
 };

@@ -1,10 +1,7 @@
 add_subdirectory(tests)
 
 add_library(AnalitzaGui operatorsmodel.cpp algebrahighlighter.cpp variablesmodel.cpp)
-target_link_libraries(AnalitzaGui Qt::Core Qt::Gui Analitza)
-if (QT_MAJOR_VERSION STREQUAL "6")
-    target_link_libraries(AnalitzaGui Qt6::Core5Compat)
-endif()
+target_link_libraries(AnalitzaGui Qt6::Core Qt6::Gui Qt6::Core5Compat Analitza)
 
 set_target_properties(AnalitzaGui PROPERTIES VERSION ${ANALITZA_VERSION} SOVERSION ${ANALITZA_SOVERSION} )
 

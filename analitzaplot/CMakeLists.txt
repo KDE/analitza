@@ -55,20 +55,17 @@ set ( analitzaplot_SRCS
     plotter3d_es.cpp
 )
 
-add_library( AnalitzaPlot ${analitzaplot_SRCS} )
-target_link_libraries ( AnalitzaPlot
-PUBLIC
-  Analitza
-  Qt::Core
-  Qt::Gui
+add_library(AnalitzaPlot ${analitzaplot_SRCS})
+target_link_libraries(AnalitzaPlot
+    PUBLIC
+        Analitza
+        Qt6::Core
+        Qt6::Gui
 
-PRIVATE
-  Qt::PrintSupport # this pulls widgets
+    PRIVATE
+        Qt6::PrintSupport # this pulls widgets
+        Qt6::OpenGL
 )
-
-if (QT_MAJOR_VERSION STREQUAL "6")
-    target_link_libraries(AnalitzaPlot PRIVATE Qt6::OpenGL)
-endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Android)
     target_link_libraries(AnalitzaPlot PRIVATE GLESv2)

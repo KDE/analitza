@@ -125,11 +125,7 @@ public:
 
     void render() override {
         m_plotter->drawPlots();
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        m_plotter->window()->resetOpenGLState();
-#else
         m_plotter->window()->endExternalCommands();
-#endif
     }
 
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override

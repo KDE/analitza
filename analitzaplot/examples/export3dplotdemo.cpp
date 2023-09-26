@@ -60,17 +60,9 @@ int main(int argc, char** argv)
             qDebug() << "Intervals should be specified as x=b..c";
         }
         bool ok;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        double from = interval.midRef(equalIdx+1, dotdotIdx-equalIdx).toDouble(&ok);
-#else
         double from = QStringView(interval).mid(equalIdx+1, dotdotIdx-equalIdx).toDouble(&ok);
-#endif
         Q_ASSERT(ok);
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        double to = interval.midRef(dotdotIdx+2).toDouble(&ok);
-#else
         double to = QStringView(interval).mid(dotdotIdx+2).toDouble(&ok);
-#endif
         Q_ASSERT(ok);
         intervals[interval.left(equalIdx)] = qMakePair<double, double>(double(from), double(to));
     }

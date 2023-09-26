@@ -11,14 +11,16 @@ set(analitzaplot_SRCS
 )
 
 add_library(AnalitzaWidgets ${analitzaplot_SRCS})
-target_link_libraries(AnalitzaWidgets PUBLIC Qt::Widgets Analitza AnalitzaPlot AnalitzaGui
-                                      PRIVATE Qt::Svg
+target_link_libraries(AnalitzaWidgets
+    PUBLIC
+        Qt::Widgets
+        Analitza
+        AnalitzaPlot
+        AnalitzaGui
+    PRIVATE
+        Qt::Svg
+        Qt6::OpenGLWidgets
 )
-
-if (QT_MAJOR_VERSION STREQUAL "6")
-    target_link_libraries(AnalitzaWidgets PRIVATE Qt6::OpenGLWidgets)
-endif()
-
 
 set_target_properties(AnalitzaWidgets PROPERTIES VERSION ${ANALITZA_VERSION} SOVERSION ${ANALITZA_SOVERSION} )
 

@@ -52,10 +52,7 @@ set(analitza_SRCS
 ecm_create_qm_loader(analitza_SRCS analitza_qt)
 
 add_library(Analitza ${analitza_SRCS})
-target_link_libraries(Analitza PUBLIC Qt::Core PRIVATE Qt::Xml)
-if (QT_MAJOR_VERSION STREQUAL "6")
-    target_link_libraries(Analitza PRIVATE Qt6::Core5Compat)
-endif()
+target_link_libraries(Analitza PUBLIC Qt::Core PRIVATE Qt::Xml Qt6::Core5Compat)
 
 target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${ANALITZA_INCLUDE_INSTALL_DIR}>")
 

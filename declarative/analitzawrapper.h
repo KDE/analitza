@@ -1,20 +1,5 @@
-/*************************************************************************************
- *  Copyright (C) 2010 by Aleix Pol <aleixpol@kde.org>                               *
- *                                                                                   *
- *  This program is free software; you can redistribute it and/or                    *
- *  modify it under the terms of the GNU General Public License                      *
- *  as published by the Free Software Foundation; either version 2                   *
- *  of the License, or (at your option) any later version.                           *
- *                                                                                   *
- *  This program is distributed in the hope that it will be useful,                  *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
- *  GNU General Public License for more details.                                     *
- *                                                                                   *
- *  You should have received a copy of the GNU General Public License                *
- *  along with this program; if not, write to the Free Software                      *
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
- *************************************************************************************/
+// SPDX-FileCopyrightText: 2010 Aleix Pol <aleixpol@kde.org>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef ANALITZAWRAPPER_H
 #define ANALITZAWRAPPER_H
@@ -22,7 +7,14 @@
 #include <QScopedPointer>
 #include <QObject>
 #include <QVariant>
+#include <QtQml/qqmlregistration.h>
+#include <QtQml/qqmlengine.h>
+
 #include <analitza/expression.h>
+#include <analitza/variables.h>
+#include <analitzaplot/plotsmodel.h>
+#include <analitzagui/variablesmodel.h>
+#include <analitzagui/operatorsmodel.h>
 #include <analitza/variables.h>
 
 namespace Analitza {
@@ -32,6 +24,7 @@ namespace Analitza {
 class ExpressionWrapper : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Expression)
     Q_PROPERTY(QString expression READ toString CONSTANT)
     Q_PROPERTY(bool isCorrect READ isCorrect CONSTANT)
     public:
@@ -52,6 +45,7 @@ class ExpressionWrapper : public QObject
 class AnalitzaWrapper : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Analitza)
     Q_PROPERTY(bool calculate READ isCalculate WRITE setCalculate NOTIFY isCalculateChanged)
     Q_PROPERTY(bool isCorrect READ isCorrect)
     Q_PROPERTY(QStringList errors READ errors)
@@ -89,6 +83,27 @@ class AnalitzaWrapper : public QObject
         QScopedPointer<Analitza::Analyzer> m_wrapped;
         QSharedPointer<Analitza::Variables> m_vars;
         bool m_calc;
+};
+
+class VariablesModelForeign
+{
+    Q_GADGET
+    QML_FOREIGN(Analitza::VariablesModel)
+    QML_NAMED_ELEMENT(VariablesModel)
+};
+
+class OperatorsModelForeign
+{
+    Q_GADGET
+    QML_NAMED_ELEMENT(OperatorsModel)
+    QML_FOREIGN(OperatorsModel)
+};
+
+class PlotsModelForeign
+{
+    Q_GADGET
+    QML_NAMED_ELEMENT(PlotsModel)
+    QML_FOREIGN(Analitza::PlotsModel)
 };
 
 #endif // ANALITZAWRAPPER_H

@@ -112,18 +112,10 @@ void Graph2DMobile::setTicksShownAtAll(bool shown)
     setShowTickLabels(show);
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-void Graph2DMobile::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
-#else
 void Graph2DMobile::geometryChange(const QRectF& newGeometry, const QRectF& oldGeometry)
-#endif
 {
     m_dirty = true;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
-#else
     QQuickItem::geometryChange(newGeometry, oldGeometry);
-#endif
 }
 
 QSGNode* Graph2DMobile::updatePaintNode(QSGNode* node, QQuickItem::UpdatePaintNodeData* /*data*/)

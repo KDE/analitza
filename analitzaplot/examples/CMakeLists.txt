@@ -5,16 +5,10 @@ add_executable(plotsdictionarydemo plotsdictionarydemo.cpp)
 target_link_libraries(plotsdictionarydemo AnalitzaWidgets)
 
 add_executable(plots3ddemo plots3ddemo.cpp)
-target_link_libraries(plots3ddemo AnalitzaWidgets)
-if (QT_MAJOR_VERSION STREQUAL "6")
-    target_link_libraries(plots3ddemo Qt6::OpenGLWidgets)
-endif()
+target_link_libraries(plots3ddemo AnalitzaWidgets Qt6::OpenGLWidgets)
 
 add_executable(export3dplotdemo export3dplotdemo.cpp)
-target_link_libraries(export3dplotdemo AnalitzaWidgets)
-if (QT_MAJOR_VERSION STREQUAL "6")
-    target_link_libraries(export3dplotdemo Qt6::OpenGLWidgets)
-endif()
+target_link_libraries(export3dplotdemo AnalitzaWidgets Qt6::OpenGLWidgets)
 
 find_library(SNDFILE sndfile)
 if (SNDFILE_FOUND)
