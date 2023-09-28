@@ -1374,7 +1374,7 @@ msgctxt "@title:column|"
 msgid "Plot"
 msgstr ""
 
-#: analitzaplot/plotter3d_es.cpp:534 declarative/graph2dmobile.cpp:149
+#: analitzaplot/plotter3d_es.cpp:534 declarative/graph2dmobile.cpp:141
 msgctxt "QObject|"
 msgid "PNG Image (*.png)"
 msgstr ""
