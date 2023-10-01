@@ -32,7 +32,7 @@ msgstr "cosa"
 #: analitza/analyzer.cpp:193
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate an empty expression"
-msgstr "Non se pode calcular unha expresión baleira"
+msgstr "Non é posíbel calcular unha expresión baleira"
 
 #: analitza/analyzer.cpp:240 analitza/analyzer.cpp:259
 #: analitza/analyzer.cpp:285
@@ -55,7 +55,7 @@ msgstr "', '"
 msgctxt "Error message, no proper condition found.|"
 msgid "Could not find a proper choice for a condition statement."
 msgstr ""
-"Non se puido atopar unha escolla axeitada para unha sentenza condicional."
+"Non foi posíbel atopar unha escolla axeitada para unha sentenza condicional."
 
 #: analitza/analyzer.cpp:936
 msgctxt "QCoreApplication|"
@@ -296,7 +296,7 @@ msgstr "Só pode haber condicións dentro de estruturas de segmentos."
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot have two parameters with the same name like '%1'."
-msgstr "Non se poden ter dous parámetros co mesmo nome que «%1»."
+msgstr "Non é posíbel ter dous parámetros co mesmo nome que «%1»."
 
 #: analitza/expression.cpp:259
 msgctxt ""
@@ -346,7 +346,7 @@ msgstr "Descoñécese o contedor: %1"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot codify the %1 value."
-msgstr "Non se pode codificar o valor %1."
+msgstr "Non é posíbel codificar o valor %1."
 
 #: analitza/expression.cpp:462
 #, qt-format
@@ -413,7 +413,7 @@ msgstr "Non se agardaba o código %1."
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not find a type that unifies '%1'"
-msgstr "Non se puido atopar un tipo que unifique «%1»."
+msgstr "Non foi posíbel atopar un tipo que unifique «%1»."
 
 #: analitza/expressiontypechecker.cpp:473
 msgctxt "QCoreApplication|"
@@ -424,14 +424,14 @@ msgstr "O dominio ten que ser ou un vector ou unha lista."
 #, qt-format
 msgctxt "type error message|"
 msgid "Cannot call '%1'"
-msgstr "Non se pode chamar a «%1»."
+msgstr "Non é posíbel chamar a «%1»."
 
 #: analitza/expressiontypechecker.cpp:593
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
 msgstr ""
-"Non se pode reducir «%1» a «%2». O tipo do parámetro «%3» para «%4» é "
+"Non é posíbel reducir «%1» a «%2». O tipo do parámetro «%3» para «%4» é "
 "incorrecto."
 
 #: analitza/expressiontypechecker.cpp:604
@@ -446,20 +446,20 @@ msgstr ""
 msgctxt "QCoreApplication|"
 msgid "Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
 msgstr ""
-"Non se pode comparar «%1» a «%2». O tipo do parámetro «%3» para «%4» é "
+"Non é posíbel comparar «%1» a «%2». O tipo do parámetro «%3» para «%4» é "
 "incorrecto."
 
 #: analitza/expressiontypechecker.cpp:654
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not call '%1'"
-msgstr "Non se puido chamar por «%1»."
+msgstr "Non foi posíbel chamar por «%1»."
 
 #: analitza/expressiontypechecker.cpp:662
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not solve '%1'"
-msgstr "Non se puido resolver «%1»."
+msgstr "Non foi posíbel resolver «%1»."
 
 #: analitza/expressiontypechecker.cpp:695
 #, qt-format
@@ -470,7 +470,7 @@ msgstr "A variábel «%1» é dun tipo incoherente."
 #: analitza/expressiontypechecker.cpp:718
 msgctxt "QCoreApplication|"
 msgid "Could not determine the type for piecewise"
-msgstr "Non se puido determinar o tipo de segmento."
+msgstr "Non foi posíbel determinar o tipo de segmento."
 
 #: analitza/expressiontypechecker.cpp:937
 msgctxt "QCoreApplication|"
@@ -481,7 +481,7 @@ msgstr "Tipo inesperado"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot convert '%1' to '%2'"
-msgstr "Non se pode converter «%1» en «%2»."
+msgstr "Non é posíbel converter «%1» en «%2»."
 
 #: analitza/htmlexpressionwriter.cpp:54 analitza/htmlexpressionwriter.cpp:55
 #, qt-format
@@ -504,22 +504,22 @@ msgstr "Descoñécese o código «%1»."
 #: analitza/operations.cpp:54 analitza/operations.cpp:191
 msgctxt "QCoreApplication|"
 msgid "Cannot divide by 0."
-msgstr "Non se pode dividir por 0."
+msgstr "Non é posíbel dividir por 0."
 
 #: analitza/operations.cpp:72 analitza/operations.cpp:203
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate the remainder on 0."
-msgstr "Non se pode calcular o resto de 0."
+msgstr "Non é posíbel calcular o resto de 0."
 
 #: analitza/operations.cpp:84 analitza/operations.cpp:213
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate the factor on 0."
-msgstr "Non se pode calcular o factor de 0."
+msgstr "Non é posíbel calcular o factor de 0."
 
 #: analitza/operations.cpp:140 analitza/operations.cpp:261
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate the lcm of 0."
-msgstr "Non se pode calcular o mínimo común múltiplo de 0."
+msgstr "Non é posíbel calcular o mínimo común múltiplo de 0."
 
 #: analitza/operations.cpp:246
 msgctxt "QCoreApplication|"
@@ -535,13 +535,13 @@ msgstr "Só se pode calcular a raíz cadrada dos números complexos."
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not calculate a value %1"
-msgstr "Non se puido calcular un valor %1."
+msgstr "Non foi posíbel calcular un valor %1."
 
 #: analitza/operations.cpp:479
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate %1 between a value and an error type"
-msgstr "Non se pode calcular %1 entre un valor e un tipo de erro."
+msgstr "Non é posíbel calcular %1 entre un valor e un tipo de erro."
 
 #: analitza/operations.cpp:495 analitza/operations.cpp:652
 #: analitza/operations.cpp:784
@@ -553,7 +553,7 @@ msgstr "O índice do contedor é incorrecto"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot operate '%1' on different sized vectors."
-msgstr "Non se pode operar «%1» con vectores de tamaños distintos."
+msgstr "Non é posíbel operar «%1» con vectores de tamaños distintos."
 
 #: analitza/operations.cpp:566
 msgctxt "QCoreApplication|"
@@ -573,13 +573,13 @@ msgstr "As entradas da matriz e do vector deben ser números."
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not calculate a vector's %1"
-msgstr "Non se puido calcular o %1 dun vector"
+msgstr "Non foi posíbel calcular o %1 dun vector"
 
 #: analitza/operations.cpp:621 analitza/operations.cpp:637
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not calculate a list's %1"
-msgstr "Non se puido calcular o %1 dunha lista"
+msgstr "Non foi posíbel calcular o %1 dunha lista"
 
 #: analitza/operations.cpp:703
 msgctxt "QCoreApplication|"
@@ -622,19 +622,19 @@ msgstr "O expoñente de «power» debe ser un número enteiro."
 #: analitza/operations.cpp:883
 msgctxt "QCoreApplication|"
 msgid "Cannot compute 'power' for non square matrix"
-msgstr "Non se pode calcular «power» dunha matriz que non é cadrada."
+msgstr "Non é posíbel calcular «power» dunha matriz que non é cadrada."
 
 #: analitza/operations.cpp:922
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate %1 between a matrix and an error type"
-msgstr "Non se pode calcular %1 entre unha matriz e un tipo de erro."
+msgstr "Non é posíbel calcular %1 entre unha matriz e un tipo de erro."
 
 #: analitza/providederivative.cpp:93
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not calculate the derivative for '%1'"
-msgstr "Non se puido calcular unha derivada de «%1»"
+msgstr "Non foi posíbel calcular unha derivada de «%1»"
 
 #: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
 #: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
