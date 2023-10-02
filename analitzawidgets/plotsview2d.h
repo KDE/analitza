@@ -165,7 +165,7 @@ private:
     QPointF ant;
     QRectF defViewport;
         
-    void sendStatus(const QString& msg) { emit status(msg); }
+    void sendStatus(const QString& msg) { Q_EMIT status(msg); }
     bool m_framed;
     bool m_readonly;
     QString m_posText;
