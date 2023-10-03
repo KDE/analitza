@@ -39,7 +39,7 @@ Graph2DView {
 
         onPinchStarted: thePreviousScale=1
 
-        onPinchUpdated: {
+        onPinchUpdated: pinch => {
             var currentDistance = distance(pinch.point1, pinch.point2)
             if(currentDistance>0) {
                 var doScale = thePreviousScale/pinch.scale
@@ -55,16 +55,16 @@ Graph2DView {
             property int lastY: 0
             acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
-            onPressed: { lastX=mouse.x; lastY=mouse.y }
+            onPressed: mouse => { lastX=mouse.x; lastY=mouse.y }
 
-            onPositionChanged: {
+            onPositionChanged: mouse => {
                 view.translate(mouse.x-lastX, mouse.y-lastY)
 
                 lastX=mouse.x
                 lastY=mouse.y
             }
 
-            onWheel: {
+            onWheel: wheel => {
                 view.scale(wheel.angleDelta.y>0 ? 0.9 : 1.1, wheel.x, wheel.y)
             }
         }
