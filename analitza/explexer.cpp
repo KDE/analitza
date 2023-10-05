@@ -82,7 +82,7 @@ void ExpLexer::getToken()
         pos++;
     } else if(a[pos].decompositionTag()==QChar::Super) {
         QString super;
-        for(int i=pos; i<a.count() && a[i].decompositionTag()==QChar::Super; i++) {
+        for(int i=pos; i<a.size() && a[i].decompositionTag()==QChar::Super; i++) {
             super+=a[i].decomposition()[0];
         }
         pos+=super.size();
