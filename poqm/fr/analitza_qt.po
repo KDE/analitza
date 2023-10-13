@@ -1,20 +1,20 @@
+# SPDX-FileCopyrightText: 2020, 2021, 2023 Xavier Besnard <xavier.besnard@neuf.fr>
 # Vincent Pinon <vpinon@kde.org>, 2015.
 # Simon Depiets <sdepiets@gmail.com>, 2018, 2019.
-# Xavier Besnard <xavier.besnard@neuf.fr>, 2020, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-02-16 03:26+0000\n"
-"PO-Revision-Date: 2021-12-27 23:08+0100\n"
-"Last-Translator: Xavier Besnard <xavier.besnard@neuf.fr>\n"
-"Language-Team: French <kde-francophone@kde.org>\n"
+"PO-Revision-Date: 2023-10-11 17:11+0200\n"
+"Last-Translator: Xavier BESNARD <xavier.besnard@neuf.fr>\n"
+"Language-Team: fr\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 21.12.0\n"
+"X-Generator: Lokalize 23.08.1\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: qtrich\n"
@@ -937,12 +937,12 @@ msgstr "Maximum"
 #: analitzagui/operatorsmodel.cpp:309
 msgctxt "QCoreApplication|"
 msgid "Greater than. gt(a,b)=a>b"
-msgstr "Supérieur à. gt(a,b)=a>b"
+msgstr "Supérieur à. gt(a,b) = a>b"
 
 #: analitzagui/operatorsmodel.cpp:312
 msgctxt "QCoreApplication|"
 msgid "Less than. lt(a,b)=a<b"
-msgstr "Inférieur à. lt(a,b)=a<b"
+msgstr "Inférieur à. lt(a,b) = a<b"
 
 #: analitzagui/operatorsmodel.cpp:315
 msgctxt "QCoreApplication|"
@@ -952,22 +952,22 @@ msgstr "Égal. eq(a,b) = a=b"
 #: analitzagui/operatorsmodel.cpp:318
 msgctxt "QCoreApplication|"
 msgid "Approximation. approx(a)=a±n"
-msgstr "Approximation. approx(a)=a±n"
+msgstr "Approximation. approx(a) = a±n"
 
 #: analitzagui/operatorsmodel.cpp:321
 msgctxt "QCoreApplication|"
 msgid "Not equal. neq(a,b)=a≠b"
-msgstr "Non égal. neq(a,b)=a≠b"
+msgstr "Non égal. neq(a,b) = a≠b"
 
 #: analitzagui/operatorsmodel.cpp:324
 msgctxt "QCoreApplication|"
 msgid "Greater or equal. geq(a,b)=a≥b"
-msgstr "Supérieur ou égal. geq(a,b)=a≥b"
+msgstr "Supérieur ou égal. geq(a,b) = a≥b"
 
 #: analitzagui/operatorsmodel.cpp:327
 msgctxt "QCoreApplication|"
 msgid "Less or equal. leq(a,b)=a≤b"
-msgstr "Inférieur ou égal. leq(a,b)=a≤b"
+msgstr "Inférieur ou égal. leq(a,b) = a≤b"
 
 #: analitzagui/operatorsmodel.cpp:330
 msgctxt "QCoreApplication|"
@@ -1129,7 +1129,7 @@ msgstr "Document X3D (*.x3d)"
 #: analitzaplot/plotter3d_es.cpp:534
 msgctxt "QObject|"
 msgid "STL Document (*.stl)"
-msgstr "Document STL (*.stl)"
+msgstr "Document « STL » (*.stl)"
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:64
 msgctxt "Function type|"
