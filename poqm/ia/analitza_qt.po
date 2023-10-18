@@ -1,8 +1,8 @@
-# Giovanni Sora <g.sora@tiscali.it>, 2020, 2021, 2022.
+# SPDX-FileCopyrightText: 2020, 2021, 2022, 2023 Giovanni Sora <g.sora@tiscali.it>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2022-12-14 12:21+0100\n"
+"PO-Revision-Date: 2023-10-17 09:01+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 21.12.3\n"
+"X-Generator: Lokalize 23.08.2\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -1086,7 +1086,7 @@ msgstr "Plot (Tracia)"
 #: analitzaplot/plotter3d_es.cpp:534 declarative/graph2dmobile.cpp:141
 msgctxt "QObject|"
 msgid "PNG Image (*.png)"
-msgstr ""
+msgstr "Imagine PNG  (*.png)"
 
 #: analitzaplot/plotter3d_es.cpp:534
 msgctxt "QObject|"
