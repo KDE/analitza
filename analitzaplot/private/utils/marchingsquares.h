@@ -21,11 +21,10 @@
 
 #include "quadtree.h"
 
+#include <QLineF>
 #include <QList>
 #include <QPair>
-#include <QVector>
 #include <qmath.h>
-#include <QLineF>
 
 struct sLimitesEspacio2D {
     double minX;
@@ -81,7 +80,7 @@ public:
 public:
     void buildGeometry();
 
-    QVector< QPair< QPointF, QPointF > > _faces_;
+    QList<QPair<QPointF, QPointF>> _faces_;
 
     void _addTri(const QPointF &a, const QPointF &b);
 

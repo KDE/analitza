@@ -29,20 +29,19 @@ SpaceCurve::SpaceCurve(AbstractFunctionGraph* g)
 SpaceCurve::~SpaceCurve()
 {}
 
-const QVector<QVector3D> & SpaceCurve::points() const
-{
-    Q_ASSERT(backend());
-    return static_cast<AbstractSpaceCurve*>(backend())->points;
+const QList<QList3D> &SpaceCurve::points() const {
+  Q_ASSERT(backend());
+  return static_cast<AbstractSpaceCurve *>(backend())->points;
 }
 
-QVector< int > SpaceCurve::jumps() const
-{
-    Q_ASSERT(backend());
-    return static_cast<AbstractSpaceCurve*>(backend())->jumps;
+QList<int> SpaceCurve::jumps() const {
+  Q_ASSERT(backend());
+  return static_cast<AbstractSpaceCurve *>(backend())->jumps;
 }
 
-void SpaceCurve::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
-{
-    Q_ASSERT(backend());
-    static_cast<AbstractSpaceCurve*>(backend())->update(oppositecorner1, oppositecorner2);
+void SpaceCurve::update(const QList3D &oppositecorner1,
+                        const QList3D &oppositecorner2) {
+  Q_ASSERT(backend());
+  static_cast<AbstractSpaceCurve *>(backend())->update(oppositecorner1,
+                                                       oppositecorner2);
 }

@@ -48,10 +48,9 @@ public:
     virtual bool setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max) override;
     virtual bool setInterval(const QString& argname, double min, double max) override;
 
-    QVector3D fromParametricArgs(double u, double v) override;
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2viewport) override;
-
-
+    QList3D fromParametricArgs(double u, double v) override;
+    void update(const QList3D &oppositecorner1,
+                const QList3D &oppositecorner2viewport) override;
 };
 
 bool Frp::setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max)
@@ -96,20 +95,19 @@ Frp::Frp(const Analitza::Expression& e): AbstractSurface(e)
 Frp::Frp(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& /*v*/): AbstractSurface(e)
 {}
 
-QVector3D Frp::fromParametricArgs(double r, double p)
-{
+QList3D Frp::fromParametricArgs(double r, double p) {
 
-    arg(QStringLiteral("r"))->setValue(r);
-    arg(QStringLiteral("p"))->setValue(p);
+  arg(QStringLiteral("r"))->setValue(r);
+  arg(QStringLiteral("p"))->setValue(p);
 
-    double h = analyzer->calculateLambda().toReal().value();
+  double h = analyzer->calculateLambda().toReal().value();
 
-    return cylindricalToCartesian(r,p,h);
+  return cylindricalToCartesian(r, p, h);
 }
 
-void Frp::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
-{
-    buildParametricSurface();
+void Frp::update(const QList3D & /*oppositecorner1*/,
+                 const QList3D & /*oppositecorner2*/) {
+  buildParametricSurface();
 }
 
 REGISTER_SURFACE(Frp)

@@ -21,7 +21,7 @@
 
 #include "functiongraph.h"
 
-#include <QVector3D>
+#include <QList3D>
 
 namespace Analitza {
 
@@ -45,12 +45,12 @@ public:
     //Own
 
     /** Update the surfaces's data @p oppositecorner1 and @p oppositecorner2 form an axis-aligned bounding box. */
-    void update(const QVector3D& oppositecorner1, const QVector3D& oppositecorner2);
+    void update(const QList3D &oppositecorner1, const QList3D &oppositecorner2);
 
     // Surface data
-    QVector<QVector3D> vertices() const;
-    QVector<QVector3D> normals() const;
-    QVector<unsigned int> indexes() const;
+    QList<QList3D> vertices() const;
+    QList<QList3D> normals() const;
+    QList<unsigned int> indexes() const;
 };
 
 }

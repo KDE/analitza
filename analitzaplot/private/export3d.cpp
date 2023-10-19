@@ -18,9 +18,9 @@
 
 #include "export3d.h"
 
-#include <QFile>
 #include <QDebug>
-#include <QVector3D>
+#include <QFile>
+#include <QList3D>
 #include <cmath>
 
 #include "surface.h"
@@ -29,48 +29,42 @@
 
 using namespace Analitza;
 
-template <typename T>
-static QByteArray fromNumbers(const QVector<T>& input)
-{
-    QByteArray ret;
-    foreach(qreal r, input) {
-        ret += QByteArray::number(r)+' ';
-    }
-    ret.chop(1);
-    return ret;
+template <typename T> static QByteArray fromNumbers(const QList<T> &input) {
+  QByteArray ret;
+  foreach (qreal r, input) {
+    ret += QByteArray::number(r) + ' ';
+  }
+  ret.chop(1);
+  return ret;
 }
 
-static QByteArray fromVector3D(const QVector3D &r)
-{
-    return QByteArray::number(r.x())+' '
-         + QByteArray::number(r.y())+' '
-         + QByteArray::number(r.z());
+static QByteArray fromVector3D(const QList3D &r) {
+  return QByteArray::number(r.x()) + ' ' + QByteArray::number(r.y()) + ' ' +
+         QByteArray::number(r.z());
 }
 
-static QByteArray fromNumbers(const QVector<QVector3D>& input)
-{
-    QByteArray ret;
-    foreach(const QVector3D &r, input) {
-        ret += fromVector3D(r);
-    }
-    ret.chop(1);
-    return ret;
+static QByteArray fromNumbers(const QList<QList3D> &input) {
+  QByteArray ret;
+  foreach (const QList3D &r, input) {
+    ret += fromVector3D(r);
+  }
+  ret.chop(1);
+  return ret;
 }
 
-static QVector<int> makeTriangles(const QVector<uint>& input)
-{
-    QVector<int> ret;
-    int i = 0;
-    foreach(uint val, input) {
-        ret += val;
-        if(i==2) {
-            ret += -1;
-            i = 0;
-        } else
-            ++i;
-    }
-    ret += -1;
-    return ret;
+static QList<int> makeTriangles(const QList<uint> &input) {
+  QList<int> ret;
+  int i = 0;
+  foreach (uint val, input) {
+    ret += val;
+    if (i == 2) {
+      ret += -1;
+      i = 0;
+    } else
+      ++i;
+  }
+  ret += -1;
+  return ret;
 }
 
 void Export3D::exportX3D(const QString& path, QAbstractItemModel* model)
@@ -147,18 +141,18 @@ void Export3D::exportSTL(const QString& path, QAbstractItemModel* model)
 
         for (int i = 0, c = indexes.count()/3; i<c; ++i) {
 //             f.write("  facet normal " + fromVector3D(normals[i]) + '\n');
-            const QVector3D v1 = vertices[indexes[i*3 + 0]]
-                          , v2 = vertices[indexes[i*3 + 1]]
-                          , v3 = vertices[indexes[i*3 + 2]];
+const QList3D v1 = vertices[indexes[i * 3 + 0]],
+              v2 = vertices[indexes[i * 3 + 1]],
+              v3 = vertices[indexes[i * 3 + 2]];
 
-            //TODO: should be using the normals from Surface
-            f.write("  facet normal " + fromVector3D(QVector3D::normal(v1, v2, v3)) + '\n');
-            f.write("     outer loop\n");
-            f.write("       vertex " + fromVector3D(v1) + '\n');
-            f.write("       vertex " + fromVector3D(v2) + '\n');
-            f.write("       vertex " + fromVector3D(v3) + '\n');
-            f.write("     endloop\n");
-            f.write("  endfacet\n");
+// TODO: should be using the normals from Surface
+f.write("  facet normal " + fromVector3D(QList3D::normal(v1, v2, v3)) + '\n');
+f.write("     outer loop\n");
+f.write("       vertex " + fromVector3D(v1) + '\n');
+f.write("       vertex " + fromVector3D(v2) + '\n');
+f.write("       vertex " + fromVector3D(v3) + '\n');
+f.write("     endloop\n");
+f.write("  endfacet\n");
         }
         f.write("\n");
     }

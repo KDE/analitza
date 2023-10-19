@@ -134,9 +134,9 @@ Monomial::Monomial(const Operator& o, Object* o2, bool& sign)
             } else if(mult==Operator::times) {
                 first=1;
                 Apply::iterator it=cx->firstValue(), itEnd=cx->end();
-                QVector<Object*> vars;
-                QVector<Object*> values;
-                
+                QList<Object *> vars;
+                QList<Object *> values;
+
                 for(; it!=itEnd; ++it) {
                     if((*it)->type()==Object::value) {
                         first *= static_cast<Cn*>(*it)->value();

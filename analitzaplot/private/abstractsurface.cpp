@@ -19,7 +19,7 @@
 
 #include "abstractsurface.h"
 
-#include <QVector3D>
+#include <QList3D>
 
 static const int MAXAROUND = 32;
 static const int MAXSTRIP = 32;
@@ -65,7 +65,7 @@ bool AbstractSurface::buildParametricSurface()
     normals.clear();
     indexes.clear();
 
-    QVector3D surface[MAXALONG][MAXAROUND];
+    QList3D surface[MAXALONG][MAXAROUND];
 
     for ( int i=0; i<usteps; i++ )
         for ( int j=0; j<vsteps; j++ )
@@ -83,75 +83,72 @@ bool AbstractSurface::buildParametricSurface()
     return !indexes.isEmpty();
 }
 
-void AbstractSurface::doQuad(int n, int m, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3)
-{
-    for (int i=0; i<m; i++)
-    {
-        const QVector3D A((p0.x()*(float)(m-i) + p1.x()*(float)i)/(float)m,
-                          (p0.y()*(float)(m-i) + p1.y()*(float)i)/(float)m,
-                          (p0.z()*(float)(m-i) + p1.z()*(float)i)/(float)m);
-        
-        const QVector3D B((p0.x()*(float)(m-i-1) + p1.x()*(float)(i+1))/(float)m,
-                          (p0.y()*(float)(m-i-1) + p1.y()*(float)(i+1))/(float)m,
-                          (p0.z()*(float)(m-i-1) + p1.z()*(float)(i+1))/(float)m);
+void AbstractSurface::doQuad(int n, int m, const QList3D &p0, const QList3D &p1,
+                             const QList3D &p2, const QList3D &p3) {
+  for (int i = 0; i < m; i++) {
+    const QList3D A((p0.x() * (float)(m - i) + p1.x() * (float)i) / (float)m,
+                    (p0.y() * (float)(m - i) + p1.y() * (float)i) / (float)m,
+                    (p0.z() * (float)(m - i) + p1.z() * (float)i) / (float)m);
 
-        const QVector3D C((p2.x()*(float)(m-i)   + p3.x()*(float)i)/(float)m,
-                          (p2.y()*(float)(m-i)   + p3.y()*(float)i)/(float)m,
-                          (p2.z()*(float)(m-i)   + p3.z()*(float)i)/(float)m);
+    const QList3D B(
+        (p0.x() * (float)(m - i - 1) + p1.x() * (float)(i + 1)) / (float)m,
+        (p0.y() * (float)(m - i - 1) + p1.y() * (float)(i + 1)) / (float)m,
+        (p0.z() * (float)(m - i - 1) + p1.z() * (float)(i + 1)) / (float)m);
 
-        const QVector3D D((p2.x()*(float)(m-i-1) + p3.x()*(float)(i+1))/(float)m,
-                          (p2.y()*(float)(m-i-1) + p3.y()*(float)(i+1))/(float)m,
-                          (p2.z()*(float)(m-i-1) + p3.z()*(float)(i+1))/(float)m);
-        
-        doStrip(n, A, B, C, D);
+    const QList3D C((p2.x() * (float)(m - i) + p3.x() * (float)i) / (float)m,
+                    (p2.y() * (float)(m - i) + p3.y() * (float)i) / (float)m,
+                    (p2.z() * (float)(m - i) + p3.z() * (float)i) / (float)m);
+
+    const QList3D D(
+        (p2.x() * (float)(m - i - 1) + p3.x() * (float)(i + 1)) / (float)m,
+        (p2.y() * (float)(m - i - 1) + p3.y() * (float)(i + 1)) / (float)m,
+        (p2.z() * (float)(m - i - 1) + p3.z() * (float)(i + 1)) / (float)m);
+
+    doStrip(n, A, B, C, D);
+  }
+}
+
+void AbstractSurface::doStrip(int n, const QList3D &p0, const QList3D &p1,
+                              const QList3D &p2, const QList3D &p3) {
+  QList3D buffer[3];
+  QList3D theStrip[MAXSTRIP][2];
+
+  for (int i = 0; i <= n; i++) {
+    const QList3D A((p0.x() * (float)(n - i) + p2.x() * (float)i) / (float)n,
+                    (p0.y() * (float)(n - i) + p2.y() * (float)i) / (float)n,
+                    (p0.z() * (float)(n - i) + p2.z() * (float)i) / (float)n);
+
+    const QList3D B((p1.x() * (float)(n - i) + p3.x() * (float)i) / (float)n,
+                    (p1.y() * (float)(n - i) + p3.y() * (float)i) / (float)n,
+                    (p1.z() * (float)(n - i) + p3.z() * (float)i) / (float)n);
+
+    theStrip[i][0] = A;
+    theStrip[i][1] = B;
+  }
+
+  buffer[0] = theStrip[0][0];
+  buffer[1] = theStrip[0][1];
+  for (int i = 1; i <= n; i++)
+    for (int j = 0; j < 2; j++) {
+      buffer[2] = theStrip[i][j];
+      createFace(buffer);
+      buffer[0] = buffer[1];
+      buffer[1] = buffer[2];
     }
 }
 
-void AbstractSurface::doStrip(int n, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3)
-{
-    QVector3D buffer[3];
-    QVector3D theStrip[MAXSTRIP][2];
+void AbstractSurface::createFace(QList3D *buffer) {
+  QList3D n = QList3D::normal(buffer[0], buffer[1], buffer[2]);
 
-    for (int i=0; i<=n; i++)
-    {
-        const QVector3D A((p0.x()*(float)(n-i) + p2.x()*(float)i)/(float)n,
-                          (p0.y()*(float)(n-i) + p2.y()*(float)i)/(float)n,
-                          (p0.z()*(float)(n-i) + p2.z()*(float)i)/(float)n);
+  vertices << buffer[0] << buffer[1] << buffer[2];
 
-        const QVector3D B((p1.x()*(float)(n-i) + p3.x()*(float)i)/(float)n,
-                          (p1.y()*(float)(n-i) + p3.y()*(float)i)/(float)n,
-                          (p1.z()*(float)(n-i) + p3.z()*(float)i)/(float)n);
+  normals << n;
 
-        theStrip[i][0] = A;
-        theStrip[i][1] = B;
-    }
-    
-    buffer[0] = theStrip[0][0];
-    buffer[1] = theStrip[0][1];
-    for (int i=1; i<=n; i++)
-        for (int j=0; j<2; j++)
-        {
-            buffer[2] = theStrip[i][j];
-            createFace(buffer);
-            buffer[0] = buffer[1];
-            buffer[1] = buffer[2];
-        }
+  indexes.append(indexes.size());
+  indexes.append(indexes.size());
+  indexes.append(indexes.size());
 }
 
-void AbstractSurface::createFace(QVector3D *buffer)
-{
-    QVector3D n = QVector3D::normal(buffer[0], buffer[1], buffer[2]);
-
-    vertices << buffer[0] << buffer[1] << buffer[2];
-
-    normals << n;
-
-    indexes.append(indexes.size());
-    indexes.append(indexes.size());
-    indexes.append(indexes.size());
-}
-
-QVector3D AbstractSurface::fromParametricArgs(double, double)
-{
-    return QVector3D();
+QList3D AbstractSurface::fromParametricArgs(double, double) {
+  return QList3D();
 }

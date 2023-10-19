@@ -18,8 +18,8 @@
 
 #include "marchingsquares.h"
 #include <QDebug>
+#include <QList2D>
 #include <QPolygon>
-#include <QVector2D>
 
 sMarching_Square MarchingSquares::evaluar_cubo(const Square& cubo)
 {

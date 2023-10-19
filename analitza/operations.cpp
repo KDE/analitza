@@ -831,7 +831,7 @@ Object* Operations::reduceMatrixValue(Operator::OperatorType op, Matrix* matrix,
                                 if (exp <= MAX_EXPONENT) { // then: use Addition-chain exponentiation
                                     const int len = additionChains[exp][0];
                                     int i, j, k;
-                                    QVector<Matrix*> products(len+1);
+                                    QList<Matrix *> products(len + 1);
                                     products[0] = base;
                                     
                                     if (exp>1)

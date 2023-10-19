@@ -37,47 +37,48 @@ public:
     PARAMETERS(QStringList(QStringLiteral("t")))
     ICON_NAME(QStringLiteral("newparametric3d"))
     EXAMPLES(QStringList(QStringLiteral("t->vector {t,t**2,t}")))
-    
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
 
-private:
+    void update(const QList3D &oppositecorner1,
+                const QList3D &oppositecorner2) override;
+
+  private:
     int resolution() { return 5000; }
     Cn findTValueForPoint(const QPointF& p);
 };
 
-void ParametricCurve3D::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
-{
-    QPair< double, double > theInterval;
-    if(hasIntervals())
-         theInterval = interval(QStringLiteral("t"));
-    else
-        theInterval = qMakePair(-3.1415*5, 3.1415*5);
-    double dlimit=theInterval.first;
-    double ulimit=theInterval.second;
-    
-    points.clear();
-    jumps.clear();
-    points.reserve(resolution());
+void ParametricCurve3D::update(const QList3D & /*oppositecorner1*/,
+                               const QList3D & /*oppositecorner2*/) {
+  QPair<double, double> theInterval;
+  if (hasIntervals())
+    theInterval = interval(QStringLiteral("t"));
+  else
+    theInterval = qMakePair(-3.1415 * 5, 3.1415 * 5);
+  double dlimit = theInterval.first;
+  double ulimit = theInterval.second;
 
-    double inv_res = double((ulimit-dlimit)/resolution());
-    
-    QVector3D curp;
-    
-    arg(QStringLiteral("t"))->setValue(dlimit);
-    Expression res;
-    
-    for(double t=dlimit; t<ulimit; t+=inv_res) {
-        arg(QStringLiteral("t"))->setValue(t);
-        res=analyzer->calculateLambda();
-        
-        Cn x=res.elementAt(0).toReal();
-        Cn y=res.elementAt(1).toReal();
-        Cn z=res.elementAt(2).toReal();
-        
-        curp = QVector3D(x.value(), y.value(), z.value());
-        
-        points.append(curp);
-    }
+  points.clear();
+  jumps.clear();
+  points.reserve(resolution());
+
+  double inv_res = double((ulimit - dlimit) / resolution());
+
+  QList3D curp;
+
+  arg(QStringLiteral("t"))->setValue(dlimit);
+  Expression res;
+
+  for (double t = dlimit; t < ulimit; t += inv_res) {
+    arg(QStringLiteral("t"))->setValue(t);
+    res = analyzer->calculateLambda();
+
+    Cn x = res.elementAt(0).toReal();
+    Cn y = res.elementAt(1).toReal();
+    Cn z = res.elementAt(2).toReal();
+
+    curp = QList3D(x.value(), y.value(), z.value());
+
+    points.append(curp);
+  }
 }
 
 REGISTER_SPACECURVE(ParametricCurve3D)

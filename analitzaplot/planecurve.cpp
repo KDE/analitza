@@ -32,16 +32,14 @@ PlaneCurve::PlaneCurve(AbstractFunctionGraph* g )
 PlaneCurve::~PlaneCurve()
 {}
 
-const QVector<QPointF> & PlaneCurve::points() const
-{
-    Q_ASSERT(backend());
-    return static_cast<AbstractPlaneCurve*>(backend())->points;
+const QList<QPointF> &PlaneCurve::points() const {
+  Q_ASSERT(backend());
+  return static_cast<AbstractPlaneCurve *>(backend())->points;
 }
 
-QVector< int > PlaneCurve::jumps() const
-{
-    Q_ASSERT(backend());
-    return static_cast<AbstractPlaneCurve*>(backend())->jumps;
+QList<int> PlaneCurve::jumps() const {
+  Q_ASSERT(backend());
+  return static_cast<AbstractPlaneCurve *>(backend())->jumps;
 }
 
 void PlaneCurve::update(const QRectF& viewport)

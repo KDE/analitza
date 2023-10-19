@@ -42,14 +42,14 @@ void cartesianToPolar(double x, double y, double &radial, double &polar)
     polar = std::atan2(y,x);
 }
 
-QVector3D cylindricalToCartesian(double radial, double polar, double height)
-{
-    return QVector3D(radial*std::cos(polar), radial*std::sin(polar), height);
+QList3D cylindricalToCartesian(double radial, double polar, double height) {
+  return QList3D(radial * std::cos(polar), radial * std::sin(polar), height);
 }
 
-QVector3D sphericalToCartesian(double radial, double azimuth, double polar)
-{
-    return QVector3D(radial*std::cos(azimuth)*std::sin(polar), radial*std::sin(azimuth)*std::sin(polar), radial*std::cos(polar));
+QList3D sphericalToCartesian(double radial, double azimuth, double polar) {
+  return QList3D(radial * std::cos(azimuth) * std::sin(polar),
+                 radial * std::sin(azimuth) * std::sin(polar),
+                 radial * std::cos(polar));
 }
 
 bool traverse(double p1, double p2, double next)

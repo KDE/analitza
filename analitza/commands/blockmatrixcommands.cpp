@@ -153,9 +153,10 @@ Expression BlockMatrixCommand::operator()(const QList< Analitza::Expression >& a
                 
                 if (isCorrect) {
                     Analitza::Matrix *matrix = new Analitza::Matrix();
-                    
-                    QVector< QVector< const Analitza::Object* > > objmatrix(nrows, QVector< const Analitza::Object* >(ncols, nullptr));
-                    
+
+                    QList<QList<const Analitza::Object *>> objmatrix(
+                        nrows, QList<const Analitza::Object *>(ncols, nullptr));
+
                     int nrowsoffset = isVector? nrows : 0;
                     int ncolsoffset = isVector? 0 : ncols;
                     
@@ -270,8 +271,9 @@ Expression BlockDiagonalMatrixCommand::operator()(const QList< Analitza::Express
         
         if (!failbyblockdiag) {
             Analitza::Matrix *matrix = new Analitza::Matrix();
-            QVector< QVector< const Analitza::Object* > > objmatrix(nrows, QVector< const Analitza::Object* >(ncols, nullptr));
-            
+            QList<QList<const Analitza::Object *>> objmatrix(
+                nrows, QList<const Analitza::Object *>(ncols, nullptr));
+
             nrows = 0;
             ncols = 0;
         

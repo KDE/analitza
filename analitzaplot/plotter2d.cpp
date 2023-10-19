@@ -752,8 +752,8 @@ void Plotter2D::drawFunctions(QPaintDevice *qpd)
         pfunc.setStyle(Qt::SolidLine);
         p.setPen(pfunc);
 
-        const QVector<QPointF> &vect=curve->points();
-        QVector<int> jumps=curve->jumps();
+        const QList<QPointF> &vect = curve->points();
+        QList<int> jumps = curve->jumps();
 
         unsigned int pointsCount = vect.count();
         QPointF ultim = toWidget(vect.at(0));

@@ -80,8 +80,8 @@ void SurfaceTest::testIncorrect()
         FunctionGraph* f = rp.create(Qt::red, QStringLiteral("lala"));
         Surface* surface = dynamic_cast<Surface*>(f);
         QVERIFY(surface);
-        
-        surface->update(QVector3D(-1,-1,-1), QVector3D(1,1,1));
+
+        surface->update(QList3D(-1, -1, -1), QList3D(1, 1, 1));
         QVERIFY(!f->isCorrect() || surface->vertices().isEmpty());
     }
 }

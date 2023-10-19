@@ -74,7 +74,7 @@
 #define EXPRESSIONPARSER_H
 
 #include <QtCore/QStringList>
-#include <QtCore/QVector>
+#include <QtCore/QList>
 #include "expressiontable_p.h"
 #include "analitzaexport.h"
 class AbstractLexer;
@@ -100,8 +100,8 @@ class ANALITZA_EXPORT ExpressionParser : protected $table
 		{ return m_symStack[m_tos + index - 1]; }
 
 		int m_tos;
-		QVector<int> m_stateStack;
-		QVector<QString> m_symStack;
+		QList<int> m_stateStack;
+		QList<QString> m_symStack;
 		int m_errorLineNumber;
 		QStringList m_err;
 		QString m_exp;

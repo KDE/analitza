@@ -119,16 +119,14 @@ class BoundingIterator
 };
 }
 
-template <class T>
-QStringList printAll(const QVector<T*> & p)
-{
-    QStringList ret;
-    foreach(T* v, p)
-        if(v)
-            ret += v->toString();
-        else
-            ret += QStringLiteral("<null>");
-    return ret;
+template <class T> QStringList printAll(const QList<T *> &p) {
+  QStringList ret;
+  foreach (T *v, p)
+    if (v)
+      ret += v->toString();
+    else
+      ret += QStringLiteral("<null>");
+  return ret;
 }
 
 const int defsize = /*500*/0;
@@ -442,8 +440,8 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
                 const Container *cbody = dynamic_cast<Container*>(body);
                 if(resolve && cbody && cbody->m_params.size()==c->m_params.size() && cbody->containerType()==Container::lambda) {
                     int bvarsSize = cbody->bvarCount();
-                    QVector<Object*> args(bvarsSize+1);
-                    
+                    QList<Object *> args(bvarsSize + 1);
+
                     args[0]=cbody->copy();
                     for(int i=0; i<bvarsSize; i++) {
                         args[i+1]=simp(eval(c->m_params[i+1], resolve, unscoped));
@@ -505,10 +503,10 @@ Object* Analyzer::eval(const Object* branch, bool resolve, const QSet<QString>& 
                     BoundingIterator *it = r->domain()? initBVarsContainer(r, top, r->domain()->copy()) : initBVarsRange(r, top, r->dlimit(), r->ulimit());
                     
                     if(it) {
-                        QVector<Object*> values;
-                        Object* element = r->m_params.first();
-                        do {
-                            values += eval(element, resolve, unscoped);
+                      QList<Object *> values;
+                      Object *element = r->m_params.first();
+                      do {
+                        values += eval(element, resolve, unscoped);
                         } while(it->hasNext());
                         
                         if(values.size()==1)
@@ -812,18 +810,17 @@ namespace Analitza
     class TypeBoundingIterator : public BoundingIterator
     {
         public:
-            TypeBoundingIterator(QVector<Object*>& runStack, int top, const QVector<Ci*>& vars, T* l)
-                : iterators(vars.size()), list(l)
-                , itBegin(l->constBegin()), itEnd(l->constEnd())
-                , m_runStack(runStack), m_top(top)
-            {
-                int s=vars.size();
-                for(int i=0; i<s; i++) {
-                    m_runStack[m_top+i]=*itBegin;
-                    iterators[i]=itBegin;
-                }
+          TypeBoundingIterator(QList<Object *> &runStack, int top,
+                               const QList<Ci *> &vars, T *l)
+              : iterators(vars.size()), list(l), itBegin(l->constBegin()),
+                itEnd(l->constEnd()), m_runStack(runStack), m_top(top) {
+            int s = vars.size();
+            for (int i = 0; i < s; i++) {
+              m_runStack[m_top + i] = *itBegin;
+              iterators[i] = itBegin;
             }
-            
+          }
+
             ~TypeBoundingIterator() override { delete list; }
             
             virtual bool hasNext() override
@@ -841,25 +838,25 @@ namespace Analitza
                 return !cont;
             }
         private:
-            QVector<Iterator> iterators;
-            T* list;
-            const Iterator itBegin, itEnd;
-            QVector<Object*>& m_runStack;
-            int m_top;
+          QList<Iterator> iterators;
+          T *list;
+          const Iterator itBegin, itEnd;
+          QList<Object *> &m_runStack;
+          int m_top;
     };
     
     class RangeBoundingIterator : public BoundingIterator
     {
         public:
-            RangeBoundingIterator(const QVector<Cn*>& values, Cn* oul, Cn* odl, double step)
-                : values(values), dl(odl->value()), ul(oul->value()), step(step), objdl(odl), objul(oul)
-            {}
-            
-            ~RangeBoundingIterator() override
-            {
-                qDeleteAll(values);
-                delete objdl;
-                delete objul;
+          RangeBoundingIterator(const QList<Cn *> &values, Cn *oul, Cn *odl,
+                                double step)
+              : values(values), dl(odl->value()), ul(oul->value()), step(step),
+                objdl(odl), objul(oul) {}
+
+          ~RangeBoundingIterator() override {
+            qDeleteAll(values);
+            delete objdl;
+            delete objul;
             }
             
             bool hasNext() override
@@ -877,10 +874,10 @@ namespace Analitza
             }
             
         private:
-            const QVector<Cn*> values;
-            const double dl, ul, step;
-            Object* objdl;
-            Object* objul;
+          const QList<Cn *> values;
+          const double dl, ul, step;
+          Object *objdl;
+          Object *objul;
     };
 }
 
@@ -915,8 +912,8 @@ BoundingIterator* Analyzer::initializeBVars(const Apply* n, int base)
 BoundingIterator* Analyzer::initBVarsContainer(const Analitza::Apply* n, int base, Object* domain)
 {
     BoundingIterator* ret = nullptr;
-    QVector<Ci*> bvars=n->bvarCi();
-    
+    QList<Ci *> bvars = n->bvarCi();
+
     switch(domain->type()) {
         case Object::matrix:
             Q_ASSERT(false && "fixme: properly iterate through elements when bounding");
@@ -948,12 +945,12 @@ BoundingIterator* Analyzer::initBVarsRange(const Apply* n, int base, Object* obj
         double dl=d->value();
         
         if(dl<=ul) {
-            QVector<Ci*> bvars=n->bvarCi();
-            QVector<Cn*> rr(bvars.size());
-            
-            for(int i=0; i<bvars.size(); ++i) {
-                rr[i]=new Cn(dl);
-                m_runStack[base+i]=rr[i];
+          QList<Ci *> bvars = n->bvarCi();
+          QList<Cn *> rr(bvars.size());
+
+          for (int i = 0; i < bvars.size(); ++i) {
+            rr[i] = new Cn(dl);
+            m_runStack[base + i] = rr[i];
             }
             
             ret=new RangeBoundingIterator(rr, u, d, 1);
@@ -1019,8 +1016,8 @@ Object* Analyzer::func(const Apply& n)
 //     qDebug() << "calling" << qPrintable(QString(++ind, '.')) << n.m_params.first()->toString() << n.toString();
     
     int bvarsize = n.m_params.size()-1;
-    QVector<Object*> args(bvarsize);
-    
+    QList<Object *> args(bvarsize);
+
     for(int i=1; i<bvarsize+1; i++) {
         args[i-1]=calc(n.m_params[i]);
 //         qDebug() << "argumen" << qPrintable(QString(ind, '.')) << n.m_params[i]->toString() << "=" << args[i-1]->toString();
@@ -1035,12 +1032,13 @@ Object* Analyzer::func(const Apply& n)
     return ret;
 }
 
-Object* Analyzer::calcCallFunction(Container* function, const QVector<Object*>& args, const Object* oper)
-{
-    Object* ret=nullptr;
-    int bvarsize = args.size();
-    
-    if(function && function->m_params.size()>1) {
+Object *Analyzer::calcCallFunction(Container *function,
+                                   const QList<Object *> &args,
+                                   const Object *oper) {
+  Object *ret = nullptr;
+  int bvarsize = args.size();
+
+  if (function && function->m_params.size() > 1) {
 #ifdef SCRIPT_PROFILER
         profiler.push(borrowed? static_cast<Ci*>(n.m_params[0])->name() : function->toString());
 #endif
@@ -1124,13 +1122,13 @@ Object* Analyzer::calcFilter(const Apply* c)
     List::iterator it=l->begin(), itEnd=l->end();
     List* ret = new List;
     for(; it!=itEnd; ++it) {
-        QVector<Object*> args(1, (*it)->copy());
-        
-        Object* ss=*it;
-        Cn* val = static_cast<Cn*>(calcCallFunction(f, args, f));
-        
-        if(val->isTrue()) {
-            ret->appendBranch(ss->copy());
+      QList<Object *> args(1, (*it)->copy());
+
+      Object *ss = *it;
+      Cn *val = static_cast<Cn *>(calcCallFunction(f, args, f));
+
+      if (val->isTrue()) {
+        ret->appendBranch(ss->copy());
         }
         delete val;
     }
@@ -1144,8 +1142,8 @@ Object* Analyzer::calcFilter(const Apply* c)
 Object* Analyzer::calcDiff(const Apply* c)
 {
     //TODO: Make multibvar
-    QVector<Ci*> bvars=c->bvarCi();
-    
+    QList<Ci *> bvars = c->bvarCi();
+
     //We construct the lambda
     Object* o=derivative(bvars[0]->name(), *c->firstValue());
     o=simp(o);
@@ -1416,8 +1414,8 @@ Object* Analyzer::simpApply(Apply* c)
         }    break;
         case Operator::_union: {
             Apply::iterator it=c->firstValue(), itEnd=c->end();
-            
-            QVector<Object*> newParams;
+
+            QList<Object *> newParams;
             for(; it!=itEnd; ++it) {
                 *it=simp(*it);
                 
@@ -1715,7 +1713,7 @@ Object* Analyzer::simpSum(Apply* c)
     if(cval->isApply() && cval->firstOperator()==Operator::times) {
         const auto &bvarString = c->bvarStrings();
         QSet<QString> bvars = QSet<QString>(bvarString.begin(), bvarString.end());
-        QVector<Object*> sum, out;
+        QList<Object *> sum, out;
         Apply::iterator it=cval->firstValue(), itEnd=cval->end();
         int removed=0;
         for(; it!=itEnd; ++it) {
@@ -1887,40 +1885,39 @@ Cn* Analyzer::insertValueVariable(const QString& name, double value)
     return val;
 }
 
-double Analyzer::derivative(const QVector<Object*>& values )
-{
-    //c++ numerical recipes p. 192. Only for f'
-    //Image
-    Q_ASSERT(m_exp.isCorrect() && m_exp.tree());
-    Q_ASSERT(values.size()==m_exp.bvarList().size());
-    
-    setStack(values);
-    
-    Expression e1(calculateLambda());
-    if(!isCorrect())
-        return 0.;
-    
-    //Image+h
-    double h=0.0000000001;
-    for(int i=0; i<values.size(); i++) {
-//         volatile double temp=valp.second+h;
-//         double hh=temp-valp.second;
-        
-        Q_ASSERT(values[i]->type()==Object::value);
-        Cn* v=static_cast<Cn*>(values[i]);
-        v->setValue(v->value()+h);
-    }
-    
-    Expression e2(calculateLambda());
-    if(!isCorrect())
-        return 0.;
-    
-    if(!e1.isReal() || !e2.isReal()) {
-        m_err << QCoreApplication::tr("The result is not a number");
-        return 0;
-    }
-    
-    return (e2.toReal().value()-e1.toReal().value())/h;
+double Analyzer::derivative(const QList<Object *> &values) {
+  // c++ numerical recipes p. 192. Only for f'
+  // Image
+  Q_ASSERT(m_exp.isCorrect() && m_exp.tree());
+  Q_ASSERT(values.size() == m_exp.bvarList().size());
+
+  setStack(values);
+
+  Expression e1(calculateLambda());
+  if (!isCorrect())
+    return 0.;
+
+  // Image+h
+  double h = 0.0000000001;
+  for (int i = 0; i < values.size(); i++) {
+    //         volatile double temp=valp.second+h;
+    //         double hh=temp-valp.second;
+
+    Q_ASSERT(values[i]->type() == Object::value);
+    Cn *v = static_cast<Cn *>(values[i]);
+    v->setValue(v->value() + h);
+  }
+
+  Expression e2(calculateLambda());
+  if (!isCorrect())
+    return 0.;
+
+  if (!e1.isReal() || !e2.isReal()) {
+    m_err << QCoreApplication::tr("The result is not a number");
+    return 0;
+  }
+
+  return (e2.toReal().value() - e1.toReal().value()) / h;
 }
 
 Analitza::Object* Analyzer::variableValue(Ci* var)

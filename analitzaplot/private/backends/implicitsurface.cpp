@@ -45,8 +45,9 @@ public:
 
     //Own
     ~ImplicitSurf() override {  }
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
-    
+    void update(const QList3D &oppositecorner1,
+                const QList3D &oppositecorner2) override;
+
     double evalScalarField(double x, double y, double z) override;
 };
 
@@ -65,54 +66,50 @@ ImplicitSurf::ImplicitSurf(const Analitza::Expression& e, const QSharedPointer<A
 
 }
 
-void ImplicitSurf::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
-{
-    SpaceLimits spaceLimits;
-    
-    double tmpsize = 6.0;
-    
-    spaceLimits.minX = -tmpsize;
-    spaceLimits.maxX = tmpsize;
-    spaceLimits.minY = -tmpsize;
-    spaceLimits.maxY = tmpsize;
-    spaceLimits.minZ = -tmpsize;
-    spaceLimits.maxZ = tmpsize;
-    
-    if (hasIntervals())
-    {
-        QPair<double, double> intervalx = interval(QStringLiteral("x"));
-        QPair<double, double> intervaly = interval(QStringLiteral("y"));
-        QPair<double, double> intervalz = interval(QStringLiteral("z"));
+void ImplicitSurf::update(const QList3D & /*oppositecorner1*/,
+                          const QList3D & /*oppositecorner2*/) {
+  SpaceLimits spaceLimits;
 
-        spaceLimits.minX = intervalx.first;
-        spaceLimits.maxX = intervalx.second;
-        spaceLimits.minY = intervaly.first;
-        spaceLimits.maxY = intervaly.second;
-        spaceLimits.minZ = intervalz.first;
-        spaceLimits.maxZ = intervalz.second;
-    }
-    
-    
-    setupSpace(spaceLimits);
-    
-    buildGeometry();
-    
-//     qDebug() << "A: " << ntrigs() << nverts();
+  double tmpsize = 6.0;
 
-    //TODO find a better way to avoi this loops
-    for (int i = 0; i < nverts(); ++i)
-    {
-        auto v = vert(i);
+  spaceLimits.minX = -tmpsize;
+  spaceLimits.maxX = tmpsize;
+  spaceLimits.minY = -tmpsize;
+  spaceLimits.maxY = tmpsize;
+  spaceLimits.minZ = -tmpsize;
+  spaceLimits.maxZ = tmpsize;
 
-        vertices.append(QVector3D(v->x, v->y, v->z));
-        normals.append(QVector3D(v->nx, v->ny, v->nz));
-    }
+  if (hasIntervals()) {
+    QPair<double, double> intervalx = interval(QStringLiteral("x"));
+    QPair<double, double> intervaly = interval(QStringLiteral("y"));
+    QPair<double, double> intervalz = interval(QStringLiteral("z"));
 
-    for (int i = 0; i < ntrigs(); ++i)
-    {
-        auto t = trig(i);
-        indexes << t->v1 << t->v2 << t->v3;
-    }
+    spaceLimits.minX = intervalx.first;
+    spaceLimits.maxX = intervalx.second;
+    spaceLimits.minY = intervaly.first;
+    spaceLimits.maxY = intervaly.second;
+    spaceLimits.minZ = intervalz.first;
+    spaceLimits.maxZ = intervalz.second;
+  }
+
+  setupSpace(spaceLimits);
+
+  buildGeometry();
+
+  //     qDebug() << "A: " << ntrigs() << nverts();
+
+  // TODO find a better way to avoi this loops
+  for (int i = 0; i < nverts(); ++i) {
+    auto v = vert(i);
+
+    vertices.append(QList3D(v->x, v->y, v->z));
+    normals.append(QList3D(v->nx, v->ny, v->nz));
+  }
+
+  for (int i = 0; i < ntrigs(); ++i) {
+    auto t = trig(i);
+    indexes << t->v1 << t->v2 << t->v3;
+  }
 }
 
 REGISTER_SURFACE(ImplicitSurf)

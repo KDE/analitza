@@ -87,7 +87,7 @@ class Polynomial : public QList<Monomial>
         void addValue(Analitza::Object* value);
         void simpScalars(bool firstValue);
 
-        QVector<Object*> m_scalars;
+        QList<Object *> m_scalars;
         Operator m_operator;
         bool m_sign;
 };

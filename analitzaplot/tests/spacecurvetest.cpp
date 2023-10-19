@@ -86,8 +86,8 @@ void SpaceCurveTest::testIncorrect()
         FunctionGraph* f = rp.create(Qt::red, QStringLiteral("lala"));
         SpaceCurve* curve = dynamic_cast<SpaceCurve*>(f);
         QVERIFY(curve);
-        
-        curve->update(QVector3D(-1,-1,-1), QVector3D(1,1,1));
+
+        curve->update(QList3D(-1, -1, -1), QList3D(1, 1, 1));
         QVERIFY(!f->isCorrect() || curve->points().isEmpty());
     }
 }

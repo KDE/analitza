@@ -20,8 +20,8 @@
 #include "abstractspacecurve.h"
 #include "functiongraph.h"
 
+#include <QList3D>
 #include <cmath>
-#include <QVector3D>
 
 #include "analitza/analyzer.h"
 #include "analitza/value.h"
@@ -40,23 +40,23 @@ AbstractSpaceCurve::AbstractSpaceCurve(const Analitza::Expression& e, const QSha
 AbstractSpaceCurve::~AbstractSpaceCurve()
 {}
 
-bool AbstractSpaceCurve::addPoint(const QVector3D& p)
-{
-    int count=points.count();
-    if(count<2) {
-        points.append(p);
-        return false;
-    }
-    
-    double angle1=std::atan2(points[count-1].y()-points[count-2].y(), points[count-1].x()-points[count-2].x());
-    double angle2=std::atan2(p.y()-points[count-1].y(), p.x()-points[count-1].x());
-    
-    bool append=!isSimilar(angle1, angle2);
-    if(append)
-        points.append(p);
-    else
-        points.last()=p;
-        
-    return append;
-}
+bool AbstractSpaceCurve::addPoint(const QList3D &p) {
+  int count = points.count();
+  if (count < 2) {
+    points.append(p);
+    return false;
+  }
 
+  double angle1 = std::atan2(points[count - 1].y() - points[count - 2].y(),
+                             points[count - 1].x() - points[count - 2].x());
+  double angle2 =
+      std::atan2(p.y() - points[count - 1].y(), p.x() - points[count - 1].x());
+
+  bool append = !isSimilar(angle1, angle2);
+  if (append)
+    points.append(p);
+  else
+    points.last() = p;
+
+  return append;
+}

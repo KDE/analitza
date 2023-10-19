@@ -21,8 +21,8 @@
 #define MATHUTILS_H
 
 #include <QLineF>
+#include <QList3D>
 #include <QPair>
-#include <QVector3D>
 
 double radiansToDegrees(double rad);
 
@@ -32,9 +32,9 @@ QPointF polarToCartesian(double radial, double polar);
 
 void cartesianToPolar(double x, double y, double &radial, double &polar);
 
-QVector3D cylindricalToCartesian(double radial, double polar, double height);
+QList3D cylindricalToCartesian(double radial, double polar, double height);
 
-QVector3D sphericalToCartesian(double radial, double azimuth, double polar);
+QList3D sphericalToCartesian(double radial, double azimuth, double polar);
 
 bool isSimilar(double a, double b, double diff = .0000001);
 

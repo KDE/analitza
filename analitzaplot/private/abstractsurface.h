@@ -34,23 +34,26 @@ public:
     ~AbstractSurface() override;
 
     //Own
-    virtual void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) = 0;
+    virtual void update(const QList3D &oppositecorner1,
+                        const QList3D &oppositecorner2) = 0;
 
-    QVector<QVector3D> vertices;
-    QVector<QVector3D> normals;
-    QVector<unsigned int> indexes;
-    
-protected:
-    virtual QVector3D fromParametricArgs(double u, double v);
+    QList<QList3D> vertices;
+    QList<QList3D> normals;
+    QList<unsigned int> indexes;
+
+  protected:
+    virtual QList3D fromParametricArgs(double u, double v);
     bool buildParametricSurface();
 
 private:
     AbstractSurface();
     AbstractSurface(const AbstractSurface& other);
-    
-    void doQuad(int n, int m, const QVector3D &p0,  const QVector3D &p1,  const QVector3D &p2,  const QVector3D &p3);
-    void doStrip(int n, const QVector3D &p0,  const QVector3D &p1, const QVector3D &p2, const QVector3D &p3);
-    void createFace( QVector3D *buffer );
+
+    void doQuad(int n, int m, const QList3D &p0, const QList3D &p1,
+                const QList3D &p2, const QList3D &p3);
+    void doStrip(int n, const QList3D &p0, const QList3D &p1, const QList3D &p2,
+                 const QList3D &p3);
+    void createFace(QList3D *buffer);
 };
 
 }

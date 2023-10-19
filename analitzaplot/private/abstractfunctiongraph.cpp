@@ -77,7 +77,7 @@ void AbstractFunctionGraph::setVariables(Analitza::Variables* variables)
     Q_ASSERT(variables);
     
     Analitza::Expression exp = analyzer->expression();
-    QVector<Analitza::Object*> prevStack = analyzer->runStack();
+    QList<Analitza::Object *> prevStack = analyzer->runStack();
     delete analyzer;
     delete m_varsmod;
     

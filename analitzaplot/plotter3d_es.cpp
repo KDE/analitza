@@ -76,7 +76,7 @@ Plotter3DES::Plotter3DES(QAbstractItemModel* model)
     , m_simpleRotation(false)
     , m_referencePlaneColor(Qt::darkGray)
 {
-    resetViewPrivate(QVector3D(-45, 0, -135));
+  resetViewPrivate(QList3D(-45, 0, -135));
 }
 
 Plotter3DES::~Plotter3DES()
@@ -127,17 +127,16 @@ void Plotter3DES::initGL()
 void Plotter3DES::resetViewport()
 {
     m_rot.setToIdentity();
-    resetViewPrivate(QVector3D(-45, 0, -135));
+    resetViewPrivate(QList3D(-45, 0, -135));
     renderGL();
 }
 
-void Plotter3DES::resetViewPrivate(const QVector3D& rot)
-{
-    m_rot.translate(0,0, -20);
-    m_rot.rotate(rot.x(), 1, 0, 0);
-    m_rot.rotate(rot.y(), 0, 1, 0);
-    m_rot.rotate(rot.z(), 0, 0, 1);
-    m_simpleRotationVector = rot;
+void Plotter3DES::resetViewPrivate(const QList3D &rot) {
+  m_rot.translate(0, 0, -20);
+  m_rot.rotate(rot.x(), 1, 0, 0);
+  m_rot.rotate(rot.y(), 0, 1, 0);
+  m_rot.rotate(rot.z(), 0, 0, 1);
+  m_simpleRotationVector = rot;
 }
 
 void Plotter3DES::setViewport(const QRectF& vp)
@@ -303,7 +302,7 @@ void Plotter3DES::rotate(int dx, int dy)
 
     if (m_simpleRotation) {
         m_rot.setToIdentity();
-        resetViewPrivate(m_simpleRotationVector + QVector3D(ax, 0, ay));
+        resetViewPrivate(m_simpleRotationVector + QList3D(ax, 0, ay));
         renderGL();
     } else if (!m_rotFixed.isNull()) {
         m_rot.rotate(angle, m_rotFixed.normalized());
@@ -311,7 +310,8 @@ void Plotter3DES::rotate(int dx, int dy)
     } else {
 //         TODO: figure out how to do this on an opengl es compatible way
 
-//         GLfloat matrix[16] = {0}; // model view matrix from current OpenGL state
+//         GLfloat matrix[16] = {0}; // model view matrix from current OpenGL
+//         state
 //
 //         glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
 //
@@ -320,7 +320,7 @@ void Plotter3DES::rotate(int dx, int dy)
 //         matrix4 = matrix4.inverted(&couldInvert);
 //
 //         if (couldInvert) {
-//             QVector3D rot(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay,
+//             QList3D rot(matrix4.row(0).x()*ax + matrix4.row(1).x()*ay,
 //                           matrix4.row(0).y()*ax + matrix4.row(1).y()*ay,
 //                           matrix4.row(0).z()*ax + matrix4.row(1).z()*ay);
 //
@@ -347,10 +347,7 @@ CartesianAxis Plotter3DES::selectAxisArrow(int x, int y)
     return InvalidAxis;
 }
 
-void Plotter3DES::fixRotation(const QVector3D& vec)
-{
-    m_rotFixed = vec;
-}
+void Plotter3DES::fixRotation(const QList3D &vec) { m_rotFixed = vec; }
 
 void Plotter3DES::showAxisArrowHint(CartesianAxis axis)
 {
@@ -376,12 +373,12 @@ void Plotter3DES::addPlots(PlotItem* item)
     if (SpaceCurve *curve = dynamic_cast<SpaceCurve*>(item))
     {
         if (curve->points().isEmpty())
-            curve->update(QVector3D(), QVector3D());
+          curve->update(QList3D(), QList3D());
     }
     else if (Surface* surf = dynamic_cast<Surface*>(item))
     {
         if (surf->indexes().isEmpty())
-            surf->update(QVector3D(), QVector3D());
+          surf->update(QList3D(), QList3D());
 
         Q_ASSERT(!surf->indexes().isEmpty());
     }
@@ -419,7 +416,7 @@ void Plotter3DES::drawAxes()
         0.f, 0.f, 10.f,
     };
 
-    static QVector<GLuint> const idxs = {0,1};
+    static QList<GLuint> const idxs = {0, 1};
 
     const int vertexLocation = program.attributeLocation("vertex");
     program.enableAttributeArray(vertexLocation);
@@ -478,7 +475,7 @@ void Plotter3DES::drawRefPlane()
 {
     glLineWidth(1.f);
     const float lims = 10;
-    QVector<QVector3D> vxs;
+    QList<QList3D> vxs;
 
     for(float x=-lims; x<=lims; ++x) {
         vxs += { x, -lims, m_depth };

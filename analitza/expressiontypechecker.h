@@ -62,7 +62,8 @@ class ANALITZA_EXPORT ExpressionTypeChecker : public AbstractExpressionVisitor
         
     private:
         ExpressionType tellTypeIdentity(const QString& name, const ExpressionType& type);
-        ExpressionType solve(const Operator* o, const QVector<Object*>& parameters);
+        ExpressionType solve(const Operator *o,
+                             const QList<Object *> &parameters);
         bool inferType(const ExpressionType& c, const ExpressionType& targetType, QMap<QString, ExpressionType>* assumptions);
         QList<ExpressionType> computePairs(const QList<ExpressionType>& options, const ExpressionType& param);
         

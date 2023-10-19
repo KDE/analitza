@@ -19,13 +19,13 @@
  *************************************************************************************/
 
 #include "plotsview3d.h"
-#include <analitzaplot/plotsmodel.h>
-#include <analitzaplot/surface.h>
-#include <analitzaplot/spacecurve.h>
-#include <QVector3D>
-#include <QItemSelectionModel>
-#include <QVector>
 #include <QDebug>
+#include <QItemSelectionModel>
+#include <QList3D>
+#include <QList>
+#include <analitzaplot/plotsmodel.h>
+#include <analitzaplot/spacecurve.h>
+#include <analitzaplot/surface.h>
 
 using namespace Analitza;
 
@@ -102,19 +102,19 @@ void PlotsView3D::mousePressEvent(QMouseEvent *e)
     showAxisArrowHint(axis);
 
     if (isRotationFixed() && axis != InvalidAxis) {
-        fixRotation(QVector3D());
-        hideAxisHint();
+      fixRotation(QList3D());
+      hideAxisHint();
     } else switch (axis)
     {
-        case XAxis: 
-            fixRotation(QVector3D(1,0,0));
-            break;
-        case YAxis: 
-            fixRotation(QVector3D(0,1,0));
-            break;
-        case ZAxis: 
-            fixRotation(QVector3D(0,0,1));
-            break;
+        case XAxis:
+          fixRotation(QList3D(1, 0, 0));
+          break;
+        case YAxis:
+          fixRotation(QList3D(0, 1, 0));
+          break;
+        case ZAxis:
+          fixRotation(QList3D(0, 0, 1));
+          break;
         case InvalidAxis:
             break;
     }

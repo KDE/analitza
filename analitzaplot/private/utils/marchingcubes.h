@@ -30,7 +30,7 @@
 #ifndef MARCHINGCUBES_H
 #define MARCHINGCUBES_H
 
-#include <QVector>
+#include <QList>
 
 struct SpaceLimits {
     double minX;

@@ -35,17 +35,18 @@ public:
 
     //Curve ... los expongo como publicos tanto para planecurve como para los backend (
     //para los backends por un tema de performance y flexibilidad) 
-    // al final en planecurve todo estara expuesto consistentemente 
-    QVector<QVector3D> points;
-    QVector<int> jumps;
+    // al final en planecurve todo estara expuesto consistentemente
+    QList<QList3D> points;
+    QList<int> jumps;
 
     //Own
-    virtual void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) = 0;
+    virtual void update(const QList3D &oppositecorner1,
+                        const QList3D &oppositecorner2) = 0;
 
-protected:
-    bool addPoint(const QVector3D& p);
+  protected:
+    bool addPoint(const QList3D &p);
 
-private:
+  private:
     AbstractSpaceCurve();
 };
 

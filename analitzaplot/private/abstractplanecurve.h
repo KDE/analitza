@@ -35,9 +35,9 @@ public:
     explicit AbstractPlaneCurve(const Analitza::Expression& e, const QSharedPointer<Analitza::Variables>& v = {});
     ~AbstractPlaneCurve() override;
 
-    QVector<QPointF> points;
-    QVector<int> jumps;
-    
+    QList<QPointF> points;
+    QList<int> jumps;
+
     virtual void update(const QRectF& viewport) = 0;
     virtual QPair<QPointF, QString> image(const QPointF &mousepos) = 0;
     virtual QLineF tangent(const QPointF &mousepos) = 0;

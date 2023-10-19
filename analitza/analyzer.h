@@ -99,8 +99,8 @@ class ANALITZA_EXPORT Analyzer
         Expression derivative(const QString& var);
         
         /** Evaluates the derivative of an expression expression. */
-        double derivative(const QVector<Object*>& values );
-        
+        double derivative(const QList<Object *> &values);
+
         /** Returns whether there has been a problem in the last calculation. */
         bool isCorrect() const { return m_err.isEmpty() && m_exp.isCorrect(); }
         
@@ -150,11 +150,11 @@ class ANALITZA_EXPORT Analyzer
          @returns the type of the current expression.
          */
         ExpressionType type() const { return m_currentType; }
-        
-        void setStack(const QVector<Object*>& stack) { m_runStack = stack; }
-        
-        QVector<Object*> runStack() const { return m_runStack; }
-        
+
+        void setStack(const QList<Object *> &stack) { m_runStack = stack; }
+
+        QList<Object *> runStack() const { return m_runStack; }
+
         BuiltinMethods* builtinMethods();
         
         /** Makes it possible to easily enter a bunch of code to execute it */
@@ -169,7 +169,7 @@ class ANALITZA_EXPORT Analyzer
         Expression m_exp;
         QSharedPointer<Variables> m_vars;
         QStringList m_err;
-        QVector<Object*> m_runStack;
+        QList<Object *> m_runStack;
         int m_runStackTop;
         BuiltinMethods m_builtin;
         
@@ -197,8 +197,10 @@ class ANALITZA_EXPORT Analyzer
         Object* calcDeclare(const Container* c);
         Object* calcMath(const Container* c);
         Object* calcLambda(const Container* c);
-        Object* calcCallFunction(Analitza::Container* function, const QVector<Analitza::Object* >& args, const Analitza::Object* op);
-        
+        Object *calcCallFunction(Analitza::Container *function,
+                                 const QList<Analitza::Object *> &args,
+                                 const Analitza::Object *op);
+
         Object* simp(Object* root);
         Object* simpPolynomials(Apply* c);
         Object* simpSum(Apply* c);

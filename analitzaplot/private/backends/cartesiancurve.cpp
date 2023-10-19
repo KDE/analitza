@@ -147,7 +147,7 @@ QLineF FunctionCartesian::tangent(const QPointF &mousepos)
     double ret = 0;
     if(m_deriv.isCorrect()) {
         arg()->setValue(mousepos.x());
-        QVector<Analitza::Object*> runStack;
+        QList<Analitza::Object *> runStack;
         runStack += arg();
 
         a.setExpression(m_deriv);
@@ -162,11 +162,11 @@ QLineF FunctionCartesian::tangent(const QPointF &mousepos)
     }
 
     if(ret==0) {
-        QVector<Analitza::Object*> vars;
-        vars.append(new Analitza::Cn(mousepos.x()));
-        a.setExpression(analyzer->expression());
-        ret=a.derivative(vars);
-        qDeleteAll(vars);
+      QList<Analitza::Object *> vars;
+      vars.append(new Analitza::Cn(mousepos.x()));
+      a.setExpression(analyzer->expression());
+      ret = a.derivative(vars);
+      qDeleteAll(vars);
     }
     return slopeToLine(ret);
 }

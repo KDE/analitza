@@ -47,8 +47,8 @@ public:
     explicit PlaneCurve(AbstractFunctionGraph* g);
     ~PlaneCurve() override;
 
-    QVector<int> jumps() const;
-    const QVector<QPointF> & points() const;
+    QList<int> jumps() const;
+    const QList<QPointF> &points() const;
     void update(const QRectF& viewport);
     QPair<QPointF, QString> image(const QPointF &mousepos); // calculate the image of the curve based on the mouse postion 
     QLineF tangent(const QPointF &mousepos);// calculate the tangent to the curve based on the mouse 

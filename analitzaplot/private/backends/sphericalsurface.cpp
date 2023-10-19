@@ -45,11 +45,10 @@ public:
     //Own
     virtual bool setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max) override;
     virtual bool setInterval(const QString& argname, double min, double max) override;
-    
-    QVector3D fromParametricArgs(double u, double v) override;
-    void update(const QVector3D& oppositecorner1, const QVector3D& oppositecorner2) override;
-    
-    
+
+    QList3D fromParametricArgs(double u, double v) override;
+    void update(const QList3D &oppositecorner1,
+                const QList3D &oppositecorner2) override;
 };
 
 bool SphericalSurface::setInterval(const QString& argname, const Analitza::Expression& min, const Analitza::Expression& max)
@@ -101,22 +100,20 @@ SphericalSurface::SphericalSurface(const Analitza::Expression& e, const QSharedP
     : AbstractSurface(e, v)
 {}
 
-QVector3D SphericalSurface::fromParametricArgs(double a, double p)
-{
-    arg(QStringLiteral("t"))->setValue(a);
-    arg(QStringLiteral("p"))->setValue(p);    
+QList3D SphericalSurface::fromParametricArgs(double a, double p) {
+  arg(QStringLiteral("t"))->setValue(a);
+  arg(QStringLiteral("p"))->setValue(p);
 
-    double r = analyzer->calculateLambda().toReal().value();
+  double r = analyzer->calculateLambda().toReal().value();
 
-    return sphericalToCartesian(r,a,p);
+  return sphericalToCartesian(r, a, p);
 }
 
-void SphericalSurface::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
-{
-    Q_UNUSED(oppositecorner1);
-    Q_UNUSED(oppositecorner2);
-    buildParametricSurface();
+void SphericalSurface::update(const QList3D &oppositecorner1,
+                              const QList3D &oppositecorner2) {
+  Q_UNUSED(oppositecorner1);
+  Q_UNUSED(oppositecorner2);
+  buildParametricSurface();
 }
-
 
 REGISTER_SURFACE(SphericalSurface)

@@ -37,7 +37,7 @@ void recordPlot(PlaneCurve* curve)
     curve->update(QRect(-10, 10, 20, -20));
 
     const auto points = curve->points();
-    QVector<qreal> buffer;
+    QList<qreal> buffer;
     buffer.reserve(points.size());
 
 //     for(const auto &p: points) {

@@ -107,111 +107,110 @@ QPair<QPointF, QString> FunctionImplicit::image(const QPointF &/*point*/)
 
     //TODO port
 
-//     QVector<Analitza::Object*> vxStack;
-//     vxStack.append(m_x);
-//     QVector<Analitza::Object*> vyStack;
-//     vyStack.append(m_y);
-//
-//     QString expLiteral = analyzer.expression().lambdaBody().toString();
-//     expLiteral.replace("y", QString::number(point.y()));
-//     expLiteral.prepend("x->");
-//
-//     Analitza::Analyzer f(analyzer.variables());
-//     f.setExpression(Analitza::Expression(expLiteral, false));
-//     f.setStack(vxStack);
-//
-//     Analitza::Analyzer df(analyzer.variables());
-//     df.setExpression(f.derivative("x"));
-//     df.setStack(vxStack);
-//
-//     const int MAX_I = 256;
-//     const double E = 0.0001;
-//     double x0 = point.x();
-//     double x = x0;
-//     double error = 1000.0;
-//     int i = 0;
-//     bool has_root_x = true;
-//
-//
-//     if (!f.isCorrect() || !df.isCorrect())
-//     {
-//         return QPair<QPointF, QString>(QPointF(), QString());
-//     }
-//
-//     while (true)
-//     {
-//         arg("x")->setValue(x0);
-//
-//         double r = f.calculateLambda().toReal().value();
-//         double d = df.calculateLambda().toReal().value();
-//
-//         i++;
-//         x = x0 - r/d;
-//
-//         if (error < E) break;
-//         if (i > MAX_I)
-//         {
-//             has_root_x = false;
-//             break;
-//         }
-//
-//         error = fabs(x - x0);
-//         x0 = x;
-//     }
-//
-//
-//     if (!has_root_x)
-//     {
-//         expLiteral = analyzer.expression().lambdaBody().toString();
-//         expLiteral.replace("x", QString::number(point.x()));
-//         expLiteral.prepend("y->");
-//
-//         Analitza::Analyzer f(analyzer.variables());
-//         f.setExpression(Analitza::Expression(expLiteral, false));
-//         f.setStack(vyStack);
-//
-//         Analitza::Analyzer df(analyzer.variables());
-//         df.setExpression(f.derivative("y"));
-//         df.setStack(vyStack);
-//
-//         double y0 = point.y();
-//         double y = y0;
-//         error = 1000.0;
-//         i = 0;
-//         bool has_root_y = true;
-//
-//         while (true)
-//         {
-//             arg("y")->setValue(y0);
-//
-//             double r = f.calculateLambda().toReal().value();
-//             double d = df.calculateLambda().toReal().value();
-//
-//             i++;
-//             y = y0 - r/d;
-//
-//             if (error < E) break;
-//             if (i > MAX_I)
-//             {
-//                 has_root_y = false;
-//                 break;
-//             }
-//
-//             error = fabs(y - y0);
-//             y0 = y;
-//         }
-//
-//         if (has_root_y)
-//             last_calc = QPointF(point.x(), y);
-//         return QPair<QPointF, QString>(last_calc, QString());
-//     }
-//     else
-//     {
-//         last_calc = QPointF(x, point.y());
-//
-//         return QPair<QPointF, QString>(last_calc, QString());
-//     }
-
+    //     QList<Analitza::Object*> vxStack;
+    //     vxStack.append(m_x);
+    //     QList<Analitza::Object*> vyStack;
+    //     vyStack.append(m_y);
+    //
+    //     QString expLiteral = analyzer.expression().lambdaBody().toString();
+    //     expLiteral.replace("y", QString::number(point.y()));
+    //     expLiteral.prepend("x->");
+    //
+    //     Analitza::Analyzer f(analyzer.variables());
+    //     f.setExpression(Analitza::Expression(expLiteral, false));
+    //     f.setStack(vxStack);
+    //
+    //     Analitza::Analyzer df(analyzer.variables());
+    //     df.setExpression(f.derivative("x"));
+    //     df.setStack(vxStack);
+    //
+    //     const int MAX_I = 256;
+    //     const double E = 0.0001;
+    //     double x0 = point.x();
+    //     double x = x0;
+    //     double error = 1000.0;
+    //     int i = 0;
+    //     bool has_root_x = true;
+    //
+    //
+    //     if (!f.isCorrect() || !df.isCorrect())
+    //     {
+    //         return QPair<QPointF, QString>(QPointF(), QString());
+    //     }
+    //
+    //     while (true)
+    //     {
+    //         arg("x")->setValue(x0);
+    //
+    //         double r = f.calculateLambda().toReal().value();
+    //         double d = df.calculateLambda().toReal().value();
+    //
+    //         i++;
+    //         x = x0 - r/d;
+    //
+    //         if (error < E) break;
+    //         if (i > MAX_I)
+    //         {
+    //             has_root_x = false;
+    //             break;
+    //         }
+    //
+    //         error = fabs(x - x0);
+    //         x0 = x;
+    //     }
+    //
+    //
+    //     if (!has_root_x)
+    //     {
+    //         expLiteral = analyzer.expression().lambdaBody().toString();
+    //         expLiteral.replace("x", QString::number(point.x()));
+    //         expLiteral.prepend("y->");
+    //
+    //         Analitza::Analyzer f(analyzer.variables());
+    //         f.setExpression(Analitza::Expression(expLiteral, false));
+    //         f.setStack(vyStack);
+    //
+    //         Analitza::Analyzer df(analyzer.variables());
+    //         df.setExpression(f.derivative("y"));
+    //         df.setStack(vyStack);
+    //
+    //         double y0 = point.y();
+    //         double y = y0;
+    //         error = 1000.0;
+    //         i = 0;
+    //         bool has_root_y = true;
+    //
+    //         while (true)
+    //         {
+    //             arg("y")->setValue(y0);
+    //
+    //             double r = f.calculateLambda().toReal().value();
+    //             double d = df.calculateLambda().toReal().value();
+    //
+    //             i++;
+    //             y = y0 - r/d;
+    //
+    //             if (error < E) break;
+    //             if (i > MAX_I)
+    //             {
+    //                 has_root_y = false;
+    //                 break;
+    //             }
+    //
+    //             error = fabs(y - y0);
+    //             y0 = y;
+    //         }
+    //
+    //         if (has_root_y)
+    //             last_calc = QPointF(point.x(), y);
+    //         return QPair<QPointF, QString>(last_calc, QString());
+    //     }
+    //     else
+    //     {
+    //         last_calc = QPointF(x, point.y());
+    //
+    //         return QPair<QPointF, QString>(last_calc, QString());
+    //     }
 }
 
 QLineF FunctionImplicit::tangent(const QPointF &/*mousepos*/)

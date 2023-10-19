@@ -137,183 +137,252 @@ QList<ExpressionType> ExpressionTypeChecker::computePairs(const QList<Expression
     return ret;
 }
 
-ExpressionType ExpressionTypeChecker::solve(const Operator* o, const QVector< Object* >& parameters)
-{
-    Q_ASSERT(o->operatorType()!=Operator::function);
-    
-    QList<ExpressionType> paramtypes;
-    for(QVector<Object*>::const_iterator it=parameters.constBegin(), itEnd=parameters.constEnd(); it!=itEnd; ++it) {
-        (*it)->accept(this);
-        paramtypes += current;
+ExpressionType ExpressionTypeChecker::solve(const Operator *o,
+                                            const QList<Object *> &parameters) {
+  Q_ASSERT(o->operatorType() != Operator::function);
+
+  QList<ExpressionType> paramtypes;
+  for (QList<Object *>::const_iterator it = parameters.constBegin(),
+                                       itEnd = parameters.constEnd();
+       it != itEnd; ++it) {
+    (*it)->accept(this);
+    paramtypes += current;
+  }
+
+  QList<ExpressionType> ret;
+  if (parameters.size() == 1) {
+    QList<ExpressionType> types =
+        paramtypes.first().type() == ExpressionType::Many
+            ? paramtypes.first().alternatives()
+            : QList<ExpressionType>() << paramtypes.first();
+    //         const QMap<QString, ExpressionType>
+    //         assumptions=current.assumptions();
+
+    foreach (const ExpressionType &t, types) {
+      QList<ExpressionType> thing =
+          computePairs(Operations::inferUnary(o->operatorType()), t);
+      foreach (const ExpressionType &opt, thing) {
+        ExpressionType tt(opt.parameters().constLast());
+        tt.addAssumptions(t.assumptions());
+        ret += tt;
+      }
     }
-    
-    QList<ExpressionType> ret;
-    if(parameters.size()==1) {
-        QList<ExpressionType> types=paramtypes.first().type()==ExpressionType::Many ? paramtypes.first().alternatives() : QList<ExpressionType>() << paramtypes.first();
-//         const QMap<QString, ExpressionType> assumptions=current.assumptions();
-        
-        foreach(const ExpressionType& t, types) {
-            QList<ExpressionType> thing=computePairs(Operations::inferUnary(o->operatorType()), t);
-            foreach(const ExpressionType& opt, thing) {
-                ExpressionType tt(opt.parameters().constLast());
-                tt.addAssumptions(t.assumptions());
-                ret+=tt;
+    //         qDebug() << "bam" << ret ;
+  } else {
+    Q_ASSERT(parameters.size() >= 2);
+    //         QMap<int, ExpressionType> stars;
+
+    ExpressionType firstType = paramtypes.first();
+    QList<ExpressionType> firstTypes = firstType.type() == ExpressionType::Many
+                                           ? firstType.alternatives()
+                                           : QList<ExpressionType>()
+                                                 << firstType;
+
+    const QList<ExpressionType> res = Operations::infer(o->operatorType());
+
+    bool firstPair = true;
+    for (QList<ExpressionType>::const_iterator it = paramtypes.constBegin() + 1,
+                                               itEnd = paramtypes.constEnd();
+         it != itEnd; ++it, firstPair = false) {
+      ExpressionType secondType = *it;
+
+      QList<ExpressionType> secondTypes =
+          secondType.type() == ExpressionType::Many
+              ? secondType.alternatives()
+              : QList<ExpressionType>() << secondType;
+      int starsbase = m_stars;
+      //             static int ind=3;
+      //             qDebug() << qPrintable("+" +QString(ind++, '-')) <<
+      //             o->toString() << firstType << secondType;
+
+      bool found = false;
+      foreach (const ExpressionType &_first, firstTypes) {
+        foreach (const ExpressionType &_second, secondTypes) {
+          QMap<int, ExpressionType> _starToType;
+          bool matches = ExpressionType::matchAssumptions(
+              &_starToType, _first.assumptions(), _second.assumptions());
+
+          if (!matches) {
+            //                         qDebug() << "peee" <<
+            //                         ExpressionType::wrongAssumptions(_first.assumptions(),
+            //                         _second.assumptions());
+            continue;
+          }
+          foreach (const ExpressionType &_opt, res) {
+            ExpressionType opt(_opt);
+            m_stars = qMax<int>(m_stars, opt.increaseStars(starsbase));
+
+            Q_ASSERT(!opt.parameters().last().isError());
+            QMap<int, ExpressionType> starToType, starToParam;
+
+            bool valid = false;
+            QMap<QString, ExpressionType> assumptions;
+
+            // NOTE In matrix multiplication (A*B) A may or not be reduced to B,
+            // since is allowed different matrix sizes provided that are valid
+            // sizes for the multiplication, thus we need a special case for
+            // matrix type
+            if (current.type() == ExpressionType::Matrix) {
+              ExpressionType first = _first.starsToType(_starToType);
+              ExpressionType second = _second.starsToType(_starToType);
+
+              //                         qDebug() << "9999999" <<
+              //                         _first.assumptions() <<
+              //                         first.assumptions() << starToType;
+
+              starToType = ExpressionType::computeStars(starToType, first,
+                                                        opt.parameters()[0]);
+              first = first.starsToType(starToType);
+              starToType = ExpressionType::computeStars(starToType, second,
+                                                        opt.parameters()[1]);
+              second = second.starsToType(starToType);
+
+              assumptions = first.assumptions();
+              valid = ExpressionType::assumptionsMerge(assumptions,
+                                                       second.assumptions());
+
+              //                         qDebug() << "PPPPPP" << opt << first <<
+              //                         second << "|||||" <<
+              //                         first.assumptions() <<
+              //                         second.assumptions();
+
+              valid &= !first.isError() && !second.isError();
+              starToParam = ExpressionType::computeStars(
+                  starToParam, opt.parameters()[0], first);
+              //                         qDebug() << "XXXXXX1" << starToParam;
+              valid &= first.canReduceTo(
+                  opt.parameters()[0].starsToType(starToParam));
+              starToParam = ExpressionType::computeStars(
+                  starToParam, opt.parameters()[1], second);
+              //                         qDebug() << "XXXXXX2" << starToParam;
+              valid &= second.canReduceTo(
+                  opt.parameters()[1].starsToType(starToParam));
+            } else {
+              ExpressionType first = _first.starsToType(_starToType);
+              ExpressionType second = _second.starsToType(_starToType);
+              //                         qDebug() << "9999999" <<
+              //                         _first.assumptions() <<
+              //                         first.assumptions() << starToType;
+
+              starToType = ExpressionType::computeStars(starToType, first,
+                                                        opt.parameters()[0]);
+              starToType = ExpressionType::computeStars(starToType, second,
+                                                        opt.parameters()[1]);
+
+              first = first.starsToType(starToType);
+              second = second.starsToType(starToType);
+
+              starToParam = ExpressionType::computeStars(
+                  starToParam, opt.parameters()[0], first);
+              starToParam = ExpressionType::computeStars(
+                  starToParam, opt.parameters()[1], second);
+              //                         qDebug() << "XXXXXX" << starToParam;
+              //                         qDebug() << "PPPPPP" << opt << first <<
+              //                         second << "|||||" <<
+              //                         first.assumptions() <<
+              //                         second.assumptions();
+
+              //                         starToType=ExpressionType::computeStars(starToType,
+              //                         first,
+              //                         opt.parameters()[0].starsToType(starToParam));
+              //                         starToType=ExpressionType::computeStars(starToType,
+              //                         second,
+              //                         opt.parameters()[1].starsToType(starToParam));
+
+              //                         first =first .starsToType(starToType);
+              //                         second=second.starsToType(starToType);
+
+              assumptions = first.assumptions();
+              valid = ExpressionType::assumptionsMerge(assumptions,
+                                                       second.assumptions());
+
+              //                         qDebug() << "fifuuuuuuu" << first <<
+              //                         (it-1)->toString() <<
+              //                                                     second <<
+              //                                                     it->toString()
+              //                                                     <<
+              //                                                     assumptions
+              //                                                     << valid;
+
+              valid &= !first.isError() && !second.isError();
+              valid &= first.canReduceTo(
+                  opt.parameters()[0].starsToType(starToParam));
+              valid &= second.canReduceTo(
+                  opt.parameters()[1].starsToType(starToParam));
+
+              //                         qDebug() << "POPOPO" <<
+              //                         (it-1)->toString() << it->toString() <<
+              //                         valid << first << second <<
+              //                         starToParam;
             }
-        }
-//         qDebug() << "bam" << ret ;
-    } else {
-        Q_ASSERT(parameters.size()>=2);
-//         QMap<int, ExpressionType> stars;
-        
-        ExpressionType firstType=paramtypes.first();
-        QList<ExpressionType> firstTypes= firstType.type()==ExpressionType::Many ?  firstType.alternatives() : QList<ExpressionType>() << firstType;
-        
-        const QList<ExpressionType> res=Operations::infer(o->operatorType());
-        
-        bool firstPair=true;
-        for(QList<ExpressionType>::const_iterator it=paramtypes.constBegin()+1, itEnd=paramtypes.constEnd(); it!=itEnd; ++it, firstPair=false)
-        {
-            ExpressionType secondType=*it;
-            
-            QList<ExpressionType> secondTypes=secondType.type()==ExpressionType::Many ? secondType.alternatives() : QList<ExpressionType>() << secondType;
-            int starsbase=m_stars;
-//             static int ind=3;
-//             qDebug() << qPrintable("+" +QString(ind++, '-')) << o->toString() << firstType << secondType;
-            
-            bool found = false;
-            foreach(const ExpressionType& _first, firstTypes) {
-                foreach(const ExpressionType& _second, secondTypes) {
-                    QMap<int, ExpressionType> _starToType;
-                    bool matches=ExpressionType::matchAssumptions(&_starToType, _first.assumptions(), _second.assumptions());
-                    
-                    if(!matches) {
-//                         qDebug() << "peee" << ExpressionType::wrongAssumptions(_first.assumptions(), _second.assumptions());
-                        continue;
-                    }
-                    foreach(const ExpressionType& _opt, res) {
-                        ExpressionType opt(_opt);
-                        m_stars=qMax<int>(m_stars, opt.increaseStars(starsbase));
-                        
-                        Q_ASSERT(!opt.parameters().last().isError());
-                        QMap<int, ExpressionType> starToType, starToParam;
-                        
-                        bool valid = false;
-                        QMap<QString, ExpressionType> assumptions;
-                        
-                        //NOTE In matrix multiplication (A*B) A may or not be reduced to B, since is allowed 
-                        //different matrix sizes provided that are valid sizes for the multiplication, 
-                        //thus we need a special case for matrix type
-                        if (current.type() == ExpressionType::Matrix) {
-                            ExpressionType first =_first .starsToType(_starToType);
-                            ExpressionType second=_second.starsToType(_starToType);
-                            
-    //                         qDebug() << "9999999" << _first.assumptions() << first.assumptions() << starToType;
-                            
-                            starToType=ExpressionType::computeStars(starToType, first,  opt.parameters()[0]);
-                            first =first .starsToType(starToType);
-                            starToType=ExpressionType::computeStars(starToType, second, opt.parameters()[1]);
-                            second=second.starsToType(starToType);
-                            
-                            assumptions=first.assumptions();
-                            valid=ExpressionType::assumptionsMerge(assumptions, second.assumptions());
-                            
-    //                         qDebug() << "PPPPPP" << opt << first << second << "|||||" << first.assumptions() << second.assumptions();
-                            
-                            valid &= !first.isError() && !second.isError();
-                            starToParam=ExpressionType::computeStars(starToParam, opt.parameters()[0], first);
-    //                         qDebug() << "XXXXXX1" << starToParam;
-                            valid &= first .canReduceTo(opt.parameters()[0].starsToType(starToParam));
-                            starToParam=ExpressionType::computeStars(starToParam, opt.parameters()[1], second);
-    //                         qDebug() << "XXXXXX2" << starToParam;
-                            valid &= second.canReduceTo(opt.parameters()[1].starsToType(starToParam));
-                        } else {
-                            ExpressionType first =_first .starsToType(_starToType);
-                            ExpressionType second=_second.starsToType(_starToType);
-    //                         qDebug() << "9999999" << _first.assumptions() << first.assumptions() << starToType;
-                            
-                            starToType=ExpressionType::computeStars(starToType, first,  opt.parameters()[0]);
-                            starToType=ExpressionType::computeStars(starToType, second, opt.parameters()[1]);
-                            
-                            first =first .starsToType(starToType);
-                            second=second.starsToType(starToType);
-                            
-                            starToParam=ExpressionType::computeStars(starToParam, opt.parameters()[0], first);
-                            starToParam=ExpressionType::computeStars(starToParam, opt.parameters()[1], second);
-    //                         qDebug() << "XXXXXX" << starToParam;
-    //                         qDebug() << "PPPPPP" << opt << first << second << "|||||" << first.assumptions() << second.assumptions();
-                            
-    //                         starToType=ExpressionType::computeStars(starToType, first,  opt.parameters()[0].starsToType(starToParam));
-    //                         starToType=ExpressionType::computeStars(starToType, second, opt.parameters()[1].starsToType(starToParam));
-                            
-    //                         first =first .starsToType(starToType);
-    //                         second=second.starsToType(starToType);
-                            
-                            assumptions=first.assumptions();
-                            valid=ExpressionType::assumptionsMerge(assumptions, second.assumptions());
-                            
-    //                         qDebug() << "fifuuuuuuu" << first << (it-1)->toString() << 
-    //                                                     second << it->toString() << assumptions << valid;
-                            
-                            valid &= !first.isError() && !second.isError();
-                            valid &= first .canReduceTo(opt.parameters()[0].starsToType(starToParam));
-                            valid &= second.canReduceTo(opt.parameters()[1].starsToType(starToParam));
-                            
-    //                         qDebug() << "POPOPO" << (it-1)->toString() << it->toString() << valid << first << second << starToParam;
-                        }
-                        
-//                         qDebug() << "POPOPO" << (it-1)->toString() << it->toString() << valid << first << second << starToParam;
-                        if(valid) {
-                            ExpressionType toadd=opt.parameters().last();
-                            toadd.addAssumptions(assumptions);
-                            toadd=toadd.starsToType(starToParam);
-                            
-                            if(firstPair) {
-                                ret += toadd;
-                                found = true;
-                            } else {
-                                QList<ExpressionType>::iterator it=ret.begin(), itEnd=ret.end();
-                                for(; it!=itEnd; ++it) {
-                                    QMap<int, ExpressionType> stars;
-                                    if(toadd.canReduceTo(*it) && ExpressionType::matchAssumptions(&stars, it->assumptions(), toadd.assumptions())) {
-                                        bool b=ExpressionType::assumptionsMerge(it->assumptions(), toadd.starsToType(stars).assumptions());
-                                        Q_ASSERT(b);
-                                        found = true;
-                                        break;
-                                    } else if(it->canReduceTo(toadd) && ExpressionType::matchAssumptions(&stars, it->assumptions(), toadd.assumptions())) {
-                                        toadd=toadd.starsToType(stars);
-                                        bool b=ExpressionType::assumptionsMerge(toadd.assumptions(), it->assumptions());
-                                        Q_ASSERT(b);
-                                        *it=toadd;
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-//                         else
-//                         {
-//                             qDebug() << "lalala" << first << second;
-//                         }
-                    }
+
+            //                         qDebug() << "POPOPO" <<
+            //                         (it-1)->toString() << it->toString() <<
+            //                         valid << first << second << starToParam;
+            if (valid) {
+              ExpressionType toadd = opt.parameters().last();
+              toadd.addAssumptions(assumptions);
+              toadd = toadd.starsToType(starToParam);
+
+              if (firstPair) {
+                ret += toadd;
+                found = true;
+              } else {
+                QList<ExpressionType>::iterator it = ret.begin(),
+                                                itEnd = ret.end();
+                for (; it != itEnd; ++it) {
+                  QMap<int, ExpressionType> stars;
+                  if (toadd.canReduceTo(*it) &&
+                      ExpressionType::matchAssumptions(
+                          &stars, it->assumptions(), toadd.assumptions())) {
+                    bool b = ExpressionType::assumptionsMerge(
+                        it->assumptions(),
+                        toadd.starsToType(stars).assumptions());
+                    Q_ASSERT(b);
+                    found = true;
+                    break;
+                  } else if (it->canReduceTo(toadd) &&
+                             ExpressionType::matchAssumptions(
+                                 &stars, it->assumptions(),
+                                 toadd.assumptions())) {
+                    toadd = toadd.starsToType(stars);
+                    bool b = ExpressionType::assumptionsMerge(
+                        toadd.assumptions(), it->assumptions());
+                    Q_ASSERT(b);
+                    *it = toadd;
+                    found = true;
+                    break;
+                  }
                 }
+              }
             }
-            if(!found) {
-                addError(QCoreApplication::tr("Could not find a type that unifies '%1'").arg(o->toString()));
-            }
-//             qDebug() << qPrintable("\\"+QString(--ind, '-')) << o->toString() << ret;
+            //                         else
+            //                         {
+            //                             qDebug() << "lalala" << first <<
+            //                             second;
+            //                         }
+          }
         }
+      }
+      if (!found) {
+        addError(QCoreApplication::tr("Could not find a type that unifies '%1'")
+                     .arg(o->toString()));
+      }
+      //             qDebug() << qPrintable("\\"+QString(--ind, '-')) <<
+      //             o->toString() << ret;
     }
-    
-    if(ret.isEmpty())
-        return ExpressionType(ExpressionType::Error);
-    else if(ret.count()==1)
-        return ret.first();
-    else {
-        ExpressionType t(ExpressionType::Many);
-        foreach(const ExpressionType& alt, ret)
-            t.addAlternative(alt);
-        return t;
-    }
+  }
+
+  if (ret.isEmpty())
+    return ExpressionType(ExpressionType::Error);
+  else if (ret.count() == 1)
+    return ret.first();
+  else {
+    ExpressionType t(ExpressionType::Many);
+    foreach (const ExpressionType &alt, ret)
+      t.addAlternative(alt);
+    return t;
+  }
 }
 
 QVariant ExpressionTypeChecker::visit(const Ci* var)

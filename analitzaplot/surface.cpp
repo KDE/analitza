@@ -29,30 +29,28 @@ Surface::Surface(AbstractFunctionGraph* g): FunctionGraph(g)
 Surface::~Surface()
 {}
 
-void Surface::update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2)
-{
-    Q_ASSERT(backend());
-    
-    static_cast<AbstractSurface*>(backend())->update(oppositecorner1, oppositecorner2);
+void Surface::update(const QList3D &oppositecorner1,
+                     const QList3D &oppositecorner2) {
+  Q_ASSERT(backend());
+
+  static_cast<AbstractSurface *>(backend())->update(oppositecorner1,
+                                                    oppositecorner2);
 }
 
-QVector<QVector3D> Surface::vertices() const
-{
-    Q_ASSERT(backend());
+QList<QList3D> Surface::vertices() const {
+  Q_ASSERT(backend());
 
-    return static_cast<AbstractSurface*>(backend())->vertices;
+  return static_cast<AbstractSurface *>(backend())->vertices;
 }
 
-QVector<QVector3D> Surface::normals() const
-{
-    Q_ASSERT(backend());
+QList<QList3D> Surface::normals() const {
+  Q_ASSERT(backend());
 
-    return static_cast<AbstractSurface*>(backend())->normals;
+  return static_cast<AbstractSurface *>(backend())->normals;
 }
 
-QVector<unsigned int> Surface::indexes() const
-{
-    Q_ASSERT(backend());
+QList<unsigned int> Surface::indexes() const {
+  Q_ASSERT(backend());
 
-    return static_cast<AbstractSurface*>(backend())->indexes;
+  return static_cast<AbstractSurface *>(backend())->indexes;
 }

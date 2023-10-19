@@ -21,9 +21,9 @@
 // #include "private/surfacefactory.h"
 #include "private/functiongraphfactory.h"
 
+#include <QList3D>
 #include <analitza/value.h>
 #include <analitza/vector.h>
-#include <QVector3D>
 
 using namespace Analitza;
 
@@ -61,28 +61,29 @@ public:
 
     //Own
 
-    QVector3D fromParametricArgs(double u, double v) override;
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
+    QList3D fromParametricArgs(double u, double v) override;
+    void update(const QList3D &oppositecorner1,
+                const QList3D &oppositecorner2) override;
 };
 
-QVector3D Fxy::fromParametricArgs(double u, double v)
-{
-    arg(QStringLiteral("x"))->setValue(u);
-    arg(QStringLiteral("y"))->setValue(v);    
-    
-    return QVector3D(u,v,analyzer->calculateLambda().toReal().value());
+QList3D Fxy::fromParametricArgs(double u, double v) {
+  arg(QStringLiteral("x"))->setValue(u);
+  arg(QStringLiteral("y"))->setValue(v);
+
+  return QList3D(u, v, analyzer->calculateLambda().toReal().value());
 }
 
-void Fxy::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
-{
-    buildParametricSurface();
-//     vertices.clear();
-//     normals.clear();
-//     indices.clear();
-// 
-//     vertices << 0 << 0 << 0 << 0 << 0 << 1 << 1 << 0 << 0; // 3 for each index
-//     normals << 0 << 1 << 0; // 1 by primitive = 1 by face (tri-face) -1 by every 3 index
-//     indices << 0 << 1 << 2; // enumeration starts from scratch
+void Fxy::update(const QList3D & /*oppositecorner1*/,
+                 const QList3D & /*oppositecorner2*/) {
+  buildParametricSurface();
+  //     vertices.clear();
+  //     normals.clear();
+  //     indices.clear();
+  //
+  //     vertices << 0 << 0 << 0 << 0 << 0 << 1 << 1 << 0 << 0; // 3 for each
+  //     index normals << 0 << 1 << 0; // 1 by primitive = 1 by face (tri-face)
+  //     -1 by every 3 index indices << 0 << 1 << 2; // enumeration starts from
+  //     scratch
 }
 
 REGISTER_SURFACE(Fxy)
@@ -101,21 +102,21 @@ public:
     ICON_NAME(QStringLiteral("newfunction3d"))
     EXAMPLES(QStringList(QStringLiteral("x+z")))
 
-    QVector3D fromParametricArgs(double u, double v) override;
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
+    QList3D fromParametricArgs(double u, double v) override;
+    void update(const QList3D &oppositecorner1,
+                const QList3D &oppositecorner2) override;
 };
 
-QVector3D Fxz::fromParametricArgs(double u, double v)
-{
-    arg(QStringLiteral("x"))->setValue(u);
-    arg(QStringLiteral("z"))->setValue(v);    
-    
-    return QVector3D(u,analyzer->calculateLambda().toReal().value(),v);
+QList3D Fxz::fromParametricArgs(double u, double v) {
+  arg(QStringLiteral("x"))->setValue(u);
+  arg(QStringLiteral("z"))->setValue(v);
+
+  return QList3D(u, analyzer->calculateLambda().toReal().value(), v);
 }
 
-void Fxz::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
-{
-    buildParametricSurface();
+void Fxz::update(const QList3D & /*oppositecorner1*/,
+                 const QList3D & /*oppositecorner2*/) {
+  buildParametricSurface();
 }
 
 REGISTER_SURFACE(Fxz)
@@ -134,21 +135,21 @@ public:
     ICON_NAME(QStringLiteral("newfunction3d"))
     EXAMPLES(QStringList(QStringLiteral("y+z")))
 
-    QVector3D fromParametricArgs(double u, double v) override;
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2) override;
+    QList3D fromParametricArgs(double u, double v) override;
+    void update(const QList3D &oppositecorner1,
+                const QList3D &oppositecorner2) override;
 };
 
-QVector3D Fyz::fromParametricArgs(double u, double v)
-{
-    arg(QStringLiteral("y"))->setValue(u);
-    arg(QStringLiteral("z"))->setValue(v);    
-    
-    return QVector3D(u,analyzer->calculateLambda().toReal().value(),v);
+QList3D Fyz::fromParametricArgs(double u, double v) {
+  arg(QStringLiteral("y"))->setValue(u);
+  arg(QStringLiteral("z"))->setValue(v);
+
+  return QList3D(u, analyzer->calculateLambda().toReal().value(), v);
 }
 
-void Fyz::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
-{
-    buildParametricSurface();
+void Fyz::update(const QList3D & /*oppositecorner1*/,
+                 const QList3D & /*oppositecorner2*/) {
+  buildParametricSurface();
 }
 
 REGISTER_SURFACE(Fyz)

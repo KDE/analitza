@@ -42,27 +42,26 @@ public:
 
     //Own
 
-    QVector3D fromParametricArgs(double u, double v) override;
-    void update(const QVector3D& oppositecorner1, const QVector3D& oppositecorner2) override;
+    QList3D fromParametricArgs(double u, double v) override;
+    void update(const QList3D &oppositecorner1,
+                const QList3D &oppositecorner2) override;
 };
 
-QVector3D ParamSurf::fromParametricArgs(double u, double v)
-{
-    arg(QStringLiteral("u"))->setValue(u);
-    arg(QStringLiteral("v"))->setValue(v);    
-    
-    Analitza::Expression res = analyzer->calculateLambda();
-    Analitza::Cn x=res.elementAt(0).toReal();
-    Analitza::Cn y=res.elementAt(1).toReal();
-    Analitza::Cn z=res.elementAt(2).toReal();
-    
-    return QVector3D(x.value(), y.value(), z.value());
+QList3D ParamSurf::fromParametricArgs(double u, double v) {
+  arg(QStringLiteral("u"))->setValue(u);
+  arg(QStringLiteral("v"))->setValue(v);
+
+  Analitza::Expression res = analyzer->calculateLambda();
+  Analitza::Cn x = res.elementAt(0).toReal();
+  Analitza::Cn y = res.elementAt(1).toReal();
+  Analitza::Cn z = res.elementAt(2).toReal();
+
+  return QList3D(x.value(), y.value(), z.value());
 }
 
-void ParamSurf::update(const QVector3D & /*oppositecorner1*/, const QVector3D & /*oppositecorner2*/)
-{
-    buildParametricSurface();
+void ParamSurf::update(const QList3D & /*oppositecorner1*/,
+                       const QList3D & /*oppositecorner2*/) {
+  buildParametricSurface();
 }
-
 
 REGISTER_SURFACE(ParamSurf)

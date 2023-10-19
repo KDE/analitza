@@ -21,7 +21,7 @@
 #define SPACECURVE_H
 
 #include "functiongraph.h"
-#include <QVector3D>
+#include <QList3D>
 
 namespace Analitza {
 
@@ -41,11 +41,11 @@ public:
     explicit SpaceCurve(AbstractFunctionGraph* g);
     ~SpaceCurve() override;
 
-    QVector<int> jumps() const;
-    const QVector<QVector3D> & points() const;
-    void update(const QVector3D & oppositecorner1, const QVector3D & oppositecorner2);
+    QList<int> jumps() const;
+    const QList<QList3D> &points() const;
+    void update(const QList3D &oppositecorner1, const QList3D &oppositecorner2);
 
-protected:
+  protected:
     SpaceCurve();
 };
 

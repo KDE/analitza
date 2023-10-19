@@ -23,14 +23,14 @@
 
 #include "plotitem.h"
 
-#include <QModelIndex>
-#include <QRect>
-#include <QVector3D>
-#include <QMatrix4x4>
-#include <QOpenGLFunctions>
-#include <QOpenGLBuffer>
-#include <QOpenGLShaderProgram>
 #include "analitzaplotexport.h"
+#include <QList3D>
+#include <QMatrix4x4>
+#include <QModelIndex>
+#include <QOpenGLBuffer>
+#include <QOpenGLFunctions>
+#include <QOpenGLShaderProgram>
+#include <QRect>
 
 class QAbstractItemModel;
 
@@ -95,7 +95,7 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         CartesianAxis selectAxisArrow(int x, int y);
 
         /** Fix the rotation around @p direction */
-        void fixRotation(const QVector3D &direction);
+        void fixRotation(const QList3D &direction);
 
         /** Query if the rotation is fixed by a specific direction. */
         bool isRotationFixed() const { return !m_rotFixed.isNull(); }
@@ -141,7 +141,7 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
 
         virtual QImage grabImage() = 0;
 
-        void resetViewPrivate(const QVector3D& rot);
+        void resetViewPrivate(const QList3D &rot);
 
         enum SceneObjectType {Axes, RefPlaneXY, XArrowAxisHint, YArrowAxisHint, ZArrowAxisHint};
 
@@ -163,11 +163,11 @@ class ANALITZAPLOT_EXPORT Plotter3DES : private QOpenGLFunctions
         const GLfloat m_depth;
         qreal m_scale;
         QMatrix4x4 m_rot;
-        QVector3D m_rotFixed;
+        QList3D m_rotFixed;
         CartesianAxis m_currentAxisIndicator;
         bool m_simpleRotation;
-        QVector3D m_simpleRotationVector;
-        QVector3D m_lightpos;
+        QList3D m_simpleRotationVector;
+        QList3D m_lightpos;
         QColor m_referencePlaneColor;
 
         QOpenGLShaderProgram program;

@@ -22,10 +22,10 @@
 #ifndef EXPRESSIONPARSER_H
 #define EXPRESSIONPARSER_H
 
-#include <QStringList>
-#include <QVector>
-#include "expressiontable_p.h"
 #include "analitzaexport.h"
+#include "expressiontable_p.h"
+#include <QList>
+#include <QStringList>
 class AbstractLexer;
 
 class ANALITZA_EXPORT ExpressionParser : protected ExpressionTable
@@ -49,8 +49,8 @@ class ANALITZA_EXPORT ExpressionParser : protected ExpressionTable
         { return m_symStack[m_tos + index - 1]; }
 
         int m_tos;
-        QVector<int> m_stateStack;
-        QVector<QString> m_symStack;
+        QList<int> m_stateStack;
+        QList<QString> m_symStack;
         int m_errorLineNumber;
         QStringList m_err;
         QString m_exp;

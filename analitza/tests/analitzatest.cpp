@@ -322,7 +322,7 @@ void AnalitzaTest::testDerivativeSimple()
     QVERIFY(a->isCorrect());
     
     double val=1.;
-    QVector<Object*> vars;
+    QList<Object *> vars;
     vars.append(new Cn(val));
     
     a->setExpression(Expression("x->"+expression, false));
@@ -956,7 +956,7 @@ void AnalitzaTest::testOperators()
             a->derivative(QStringLiteral("x"));
             
             Cn* vv = new Cn(v);
-            QVector<Object*> stack;
+            QList<Object *> stack;
             stack += vv;
             a->derivative(stack);
             delete vv;
