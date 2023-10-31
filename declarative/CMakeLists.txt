@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2023 Carl Schwan <carl@carlschwan.eu>
-# SPDX-License-Identifier: BSD-2-Clauses
+# SPDX-License-Identifier: BSD-2-Clause
 
 ecm_add_qml_module(analitzadeclarativeplugin URI "org.kde.analitza" VERSION 1.0 GENERATE_PLUGIN_SOURCE)
 
