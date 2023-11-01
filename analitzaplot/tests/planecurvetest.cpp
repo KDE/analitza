@@ -82,7 +82,6 @@ void PlaneCurveTest::testIncorrect_data()
 {
     QTest::addColumn<QString>("input");
 
-    //QTest::newRow("empty function") << ""; // se elimina este test porque no se podran crear graficos sin una expresion correcta o con una vacia
     QTest::newRow("undefined var") << "x:=w";
     QTest::newRow("parametric-wrongvector") << "t->vector{3}";
     QTest::newRow("wrong-dimension") << "vector{2,3}";
