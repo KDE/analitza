@@ -1312,8 +1312,8 @@ Object* Analyzer::simpApply(Apply* c)
         case Operator::minus:
         case Operator::plus: {
 //             qDebug() << "........................" << c->toString();
-            for(Apply::iterator it=c->begin(), itEnd=c->end(); it!=itEnd; ++it) {
-                *it = simp(*it);
+            for(Apply::iterator it2=c->begin(), itEnd=c->end(); it2!=itEnd; ++it2) {
+                *it2 = simp(*it2);
             }
             
 //             qDebug()<< "PEPEPE" << c->toString();
@@ -1415,26 +1415,26 @@ Object* Analyzer::simpApply(Apply* c)
             }
         }    break;
         case Operator::_union: {
-            Apply::iterator it=c->firstValue(), itEnd=c->end();
+            Apply::iterator it2=c->firstValue(), itEnd=c->end();
             
             QVector<Object*> newParams;
-            for(; it!=itEnd; ++it) {
-                *it=simp(*it);
+            for(; it2!=itEnd; ++it2) {
+                *it2=simp(*it2);
                 
                 if(newParams.isEmpty())
-                    newParams.append(*it);
+                    newParams.append(*it2);
                 else {
-                    if((*it)->type()==Object::list && newParams.last()->type()==Object::list) {
+                    if((*it2)->type()==Object::list && newParams.last()->type()==Object::list) {
                         QString* err=nullptr;
-                        Object* ret=Operations::reduce(Operator::_union, newParams.last(), *it, &err);
+                        Object* ret=Operations::reduce(Operator::_union, newParams.last(), *it2, &err);
                         delete err;
                         newParams.last()=ret;
-                        delete *it;
+                        delete *it2;
                     } else {
-                        newParams.append(*it);
+                        newParams.append(*it2);
                     }
                 }
-                *it=nullptr;
+                *it2=nullptr;
             }
             
             if(newParams.last()==nullptr)
@@ -1455,11 +1455,11 @@ Object* Analyzer::simpApply(Apply* c)
             bool alleq=true, existsjustvar=false, allButFirstZero=false;
             QStringList deps = AnalitzaUtils::dependencies(c, QStringList());
             
-            for(Apply::iterator it=c->firstValue(), itEnd=c->end(); it!=itEnd; ++it) {
-                *it = simp(*it);
-                alleq = alleq && equalTree(*c->firstValue(), *it);
-                existsjustvar = existsjustvar || (*it)->type()==Object::variable;
-                allButFirstZero = (it==c->firstValue() || (*it)->isZero());
+            for(Apply::iterator it2=c->firstValue(), itEnd=c->end(); it2!=itEnd; ++it2) {
+                *it2 = simp(*it2);
+                alleq = alleq && equalTree(*c->firstValue(), *it2);
+                existsjustvar = existsjustvar || (*it2)->type()==Object::variable;
+                allButFirstZero = (it2==c->firstValue() || (*it2)->isZero());
             }
             
             if(alleq) {
@@ -1475,8 +1475,8 @@ Object* Analyzer::simpApply(Apply* c)
                     Apply* a = new Apply;
                     a->appendBranch(new Operator(Operator::minus));
                     
-                    for(Apply::const_iterator it=c->constBegin(), itEnd=c->constEnd(); it!=itEnd; ++it) {
-                        a->appendBranch(*it);
+                    for(Apply::const_iterator it2=c->constBegin(), itEnd=c->constEnd(); it2!=itEnd; ++it2) {
+                        a->appendBranch(*it2);
                     }
                     c->m_params.clear();
                     delete c;
