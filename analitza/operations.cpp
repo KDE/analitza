@@ -126,9 +126,9 @@ Object* reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a, doubl
             break;
         case Operator::gcd:  {
             //code by michael cane aka kiko :)
-            int ia=floor(a), ib=floor(b), residu = 0;
+            int ia=floor(a), ib=floor(b);
             while (ib > 0) {
-                residu = ia % ib;
+                int residu = ia % ib;
                 ia = ib;
                 ib = residu;
             }
@@ -142,9 +142,9 @@ Object* reduceRealReal(enum Operator::OperatorType op, Cn *oper, double a, doubl
             }
             else {
                 int ia=floor(a), ib=floor(b);
-                int ic=ia*ib, residu = 0;
+                int ic=ia*ib;
                 while (ib > 0) {
-                    residu = ia % ib;
+                    int residu = ia % ib;
                     ia = ib;
                     ib = residu;
                 }
@@ -247,9 +247,9 @@ Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<doubl
             break;
         case Operator::gcd:  {
             //code by michael cane aka kiko :)
-            int ia=floor(a.real()), ib=floor(b.real()), residu = 0;
+            int ia=floor(a.real()), ib=floor(b.real());
             while (ib > 0) {
-                residu = ia % ib;
+                int residu = ia % ib;
                 ia = ib;
                 ib = residu;
             }
@@ -261,9 +261,9 @@ Cn* reduceComplexComplex(enum Operator::OperatorType op, Cn *oper, complex<doubl
                 *correct=new QString(QCoreApplication::tr("Cannot calculate the lcm of 0."));
             else {
                 int ia=floor(a.real()), ib=floor(b.real());
-                int ic=ia*ib, residu = 0;
+                int ic=ia*ib;
                 while (ib > 0) {
-                    residu = ia % ib;
+                    int residu = ia % ib;
                     ia = ib;
                     ib = residu;
                 }
