@@ -125,7 +125,6 @@ public:
 
     void render() override {
         m_plotter->drawPlots();
-        m_plotter->window()->endExternalCommands();
     }
 
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override
