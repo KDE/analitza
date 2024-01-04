@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: analitza\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2014-10-15 09:50+0200\n"
-"PO-Revision-Date: 2023-11-30 19:46+0100\n"
+"PO-Revision-Date: 2024-01-03 12:02+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -376,7 +376,7 @@ msgstr "Ne subtenata/nekonata: %1"
 #: analitza/expressionparser.cpp:296
 msgctxt "QCoreApplication|"
 msgid ", "
-msgstr ","
+msgstr ", "
 
 #: analitza/expressionparser.cpp:296
 #, qt-format
@@ -1067,7 +1067,7 @@ msgstr "<b>%1</b>"
 #: analitzagui/operatorsmodel.cpp:592
 msgctxt "Function parameter separator|"
 msgid ", "
-msgstr ","
+msgstr ", "
 
 #: analitzagui/operatorsmodel.cpp:596
 msgctxt "Current parameter is the bounding|"
