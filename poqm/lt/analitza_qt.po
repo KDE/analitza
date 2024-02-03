@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: l 10n\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-02-16 03:26+0000\n"
-"PO-Revision-Date: 2014-11-11 06:50+0200\n"
+"PO-Revision-Date: 2024-02-02 15:05+0200\n"
 "Last-Translator: Liudas Ališauskas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n%10>=2 && (n%100<10 || n"
 "%100>=20) ? 1 : n%10==0 || (n%100>10 && n%100<20) ? 2 : 3);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Poedit 3.0.1\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -639,7 +639,7 @@ msgstr "Pavadinimas"
 #: analitzagui/operatorsmodel.cpp:98
 msgctxt "@title:column|"
 msgid "Description"
-msgstr "Aprašymas"
+msgstr "Aprašas"
 
 #: analitzagui/operatorsmodel.cpp:101
 msgctxt "@title:column|"
@@ -829,7 +829,7 @@ msgstr "Visiems"
 #: analitzagui/operatorsmodel.cpp:249
 msgctxt "QCoreApplication|"
 msgid "Exists"
-msgstr "Egzistuoja"
+msgstr "Yra"
 
 #: analitzagui/operatorsmodel.cpp:252
 msgctxt "QCoreApplication|"
@@ -864,7 +864,7 @@ msgstr "Arksekantas"
 #: analitzagui/operatorsmodel.cpp:270
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc secant"
-msgstr "Hiperbolinsi arksekantas"
+msgstr "Hiperbolinis arksekantas"
 
 #: analitzagui/operatorsmodel.cpp:273
 msgctxt "QCoreApplication|"
