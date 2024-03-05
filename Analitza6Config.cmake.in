@@ -4,6 +4,5 @@ include(CMakeFindDependencyMacro)
 
 find_dependency(Qt6Core @QT_MIN_VERSION@)
 find_dependency(Qt6Xml @QT_MIN_VERSION@)
-find_dependency(Qt6Core5Compat @QT_MIN_VERSION@)
 
 include("${CMAKE_CURRENT_LIST_DIR}/Analitza6Targets.cmake")

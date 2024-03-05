@@ -23,7 +23,7 @@
 #include <QStringList>
 #include "abstractlexer.h"
 #include "analitzaexport.h"
-#include <QRegExp>
+#include <QRegularExpression>
 
 class ANALITZA_EXPORT ExpLexer : public AbstractLexer
 {
@@ -36,7 +36,7 @@ class ANALITZA_EXPORT ExpLexer : public AbstractLexer
     private:
         int m_pos;
         void getToken() override;
-        QRegExp m_realRx;
+        QRegularExpression m_realRx;
 };
 
 #endif

@@ -34,7 +34,6 @@ find_package(Qt6 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS
     Qml
     Quick
     PrintSupport
-    Core5Compat
     OpenGLWidgets
 )
 set(ANALITZA_INCLUDE_INSTALL_DIR "${KDE_INSTALL_INCLUDEDIR}/Analitza6")

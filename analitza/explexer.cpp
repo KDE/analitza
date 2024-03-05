@@ -21,11 +21,10 @@
 
 #include <QDebug>
 #include <QCoreApplication>
-#include <QRegExp>
 
 ExpLexer::ExpLexer(const QString &source)
     : AbstractLexer(source), m_pos(0)
-    , m_realRx("^-?((\\.[0-9]+)|[0-9]+(\\.[0-9]+)?)(e-?[0-9]+)?", Qt::CaseSensitive, QRegExp::RegExp2)
+    , m_realRx("^-?((\\.[0-9]+)|[0-9]+(\\.[0-9]+)?)(e-?[0-9]+)?")
 {}
 
 QString ExpLexer::escape(const QString& str)
@@ -94,11 +93,11 @@ void ExpLexer::getToken()
         }
         ret.type= ExpressionTable::tId;
         Q_ASSERT(!ret.val.isEmpty());
-    } else if(m_realRx.indexIn(a, pos, QRegExp::CaretAtOffset)==pos) {
-        ret.val = m_realRx.cap();
+    } else if(const auto match = m_realRx.match(QStringView(a).mid(pos), 0, QRegularExpression::NormalMatch, QRegularExpression::AnchorAtOffsetMatchOption); match.hasMatch()) {
+        ret.val = match.captured();
         
         QString attrib;
-        if(!m_realRx.cap(2).isEmpty() || !m_realRx.cap(3).isEmpty() || !m_realRx.cap(4).isEmpty())
+        if(!match.captured(2).isEmpty() || !match.captured(3).isEmpty() || !match.captured(4).isEmpty())
             attrib+=QLatin1String(" type='real'");
         
         Q_ASSERT(!ret.val.isEmpty());
@@ -106,7 +105,7 @@ void ExpLexer::getToken()
         ret.val = QStringLiteral("<cn%1>%2</cn>").arg(attrib, ret.val);
         ret.type= ExpressionTable::tVal;
         
-        pos += m_realRx.matchedLength();
+        pos += match.capturedLength();
     } else {
         ret.val=QString();
         m_err=QCoreApplication::tr("Unknown token %1").arg(a[pos]);
