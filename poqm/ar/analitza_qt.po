@@ -241,12 +241,12 @@ msgctxt "QCoreApplication|"
 msgid "Vector size must be some integer value greater to zero"
 msgstr ""
 
-#: analitza/explexer.cpp:78
+#: analitza/explexer.cpp:77
 msgctxt "QCoreApplication|"
 msgid "Unexpectedly arrived to the end of the input"
 msgstr ""
 
-#: analitza/explexer.cpp:112
+#: analitza/explexer.cpp:111
 #, fuzzy, qt-format
 #| msgid "Unknown identifier: '%1'"
 msgctxt "QCoreApplication|"

@@ -233,12 +233,12 @@ msgctxt "QCoreApplication|"
 msgid "Vector size must be some integer value greater to zero"
 msgstr "Vektorstorleken måste vara ett heltal större än noll"
 
-#: analitza/explexer.cpp:78
+#: analitza/explexer.cpp:77
 msgctxt "QCoreApplication|"
 msgid "Unexpectedly arrived to the end of the input"
 msgstr "Kom oväntat till slutet på indata"
 
-#: analitza/explexer.cpp:112
+#: analitza/explexer.cpp:111
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unknown token %1"

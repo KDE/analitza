@@ -237,12 +237,12 @@ msgctxt "QCoreApplication|"
 msgid "Vector size must be some integer value greater to zero"
 msgstr "Розмірність вектора має бути цілим значенням, що перевищує нуль"
 
-#: analitza/explexer.cpp:78
+#: analitza/explexer.cpp:77
 msgctxt "QCoreApplication|"
 msgid "Unexpectedly arrived to the end of the input"
 msgstr "Виявлено несподіване завершення вхідних даних"
 
-#: analitza/explexer.cpp:112
+#: analitza/explexer.cpp:111
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unknown token %1"

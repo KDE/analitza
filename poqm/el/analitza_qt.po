@@ -238,12 +238,12 @@ msgstr ""
 "Το μέγεθος του διανύσματος πρέπει να είναι κάποια ακέραια τιμή μεγαλύτερη "
 "από μηδέν"
 
-#: analitza/explexer.cpp:78
+#: analitza/explexer.cpp:77
 msgctxt "QCoreApplication|"
 msgid "Unexpectedly arrived to the end of the input"
 msgstr "Απροσδόκητη άφιξη στο τέλος της εισαγωγής δεδομένων"
 
-#: analitza/explexer.cpp:112
+#: analitza/explexer.cpp:111
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unknown token %1"
