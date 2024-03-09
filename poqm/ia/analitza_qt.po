@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 2020, 2021, 2022, 2023 Giovanni Sora <g.sora@tiscali.it>
+# giovanni <g.sora@tiscali.it>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-10-17 09:01+0200\n"
+"PO-Revision-Date: 2024-03-08 11:09+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -11,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.08.2\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -984,7 +985,7 @@ msgstr "Radice"
 #: analitzagui/operatorsmodel.cpp:354
 msgctxt "QCoreApplication|"
 msgid "Cardinal"
-msgstr ""
+msgstr "Cardinal"
 
 #: analitzagui/operatorsmodel.cpp:357
 msgctxt "QCoreApplication|"
