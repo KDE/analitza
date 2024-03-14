@@ -1,8 +1,8 @@
-# Emir SARI <emir_sari@icloud.com>, 2022, 2023.
+# SPDX-FileCopyrightText: 2022, 2023, 2024 Emir SARI <emir_sari@icloud.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2023-03-09 13:28+0300\n"
+"PO-Revision-Date: 2024-03-13 20:12+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 24.02.0\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -36,12 +36,12 @@ msgstr "Bir doğru işlem belirtilmelidir"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unknown identifier: '%1'"
-msgstr "Bilinmeyen tanımlayıcı: '%1'"
+msgstr "Bilinmeyen tanımlayıcı: ‘%1’"
 
 #: analitza/analyzer.cpp:257 analitza/analyzer.cpp:290
 msgctxt "identifier separator in error message|"
 msgid "', '"
-msgstr "', '"
+msgstr "‘, ’"
 
 #: analitza/analyzer.cpp:615
 msgctxt "Error message, no proper condition found.|"
@@ -67,7 +67,7 @@ msgstr "Hatalı alt veya üst sınır."
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid type for parameter '%1'"
-msgstr "'%1' parametresi için geçersiz tür"
+msgstr "‘%1’ parametresi için geçersiz tür"
 
 #: analitza/analyzer.cpp:1877
 msgctxt "By a cycle i mean a variable that depends on itself|"
@@ -89,7 +89,7 @@ msgstr "Sonuç bir sayı değil"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%1'"
-msgstr "'%1' için geçersiz parametre sayısı"
+msgstr "‘%1’ için geçersiz parametre sayısı"
 
 #: analitza/commands/blockmatrixcommands.cpp:86
 #: analitza/commands/blockmatrixcommands.cpp:119
@@ -143,13 +143,13 @@ msgstr "%1 argümanı geçersiz veya hatalı"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%1'. Should have 1 parameter"
-msgstr "'%1' için geçersiz parametre sayısı. 1 parametre olmalı"
+msgstr "‘%1’ için geçersiz parametre sayısı. 1 parametre olmalı"
 
 #: analitza/commands/eigencommands.cpp:47
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "To use '%1' command the input matrix must be square"
-msgstr "'%1' komutunu kullanabilmek için girdi matrisi kare matris olmalıdır"
+msgstr "‘%1’ komutunu kullanabilmek için girdi matrisi kare matris olmalıdır"
 
 #: analitza/commands/eigencommands.cpp:68
 #: analitza/commands/eigencommands.cpp:74
@@ -158,7 +158,7 @@ msgctxt "QCoreApplication|"
 msgid ""
 "Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number "
 "value"
-msgstr "'%3' için geçersiz matris girdisi (%1,%2), bir sayı değeri olmalıydı"
+msgstr "‘%3’ için geçersiz matris girdisi (%1,%2), bir sayı değeri olmalıydı"
 
 #: analitza/commands/eigencommands.cpp:126
 #: analitza/commands/eigencommands.cpp:193
@@ -216,7 +216,7 @@ msgstr "Ninci köşegen indeksi pozitif bir sayı olmalıdır"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter type for '%1', was expected a list"
-msgstr "'%1' için geçersiz parametre türü, bir liste olmalıydı"
+msgstr "‘%1’ için geçersiz parametre türü, bir liste olmalıydı"
 
 #: analitza/commands/vectorcommands.cpp:75
 #: analitza/commands/vectorcommands.cpp:78
@@ -251,19 +251,19 @@ msgstr "<em>%1</em> %2 parametreye gereksinim duyar"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Missing boundary for '%1'"
-msgstr "'%1' için sınır eksik"
+msgstr "‘%1’ için sınır eksik"
 
 #: analitza/expression.cpp:173
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected bounding for '%1'"
-msgstr "'%1' için beklenmeyen sınırlandırıcı"
+msgstr "‘%1’ için beklenmeyen sınırlandırıcı"
 
 #: analitza/expression.cpp:178
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "<em>%1</em> missing bounds on '%2'"
-msgstr "'%2' için <em>%1</em> eksik sınır"
+msgstr "‘%2’ üzerinde <em>%1</em> eksik sınır"
 
 #: analitza/expression.cpp:200
 msgctxt "QCoreApplication|"
@@ -285,7 +285,7 @@ msgstr "Parçalı yapılar içinde yalnızca koşullarımız olabilir."
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot have two parameters with the same name like '%1'."
-msgstr "'%1' adında iki parametre olamaz."
+msgstr "‘%1’ adında iki parametre olamaz."
 
 #: analitza/expression.cpp:259
 msgctxt ""
@@ -347,7 +347,7 @@ msgstr "%1 operatörü çocuk içeriklerine sahip olamaz."
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "The element '%1' is not an operator."
-msgstr "'%1' ögesi bir operatör değil."
+msgstr "‘%1’ ögesi bir operatör değil."
 
 #: analitza/expression.cpp:479
 msgctxt "QCoreApplication|"
@@ -374,7 +374,7 @@ msgstr ", "
 #, qt-format
 msgctxt "error message|"
 msgid "Expected %1 instead of '%2'"
-msgstr "'%2' yerine %1 bekleniyor"
+msgstr "‘%2’ yerine %1 bekleniyordu"
 
 #: analitza/expressionparser.cpp:298
 msgctxt "QCoreApplication|"
@@ -402,7 +402,7 @@ msgstr "Beklenmeyen jeton %1"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not find a type that unifies '%1'"
-msgstr "'%1' için birleştirici bir tür bulunamadı"
+msgstr "‘%1’ için birleştirici bir tür bulunamadı"
 
 #: analitza/expressiontypechecker.cpp:473
 msgctxt "QCoreApplication|"
@@ -413,46 +413,45 @@ msgstr "Alan bir vektör veya liste olmalıdır"
 #, qt-format
 msgctxt "type error message|"
 msgid "Cannot call '%1'"
-msgstr "'%1' çağrılamaz"
+msgstr "‘%1’ çağrılamıyor"
 
 #: analitza/expressiontypechecker.cpp:593
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
 msgstr ""
-"'%1' değeri '%2' olarak azaltılamaz. '%4' için geçersiz parametre türü '%3'"
+"‘%1’ değeri ‘%2’ olarak azaltılamaz. ‘%4’ için geçersiz parametre türü ‘%3’"
 
 #: analitza/expressiontypechecker.cpp:604
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%2'. Should have %1 parameters."
-msgstr "'%2' için geçersiz parametre sayısı. %1 parametre olmalıdır."
+msgstr "‘%2’ için geçersiz parametre sayısı. %1 parametre olmalıdır."
 
 #: analitza/expressiontypechecker.cpp:616
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
 msgstr ""
-"Cannot compare '%1' ile '%2' karşılaştırılamaz. '%4' için geçersiz parametre "
-"türü '%3'"
+"‘%1’ ile ‘%2’ karşılaştırılamaz. ‘%4’ için geçersiz parametre türü ‘%3’"
 
 #: analitza/expressiontypechecker.cpp:654
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not call '%1'"
-msgstr "'%1' çağrılamadı"
+msgstr "‘%1’ çağrılamadı"
 
 #: analitza/expressiontypechecker.cpp:662
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not solve '%1'"
-msgstr "'%1' çözülemedi"
+msgstr "‘%1’ çözülemedi"
 
 #: analitza/expressiontypechecker.cpp:695
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Incoherent type for the variable '%1'"
-msgstr "'%1' değişkeni için tutarsız tür"
+msgstr "‘%1’ değişkeni için tutarsız tür"
 
 #: analitza/expressiontypechecker.cpp:718
 msgctxt "QCoreApplication|"
@@ -468,7 +467,7 @@ msgstr "Beklenmeyen tür"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot convert '%1' to '%2'"
-msgstr "'%1' değeri '%2' olarak dönüştürülemez"
+msgstr "‘%1’ değeri ‘%2’ olarak dönüştürülemez"
 
 #: analitza/htmlexpressionwriter.cpp:54 analitza/htmlexpressionwriter.cpp:55
 #, qt-format
@@ -486,7 +485,7 @@ msgstr "<span class='keyword'>%1</span>"
 #, qt-format
 msgctxt "Error message|"
 msgid "Unknown token '%1'"
-msgstr "Bilinmeyen jeton '%1'"
+msgstr "Bilinmeyen jeton ‘%1’"
 
 #: analitza/operations.cpp:54 analitza/operations.cpp:191
 msgctxt "QCoreApplication|"
@@ -540,7 +539,7 @@ msgstr "Bir kap için geçersiz indeks"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot operate '%1' on different sized vectors."
-msgstr "Farklı boyuttaki vektörlerde '%1' işletilemez."
+msgstr "Farklı boyuttaki vektörlerde ‘%1’ işletilemez."
 
 #: analitza/operations.cpp:566
 msgctxt "QCoreApplication|"
@@ -604,12 +603,12 @@ msgstr "Matris girdileri sayı olmalıdır"
 #: analitza/operations.cpp:879
 msgctxt "QCoreApplication|"
 msgid "The exponent of 'power' must be some integer number"
-msgstr "'Kuvvet' alma işlemi ancak bir tam sayı ile yapılabilir"
+msgstr "‘Üs’ alma işlemi ancak bir tamsayı ile yapılabilir"
 
 #: analitza/operations.cpp:883
 msgctxt "QCoreApplication|"
 msgid "Cannot compute 'power' for non square matrix"
-msgstr "Kare olmayan matrisin 'kuvveti' hesaplanamaz"
+msgstr "Kare olmayan matrisin ‘üssü’ hesaplanamaz"
 
 #: analitza/operations.cpp:922
 #, qt-format
@@ -621,7 +620,7 @@ msgstr "Bir matris ile bir hata türü arasında %1 hesaplanamaz"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not calculate the derivative for '%1'"
-msgstr "'%1' için türev hesaplanamadı"
+msgstr "‘%1’ için türev hesaplanamadı"
 
 #: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
 #: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
@@ -664,7 +663,7 @@ msgstr "%1("
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "%1... parameters, ...%2)"
-msgstr "%1... parametreler, ...%2)"
+msgstr "%1… parametreler, …%2)"
 
 #: analitzagui/operatorsmodel.cpp:146
 #, qt-format
@@ -865,12 +864,12 @@ msgstr "Kuvvet (e^x)"
 #: analitzagui/operatorsmodel.cpp:276
 msgctxt "QCoreApplication|"
 msgid "Base-e logarithm"
-msgstr "e-tabanında logaritma"
+msgstr "e tabanında logaritma"
 
 #: analitzagui/operatorsmodel.cpp:279
 msgctxt "QCoreApplication|"
 msgid "Base-10 logarithm"
-msgstr "10-tabanında logaritma"
+msgstr "10 tabanında logaritma"
 
 #: analitzagui/operatorsmodel.cpp:282
 msgctxt "QCoreApplication|"
@@ -1031,7 +1030,7 @@ msgstr "Devrik"
 #, qt-format
 msgctxt "n-ary function prototype|"
 msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
-msgstr "<em>%1</em>(..., <b>par%2</b>, ...)"
+msgstr "<em>%1</em>(…, <b>par%2</b>, …)"
 
 #: analitzagui/operatorsmodel.cpp:582
 #, qt-format
@@ -1081,13 +1080,13 @@ msgstr "İfade doğru değil"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Function type '%1' not recognized"
-msgstr "'%1' fonksiyon türü tanınamadı"
+msgstr "‘%1’ işlev türü tanımlanamadı"
 
 #: analitzaplot/plotsfactory.cpp:74
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Function '%1' not recognized"
-msgstr "'%1' işlevi tanınamadı"
+msgstr "‘%1’ işlevi tanımlanamadı"
 
 #: analitzaplot/plotsmodel.cpp:79
 msgctxt "@title:column|"
@@ -1226,4 +1225,4 @@ msgstr "Örnekler"
 #: analitzawidgets/plotsview2d.cpp:214
 msgctxt "QCoreApplication|"
 msgid "Selected viewport too small"
-msgstr "Seçilen görünüm penceresi çok küçük"
+msgstr "Seçili görüş alanı çok küçük"
