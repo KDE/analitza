@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-set(ANALITZA_VERSION "8.0.0")
+set(ANALITZA_VERSION "9.0.0")
 project(Analitza VERSION ${ANALITZA_VERSION})
 
 set(QT_MIN_VERSION "6.5.2")
@@ -39,9 +39,9 @@ find_package(Qt6 ${QT_REQUIRED_VERSION} REQUIRED NO_MODULE COMPONENTS
 )
 set(ANALITZA_INCLUDE_INSTALL_DIR "${KDE_INSTALL_INCLUDEDIR}/Analitza6")
 
-ecm_setup_version(8.0.0 VARIABLE_PREFIX ANALITZA
-                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
-                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/Analitza6ConfigVersion.cmake")
+ecm_setup_version(${ANALITZA_VERSION} VARIABLE_PREFIX ANALITZA
+                                      VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/analitza_version.h"
+                                      PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/Analitza6ConfigVersion.cmake")
 
 find_package(Eigen3 CONFIG) # find and setup Eigen3 if available
 set(HAVE_EIGEN3 ${EIGEN3_FOUND})
