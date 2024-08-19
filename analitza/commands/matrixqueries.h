@@ -28,7 +28,7 @@ class Expression;
 class IsZeroMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
-    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
+    Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
 
     static const QString id;
     static const Analitza::ExpressionType type;
@@ -37,7 +37,7 @@ public:
 class IsIdentityMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
-    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
+    Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
 
     static const QString id;
     static const Analitza::ExpressionType type;
@@ -46,7 +46,7 @@ public:
 class IsDiagonalMatrixCommand: public Analitza::FunctionDefinition
 {
 public:
-    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
+    Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
 
     static const QString id;
     static const Analitza::ExpressionType type;

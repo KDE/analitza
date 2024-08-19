@@ -67,7 +67,7 @@ public:
     /** Copy constructor, copies all of the branches derivated on it.*/
     Container(const Container& c);
     
-    virtual Container* copy() const override;
+    Container* copy() const override;
     
     /** Destructor. Deletes all the references. */
     ~Container() override { qDeleteAll(m_params); }
@@ -117,11 +117,11 @@ public:
     /** @return Returns the string associated to the container type. */
     QString tagName() const;
     
-    virtual QVariant accept(AbstractExpressionVisitor*) const override;
+    QVariant accept(AbstractExpressionVisitor*) const override;
     
-    virtual bool isZero() const override;
+    bool isZero() const override;
     
-    virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const override;
+    bool matches(const Object* pattern, QMap< QString, const Object* >* found) const override;
     
     const Container* extractType(Container::ContainerType t) const;
     

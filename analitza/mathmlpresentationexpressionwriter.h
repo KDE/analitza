@@ -40,17 +40,17 @@ class MathMLPresentationExpressionWriter : public AbstractExpressionVisitor
         typedef QString (*operatorToString)(const Apply* o, MathMLPresentationExpressionWriter* w);
         explicit MathMLPresentationExpressionWriter(const Object* o);
         
-        virtual QVariant visit(const None* var) override;
-        virtual QVariant visit(const Ci* var) override;
-        virtual QVariant visit(const Cn* var) override;
-        virtual QVariant visit(const Container* var) override;
-        virtual QVariant visit(const Operator* var) override;
-        virtual QVariant visit(const Vector* var) override;
-        virtual QVariant visit(const List* l) override;
-        virtual QVariant visit(const Matrix* m) override;
-        virtual QVariant visit(const MatrixRow* c) override;
-        virtual QVariant visit(const Apply* a) override;
-        virtual QVariant visit(const CustomObject* c) override;
+        QVariant visit(const None* var) override;
+        QVariant visit(const Ci* var) override;
+        QVariant visit(const Cn* var) override;
+        QVariant visit(const Container* var) override;
+        QVariant visit(const Operator* var) override;
+        QVariant visit(const Vector* var) override;
+        QVariant visit(const List* l) override;
+        QVariant visit(const Matrix* m) override;
+        QVariant visit(const MatrixRow* c) override;
+        QVariant visit(const Apply* a) override;
+        QVariant visit(const CustomObject* c) override;
         
         QVariant result() const override { return m_result; }
         

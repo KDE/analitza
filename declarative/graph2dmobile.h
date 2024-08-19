@@ -46,10 +46,10 @@ class Graph2DMobile : public QQuickItem, public Analitza::Plotter2D
     public:
         explicit Graph2DMobile(QQuickItem* parent = nullptr);
 
-        virtual void forceRepaint() override;
-        virtual void viewportChanged() override {}
-        virtual void modelChanged() override;
-        virtual int currentFunction() const override { return m_currentFunction; }
+        void forceRepaint() override;
+        void viewportChanged() override {}
+        void modelChanged() override;
+        int currentFunction() const override { return m_currentFunction; }
 
         void geometryChange(const QRectF& newGeometry, const QRectF& oldGeometry) override;
 

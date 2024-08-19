@@ -140,8 +140,8 @@ private:
     };
     
 private:
-    virtual void viewportChanged() override;
-    virtual int currentFunction() const override;
+    void viewportChanged() override;
+    int currentFunction() const override;
     
     //painting
     QPixmap buffer;

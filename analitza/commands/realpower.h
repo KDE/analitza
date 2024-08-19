@@ -24,7 +24,7 @@
 class RealPower: public Analitza::FunctionDefinition
 {
 public:
-    virtual Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
+    Analitza::Expression operator()(const QList< Analitza::Expression >& args) override;
 
     static const QString id;
     static const Analitza::ExpressionType type;

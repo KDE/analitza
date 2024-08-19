@@ -151,16 +151,16 @@ class ANALITZA_EXPORT Cn : public Object
         /** @returns whether the value has an imaginary part */
         bool isComplex() const { return m_format == Complex && m_imaginaryPart!=0.; }
 
-        virtual QVariant accept(AbstractExpressionVisitor*) const override;
-        virtual bool isZero() const override { return m_value==0. && m_imaginaryPart==0.; }
+        QVariant accept(AbstractExpressionVisitor*) const override;
+        bool isZero() const override { return m_value==0. && m_imaginaryPart==0.; }
 
-        virtual bool matches(const Object* exp, QMap< QString, const Object* >* found) const override;
+        bool matches(const Object* exp, QMap< QString, const Object* >* found) const override;
         /*/** Sets whether it is a correct Cn.
         void setCorrect(bool b) {m_correct = b; }*/
 
         std::complex<double> complexValue() const;
 
-        virtual Object* copy() const override;
+        Object* copy() const override;
 
         static Cn pi();
         static Cn e();

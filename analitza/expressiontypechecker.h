@@ -38,19 +38,19 @@ class ANALITZA_EXPORT ExpressionTypeChecker : public AbstractExpressionVisitor
         
         ExpressionType check(const Expression& exp);
         
-        virtual QVariant visit(const None* var) override;
-        virtual QVariant visit(const Operator* var) override;
-        virtual QVariant visit(const Ci* var) override;
-        virtual QVariant visit(const Cn* var) override;
-        virtual QVariant visit(const Container* var) override;
-        virtual QVariant visit(const Vector* var) override;
-        virtual QVariant visit(const List* l) override;
-        virtual QVariant visit(const Matrix* c) override;
-        virtual QVariant visit(const Analitza::MatrixRow* m) override;
-        virtual QVariant visit(const Apply* a) override;
-        virtual QVariant visit(const CustomObject* c) override;
+        QVariant visit(const None* var) override;
+        QVariant visit(const Operator* var) override;
+        QVariant visit(const Ci* var) override;
+        QVariant visit(const Cn* var) override;
+        QVariant visit(const Container* var) override;
+        QVariant visit(const Vector* var) override;
+        QVariant visit(const List* l) override;
+        QVariant visit(const Matrix* c) override;
+        QVariant visit(const Analitza::MatrixRow* m) override;
+        QVariant visit(const Apply* a) override;
+        QVariant visit(const CustomObject* c) override;
         
-        virtual QVariant result() const override { return QVariant(); }
+        QVariant result() const override { return QVariant(); }
         
         QStringList dependencies() const { return m_deps; }
         bool hasDependencies() const { return !m_deps.isEmpty(); }

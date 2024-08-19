@@ -55,11 +55,11 @@ class ANALITZA_EXPORT List : public Object
         void setAt(int i, Object* o) { m_elements[i]=o; }
         QList<Object*> values() const { return m_elements; }
         
-        virtual QVariant accept(AbstractExpressionVisitor* e) const override;
-        virtual bool isZero() const override;
+        QVariant accept(AbstractExpressionVisitor* e) const override;
+        bool isZero() const override;
         
-        virtual bool matches(const Object* pattern, QMap< QString, const Object* >* found) const override;
-        virtual List* copy() const override;
+        bool matches(const Object* pattern, QMap< QString, const Object* >* found) const override;
+        List* copy() const override;
         bool operator==(const List& v) const;
         bool isEmpty() const { return m_elements.isEmpty(); }
         

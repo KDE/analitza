@@ -46,7 +46,7 @@ class ANALITZAGUI_EXPORT VariablesModel : public QAbstractTableModel
         VariablesModel(const QSharedPointer<Analitza::Variables> &v, QObject *parent = nullptr);
         void setVariables(const QSharedPointer<Analitza::Variables> &v);
         
-        virtual QFlags< Qt::ItemFlag > flags(const QModelIndex& index) const override;
+        QFlags< Qt::ItemFlag > flags(const QModelIndex& index) const override;
         bool setData(const QModelIndex& index, const QVariant& value, int role=Qt::EditRole) override;
         QVariant data( const QModelIndex &index, int role=Qt::DisplayRole) const override;
         QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const override;

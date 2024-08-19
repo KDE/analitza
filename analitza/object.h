@@ -121,8 +121,8 @@ class ANALITZA_EXPORT None : public Object
         
         QString toMathML() const { return QString(); }
         QString toHtml() const { return QString(); }
-        virtual QVariant accept(Analitza::AbstractExpressionVisitor* visitor) const override;
-        virtual bool matches(const Object* pattern, QMap<QString, const Object*>* found) const override;
+        QVariant accept(Analitza::AbstractExpressionVisitor* visitor) const override;
+        bool matches(const Object* pattern, QMap<QString, const Object*>* found) const override;
         None* copy() const override;
 };
 

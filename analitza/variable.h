@@ -57,8 +57,8 @@ class ANALITZA_EXPORT Ci : public Object
         /** Returns the HTML representation of the variable */
         QString toHtml() const;
         
-        virtual QVariant accept(AbstractExpressionVisitor*) const override;
-        virtual bool matches(const Object* pattern, QMap<QString, const Object*>* found) const override;
+        QVariant accept(AbstractExpressionVisitor*) const override;
+        bool matches(const Object* pattern, QMap<QString, const Object*>* found) const override;
         Ci* copy() const override;
         
         void setBVarDepth(int depth) { m_depth = depth; }
