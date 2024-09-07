@@ -1,6 +1,5 @@
 if(WIN32)
     find_package(GLEW REQUIRED)
-    include_directories(${GLEW_INCLUDE_DIRS})
 endif(WIN32)
 
 find_path(IEEEFP_DIR ieeefp.h)
@@ -70,7 +69,7 @@ target_link_libraries(AnalitzaPlot
 if(CMAKE_SYSTEM_NAME STREQUAL Android)
     target_link_libraries(AnalitzaPlot PRIVATE GLESv2)
 elseif(WIN32)
-    target_link_libraries(AnalitzaPlot PRIVATE ${GLEW_LIBRARIES})
+    target_link_libraries(AnalitzaPlot PRIVATE GLEW::glew)
 endif()
 
 set_target_properties(AnalitzaPlot PROPERTIES VERSION ${ANALITZA_VERSION} SOVERSION ${ANALITZA_SOVERSION} )
