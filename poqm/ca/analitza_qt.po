@@ -1,5 +1,5 @@
 # Translation of analitza_qt.po to Catalan
-# Copyright (C) 2011-2023 This_file_is_part_of_KDE
+# Copyright (C) 2011-2024 This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Orestes Mas <orestes@tsc.upc.edu>, 2011, 2012.
