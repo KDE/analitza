@@ -4,20 +4,21 @@
 #
 # Stelios <sstavra@gmail.com>, 2012, 2017, 2020.
 # Dimitrys Meliates <demetresmeliates+i18n@gmail.com>, 2024.
+# SPDX-FileCopyrightText: 2024 Antonis Geralis <capoiosct@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: analitza\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-02-16 03:26+0000\n"
-"PO-Revision-Date: 2024-08-27 19:47+0300\n"
-"Last-Translator: Αντώνης Γέραλης <capoiosct@gmail.com>\n"
-"Language-Team: Greek <kde-i18n-doc@kde.org>\n"
+"PO-Revision-Date: 2024-09-19 13:51+0300\n"
+"Last-Translator: Antonis Geralis <capoiosct@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-el@kde.org>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.08.0\n"
+"X-Generator: Lokalize 24.08.1\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "QObject|dictionary"
@@ -607,7 +608,7 @@ msgid ""
 "Multiplication of two matrices is allowed provided that the number of "
 "columns of the first matrix equals the number of rows of the second matrix"
 msgstr ""
-"Ο πολλαπλασιαμός ανάμεσα σε δύο μήτρες επιτρέπεται αν το πλήθος των στηλών "
+"Ο πολλαπλασιασμός ανάμεσα σε δύο μήτρες επιτρέπεται αν το πλήθος των στηλών "
 "της πρώτης ισούται με το πλήθος των γραμμών της δεύτερης"
 
 #: analitza/operations.cpp:766 analitza/operations.cpp:804
@@ -624,7 +625,7 @@ msgstr "Ο εκθέτης της 'δύναμης' πρέπει να είναι �
 #: analitza/operations.cpp:883
 msgctxt "QCoreApplication|"
 msgid "Cannot compute 'power' for non square matrix"
-msgstr "Αδυναμία υπολογισσμού 'δύναμης' για μη τετραγωνική μήτρα"
+msgstr "Αδυναμία υπολογισμού 'δύναμης' για μη τετραγωνική μήτρα"
 
 #: analitza/operations.cpp:922
 #, qt-format
@@ -735,7 +736,7 @@ msgstr "Παραγοντικό. factorial(n)=n!"
 #: analitzagui/operatorsmodel.cpp:186
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the sine of a given angle"
-msgstr "Συνάρτηση υπολογισμού του ημιτόνου μιας δοσμένης γωνίας"
+msgstr "Συνάρτηση υπολογισμού του ημίτονου μιας δοσμένης γωνίας"
 
 #: analitzagui/operatorsmodel.cpp:189
 msgctxt "QCoreApplication|"
@@ -795,7 +796,7 @@ msgstr "Υπερβολική συνεφαπτομένη"
 #: analitzagui/operatorsmodel.cpp:222
 msgctxt "QCoreApplication|"
 msgid "Arc sine"
-msgstr "Τόξο ημιτόνου"
+msgstr "Τόξο ημίτονου"
 
 #: analitzagui/operatorsmodel.cpp:225
 msgctxt "QCoreApplication|"
@@ -845,7 +846,7 @@ msgstr "Διαφορισμός"
 #: analitzagui/operatorsmodel.cpp:255
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc sine"
-msgstr "Υπερβολικό τόξο ημιτόνου"
+msgstr "Υπερβολικό τόξο ημίτονου"
 
 #: analitzagui/operatorsmodel.cpp:258
 msgctxt "QCoreApplication|"
@@ -1132,12 +1133,12 @@ msgstr "STL έγγραφο (*.stl)"
 #: analitzaplot/private/backends/cartesiancurve.cpp:64
 msgctxt "Function type|"
 msgid "Plane Curve F(y)"
-msgstr "Καμπύλη επιπεδου F(y)"
+msgstr "Καμπύλη επίπεδου F(y)"
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:80
 msgctxt "Function type|"
 msgid "Plane Curve F(x)"
-msgstr "Καμπύλη επιπεδου F(x)"
+msgstr "Καμπύλη επίπεδου F(x)"
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:137
 #: analitzaplot/private/backends/cartesiancurve.cpp:245
