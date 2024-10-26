@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2024-04-30 00:21+0300\n"
+"PO-Revision-Date: 2024-10-25 18:18+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Lokalize 24.07.70\n"
+"X-Generator: Lokalize 24.08.2\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -41,7 +41,7 @@ msgstr "Bilinmeyen tanımlayıcı: “%1”"
 #: analitza/analyzer.cpp:257 analitza/analyzer.cpp:290
 msgctxt "identifier separator in error message|"
 msgid "', '"
-msgstr "‘, ’"
+msgstr "“, ”"
 
 #: analitza/analyzer.cpp:615
 msgctxt "Error message, no proper condition found.|"
@@ -603,12 +603,12 @@ msgstr "Matris girdileri sayı olmalıdır"
 #: analitza/operations.cpp:879
 msgctxt "QCoreApplication|"
 msgid "The exponent of 'power' must be some integer number"
-msgstr "‘Üs’ alma işlemi ancak bir tamsayı ile yapılabilir"
+msgstr "“Üs” alma işlemi ancak bir tamsayı ile yapılabilir"
 
 #: analitza/operations.cpp:883
 msgctxt "QCoreApplication|"
 msgid "Cannot compute 'power' for non square matrix"
-msgstr "Kare olmayan matrisin ‘üssü’ hesaplanamaz"
+msgstr "Kare olmayan matrisin “üssü” hesaplanamaz"
 
 #: analitza/operations.cpp:922
 #, qt-format
