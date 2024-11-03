@@ -31,6 +31,7 @@ OperatorsModel::OperatorsModel(QObject *parent) : QAbstractTableModel(parent), m
 QHash<int, QByteArray> OperatorsModel::roleNames() const
 {
     auto ret = QAbstractTableModel::roleNames();
+    ret[Qt::DisplayRole] = "name";
     ret.insert(IsVariableRole, "isVariable");
     ret.insert(DescriptionRole, "description");
     return ret;
