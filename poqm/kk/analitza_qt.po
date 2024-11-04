@@ -748,7 +748,7 @@ msgctxt "QCoreApplication|"
 msgid "Could not calculate the derivative for '%1'"
 msgstr "'%1' дегеннің тұындысы есептеуге келмейді"
 
-#: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
+#: analitzagui/operatorsmodel.cpp:96 analitzagui/variablesmodel.cpp:91
 #: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
 #, fuzzy
 #| msgctxt "@title:column"
@@ -757,7 +757,7 @@ msgctxt "@title:column|"
 msgid "Name"
 msgstr "Атауы"
 
-#: analitzagui/operatorsmodel.cpp:98
+#: analitzagui/operatorsmodel.cpp:99
 #, fuzzy
 #| msgctxt "@title:column"
 #| msgid "Description"
@@ -765,7 +765,7 @@ msgctxt "@title:column|"
 msgid "Description"
 msgstr "Сипаттама"
 
-#: analitzagui/operatorsmodel.cpp:101
+#: analitzagui/operatorsmodel.cpp:102
 #, fuzzy
 #| msgctxt "@title:column"
 #| msgid "Parameters"
@@ -773,7 +773,7 @@ msgctxt "@title:column|"
 msgid "Parameters"
 msgstr "Параметрлері"
 
-#: analitzagui/operatorsmodel.cpp:104
+#: analitzagui/operatorsmodel.cpp:105
 #, fuzzy
 #| msgctxt "@title:column"
 #| msgid "Example"
@@ -781,7 +781,7 @@ msgctxt "@title:column|"
 msgid "Example"
 msgstr "Мысал"
 
-#: analitzagui/operatorsmodel.cpp:135
+#: analitzagui/operatorsmodel.cpp:136
 #, fuzzy
 #| msgctxt "Syntax for function bounding"
 #| msgid " : var"
@@ -789,7 +789,7 @@ msgctxt "Syntax for function bounding|"
 msgid " : var"
 msgstr " : айнымалы"
 
-#: analitzagui/operatorsmodel.cpp:137
+#: analitzagui/operatorsmodel.cpp:138
 #, fuzzy
 #| msgctxt "Syntax for function bounding values"
 #| msgid "=from..to"
@@ -797,482 +797,482 @@ msgctxt "Syntax for function bounding values|"
 msgid "=from..to"
 msgstr "=мыныдан..мынаған_дейін"
 
-#: analitzagui/operatorsmodel.cpp:140
+#: analitzagui/operatorsmodel.cpp:141
 #, fuzzy, qt-format
 #| msgid "%1("
 msgctxt "QCoreApplication|"
 msgid "%1("
 msgstr "%1("
 
-#: analitzagui/operatorsmodel.cpp:143
+#: analitzagui/operatorsmodel.cpp:144
 #, fuzzy, qt-format
 #| msgid "%1... parameters, ...%2)"
 msgctxt "QCoreApplication|"
 msgid "%1... parameters, ...%2)"
 msgstr "%1... параметрлер, ...%2)"
 
-#: analitzagui/operatorsmodel.cpp:146
+#: analitzagui/operatorsmodel.cpp:147
 #, fuzzy, qt-format
 #| msgid "par%1"
 msgctxt "QCoreApplication|"
 msgid "par%1"
 msgstr "par%1"
 
-#: analitzagui/operatorsmodel.cpp:159
+#: analitzagui/operatorsmodel.cpp:160
 #, fuzzy
 #| msgid "Addition"
 msgctxt "QCoreApplication|"
 msgid "Addition"
 msgstr "Қосу"
 
-#: analitzagui/operatorsmodel.cpp:162
+#: analitzagui/operatorsmodel.cpp:163
 #, fuzzy
 #| msgid "Multiplication"
 msgctxt "QCoreApplication|"
 msgid "Multiplication"
 msgstr "Көбейту"
 
-#: analitzagui/operatorsmodel.cpp:165
+#: analitzagui/operatorsmodel.cpp:166
 #, fuzzy
 #| msgid "Division"
 msgctxt "QCoreApplication|"
 msgid "Division"
 msgstr "Бөлу"
 
-#: analitzagui/operatorsmodel.cpp:168
+#: analitzagui/operatorsmodel.cpp:169
 #, fuzzy
 #| msgid "Subtraction. Will remove all values from the first one."
 msgctxt "QCoreApplication|"
 msgid "Subtraction. Will remove all values from the first one."
 msgstr "Азайту. Біріншісінен барлық қалғандарын алып тастайды."
 
-#: analitzagui/operatorsmodel.cpp:171
+#: analitzagui/operatorsmodel.cpp:172
 #, fuzzy
 #| msgid "Power"
 msgctxt "QCoreApplication|"
 msgid "Power"
 msgstr "Дәреже"
 
-#: analitzagui/operatorsmodel.cpp:174
+#: analitzagui/operatorsmodel.cpp:175
 #, fuzzy
 #| msgid "Remainder"
 msgctxt "QCoreApplication|"
 msgid "Remainder"
 msgstr "Қалдық"
 
-#: analitzagui/operatorsmodel.cpp:177
+#: analitzagui/operatorsmodel.cpp:178
 #, fuzzy
 #| msgid "Quotient"
 msgctxt "QCoreApplication|"
 msgid "Quotient"
 msgstr "Бөлінді"
 
-#: analitzagui/operatorsmodel.cpp:180
+#: analitzagui/operatorsmodel.cpp:181
 #, fuzzy
 #| msgid "The factor of"
 msgctxt "QCoreApplication|"
 msgid "The factor of"
 msgstr "Келесінің көбейткіші"
 
-#: analitzagui/operatorsmodel.cpp:183
+#: analitzagui/operatorsmodel.cpp:184
 #, fuzzy
 #| msgid "Factorial. factorial(n)=n!"
 msgctxt "QCoreApplication|"
 msgid "Factorial. factorial(n)=n!"
 msgstr "Факториал. factorial(n)=n!"
 
-#: analitzagui/operatorsmodel.cpp:186
+#: analitzagui/operatorsmodel.cpp:187
 #, fuzzy
 #| msgid "Function to calculate the sine of a given angle"
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the sine of a given angle"
 msgstr "Келтірілген бұрыштың синусын есептейтін функция"
 
-#: analitzagui/operatorsmodel.cpp:189
+#: analitzagui/operatorsmodel.cpp:190
 #, fuzzy
 #| msgid "Function to calculate the cosine of a given angle"
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the cosine of a given angle"
 msgstr "Келтірілген бұрыштың косинусын есептейтін функция"
 
-#: analitzagui/operatorsmodel.cpp:192
+#: analitzagui/operatorsmodel.cpp:193
 #, fuzzy
 #| msgid "Function to calculate the tangent of a given angle"
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the tangent of a given angle"
 msgstr "Келтірілген бұрыштың тангенсін есептейтін функция"
 
-#: analitzagui/operatorsmodel.cpp:195
+#: analitzagui/operatorsmodel.cpp:196
 #, fuzzy
 #| msgid "Secant"
 msgctxt "QCoreApplication|"
 msgid "Secant"
 msgstr "Секанс"
 
-#: analitzagui/operatorsmodel.cpp:198
+#: analitzagui/operatorsmodel.cpp:199
 #, fuzzy
 #| msgid "Cosecant"
 msgctxt "QCoreApplication|"
 msgid "Cosecant"
 msgstr "Косеканс"
 
-#: analitzagui/operatorsmodel.cpp:201
+#: analitzagui/operatorsmodel.cpp:202
 #, fuzzy
 #| msgid "Cotangent"
 msgctxt "QCoreApplication|"
 msgid "Cotangent"
 msgstr "Котангенс"
 
-#: analitzagui/operatorsmodel.cpp:204
+#: analitzagui/operatorsmodel.cpp:205
 #, fuzzy
 #| msgid "Hyperbolic sine"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic sine"
 msgstr "Гиперболалық синус"
 
-#: analitzagui/operatorsmodel.cpp:207
+#: analitzagui/operatorsmodel.cpp:208
 #, fuzzy
 #| msgid "Hyperbolic cosine"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cosine"
 msgstr "Гиперболалық косинус"
 
-#: analitzagui/operatorsmodel.cpp:210
+#: analitzagui/operatorsmodel.cpp:211
 #, fuzzy
 #| msgid "Hyperbolic tangent"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic tangent"
 msgstr "Гиперболалық тангенс"
 
-#: analitzagui/operatorsmodel.cpp:213
+#: analitzagui/operatorsmodel.cpp:214
 #, fuzzy
 #| msgid "Hyperbolic secant"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic secant"
 msgstr "Гиперболалық секанс"
 
-#: analitzagui/operatorsmodel.cpp:216
+#: analitzagui/operatorsmodel.cpp:217
 #, fuzzy
 #| msgid "Hyperbolic cosecant"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cosecant"
 msgstr "Гиперболалық косеканс"
 
-#: analitzagui/operatorsmodel.cpp:219
+#: analitzagui/operatorsmodel.cpp:220
 #, fuzzy
 #| msgid "Hyperbolic cotangent"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cotangent"
 msgstr "Гиперболалық котангенс"
 
-#: analitzagui/operatorsmodel.cpp:222
+#: analitzagui/operatorsmodel.cpp:223
 #, fuzzy
 #| msgid "Arc sine"
 msgctxt "QCoreApplication|"
 msgid "Arc sine"
 msgstr "Арксинус"
 
-#: analitzagui/operatorsmodel.cpp:225
+#: analitzagui/operatorsmodel.cpp:226
 #, fuzzy
 #| msgid "Arc cosine"
 msgctxt "QCoreApplication|"
 msgid "Arc cosine"
 msgstr "Арккосинус"
 
-#: analitzagui/operatorsmodel.cpp:228
+#: analitzagui/operatorsmodel.cpp:229
 #, fuzzy
 #| msgid "Arc tangent"
 msgctxt "QCoreApplication|"
 msgid "Arc tangent"
 msgstr "Арктангенс"
 
-#: analitzagui/operatorsmodel.cpp:231
+#: analitzagui/operatorsmodel.cpp:232
 #, fuzzy
 #| msgid "Arc cotangent"
 msgctxt "QCoreApplication|"
 msgid "Arc cotangent"
 msgstr "Арккотангенс"
 
-#: analitzagui/operatorsmodel.cpp:237
+#: analitzagui/operatorsmodel.cpp:238
 #, fuzzy
 #| msgid "Hyperbolic arc tangent"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc tangent"
 msgstr "Гиперболалық арктангенс"
 
-#: analitzagui/operatorsmodel.cpp:240
+#: analitzagui/operatorsmodel.cpp:241
 #, fuzzy
 #| msgid "Summatory"
 msgctxt "QCoreApplication|"
 msgid "Summatory"
 msgstr "Қосынды есептеуіш"
 
-#: analitzagui/operatorsmodel.cpp:243
+#: analitzagui/operatorsmodel.cpp:244
 #, fuzzy
 #| msgid "Productory"
 msgctxt "QCoreApplication|"
 msgid "Productory"
 msgstr "Көбейткіш"
 
-#: analitzagui/operatorsmodel.cpp:246
+#: analitzagui/operatorsmodel.cpp:247
 #, fuzzy
 #| msgid "For all"
 msgctxt "QCoreApplication|"
 msgid "For all"
 msgstr "Бүкілдеріне"
 
-#: analitzagui/operatorsmodel.cpp:249
+#: analitzagui/operatorsmodel.cpp:250
 #, fuzzy
 #| msgid "Exists"
 msgctxt "QCoreApplication|"
 msgid "Exists"
 msgstr "Бар"
 
-#: analitzagui/operatorsmodel.cpp:252
+#: analitzagui/operatorsmodel.cpp:253
 #, fuzzy
 #| msgid "Differentiation"
 msgctxt "QCoreApplication|"
 msgid "Differentiation"
 msgstr "Дифференциалдау"
 
-#: analitzagui/operatorsmodel.cpp:255
+#: analitzagui/operatorsmodel.cpp:256
 #, fuzzy
 #| msgid "Hyperbolic arc sine"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc sine"
 msgstr "Гиперболалық арксинус"
 
-#: analitzagui/operatorsmodel.cpp:258
+#: analitzagui/operatorsmodel.cpp:259
 #, fuzzy
 #| msgid "Hyperbolic arc cosine"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc cosine"
 msgstr "Гиперболалық арккосинус"
 
-#: analitzagui/operatorsmodel.cpp:261
+#: analitzagui/operatorsmodel.cpp:262
 #, fuzzy
 #| msgid "Arc cosecant"
 msgctxt "QCoreApplication|"
 msgid "Arc cosecant"
 msgstr "арккосеканс"
 
-#: analitzagui/operatorsmodel.cpp:264
+#: analitzagui/operatorsmodel.cpp:265
 #, fuzzy
 #| msgid "Hyperbolic arc cosecant"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc cosecant"
 msgstr "Гиперболалық арккосеканс"
 
-#: analitzagui/operatorsmodel.cpp:267
+#: analitzagui/operatorsmodel.cpp:268
 #, fuzzy
 #| msgid "Arc secant"
 msgctxt "QCoreApplication|"
 msgid "Arc secant"
 msgstr "Арксеканс"
 
-#: analitzagui/operatorsmodel.cpp:270
+#: analitzagui/operatorsmodel.cpp:271
 #, fuzzy
 #| msgid "Hyperbolic arc secant"
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc secant"
 msgstr "Гиперболалық арксеканс"
 
-#: analitzagui/operatorsmodel.cpp:273
+#: analitzagui/operatorsmodel.cpp:274
 #, fuzzy
 #| msgid "Exponent (e^x)"
 msgctxt "QCoreApplication|"
 msgid "Exponent (e^x)"
 msgstr "Экспонента (e^x)"
 
-#: analitzagui/operatorsmodel.cpp:276
+#: analitzagui/operatorsmodel.cpp:277
 #, fuzzy
 #| msgid "Base-e logarithm"
 msgctxt "QCoreApplication|"
 msgid "Base-e logarithm"
 msgstr "Натурал логарифм"
 
-#: analitzagui/operatorsmodel.cpp:279
+#: analitzagui/operatorsmodel.cpp:280
 #, fuzzy
 #| msgid "Base-10 logarithm"
 msgctxt "QCoreApplication|"
 msgid "Base-10 logarithm"
 msgstr "Ондық логарифм"
 
-#: analitzagui/operatorsmodel.cpp:282
+#: analitzagui/operatorsmodel.cpp:283
 #, fuzzy
 #| msgid "Absolute value. abs(n)=|n|"
 msgctxt "QCoreApplication|"
 msgid "Absolute value. abs(n)=|n|"
 msgstr "Модулі. abs(n)=|n|"
 
-#: analitzagui/operatorsmodel.cpp:285
+#: analitzagui/operatorsmodel.cpp:286
 msgctxt "QCoreApplication|"
 msgid "Conjugate"
 msgstr ""
 
-#: analitzagui/operatorsmodel.cpp:288
+#: analitzagui/operatorsmodel.cpp:289
 msgctxt "QCoreApplication|"
 msgid "Arg"
 msgstr ""
 
-#: analitzagui/operatorsmodel.cpp:291
+#: analitzagui/operatorsmodel.cpp:292
 msgctxt "QCoreApplication|"
 msgid "Real"
 msgstr ""
 
-#: analitzagui/operatorsmodel.cpp:294
+#: analitzagui/operatorsmodel.cpp:295
 msgctxt "QCoreApplication|"
 msgid "Imaginary"
 msgstr ""
 
-#: analitzagui/operatorsmodel.cpp:297
+#: analitzagui/operatorsmodel.cpp:298
 #, fuzzy
 #| msgid "Floor value. floor(n)=⌊n⌋"
 msgctxt "QCoreApplication|"
 msgid "Floor value. floor(n)=⌊n⌋"
 msgstr "Ең жақын кіші тұтас сан. floor(n)=⌊n⌋"
 
-#: analitzagui/operatorsmodel.cpp:300
+#: analitzagui/operatorsmodel.cpp:301
 #, fuzzy
 #| msgid "Ceil value. ceil(n)=⌈n⌉"
 msgctxt "QCoreApplication|"
 msgid "Ceil value. ceil(n)=⌈n⌉"
 msgstr "Ең жақын үлкен тұтас сан. ceil(n)=⌈n⌉"
 
-#: analitzagui/operatorsmodel.cpp:303
+#: analitzagui/operatorsmodel.cpp:304
 #, fuzzy
 #| msgid "Minimum"
 msgctxt "QCoreApplication|"
 msgid "Minimum"
 msgstr "Минимум"
 
-#: analitzagui/operatorsmodel.cpp:306
+#: analitzagui/operatorsmodel.cpp:307
 #, fuzzy
 #| msgid "Maximum"
 msgctxt "QCoreApplication|"
 msgid "Maximum"
 msgstr "Максимум"
 
-#: analitzagui/operatorsmodel.cpp:309
+#: analitzagui/operatorsmodel.cpp:310
 #, fuzzy
 #| msgid "Greater than. gt(a,b)=a>b"
 msgctxt "QCoreApplication|"
 msgid "Greater than. gt(a,b)=a>b"
 msgstr "Келесіден артық. gt(a,b)=a>b"
 
-#: analitzagui/operatorsmodel.cpp:312
+#: analitzagui/operatorsmodel.cpp:313
 #, fuzzy
 #| msgid "Less than. lt(a,b)=a<b"
 msgctxt "QCoreApplication|"
 msgid "Less than. lt(a,b)=a<b"
 msgstr "Келесіден кем. lt(a,b)=a<b"
 
-#: analitzagui/operatorsmodel.cpp:315
+#: analitzagui/operatorsmodel.cpp:316
 #, fuzzy
 #| msgid "Equal. eq(a,b) = a=b"
 msgctxt "QCoreApplication|"
 msgid "Equal. eq(a,b) = a=b"
 msgstr "Тең. eq(a,b) = a=b"
 
-#: analitzagui/operatorsmodel.cpp:318
+#: analitzagui/operatorsmodel.cpp:319
 #, fuzzy
 #| msgid "Approximation. approx(a)=a±n"
 msgctxt "QCoreApplication|"
 msgid "Approximation. approx(a)=a±n"
 msgstr "Жуық. approx(a)=a±n"
 
-#: analitzagui/operatorsmodel.cpp:321
+#: analitzagui/operatorsmodel.cpp:322
 #, fuzzy
 #| msgid "Not equal. neq(a,b)=a≠b"
 msgctxt "QCoreApplication|"
 msgid "Not equal. neq(a,b)=a≠b"
 msgstr "Тең емес. neq(a,b)=a≠b"
 
-#: analitzagui/operatorsmodel.cpp:324
+#: analitzagui/operatorsmodel.cpp:325
 #, fuzzy
 #| msgid "Greater or equal. geq(a,b)=a≥b"
 msgctxt "QCoreApplication|"
 msgid "Greater or equal. geq(a,b)=a≥b"
 msgstr "Келесіден артық не оған тең. geq(a,b)=a≥b"
 
-#: analitzagui/operatorsmodel.cpp:327
+#: analitzagui/operatorsmodel.cpp:328
 #, fuzzy
 #| msgid "Less or equal. leq(a,b)=a≤b"
 msgctxt "QCoreApplication|"
 msgid "Less or equal. leq(a,b)=a≤b"
 msgstr "Келесіден кем не оған тең. leq(a,b)=a≤b"
 
-#: analitzagui/operatorsmodel.cpp:330
+#: analitzagui/operatorsmodel.cpp:331
 #, fuzzy
 #| msgid "Boolean and"
 msgctxt "QCoreApplication|"
 msgid "Boolean and"
 msgstr "Логикалық ЖӘНЕ"
 
-#: analitzagui/operatorsmodel.cpp:333
+#: analitzagui/operatorsmodel.cpp:334
 #, fuzzy
 #| msgid "Boolean not"
 msgctxt "QCoreApplication|"
 msgid "Boolean not"
 msgstr "Логикалық терістеу"
 
-#: analitzagui/operatorsmodel.cpp:336
+#: analitzagui/operatorsmodel.cpp:337
 #, fuzzy
 #| msgid "Boolean or"
 msgctxt "QCoreApplication|"
 msgid "Boolean or"
 msgstr "Логикалық НЕМЕСЕ"
 
-#: analitzagui/operatorsmodel.cpp:339
+#: analitzagui/operatorsmodel.cpp:340
 #, fuzzy
 #| msgid "Boolean xor"
 msgctxt "QCoreApplication|"
 msgid "Boolean xor"
 msgstr "Логикалық Сыйыспайтын НЕМЕСЕ"
 
-#: analitzagui/operatorsmodel.cpp:342
+#: analitzagui/operatorsmodel.cpp:343
 #, fuzzy
 #| msgid "Boolean implication"
 msgctxt "QCoreApplication|"
 msgid "Boolean implication"
 msgstr "Логикалық импликация"
 
-#: analitzagui/operatorsmodel.cpp:345
+#: analitzagui/operatorsmodel.cpp:346
 #, fuzzy
 #| msgid "Greatest common divisor"
 msgctxt "QCoreApplication|"
 msgid "Greatest common divisor"
 msgstr "Ең үлкен ортақ бөлгіш"
 
-#: analitzagui/operatorsmodel.cpp:348
+#: analitzagui/operatorsmodel.cpp:349
 #, fuzzy
 #| msgid "Least common multiple"
 msgctxt "QCoreApplication|"
 msgid "Least common multiple"
 msgstr "Ең кіші ортақ еселігі"
 
-#: analitzagui/operatorsmodel.cpp:351
+#: analitzagui/operatorsmodel.cpp:352
 #, fuzzy
 #| msgid "Root"
 msgctxt "QCoreApplication|"
 msgid "Root"
 msgstr "Түбір"
 
-#: analitzagui/operatorsmodel.cpp:354
+#: analitzagui/operatorsmodel.cpp:355
 #, fuzzy
 #| msgid "Cardinal"
 msgctxt "QCoreApplication|"
 msgid "Cardinal"
 msgstr "Есептік сан"
 
-#: analitzagui/operatorsmodel.cpp:357
+#: analitzagui/operatorsmodel.cpp:358
 #, fuzzy
 #| msgid "Scalar product"
 msgctxt "QCoreApplication|"
 msgid "Scalar product"
 msgstr "Скаляр көбейтінді"
 
-#: analitzagui/operatorsmodel.cpp:360
+#: analitzagui/operatorsmodel.cpp:361
 #, fuzzy
 #| msgid "Select the par1-th element of par2 list or vector"
 msgctxt "QCoreApplication|"
@@ -1281,35 +1281,35 @@ msgstr ""
 "Екінші параметрімен берілген тізімінің не векторының бірінші параметрімен "
 "берілген элементің таңдау"
 
-#: analitzagui/operatorsmodel.cpp:363
+#: analitzagui/operatorsmodel.cpp:364
 #, fuzzy
 #| msgid "Joins several items of the same type"
 msgctxt "QCoreApplication|"
 msgid "Joins several items of the same type"
 msgstr "Түрі бірдей бірнеше аталымдарын біріктіру"
 
-#: analitzagui/operatorsmodel.cpp:366
+#: analitzagui/operatorsmodel.cpp:367
 #, fuzzy
 #| msgid "Applies a function to every element in a list"
 msgctxt "QCoreApplication|"
 msgid "Applies a function to every element in a list"
 msgstr "Тізімдегі әрбір элементтерінің функциясын алады"
 
-#: analitzagui/operatorsmodel.cpp:369
+#: analitzagui/operatorsmodel.cpp:370
 #, fuzzy
 #| msgid "Removes all elements that don't fit a condition"
 msgctxt "QCoreApplication|"
 msgid "Removes all elements that don't fit a condition"
 msgstr "Шартқа келмейтін бүкіл элементтерін кетіру"
 
-#: analitzagui/operatorsmodel.cpp:372
+#: analitzagui/operatorsmodel.cpp:373
 #, fuzzy
 #| msgid "Transpose"
 msgctxt "QCoreApplication|"
 msgid "Transpose"
 msgstr "Транспозициялау"
 
-#: analitzagui/operatorsmodel.cpp:572
+#: analitzagui/operatorsmodel.cpp:573
 #, fuzzy, qt-format
 #| msgctxt "n-ary function prototype"
 #| msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
@@ -1317,7 +1317,7 @@ msgctxt "n-ary function prototype|"
 msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
 msgstr "<em>%1</em>(..., <b>par%2</b>, ...)"
 
-#: analitzagui/operatorsmodel.cpp:582
+#: analitzagui/operatorsmodel.cpp:583
 #, fuzzy, qt-format
 #| msgctxt "Function name in function prototype"
 #| msgid "<em>%1</em>("
@@ -1325,7 +1325,7 @@ msgctxt "Function name in function prototype|"
 msgid "<em>%1</em>("
 msgstr "<em>%1</em>("
 
-#: analitzagui/operatorsmodel.cpp:583
+#: analitzagui/operatorsmodel.cpp:584
 #, fuzzy, qt-format
 #| msgctxt "Uncorrect function name in function prototype"
 #| msgid "<em style='color:red'><b>%1</b></em>("
@@ -1333,14 +1333,14 @@ msgctxt "Uncorrect function name in function prototype|"
 msgid "<em style='color:red'><b>%1</b></em>("
 msgstr "<em style='color:red'><b>%1</b></em>("
 
-#: analitzagui/operatorsmodel.cpp:586
+#: analitzagui/operatorsmodel.cpp:587
 #, fuzzy, qt-format
 #| msgid "par%1"
 msgctxt "Parameter in function prototype|"
 msgid "par%1"
 msgstr "par%1"
 
-#: analitzagui/operatorsmodel.cpp:589 analitzagui/operatorsmodel.cpp:599
+#: analitzagui/operatorsmodel.cpp:590 analitzagui/operatorsmodel.cpp:600
 #, fuzzy, qt-format
 #| msgctxt "Current parameter in function prototype"
 #| msgid "<b>%1</b>"
@@ -1348,14 +1348,14 @@ msgctxt "Current parameter in function prototype|"
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: analitzagui/operatorsmodel.cpp:592
+#: analitzagui/operatorsmodel.cpp:593
 #, fuzzy
 #| msgid ", "
 msgctxt "Function parameter separator|"
 msgid ", "
 msgstr ", "
 
-#: analitzagui/operatorsmodel.cpp:596
+#: analitzagui/operatorsmodel.cpp:597
 #, fuzzy
 #| msgctxt "Current parameter is the bounding"
 #| msgid " : bounds"

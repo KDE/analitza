@@ -618,446 +618,446 @@ msgctxt "QCoreApplication|"
 msgid "Could not calculate the derivative for '%1'"
 msgstr "無法計算 %1 的導數"
 
-#: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
+#: analitzagui/operatorsmodel.cpp:96 analitzagui/variablesmodel.cpp:91
 #: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
 msgctxt "@title:column|"
 msgid "Name"
 msgstr "名稱"
 
-#: analitzagui/operatorsmodel.cpp:98
+#: analitzagui/operatorsmodel.cpp:99
 msgctxt "@title:column|"
 msgid "Description"
 msgstr "描述"
 
-#: analitzagui/operatorsmodel.cpp:101
+#: analitzagui/operatorsmodel.cpp:102
 msgctxt "@title:column|"
 msgid "Parameters"
 msgstr "參數"
 
-#: analitzagui/operatorsmodel.cpp:104
+#: analitzagui/operatorsmodel.cpp:105
 msgctxt "@title:column|"
 msgid "Example"
 msgstr "範例"
 
-#: analitzagui/operatorsmodel.cpp:135
+#: analitzagui/operatorsmodel.cpp:136
 msgctxt "Syntax for function bounding|"
 msgid " : var"
 msgstr " : 變數"
 
-#: analitzagui/operatorsmodel.cpp:137
+#: analitzagui/operatorsmodel.cpp:138
 msgctxt "Syntax for function bounding values|"
 msgid "=from..to"
 msgstr "=啟始值..結束值"
 
-#: analitzagui/operatorsmodel.cpp:140
+#: analitzagui/operatorsmodel.cpp:141
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "%1("
 msgstr "%1("
 
-#: analitzagui/operatorsmodel.cpp:143
+#: analitzagui/operatorsmodel.cpp:144
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "%1... parameters, ...%2)"
 msgstr "%1... 參數， ...%2)"
 
-#: analitzagui/operatorsmodel.cpp:146
+#: analitzagui/operatorsmodel.cpp:147
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "par%1"
 msgstr "par%1"
 
-#: analitzagui/operatorsmodel.cpp:159
+#: analitzagui/operatorsmodel.cpp:160
 msgctxt "QCoreApplication|"
 msgid "Addition"
 msgstr "加法"
 
-#: analitzagui/operatorsmodel.cpp:162
+#: analitzagui/operatorsmodel.cpp:163
 msgctxt "QCoreApplication|"
 msgid "Multiplication"
 msgstr "乘法"
 
-#: analitzagui/operatorsmodel.cpp:165
+#: analitzagui/operatorsmodel.cpp:166
 msgctxt "QCoreApplication|"
 msgid "Division"
 msgstr "除法"
 
-#: analitzagui/operatorsmodel.cpp:168
+#: analitzagui/operatorsmodel.cpp:169
 msgctxt "QCoreApplication|"
 msgid "Subtraction. Will remove all values from the first one."
 msgstr "減法。會從第一個移除所有的數值。"
 
-#: analitzagui/operatorsmodel.cpp:171
+#: analitzagui/operatorsmodel.cpp:172
 msgctxt "QCoreApplication|"
 msgid "Power"
 msgstr "乘方"
 
-#: analitzagui/operatorsmodel.cpp:174
+#: analitzagui/operatorsmodel.cpp:175
 msgctxt "QCoreApplication|"
 msgid "Remainder"
 msgstr "餘數"
 
-#: analitzagui/operatorsmodel.cpp:177
+#: analitzagui/operatorsmodel.cpp:178
 msgctxt "QCoreApplication|"
 msgid "Quotient"
 msgstr "商數"
 
-#: analitzagui/operatorsmodel.cpp:180
+#: analitzagui/operatorsmodel.cpp:181
 msgctxt "QCoreApplication|"
 msgid "The factor of"
 msgstr "因數"
 
-#: analitzagui/operatorsmodel.cpp:183
+#: analitzagui/operatorsmodel.cpp:184
 msgctxt "QCoreApplication|"
 msgid "Factorial. factorial(n)=n!"
 msgstr "乘階。factorial(n) = n!"
 
-#: analitzagui/operatorsmodel.cpp:186
+#: analitzagui/operatorsmodel.cpp:187
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the sine of a given angle"
 msgstr "計算給定角度的正弦值的函數"
 
-#: analitzagui/operatorsmodel.cpp:189
+#: analitzagui/operatorsmodel.cpp:190
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the cosine of a given angle"
 msgstr "計算給定角度的餘弦值的函數"
 
-#: analitzagui/operatorsmodel.cpp:192
+#: analitzagui/operatorsmodel.cpp:193
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the tangent of a given angle"
 msgstr "計算給定角度的正切值的函數"
 
-#: analitzagui/operatorsmodel.cpp:195
+#: analitzagui/operatorsmodel.cpp:196
 msgctxt "QCoreApplication|"
 msgid "Secant"
 msgstr "正割"
 
-#: analitzagui/operatorsmodel.cpp:198
+#: analitzagui/operatorsmodel.cpp:199
 msgctxt "QCoreApplication|"
 msgid "Cosecant"
 msgstr "餘割"
 
-#: analitzagui/operatorsmodel.cpp:201
+#: analitzagui/operatorsmodel.cpp:202
 msgctxt "QCoreApplication|"
 msgid "Cotangent"
 msgstr "餘切"
 
-#: analitzagui/operatorsmodel.cpp:204
+#: analitzagui/operatorsmodel.cpp:205
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic sine"
 msgstr "雙曲正弦函數"
 
-#: analitzagui/operatorsmodel.cpp:207
+#: analitzagui/operatorsmodel.cpp:208
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cosine"
 msgstr "雙曲正弦函數"
 
-#: analitzagui/operatorsmodel.cpp:210
+#: analitzagui/operatorsmodel.cpp:211
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic tangent"
 msgstr "雙曲正切函數"
 
-#: analitzagui/operatorsmodel.cpp:213
+#: analitzagui/operatorsmodel.cpp:214
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic secant"
 msgstr "雙曲正割"
 
-#: analitzagui/operatorsmodel.cpp:216
+#: analitzagui/operatorsmodel.cpp:217
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cosecant"
 msgstr "雙曲餘割"
 
-#: analitzagui/operatorsmodel.cpp:219
+#: analitzagui/operatorsmodel.cpp:220
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cotangent"
 msgstr "雙曲餘切"
 
-#: analitzagui/operatorsmodel.cpp:222
+#: analitzagui/operatorsmodel.cpp:223
 msgctxt "QCoreApplication|"
 msgid "Arc sine"
 msgstr "反正弦函數"
 
-#: analitzagui/operatorsmodel.cpp:225
+#: analitzagui/operatorsmodel.cpp:226
 msgctxt "QCoreApplication|"
 msgid "Arc cosine"
 msgstr "反餘弦函數"
 
-#: analitzagui/operatorsmodel.cpp:228
+#: analitzagui/operatorsmodel.cpp:229
 msgctxt "QCoreApplication|"
 msgid "Arc tangent"
 msgstr "反餘弦函數"
 
-#: analitzagui/operatorsmodel.cpp:231
+#: analitzagui/operatorsmodel.cpp:232
 msgctxt "QCoreApplication|"
 msgid "Arc cotangent"
 msgstr "反餘切函數"
 
-#: analitzagui/operatorsmodel.cpp:237
+#: analitzagui/operatorsmodel.cpp:238
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc tangent"
 msgstr "雙曲反正切函數"
 
-#: analitzagui/operatorsmodel.cpp:240
+#: analitzagui/operatorsmodel.cpp:241
 msgctxt "QCoreApplication|"
 msgid "Summatory"
 msgstr "加法器"
 
-#: analitzagui/operatorsmodel.cpp:243
+#: analitzagui/operatorsmodel.cpp:244
 msgctxt "QCoreApplication|"
 msgid "Productory"
 msgstr "加法器"
 
-#: analitzagui/operatorsmodel.cpp:246
+#: analitzagui/operatorsmodel.cpp:247
 msgctxt "QCoreApplication|"
 msgid "For all"
 msgstr "所有"
 
-#: analitzagui/operatorsmodel.cpp:249
+#: analitzagui/operatorsmodel.cpp:250
 msgctxt "QCoreApplication|"
 msgid "Exists"
 msgstr "已存在"
 
-#: analitzagui/operatorsmodel.cpp:252
+#: analitzagui/operatorsmodel.cpp:253
 msgctxt "QCoreApplication|"
 msgid "Differentiation"
 msgstr "微分"
 
-#: analitzagui/operatorsmodel.cpp:255
+#: analitzagui/operatorsmodel.cpp:256
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc sine"
 msgstr "雙曲反正弦函數"
 
-#: analitzagui/operatorsmodel.cpp:258
+#: analitzagui/operatorsmodel.cpp:259
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc cosine"
 msgstr "雙曲反餘弦函數"
 
-#: analitzagui/operatorsmodel.cpp:261
+#: analitzagui/operatorsmodel.cpp:262
 msgctxt "QCoreApplication|"
 msgid "Arc cosecant"
 msgstr "反餘割函數"
 
-#: analitzagui/operatorsmodel.cpp:264
+#: analitzagui/operatorsmodel.cpp:265
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc cosecant"
 msgstr "反餘割函數"
 
-#: analitzagui/operatorsmodel.cpp:267
+#: analitzagui/operatorsmodel.cpp:268
 msgctxt "QCoreApplication|"
 msgid "Arc secant"
 msgstr "反正割函數"
 
-#: analitzagui/operatorsmodel.cpp:270
+#: analitzagui/operatorsmodel.cpp:271
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc secant"
 msgstr "雙曲反正割函數"
 
-#: analitzagui/operatorsmodel.cpp:273
+#: analitzagui/operatorsmodel.cpp:274
 msgctxt "QCoreApplication|"
 msgid "Exponent (e^x)"
 msgstr "指數 (e^x)"
 
-#: analitzagui/operatorsmodel.cpp:276
+#: analitzagui/operatorsmodel.cpp:277
 msgctxt "QCoreApplication|"
 msgid "Base-e logarithm"
 msgstr "自然對數"
 
-#: analitzagui/operatorsmodel.cpp:279
+#: analitzagui/operatorsmodel.cpp:280
 msgctxt "QCoreApplication|"
 msgid "Base-10 logarithm"
 msgstr "10 基底的對數"
 
-#: analitzagui/operatorsmodel.cpp:282
+#: analitzagui/operatorsmodel.cpp:283
 msgctxt "QCoreApplication|"
 msgid "Absolute value. abs(n)=|n|"
 msgstr "絕對值。abs(n)=|n|"
 
-#: analitzagui/operatorsmodel.cpp:285
+#: analitzagui/operatorsmodel.cpp:286
 msgctxt "QCoreApplication|"
 msgid "Conjugate"
 msgstr "共軛複數"
 
-#: analitzagui/operatorsmodel.cpp:288
+#: analitzagui/operatorsmodel.cpp:289
 msgctxt "QCoreApplication|"
 msgid "Arg"
 msgstr "幅角"
 
-#: analitzagui/operatorsmodel.cpp:291
+#: analitzagui/operatorsmodel.cpp:292
 msgctxt "QCoreApplication|"
 msgid "Real"
 msgstr "實數"
 
-#: analitzagui/operatorsmodel.cpp:294
+#: analitzagui/operatorsmodel.cpp:295
 msgctxt "QCoreApplication|"
 msgid "Imaginary"
 msgstr "實數"
 
-#: analitzagui/operatorsmodel.cpp:297
+#: analitzagui/operatorsmodel.cpp:298
 msgctxt "QCoreApplication|"
 msgid "Floor value. floor(n)=⌊n⌋"
 msgstr "下限值。floor(n)=⌊n⌋"
 
-#: analitzagui/operatorsmodel.cpp:300
+#: analitzagui/operatorsmodel.cpp:301
 msgctxt "QCoreApplication|"
 msgid "Ceil value. ceil(n)=⌈n⌉"
 msgstr "上限值。ceil(n)=⌈n⌉"
 
-#: analitzagui/operatorsmodel.cpp:303
+#: analitzagui/operatorsmodel.cpp:304
 msgctxt "QCoreApplication|"
 msgid "Minimum"
 msgstr "最小值"
 
-#: analitzagui/operatorsmodel.cpp:306
+#: analitzagui/operatorsmodel.cpp:307
 msgctxt "QCoreApplication|"
 msgid "Maximum"
 msgstr "最大值"
 
-#: analitzagui/operatorsmodel.cpp:309
+#: analitzagui/operatorsmodel.cpp:310
 msgctxt "QCoreApplication|"
 msgid "Greater than. gt(a,b)=a>b"
 msgstr "大於。gt(a,b)=a>b"
 
-#: analitzagui/operatorsmodel.cpp:312
+#: analitzagui/operatorsmodel.cpp:313
 msgctxt "QCoreApplication|"
 msgid "Less than. lt(a,b)=a<b"
 msgstr "小於。lt(a,b)=a<b"
 
-#: analitzagui/operatorsmodel.cpp:315
+#: analitzagui/operatorsmodel.cpp:316
 msgctxt "QCoreApplication|"
 msgid "Equal. eq(a,b) = a=b"
 msgstr "等於。eq(a,b) = a=b"
 
-#: analitzagui/operatorsmodel.cpp:318
+#: analitzagui/operatorsmodel.cpp:319
 msgctxt "QCoreApplication|"
 msgid "Approximation. approx(a)=a±n"
 msgstr "近似值。approx(a)=a±n"
 
-#: analitzagui/operatorsmodel.cpp:321
+#: analitzagui/operatorsmodel.cpp:322
 msgctxt "QCoreApplication|"
 msgid "Not equal. neq(a,b)=a≠b"
 msgstr "不等於。neq(a,b)=a≠b"
 
-#: analitzagui/operatorsmodel.cpp:324
+#: analitzagui/operatorsmodel.cpp:325
 msgctxt "QCoreApplication|"
 msgid "Greater or equal. geq(a,b)=a≥b"
 msgstr "大於等於。geq(a,b)=a≥b"
 
-#: analitzagui/operatorsmodel.cpp:327
+#: analitzagui/operatorsmodel.cpp:328
 msgctxt "QCoreApplication|"
 msgid "Less or equal. leq(a,b)=a≤b"
 msgstr "小於等於。leq(a,b) = a≤b"
 
-#: analitzagui/operatorsmodel.cpp:330
+#: analitzagui/operatorsmodel.cpp:331
 msgctxt "QCoreApplication|"
 msgid "Boolean and"
 msgstr "AND"
 
-#: analitzagui/operatorsmodel.cpp:333
+#: analitzagui/operatorsmodel.cpp:334
 msgctxt "QCoreApplication|"
 msgid "Boolean not"
 msgstr "NOT"
 
-#: analitzagui/operatorsmodel.cpp:336
+#: analitzagui/operatorsmodel.cpp:337
 msgctxt "QCoreApplication|"
 msgid "Boolean or"
 msgstr "OR"
 
-#: analitzagui/operatorsmodel.cpp:339
+#: analitzagui/operatorsmodel.cpp:340
 msgctxt "QCoreApplication|"
 msgid "Boolean xor"
 msgstr "OR"
 
-#: analitzagui/operatorsmodel.cpp:342
+#: analitzagui/operatorsmodel.cpp:343
 msgctxt "QCoreApplication|"
 msgid "Boolean implication"
 msgstr "XOR"
 
-#: analitzagui/operatorsmodel.cpp:345
+#: analitzagui/operatorsmodel.cpp:346
 msgctxt "QCoreApplication|"
 msgid "Greatest common divisor"
 msgstr "布林值推斷"
 
-#: analitzagui/operatorsmodel.cpp:348
+#: analitzagui/operatorsmodel.cpp:349
 msgctxt "QCoreApplication|"
 msgid "Least common multiple"
 msgstr "最小公倍數"
 
-#: analitzagui/operatorsmodel.cpp:351
+#: analitzagui/operatorsmodel.cpp:352
 msgctxt "QCoreApplication|"
 msgid "Root"
 msgstr "最小公倍數"
 
-#: analitzagui/operatorsmodel.cpp:354
+#: analitzagui/operatorsmodel.cpp:355
 msgctxt "QCoreApplication|"
 msgid "Cardinal"
 msgstr "基數"
 
-#: analitzagui/operatorsmodel.cpp:357
+#: analitzagui/operatorsmodel.cpp:358
 msgctxt "QCoreApplication|"
 msgid "Scalar product"
 msgstr "純量乘積"
 
-#: analitzagui/operatorsmodel.cpp:360
+#: analitzagui/operatorsmodel.cpp:361
 msgctxt "QCoreApplication|"
 msgid "Select the par1-th element of par2 list or vector"
 msgstr "請選擇 par2 清單中的第 par1 個元素，或是向量"
 
-#: analitzagui/operatorsmodel.cpp:363
+#: analitzagui/operatorsmodel.cpp:364
 msgctxt "QCoreApplication|"
 msgid "Joins several items of the same type"
 msgstr "將幾個相同型態的項目結合在一起"
 
-#: analitzagui/operatorsmodel.cpp:366
+#: analitzagui/operatorsmodel.cpp:367
 msgctxt "QCoreApplication|"
 msgid "Applies a function to every element in a list"
 msgstr "將幾個相同型態的項目結合在一起"
 
-#: analitzagui/operatorsmodel.cpp:369
+#: analitzagui/operatorsmodel.cpp:370
 msgctxt "QCoreApplication|"
 msgid "Removes all elements that don't fit a condition"
 msgstr "將幾個相同型態的項目結合在一起"
 
-#: analitzagui/operatorsmodel.cpp:372
+#: analitzagui/operatorsmodel.cpp:373
 msgctxt "QCoreApplication|"
 msgid "Transpose"
 msgstr "移項"
 
-#: analitzagui/operatorsmodel.cpp:572
+#: analitzagui/operatorsmodel.cpp:573
 #, qt-format
 msgctxt "n-ary function prototype|"
 msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
 msgstr "<em>%1</em>(..., <b>par%2</b>, ...)"
 
-#: analitzagui/operatorsmodel.cpp:582
+#: analitzagui/operatorsmodel.cpp:583
 #, qt-format
 msgctxt "Function name in function prototype|"
 msgid "<em>%1</em>("
 msgstr "<em>%1</em>("
 
-#: analitzagui/operatorsmodel.cpp:583
+#: analitzagui/operatorsmodel.cpp:584
 #, qt-format
 msgctxt "Uncorrect function name in function prototype|"
 msgid "<em style='color:red'><b>%1</b></em>("
 msgstr "<em style='color:red'><b>%1</b></em>("
 
-#: analitzagui/operatorsmodel.cpp:586
+#: analitzagui/operatorsmodel.cpp:587
 #, qt-format
 msgctxt "Parameter in function prototype|"
 msgid "par%1"
 msgstr "par%1"
 
-#: analitzagui/operatorsmodel.cpp:589 analitzagui/operatorsmodel.cpp:599
+#: analitzagui/operatorsmodel.cpp:590 analitzagui/operatorsmodel.cpp:600
 #, qt-format
 msgctxt "Current parameter in function prototype|"
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: analitzagui/operatorsmodel.cpp:592
+#: analitzagui/operatorsmodel.cpp:593
 msgctxt "Function parameter separator|"
 msgid ", "
 msgstr ", "
 
-#: analitzagui/operatorsmodel.cpp:596
+#: analitzagui/operatorsmodel.cpp:597
 msgctxt "Current parameter is the bounding|"
 msgid " : bounds"
 msgstr " : 邊界"
