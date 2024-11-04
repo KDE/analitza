@@ -636,446 +636,446 @@ msgctxt "QCoreApplication|"
 msgid "Could not calculate the derivative for '%1'"
 msgstr "Lausekkeelle ”%1” ei saatu laskettua derivaattaa"
 
-#: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
+#: analitzagui/operatorsmodel.cpp:96 analitzagui/variablesmodel.cpp:91
 #: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
 msgctxt "@title:column|"
 msgid "Name"
 msgstr "Nimi"
 
-#: analitzagui/operatorsmodel.cpp:98
+#: analitzagui/operatorsmodel.cpp:99
 msgctxt "@title:column|"
 msgid "Description"
 msgstr "Kuvaus"
 
-#: analitzagui/operatorsmodel.cpp:101
+#: analitzagui/operatorsmodel.cpp:102
 msgctxt "@title:column|"
 msgid "Parameters"
 msgstr "Parametrit"
 
-#: analitzagui/operatorsmodel.cpp:104
+#: analitzagui/operatorsmodel.cpp:105
 msgctxt "@title:column|"
 msgid "Example"
 msgstr "Esimerkki"
 
-#: analitzagui/operatorsmodel.cpp:135
+#: analitzagui/operatorsmodel.cpp:136
 msgctxt "Syntax for function bounding|"
 msgid " : var"
 msgstr " : muuttuja"
 
-#: analitzagui/operatorsmodel.cpp:137
+#: analitzagui/operatorsmodel.cpp:138
 msgctxt "Syntax for function bounding values|"
 msgid "=from..to"
 msgstr "=alaraja..yläraja"
 
-#: analitzagui/operatorsmodel.cpp:140
+#: analitzagui/operatorsmodel.cpp:141
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "%1("
 msgstr "%1("
 
-#: analitzagui/operatorsmodel.cpp:143
+#: analitzagui/operatorsmodel.cpp:144
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "%1... parameters, ...%2)"
 msgstr "%1… parametreja, …%2)"
 
-#: analitzagui/operatorsmodel.cpp:146
+#: analitzagui/operatorsmodel.cpp:147
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "par%1"
 msgstr "par%1"
 
-#: analitzagui/operatorsmodel.cpp:159
+#: analitzagui/operatorsmodel.cpp:160
 msgctxt "QCoreApplication|"
 msgid "Addition"
 msgstr "Yhteenlasku"
 
-#: analitzagui/operatorsmodel.cpp:162
+#: analitzagui/operatorsmodel.cpp:163
 msgctxt "QCoreApplication|"
 msgid "Multiplication"
 msgstr "Kertolasku"
 
-#: analitzagui/operatorsmodel.cpp:165
+#: analitzagui/operatorsmodel.cpp:166
 msgctxt "QCoreApplication|"
 msgid "Division"
 msgstr "Jakolasku"
 
-#: analitzagui/operatorsmodel.cpp:168
+#: analitzagui/operatorsmodel.cpp:169
 msgctxt "QCoreApplication|"
 msgid "Subtraction. Will remove all values from the first one."
 msgstr "Vähennyslasku. Vähentää kaikki arvot ensimmäisestä."
 
-#: analitzagui/operatorsmodel.cpp:171
+#: analitzagui/operatorsmodel.cpp:172
 msgctxt "QCoreApplication|"
 msgid "Power"
 msgstr "Potenssi"
 
-#: analitzagui/operatorsmodel.cpp:174
+#: analitzagui/operatorsmodel.cpp:175
 msgctxt "QCoreApplication|"
 msgid "Remainder"
 msgstr "Jakojäännös"
 
-#: analitzagui/operatorsmodel.cpp:177
+#: analitzagui/operatorsmodel.cpp:178
 msgctxt "QCoreApplication|"
 msgid "Quotient"
 msgstr "Osamäärä"
 
-#: analitzagui/operatorsmodel.cpp:180
+#: analitzagui/operatorsmodel.cpp:181
 msgctxt "QCoreApplication|"
 msgid "The factor of"
 msgstr "Tekijä"
 
-#: analitzagui/operatorsmodel.cpp:183
+#: analitzagui/operatorsmodel.cpp:184
 msgctxt "QCoreApplication|"
 msgid "Factorial. factorial(n)=n!"
 msgstr "Kertoma. factorial(n)=n!"
 
-#: analitzagui/operatorsmodel.cpp:186
+#: analitzagui/operatorsmodel.cpp:187
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the sine of a given angle"
 msgstr "Funktio annetun kulman sinin laskemiseen"
 
-#: analitzagui/operatorsmodel.cpp:189
+#: analitzagui/operatorsmodel.cpp:190
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the cosine of a given angle"
 msgstr "Funktio annetun kulman kosinin laskemiseen"
 
-#: analitzagui/operatorsmodel.cpp:192
+#: analitzagui/operatorsmodel.cpp:193
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the tangent of a given angle"
 msgstr "Funktio annetun kulman tangentin laskemiseen"
 
-#: analitzagui/operatorsmodel.cpp:195
+#: analitzagui/operatorsmodel.cpp:196
 msgctxt "QCoreApplication|"
 msgid "Secant"
 msgstr "Sekantti"
 
-#: analitzagui/operatorsmodel.cpp:198
+#: analitzagui/operatorsmodel.cpp:199
 msgctxt "QCoreApplication|"
 msgid "Cosecant"
 msgstr "Kosekantti"
 
-#: analitzagui/operatorsmodel.cpp:201
+#: analitzagui/operatorsmodel.cpp:202
 msgctxt "QCoreApplication|"
 msgid "Cotangent"
 msgstr "Kotangentti"
 
-#: analitzagui/operatorsmodel.cpp:204
+#: analitzagui/operatorsmodel.cpp:205
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic sine"
 msgstr "Hyperbolinen sini"
 
-#: analitzagui/operatorsmodel.cpp:207
+#: analitzagui/operatorsmodel.cpp:208
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cosine"
 msgstr "Hyperbolinen kosini"
 
-#: analitzagui/operatorsmodel.cpp:210
+#: analitzagui/operatorsmodel.cpp:211
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic tangent"
 msgstr "Hyperbolinen tangentti"
 
-#: analitzagui/operatorsmodel.cpp:213
+#: analitzagui/operatorsmodel.cpp:214
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic secant"
 msgstr "Hyperbolinen sekantti"
 
-#: analitzagui/operatorsmodel.cpp:216
+#: analitzagui/operatorsmodel.cpp:217
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cosecant"
 msgstr "Hyperbolinen kosekantti"
 
-#: analitzagui/operatorsmodel.cpp:219
+#: analitzagui/operatorsmodel.cpp:220
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cotangent"
 msgstr "Hyperbolinen kotangentti"
 
-#: analitzagui/operatorsmodel.cpp:222
+#: analitzagui/operatorsmodel.cpp:223
 msgctxt "QCoreApplication|"
 msgid "Arc sine"
 msgstr "Arkussini"
 
-#: analitzagui/operatorsmodel.cpp:225
+#: analitzagui/operatorsmodel.cpp:226
 msgctxt "QCoreApplication|"
 msgid "Arc cosine"
 msgstr "Arkuskosini"
 
-#: analitzagui/operatorsmodel.cpp:228
+#: analitzagui/operatorsmodel.cpp:229
 msgctxt "QCoreApplication|"
 msgid "Arc tangent"
 msgstr "Arkustangentti"
 
-#: analitzagui/operatorsmodel.cpp:231
+#: analitzagui/operatorsmodel.cpp:232
 msgctxt "QCoreApplication|"
 msgid "Arc cotangent"
 msgstr "Arkuskotangentti"
 
-#: analitzagui/operatorsmodel.cpp:237
+#: analitzagui/operatorsmodel.cpp:238
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc tangent"
 msgstr "Hyperbolinen arkustangentti"
 
-#: analitzagui/operatorsmodel.cpp:240
+#: analitzagui/operatorsmodel.cpp:241
 msgctxt "QCoreApplication|"
 msgid "Summatory"
 msgstr "Summa"
 
-#: analitzagui/operatorsmodel.cpp:243
+#: analitzagui/operatorsmodel.cpp:244
 msgctxt "QCoreApplication|"
 msgid "Productory"
 msgstr "Tulo"
 
-#: analitzagui/operatorsmodel.cpp:246
+#: analitzagui/operatorsmodel.cpp:247
 msgctxt "QCoreApplication|"
 msgid "For all"
 msgstr "Kaikille"
 
-#: analitzagui/operatorsmodel.cpp:249
+#: analitzagui/operatorsmodel.cpp:250
 msgctxt "QCoreApplication|"
 msgid "Exists"
 msgstr "On olemassa"
 
-#: analitzagui/operatorsmodel.cpp:252
+#: analitzagui/operatorsmodel.cpp:253
 msgctxt "QCoreApplication|"
 msgid "Differentiation"
 msgstr "Derivointi"
 
-#: analitzagui/operatorsmodel.cpp:255
+#: analitzagui/operatorsmodel.cpp:256
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc sine"
 msgstr "Hyperbolinen arkussini"
 
-#: analitzagui/operatorsmodel.cpp:258
+#: analitzagui/operatorsmodel.cpp:259
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc cosine"
 msgstr "Hyperbolinen arkuskosini"
 
-#: analitzagui/operatorsmodel.cpp:261
+#: analitzagui/operatorsmodel.cpp:262
 msgctxt "QCoreApplication|"
 msgid "Arc cosecant"
 msgstr "Arkuskosekantti"
 
-#: analitzagui/operatorsmodel.cpp:264
+#: analitzagui/operatorsmodel.cpp:265
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc cosecant"
 msgstr "Hyperbolinen arkuskosekantti"
 
-#: analitzagui/operatorsmodel.cpp:267
+#: analitzagui/operatorsmodel.cpp:268
 msgctxt "QCoreApplication|"
 msgid "Arc secant"
 msgstr "Arkussekantti"
 
-#: analitzagui/operatorsmodel.cpp:270
+#: analitzagui/operatorsmodel.cpp:271
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc secant"
 msgstr "Hyperbolinen arkussekantti"
 
-#: analitzagui/operatorsmodel.cpp:273
+#: analitzagui/operatorsmodel.cpp:274
 msgctxt "QCoreApplication|"
 msgid "Exponent (e^x)"
 msgstr "Eksponentti (e^x)"
 
-#: analitzagui/operatorsmodel.cpp:276
+#: analitzagui/operatorsmodel.cpp:277
 msgctxt "QCoreApplication|"
 msgid "Base-e logarithm"
 msgstr "Luonnollinen logaritmi"
 
-#: analitzagui/operatorsmodel.cpp:279
+#: analitzagui/operatorsmodel.cpp:280
 msgctxt "QCoreApplication|"
 msgid "Base-10 logarithm"
 msgstr "Kymmenkantainen logaritmi"
 
-#: analitzagui/operatorsmodel.cpp:282
+#: analitzagui/operatorsmodel.cpp:283
 msgctxt "QCoreApplication|"
 msgid "Absolute value. abs(n)=|n|"
 msgstr "Itseisarvo. abs(n)=|n|"
 
-#: analitzagui/operatorsmodel.cpp:285
+#: analitzagui/operatorsmodel.cpp:286
 msgctxt "QCoreApplication|"
 msgid "Conjugate"
 msgstr "Liittoluku"
 
-#: analitzagui/operatorsmodel.cpp:288
+#: analitzagui/operatorsmodel.cpp:289
 msgctxt "QCoreApplication|"
 msgid "Arg"
 msgstr "Argumentti"
 
-#: analitzagui/operatorsmodel.cpp:291
+#: analitzagui/operatorsmodel.cpp:292
 msgctxt "QCoreApplication|"
 msgid "Real"
 msgstr "Reaaliosa"
 
-#: analitzagui/operatorsmodel.cpp:294
+#: analitzagui/operatorsmodel.cpp:295
 msgctxt "QCoreApplication|"
 msgid "Imaginary"
 msgstr "Imaginaariosa"
 
-#: analitzagui/operatorsmodel.cpp:297
+#: analitzagui/operatorsmodel.cpp:298
 msgctxt "QCoreApplication|"
 msgid "Floor value. floor(n)=⌊n⌋"
 msgstr "Lattiafunktio. floor(n)=⌊n⌋"
 
-#: analitzagui/operatorsmodel.cpp:300
+#: analitzagui/operatorsmodel.cpp:301
 msgctxt "QCoreApplication|"
 msgid "Ceil value. ceil(n)=⌈n⌉"
 msgstr "Kattofunktio. ceil(n)=⌈n⌉"
 
-#: analitzagui/operatorsmodel.cpp:303
+#: analitzagui/operatorsmodel.cpp:304
 msgctxt "QCoreApplication|"
 msgid "Minimum"
 msgstr "Minimi"
 
-#: analitzagui/operatorsmodel.cpp:306
+#: analitzagui/operatorsmodel.cpp:307
 msgctxt "QCoreApplication|"
 msgid "Maximum"
 msgstr "Maksimi"
 
-#: analitzagui/operatorsmodel.cpp:309
+#: analitzagui/operatorsmodel.cpp:310
 msgctxt "QCoreApplication|"
 msgid "Greater than. gt(a,b)=a>b"
 msgstr "Suurempi kuin. gt(a,b)=a>b"
 
-#: analitzagui/operatorsmodel.cpp:312
+#: analitzagui/operatorsmodel.cpp:313
 msgctxt "QCoreApplication|"
 msgid "Less than. lt(a,b)=a<b"
 msgstr "Pienempi kuin. lt(a,b)=a<b"
 
-#: analitzagui/operatorsmodel.cpp:315
+#: analitzagui/operatorsmodel.cpp:316
 msgctxt "QCoreApplication|"
 msgid "Equal. eq(a,b) = a=b"
 msgstr "Yhtä suuri kuin. eq(a,b) = a=b"
 
-#: analitzagui/operatorsmodel.cpp:318
+#: analitzagui/operatorsmodel.cpp:319
 msgctxt "QCoreApplication|"
 msgid "Approximation. approx(a)=a±n"
 msgstr "Approksimaatio. approx(a)=a±n"
 
-#: analitzagui/operatorsmodel.cpp:321
+#: analitzagui/operatorsmodel.cpp:322
 msgctxt "QCoreApplication|"
 msgid "Not equal. neq(a,b)=a≠b"
 msgstr "Ei yhtä suuri kuin. neq(a,b)=a≠b"
 
-#: analitzagui/operatorsmodel.cpp:324
+#: analitzagui/operatorsmodel.cpp:325
 msgctxt "QCoreApplication|"
 msgid "Greater or equal. geq(a,b)=a≥b"
 msgstr "Suurempi tai yhtä suuri. geq(a,b)=a≥b"
 
-#: analitzagui/operatorsmodel.cpp:327
+#: analitzagui/operatorsmodel.cpp:328
 msgctxt "QCoreApplication|"
 msgid "Less or equal. leq(a,b)=a≤b"
 msgstr "Pienempi tai yhtä suuri. leq(a,b)=a≤b"
 
-#: analitzagui/operatorsmodel.cpp:330
+#: analitzagui/operatorsmodel.cpp:331
 msgctxt "QCoreApplication|"
 msgid "Boolean and"
 msgstr "Boolen ja"
 
-#: analitzagui/operatorsmodel.cpp:333
+#: analitzagui/operatorsmodel.cpp:334
 msgctxt "QCoreApplication|"
 msgid "Boolean not"
 msgstr "Boolen ei"
 
-#: analitzagui/operatorsmodel.cpp:336
+#: analitzagui/operatorsmodel.cpp:337
 msgctxt "QCoreApplication|"
 msgid "Boolean or"
 msgstr "Boolen tai"
 
-#: analitzagui/operatorsmodel.cpp:339
+#: analitzagui/operatorsmodel.cpp:340
 msgctxt "QCoreApplication|"
 msgid "Boolean xor"
 msgstr "Boolen xor"
 
-#: analitzagui/operatorsmodel.cpp:342
+#: analitzagui/operatorsmodel.cpp:343
 msgctxt "QCoreApplication|"
 msgid "Boolean implication"
 msgstr "Boolen implikaatio"
 
-#: analitzagui/operatorsmodel.cpp:345
+#: analitzagui/operatorsmodel.cpp:346
 msgctxt "QCoreApplication|"
 msgid "Greatest common divisor"
 msgstr "Suurin yhteinen tekijä"
 
-#: analitzagui/operatorsmodel.cpp:348
+#: analitzagui/operatorsmodel.cpp:349
 msgctxt "QCoreApplication|"
 msgid "Least common multiple"
 msgstr "Pienin yhteinen jaettava"
 
-#: analitzagui/operatorsmodel.cpp:351
+#: analitzagui/operatorsmodel.cpp:352
 msgctxt "QCoreApplication|"
 msgid "Root"
 msgstr "Juuri"
 
-#: analitzagui/operatorsmodel.cpp:354
+#: analitzagui/operatorsmodel.cpp:355
 msgctxt "QCoreApplication|"
 msgid "Cardinal"
 msgstr "Mahtavuus"
 
-#: analitzagui/operatorsmodel.cpp:357
+#: analitzagui/operatorsmodel.cpp:358
 msgctxt "QCoreApplication|"
 msgid "Scalar product"
 msgstr "Pistetulo"
 
-#: analitzagui/operatorsmodel.cpp:360
+#: analitzagui/operatorsmodel.cpp:361
 msgctxt "QCoreApplication|"
 msgid "Select the par1-th element of par2 list or vector"
 msgstr "Valitse par1:s alkio par2-listasta tai -vektorista"
 
-#: analitzagui/operatorsmodel.cpp:363
+#: analitzagui/operatorsmodel.cpp:364
 msgctxt "QCoreApplication|"
 msgid "Joins several items of the same type"
 msgstr "Yhdistää useita samantyyppisiä alkioita"
 
-#: analitzagui/operatorsmodel.cpp:366
+#: analitzagui/operatorsmodel.cpp:367
 msgctxt "QCoreApplication|"
 msgid "Applies a function to every element in a list"
 msgstr "Käyttää funktiota listan joka alkiolle"
 
-#: analitzagui/operatorsmodel.cpp:369
+#: analitzagui/operatorsmodel.cpp:370
 msgctxt "QCoreApplication|"
 msgid "Removes all elements that don't fit a condition"
 msgstr "Poistaa kaikki alkiot, jotka eivät täytä ehtoa"
 
-#: analitzagui/operatorsmodel.cpp:372
+#: analitzagui/operatorsmodel.cpp:373
 msgctxt "QCoreApplication|"
 msgid "Transpose"
 msgstr "Transpoosi"
 
-#: analitzagui/operatorsmodel.cpp:572
+#: analitzagui/operatorsmodel.cpp:573
 #, qt-format
 msgctxt "n-ary function prototype|"
 msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
 msgstr "<em>%1</em>(…, <b>par%2</b>, …)"
 
-#: analitzagui/operatorsmodel.cpp:582
+#: analitzagui/operatorsmodel.cpp:583
 #, qt-format
 msgctxt "Function name in function prototype|"
 msgid "<em>%1</em>("
 msgstr "<em>%1</em>("
 
-#: analitzagui/operatorsmodel.cpp:583
+#: analitzagui/operatorsmodel.cpp:584
 #, qt-format
 msgctxt "Uncorrect function name in function prototype|"
 msgid "<em style='color:red'><b>%1</b></em>("
 msgstr "<em style='color:red'><b>%1</b></em>("
 
-#: analitzagui/operatorsmodel.cpp:586
+#: analitzagui/operatorsmodel.cpp:587
 #, qt-format
 msgctxt "Parameter in function prototype|"
 msgid "par%1"
 msgstr "par%1"
 
-#: analitzagui/operatorsmodel.cpp:589 analitzagui/operatorsmodel.cpp:599
+#: analitzagui/operatorsmodel.cpp:590 analitzagui/operatorsmodel.cpp:600
 #, qt-format
 msgctxt "Current parameter in function prototype|"
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: analitzagui/operatorsmodel.cpp:592
+#: analitzagui/operatorsmodel.cpp:593
 msgctxt "Function parameter separator|"
 msgid ", "
 msgstr ", "
 
-#: analitzagui/operatorsmodel.cpp:596
+#: analitzagui/operatorsmodel.cpp:597
 msgctxt "Current parameter is the bounding|"
 msgid " : bounds"
 msgstr " : sidonnat"

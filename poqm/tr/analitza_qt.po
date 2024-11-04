@@ -622,446 +622,446 @@ msgctxt "QCoreApplication|"
 msgid "Could not calculate the derivative for '%1'"
 msgstr "“%1” için türev hesaplanamadı"
 
-#: analitzagui/operatorsmodel.cpp:95 analitzagui/variablesmodel.cpp:91
+#: analitzagui/operatorsmodel.cpp:96 analitzagui/variablesmodel.cpp:91
 #: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
 msgctxt "@title:column|"
 msgid "Name"
 msgstr "Ad"
 
-#: analitzagui/operatorsmodel.cpp:98
+#: analitzagui/operatorsmodel.cpp:99
 msgctxt "@title:column|"
 msgid "Description"
 msgstr "Tanımlama"
 
-#: analitzagui/operatorsmodel.cpp:101
+#: analitzagui/operatorsmodel.cpp:102
 msgctxt "@title:column|"
 msgid "Parameters"
 msgstr "Parametreler"
 
-#: analitzagui/operatorsmodel.cpp:104
+#: analitzagui/operatorsmodel.cpp:105
 msgctxt "@title:column|"
 msgid "Example"
 msgstr "Örnek"
 
-#: analitzagui/operatorsmodel.cpp:135
+#: analitzagui/operatorsmodel.cpp:136
 msgctxt "Syntax for function bounding|"
 msgid " : var"
 msgstr " : var"
 
-#: analitzagui/operatorsmodel.cpp:137
+#: analitzagui/operatorsmodel.cpp:138
 msgctxt "Syntax for function bounding values|"
 msgid "=from..to"
 msgstr "=baslangıç..bitiş"
 
-#: analitzagui/operatorsmodel.cpp:140
+#: analitzagui/operatorsmodel.cpp:141
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "%1("
 msgstr "%1("
 
-#: analitzagui/operatorsmodel.cpp:143
+#: analitzagui/operatorsmodel.cpp:144
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "%1... parameters, ...%2)"
 msgstr "%1… parametreler, …%2)"
 
-#: analitzagui/operatorsmodel.cpp:146
+#: analitzagui/operatorsmodel.cpp:147
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "par%1"
 msgstr "par%1"
 
-#: analitzagui/operatorsmodel.cpp:159
+#: analitzagui/operatorsmodel.cpp:160
 msgctxt "QCoreApplication|"
 msgid "Addition"
 msgstr "Toplama"
 
-#: analitzagui/operatorsmodel.cpp:162
+#: analitzagui/operatorsmodel.cpp:163
 msgctxt "QCoreApplication|"
 msgid "Multiplication"
 msgstr "Çarpma"
 
-#: analitzagui/operatorsmodel.cpp:165
+#: analitzagui/operatorsmodel.cpp:166
 msgctxt "QCoreApplication|"
 msgid "Division"
 msgstr "Bölme"
 
-#: analitzagui/operatorsmodel.cpp:168
+#: analitzagui/operatorsmodel.cpp:169
 msgctxt "QCoreApplication|"
 msgid "Subtraction. Will remove all values from the first one."
 msgstr "Çıkarma. Tüm değerleri birinciden çıkarır."
 
-#: analitzagui/operatorsmodel.cpp:171
+#: analitzagui/operatorsmodel.cpp:172
 msgctxt "QCoreApplication|"
 msgid "Power"
 msgstr "Kuvvet"
 
-#: analitzagui/operatorsmodel.cpp:174
+#: analitzagui/operatorsmodel.cpp:175
 msgctxt "QCoreApplication|"
 msgid "Remainder"
 msgstr "Kalan"
 
-#: analitzagui/operatorsmodel.cpp:177
+#: analitzagui/operatorsmodel.cpp:178
 msgctxt "QCoreApplication|"
 msgid "Quotient"
 msgstr "Bölüm"
 
-#: analitzagui/operatorsmodel.cpp:180
+#: analitzagui/operatorsmodel.cpp:181
 msgctxt "QCoreApplication|"
 msgid "The factor of"
 msgstr "Kuvveti"
 
-#: analitzagui/operatorsmodel.cpp:183
+#: analitzagui/operatorsmodel.cpp:184
 msgctxt "QCoreApplication|"
 msgid "Factorial. factorial(n)=n!"
 msgstr "Faktöriyel. factorial(n)=n!"
 
-#: analitzagui/operatorsmodel.cpp:186
+#: analitzagui/operatorsmodel.cpp:187
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the sine of a given angle"
 msgstr "Verilen bir açının sinüsünü hesaplayan fonksiyon"
 
-#: analitzagui/operatorsmodel.cpp:189
+#: analitzagui/operatorsmodel.cpp:190
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the cosine of a given angle"
 msgstr "Verilen bir açının kosinüsünü hesaplayan fonksiyon"
 
-#: analitzagui/operatorsmodel.cpp:192
+#: analitzagui/operatorsmodel.cpp:193
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the tangent of a given angle"
 msgstr "Verilen bir açının tanjantını hesaplayan fonksiyon"
 
-#: analitzagui/operatorsmodel.cpp:195
+#: analitzagui/operatorsmodel.cpp:196
 msgctxt "QCoreApplication|"
 msgid "Secant"
 msgstr "Sekant"
 
-#: analitzagui/operatorsmodel.cpp:198
+#: analitzagui/operatorsmodel.cpp:199
 msgctxt "QCoreApplication|"
 msgid "Cosecant"
 msgstr "Kosekant"
 
-#: analitzagui/operatorsmodel.cpp:201
+#: analitzagui/operatorsmodel.cpp:202
 msgctxt "QCoreApplication|"
 msgid "Cotangent"
 msgstr "Kotanjant"
 
-#: analitzagui/operatorsmodel.cpp:204
+#: analitzagui/operatorsmodel.cpp:205
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic sine"
 msgstr "Hiperbolik sinüs"
 
-#: analitzagui/operatorsmodel.cpp:207
+#: analitzagui/operatorsmodel.cpp:208
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cosine"
 msgstr "Hiperbolik kosinüs"
 
-#: analitzagui/operatorsmodel.cpp:210
+#: analitzagui/operatorsmodel.cpp:211
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic tangent"
 msgstr "Hiperbolik tanjant"
 
-#: analitzagui/operatorsmodel.cpp:213
+#: analitzagui/operatorsmodel.cpp:214
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic secant"
 msgstr "Hiperbolik sekant"
 
-#: analitzagui/operatorsmodel.cpp:216
+#: analitzagui/operatorsmodel.cpp:217
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cosecant"
 msgstr "Hiperbolik kosekant"
 
-#: analitzagui/operatorsmodel.cpp:219
+#: analitzagui/operatorsmodel.cpp:220
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic cotangent"
 msgstr "Hiperbolik kotanjant"
 
-#: analitzagui/operatorsmodel.cpp:222
+#: analitzagui/operatorsmodel.cpp:223
 msgctxt "QCoreApplication|"
 msgid "Arc sine"
 msgstr "Ark sinüs"
 
-#: analitzagui/operatorsmodel.cpp:225
+#: analitzagui/operatorsmodel.cpp:226
 msgctxt "QCoreApplication|"
 msgid "Arc cosine"
 msgstr "Ark kosinüs"
 
-#: analitzagui/operatorsmodel.cpp:228
+#: analitzagui/operatorsmodel.cpp:229
 msgctxt "QCoreApplication|"
 msgid "Arc tangent"
 msgstr "Ark tanjant"
 
-#: analitzagui/operatorsmodel.cpp:231
+#: analitzagui/operatorsmodel.cpp:232
 msgctxt "QCoreApplication|"
 msgid "Arc cotangent"
 msgstr "Arkkotanjant"
 
-#: analitzagui/operatorsmodel.cpp:237
+#: analitzagui/operatorsmodel.cpp:238
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc tangent"
 msgstr "Hiperbolik ark tanjant"
 
-#: analitzagui/operatorsmodel.cpp:240
+#: analitzagui/operatorsmodel.cpp:241
 msgctxt "QCoreApplication|"
 msgid "Summatory"
 msgstr "Toplam"
 
-#: analitzagui/operatorsmodel.cpp:243
+#: analitzagui/operatorsmodel.cpp:244
 msgctxt "QCoreApplication|"
 msgid "Productory"
 msgstr "Çarpım"
 
-#: analitzagui/operatorsmodel.cpp:246
+#: analitzagui/operatorsmodel.cpp:247
 msgctxt "QCoreApplication|"
 msgid "For all"
 msgstr "Tümü için"
 
-#: analitzagui/operatorsmodel.cpp:249
+#: analitzagui/operatorsmodel.cpp:250
 msgctxt "QCoreApplication|"
 msgid "Exists"
 msgstr "Vardır"
 
-#: analitzagui/operatorsmodel.cpp:252
+#: analitzagui/operatorsmodel.cpp:253
 msgctxt "QCoreApplication|"
 msgid "Differentiation"
 msgstr "Fark"
 
-#: analitzagui/operatorsmodel.cpp:255
+#: analitzagui/operatorsmodel.cpp:256
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc sine"
 msgstr "Hiperbolik arksinüs"
 
-#: analitzagui/operatorsmodel.cpp:258
+#: analitzagui/operatorsmodel.cpp:259
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc cosine"
 msgstr "Hiperbolik arkkosinüs"
 
-#: analitzagui/operatorsmodel.cpp:261
+#: analitzagui/operatorsmodel.cpp:262
 msgctxt "QCoreApplication|"
 msgid "Arc cosecant"
 msgstr "Arkkosekant"
 
-#: analitzagui/operatorsmodel.cpp:264
+#: analitzagui/operatorsmodel.cpp:265
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc cosecant"
 msgstr "Hiperbolik arkkosekant"
 
-#: analitzagui/operatorsmodel.cpp:267
+#: analitzagui/operatorsmodel.cpp:268
 msgctxt "QCoreApplication|"
 msgid "Arc secant"
 msgstr "Arksekant"
 
-#: analitzagui/operatorsmodel.cpp:270
+#: analitzagui/operatorsmodel.cpp:271
 msgctxt "QCoreApplication|"
 msgid "Hyperbolic arc secant"
 msgstr "Hiperbolik arksekant"
 
-#: analitzagui/operatorsmodel.cpp:273
+#: analitzagui/operatorsmodel.cpp:274
 msgctxt "QCoreApplication|"
 msgid "Exponent (e^x)"
 msgstr "Kuvvet (e^x)"
 
-#: analitzagui/operatorsmodel.cpp:276
+#: analitzagui/operatorsmodel.cpp:277
 msgctxt "QCoreApplication|"
 msgid "Base-e logarithm"
 msgstr "e tabanında logaritma"
 
-#: analitzagui/operatorsmodel.cpp:279
+#: analitzagui/operatorsmodel.cpp:280
 msgctxt "QCoreApplication|"
 msgid "Base-10 logarithm"
 msgstr "10 tabanında logaritma"
 
-#: analitzagui/operatorsmodel.cpp:282
+#: analitzagui/operatorsmodel.cpp:283
 msgctxt "QCoreApplication|"
 msgid "Absolute value. abs(n)=|n|"
 msgstr "Mutlak değer. abs(n)=|n|"
 
-#: analitzagui/operatorsmodel.cpp:285
+#: analitzagui/operatorsmodel.cpp:286
 msgctxt "QCoreApplication|"
 msgid "Conjugate"
 msgstr "Eşlenik"
 
-#: analitzagui/operatorsmodel.cpp:288
+#: analitzagui/operatorsmodel.cpp:289
 msgctxt "QCoreApplication|"
 msgid "Arg"
 msgstr "Arg"
 
-#: analitzagui/operatorsmodel.cpp:291
+#: analitzagui/operatorsmodel.cpp:292
 msgctxt "QCoreApplication|"
 msgid "Real"
 msgstr "Gerçek"
 
-#: analitzagui/operatorsmodel.cpp:294
+#: analitzagui/operatorsmodel.cpp:295
 msgctxt "QCoreApplication|"
 msgid "Imaginary"
 msgstr "Sanal"
 
-#: analitzagui/operatorsmodel.cpp:297
+#: analitzagui/operatorsmodel.cpp:298
 msgctxt "QCoreApplication|"
 msgid "Floor value. floor(n)=⌊n⌋"
 msgstr "Alt değer. floor(n)=⌊n⌋"
 
-#: analitzagui/operatorsmodel.cpp:300
+#: analitzagui/operatorsmodel.cpp:301
 msgctxt "QCoreApplication|"
 msgid "Ceil value. ceil(n)=⌈n⌉"
 msgstr "Üst değer. ceil(n)=⌈n⌉"
 
-#: analitzagui/operatorsmodel.cpp:303
+#: analitzagui/operatorsmodel.cpp:304
 msgctxt "QCoreApplication|"
 msgid "Minimum"
 msgstr "En az"
 
-#: analitzagui/operatorsmodel.cpp:306
+#: analitzagui/operatorsmodel.cpp:307
 msgctxt "QCoreApplication|"
 msgid "Maximum"
 msgstr "En çok"
 
-#: analitzagui/operatorsmodel.cpp:309
+#: analitzagui/operatorsmodel.cpp:310
 msgctxt "QCoreApplication|"
 msgid "Greater than. gt(a,b)=a>b"
 msgstr "Büyüktür. gt(a,b)=a>b"
 
-#: analitzagui/operatorsmodel.cpp:312
+#: analitzagui/operatorsmodel.cpp:313
 msgctxt "QCoreApplication|"
 msgid "Less than. lt(a,b)=a<b"
 msgstr "Küçüktür. lt(a,b)=a<b"
 
-#: analitzagui/operatorsmodel.cpp:315
+#: analitzagui/operatorsmodel.cpp:316
 msgctxt "QCoreApplication|"
 msgid "Equal. eq(a,b) = a=b"
 msgstr "Eşittir. eq(a,b) = a=b"
 
-#: analitzagui/operatorsmodel.cpp:318
+#: analitzagui/operatorsmodel.cpp:319
 msgctxt "QCoreApplication|"
 msgid "Approximation. approx(a)=a±n"
 msgstr "Yaklaşık. approx(a)=a±n"
 
-#: analitzagui/operatorsmodel.cpp:321
+#: analitzagui/operatorsmodel.cpp:322
 msgctxt "QCoreApplication|"
 msgid "Not equal. neq(a,b)=a≠b"
 msgstr "Eşit değildir. neq(a,b)=a≠b"
 
-#: analitzagui/operatorsmodel.cpp:324
+#: analitzagui/operatorsmodel.cpp:325
 msgctxt "QCoreApplication|"
 msgid "Greater or equal. geq(a,b)=a≥b"
 msgstr "Büyük eşittir. geq(a,b)=a≥b"
 
-#: analitzagui/operatorsmodel.cpp:327
+#: analitzagui/operatorsmodel.cpp:328
 msgctxt "QCoreApplication|"
 msgid "Less or equal. leq(a,b)=a≤b"
 msgstr "Küçük eşittir. leq(a,b)=a≤b"
 
-#: analitzagui/operatorsmodel.cpp:330
+#: analitzagui/operatorsmodel.cpp:331
 msgctxt "QCoreApplication|"
 msgid "Boolean and"
 msgstr "Mantıksal ve"
 
-#: analitzagui/operatorsmodel.cpp:333
+#: analitzagui/operatorsmodel.cpp:334
 msgctxt "QCoreApplication|"
 msgid "Boolean not"
 msgstr "Mantıksal değil"
 
-#: analitzagui/operatorsmodel.cpp:336
+#: analitzagui/operatorsmodel.cpp:337
 msgctxt "QCoreApplication|"
 msgid "Boolean or"
 msgstr "Mantıksal veya"
 
-#: analitzagui/operatorsmodel.cpp:339
+#: analitzagui/operatorsmodel.cpp:340
 msgctxt "QCoreApplication|"
 msgid "Boolean xor"
 msgstr "Mantıksal xor"
 
-#: analitzagui/operatorsmodel.cpp:342
+#: analitzagui/operatorsmodel.cpp:343
 msgctxt "QCoreApplication|"
 msgid "Boolean implication"
 msgstr "Mantıksal içerme"
 
-#: analitzagui/operatorsmodel.cpp:345
+#: analitzagui/operatorsmodel.cpp:346
 msgctxt "QCoreApplication|"
 msgid "Greatest common divisor"
 msgstr "En büyük ortak bölen"
 
-#: analitzagui/operatorsmodel.cpp:348
+#: analitzagui/operatorsmodel.cpp:349
 msgctxt "QCoreApplication|"
 msgid "Least common multiple"
 msgstr "En küçük ortak kat"
 
-#: analitzagui/operatorsmodel.cpp:351
+#: analitzagui/operatorsmodel.cpp:352
 msgctxt "QCoreApplication|"
 msgid "Root"
 msgstr "Kök"
 
-#: analitzagui/operatorsmodel.cpp:354
+#: analitzagui/operatorsmodel.cpp:355
 msgctxt "QCoreApplication|"
 msgid "Cardinal"
 msgstr "Sayma"
 
-#: analitzagui/operatorsmodel.cpp:357
+#: analitzagui/operatorsmodel.cpp:358
 msgctxt "QCoreApplication|"
 msgid "Scalar product"
 msgstr "Skaler çarpım"
 
-#: analitzagui/operatorsmodel.cpp:360
+#: analitzagui/operatorsmodel.cpp:361
 msgctxt "QCoreApplication|"
 msgid "Select the par1-th element of par2 list or vector"
 msgstr "par2 liste veya vektörünün par1. ögesini seçin"
 
-#: analitzagui/operatorsmodel.cpp:363
+#: analitzagui/operatorsmodel.cpp:364
 msgctxt "QCoreApplication|"
 msgid "Joins several items of the same type"
 msgstr "Aynı türdeki ögeleri birleştir"
 
-#: analitzagui/operatorsmodel.cpp:366
+#: analitzagui/operatorsmodel.cpp:367
 msgctxt "QCoreApplication|"
 msgid "Applies a function to every element in a list"
 msgstr "Bir listedeki her elemana bir fonksiyonu uygular"
 
-#: analitzagui/operatorsmodel.cpp:369
+#: analitzagui/operatorsmodel.cpp:370
 msgctxt "QCoreApplication|"
 msgid "Removes all elements that don't fit a condition"
 msgstr "Bir duruma uymayan bütün ögeleri kaldırır"
 
-#: analitzagui/operatorsmodel.cpp:372
+#: analitzagui/operatorsmodel.cpp:373
 msgctxt "QCoreApplication|"
 msgid "Transpose"
 msgstr "Devrik"
 
-#: analitzagui/operatorsmodel.cpp:572
+#: analitzagui/operatorsmodel.cpp:573
 #, qt-format
 msgctxt "n-ary function prototype|"
 msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
 msgstr "<em>%1</em>(…, <b>par%2</b>, …)"
 
-#: analitzagui/operatorsmodel.cpp:582
+#: analitzagui/operatorsmodel.cpp:583
 #, qt-format
 msgctxt "Function name in function prototype|"
 msgid "<em>%1</em>("
 msgstr "<em>%1</em>("
 
-#: analitzagui/operatorsmodel.cpp:583
+#: analitzagui/operatorsmodel.cpp:584
 #, qt-format
 msgctxt "Uncorrect function name in function prototype|"
 msgid "<em style='color:red'><b>%1</b></em>("
 msgstr "<em style='color:red'><b>%1</b></em>("
 
-#: analitzagui/operatorsmodel.cpp:586
+#: analitzagui/operatorsmodel.cpp:587
 #, qt-format
 msgctxt "Parameter in function prototype|"
 msgid "par%1"
 msgstr "par%1"
 
-#: analitzagui/operatorsmodel.cpp:589 analitzagui/operatorsmodel.cpp:599
+#: analitzagui/operatorsmodel.cpp:590 analitzagui/operatorsmodel.cpp:600
 #, qt-format
 msgctxt "Current parameter in function prototype|"
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: analitzagui/operatorsmodel.cpp:592
+#: analitzagui/operatorsmodel.cpp:593
 msgctxt "Function parameter separator|"
 msgid ", "
 msgstr ", "
 
-#: analitzagui/operatorsmodel.cpp:596
+#: analitzagui/operatorsmodel.cpp:597
 msgctxt "Current parameter is the bounding|"
 msgid " : bounds"
 msgstr " : sınırlar"
