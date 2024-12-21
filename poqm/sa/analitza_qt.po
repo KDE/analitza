@@ -1,15 +1,17 @@
+# SPDX-FileCopyrightText: 2024 kali <skkalwar999@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: analitza_qt\n"
-"PO-Revision-Date: 2024-12-13 19:09+0530\n"
-"Last-Translator: Kali <EMAIL@ADDRESS>\n"
-"Language-Team: Sanskrit\n"
+"PO-Revision-Date: 2024-12-20 12:25+0530\n"
+"Last-Translator: kali <skkalwar999@gmail.com>\n"
+"Language-Team: English <kde-i18n-doc@kde.org>\n"
 "Language: sa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
+"X-Generator: Lokalize 24.08.2\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -858,7 +860,7 @@ msgstr "अतिशय चाप सेकेन्ट"
 #: analitzagui/operatorsmodel.cpp:274
 msgctxt "QCoreApplication|"
 msgid "Exponent (e^x)"
-msgstr "घातांक (e^x) २."
+msgstr "घातांक (e^x)"
 
 #: analitzagui/operatorsmodel.cpp:277
 msgctxt "QCoreApplication|"
@@ -898,12 +900,12 @@ msgstr "काल्पनिकः"
 #: analitzagui/operatorsmodel.cpp:298
 msgctxt "QCoreApplication|"
 msgid "Floor value. floor(n)=⌊n⌋"
-msgstr "तल मूल्य। तल(न)=⌊n⌋ २."
+msgstr "तल मूल्य। तल(न)=⌊n⌋"
 
 #: analitzagui/operatorsmodel.cpp:301
 msgctxt "QCoreApplication|"
 msgid "Ceil value. ceil(n)=⌈n⌉"
-msgstr "सील मूल्य। ceil(n)=⌈n⌉ २."
+msgstr "सील मूल्य। ceil(n)=⌈n⌉"
 
 #: analitzagui/operatorsmodel.cpp:304
 msgctxt "QCoreApplication|"
@@ -1138,12 +1140,12 @@ msgstr "x=%1 य=%2"
 #: analitzaplot/private/backends/cartesiansurface.cpp:52
 msgctxt "Function type|"
 msgid "Surface z=F(x,y)"
-msgstr "पृष्ठभाग z=F(x,y) २."
+msgstr "पृष्ठभाग z=F(x,y)"
 
 #: analitzaplot/private/backends/cartesiansurface.cpp:94
 msgctxt "Function type|"
 msgid "Surface y=F(x,z)"
-msgstr "पृष्ठभाग y=F(x,z) २."
+msgstr "पृष्ठभाग y=F(x,z)"
 
 #: analitzaplot/private/backends/cartesiansurface.cpp:127
 msgctxt "Function type|"
