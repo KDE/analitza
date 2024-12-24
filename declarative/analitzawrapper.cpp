@@ -21,6 +21,7 @@
 #include <analitza/value.h>
 #include <analitza/analitzautils.h>
 #include <analitzagui/variablesmodel.h>
+#include <QCoreApplication>
 
 
 Q_DECLARE_METATYPE(ExpressionWrapper*)
@@ -114,6 +115,11 @@ QVariant AnalitzaWrapper::executeFunc(const QString& name, const QVariantList& a
     
     m_wrapped->setExpression(Analitza::Expression(name, false));
     m_wrapped->setExpression(m_wrapped->calculate());
+
+    if (const auto bvars = m_wrapped->expression().bvarList(); bvars.size() != args.size()) {
+        return QCoreApplication::tr("Have %1 bounded variables needed, got %2").arg(bvars.join(QLatin1String(", "))).arg(args.size());
+    }
+
     m_wrapped->setStack(stack);
     Analitza::Expression expr = m_wrapped->calculateLambda();
     
@@ -125,7 +131,12 @@ QVariant AnalitzaWrapper::executeFunc(const QString& name, const QVariantList& a
 
 QString AnalitzaWrapper::dependenciesToLambda(const QString& expression) const
 {
-    m_wrapped->setExpression(Analitza::Expression(expression, false));
+    Analitza::Expression exp(expression, false);
+    if (!exp.isCorrect()) {
+        qWarning() << "Error on expression" << expression << exp.error();
+        return {};
+    }
+    m_wrapped->setExpression(exp);
     return m_wrapped->dependenciesToLambda().toString();
 }
 
