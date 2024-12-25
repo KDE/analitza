@@ -1231,6 +1231,12 @@ msgctxt "QCoreApplication|"
 msgid "Selected viewport too small"
 msgstr "Vybraný výrez je príliš malý"
 
+#: declarative/analitzawrapper.cpp:120
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Have %1 bounded variables needed, got %2"
+msgstr ""
+
 #~ msgctxt "NAME OF TRANSLATORS"
 #~ msgid "Your names"
 #~ msgstr "Roman Paholík"

@@ -1248,6 +1248,12 @@ msgctxt "QCoreApplication|"
 msgid "Selected viewport too small"
 msgstr "L'àrea de visualització seleccionada és massa petita"
 
+#: declarative/analitzawrapper.cpp:120
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Have %1 bounded variables needed, got %2"
+msgstr ""
+
 #~ msgctxt "QObject|"
 #~ msgid "PNG File (*.png)"
 #~ msgstr "Fitxer PNG (*.png)"

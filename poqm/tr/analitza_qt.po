@@ -1226,3 +1226,9 @@ msgstr "Örnekler"
 msgctxt "QCoreApplication|"
 msgid "Selected viewport too small"
 msgstr "Seçili görüş alanı çok küçük"
+
+#: declarative/analitzawrapper.cpp:120
+#, qt-format
+msgctxt "QCoreApplication|"
+msgid "Have %1 bounded variables needed, got %2"
+msgstr ""
