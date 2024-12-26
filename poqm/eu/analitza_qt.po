@@ -1,14 +1,14 @@
 # Translation for analitza_qt.po to Euskara/Basque (eu).
 # Copyright (C) 2021, This file is copyright:
 # This file is distributed under the same license as the original file.
-# KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>.
+# SPDX-FileCopyrightText: 2024 KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>
 #
 # Translators:
 # Iñigo Salvador Azurmendi <xalba@ni.eus>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2021-01-24 19:42+0100\n"
+"PO-Revision-Date: 2024-12-25 08:51+0100\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 20.12.1\n"
+"X-Generator: Lokalize 24.12.0\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
@@ -57,7 +57,7 @@ msgstr "Ezin izan da baldintza deklarazio baterako aukera egokirik aurkitu."
 #: analitza/analyzer.cpp:936
 msgctxt "QCoreApplication|"
 msgid "Type not supported for bounding."
-msgstr "Mota ez da mugatzeko onartzen."
+msgstr "Mota ez da bornea ipintzeko onartzen."
 
 #: analitza/analyzer.cpp:961
 msgctxt "QCoreApplication|"
@@ -261,19 +261,19 @@ msgstr "<em>%1</em>(e)k %2 parametro behar ditu"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Missing boundary for '%1'"
-msgstr "«%1»(e)rako muga falta da"
+msgstr "«%1»(e)rako bornea falta da"
 
 #: analitza/expression.cpp:173
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected bounding for '%1'"
-msgstr "«%1»(e)rako ustekabeko muga"
+msgstr "'%1'(e)rako ustekabeko bornea"
 
 #: analitza/expression.cpp:178
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "<em>%1</em> missing bounds on '%2'"
-msgstr "<em>%1</em> mugak falta ditu «%2»(e)an"
+msgstr "<em>%1</em> '%2'(e)an borneak falta ditu"
 
 #: analitza/expression.cpp:200
 msgctxt "QCoreApplication|"
@@ -317,7 +317,7 @@ msgstr "Aldagaiak baino ezin ditugu deklaratu"
 #: analitza/expression.cpp:279
 msgctxt "QCoreApplication|"
 msgid "We can only have bounded variables"
-msgstr "Mugadun aldagaiak baino ezin ditugu izan"
+msgstr "Aldagai bornatuak baino ezin ditugu izan"
 
 #: analitza/expression.cpp:290 analitza/expression.cpp:495
 msgctxt "QCoreApplication|"
@@ -1077,7 +1077,7 @@ msgstr ", "
 #: analitzagui/operatorsmodel.cpp:597
 msgctxt "Current parameter is the bounding|"
 msgid " : bounds"
-msgstr " : mugak"
+msgstr " : borneak"
 
 #: analitzagui/variablesmodel.cpp:94
 msgctxt "@title:column|"
