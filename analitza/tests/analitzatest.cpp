@@ -699,6 +699,7 @@ void AnalitzaTest::testSimplify_data()
     
     //equations
     QTest::newRow("eqminus") << "x-3=0" << "x=3";
+    QTest::newRow("eqminus-unary") << "-x=0" << "x=0";
     QTest::newRow("eqplus") << "x+3=0" << "x=-3";
     QTest::newRow("eqtimes") << "3x=0" << "x=0";
     QTest::newRow("eqtimes1") << "(x-3)*(x-2)=0" << "or(x=3, x=2)";

@@ -1603,10 +1603,13 @@ QList<Object*> Analyzer::findRootsApply(const QString& dep, const Apply* a)
                 }
             }
             
-            if(varTree) {
+            const int count = a->countValues();
+            if (count == 1) { // unary +x and -x root is 0
+                ret += new Cn(0.);
+            } else if(varTree) {
                 Apply* na = nullptr;
                 Object* value = nullptr;
-                if(a->countValues()>2) {
+                if(count>2) {
                     na = new Apply;
                     na->appendBranch(new Operator(a->firstOperator().inverse()));
                     value = na;
