@@ -86,7 +86,7 @@ msgctxt "QCoreApplication|"
 msgid "Invalid type for parameter '%1'"
 msgstr ""
 
-#: analitza/analyzer.cpp:1877
+#: analitza/analyzer.cpp:1880
 #, fuzzy
 #| msgctxt "By a cycle i mean a variable that depends on itself"
 #| msgid "Defined a variable cycle"
@@ -94,7 +94,7 @@ msgctxt "By a cycle i mean a variable that depends on itself|"
 msgid "Defined a variable cycle"
 msgstr "それ自身に依存する変数が定義されました"
 
-#: analitza/analyzer.cpp:1919
+#: analitza/analyzer.cpp:1922
 #, fuzzy
 #| msgid "The result is not a number"
 msgctxt "QCoreApplication|"
