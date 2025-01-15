@@ -69,12 +69,12 @@ msgctxt "QCoreApplication|"
 msgid "Invalid type for parameter '%1'"
 msgstr "“%1” parametresi için geçersiz tür"
 
-#: analitza/analyzer.cpp:1877
+#: analitza/analyzer.cpp:1880
 msgctxt "By a cycle i mean a variable that depends on itself|"
 msgid "Defined a variable cycle"
 msgstr "Kendine bağlı bir değişken tanımlandı"
 
-#: analitza/analyzer.cpp:1919
+#: analitza/analyzer.cpp:1922
 msgctxt "QCoreApplication|"
 msgid "The result is not a number"
 msgstr "Sonuç bir sayı değil"

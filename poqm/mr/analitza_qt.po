@@ -77,12 +77,12 @@ msgctxt "QCoreApplication|"
 msgid "Invalid type for parameter '%1'"
 msgstr ""
 
-#: analitza/analyzer.cpp:1877
+#: analitza/analyzer.cpp:1880
 msgctxt "By a cycle i mean a variable that depends on itself|"
 msgid "Defined a variable cycle"
 msgstr ""
 
-#: analitza/analyzer.cpp:1919
+#: analitza/analyzer.cpp:1922
 msgctxt "QCoreApplication|"
 msgid "The result is not a number"
 msgstr ""
