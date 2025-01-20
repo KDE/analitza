@@ -1223,4 +1223,4 @@ msgstr "所选视图过小"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Have %1 bounded variables needed, got %2"
-msgstr ""
+msgstr "所需的绑定变量有 %1 个，实际得到 %2 个 。"
