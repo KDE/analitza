@@ -1,15 +1,15 @@
 # Translation of analitza_qt to Spanish
-# Copyright (C) YEAR This_file_is_part_of_KDE
+# Copyright (C) 2011-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the analitza package.
 #
-# SPDX-FileCopyrightText: 2011, 2012, 2013, 2014, 2015, 2017, 2019, 2024 Eloy Cuadra <ecuadra@eloihr.net>
+# SPDX-FileCopyrightText: 2011, 2012, 2013, 2014, 2015, 2017, 2019, 2024, 2025 Eloy Cuadra <ecuadra@eloihr.net>
 # SPDX-FileCopyrightText: 2013 Rocío Gallego <traducciones@rociogallego.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: analitza_qt\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-02-16 03:26+0000\n"
-"PO-Revision-Date: 2024-12-26 20:31+0100\n"
+"PO-Revision-Date: 2025-02-17 22:32+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.12.0\n"
+"X-Generator: Lokalize 24.12.2\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "QObject|dictionary"
@@ -679,7 +679,7 @@ msgstr "%1("
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "%1... parameters, ...%2)"
-msgstr "%1... parámetros, ...%2)"
+msgstr "%1… parámetros, …%2)"
 
 #: analitzagui/operatorsmodel.cpp:147
 #, qt-format
@@ -1046,7 +1046,7 @@ msgstr "Transponer"
 #, qt-format
 msgctxt "n-ary function prototype|"
 msgid "<em>%1</em>(..., <b>par%2</b>, ...)"
-msgstr "<em>%1</em>(..., <b>par%2</b>, ...)"
+msgstr "<em>%1</em>(…, <b>par%2</b>, …)"
 
 #: analitzagui/operatorsmodel.cpp:583
 #, qt-format
