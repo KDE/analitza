@@ -2,20 +2,21 @@
 # Frederik Schwarzer <schwarzer@kde.org>, 2011, 2012, 2013.
 # Burkhard Lück <lueck@hube-lueck.de>, 2011, 2012, 2013, 2014, 2015, 2017, 2019.
 # Rene Landert <rene.landert@bluewin.ch>, 2012.
+# SPDX-FileCopyrightText: 2025 Alexander Becker <alex-at-kde-l10n-de@freenet.de>
 msgid ""
 msgstr ""
 "Project-Id-Version: analitza_qt\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-02-16 03:26+0000\n"
-"PO-Revision-Date: 2024-06-12 22:29+0200\n"
-"Last-Translator: Alois Spitzbart <spitz234@hotmail.com>\n"
+"PO-Revision-Date: 2025-07-29 21:29+0200\n"
+"Last-Translator: Alexander Becker <alex-at-kde-l10n-de@freenet.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 24.05.0\n"
+"X-Generator: Lokalize 24.12.3\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "QObject|dictionary"
@@ -95,14 +96,14 @@ msgstr "Das Ergebnis ist keine Nummer"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%1'"
-msgstr "Ungültiger Parameteranzahl für „%1“"
+msgstr "Ungültige Parameteranzahl für „%1“"
 
 #: analitza/commands/blockmatrixcommands.cpp:86
 #: analitza/commands/blockmatrixcommands.cpp:119
 #: analitza/commands/blockmatrixcommands.cpp:122
 msgctxt "QCoreApplication|"
 msgid "Blocks must have consistent size between each and other"
-msgstr "Blöcke müssen einheitliche Größen haben"
+msgstr "Blöcke müssen untereinander konsistente Größen haben"
 
 #: analitza/commands/blockmatrixcommands.cpp:90
 #: analitza/commands/blockmatrixcommands.cpp:126
@@ -122,7 +123,7 @@ msgstr "Blöcke müssen Matrizen sein"
 #: analitza/commands/blockmatrixcommands.cpp:142
 msgctxt "QCoreApplication|"
 msgid "Number of blocks must be consistent"
-msgstr "Die Anzahl der Blöcke muss einheitlich sein"
+msgstr "Die Anzahl der Blöcke muss konsistent sein"
 
 #: analitza/commands/blockmatrixcommands.cpp:145
 #: analitza/commands/blockmatrixcommands.cpp:211
@@ -136,9 +137,7 @@ msgstr "Keine leeren Vektoren/Elemente in Matrix-Zeilen zulässig"
 #: analitza/commands/matrixcommands.cpp:149
 msgctxt "QCoreApplication|"
 msgid "Matrix constructor needs vectors or matrixrow elements"
-msgstr ""
-"Der Konstruktor für eine Matrix benötigt Vektoren oder Elemente einer Matrix-"
-"Zeile"
+msgstr "Matrixkonstrukteur benötigt Vektoren oder Matrixzeilenelemente"
 
 #: analitza/commands/blockmatrixcommands.cpp:244
 #: analitza/commands/matrixcommands.cpp:288
@@ -151,7 +150,7 @@ msgstr "Das Argument %1 ist ungültig oder fehlerhaft"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%1'. Should have 1 parameter"
-msgstr "Falsche Parameteranzahl für „%1“: Es sollte %1 Parameter sein"
+msgstr "Falsche Parameteranzahl für „%1“: Es sollte nur ein Parameter haben"
 
 #: analitza/commands/eigencommands.cpp:47
 #, qt-format
@@ -200,7 +199,7 @@ msgstr "Nicht alle Parameter sind Zeilen oder Vektoren"
 #: analitza/commands/matrixcommands.cpp:143
 msgctxt "QCoreApplication|"
 msgid "Every argument must be a matrixrow element"
-msgstr "Jedes Argument muss ein Element einer Matrix-Zeile"
+msgstr "Jedes Argument muss ein Element einer Matrixzeile sein"
 
 #: analitza/commands/matrixcommands.cpp:241
 msgctxt "QCoreApplication|"
@@ -215,35 +214,35 @@ msgstr "Der n-te Diagonalindex muss kleiner als die Spaltenanzahl sein"
 #: analitza/commands/matrixcommands.cpp:265
 msgctxt "QCoreApplication|"
 msgid "nth diagonal index must be integer number"
-msgstr "Der n-te Diagonalindex muss eine ganze Zahl sein"
+msgstr "Der n-te Diagonalindex muss eine Ganzzahl sein"
 
 #: analitza/commands/matrixcommands.cpp:269
 msgctxt "QCoreApplication|"
 msgid "nth diagonal index must be a positive integer number"
-msgstr "Der n-te Diagonalindex muss eine positive ganze Zahl sein"
+msgstr "Der n-te Diagonalindex muss eine positive Ganzzahl sein"
 
 #: analitza/commands/vectorcommands.cpp:62
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter type for '%1', was expected a list"
-msgstr "Falscher Parametertyp für „%1“: Es wird eine Liste erwartet."
+msgstr "Falscher Parametertyp für „%1“: Es wird eine Liste erwartet"
 
 #: analitza/commands/vectorcommands.cpp:75
 #: analitza/commands/vectorcommands.cpp:78
 msgctxt "QCoreApplication|"
 msgid "Vector size must be some integer value greater to zero"
-msgstr "Die Größe eines Vektors muss eine ganze Zahl größer als Null sein"
+msgstr "Die Größe eines Vektors muss eine Ganzzahl größer Null sein"
 
 #: analitza/explexer.cpp:77
 msgctxt "QCoreApplication|"
 msgid "Unexpectedly arrived to the end of the input"
-msgstr "Unerwartetes Ende der Eingabe"
+msgstr "Unerwartetes Eingabeende"
 
 #: analitza/explexer.cpp:111
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unknown token %1"
-msgstr "Unbekanntes Trennzeichen %1"
+msgstr "Unbekanntes Zeichen %1"
 
 #: analitza/expression.cpp:162
 #, qt-format
@@ -261,7 +260,7 @@ msgstr "<em>%1</em> benötigt %2 Parameter"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Missing boundary for '%1'"
-msgstr "Fehlende Grenze für „%1“"
+msgstr "Fehlende Begrenzung für „%1“"
 
 #: analitza/expression.cpp:173
 #, qt-format
@@ -327,12 +326,12 @@ msgstr "Es können nur gebundene Variablen deklariert werden"
 #: analitza/expression.cpp:290 analitza/expression.cpp:495
 msgctxt "QCoreApplication|"
 msgid "Do not want empty matrixrow elements"
-msgstr "Keine leeren Elemente einer Matrix-Zeilen zulässig"
+msgstr "Keine leeren Elemente einer Matrixzeile zulässig"
 
 #: analitza/expression.cpp:300
 msgctxt "QCoreApplication|"
 msgid "The matrix must contain only matrixrow elements"
-msgstr "Die Matrix darf nur Elemente einer Matrix-Zeile enthalten"
+msgstr "Die Matrix darf nur Elemente einer Matrixzeile enthalten"
 
 #: analitza/expression.cpp:419
 #, qt-format
@@ -389,12 +388,12 @@ msgstr ", "
 #, qt-format
 msgctxt "error message|"
 msgid "Expected %1 instead of '%2'"
-msgstr "Es wurde %1 anstatt „%2“ erwartet"
+msgstr "Es wurde %1 anstatt von „%2“ erwartet"
 
 #: analitza/expressionparser.cpp:298
 msgctxt "QCoreApplication|"
 msgid "Missing right parenthesis"
-msgstr "Fehlende schließende Klammer"
+msgstr "Fehlende schließende Klammern"
 
 #: analitza/expressionparser.cpp:300
 msgctxt "QCoreApplication|"
@@ -405,13 +404,13 @@ msgstr "Unausgeglichene schließende Klammern"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected token identifier: %1"
-msgstr "Unerwarteter Zeichen-Identifier: %1"
+msgstr "Unerwartete Zeichenkennung: %1"
 
 #: analitza/expressionparser.cpp:305
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected token %1"
-msgstr "Unerwartetes Trennzeichen %1"
+msgstr "Unerwartetes Zeichen %1"
 
 #: analitza/expressiontypechecker.cpp:301
 #, qt-format
@@ -503,7 +502,7 @@ msgstr "<span class='keyword'>%1</span>"
 #, qt-format
 msgctxt "Error message|"
 msgid "Unknown token '%1'"
-msgstr "Unbekanntes Trennzeichen „%1“"
+msgstr "Unbekanntes Zeichen „%1“"
 
 #: analitza/operations.cpp:54 analitza/operations.cpp:191
 msgctxt "QCoreApplication|"
@@ -611,20 +610,19 @@ msgid ""
 "Multiplication of two matrices is allowed provided that the number of "
 "columns of the first matrix equals the number of rows of the second matrix"
 msgstr ""
-"Multiplikation einer Matrix mit einem Vektor ist nur möglich, wenn die "
-"Anzahl der Spalten der ersten Matrix der Anzahl der Zeilen der zweiten "
-"Matrix entspricht"
+"Multiplikation zweier Matrizen ist nur möglich, wenn die Anzahl der Spalten "
+"der ersten Matrix der Anzahl der Zeilen der zweiten Matrix entspricht"
 
 #: analitza/operations.cpp:766 analitza/operations.cpp:804
 #: analitza/operations.cpp:887
 msgctxt "QCoreApplication|"
 msgid "Matrix entries must be numbers"
-msgstr "Elemente in Matrizen müssen Zahlen sein"
+msgstr "Matrixelemente müssen Zahlen sein"
 
 #: analitza/operations.cpp:879
 msgctxt "QCoreApplication|"
 msgid "The exponent of 'power' must be some integer number"
-msgstr "Der Exponent einer Potenzfunktion muss eine ganze Zahl sein"
+msgstr "Der Exponent einer Potenzfunktion muss eine Ganzzahl sein"
 
 #: analitza/operations.cpp:883
 msgctxt "QCoreApplication|"
@@ -741,17 +739,17 @@ msgstr "Fakultät. factorial(n)=n!"
 #: analitzagui/operatorsmodel.cpp:187
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the sine of a given angle"
-msgstr "Funktion, um den Sinus eines gegebenen Winkels auszurechnen"
+msgstr "Funktion für Sinusberechnung eines gegebenen Winkels"
 
 #: analitzagui/operatorsmodel.cpp:190
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the cosine of a given angle"
-msgstr "Funktion, um den Kosinus eines gegebenen Winkels auszurechnen"
+msgstr "Funktion für Kosinusberechnung eines gegebenen Winkels"
 
 #: analitzagui/operatorsmodel.cpp:193
 msgctxt "QCoreApplication|"
 msgid "Function to calculate the tangent of a given angle"
-msgstr "Funktion, um den Tangens eines gegebenen Winkels auszurechnen"
+msgstr "Funktion für Tangensberechnung eines gegebenen Winkels"
 
 #: analitzagui/operatorsmodel.cpp:196
 msgctxt "QCoreApplication|"
@@ -966,12 +964,12 @@ msgstr "Ungleich. neq(a,b)=a≠b"
 #: analitzagui/operatorsmodel.cpp:325
 msgctxt "QCoreApplication|"
 msgid "Greater or equal. geq(a,b)=a≥b"
-msgstr "Größer oder Gleich. geq(a,b)=a≥b"
+msgstr "Größer oder gleich. geq(a,b)=a≥b"
 
 #: analitzagui/operatorsmodel.cpp:328
 msgctxt "QCoreApplication|"
 msgid "Less or equal. leq(a,b)=a≤b"
-msgstr "Kleiner oder Gleich. leq(a,b)=a≤b"
+msgstr "Kleiner oder gleich. leq(a,b)=a≤b"
 
 #: analitzagui/operatorsmodel.cpp:331
 msgctxt "QCoreApplication|"
@@ -1128,7 +1126,7 @@ msgstr "PDF-Dokument (*.pdf)"
 #: analitzaplot/plotter3d_es.cpp:534
 msgctxt "QObject|"
 msgid "X3D Document (*.x3d)"
-msgstr "X2D-Dokument (*.x3d)"
+msgstr "X3D-Dokument (*.x3d)"
 
 #: analitzaplot/plotter3d_es.cpp:534
 msgctxt "QObject|"
@@ -1253,7 +1251,7 @@ msgstr "Ausgewähltes Darstellungsfeld zu klein"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Have %1 bounded variables needed, got %2"
-msgstr ""
+msgstr "Es werden %1 gebundene Variablen gebraucht, %2 erhalten"
 
 #~ msgctxt "NAME OF TRANSLATORS"
 #~ msgid "Your names"
