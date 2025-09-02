@@ -1024,7 +1024,7 @@ msgstr "Producte escalar"
 #: analitzagui/operatorsmodel.cpp:361
 msgctxt "QCoreApplication|"
 msgid "Select the par1-th element of par2 list or vector"
-msgstr "Selecciona l'element par1-è de la llista o vector par2"
+msgstr "Tria l'element par1-è de la llista o vector par2"
 
 #: analitzagui/operatorsmodel.cpp:364
 msgctxt "QCoreApplication|"
