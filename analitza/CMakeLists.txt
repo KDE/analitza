@@ -59,7 +59,7 @@ target_include_directories(Analitza INTERFACE "$<INSTALL_INTERFACE:${ANALITZA_IN
 set_target_properties(Analitza PROPERTIES VERSION ${ANALITZA_VERSION} SOVERSION ${ANALITZA_SOVERSION} )
 
 
-if(EIGEN3_FOUND)
+if(Eigen3_FOUND)
     target_sources(Analitza PRIVATE commands/eigencommands.cpp)
     target_link_libraries(Analitza PRIVATE Eigen3::Eigen)
 endif()
