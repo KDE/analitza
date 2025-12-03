@@ -340,7 +340,7 @@ msgstr "La matriu només pot contindre elements de fila de matriu"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Error while parsing: %1"
-msgstr "S'ha produït un error en llegir: %1"
+msgstr "S'ha produït un error mentre es llegia: %1"
 
 #: analitza/expression.cpp:450
 #, qt-format
