@@ -1,16 +1,16 @@
 # Translation of analitza_qt.po to Catalan (Valencian)
-# Copyright (C) 2011-2024 This_file_is_part_of_KDE
+# Copyright (C) 2011-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
 # SPDX-FileCopyrightText: 2011, 2012 Orestes Mas <orestes@tsc.upc.edu>
 # SPDX-FileCopyrightText: 2018, 2020 Antoni Bella Pérez <antonibella5@yahoo.com>
-# SPDX-FileCopyrightText: 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021, 2023, 2024 Josep M. Ferrer <txemaq@gmail.com>
+# SPDX-FileCopyrightText: 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021, 2023, 2024, 2025 Josep M. Ferrer <txemaq@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: analitza\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2014-02-16 03:26+0000\n"
-"PO-Revision-Date: 2024-12-25 09:02+0100\n"
+"PO-Revision-Date: 2025-12-22 10:36+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 25.04.0\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "QObject|dictionary"
@@ -87,7 +87,7 @@ msgstr "S'ha definit una variable cíclica"
 #: analitza/analyzer.cpp:1922
 msgctxt "QCoreApplication|"
 msgid "The result is not a number"
-msgstr "En resultat no és un nombre"
+msgstr "El resultat no és un nombre"
 
 #: analitza/commands/blockmatrixcommands.cpp:44
 #: analitza/commands/blockmatrixcommands.cpp:234
@@ -340,7 +340,7 @@ msgstr "La matriu només pot contindre elements de fila de matriu"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Error while parsing: %1"
-msgstr "S'ha produït un error en llegir: %1"
+msgstr "S'ha produït un error mentre es llegia: %1"
 
 #: analitza/expression.cpp:450
 #, qt-format
