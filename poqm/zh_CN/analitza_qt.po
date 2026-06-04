@@ -235,7 +235,7 @@ msgstr "意外到达输入的末尾"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unknown token %1"
-msgstr "未知记号 %1"
+msgstr "未知令牌 %1"
 
 #: analitza/expression.cpp:162
 #, qt-format
@@ -392,13 +392,13 @@ msgstr "不平衡的右括号"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected token identifier: %1"
-msgstr "意外的令牌标识符：%1"
+msgstr "不符合预期的令牌标识符：%1"
 
 #: analitza/expressionparser.cpp:305
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected token %1"
-msgstr "意外的令牌 %1"
+msgstr "不符合预期的令牌 %1"
 
 #: analitza/expressiontypechecker.cpp:301
 #, qt-format
@@ -485,7 +485,7 @@ msgstr "<span class='keyword'>%1</span>"
 #, qt-format
 msgctxt "Error message|"
 msgid "Unknown token '%1'"
-msgstr "未知记号 “%1”"
+msgstr "未知令牌“%1”"
 
 #: analitza/operations.cpp:54 analitza/operations.cpp:191
 msgctxt "QCoreApplication|"
