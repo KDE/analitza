@@ -1,27 +1,28 @@
+# SPDX-FileCopyrightText: 2026 Libor Filípek <libor.filipek@gmail.com>
 # Vít Pelčák <vit@pelcak.org>, 2014, 2015, 2017, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2014-02-16 03:26+0000\n"
-"PO-Revision-Date: 2019-09-06 17:49+0200\n"
-"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
+"PO-Revision-Date: 2026-07-01 12:26+0200\n"
+"Last-Translator: Libor Filípek <libor.filipek@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 19.08.0\n"
+"X-Generator: Poedit 3.9\n"
 "X-Qt-Contexts: true\n"
 
 msgctxt "QObject|dictionary"
 msgid "xaxaxaxaxa"
-msgstr ""
+msgstr "xaxaxaxaxa"
 
 msgctxt "QObject|dictionary"
 msgid "cosa"
-msgstr ""
+msgstr "cosa"
 
 #: analitza/analyzer.cpp:193
 msgctxt "QCoreApplication|"
@@ -53,7 +54,7 @@ msgstr "Pro stanovení podmínek nelze najít správnou volbu."
 #: analitza/analyzer.cpp:936
 msgctxt "QCoreApplication|"
 msgid "Type not supported for bounding."
-msgstr ""
+msgstr "Tento typ není pro omezení podporován."
 
 #: analitza/analyzer.cpp:961
 msgctxt "QCoreApplication|"
@@ -69,7 +70,7 @@ msgstr "Horní limita nebo spodní limita není správná."
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid type for parameter '%1'"
-msgstr ""
+msgstr "Neplatný typ parametru '%1'"
 
 #: analitza/analyzer.cpp:1880
 msgctxt "By a cycle i mean a variable that depends on itself|"
@@ -91,21 +92,21 @@ msgstr "Výsledek není číslo"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%1'"
-msgstr ""
+msgstr "Neplatný počet parametrů pro '%1'"
 
 #: analitza/commands/blockmatrixcommands.cpp:86
 #: analitza/commands/blockmatrixcommands.cpp:119
 #: analitza/commands/blockmatrixcommands.cpp:122
 msgctxt "QCoreApplication|"
 msgid "Blocks must have consistent size between each and other"
-msgstr ""
+msgstr "Bloky musí mít mezi sebou stejnou velikost"
 
 #: analitza/commands/blockmatrixcommands.cpp:90
 #: analitza/commands/blockmatrixcommands.cpp:126
 #: analitza/commands/blockmatrixcommands.cpp:263
 msgctxt "QCoreApplication|"
 msgid "Do not want empty blocks"
-msgstr ""
+msgstr "Prázdné bloky nejsou žádoucí"
 
 #: analitza/commands/blockmatrixcommands.cpp:93
 #: analitza/commands/blockmatrixcommands.cpp:130
@@ -113,45 +114,45 @@ msgstr ""
 #: analitza/commands/blockmatrixcommands.cpp:267
 msgctxt "QCoreApplication|"
 msgid "Blocks must be matrices"
-msgstr ""
+msgstr "Bloky musí být matice"
 
 #: analitza/commands/blockmatrixcommands.cpp:142
 msgctxt "QCoreApplication|"
 msgid "Number of blocks must be consistent"
-msgstr ""
+msgstr "Počet bloků musí být stejný"
 
 #: analitza/commands/blockmatrixcommands.cpp:145
 #: analitza/commands/blockmatrixcommands.cpp:211
 #: analitza/commands/matrixcommands.cpp:147
 msgctxt "QCoreApplication|"
 msgid "Do not want empty vectors/matrixrow elements"
-msgstr ""
+msgstr "Prázdné vektory a prvky řádků matice nejsou žádoucí"
 
 #: analitza/commands/blockmatrixcommands.cpp:150
 #: analitza/commands/blockmatrixcommands.cpp:213
 #: analitza/commands/matrixcommands.cpp:149
 msgctxt "QCoreApplication|"
 msgid "Matrix constructor needs vectors or matrixrow elements"
-msgstr ""
+msgstr "Konstruktér matice vyžaduje vektory nebo prvky řádků matice"
 
 #: analitza/commands/blockmatrixcommands.cpp:244
 #: analitza/commands/matrixcommands.cpp:288
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "the arg %1 is invalid or is error"
-msgstr ""
+msgstr "argument %1 je neplatný nebo obsahuje chybu"
 
 #: analitza/commands/eigencommands.cpp:39
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%1'. Should have 1 parameter"
-msgstr ""
+msgstr "Neplatný počet parametrů pro '%1'. Měl by mít 1 parametr"
 
 #: analitza/commands/eigencommands.cpp:47
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "To use '%1' command the input matrix must be square"
-msgstr ""
+msgstr "Aby bylo možné použít příkaz '%1', musí být vstupní matice čtvercová"
 
 #: analitza/commands/eigencommands.cpp:68
 #: analitza/commands/eigencommands.cpp:74
@@ -161,75 +162,77 @@ msgid ""
 "Invalid parameter type in matrix entry (%1,%2) for '%3', it must be a number "
 "value"
 msgstr ""
+"Neplatný typ parametru v položce matice (%1,%2) pro '%3' – musí se jednat o "
+"číselnou hodnotu"
 
 #: analitza/commands/eigencommands.cpp:126
 #: analitza/commands/eigencommands.cpp:193
 msgctxt "QCoreApplication|NaN means Not a Number, is an invalid float number"
 msgid "Returned eigenvalue is NaN"
-msgstr ""
+msgstr "Vrácená vlastní hodnota je NaN"
 
 #: analitza/commands/eigencommands.cpp:132
 #: analitza/commands/eigencommands.cpp:196
 msgctxt "QCoreApplication|"
 msgid "Returned eigenvalue is too big"
-msgstr ""
+msgstr "Vrácená vlastní hodnota je příliš velká"
 
 #: analitza/commands/matrixcommands.cpp:31
 msgctxt "QCoreApplication|"
 msgid "Matrix dimensions must be greater than zero"
-msgstr ""
+msgstr "Rozměry matice musí být větší než nula"
 
 #: analitza/commands/matrixcommands.cpp:122 analitza/expression.cpp:296
 msgctxt "QCoreApplication|"
 msgid "All matrixrow elements must have the same size"
-msgstr ""
+msgstr "Všechny prvky řádku matice musí mít stejnou velikost"
 
 #: analitza/commands/matrixcommands.cpp:127
 msgctxt "QCoreApplication|"
 msgid "Not all are rows or vectors"
-msgstr ""
+msgstr "Ne všechno jsou řádky nebo vektory"
 
 #: analitza/commands/matrixcommands.cpp:143
 msgctxt "QCoreApplication|"
 msgid "Every argument must be a matrixrow element"
-msgstr ""
+msgstr "Každý argument musí být prvkem řádku matice"
 
 #: analitza/commands/matrixcommands.cpp:241
 msgctxt "QCoreApplication|"
 msgid "The nth diagonal index must be less than the row count"
-msgstr ""
+msgstr "N-tý diagonální index musí být menší než počet řádků"
 
 #: analitza/commands/matrixcommands.cpp:249
 msgctxt "QCoreApplication|"
 msgid "The nth diagonal index must be less than the column count"
-msgstr ""
+msgstr "N-tý diagonální index musí být menší než počet sloupců"
 
 #: analitza/commands/matrixcommands.cpp:265
 msgctxt "QCoreApplication|"
 msgid "nth diagonal index must be integer number"
-msgstr ""
+msgstr "n-tý diagonální index musí být celé číslo"
 
 #: analitza/commands/matrixcommands.cpp:269
 msgctxt "QCoreApplication|"
 msgid "nth diagonal index must be a positive integer number"
-msgstr ""
+msgstr "n-tý diagonální index musí být kladné celé číslo"
 
 #: analitza/commands/vectorcommands.cpp:62
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter type for '%1', was expected a list"
-msgstr ""
+msgstr "Neplatný typ parametru pro '%1', byl očekáván seznam"
 
 #: analitza/commands/vectorcommands.cpp:75
 #: analitza/commands/vectorcommands.cpp:78
 msgctxt "QCoreApplication|"
 msgid "Vector size must be some integer value greater to zero"
-msgstr ""
+msgstr "Velikost vektoru musí být celé číslo větší než nula"
 
 #: analitza/explexer.cpp:77
 msgctxt "QCoreApplication|"
 msgid "Unexpectedly arrived to the end of the input"
-msgstr ""
+msgstr "Neočekávané dosažení konce vstupu"
 
 #: analitza/explexer.cpp:111
 #, qt-format
@@ -253,24 +256,24 @@ msgstr "<em>%1</em> vyžaduje %2 parametrů"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Missing boundary for '%1'"
-msgstr ""
+msgstr "Chybí omezení pro '%1'"
 
 #: analitza/expression.cpp:173
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected bounding for '%1'"
-msgstr ""
+msgstr "Neočekávané omezení pro '%1'"
 
 #: analitza/expression.cpp:178
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "<em>%1</em> missing bounds on '%2'"
-msgstr ""
+msgstr "<em>%1</em> chybí omezení u '%2'"
 
 #: analitza/expression.cpp:200
 msgctxt "QCoreApplication|"
 msgid "Wrong declare"
-msgstr ""
+msgstr "Nesprávná deklarace"
 
 #: analitza/expression.cpp:210
 #, qt-format
@@ -288,13 +291,13 @@ msgstr ""
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot have two parameters with the same name like '%1'."
-msgstr ""
+msgstr "Nelze použít dva parametry se stejným názvem, jako je například '%1'."
 
 #: analitza/expression.cpp:259
 msgctxt ""
 "this is an error message. otherwise is the else in a mathml condition|"
 msgid "The <em>otherwise</em> parameter should be the last one"
-msgstr ""
+msgstr "<em>Jiný</em> parametr by měl být posledním"
 
 #: analitza/expression.cpp:267
 #, qt-format
@@ -315,12 +318,12 @@ msgstr "Můžeme mít pouze omezené proměnné"
 #: analitza/expression.cpp:290 analitza/expression.cpp:495
 msgctxt "QCoreApplication|"
 msgid "Do not want empty matrixrow elements"
-msgstr ""
+msgstr "Prázdné prvky řádků matice nejsou žádoucí"
 
 #: analitza/expression.cpp:300
 msgctxt "QCoreApplication|"
 msgid "The matrix must contain only matrixrow elements"
-msgstr ""
+msgstr "Matice musí obsahovat pouze prvky řádků matice"
 
 #: analitza/expression.cpp:419
 #, qt-format
@@ -350,17 +353,17 @@ msgstr "Operátor %1 nemůže mít dětské souvislosti."
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "The element '%1' is not an operator."
-msgstr ""
+msgstr "Prvek '%1' není operátor."
 
 #: analitza/expression.cpp:479
 msgctxt "QCoreApplication|"
 msgid "Do not want empty vectors"
-msgstr ""
+msgstr "Prázdné vektory nejsou žádoucí"
 
 #: analitza/expression.cpp:489
 msgctxt "QCoreApplication|"
 msgid "Do not want empty matrices"
-msgstr ""
+msgstr "Prázdné matice nejsou žádoucí"
 
 #: analitza/expression.cpp:508
 #, qt-format
@@ -393,7 +396,7 @@ msgstr "Pravá kulatá závorka je v nerovnováze"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Unexpected token identifier: %1"
-msgstr ""
+msgstr "Neočekávaný identifikátor tokenu: %1"
 
 #: analitza/expressionparser.cpp:305
 #, qt-format
@@ -405,36 +408,36 @@ msgstr "Neočekávaný výraz %1"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not find a type that unifies '%1'"
-msgstr ""
+msgstr "Nebylo možné najít typ, který by sjednotil '%1'"
 
 #: analitza/expressiontypechecker.cpp:473
 msgctxt "QCoreApplication|"
 msgid "The domain should be either a vector or a list"
-msgstr ""
+msgstr "Doména by měla být buď vektorem, nebo seznamem"
 
 #: analitza/expressiontypechecker.cpp:558
 #, qt-format
 msgctxt "type error message|"
 msgid "Cannot call '%1'"
-msgstr ""
+msgstr "Nelze zavolat '%1'"
 
 #: analitza/expressiontypechecker.cpp:593
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot reduce '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
-msgstr ""
+msgstr "Nelze převést '%1' na '%2'. Neplatný typ parametru '%3' pro '%4'"
 
 #: analitza/expressiontypechecker.cpp:604
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Invalid parameter count for '%2'. Should have %1 parameters."
-msgstr ""
+msgstr "Neplatný počet parametrů pro '%2'. Měl by mít %1 parametrů."
 
 #: analitza/expressiontypechecker.cpp:616
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot compare '%1' to '%2'. Invalid type of parameter '%3' for '%4'"
-msgstr ""
+msgstr "Nelze porovnat '%1' s '%2'. Neplatný typ parametru '%3' pro '%4'"
 
 #: analitza/expressiontypechecker.cpp:654
 #, qt-format
@@ -452,12 +455,12 @@ msgstr "Nelze vyřešit '%1'"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Incoherent type for the variable '%1'"
-msgstr ""
+msgstr "Nesprávný typ proměnné '%1'"
 
 #: analitza/expressiontypechecker.cpp:718
 msgctxt "QCoreApplication|"
 msgid "Could not determine the type for piecewise"
-msgstr ""
+msgstr "Nepodařilo se určit typ pro piecewise"
 
 #: analitza/expressiontypechecker.cpp:937
 msgctxt "QCoreApplication|"
@@ -511,12 +514,12 @@ msgstr "Nelze vypočítat nejmenší společný násobek rovný 0."
 #: analitza/operations.cpp:246
 msgctxt "QCoreApplication|"
 msgid "Boolean operations on complex numbers not available"
-msgstr ""
+msgstr "Booleovské operace s komplexními čísly nejsou k dispozici"
 
 #: analitza/operations.cpp:276
 msgctxt "QCoreApplication|"
 msgid "Only square root implemented for complex numbers"
-msgstr ""
+msgstr "U komplexních čísel je implementována pouze odmocnina"
 
 #: analitza/operations.cpp:351 analitza/operations.cpp:463
 #, qt-format
@@ -528,7 +531,7 @@ msgstr "Nelze vypočítat hodnotu %1"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate %1 between a value and an error type"
-msgstr ""
+msgstr "Nelze vypočítat %1 mezi hodnotou a typem chyby"
 
 #: analitza/operations.cpp:495 analitza/operations.cpp:652
 #: analitza/operations.cpp:784
@@ -548,11 +551,13 @@ msgid ""
 "Multiplication between a matrix and a vector is allowed provided that the "
 "number of columns of the matrix equals the size of the vector"
 msgstr ""
+"Násobení matice a vektoru je přípustné za předpokladu, že počet sloupců "
+"matice se rovná velikosti vektoru"
 
 #: analitza/operations.cpp:570 analitza/operations.cpp:707
 msgctxt "QCoreApplication|"
 msgid "Matrix and vector entries must be numbers"
-msgstr ""
+msgstr "Prvky matice a vektoru musí být čísla"
 
 #: analitza/operations.cpp:599
 #, qt-format
@@ -564,7 +569,7 @@ msgstr "%1 vektoru nelze vypočítat"
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not calculate a list's %1"
-msgstr ""
+msgstr "Nepodařilo se vypočítat seznam %1"
 
 #: analitza/operations.cpp:703
 msgctxt "QCoreApplication|"
@@ -572,6 +577,8 @@ msgid ""
 "Multiplication between a vector and a matrix is allowed provided that the "
 "matrix has only one matrixrow element"
 msgstr ""
+"Násobení vektoru a matice je přípustné za předpokladu, že matice obsahuje "
+"pouze jeden prvek v řádku"
 
 #: analitza/operations.cpp:730
 msgctxt "QCoreApplication|"
@@ -579,6 +586,8 @@ msgid ""
 "Addition of two matrices is allowed provided that both matrices have the "
 "same number of rows and the same number of columns"
 msgstr ""
+"Sčítání dvou matic je přípustné za předpokladu, že obě matice mají stejný "
+"počet řádků a stejný počet sloupců"
 
 #: analitza/operations.cpp:762
 msgctxt "QCoreApplication|"
@@ -586,34 +595,36 @@ msgid ""
 "Multiplication of two matrices is allowed provided that the number of "
 "columns of the first matrix equals the number of rows of the second matrix"
 msgstr ""
+"Násobení dvou matic je přípustné za předpokladu, že počet sloupců první "
+"matice se rovná počtu řádků druhé matice"
 
 #: analitza/operations.cpp:766 analitza/operations.cpp:804
 #: analitza/operations.cpp:887
 msgctxt "QCoreApplication|"
 msgid "Matrix entries must be numbers"
-msgstr ""
+msgstr "Prvky matice musí být čísla"
 
 #: analitza/operations.cpp:879
 msgctxt "QCoreApplication|"
 msgid "The exponent of 'power' must be some integer number"
-msgstr ""
+msgstr "Exponent 'mocniny' musí být celé číslo"
 
 #: analitza/operations.cpp:883
 msgctxt "QCoreApplication|"
 msgid "Cannot compute 'power' for non square matrix"
-msgstr ""
+msgstr "Nelze vypočítat 'mocninu' pro matici, která není čtvercová"
 
 #: analitza/operations.cpp:922
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Cannot calculate %1 between a matrix and an error type"
-msgstr ""
+msgstr "Nelze vypočítat %1 mezi maticí a typem chyby"
 
 #: analitza/providederivative.cpp:93
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Could not calculate the derivative for '%1'"
-msgstr ""
+msgstr "Nepodařilo se vypočítat derivaci pro '%1'"
 
 #: analitzagui/operatorsmodel.cpp:96 analitzagui/variablesmodel.cpp:91
 #: analitzaplot/plotsdictionarymodel.cpp:36 analitzaplot/plotsmodel.cpp:78
@@ -639,12 +650,12 @@ msgstr "Příklad"
 #: analitzagui/operatorsmodel.cpp:136
 msgctxt "Syntax for function bounding|"
 msgid " : var"
-msgstr ""
+msgstr " : var"
 
 #: analitzagui/operatorsmodel.cpp:138
 msgctxt "Syntax for function bounding values|"
 msgid "=from..to"
-msgstr ""
+msgstr "=od..do"
 
 #: analitzagui/operatorsmodel.cpp:141
 #, qt-format
@@ -682,7 +693,7 @@ msgstr "Dělení"
 #: analitzagui/operatorsmodel.cpp:169
 msgctxt "QCoreApplication|"
 msgid "Subtraction. Will remove all values from the first one."
-msgstr ""
+msgstr "Odčítání. Odstraní všechny hodnoty od první hodnoty."
 
 #: analitzagui/operatorsmodel.cpp:172
 msgctxt "QCoreApplication|"
@@ -872,22 +883,22 @@ msgstr "Absolutní hodnota. abs(n)=|n|"
 #: analitzagui/operatorsmodel.cpp:286
 msgctxt "QCoreApplication|"
 msgid "Conjugate"
-msgstr ""
+msgstr "Konjugát"
 
 #: analitzagui/operatorsmodel.cpp:289
 msgctxt "QCoreApplication|"
 msgid "Arg"
-msgstr ""
+msgstr "Arg"
 
 #: analitzagui/operatorsmodel.cpp:292
 msgctxt "QCoreApplication|"
 msgid "Real"
-msgstr ""
+msgstr "Real"
 
 #: analitzagui/operatorsmodel.cpp:295
 msgctxt "QCoreApplication|"
 msgid "Imaginary"
-msgstr ""
+msgstr "Imaginární"
 
 #: analitzagui/operatorsmodel.cpp:298
 msgctxt "QCoreApplication|"
@@ -997,22 +1008,22 @@ msgstr "Skalární součin"
 #: analitzagui/operatorsmodel.cpp:361
 msgctxt "QCoreApplication|"
 msgid "Select the par1-th element of par2 list or vector"
-msgstr ""
+msgstr "Vyberte par1-tý prvek seznamu nebo vektoru par2"
 
 #: analitzagui/operatorsmodel.cpp:364
 msgctxt "QCoreApplication|"
 msgid "Joins several items of the same type"
-msgstr ""
+msgstr "Spojuje několik položek stejného typu"
 
 #: analitzagui/operatorsmodel.cpp:367
 msgctxt "QCoreApplication|"
 msgid "Applies a function to every element in a list"
-msgstr ""
+msgstr "Použije funkci na každý prvek v seznamu"
 
 #: analitzagui/operatorsmodel.cpp:370
 msgctxt "QCoreApplication|"
 msgid "Removes all elements that don't fit a condition"
-msgstr ""
+msgstr "Odstraní všechny prvky, které nesplňují danou podmínku"
 
 #: analitzagui/operatorsmodel.cpp:373
 msgctxt "QCoreApplication|"
@@ -1067,7 +1078,7 @@ msgstr "Hodnota"
 #: analitzaplot/plotsfactory.cpp:49
 msgctxt "QCoreApplication|"
 msgid "The expression is not correct"
-msgstr ""
+msgstr "Výraz není správný"
 
 #: analitzaplot/plotsfactory.cpp:72
 #, qt-format
@@ -1109,18 +1120,18 @@ msgstr "Dokument STL (*.stl)"
 #: analitzaplot/private/backends/cartesiancurve.cpp:64
 msgctxt "Function type|"
 msgid "Plane Curve F(y)"
-msgstr ""
+msgstr "Rovinná křivka F(y)"
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:80
 msgctxt "Function type|"
 msgid "Plane Curve F(x)"
-msgstr ""
+msgstr "Rovinná křivka F(x)"
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:137
 #: analitzaplot/private/backends/cartesiancurve.cpp:245
 msgctxt "QCoreApplication|"
 msgid "We can only draw Real results."
-msgstr ""
+msgstr "Můžeme vyvozovat pouze reálné závěry."
 
 #: analitzaplot/private/backends/cartesiancurve.cpp:248
 #: analitzawidgets/plotsview2d.cpp:236
@@ -1132,62 +1143,64 @@ msgstr "x=%1 y=%2"
 #: analitzaplot/private/backends/cartesiansurface.cpp:52
 msgctxt "Function type|"
 msgid "Surface z=F(x,y)"
-msgstr ""
+msgstr "Plocha z=F(x,y)"
 
 #: analitzaplot/private/backends/cartesiansurface.cpp:94
 msgctxt "Function type|"
 msgid "Surface y=F(x,z)"
-msgstr ""
+msgstr "Plocha y=F(x,z)"
 
 #: analitzaplot/private/backends/cartesiansurface.cpp:127
 msgctxt "Function type|"
 msgid "Surface x=F(y,z)"
-msgstr ""
+msgstr "Plocha x=F(y,z)"
 
 #: analitzaplot/private/backends/cylindricalsurface.cpp:37
 msgctxt "Function type|"
 msgid "Cylindrical Surface z=F(r: Radial, p: Polar)"
-msgstr ""
+msgstr "Válcová plocha z = F(r: radiální, p: polární)"
 
 #: analitzaplot/private/backends/implicitcurve.cpp:44
 msgctxt "Function type|"
 msgid "Implicit Curve"
-msgstr ""
+msgstr "Implicitní křivka"
 
 #: analitzaplot/private/backends/implicitpolarcurve.cpp:37
 msgctxt "Function type|"
 msgid "Polar implicit Curve 0=F(r: Radial, p: Polar)"
-msgstr ""
+msgstr "Implicitní polární křivka 0 = F(r: radiální, p: polární)"
 
 #: analitzaplot/private/backends/implicitsurface.cpp:35
 msgctxt "Function type|"
 msgid "Implicit Surface"
-msgstr ""
+msgstr "Implicitní plocha"
 
 #: analitzaplot/private/backends/parametriccurve2d.cpp:37
 msgctxt "Function type|"
 msgid "Parametric Curve 2D"
-msgstr ""
+msgstr "Parametrická křivka 2D"
 
 #: analitzaplot/private/backends/parametriccurve3d.cpp:31
 msgctxt "Function type|"
 msgid "Parametric Curve 3D"
-msgstr ""
+msgstr "Parametrická křivka 3D"
 
 #: analitzaplot/private/backends/parametricsurface.cpp:32
 msgctxt "Function type|"
 msgid "Parametric Surface"
-msgstr ""
+msgstr "Parametrická plocha"
 
 #: analitzaplot/private/backends/polarcurve.cpp:37
 msgctxt "Function type|"
 msgid "Polar Curve r=F(p: Polar)"
-msgstr ""
+msgstr "Polární křivka r = F(p: polární)"
 
 #: analitzaplot/private/backends/sphericalsurface.cpp:35
 msgctxt "Function type|"
 msgid "Spherical Surface Radial=F(t:Azimuth, p: Polar)"
 msgstr ""
+"Radiální souřadnice na sférickém povrchu = F(t: azimut, p: polární "
+"souřadnice)"
 
 #: analitzawidgets/expressionedit.cpp:295
 #, qt-format
@@ -1198,12 +1211,12 @@ msgstr "Výsledek: %1"
 #: analitzawidgets/expressionedit.cpp:405
 msgctxt "QCoreApplication|"
 msgid "To Expression"
-msgstr ""
+msgstr "Do výrazu"
 
 #: analitzawidgets/expressionedit.cpp:407
 msgctxt "QCoreApplication|"
 msgid "To MathML"
-msgstr ""
+msgstr "Do MathML"
 
 #: analitzawidgets/expressionedit.cpp:409
 msgctxt "QCoreApplication|"
@@ -1218,10 +1231,10 @@ msgstr "Příklady"
 #: analitzawidgets/plotsview2d.cpp:214
 msgctxt "QCoreApplication|"
 msgid "Selected viewport too small"
-msgstr ""
+msgstr "Vybraný výřez je příliš malý"
 
 #: declarative/analitzawrapper.cpp:120
 #, qt-format
 msgctxt "QCoreApplication|"
 msgid "Have %1 bounded variables needed, got %2"
-msgstr ""
+msgstr "Potřebujete %1 omezených proměnných, máte %2"
