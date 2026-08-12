@@ -383,7 +383,7 @@ msgstr "، "
 #, qt-format
 msgctxt "error message|"
 msgid "Expected %1 instead of '%2'"
-msgstr "كان من المتوقع %1 بدلاً من '%2'"
+msgstr "كان من المتوقع %1 بدلًا من '%2'"
 
 #: analitza/expressionparser.cpp:298
 msgctxt "QCoreApplication|"
